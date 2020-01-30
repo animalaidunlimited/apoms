@@ -1,0 +1,73 @@
+<form [formGroup]="recordForm.get('rescueDetails')" class="form-sub-group">
+                  
+    <legend class="legend">Rescue Details</legend>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+            <mat-form-field>
+                <mat-label>Driver</mat-label>
+                    <mat-select formControlName="driver" [errorStateMatcher]="errorMatcher">
+
+                    <!-- <mat-select formControl="driver" [errorStateMatcher]="errorMatcher"></mat-select> -->
+                    <mat-option *ngFor="let driver of drivers" [value]="driver.id">
+                        {{driver.driver}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                    <mat-label>Worker</mat-label>
+                        <mat-select formControlName="worker" [errorStateMatcher]="errorMatcher">
+    
+                        <!-- <mat-select formControl="worker" [errorStateMatcher]="errorMatcher"></mat-select> -->
+                        <mat-option *ngFor="let worker of workers" [value]="worker.id">
+                            {{worker.worker}}
+                        </mat-option>
+                    </mat-select>
+            </mat-form-field>
+          
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="left">
+        <label id="ambulance-arrived-label" class="label" >Ambulance arrived</label>
+            
+
+        <mat-radio-group formControlName="ambulanceArrived" aria-labelledby="ambulance-arrived-label">
+        <!-- <mat-radio-group aria-labelledby="ambulance-arrived-label"> -->
+            
+            <mat-radio-button value="1" checked>N/A</mat-radio-button>
+                <mat-radio-button value="2">Yes</mat-radio-button>
+                <mat-radio-button value="3">No</mat-radio-button>
+                <mat-error style="font-size: small; padding-left: 10px;" *ngIf="ambulanceArrived.errors?.noAmbulanceArrived">
+                    Pick Yes or No.
+                </mat-error>
+        </mat-radio-group>  
+    </div>
+
+
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+            <mat-form-field>
+                    <input formControlName="rescueTime" type="datetime-local" name="rescueTime" [min]="currentCallDateTime" [max]="currentAdmissionTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput> 
+
+                        <mat-error *ngIf="rescueTime.errors?.rescueBeforeCallDatetime">
+                        Rescue time before Call time!
+                        </mat-error>
+
+                        <mat-error *ngIf="rescueTime.errors?.rescueAfterAdmission">
+                            Rescue after Admission!
+                        </mat-error>
+        </mat-form-field>
+
+
+            <mat-form-field>
+                    <input formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+                    
+                    <mat-error *ngIf="admissionTime.errors?.rescueAfterAdmission">
+                        Rescue after Admission!
+                    </mat-error>                    
+            </mat-form-field>
+
+    </div>
+</form>  

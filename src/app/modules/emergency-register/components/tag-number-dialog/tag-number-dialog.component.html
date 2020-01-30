@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Enter tag number</h1>
+<form autocomplete="off" [mat-dialog-close]="data.tagNumber">
+<div mat-dialog-content>  
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.tagNumber" name="tag-number" cdkFocusInitial>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.tagNumber" >Save</button>
+</div>
+</form>

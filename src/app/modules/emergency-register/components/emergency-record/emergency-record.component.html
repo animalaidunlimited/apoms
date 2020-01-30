@@ -1,0 +1,69 @@
+
+<form [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm(recordForm.value)">
+
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
+        
+                <div fxLayout="column" fxFlex="1 1 60" fxLayoutGap="15px" fxLayoutAlign="start">
+                        <fieldset [formGroup]="recordForm.get('emergencyDetails')" class="form-sub-group">
+                    
+                                <legend class="legend">Emergency Details</legend>
+                    
+                                <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">  
+                    
+                                <mat-form-field>
+                                        <input formControlName="emergencyNumber" type="text" (click)="saveForm()" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput cdkFocusInitial>                        
+                                </mat-form-field>
+                    
+                                <mat-form-field>
+                                        <input formControlName="callDateTime" name="callDateTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>                                                             
+                                </mat-form-field>
+                    
+                                <mat-form-field>
+                                        <mat-label>Dispatcher</mat-label>
+                                        <mat-select formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
+                                            <mat-option *ngFor="let dispatcher of dispatchers" [value]="dispatcher.id">
+                                                {{dispatcher.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                    
+                                </div>
+                    
+                              </fieldset>
+                    
+                              <animal-selection></animal-selection>
+                    
+                        </div>
+
+        <div fxLayout="column" fxFlex="0 1 40" fxLayoutGap="5px" fxLayoutAlign="start">
+
+            <caller-details [recordForm]="recordForm"></caller-details>
+
+            <location-details [recordForm]="recordForm"></location-details>
+
+            <rescue-details [recordForm]="recordForm" ></rescue-details>            
+
+              <fieldset [formGroup]="recordForm.get('callOutcome')" class="form-sub-group">
+                
+                    <legend class="legend">Call Outcome</legend>
+
+                    <mat-form-field class="extra-wide">
+                            <mat-label>Call Outcome</mat-label>
+                            <mat-select formControlName="callOutcome">
+                                <mat-option *ngFor="let outcome of outcomes" [value]="outcome.id">
+                                    {{outcome.outcome}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+              </fieldset>
+
+              <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
+                <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
+                <button mat-raised-button color="primary">Reset</button>
+              </div>
+              
+            </div>
+        </div>
+</form>
+

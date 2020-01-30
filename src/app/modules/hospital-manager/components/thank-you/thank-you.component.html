@@ -1,0 +1,86 @@
+<!-- <fieldset [formGroup]="thankYouForm.get('thankYouDetails')" class="form-sub-group"> -->
+    <fieldset [formGroup]="thankYouForm.get('callDetails')" class="form-sub-group">
+    
+          
+    <legend class="legend">Thank you call</legend>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <mat-form-field>
+        <input formControlName="call1Time" name="call1Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 1 time" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 1 made by</mat-label>
+        <mat-select formControlName="call1MadeBy" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 1 outcome</mat-label>
+        <mat-select formControlName="call1Outcome" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <mat-form-field>
+        <input formControlName="call2Time" name="call2Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 2 time" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 2 made by</mat-label>
+        <mat-select formControlName="call2MadeBy" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 2 outcome</mat-label>
+        <mat-select formControlName="call2Outcome" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <mat-form-field>
+        <input formControlName="call3Time" name="call3Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 3 time" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 3 made by</mat-label>
+        <mat-select formControlName="call3MadeBy" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Call 3 outcome</mat-label>
+        <mat-select formControlName="call3Outcome" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let caller of officeStaff" [value]="staff.id">
+                {{staff.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>
+
+</fieldset>
+
+
+<!-- </fieldset> -->

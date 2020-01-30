@@ -1,0 +1,21 @@
+<fieldset [formGroup]="recordForm.get('complainerDetails')" class="form-sub-group">
+                
+    <legend class="legend">Complainer Details</legend>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+        <mat-form-field>
+                <input formControlName="complainerName" type="text" placeholder="Name" [errorStateMatcher]="errorMatcher" matInput>                        
+        </mat-form-field>
+
+        <mat-form-field>
+                <input formControlName="complainerNumber" type="text" placeholder="Number" [errorStateMatcher]="errorMatcher" matInput>                        
+        </mat-form-field>
+
+        <mat-form-field>
+                <input formControlName="complainerAlternateNumber" type="text" placeholder="Alt. Number" matInput>                        
+        </mat-form-field>
+
+    </div>
+
+  </fieldset>
