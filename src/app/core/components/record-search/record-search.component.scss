@@ -1,0 +1,46 @@
+$standard-width: 175px;
+$standard-height: 48px;
+
+.er-case-search-box
+{
+    cursor: pointer;
+    width: $standard-width * 3;
+    padding-bottom: 1px;
+}
+
+
+.search-form{
+    width: $standard-width * 3;
+    border: 1px rgba(0, 0, 0, 0.36) solid;
+    border-radius: 4px;
+    position: relative;
+    background: #ffffff;
+    padding-bottom: 40px;
+    margin-top: -17px;
+}
+
+.er-search-button{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.search-row
+{
+    margin: 15px;
+    height: 48px;
+}
+
+.add-search-row
+{
+    margin-left: 15px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.ngx-flexible-select-option
+{
+    font-family: arial !important;
+}

@@ -1,0 +1,45 @@
+<fieldset [formGroup]="recordForm.get('patientDetails')" class="form-sub-group">
+                
+    <legend class="legend">Patient Details</legend>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <mat-form-field>
+            <input formControlName="admissionTime" name="admissionTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Admission time" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Species</mat-label>
+        <mat-select formControlName="species" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let animalType of species" [value]="animalType.id">
+                {{animalType.animalType}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+            <input formControlName="tagNumber" type="text" placeholder="Tag Number" matInput>                        
+    </mat-form-field>
+
+
+</div>
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+        <mat-form-field>
+                <input formControlName="mainProblems" type="text" placeholder="Main Problem(s)" matInput>                        
+        </mat-form-field>
+
+        <mat-form-field>
+                <input formControlName="description" type="text" placeholder="Description" matInput>                        
+        </mat-form-field>
+
+
+            <mat-checkbox name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
+
+
+    </div>
+
+  </fieldset>
+
+  <!-- <mat-checkbox formControlName="suspectedRabies">Suspected Rabies</mat-checkbox> -->
+  <!-- <input type="checkbox" formControlName="suspectedRabies" placeholder="Suspected Rabies">                         -->

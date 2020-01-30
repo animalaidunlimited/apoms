@@ -1,0 +1,26 @@
+<fieldset [formGroup]="recordForm.get('locationDetails')" class="form-sub-group">
+                
+    <legend class="legend">Location Details</legend>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+            <mat-form-field >
+                <input type="text" placeholder="Animal Area" (blur)="checkArea()" aria-label="Text" matInput formControlName="animalArea" [errorStateMatcher]="errorMatcher"  [matAutocomplete]="autoArea">
+                <mat-error style="font-size: small; padding-left: 10px;" *ngIf="animalArea.errors?.incorrectAreaEntered">
+                    Select an area from the list
+                </mat-error>
+                <mat-autocomplete #autoArea="matAutocomplete" >
+                    <mat-option *ngFor="let area of filteredAreas | async" [value]="area.areaName">
+                    {{area.areaName}}
+                    </mat-option>
+                </mat-autocomplete>
+                
+            </mat-form-field>
+
+            <mat-form-field class="extra-wide">
+                    <input formControlName="animalLocation" type="text" placeholder="Animal location" [errorStateMatcher]="errorMatcher" matInput>                        
+            </mat-form-field>
+
+            </div>
+
+</fieldset>

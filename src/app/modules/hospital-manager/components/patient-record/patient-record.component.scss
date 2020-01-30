@@ -1,0 +1,44 @@
+$colour-border:#a9abad;
+$primary-font-colour: #626262;
+$standard-width: 175px;
+
+.form-sub-group
+{
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $colour-border;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:host ::ng-deep .mat-tab-labels {
+  flex-direction: column;
+}
+
+mat-tab-group {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-tab-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep mat-ink-bar {
+  display: none;
+}

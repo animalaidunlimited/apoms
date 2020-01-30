@@ -1,0 +1,21 @@
+.form-sub-group {
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #a9abad;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.mat-radio-group {
+  display: flex;
+  color: #626262;
+  justify-content: start center;
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+mat-radio-button {
+  margin-right: 15px;
+}
+.legend {
+  color: #626262;
+  font-size: 12pt;
+}
