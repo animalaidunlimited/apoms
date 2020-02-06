@@ -1,0 +1,42 @@
+$colour-border:#a9abad;
+$primary-font-colour: #626262;
+$standard-width: 180px;
+
+// * {
+//   box-sizing: border-box;
+// }
+
+.form-sub-group
+{
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $colour-border;
+  padding-left:5px;
+  padding-right:5px;
+  text-align: center;
+}
+
+.mat-tab-body-content {
+  transform: none !important;
+}
+
+.gallery-wrapper {
+ text-align: center;
+  .ngx-gallery {
+    display: inline-block;
+    margin-bottom: 20px;
+    height: 100%;
+    width: 100%;
+    /* width: 500px;
+     height: 400px;
+     border-color: #4a89ff;*/
+  }
+}
+
+.mat-drawer-inner-container{
+  box-sizing: unset !important;
+}
+
+.legend{
+  text-align: start !important;
+}

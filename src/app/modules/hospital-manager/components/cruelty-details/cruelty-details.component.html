@@ -1,0 +1,27 @@
+<fieldset [formGroup]="crueltyForm.get('crueltyDetails')" class="form-sub-group">
+    
+          
+    <legend class="legend">Cruelty details</legend>
+
+    <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start">
+
+        <mat-form-field class="extra-wide">
+            <textarea formControlName="crueltyReport" rows="3" placeholder="Cruelty report" [errorStateMatcher]="errorMatcher" matInput></textarea>                        
+        </mat-form-field>
+    
+        <mat-form-field class="extra-wide">
+            <textarea formControlName="postCrueltyReport" rows="3" placeholder="Post cruelty report" [errorStateMatcher]="errorMatcher" matInput></textarea>                       
+        </mat-form-field>
+
+    </div>
+
+    <mat-form-field>
+        <mat-label>Cruelty inspector</mat-label>
+        <mat-select formControlName="crueltyInspector" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let inspector of crueltyInspectors" [value]="inspector.id">
+                {{inspector.crueltyInspector}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</fieldset>

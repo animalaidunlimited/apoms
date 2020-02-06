@@ -1,4 +1,3 @@
-<!-- <fieldset [formGroup]="thankYouForm.get('thankYouDetails')" class="form-sub-group"> -->
     <fieldset [formGroup]="thankYouForm.get('callDetails')" class="form-sub-group">
     
           
@@ -77,6 +76,55 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
+
+</div>
+
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+
+<label id="caller-happy-label" class="label" >Caller happy</label>
+
+<mat-radio-group formControlName="callerHappy" aria-labelledby="caller-happy-label">
+        
+    <mat-radio-button value="1" checked>N/A</mat-radio-button>
+    <mat-radio-button value="2">Yes</mat-radio-button>
+    <mat-radio-button value="3">No</mat-radio-button>
+    <mat-error style="font-size: small; padding-left: 10px;" *ngIf="callerHappy.errors?.noCallerHappy">
+        Pick Yes or No.
+    </mat-error>
+</mat-radio-group>  
+
+</div>
+
+<div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start">
+
+
+
+    <mat-form-field class="extra-wide">
+        <input formControlName="fullAddress" type="text" placeholder="Caller full address" [errorStateMatcher]="errorMatcher" matInput>                        
+    </mat-form-field>
+
+    <mat-form-field class="extra-wide">
+        <input formControlName="area" type="text" placeholder="Caller area" [errorStateMatcher]="errorMatcher" matInput>                        
+    </mat-form-field>
+
+    <mat-form-field class="extra-wide">
+        <input formControlName="emailAddress" type="text" placeholder="Caller email" [errorStateMatcher]="errorMatcher" matInput>                        
+    </mat-form-field>
+
+</div>
+
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+
+<label id="has-visited-label" class="label" >Has visited Animal Aid?</label>
+<mat-radio-group formControlName="hasVisited" aria-labelledby="has-visited-label">
+        
+    <mat-radio-button value="1" checked>N/A</mat-radio-button>
+    <mat-radio-button value="2">Yes</mat-radio-button>
+    <mat-radio-button value="3">No</mat-radio-button>
+    <mat-error style="font-size: small; padding-left: 10px;" *ngIf="hasVisited.errors?.noCallerHappy">
+        Pick Yes or No.
+    </mat-error>
+</mat-radio-group>
 
 </div>
 

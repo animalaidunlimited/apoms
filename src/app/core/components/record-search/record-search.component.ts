@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup,FormArray} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormArray} from '@angular/forms';
 import { trigger, state, style, animate, transition} from '@angular/animations';
 
 export interface SearchValue {

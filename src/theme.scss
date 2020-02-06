@@ -24,3 +24,7 @@ $my-app-foreground: my-mat-light-theme-foreground($main-font-color);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-foreground));
 @include angular-material-theme($my-app-theme-with-foreground);
+
+.mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
+    transform: none !important;
+}

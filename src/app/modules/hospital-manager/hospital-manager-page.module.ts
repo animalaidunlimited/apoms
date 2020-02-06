@@ -17,6 +17,13 @@ import { CensusDetailsComponent } from './components/census-details/census-detai
 
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { ThankYouComponent } from './components/thank-you/thank-you.component';
+import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
+import { OutcomeComponent } from './components/outcome/outcome.component';
+import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
+import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
+import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
+
+
 
 @NgModule({
   declarations: [
@@ -27,8 +34,12 @@ import { ThankYouComponent } from './components/thank-you/thank-you.component';
     CensusDetailsComponent,
     SurgeryDetailsComponent,
     ThankYouComponent,
-    
+    CrueltyDetailsComponent,
+    OutcomeComponent,
+    AnimalHeaderComponent,
+    ImageUploadDialog,
     ],
+    entryComponents: [ImageUploadDialog],
   imports: [
     CommonModule,
     HospitalManagerPageRoutingModule,
@@ -36,6 +47,7 @@ import { ThankYouComponent } from './components/thank-you/thank-you.component';
     RecordSearchModule,
     LocationDetailsModule,
     CallerDetailsModule,
+    ThumbnailSliderModule
   ],
   exports: [    
   ]
