@@ -6,7 +6,7 @@
     background-color: transparentize($primaryColor, 1);
     transition: background-color 0.1s linear, color 0.1s linear,
         font-weight 0.1s linear;
-    overflow-x: hidden;
+    overflow: hidden;
 
     &:focus {
         background: inherit;

@@ -10,6 +10,7 @@ export class PatientRecordComponent implements OnInit {
 
   recordForm;
 
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
@@ -24,8 +25,18 @@ export class PatientRecordComponent implements OnInit {
         mainProblems: ['', Validators.required],
         tagNumber: ['', Validators.required],
         description: ['', Validators.required],
-        suspectedRabies: ['']
-      }),      
+        sex: ['']
+        
+      }),
+      patientStatus: this.fb.group({
+        status: [''],
+        releaseDate: [''],
+        diedDate: [''],
+        escapeDate: [''],
+        PN: [''],
+        suspectedRabies: [''],
+        currentArea: [''],
+      }),
       complainerDetails: this.fb.group({ 
         complainerName: [''],
         complainerNumber: [''],
@@ -34,9 +45,15 @@ export class PatientRecordComponent implements OnInit {
       locationDetails: this.fb.group({
         animalArea: [''],
         animalLocation: ['']
+      }),
+      vaccinationDetails: this.fb.group({
+        megavac1Date: [''],
+        megavac2Date: [''],
+        rabiesVaccinationDate: ['']
       })
     }
-    );
+    );    
+
   }
 
 }

@@ -1,0 +1,5 @@
+@import url(~@angular/material/prebuilt-themes/deeppurple-amber.css);
+@import url(~font-awesome/css/font-awesome.css);
+body {
+  margin: 0 !important;
+}

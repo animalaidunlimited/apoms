@@ -10,3 +10,24 @@ $standard-width: 180px;
   padding-left:5px;
   padding-right:5px;
 }
+
+.mat-radio-group{
+  display:flex;
+  color: $primary-font-colour;
+  justify-content: start center;
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+
+mat-radio-button{
+  margin-right: 15px;
+}
+
+.label{
+  align-self: center;
+  color: #626262;
+}
+
+.wide{
+  width: $standard-width * 2 + 20;
+}

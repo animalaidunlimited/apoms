@@ -1,0 +1,26 @@
+.form-sub-group {
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #a9abad;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
+.mat-tab-body-content {
+  transform: none !important;
+}
+.gallery-wrapper {
+  text-align: center;
+}
+.gallery-wrapper .ngx-gallery {
+  display: inline-block;
+  margin-bottom: 20px;
+  height: 100%;
+  width: 100%;
+}
+.mat-drawer-inner-container {
+  box-sizing: unset !important;
+}
+.legend {
+  text-align: start !important;
+}

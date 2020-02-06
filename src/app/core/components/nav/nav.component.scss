@@ -1,10 +1,21 @@
 .sidenav-container {
     height: 100%;
+    
 
     mat-sidenav {
         box-shadow: 0 0 10px -5px #bbb;
         border: none;
+        
     }
+}
+
+.mat-drawer.mat-drawer-side{
+    z-index: 1;
+}
+
+
+* {
+    box-sizing: unset !important;
 }
 
 .sidenav-logo-container {
