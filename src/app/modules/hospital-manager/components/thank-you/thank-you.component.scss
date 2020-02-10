@@ -1,34 +1,4 @@
-$colour-border:#a9abad;
-$primary-font-colour: #626262;
-$standard-width: 175px;
-
 .form-sub-group
 {
-  border: 2px solid;
-  border-radius: 5px;
-  border-color: $colour-border;
-  padding-left:15px;
-  padding-right:15px;
-  width: fit-content;
-}
-
-.mat-radio-group{
-  display:flex;
-  color: $primary-font-colour;
-  justify-content: start center;
-  padding-bottom: 25px;
-  padding-top: 25px;
-}
-
-mat-radio-button{
-  margin-right: 15px;
-}
-
-.label{
-  align-self: center;
-  color: #626262;
-}
-
-.extra-wide{
-  width: $standard-width * 3;
+    width: fit-content;
 }

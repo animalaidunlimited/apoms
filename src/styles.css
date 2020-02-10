@@ -3,3 +3,36 @@
 body {
   margin: 0 !important;
 }
+.form-sub-group {
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #a9abad;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.mat-raised-button {
+  margin-right: 8px !important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  width: 175px;
+  box-sizing: unset !important;
+}
+.mat-radio-group {
+  display: flex;
+  color: #626262;
+  justify-content: start center;
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+mat-radio-button {
+  margin-right: 15px;
+}
+.label {
+  align-self: center;
+  color: #626262;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+.extra-wide {
+  width: 525px;
+}

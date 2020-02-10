@@ -17,12 +17,21 @@
             <thumbnail-slider></thumbnail-slider>
             <census-details></census-details>
             <surgery-details></surgery-details>
+
+            <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
+                <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
+                <button mat-raised-button color="primary">Reset</button>
+              </div>
         </div>
     </div>
     </mat-tab>
     <mat-tab label="Thank You">
         <thank-you-call></thank-you-call>
     </mat-tab>
-    <mat-tab label="Outcome"> Content 3 </mat-tab>
-    <mat-tab label="Cruelty"> Content 3 </mat-tab>
+    <mat-tab label="Outcome">
+        <outcome></outcome>
+    </mat-tab>
+    <mat-tab label="Cruelty">
+        <cruelty-details></cruelty-details>
+    </mat-tab>
   </mat-tab-group>

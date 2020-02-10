@@ -1,7 +1,86 @@
-<fieldset [formGroup]="outcomeForm.get('outcomeDetails')" class="form-sub-group">
+<fieldset [formGroup]="outcomeForm.get('vaccinationDetails')" class="form-sub-group">
     
           
-    <legend class="legend">Patient outcome</legend>
+    <legend class="legend">Vaccination details</legend>
 
+    <div fxLayout="row wrap" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
+
+    <mat-form-field>
+        <input formControlName="megavac1Date" name="megavac1Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <input formControlName="megavac2Date" name="megavac2Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>                                                             
+    </mat-form-field>
+
+    <mat-form-field>
+        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>                                                             
+    </mat-form-field>
+
+    </div>
+    
+
+
+</fieldset>
+
+<fieldset [formGroup]="outcomeForm.get('antibioticDetails')" class="form-sub-group">
+    
+          
+    <legend class="legend">Antibiotic details</legend>
+
+    <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
+
+    <label class="label">Antibiotic 1</label>
+
+    <mat-chip-list #antibiotic1Chips aria-label="Antibiotic 1" selectable>
+            <mat-chip
+            (click)="antibiotic1.toggleSelected()"
+            (keydown)="cycleChips($event.key)"
+            (selectionChange)="toggleAntibioticChip(antibiotic1)"
+            #antibiotic1="matChip"
+            *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
+    </mat-chip-list>
+
+    <label class="label">Antibiotic 2</label>
+
+    <mat-chip-list #antibiotic2Chips aria-label="Antibiotic 2" selectable>
+        <mat-chip
+        (click)="antibiotic2.toggleSelected()"
+        (keydown)="cycleChips($event.key)"
+        (selectionChange)="toggleAntibioticChip(antibiotic2)"
+        #antibiotic2="matChip"
+        *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
+</mat-chip-list>
+
+<label class="label">Antibiotic 3</label>
+
+<mat-chip-list #antibiotic3Chips aria-label="Antibiotic 3" selectable>
+        <mat-chip
+        (click)="antibiotic3.toggleSelected()"
+        (keydown)="cycleChips($event.key)"
+        (selectionChange)="toggleAntibioticChip(antibiotic3)"
+        #antibiotic3="matChip"
+        *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
+</mat-chip-list>
+
+    </div>
+    
+
+
+</fieldset>
+
+<fieldset [formGroup]="outcomeForm.get('isoReason')" class="form-sub-group">
+    
+          
+    <legend class="legend">Isolation reason</legend>
+
+    <mat-form-field>
+        <mat-label>Isolation reason</mat-label>
+        <mat-select formControlName="isoReason" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let isoReason of isoReasons" [value]="isoReason.id">
+                {{isoReason.isoReason}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 
 </fieldset>
