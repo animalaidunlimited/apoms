@@ -6,6 +6,7 @@ import { getCurrentTimeString } from '../../../../core/utils';
 import { Observable } from 'rxjs';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { templateJitUrl } from '@angular/compiler';
 
 @Component({
   selector: 'emergency-record',
@@ -15,13 +16,13 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 
 export class EmergencyRecordComponent implements OnInit{
 
-  
+
   recordForm;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
   filteredAreas: Observable<any[]>;
-  
+
   dispatchers;
   outcomes;
   areas: any[];
@@ -38,7 +39,7 @@ ngOnInit()
   this.areas = this.dropdowns.getAreas();
   this.dispatchers = this.dropdowns.getDispatchers();
   this.outcomes = this.dropdowns.getOutcomes();
-  
+
 
   this.recordForm = this.fb.group({
 
@@ -47,15 +48,15 @@ ngOnInit()
       callDateTime: [getCurrentTimeString(), Validators.required],
       dispatcher: ['', Validators.required]
     }),
-    
-    complainerDetails: this.fb.group({ 
-      complainerName: [''],
-      complainerNumber: [''],
+    animals: this.fb.array([]),
+    complainerDetails: this.fb.group({
+      complainerName: ['', Validators.required],
+      complainerNumber: ['', Validators.required],
       complainerAlternateNumber: ['']
     }),
     locationDetails: this.fb.group({
-      animalArea: [''],
-      animalLocation: ['']
+      animalArea: ['', Validators.required],
+      animalLocation: ['', Validators.required]
     }),
     rescueDetails: this.fb.group({
       driver: [''],
@@ -79,7 +80,7 @@ ngOnInit()
 
 
 
-  
+
 updateValidators()
 {
 
@@ -93,13 +94,13 @@ updateValidators()
   if((complainerName.value || complainerNumber.value) && !(complainerName.value && complainerNumber.value))
   {
     !!complainerName.value == true  ? complainerNumber.setValidators([Validators.required])
-                            : complainerName.setValidators([Validators.required]); 
+                            : complainerName.setValidators([Validators.required]);
   }
 
   if((animalArea.value || animalLocation.value) && !(animalArea.value && animalLocation.value))
   {
     !!animalArea.value == true  ? animalLocation.setValidators([Validators.required])
-                            : animalArea.setValidators([Validators.required]); 
+                            : animalArea.setValidators([Validators.required]);
   }
 
   complainerName.updateValueAndValidity({emitEvent: false });
@@ -110,7 +111,7 @@ updateValidators()
 }
 
 
-onChanges(): void {  
+onChanges(): void {
 
     this.recordForm.valueChanges.subscribe(val => {
 
@@ -123,10 +124,9 @@ onChanges(): void {
   }
 
   saveForm()
-  {  
-    alert("Save the form");
+  {
+    alert(this.recordForm.valid);
   }
 
 
-  
 }

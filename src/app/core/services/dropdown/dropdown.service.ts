@@ -17,8 +17,62 @@ export class DropdownService {
   private dispatchers$;
   private outcomes$;
   private crueltyIspectors$;
+  private antibiotics$;
+  private isoReasons$;
+  private animalTypes$:any[];
+  private problems$;
+  private exclusions$;
+
 
   constructor(private http: HttpClient) { }
+
+  getExclusions() {
+    if (!this.exclusions$)
+    {
+      this.exclusions$ = [{"animalType":"Bird","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Buffalo","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Bull","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Calf","exclusionList":["Can't Fly","Shifted puppies","Pregnancy problem"]},{"animalType":"Camel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Cat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Chicken","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Cow","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Dog","exclusionList":["Can't Fly"]},{"animalType":"Donkey","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Fox","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Goat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Horse","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Kitten","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Parrot","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Pig","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Pigeon","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Puppy","exclusionList":["Can't Fly"]},{"animalType":"Sheep","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Sparrow","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Squirrel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Tortoise","exclusionList":["Can't Fly","Shifted puppies"]}];
+    }
+
+    return this.exclusions$;
+  }
+
+
+
+  getAnimalTypes() {
+    if (!this.animalTypes$)
+    {
+      this.animalTypes$ = [{"id": 1,"animalType": "Dog"},	{"id": 2,"animalType": "Puppy"},	{"id": 3,"animalType": "Cow"},	{"id": 4,"animalType": "Bull"},	{"id": 5,"animalType": "Calf"},	{"id": 6,"animalType": "Donkey"},	{"id": 7,"animalType": "Cat"},	{"id": 8,"animalType": "Bird"},	{"id": 9,"animalType": "Goat"},	{"id": 10,"animalType": "Pig"},	{"id": 11,"animalType": "Kitten"},	{"id": 12,"animalType": "Sheep"},	{"id": 13,"animalType": "Buffalo"},	{"id": 14,"animalType": "Parrot"},	{"id": 15,"animalType": "Squirrel"},	{"id": 16,"animalType": "Fox"},	{"id": 17,"animalType": "Camel"},	{"id": 18,"animalType": "Pigeon"},	{"id": 19,"animalType": "Sparrow"},{"id": 20,"animalType": "Horse"},{"id": 21,"animalType": "Tortoise"},{"id": 22,"animalType": "Chicken"}];
+    }
+
+    return this.animalTypes$;
+  }
+
+  getProblems() {
+    if (!this.problems$)
+    {
+      this.problems$ =[{"id":1, "problem": "Abnormal Behaviour","problemStripped": "AbnormalBehaviour"},{"id":2, "problem": "Abnormal Walking", "problemStripped": "AbnormalWalking"},{"id":3, "problem": "Abnormal Behaviour Biting", "problemStripped": "AbnormalBehaviourBiting"},{"id":4, "problem": "Anorexia", "problemStripped": "Anorexia"},{"id":5, "problem": "Blind", "problemStripped": "Blind"},{"id":6, "problem": "Can't Fly", "problemStripped": "Cantfly"},{"id":7, "problem": "Circling", "problemStripped": "Circling"},{"id":8, "problem": "Cruelty", "problemStripped": "Cruelty"},{"id":9, "problem": "Diarrhea", "problemStripped": "Diarrhea"},{"id":10, "problem": "Dull/Weakness", "problemStripped": "DullWeakness"},{"id":11, "problem": "Ear problem", "problemStripped": "Earproblem"},{"id":12, "problem": "Eye problem", "problemStripped": "Eyeproblem"},{"id":13, "problem": "For ABC", "problemStripped": "ForABC"},{"id":14, "problem": "Horn/Hoof problem", "problemStripped": "HornHoofproblem"},{"id":15, "problem": "Item Tied/Stuck on Body", "problemStripped": "ItemTiedStuckonBody"},{"id":16, "problem": "Leg problem", "problemStripped": "Legproblem"},{"id":17, "problem": "Mouth Open", "problemStripped": "MouthOpen"},{"id":18, "problem": "Normal Behaviour - Biting", "problemStripped": "NormalBehaviour-Biting"},{"id":19, "problem": "Nose Bleeding", "problemStripped": "NoseBleeding"},{"id":20, "problem": "Orphan", "problemStripped": "Orphan"},{"id":21, "problem": "Penis Coming Out", "problemStripped": "PenisComingOut"},{"id":22, "problem": "Pregnancy problem", "problemStripped": "Pregnancyproblem"},{"id":23, "problem": "Shifted puppies", "problemStripped": "Shiftedpuppies"},{"id":24, "problem": "Recumbent", "problemStripped": "Recumbent"},{"id":25, "problem": "Respiratory", "problemStripped": "Respiratory"},{"id":26, "problem": "Rectal Prolapse", "problemStripped": "RectalProlapse"},{"id":27, "problem": "Salivating/Foaming", "problemStripped": "SalivatingFoaming"},{"id":28, "problem": "Seizure", "problemStripped": "Seizure"},{"id":29, "problem": "Skin problem", "problemStripped": "Skinproblem"},{"id":30, "problem": "Stomach problem/Collic", "problemStripped": "StomachproblemCollic"},{"id":31, "problem": "Stuck/Trapped", "problemStripped": "StuckTrapped"},{"id":32, "problem": "Swelling other than Leg/Abdominal Swelling", "problemStripped": "SwellingotherthanLegAbdominalSwelling"},{"id":33, "problem": "Tick/Flea Infestation", "problemStripped": "TickFleaInfestation"},{"id":34, "problem": "Tumor", "problemStripped": "Tumor"},{"id":35, "problem": "Twitching", "problemStripped": "Twitching"},{"id":36, "problem": "Very skinny", "problemStripped": "Veryskinny"},{"id":37, "problem": "Vaginal/Penis Discharge/Bleeding", "problemStripped": "VaginalPenisDischargeBleeding"},{"id":38, "problem": "Vomiting", "problemStripped": "Vomiting"},{"id":39, "problem": "Vaginal Prolapse", "problemStripped": "VaginalProlapse"},{"id":40, "problem": "Wound", "problemStripped": "Wound"}];
+  }
+
+    return this.problems$;
+  }
+
+
+  getIsoReasons() {
+    if (!this.isoReasons$)
+    {
+      this.isoReasons$ = [{"id":1,"isoReason":"Breathing Problem"},{"id":2,"isoReason":"Nasal Discharge"},{"id":3,"isoReason":"Eye Discharge"},{"id":4,"isoReason":"Coughing"},{"id":5,"isoReason":"Diarrhea"},{"id":6,"isoReason":"Circling"},{"id":7,"isoReason":"Twitching"},{"id":8,"isoReason":"Nuerological"},{"id":9,"isoReason":"Rabies Suspected"},];
+    }
+
+    return this.isoReasons$;
+  }
+
+  getAntibiotics() {
+    if (!this.antibiotics$)
+    {
+      this.antibiotics$ = [{"id":1,"antibiotic":"Amoxicillin"},{"id":2,"antibiotic":"Azithromycin"},{"id":3,"antibiotic":"Bactoclav"},{"id":4,"antibiotic":"Biotrim"},{"id":5,"antibiotic":"Bovicef"},{"id":6,"antibiotic":"Cefpet"},{"id":7,"antibiotic":"Clindamycin"},{"id":8,"antibiotic":"Doxycycline"},{"id":9,"antibiotic":"Enrofloxacin"},{"id":10,"antibiotic":"Intacef"},{"id":11,"antibiotic":"Meloxicam"},{"id":12,"antibiotic":"Metrogyl"},{"id":13,"antibiotic":"Metronidazole"},{"id":14,"antibiotic":"Metroxyl"},{"id":15,"antibiotic":"Penicillin"},{"id":16,"antibiotic":"Septran"},{"id":17,"antibiotic":"Tramadol"},{"id":18,"antibiotic":"Tribivet"}];
+    }
+
+    return this.antibiotics$;
+  }
 
   getAreas() {
     if (!this.areas$)
@@ -74,7 +128,7 @@ export class DropdownService {
     return this.workers$;
   }
 
-  
+
 
   getSpecies() {
     if (!this.species$)
@@ -86,7 +140,7 @@ export class DropdownService {
   }
 
   //This method should be used when the API is up nd running to cache
-  //the response of this api call. We're going to be getting these dropdowns a heck 
+  //the response of this api call. We're going to be getting these dropdowns a heck
   //of a lot and shouldn't hit the database each time.
   // getSpecies(): Observable<Species[]> {
   //   if (!this.species$)

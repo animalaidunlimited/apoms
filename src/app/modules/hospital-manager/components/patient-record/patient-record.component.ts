@@ -45,11 +45,6 @@ export class PatientRecordComponent implements OnInit {
       locationDetails: this.fb.group({
         animalArea: [''],
         animalLocation: ['']
-      }),
-      vaccinationDetails: this.fb.group({
-        megavac1Date: [''],
-        megavac2Date: [''],
-        rabiesVaccinationDate: ['']
       })
     }
     );    
