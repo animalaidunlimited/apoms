@@ -6,7 +6,7 @@ import { getCurrentTimeString } from '../../../../core/utils';
 import { Observable } from 'rxjs';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { templateJitUrl } from '@angular/compiler';
+
 
 @Component({
   selector: 'emergency-record',
@@ -40,7 +40,6 @@ ngOnInit()
   this.dispatchers = this.dropdowns.getDispatchers();
   this.outcomes = this.dropdowns.getOutcomes();
 
-
   this.recordForm = this.fb.group({
 
     emergencyDetails: this.fb.group({
@@ -53,10 +52,6 @@ ngOnInit()
       complainerName: ['', Validators.required],
       complainerNumber: ['', Validators.required],
       complainerAlternateNumber: ['']
-    }),
-    locationDetails: this.fb.group({
-      animalArea: ['', Validators.required],
-      animalLocation: ['', Validators.required]
     }),
     rescueDetails: this.fb.group({
       driver: [''],
@@ -86,8 +81,8 @@ updateValidators()
 
   let complainerName = this.recordForm.get('complainerDetails.complainerName');
   let complainerNumber = this.recordForm.get('complainerDetails.complainerNumber');
-  let animalArea = this.recordForm.get('locationDetails.animalArea');
-  let animalLocation = this.recordForm.get('locationDetails.animalLocation');
+  // let animalArea = this.recordForm.get('locationDetails.animalArea');
+  // let animalLocation = this.recordForm.get('locationDetails.animalLocation');
   let dispatcher = this.recordForm.get("emergencyDetails.dispatcher");
 
 
@@ -97,16 +92,16 @@ updateValidators()
                             : complainerName.setValidators([Validators.required]);
   }
 
-  if((animalArea.value || animalLocation.value) && !(animalArea.value && animalLocation.value))
-  {
-    !!animalArea.value == true  ? animalLocation.setValidators([Validators.required])
-                            : animalArea.setValidators([Validators.required]);
-  }
+  // if((animalArea.value || animalLocation.value) && !(animalArea.value && animalLocation.value))
+  // {
+  //   !!animalArea.value == true  ? animalLocation.setValidators([Validators.required])
+  //                           : animalArea.setValidators([Validators.required]);
+  // }
 
   complainerName.updateValueAndValidity({emitEvent: false });
   complainerNumber.updateValueAndValidity({emitEvent: false });
-  animalArea.updateValueAndValidity({emitEvent: false });
-  animalLocation.updateValueAndValidity({emitEvent: false });
+  // animalArea.updateValueAndValidity({emitEvent: false });
+  // animalLocation.updateValueAndValidity({emitEvent: false });
   dispatcher.updateValueAndValidity({emitEvent: false });
 }
 
@@ -125,6 +120,8 @@ onChanges(): void {
 
   saveForm()
   {
+
+    console.log(this.recordForm);
     alert(this.recordForm.valid);
   }
 
