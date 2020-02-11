@@ -17,7 +17,7 @@ $standard-width: 175px;
   border-radius: 5px;
   border-color: $colour-border;
   padding-left:15px;
-  padding-right:15px;  
+  padding-right:15px;
 }
 
 .mat-raised-button{
@@ -49,4 +49,8 @@ mat-radio-button{
 
 .extra-wide{
   width: $standard-width * 3;
+}
+
+.double-width{
+  width: $standard-width * 2;
 }

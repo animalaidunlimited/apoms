@@ -1,5 +1,5 @@
 <fieldset fxFlex class="form-sub-group">
-            
+
         <legend class="legend">Animal Details</legend>
 
         <table mat-table #animalTable [dataSource]="animalDataSource" class="mat-elevation-z8">
@@ -19,30 +19,30 @@
 
             <ng-container matColumnDef="species">
                 <th mat-header-cell *matHeaderCellDef> Species\Type </th>
-                <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.species}} </td>
+                <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("species").value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="mainProblem">
                     <th mat-header-cell *matHeaderCellDef> Main Problem(s) </th>
-                    <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.problemsString}} </td>
+                    <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("problemsString").value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="tagNo">
                     <th mat-header-cell *matHeaderCellDef> Tag Number </th>
-                    <td mat-cell *matCellDef="let element" (click)="updateTag(element)" style="cursor:pointer"> {{element.tagNumber}} </td>
+                    <td mat-cell *matCellDef="let element" (click)="updateTag(element)" style="cursor:pointer"> {{element.get("tagNumber").value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef>Delete</th>
                 <td mat-cell *matCellDef="let row">
                 <mat-icon (click)="deleteAnimalRow(row)" style="cursor:pointer">delete</mat-icon>
-                
+
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="animalArrayDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: animalArrayDisplayedColumns;" (keydown.enter)="updateTag(row)"></tr>                        
-            
+            <tr mat-row *matRowDef="let row; columns: animalArrayDisplayedColumns;" (keydown.enter)="updateTag(row)"></tr>
+
 
 
             </table>
@@ -79,11 +79,10 @@
 
             <mat-chip-list #problemChips fxFlex multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
-                    (click)="problemChip.toggleSelected()"
-                    (selectionChange)="problemChipSelected(problemChip)"
+                    (click)="problemChip.toggleSelected(); problemChipSelected(problemChip)"
                     #problemChip="matChip"
                     *ngFor="let problem of problems">{{problem.problem}}</mat-chip>
             </mat-chip-list>
 
-
+            <!-- (selectionChange)="problemChipSelected(problemChip)" -->
       </fieldset>

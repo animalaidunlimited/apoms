@@ -11,8 +11,10 @@ import { HttpConfigInterceptor } from './core/services/http/interceptor.service'
 import { MaterialModule } from './material-module';
 import { AutocompleteSelectComponent } from './core/components/autocomplete-select/autocomplete-select.component';
 
+
+
 @NgModule({
-    declarations: [AppComponent, AutocompleteSelectComponent, 
+    declarations: [AppComponent, AutocompleteSelectComponent,
     ],
     imports: [
         BrowserModule,
@@ -20,10 +22,14 @@ import { AutocompleteSelectComponent } from './core/components/autocomplete-sele
         AppRoutingModule,
         NavModule,
         HttpClientModule,
-        MaterialModule,        
+        MaterialModule,
+
+
+
+
     ],
     exports: [
-        
+
     ],
     providers: [
         {

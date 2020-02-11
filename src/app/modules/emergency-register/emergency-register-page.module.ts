@@ -29,7 +29,7 @@ import { DatePipe } from '@angular/common';
     TagNumberDialog,
     RescueDetailsComponent,
     TabBarComponent
-    
+
   ],
   providers: [DatePipe],
 
@@ -44,7 +44,8 @@ import { DatePipe } from '@angular/common';
     RecordSearchModule,
     FormsModule,
     CallerDetailsModule,
-    LocationDetailsModule
+    LocationDetailsModule,
+    
   ],
   exports: [
   ]

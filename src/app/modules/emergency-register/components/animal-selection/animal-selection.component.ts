@@ -5,6 +5,7 @@ import { MatChip, MatChipList, MatDialog } from '@angular/material';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { validateBasis } from '@angular/flex-layout';
 
 export interface Problem {
   id: number;
@@ -46,14 +47,14 @@ export class AnimalSelectionComponent implements OnInit{
 
   animalArrayDisplayedColumns: string[] = ["select", "species", "mainProblem", "tagNo", "delete"];
 
-  problemArray: Problem[] = [];
-  animalArray: Animal[] = [{position: 1, speciesId: null, species: "", problems: this.problemArray, problemsString: "", tagNumber: ""}];
+  //problemArray: FormArray;
+  animalArray:FormArray; //: Animal[] = [{position: 1, speciesId: null, species: "", problems: this.problemArray, problemsString: "", tagNumber: ""}];
 
   currentAnimalChip = "";
 
-  animalDataSource = new MatTableDataSource<Animal>(this.animalArray);
+  animalDataSource:MatTableDataSource<any>;// = new MatTableDataSource<Animal>(this.animalArray);
 
-  selection = new SelectionModel<Animal>(false, [this.animalDataSource.data[0]]);
+  selection;// = new SelectionModel<Animal>(false, [this.animalDataSource.data[0]]);
 
   tagNumber: string;
 
@@ -61,12 +62,33 @@ export class AnimalSelectionComponent implements OnInit{
 
   ngOnInit()
   {
+    this.initAnimalArray();
 
+    this.animalDataSource = new MatTableDataSource((this.recordForm.get('animals') as FormArray).controls);
 
-    
+    this.selection = new SelectionModel<any>(false, [this.animalDataSource.data[0]]);
+
     this.animalTypes = this.dropdown.getAnimalTypes();
     this.problems = this.dropdown.getProblems();
     this.exclusions = this.dropdown.getExclusions();
+  }
+
+  initAnimalArray()
+  {
+    let animal = this.fb.group({
+      position: [''],
+      speciesId: [''],
+      species: [''],
+      problems: this.fb.array([]),
+      problemsString:['', Validators.required],
+      tagNumber: ['']
+    });
+
+    animal.get('position').setValue(1);
+
+    this.animalArray = this.recordForm.get('animals') as FormArray;
+
+    this.animalArray.push(animal);
   }
 
   openDialog(currentAnimal): void {
@@ -96,9 +118,13 @@ export class AnimalSelectionComponent implements OnInit{
 
   toggleRow(row)
   {
+
     this.selection.toggle(row);
     this.clearChips();
-    this.selection.selected.length != 0 ? this.reloadChips(this.getCurrentAnimal()) : null;
+    this.selection.selected.length != 0 ? this.reloadChips(this.getCurrentAnimal()) :
+    null;
+
+
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
@@ -148,16 +174,16 @@ export class AnimalSelectionComponent implements OnInit{
 
     });
 
-    currentAnimal.problems.forEach(problem => {
+    let problems:FormArray = currentAnimal.get('problems');
+
+    problems.controls.forEach(problem => {
 
       this.problemChips.chips.forEach(chip => {
 
-      problem.problem == chip.value ? chip.toggleSelected() : null;
+      problem.get('problem').value == chip.value ? chip.toggleSelected() : null;
 
       });
-
     });
-
   }
 
   toggleAnimalChip(speciesChip)
@@ -191,14 +217,10 @@ export class AnimalSelectionComponent implements OnInit{
 
       let currentAnimal = this.getCurrentAnimal();
 
-      currentAnimal.species = speciesChip.selected ? speciesObject.animalType : null;
-      currentAnimal.speciesId = speciesChip.selected ? speciesObject.id : null;
+      currentAnimal.get("species").setValue(speciesChip.selected ? speciesObject.animalType : null);
+      currentAnimal.get("speciesId").setValue(speciesChip.selected ? speciesObject.id : null);
 
       this.currentAnimalChip = speciesChip.value;
-
-      //TODO update the animal array
-
-      this.formArrayAnimalUpdate(currentAnimal);
 
       this.animalTable.renderRows();
 
@@ -214,35 +236,29 @@ export class AnimalSelectionComponent implements OnInit{
 
         let currentAnimal = this.animalTypes.filter(type => type.animalType == this.currentAnimalChip);
 
-        let animalProblems:Problem[] = [];
-
         let position:number = (this.animalDataSource.data.length + 1);
 
-        let newAnimal:Animal =
+        let newAnimal = this.fb.group(
           {
-            position: position,
-            speciesId: currentAnimal[0].id,
-            species: currentAnimal[0].animalType,
-            problems: animalProblems,
-            problemsString: animalProblems.map(item =>
-              item.problem).join(","),
-            tagNumber: ""
+            position: [position, Validators.required],
+            speciesId: [currentAnimal[0].id, Validators.required],
+            species: [currentAnimal[0].animalType, Validators.required],
+            problems: this.fb.array([]),
+            problemsString: ['', Validators.required],
+            tagNumber: ['']
+          });
 
-          };
-
+        //this.animalArray.push(newAnimal);
         this.animalArray.push(newAnimal);
-        this.formArrayAnimalAdd(newAnimal);;
         this.animalTable.renderRows();
-
 
         //Set the new row to be selected
         this.selection.select(this.animalDataSource.data.find(row =>
-           row.position == position ));
+           row.get("position").value == position
+           ));
 
-           this.hideIrrelevantChips(speciesChip);
-
+        this.hideIrrelevantChips(speciesChip);
     }
-
 
   }
 
@@ -358,9 +374,7 @@ export class AnimalSelectionComponent implements OnInit{
 
   deleteAnimalRow(row)
   {
-    this.animalArray.splice(row.position - 1, 1);
-    this.formArrayAnimalDelete(row.position - 1);
-
+    this.animalArray.removeAt(row.position - 1);
 
     this.clearChips();
 
@@ -378,62 +392,40 @@ export class AnimalSelectionComponent implements OnInit{
       item.problem == problemChip.value
       );
 
-    let currentAnimal = this.getCurrentAnimal();
+    let problemsGroup = this.fb.group({
+      id: [problemsObject.id, Validators.required],
+      problem: [problemsObject.problem, Validators.required],
+      problemStripped: [problemsObject.problemStripped, Validators.required]
+    });
+
+    let currentAnimal:FormGroup = this.getCurrentAnimal();
 
     //If the problem chip has been selected we need to add it to the problem array of the animal
     //else we need to find this problem in the array and remove it.
 
-    let problemIndex = currentAnimal.problems.findIndex(problem =>
-      problem.id == problemsObject.id);
+    let problems:FormArray = currentAnimal.get('problems') as FormArray;
+
+    let problemIndex = problems.value.findIndex(problem =>
+        problem.id == problemsObject.id)
+
 
     problemChip.selected ?
-      currentAnimal.problems.push(problemsObject)
+      problems.push(problemsGroup)
       :
-      problemIndex == -1 ? null : currentAnimal.problems.splice(problemIndex, 1);
+      problemIndex == -1 ? null : problems.removeAt(problemIndex);
 
-
-    currentAnimal.problemsString = currentAnimal.problems.map(problem =>
-        problem.problem).join(",");
+    currentAnimal.get("problemsString").setValue(problems.controls.map(problem =>
+        problem.get("problem").value).join(","));
 
     this.animalTable.renderRows();
   }
 
   updateTag(currentAnimal)
   {
-    console.log(JSON.stringify(this.animalArray));
-    // this.selection.isSelected(currentAnimal) ? null : this.toggleRow(currentAnimal);
+    console.log(this.recordForm)
+    this.selection.isSelected(currentAnimal) ? null : this.toggleRow(currentAnimal);
 
-    // this.openDialog(currentAnimal);
-  }
-
-  formArrayAnimalAdd(animal)
-  {
-
-
-    let newAnimal = this.fb.group({
-      position: ['', Validators.required],
-      speciesId: ['', Validators.required],
-      species: ['', Validators.required],
-
-      tagNumber: ['', Validators.required],
-
-    })
-
-    // problems: Problem[];
-    // problemsString: string;
-
-    let animalArray:FormArray = this.recordForm.get('animals') as FormArray;
-    animalArray.push(newAnimal);
-  }
-
-  formArrayAnimalUpdate(animal)
-  {
-
-  }
-
-  formArrayAnimalDelete(position)
-  {
-
+    this.openDialog(currentAnimal);
   }
 
 }

@@ -26,7 +26,7 @@ export class PatientRecordComponent implements OnInit {
         tagNumber: ['', Validators.required],
         description: ['', Validators.required],
         sex: ['']
-        
+
       }),
       patientStatus: this.fb.group({
         status: [''],
@@ -37,17 +37,13 @@ export class PatientRecordComponent implements OnInit {
         suspectedRabies: [''],
         currentArea: [''],
       }),
-      complainerDetails: this.fb.group({ 
+      complainerDetails: this.fb.group({
         complainerName: [''],
         complainerNumber: [''],
         complainerAlternateNumber: ['']
-      }),
-      locationDetails: this.fb.group({
-        animalArea: [''],
-        animalLocation: ['']
       })
     }
-    );    
+    );
 
   }
 
