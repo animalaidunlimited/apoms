@@ -16,35 +16,6 @@
             <mat-icon matSuffix (click)="performSearch($event)" style="cursor: pointer">search</mat-icon>
           </mat-form-field>
 
-
-
-          <!-- <mat-form-field class="double-width"
-               autocomplete="false">
-            <mat-google-maps-autocomplete matInput
-            [appearance]="standard"
-            [country]="in"
-            [type]="geocode"
-            [formControl]="searchControl"
-            [errorStateMatcher]="errorMatcher"
-            (onAutocompleteSelected)="onAutocompleteSelected($event)"
-                                          (onLocationSelected)="onLocationSelected($event)">
-            </mat-google-maps-autocomplete>
-        </mat-form-field> -->
-
-        <!-- <mat-form-field >
-            <input type="text" placeholder="Animal area" autocomplete="off" (blur)="checkArea()" aria-label="Text" matInput formControlName="animalArea" [errorStateMatcher]="errorMatcher"  [matAutocomplete]="autoArea">
-            <mat-error style="font-size: small; padding-left: 10px;" *ngIf="animalArea.errors?.incorrectAreaEntered">
-                Select an area from the list
-            </mat-error>
-            <mat-autocomplete #autoArea="matAutocomplete" >
-                <mat-option *ngFor="let area of filteredAreas | async" [value]="area.areaName">
-                {{area.areaName}}
-                </mat-option>
-            </mat-autocomplete>
-
-        </mat-form-field> -->
-
-
     </div>
     <div fxFlex>
         <agm-map [latitude]="latitude.value" [longitude]="longitude.value" [zoom]="zoom"

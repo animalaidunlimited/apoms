@@ -31,10 +31,6 @@ export class LocationDetailsComponent implements OnInit {
     private fb: FormBuilder,
     private userOptions: UserOptionsService) { }
 
-  //private areas;
-  //private filteredAreas;
-  //private animalArea;
-
   private zoom: number;
   private latitude: AbstractControl;
   private longitude: AbstractControl;
@@ -47,17 +43,11 @@ export class LocationDetailsComponent implements OnInit {
   @ViewChild('addressSearch', {static: false}) addresstext: any;
 
 
-  // private _filter(value): any[] {
-  //   const filterValue = value.toLowerCase();
-
-  //   return this.areas.filter(option => option.areaName.toLowerCase().includes(filterValue));
-  // }
 
   ngOnInit() {
 
     this.recordForm.addControl(
       "locationDetails", this.fb.group({
-       // animalArea: ['', Validators.required],
         animalLocation: ['', Validators.required],
         latitude: ['', Validators.required],
         longitude: ['', Validators.required],
@@ -81,16 +71,6 @@ export class LocationDetailsComponent implements OnInit {
     }
 
     this.markers.push(marker);
-
-    // this.areas = this.dropdowns.getAreas();
-
-    // this.animalArea = this.recordForm.get("locationDetails.animalArea");
-
-    // this.filteredAreas = this.animalArea.valueChanges
-    // .pipe(
-    //   startWith(''),
-    //   map(area => this._filter(area))
-    // );
   }
 
   ngAfterViewInit() {
@@ -102,7 +82,7 @@ getPlaceAutocomplete() {
     const autocomplete = new google.maps.places.Autocomplete(this.addresstext.nativeElement,
         {
             componentRestrictions: { country: 'IN' },
-            types: ["geocode"]  // 'establishment' / 'address' / 'geocode'
+            types: ["geocode"]
         });
 
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
@@ -118,34 +98,6 @@ invokeEvent(place: Object) {
 
     this.updateLocation(result.geometry.location.lat(), result.geometry.location.lng());
 }
-
-
-// checkArea()
-//   {
-//     let areaExists = this.areas.some(area => {
-//       return area.areaName == this.animalArea.value;
-//     })
-
-//     if(!areaExists)
-//     {
-//       this.animalArea.setErrors({"incorrectAreaEntered" : true});
-//     }
-
-//   }
-
-//   getAreaName(value): any {
-
-//     if(value)
-//     {
-//       const results = this.areas.filter(area => area.areaName === value);
-
-//       if (results.length) {
-//           return results[0].areaName;
-//       }
-//     }
-
-//     return value;
-//   }
 
   updateLocation(iLatitude:number, iLongitude:number)
   {
