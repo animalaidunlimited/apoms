@@ -1,16 +1,12 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { map, startWith } from 'rxjs/operators';
 
 import { UserOptionsService } from '../../services/user-options.service';
 
 import {Location, Appearance} from '@angular-material-extensions/google-maps-autocomplete';
-
-
-import PlaceResult = google.maps.places.PlaceResult;
-
 
 export interface marker {
 	latitude: number;
@@ -35,117 +31,155 @@ export class LocationDetailsComponent implements OnInit {
     private fb: FormBuilder,
     private userOptions: UserOptionsService) { }
 
-  areas;
-  filteredAreas;
-  animalArea;
+  //private areas;
+  //private filteredAreas;
+  //private animalArea;
 
-  appearance = Appearance;
-  zoom: number;
-  latitude: number;
-  longitude: number;
-  selectedAddress: PlaceResult;
-  markers: marker[] = [];
+  private zoom: number;
+  private latitude: AbstractControl;
+  private longitude: AbstractControl;
 
-  private _filter(value): any[] {
-    const filterValue = value.toLowerCase();
+  private animalLocation;
 
-    return this.areas.filter(option => option.areaName.toLowerCase().includes(filterValue));
-  }
+  private markers: marker[] = [];
+
+  @Output() setAddress: EventEmitter<any> = new EventEmitter();
+  @ViewChild('addressSearch', {static: false}) addresstext: any;
+
+
+  // private _filter(value): any[] {
+  //   const filterValue = value.toLowerCase();
+
+  //   return this.areas.filter(option => option.areaName.toLowerCase().includes(filterValue));
+  // }
 
   ngOnInit() {
 
-    var b = 0;
-
     this.recordForm.addControl(
       "locationDetails", this.fb.group({
-        animalArea: ['', Validators.required],
+       // animalArea: ['', Validators.required],
         animalLocation: ['', Validators.required],
         latitude: ['', Validators.required],
         longitude: ['', Validators.required],
       })
     );
 
+    this.latitude = this.recordForm.get("locationDetails.latitude");
+    this.longitude = this.recordForm.get("locationDetails.longitude");
+    this.animalLocation = this.recordForm.get("locationDetails.animalLocation");
+
     let coordinates = this.userOptions.getCoordinates() as Location;
-    this.latitude = coordinates.latitude;
-    this.longitude = coordinates.longitude;
+    this.latitude.setValue(coordinates.latitude);
+    this.longitude.setValue(coordinates.longitude);
     this.zoom = 13;
 
-    this.areas = this.dropdowns.getAreas();
-
-    this.animalArea = this.recordForm.get("locationDetails.animalArea");
-
-    this.filteredAreas = this.animalArea.valueChanges
-    .pipe(
-      startWith(''),
-      map(area => this._filter(area))
-    );
-  }
-
-  initMarkerArray(latitude:number, longitude:number)
-  {
     let marker:marker = {
-      latitude: latitude,
-      longitude: longitude,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
       label: "",
       draggable: true
     }
 
     this.markers.push(marker);
+
+    // this.areas = this.dropdowns.getAreas();
+
+    // this.animalArea = this.recordForm.get("locationDetails.animalArea");
+
+    // this.filteredAreas = this.animalArea.valueChanges
+    // .pipe(
+    //   startWith(''),
+    //   map(area => this._filter(area))
+    // );
   }
 
-  checkArea()
+  ngAfterViewInit() {
+
+      this.getPlaceAutocomplete();
+}
+
+getPlaceAutocomplete() {
+    const autocomplete = new google.maps.places.Autocomplete(this.addresstext.nativeElement,
+        {
+            componentRestrictions: { country: 'IN' },
+            types: ["geocode"]  // 'establishment' / 'address' / 'geocode'
+        });
+
+    google.maps.event.addListener(autocomplete, 'place_changed', () => {
+        const place = autocomplete.getPlace();
+        this.invokeEvent(place);
+    });
+}
+
+invokeEvent(place: Object) {
+    this.setAddress.emit(place);
+
+    let result = place as google.maps.places.PlaceResult;
+
+    this.updateLocation(result.geometry.location.lat(), result.geometry.location.lng());
+}
+
+
+// checkArea()
+//   {
+//     let areaExists = this.areas.some(area => {
+//       return area.areaName == this.animalArea.value;
+//     })
+
+//     if(!areaExists)
+//     {
+//       this.animalArea.setErrors({"incorrectAreaEntered" : true});
+//     }
+
+//   }
+
+//   getAreaName(value): any {
+
+//     if(value)
+//     {
+//       const results = this.areas.filter(area => area.areaName === value);
+
+//       if (results.length) {
+//           return results[0].areaName;
+//       }
+//     }
+
+//     return value;
+//   }
+
+  updateLocation(iLatitude:number, iLongitude:number)
   {
-    let areaExists = this.areas.some(area => {
+    this.latitude.setValue(iLatitude);
+    this.longitude.setValue(iLongitude);
 
-      return area.areaName == this.animalArea.value;
-
-    })
-
-    if(!areaExists)
-    {
-      this.animalArea.setErrors({"incorrectAreaEntered" : true});
-    }
-
-  }
-
-  getAreaName(value): any {
-
-    if(value)
-    {
-      const results = this.areas.filter(area => area.areaName === value);
-
-      if (results.length) {
-          return results[0].areaName;
-      }
-    }
-
-    return value;
-
-  }
-
-  onAutocompleteSelected(result: PlaceResult) {
-  }
-
-  onLocationSelected(location: Location) {
-    this.latitude = location.latitude;
-    this.longitude = location.longitude;
-
-    if(this.markers.length === 0)
-    {
-      this.initMarkerArray(location.latitude, location.longitude);
-    }
-
-    this.markers[0].latitude = location.latitude;
-    this.markers[0].longitude = location.longitude;
-
+    this.markers[0].latitude = iLatitude;
+    this.markers[0].longitude = iLongitude;
   }
 
   markerDragEnd(marker, $event)
   {
-    this.latitude = marker.latitude;
-    this.longitude = marker.longitude;
+    this.latitude.setValue(marker.latitude);
+    this.longitude.setValue(marker.longitude);
   }
 
+  performSearch($event)
+  {
 
+    const addressSearcher = new google.maps.places.PlacesService(this.addresstext.nativeElement);
+
+    var searchRequest = {
+      query: this.animalLocation.value,
+      fields: ['name', 'geometry'],
+    };
+
+    addressSearcher.findPlaceFromQuery(searchRequest,(results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
+        }
+      }
+    });
+
+  }
 
 }

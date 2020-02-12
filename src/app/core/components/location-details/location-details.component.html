@@ -1,4 +1,4 @@
-<fieldset [formGroup]="recordForm.get('locationDetails')" class="form-sub-group">
+<fieldset [formGroup]="recordForm.get('locationDetails')" class="form-sub-group" autocomplete=false>
 
     <legend class="legend">Location Details</legend>
 
@@ -6,8 +6,33 @@
 
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
 
-        <mat-form-field >
-            <input type="text" placeholder="Animal Area" (blur)="checkArea()" aria-label="Text" matInput formControlName="animalArea" [errorStateMatcher]="errorMatcher"  [matAutocomplete]="autoArea">
+
+        <mat-form-field class="double-width">
+            <input matInput type="text"
+            placeholder="Animal location"
+            (setAddress)="getAddress($event)"
+            formControlName="animalLocation"
+            [errorStateMatcher]="errorMatcher" #addressSearch>
+            <mat-icon matSuffix (click)="performSearch($event)" style="cursor: pointer">search</mat-icon>
+          </mat-form-field>
+
+
+
+          <!-- <mat-form-field class="double-width"
+               autocomplete="false">
+            <mat-google-maps-autocomplete matInput
+            [appearance]="standard"
+            [country]="in"
+            [type]="geocode"
+            [formControl]="searchControl"
+            [errorStateMatcher]="errorMatcher"
+            (onAutocompleteSelected)="onAutocompleteSelected($event)"
+                                          (onLocationSelected)="onLocationSelected($event)">
+            </mat-google-maps-autocomplete>
+        </mat-form-field> -->
+
+        <!-- <mat-form-field >
+            <input type="text" placeholder="Animal area" autocomplete="off" (blur)="checkArea()" aria-label="Text" matInput formControlName="animalArea" [errorStateMatcher]="errorMatcher"  [matAutocomplete]="autoArea">
             <mat-error style="font-size: small; padding-left: 10px;" *ngIf="animalArea.errors?.incorrectAreaEntered">
                 Select an area from the list
             </mat-error>
@@ -17,32 +42,12 @@
                 </mat-option>
             </mat-autocomplete>
 
-        </mat-form-field>
-
-        <!-- <mat-form-field class="double-width">
-            <mat-label>Animal location</mat-label>
-            <input matInput
-                 matGoogleMapsAutocomplete
-                 [country]="in"
-                 (onAutocompleteSelected)="onAutocompleteSelected($event)"
-                 (onLocationSelected)="onLocationSelected($event)">
-          </mat-form-field> -->
-
-
-
-          <div class="double-width"
-               autocomplete="false">
-            <mat-google-maps-autocomplete [appearance]="standard" [country]="in" type="geocode"
-            formControlName="animalLocation"
-            (onAutocompleteSelected)="onAutocompleteSelected($event)"
-                                          (onLocationSelected)="onLocationSelected($event)">
-            </mat-google-maps-autocomplete>
-        </div>
+        </mat-form-field> -->
 
 
     </div>
     <div fxFlex>
-        <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom"
+        <agm-map [latitude]="latitude.value" [longitude]="longitude.value" [zoom]="zoom"
         [usePanning]="true"
         [fullscreenControl]="true">
             <agm-marker
@@ -53,7 +58,7 @@
                     [label]="marker.label"
                     [markerDraggable]="marker.draggable"
                     (dragEnd)="markerDragEnd(marker, $event)"></agm-marker>
-          <!-- <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker> -->
+          <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
         </agm-map>
       </div>
 
