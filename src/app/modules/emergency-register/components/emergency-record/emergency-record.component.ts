@@ -72,16 +72,11 @@ ngOnInit()
   this.onChanges();
 }
 
-
-
-
-
 updateValidators()
 {
 
   let complainerName = this.recordForm.get('complainerDetails.complainerName');
   let complainerNumber = this.recordForm.get('complainerDetails.complainerNumber');
-  let animalArea = this.recordForm.get('locationDetails.animalArea');
   let animalLocation = this.recordForm.get('locationDetails.animalLocation');
   let dispatcher = this.recordForm.get("emergencyDetails.dispatcher");
 
@@ -92,15 +87,8 @@ updateValidators()
                             : complainerName.setValidators([Validators.required]);
   }
 
-  if((animalArea.value || animalLocation.value) && !(animalArea.value && animalLocation.value))
-  {
-    !!animalArea.value == true  ? animalLocation.setValidators([Validators.required])
-                            : animalArea.setValidators([Validators.required]);
-  }
-
   complainerName.updateValueAndValidity({emitEvent: false });
   complainerNumber.updateValueAndValidity({emitEvent: false });
-  animalArea.updateValueAndValidity({emitEvent: false });
   animalLocation.updateValueAndValidity({emitEvent: false });
   dispatcher.updateValueAndValidity({emitEvent: false });
 }
