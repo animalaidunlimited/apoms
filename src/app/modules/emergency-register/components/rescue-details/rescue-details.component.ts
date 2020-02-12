@@ -27,14 +27,14 @@ export class RescueDetailsComponent implements OnInit {
   rescueTime;
   admissionTime;
   callDateTime;
-  
+
   constructor(private dropdowns: DropdownService) {}
   // constructor(private errorMatcher: CrossFieldErrorMatcher) {}
 
 
   drivers;
   workers;
-  
+
   ngOnInit() {
 
     this.drivers = this.dropdowns.getDrivers();
@@ -48,7 +48,7 @@ export class RescueDetailsComponent implements OnInit {
     this.callDateTime       = this.recordForm.get("emergencyDetails.callDateTime");
 
     this.onChanges();
-   
+
   }
 
 updateValidators()
@@ -72,18 +72,20 @@ updateValidators()
   {
     this.worker.setValidators([Validators.required]);
     this.driver.setValidators([Validators.required]);
-    this.rescueTime.setValidators([Validators.required]);    
+    this.rescueTime.setValidators([Validators.required]);
     this.rescueTime.updateValueAndValidity({emitEvent: false });
   }
 
   //if rescue time then driver, worker, ambulance arrived required
   if(this.rescueTime.value)
   {
+
     this.worker.setValidators([Validators.required]);
     this.driver.setValidators([Validators.required]);
 
     this.ambulanceArrived.setValidators([Validators.required]);
     this.ambulanceArrived.setErrors({"noAmbulanceArrived": true});
+    this.ambulanceArrived.updateValueAndValidity({emitEvent: false });
   }
 
   if(this.rescueTime.value < this.callDateTime.value && this.rescueTime.value != "")
@@ -120,13 +122,13 @@ updateValidators()
   this.ambulanceArrived.updateValueAndValidity({emitEvent: false });
 }
 
-onChanges(): void {    
+onChanges(): void {
 
     this.recordForm.valueChanges.subscribe(val => {
 
       //The values won't have bubbled up to the parent yet, so wait for one tick
       setTimeout(() =>
-        this.updateValidators()        
+        this.updateValidators()
       )
 
     });
@@ -135,7 +137,7 @@ onChanges(): void {
   setInitialTime(event)
   {
     let currentTime;
-    
+
     currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
 
     if(!currentTime)
@@ -143,7 +145,7 @@ onChanges(): void {
       this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
     }
    }
-  
+
   updateTimes()
   {
     this.currentCallDateTime = this.recordForm.get('emergencyDetails.callDateTime').value;
