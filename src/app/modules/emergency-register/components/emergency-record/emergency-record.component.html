@@ -3,7 +3,7 @@
 
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
-                <div fxLayout="column" fxFlex="1 1 60" fxLayoutGap="15px" fxLayoutAlign="start">
+                <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
                         <fieldset [formGroup]="recordForm.get('emergencyDetails')" class="form-sub-group">
 
                                 <legend class="legend">Emergency Details</legend>
@@ -15,7 +15,7 @@
                                 </mat-form-field>
 
                                 <mat-form-field>
-                                        <input formControlName="callDateTime" name="callDateTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+                                        <input formControlName="callDateTime" name="callDateTime" type="datetime-local" [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
                                 </mat-form-field>
 
                                 <mat-form-field>
@@ -35,7 +35,7 @@
 
                         </div>
 
-        <div fxLayout="column" fxFlex="0 1 40" fxLayoutGap="5px" fxLayoutAlign="start">
+        <div fxLayout="column" fxFlex="0 1 43" fxLayoutGap="5px" fxLayoutAlign="start">
 
             <caller-details [recordForm]="recordForm"></caller-details>
 

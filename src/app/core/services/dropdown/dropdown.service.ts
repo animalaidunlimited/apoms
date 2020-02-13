@@ -13,8 +13,8 @@ import { shareReplay } from 'rxjs/operators';
 export class DropdownService {
 
   private species$;//: Observable<Species[]>;
-  private drivers$;
-  private workers$;
+  private rescuer1$;
+  private rescuer2$;
   private areas$:any[];
   private dispatchers$;
   private outcomes$;
@@ -112,22 +112,22 @@ export class DropdownService {
     return this.outcomes$;
   }
 
-  getDrivers() {
-    if (!this.drivers$)
+  getRescuer1List() {
+    if (!this.rescuer1$)
     {
-      this.drivers$ = [{"id": null,"name":null},{"id": 1, "driver": "Baghat Singh"},{"id": 2, "driver": "Jagdish"},{"id": 3, "driver": "Kalu Singh"},{"id": 4, "driver": "Laxman Singh"},{"id": 5, "driver": "Kamlesh"},{"id": 6, "driver": "Devi Singh"},{"id": 7, "driver": "Self"}]
+      this.rescuer1$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},{"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},{"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"}]
     }
 
-    return this.drivers$;
+    return this.rescuer1$;
   }
 
-  getWorkers() {
-    if (!this.workers$)
+  getRescuer2List() {
+    if (!this.rescuer2$)
     {
-      this.workers$ = [{"id": null,"name":null},{"id": 1, "worker": "Nandu"},{"id": 2, "worker": "Ganpat"},{"id": 3, "worker": "Sanjay"},{"id": 4, "worker": "Mahender"},{"id": 5, "worker": "Pushkar"},{"id": 7, "worker": "Vinod"},{"id": 8, "worker": "Deendeyal"},{"id": 9, "worker": "Heera"},{"id": 10, "worker": "Dharmendra"},{"id": 11, "worker": "Kamlesh"},{"id": 12, "worker": "Self"}]
+      this.rescuer2$ = [{"id": null,"name":null},{"id": 1, "name": "Nandu"},{"id": 2, "name": "Ganpat"},{"id": 3, "name": "Sanjay"},{"id": 4, "name": "Mahender"},{"id": 5, "name": "Pushkar"},{"id": 7, "name": "Vinod"},{"id": 8, "name": "Deendeyal"},{"id": 9, "name": "Heera"},{"id": 10, "name": "Dharmendra"},{"id": 11, "name": "Kamlesh"},{"id": 12, "name": "Self"}]
     }
 
-    return this.workers$;
+    return this.rescuer2$;
   }
 
 

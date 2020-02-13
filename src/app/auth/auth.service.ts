@@ -5,6 +5,12 @@ import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
 const { AUTH_TOKEN } = StorageKey;
 
+export interface Response{
+    success: boolean;
+    message: string;
+    token: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -14,6 +20,7 @@ const { AUTH_TOKEN } = StorageKey;
 export class AuthService extends CrudService {
     endpoint = 'auth';
     token: string;
+    response: Response;
     redirectUrl: string;
 
     constructor(http: HttpClient, private storage: StorageService) {
@@ -21,13 +28,19 @@ export class AuthService extends CrudService {
         this.token = this.storage.read(AUTH_TOKEN) || '';
     }
 
-    public async login(email: string, password: string) {
+    public async login(username: string, password: string) {
         try {
-            this.token = await this.post({ email, password });
+            this.response = await this.post({ username, password }) as Response;
+            this.token = this.response.token || "";
+            if(!this.response.success){
+                throw new Error(
+                    'Wrong Credentials!',
+                );
+            }
             this.storage.save(AUTH_TOKEN, this.token);
             return this.redirectUrl;
         } catch (error) {
-            console.error('Error during login request', error);
+            //console.error('Error during login request', error);
             return Promise.reject(error);
         }
     }
