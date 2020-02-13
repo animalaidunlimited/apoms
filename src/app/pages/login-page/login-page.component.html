@@ -7,9 +7,9 @@
             Login to apoms
         </mat-card-title>
         <mat-card-content>
-            <form (keyup.enter)="login(email, password)">
+            <form (keyup.enter)="login(username, password)">
                 <mat-form-field class="login-field">
-                    <input matInput placeholder="Email" name="email" [(ngModel)]="email" type="email" autocomplete="username email"/>
+                    <input matInput placeholder="Username" name="username" [(ngModel)]="username" type="username" autocomplete="username username"/>
                 </mat-form-field>
                 <mat-form-field class="login-field">
                     <input matInput placeholder="Password" name="password" [(ngModel)]="password" type="password" autocomplete="current-password"/>
@@ -19,7 +19,7 @@
         </mat-card-content>
         <mat-card-actions>
             <button mat-raised-button color="primary"
-                    class="login-field" (click)="login(email, password)" type="submit">
+                    class="login-field" (click)="login(username, password)" type="submit">
                 Login
             </button>
         </mat-card-actions>

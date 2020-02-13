@@ -6,22 +6,22 @@
 
             <mat-form-field>
                 <mat-label>Driver</mat-label>
-                    <mat-select formControlName="driver" [errorStateMatcher]="errorMatcher">
+                    <mat-select formControlName="rescuer1" [errorStateMatcher]="errorMatcher">
 
-                    <!-- <mat-select formControl="driver" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                    <mat-option *ngFor="let driver of drivers" [value]="driver.id">
-                        {{driver.driver}}
+                    <!-- <mat-select formControl="rescuer1" [errorStateMatcher]="errorMatcher"></mat-select> -->
+                    <mat-option *ngFor="let rescuer1 of rescuer1List" [value]="rescuer1.id">
+                        {{rescuer1.name}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field>
                     <mat-label>Worker</mat-label>
-                        <mat-select formControlName="worker" [errorStateMatcher]="errorMatcher">
+                        <mat-select formControlName="rescuer2" [errorStateMatcher]="errorMatcher">
 
-                        <!-- <mat-select formControl="worker" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                        <mat-option *ngFor="let worker of workers" [value]="worker.id">
-                            {{worker.worker}}
+                        <!-- <mat-select formControl="rescuer2" [errorStateMatcher]="errorMatcher"></mat-select> -->
+                        <mat-option *ngFor="let rescuer2 of rescuer2List" [value]="rescuer2.id">
+                            {{rescuer2.name}}
                         </mat-option>
                     </mat-select>
             </mat-form-field>
@@ -29,40 +29,65 @@
 
     </div>
 
-    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="left">
-        <label id="ambulance-arrived-label" class="label" >Ambulance arrived</label>
+    <!-- <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="left">
+        <label id="ambulance-arrived-label" class="label" >Ambulance arrived</label> -->
 
 
-        <mat-radio-group formControlName="ambulanceArrived" aria-labelledby="ambulance-arrived-label">
-        <!-- <mat-radio-group aria-labelledby="ambulance-arrived-label"> -->
+        <!-- <mat-radio-group formControlName="ambulanceArrived" aria-labelledby="ambulance-arrived-label">
+
 
             <mat-radio-button value="1" checked>N/A</mat-radio-button>
                 <mat-radio-button value="2">Yes</mat-radio-button>
                 <mat-radio-button value="3">No</mat-radio-button>
-        </mat-radio-group>
-        <div style="font-size: small; padding-left: 10px;" *ngIf="ambulanceArrived.errors?.noAmbulanceArrived">
+        </mat-radio-group> -->
+
+        <!-- <mat-checkbox formControlName="ambulanceArrived" #tc></mat-checkbox>
+        <mat-error align="end" style="font-size: small; padding-left: 10px;" *ngIf="ambulanceArrived.errors?.noAmbulanceArrived">
             Pick Yes or No.
-        </div>
-    </div>
+        </mat-error> -->
+    <!-- </div> -->
+
 
 
     <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
 
+        <mat-form-field>
+            <input formControlName="ambulanceArrivalTime" type="datetime-local"
+            name="ambulanceArrivalTime" [min]="currentCallDateTime" [max]="currentRescueTime"
+            (focus)="setInitialTime($event)" (blur)="updateTimes()"
+            placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
+
+                <mat-error *ngIf="ambulanceArrivalTime.errors?.ambulanceArrivalBeforeCallDatetime">
+                <!-- <mat-error> -->
+                Ambulance arrival before call!
+                </mat-error>
+
+                <mat-error *ngIf="ambulanceArrivalTime.errors?.ambulanceArrivalAfterRescue">
+                Ambulance arrival after rescue!
+                </mat-error>
+        </mat-form-field>
+
             <mat-form-field>
-                    <input formControlName="rescueTime" type="datetime-local" name="rescueTime" [min]="currentCallDateTime" [max]="currentAdmissionTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput>
+                    <input formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                    [min]="currentCallDateTime" [max]="currentAdmissionTime"
+                    (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput>
 
                         <mat-error *ngIf="rescueTime.errors?.rescueBeforeCallDatetime">
-                        Rescue time before Call time!
+                        Rescue before call!
                         </mat-error>
 
                         <mat-error *ngIf="rescueTime.errors?.rescueAfterAdmission">
-                            Rescue after Admission!
+                            Rescue after admission!
                         </mat-error>
         </mat-form-field>
 
 
             <mat-form-field>
                     <input formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+
+                    <mat-error *ngIf="admissionTime.errors?.admissionBeforeCallDatetime">
+                        Rescue before call!
+                        </mat-error>
 
                     <mat-error *ngIf="admissionTime.errors?.rescueAfterAdmission">
                         Rescue after Admission!

@@ -2,12 +2,11 @@
 
     <legend class="legend">Location Details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
 
 
-        <mat-form-field class="double-width">
+        <mat-form-field style="width: 100%">
             <input matInput type="text"
             placeholder="Animal location"
             (setAddress)="getAddress($event)"
@@ -16,7 +15,7 @@
             <mat-icon matSuffix (click)="performSearch($event)" style="cursor: pointer">search</mat-icon>
           </mat-form-field>
 
-    </div>
+
     <div fxFlex>
         <agm-map [latitude]="latitude.value" [longitude]="longitude.value" [zoom]="zoom"
         [usePanning]="true"
@@ -34,4 +33,5 @@
       </div>
 
     </div>
+
 </fieldset>

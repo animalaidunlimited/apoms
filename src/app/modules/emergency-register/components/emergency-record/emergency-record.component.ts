@@ -16,7 +16,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 
 export class EmergencyRecordComponent implements OnInit{
 
-
   recordForm;
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -53,21 +52,11 @@ ngOnInit()
       complainerNumber: ['', Validators.required],
       complainerAlternateNumber: ['']
     }),
-    rescueDetails: this.fb.group({
-      driver: [''],
-      worker: [''],
-      ambulanceArrived: [''],
-      rescueTime: [''],
-      admissionTime: ['']
-    }),
     callOutcome: this.fb.group({
       callOutcome: ['']
     })
   }
   );
-
-
-
 
   this.onChanges();
 }
@@ -77,9 +66,7 @@ updateValidators()
 
   let complainerName = this.recordForm.get('complainerDetails.complainerName');
   let complainerNumber = this.recordForm.get('complainerDetails.complainerNumber');
-  let animalLocation = this.recordForm.get('locationDetails.animalLocation');
   let dispatcher = this.recordForm.get("emergencyDetails.dispatcher");
-
 
   if((complainerName.value || complainerNumber.value) && !(complainerName.value && complainerNumber.value))
   {
@@ -89,7 +76,6 @@ updateValidators()
 
   complainerName.updateValueAndValidity({emitEvent: false });
   complainerNumber.updateValueAndValidity({emitEvent: false });
-  animalLocation.updateValueAndValidity({emitEvent: false });
   dispatcher.updateValueAndValidity({emitEvent: false });
 }
 
