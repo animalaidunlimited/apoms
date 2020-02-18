@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { AnimalType } from '../../models/animal-type';
+import { map, shareReplay, catchError } from 'rxjs/operators';
 
-import { Species } from '../../models/species';
-import { shareReplay } from 'rxjs/operators';
 
+export interface AnimalTypeResponse {
+  data: AnimalType[];
+}
 
 
 @Injectable({
@@ -12,7 +15,6 @@ import { shareReplay } from 'rxjs/operators';
 })
 export class DropdownService {
 
-  private species$;//: Observable<Species[]>;
   private rescuer1$;
   private rescuer2$;
   private areas$:any[];
@@ -21,32 +23,50 @@ export class DropdownService {
   private crueltyIspectors$;
   private antibiotics$;
   private isoReasons$;
-  private animalTypes$:any[];
+  private animalTypes$; //:Observable<AnimalType[]>;
   private problems$;
   private exclusions$;
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getExclusions() {
     if (!this.exclusions$)
     {
-      this.exclusions$ = [{"animalType":"Bird","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Buffalo","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Bull","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Calf","exclusionList":["Can't Fly","Shifted puppies","Pregnancy problem"]},{"animalType":"Camel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Cat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Chicken","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Cow","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Dog","exclusionList":["Can't Fly"]},{"animalType":"Donkey","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Fox","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Goat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Horse","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Kitten","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Parrot","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Pig","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Pigeon","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Puppy","exclusionList":["Can't Fly"]},{"animalType":"Sheep","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Sparrow","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Squirrel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Tortoise","exclusionList":["Can't Fly","Shifted puppies"]}];
+      this.exclusions$ = [{"animalType":"Bird","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Buffalo","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Buffalo Calf","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Bull","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Calf","exclusionList":["Can't Fly","Shifted puppies","Pregnancy problem"]},{"animalType":"Camel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Cat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Chicken","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Cow","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Dog","exclusionList":["Can't Fly"]},{"animalType":"Donkey","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Fox","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Goat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Horse","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Kitten","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Parrot","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Pig","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Pigeon","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Puppy","exclusionList":["Can't Fly"]},{"animalType":"Sheep","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Sparrow","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Squirrel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Tortoise","exclusionList":["Can't Fly","Shifted puppies"]}];
     }
 
     return this.exclusions$;
   }
 
+  //Here we get the response and map it to our observable array and then use
+  //share replay for caching to avoid hitting the API every time we want to add
+  //a new case
+  getAnimalTypes(): Observable<AnimalType[]> {
 
 
-  getAnimalTypes() {
     if (!this.animalTypes$)
     {
-      this.animalTypes$ = [{"id": 1,"animalType": "Dog"},	{"id": 2,"animalType": "Puppy"},	{"id": 3,"animalType": "Cow"},	{"id": 4,"animalType": "Bull"},	{"id": 5,"animalType": "Calf"},	{"id": 6,"animalType": "Donkey"},	{"id": 7,"animalType": "Cat"},	{"id": 8,"animalType": "Bird"},	{"id": 9,"animalType": "Goat"},	{"id": 10,"animalType": "Pig"},	{"id": 11,"animalType": "Kitten"},	{"id": 12,"animalType": "Sheep"},	{"id": 13,"animalType": "Buffalo"},	{"id": 14,"animalType": "Parrot"},	{"id": 15,"animalType": "Squirrel"},	{"id": 16,"animalType": "Fox"},	{"id": 17,"animalType": "Camel"},	{"id": 18,"animalType": "Pigeon"},	{"id": 19,"animalType": "Sparrow"},{"id": 20,"animalType": "Horse"},{"id": 21,"animalType": "Tortoise"},{"id": 22,"animalType": "Chicken"}];
+      this.animalTypes$ = this.http
+      .get<AnimalTypeResponse>("/Case/GetAnimalType").pipe(
+        map( (res) => {return res.data}),
+        shareReplay(1,10000)
+      )
     }
 
     return this.animalTypes$;
+
   }
+
+  // getAnimalTypes() {
+  //   if (!this.animalTypes$)
+  //   {
+  //     this.animalTypes$ = [{"id": 1,"animalType": "Dog"},	{"id": 2,"animalType": "Puppy"},	{"id": 3,"animalType": "Cow"},	{"id": 4,"animalType": "Bull"},	{"id": 5,"animalType": "Calf"},	{"id": 6,"animalType": "Donkey"},	{"id": 7,"animalType": "Cat"},	{"id": 8,"animalType": "Bird"},	{"id": 9,"animalType": "Goat"},	{"id": 10,"animalType": "Pig"},	{"id": 11,"animalType": "Kitten"},	{"id": 12,"animalType": "Sheep"},	{"id": 13,"animalType": "Buffalo"},	{"id": 14,"animalType": "Parrot"},	{"id": 15,"animalType": "Squirrel"},	{"id": 16,"animalType": "Fox"},	{"id": 17,"animalType": "Camel"},	{"id": 18,"animalType": "Pigeon"},	{"id": 19,"animalType": "Sparrow"},{"id": 20,"animalType": "Horse"},{"id": 21,"animalType": "Tortoise"},{"id": 22,"animalType": "Chicken"}];
+  //   }
+
+  //   return this.animalTypes$;
+  // }
 
   getProblems() {
     if (!this.problems$)
@@ -130,28 +150,4 @@ export class DropdownService {
     return this.rescuer2$;
   }
 
-
-
-  getSpecies() {
-    if (!this.species$)
-    {
-      this.species$ = [{"id": 1,"animalType": "Dog"},	{"id": 2,"animalType": "Puppy"},	{"id": 3,"animalType": "Cow"},	{"id": 4,"animalType": "Bull"},	{"id": 5,"animalType": "Calf"},	{"id": 6,"animalType": "Donkey"},	{"id": 7,"animalType": "Cat"},	{"id": 8,"animalType": "Bird"},	{"id": 9,"animalType": "Goat"},	{"id": 10,"animalType": "Pig"},	{"id": 11,"animalType": "Kitten"},	{"id": 12,"animalType": "Sheep"},	{"id": 13,"animalType": "Buffalo"},	{"id": 14,"animalType": "Parrot"},	{"id": 15,"animalType": "Squirrel"},	{"id": 16,"animalType": "Fox"},	{"id": 17,"animalType": "Camel"},	{"id": 18,"animalType": "Pigeon"},	{"id": 19,"animalType": "Sparrow"},{"id": 20,"animalType": "Horse"},{"id": 21,"animalType": "Tortoise"},{"id": 22,"animalType": "Chicken"}];
-    }
-
-    return this.species$;
-  }
-
-  //This method should be used when the API is up nd running to cache
-  //the response of this api call. We're going to be getting these dropdowns a heck
-  //of a lot and shouldn't hit the database each time.
-  // getSpecies(): Observable<Species[]> {
-  //   if (!this.species$)
-  //   {
-  //     this.species$ = this.http
-  //     .get<Species[]>("api/getSpecies")
-  //     .pipe(shareReplay(1,10000))
-  //   }
-
-  //   return this.species$;
-  // }
 }

@@ -10,7 +10,7 @@ import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-up
 })
 export class PatientDetailsComponent implements OnInit {
 
-  species;
+  animalTypes;
   @Input() recordForm: FormGroup;
   dialog: any;
 
@@ -18,7 +18,7 @@ export class PatientDetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.species = this.dropdowns.getSpecies();
+    this.animalTypes = this.dropdowns.getAnimalTypes();
     this.recordForm.get("patientStatus.currentArea").setValue("A Kennel");
   }
 
@@ -47,14 +47,14 @@ export class PatientDetailsComponent implements OnInit {
         {
           //TODO set this to be the last area
           this.recordForm.get("patientStatus.currentArea").setValue("A Kennel");
-          break;          
+          break;
         }
-      
+
     }
 
   }
 
 
-  
+
 
 }

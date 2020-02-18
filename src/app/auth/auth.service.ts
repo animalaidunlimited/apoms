@@ -14,11 +14,9 @@ export interface Response{
 @Injectable({
     providedIn: 'root',
 })
-@Injectable({
-    providedIn: 'root',
-})
+
 export class AuthService extends CrudService {
-    endpoint = 'auth';
+    endpoint = 'Auth';
     token: string;
     response: Response;
     redirectUrl: string;
@@ -26,6 +24,7 @@ export class AuthService extends CrudService {
     constructor(http: HttpClient, private storage: StorageService) {
         super(http);
         this.token = this.storage.read(AUTH_TOKEN) || '';
+
     }
 
     public async login(username: string, password: string) {

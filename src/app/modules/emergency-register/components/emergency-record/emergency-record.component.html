@@ -27,6 +27,16 @@
                                         </mat-select>
                                     </mat-form-field>
 
+                                    <mat-form-field>
+                                            <mat-label>Code</mat-label>
+                                            <mat-select formControlName="code" [errorStateMatcher]="errorMatcher">
+                                                <mat-option [value]=""></mat-option>
+                                                <mat-option [value]="1">Red</mat-option>
+                                                <mat-option [value]="2">Yellow</mat-option>
+                                                <mat-option [value]="3">Green</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
                                 </div>
 
                               </fieldset>

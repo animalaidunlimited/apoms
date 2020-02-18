@@ -71,7 +71,7 @@
                 (keydown)="cycleChips($event.key)"
                 (selectionChange)="toggleAnimalChip(speciesChip)"
                 #speciesChip="matChip"
-                *ngFor="let species of animalTypes">{{species.animalType}}</mat-chip>
+                *ngFor="let species of animalTypes$">{{species.AnimalType}}</mat-chip>
         </mat-chip-list>
 
 

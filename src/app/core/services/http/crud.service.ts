@@ -10,7 +10,9 @@ export abstract class CrudService<T = any> {
         let response = null;
         try {
             response = await this.http
-                .get<G>(`${this.url}/${this.endpoint}/${request}`)
+                // .get<G>(`${this.url}/${this.endpoint}/${request}`)
+                .get<G>(`${this.url}/${this.endpoint}`)
+
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('GET', error);
@@ -31,9 +33,23 @@ export abstract class CrudService<T = any> {
         try {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
+                // .post(`${this.url}/${this.endpoint}`, "")
+
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('POST', error);
+        }
+        return response;
+    }
+
+    public async put(body): Promise<any> {
+        let response = null;
+        try {
+            response = await this.http
+                .put(`${this.url}/${this.endpoint}`, body)
+                .toPromise();
+        } catch (error) {
+            response = this.errorHandler('PUT', error);
         }
         return response;
     }

@@ -5,7 +5,9 @@ import { MatChip, MatChipList, MatDialog } from '@angular/material';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { validateBasis } from '@angular/flex-layout';
+import { AnimalType } from 'src/app/core/models/animal-type';
+import { Observable } from 'rxjs';
+import { filter,map } from 'rxjs/operators';
 
 export interface Problem {
   id: number;
@@ -13,10 +15,7 @@ export interface Problem {
   problemStripped: string;
   }
 
-  export interface AnimalType{
-    id: number;
-    animalType: string;
-  }
+
 
   export interface Animal {
     position: number;
@@ -35,8 +34,8 @@ export interface Problem {
 
 export class AnimalSelectionComponent implements OnInit{
 
-  //I used animalTypes instead of species here to make the ngFors more readable (let specie(?) of species )
-  animalTypes: AnimalType[];
+  //I used animalTypes$ instead of species here to make the ngFors more readable (let specie(?) of species )
+  animalTypes$: AnimalType[];
   problems: Problem[];
   exclusions;
 
@@ -68,7 +67,8 @@ export class AnimalSelectionComponent implements OnInit{
 
     this.selection = new SelectionModel<any>(false, [this.animalDataSource.data[0]]);
 
-    this.animalTypes = this.dropdown.getAnimalTypes();
+    this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
+
     this.problems = this.dropdown.getProblems();
     this.exclusions = this.dropdown.getExclusions();
   }
@@ -210,21 +210,21 @@ export class AnimalSelectionComponent implements OnInit{
     if(selectedCount == 1 && (speciesChip.selected ||
       !(this.speciesChips.selected instanceof MatChip)))
     {
-      //There is only 1 row selected, so we can update the animal for that row
-      let speciesObject = this.animalTypes.find(item =>
-        item.animalType == speciesChip.value
-      );
+    //There is only 1 row selected, so we can update the animal for that row
+    let speciesObject;
 
-      let currentAnimal = this.getCurrentAnimal();
+     speciesObject = this.getAnimalFromObservable(speciesChip.value);
 
-      currentAnimal.get("species").setValue(speciesChip.selected ? speciesObject.animalType : null);
-      currentAnimal.get("speciesId").setValue(speciesChip.selected ? speciesObject.id : null);
+    let currentAnimal = this.getCurrentAnimal();
 
-      this.currentAnimalChip = speciesChip.value;
+    currentAnimal.get("species").setValue(speciesChip.selected ? speciesObject.AnimalType : null);
+    currentAnimal.get("speciesId").setValue(speciesChip.selected ? speciesObject.AnimalTypeId : null);
 
-      this.animalTable.renderRows();
+    this.currentAnimalChip = speciesChip.value;
 
-      this.hideIrrelevantChips(speciesChip);
+    this.animalTable.renderRows();
+
+    this.hideIrrelevantChips(speciesChip);
 
     }
 
@@ -234,15 +234,18 @@ export class AnimalSelectionComponent implements OnInit{
 
       this.currentAnimalChip = speciesChip.value;
 
-        let currentAnimal = this.animalTypes.filter(type => type.animalType == this.currentAnimalChip);
+      let currentAnimal = this.getAnimalFromObservable(this.currentAnimalChip);
+
+
+      //this.animalTypes$.pipe(filter(type => type.AnimalType == this.currentAnimalChip));
 
         let position:number = (this.animalDataSource.data.length + 1);
 
         let newAnimal = this.fb.group(
           {
             position: [position, Validators.required],
-            speciesId: [currentAnimal[0].id, Validators.required],
-            species: [currentAnimal[0].animalType, Validators.required],
+            speciesId: [currentAnimal.AnimalTypeId, Validators.required],
+            species: [currentAnimal.AnimalType, Validators.required],
             problems: this.fb.array([]),
             problemsString: ['', Validators.required],
             tagNumber: ['']
@@ -426,6 +429,11 @@ export class AnimalSelectionComponent implements OnInit{
     this.selection.isSelected(currentAnimal) ? null : this.toggleRow(currentAnimal);
 
     this.openDialog(currentAnimal);
+  }
+
+  getAnimalFromObservable(name: string)
+  {
+    return this.animalTypes$.find(animalType => animalType.AnimalType == name);
   }
 
 }
