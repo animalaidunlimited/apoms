@@ -5,7 +5,12 @@ import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-
 import { getCurrentTimeString } from '../../../../core/utils';
 import { Observable } from 'rxjs';
 
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { DropdownService, AnimalTypeResponse } from 'src/app/core/services/dropdown/dropdown.service';
+import { CaseService } from '../../services/case.service';
+import { EmergencyCase } from 'src/app/core/models/emergency-record';
+import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { MatSnackBar } from '@angular/material';
+import { EmergencyResponse } from 'src/app/core/models/responses';
 
 
 @Component({
@@ -22,6 +27,8 @@ export class EmergencyRecordComponent implements OnInit{
 
   filteredAreas: Observable<any[]>;
 
+  notificationDurationSeconds;
+
   dispatchers;
   outcomes;
   areas: any[];
@@ -31,20 +38,29 @@ export class EmergencyRecordComponent implements OnInit{
   admissionTime:string;
   currentTime:string;
 
-  constructor(private fb: FormBuilder, private dropdowns: DropdownService) {}
+  constructor(
+    private fb: FormBuilder,
+    private dropdowns: DropdownService,
+    private userOptions: UserOptionsService,
+    private _snackBar: MatSnackBar,
+    private emergencyCase: CaseService) {}
 
 ngOnInit()
 {
+
   this.areas = this.dropdowns.getAreas();
   this.dispatchers = this.dropdowns.getDispatchers();
   this.outcomes = this.dropdowns.getOutcomes();
+
+  this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
   this.recordForm = this.fb.group({
 
     emergencyDetails: this.fb.group({
       emergencyNumber: ['45675', Validators.required],
       callDateTime: [getCurrentTimeString(), Validators.required],
-      dispatcher: ['', Validators.required]
+      dispatcher: ['', Validators.required],
+      code: ['', Validators.required]
     }),
     animals: this.fb.array([]),
     complainerDetails: this.fb.group({
@@ -94,9 +110,26 @@ onChanges(): void {
 
   saveForm()
   {
+    if(this.recordForm.valid)
+    {
+      let emergencyForm: EmergencyCase = Object.assign({}, {"emergencyForm" : this.recordForm.value});
 
-    console.log(this.recordForm);
-    alert(this.recordForm.valid);
+      this.emergencyCase.postCase(emergencyForm)
+      .then((data) => {
+
+        let resultBody = data as EmergencyResponse;
+
+        this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
+        });
+
+    }
+
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: this.notificationDurationSeconds * 1000,
+    });
   }
 
 
