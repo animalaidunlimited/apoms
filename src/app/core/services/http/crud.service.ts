@@ -1,10 +1,13 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
+
 export abstract class CrudService<T = any> {
     abstract endpoint;
     url = '';
 
-    protected constructor(protected http: HttpClient) {}
+    protected constructor(
+        protected http: HttpClient
+        ) {}
 
     public async get<G>(request: string): Promise<G | null> {
         let response = null;
@@ -28,19 +31,21 @@ export abstract class CrudService<T = any> {
         return this.get<T>('' + id);
     }
 
-    public async post(body): Promise<any> {
+    public async deleteById(id: number | string): Promise<any> {
         let response = null;
         try {
             response = await this.http
-                .post(`${this.url}/${this.endpoint}`, body)
-                // .post(`${this.url}/${this.endpoint}`, "")
-
+                .delete(`${this.url}/${this.endpoint}/${id}`)
                 .toPromise();
         } catch (error) {
-            response = this.errorHandler('POST', error);
+            response = this.errorHandler('DELETE', error);
         }
         return response;
     }
+
+
+
+
 
     public async put(body): Promise<any> {
         let response = null;
@@ -54,17 +59,25 @@ export abstract class CrudService<T = any> {
         return response;
     }
 
-    public async deleteById(id: number | string): Promise<any> {
+
+
+    public async post(body): Promise<any> {
+
         let response = null;
         try {
             response = await this.http
-                .delete(`${this.url}/${this.endpoint}/${id}`)
+                .post(`${this.url}/${this.endpoint}`, body)
+                // .post(`${this.url}/${this.endpoint}`, "")
+
                 .toPromise();
         } catch (error) {
-            response = this.errorHandler('DELETE', error);
+            response = this.errorHandler('POST', error);
         }
         return response;
     }
+
+
+
 
     public errorHandler(
         method: string,

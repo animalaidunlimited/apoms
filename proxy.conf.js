@@ -3,7 +3,8 @@ const PROXY_CONFIG = [
         context: [
             "/Auth",
             "/Case",
-            "/EmergencyRegister"
+            "/EmergencyRegister",
+            "/Health"
         ],
         target: "http://localhost:8080",
         secure: false
