@@ -17,9 +17,9 @@
             </td>
         </ng-container>
 
-            <ng-container matColumnDef="species">
-                <th mat-header-cell *matHeaderCellDef> Species\Type </th>
-                <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("species").value}} </td>
+            <ng-container matColumnDef="animalType">
+                <th mat-header-cell *matHeaderCellDef> animalType\Type </th>
+                <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("animalType").value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="mainProblem">
@@ -49,29 +49,29 @@
 
 
 
-            <label class="label">Animal species\type</label>
+            <label class="label">Animal animalType\type</label>
 
-            <!-- <mat-chip-list #speciesChips fxFlex aria-label="Animal species\type" selectable>
+            <!-- <mat-chip-list #animalTypeChips fxFlex aria-label="Animal animalType\type" selectable>
                     <mat-chip
-                    (click)="animalChipSelected(speciesChip)"
-                    (keydown.space)="animalChipSelected(speciesChip)"
-                    #speciesChip="matChip"
-                    *ngFor="let species of animalTypes">{{species.animalType}}</mat-chip>
+                    (click)="animalChipSelected(animalTypeChip)"
+                    (keydown.space)="animalChipSelected(animalTypeChip)"
+                    #animalTypeChip="matChip"
+                    *ngFor="let animalType of animalTypes">{{animalType.animalType}}</mat-chip>
             </mat-chip-list> -->
 
-            <!-- (change)="animalChipSelected(speciesChip)"
-            (click)="speciesChip.toggleSelected(); animalChipSelected(speciesChip)"
-            (selectionChange)="animalChipSelected(speciesChip" -->
+            <!-- (change)="animalChipSelected(animalTypeChip)"
+            (click)="animalTypeChip.toggleSelected(); animalChipSelected(animalTypeChip)"
+            (selectionChange)="animalChipSelected(animalTypeChip" -->
 
             <!-- (click)="method1()" -->
 
-            <mat-chip-list #speciesChips aria-label="Animal species\type" selectable>
+            <mat-chip-list #animalTypeChips aria-label="Animal animalType\type" selectable>
                 <mat-chip
-                (click)="speciesChip.toggleSelected()"
+                (click)="animalTypeChip.toggleSelected()"
                 (keydown)="cycleChips($event.key)"
-                (selectionChange)="toggleAnimalChip(speciesChip)"
-                #speciesChip="matChip"
-                *ngFor="let species of animalTypes$">{{species.AnimalType}}</mat-chip>
+                (selectionChange)="toggleAnimalChip(animalTypeChip)"
+                #animalTypeChip="matChip"
+                *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
         </mat-chip-list>
 
 

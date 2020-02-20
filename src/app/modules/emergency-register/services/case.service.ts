@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { CrudService } from 'src/app/core/services/http/crud.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse } from 'src/app/core/models/responses';
+import { OnlineStatusService } from 'src/app/core/services/online-status.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,17 +12,62 @@ import { EmergencyResponse } from 'src/app/core/models/responses';
 export class CaseService extends CrudService {
 
   constructor(
-    http: HttpClient  ) {
+    http: HttpClient,
+    private readonly onlineStatus: OnlineStatusService  ) {
       super(http);
+      this.online = this.onlineStatus.isOnline;
+      this.checkStatus(onlineStatus);
     }
 
     endpoint = 'EmergencyRegister';
     response: EmergencyResponse;
     redirectUrl: string;
+    online: boolean;
+
+    private checkStatus(onlineStatus: OnlineStatusService)
+    {
+        onlineStatus.connectionChanged.subscribe(online => {
+            if (online) {
+              this.online = true;
+              console.log("We're online: online = " + online);
+              this.syncCasesWithRemote();
+            } else {
+              this.online = false;
+              console.log("We're offline: online = " + online);
+            }
+          });
+    }
+
+    public async addCase(emergencyCase:EmergencyCase)
+    {
+
+        if(this.online)
+        {
+            return await this.postCase(emergencyCase);
+        }
+        else
+        {
+            return await this.saveCaseToDatabase(emergencyCase);
+        }
 
 
-  public async postCase(emergencyCase:EmergencyCase)
+    }
+
+    private async saveCaseToDatabase(emergencyCase:EmergencyCase)
+    {
+        return Promise.resolve("Saving cases to local db");
+
+    }
+
+    private async syncCasesWithRemote()
+    {
+        console.log("Sending cases from local db to server");
+    }
+
+
+  private async postCase(emergencyCase:EmergencyCase)
   {
+
       try {
           this.response = await this.post({ emergencyCase }) as EmergencyResponse;
 

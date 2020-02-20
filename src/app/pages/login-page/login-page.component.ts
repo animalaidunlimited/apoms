@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./login-page.component.scss'],
 })
 export class LoginPageComponent implements OnInit {
-    email: string;
+    username: string;
     password: string;
     errorMessage: string;
 
@@ -34,10 +34,10 @@ export class LoginPageComponent implements OnInit {
         }
     }
 
-    // public async login(email: string, password: string) {
+    // public async login(username: string, password: string) {
     //     try {
     //         const url = (await this.authService.mockLogin(
-    //             email,
+    //             username,
     //             password,
     //         )) as string;
     //         this.navigateTo(url);

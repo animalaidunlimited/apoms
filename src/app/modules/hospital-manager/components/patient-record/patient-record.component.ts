@@ -21,7 +21,7 @@ export class PatientRecordComponent implements OnInit {
       patientDetails: this.fb.group({
         emergencyNumber: ['45675', Validators.required],
         admissionTime: [, Validators.required],
-        species: ['', Validators.required],
+        animalType: ['', Validators.required],
         mainProblems: ['', Validators.required],
         tagNumber: ['', Validators.required],
         description: ['', Validators.required],
@@ -45,6 +45,11 @@ export class PatientRecordComponent implements OnInit {
     }
     );
 
+  }
+
+  saveForm()
+  {
+    alert("Save the form!");
   }
 
 }

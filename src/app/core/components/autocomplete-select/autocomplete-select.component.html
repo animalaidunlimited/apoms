@@ -1,8 +1,0 @@
-<mat-form-field>
-        <input type="text" formControlName="searchField" placeholder="Search field" aria-label="Number" matInput [formControl]="searchFieldForm" [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name">
-                {{option.name}}
-                </mat-option>
-        </mat-autocomplete>
-</mat-form-field>

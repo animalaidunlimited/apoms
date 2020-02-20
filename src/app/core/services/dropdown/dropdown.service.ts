@@ -15,20 +15,30 @@ export interface AnimalTypeResponse {
 })
 export class DropdownService {
 
-  private rescuer1$;
-  private rescuer2$;
-  private areas$:any[];
-  private dispatchers$;
-  private outcomes$;
-  private crueltyIspectors$;
-  private antibiotics$;
-  private isoReasons$;
-  private animalTypes$; //:Observable<AnimalType[]>;
-  private problems$;
-  private exclusions$;
+  rescuer1$;
+  rescuer2$;
+  areas$:any[];
+  dispatchers$;
+  outcomes$;
+  crueltyIspectors$;
+  antibiotics$;
+  isoReasons$;
+  animalTypes$:Observable<AnimalType[]>;
+  problems$;
+  exclusions$;
+  officeStaff$;
 
 
   constructor(private http: HttpClient) {
+  }
+
+  getOfficeStaff(){
+    if (!this.officeStaff$)
+    {
+      this.officeStaff$ = [{"id":1,"name":"Kiran"},{"id":2,"name":"Komal"}];
+    }
+
+    return this.officeStaff$;
   }
 
   getExclusions() {
@@ -45,13 +55,14 @@ export class DropdownService {
   //a new case
   getAnimalTypes(): Observable<AnimalType[]> {
 
+    console.log("Hitting the /Case route");
 
     if (!this.animalTypes$)
     {
       this.animalTypes$ = this.http
       .get<AnimalTypeResponse>("/Case/GetAnimalType").pipe(
-        map( (res) => {return res.data}),
-        shareReplay(1,10000)
+        map( (res) => {return res.data})//,
+        //shareReplay(1,10000)
       )
     }
 

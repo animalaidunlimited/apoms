@@ -31,13 +31,13 @@ export class LocationDetailsComponent implements OnInit {
     private fb: FormBuilder,
     private userOptions: UserOptionsService) { }
 
-  private zoom: number;
-  private latitude: AbstractControl;
-  private longitude: AbstractControl;
+  zoom: number;
+  latitude: AbstractControl;
+  longitude: AbstractControl;
 
-  private animalLocation;
+  animalLocation;
 
-  private markers: marker[] = [];
+  markers: marker[] = [];
 
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
   @ViewChild('addressSearch', {static: false}) addresstext: any;

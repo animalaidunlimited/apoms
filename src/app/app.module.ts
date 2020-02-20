@@ -9,12 +9,14 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HttpConfigInterceptor } from './core/services/http/interceptor.service';
 
 import { MaterialModule } from './material-module';
-import { AutocompleteSelectComponent } from './core/components/autocomplete-select/autocomplete-select.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 
 @NgModule({
-    declarations: [AppComponent, AutocompleteSelectComponent,
+    declarations: [
+        AppComponent
     ],
     imports: [
         BrowserModule,
@@ -23,6 +25,7 @@ import { AutocompleteSelectComponent } from './core/components/autocomplete-sele
         NavModule,
         HttpClientModule,
         MaterialModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
 
 

@@ -10,7 +10,7 @@ import { FormControl } from '@angular/forms';
 
 export class TabBarComponent {
 
-  tabs = [{"id":0, "value": "Search"}];
+  tabs = [{"id":0, "vvalue": "Search"}];
 
   selected = new FormControl(0);
 
@@ -20,7 +20,7 @@ export class TabBarComponent {
   }
 
   addTab() {
-      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "value":`New Call*`});
-      this.selected.setValue(this.tabs.length - 1);  
+      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "vvalue":`New Call*`});
+      this.selected.setValue(this.tabs.length - 1);
   }
 }
