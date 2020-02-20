@@ -12,10 +12,12 @@ export class OnlineStatusService {
   }
 
   get isOnline() {
+
     return !!window.navigator.onLine;
   }
 
   constructor() {
+
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
   }

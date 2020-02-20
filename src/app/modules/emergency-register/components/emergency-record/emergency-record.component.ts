@@ -114,14 +114,38 @@ onChanges(): void {
   //  {
       let emergencyForm: EmergencyCase = Object.assign({}, {"emergencyForm" : this.recordForm.value});
 
-      this.emergencyCase.addCase(emergencyForm)
-      .then((data) => {
-        console.log(data);
+      if(emergencyForm.emergencyForm.emergencyDetails.emergencyNumber == "")
+      {
+        this.emergencyCase.insertCase(emergencyForm)
+        .then((data) => {
+          console.log(data);
 
-        //let resultBody = data as EmergencyResponse;
+          //let resultBody = data as EmergencyResponse;
 
-        //this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
-        });
+          //this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      }
+      else
+      {
+        this.emergencyCase.updateCase(emergencyForm)
+        .then((data) => {
+          console.log(data);
+
+          //let resultBody = data as EmergencyResponse;
+
+          //this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      }
+
+
 
    // }
 
