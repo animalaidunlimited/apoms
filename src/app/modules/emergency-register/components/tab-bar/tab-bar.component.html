@@ -1,21 +1,22 @@
 <div class="tab-container">
 
 <div>
-        <mat-tab-group [(selectedIndex)]="selected.value">
-                
+        <!-- <mat-tab-group [(selectedIndex)]="selected.value"> -->
+                <mat-tab-group [selectedIndex]="selected.value">
+
                 <mat-tab *ngFor="let tab of tabs; let i = index"
                 label="{{tab.id}}">
-                
+
                 <ng-template mat-tab-label>
-                {{tab.value}}
-                
+                {{tab.vvalue}}
+
                 <mat-icon *ngIf="i > 0 && i < tabs?.length" class="tab-icon"
-                        (click)="removeTab(i)">close</mat-icon>                        
+                        (click)="removeTab(i)">close</mat-icon>
                 </ng-template>
-                                                
+
                 <record-search *ngIf="i == 0" class="tab-icon"></record-search>
                 <emergency-record *ngIf="i > 0" class="tab-icon"></emergency-record>
-                
+
                 </mat-tab>
 
                 <mat-tab disabled>
@@ -26,7 +27,7 @@
                 </ng-template>
                 </mat-tab>
 
-        </mat-tab-group>         
+        </mat-tab-group>
         </div>
 
 

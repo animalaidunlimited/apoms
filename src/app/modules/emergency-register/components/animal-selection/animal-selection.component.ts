@@ -6,8 +6,6 @@ import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.componen
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { Observable } from 'rxjs';
-import { filter,map } from 'rxjs/operators';
 
 export interface Problem {
   id: number;
@@ -15,12 +13,10 @@ export interface Problem {
   problemStripped: string;
   }
 
-
-
   export interface Animal {
     position: number;
-    speciesId: number;
-    species: string;
+    animalTypeId: number;
+    animalType: string;
     problems: Problem[];
     problemsString: string;
     tagNumber: string;
@@ -34,30 +30,28 @@ export interface Problem {
 
 export class AnimalSelectionComponent implements OnInit{
 
-  //I used animalTypes$ instead of species here to make the ngFors more readable (let specie(?) of species )
+  //I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
   animalTypes$: AnimalType[];
   problems: Problem[];
   exclusions;
 
   @ViewChild(MatTable, {static: true}) animalTable: MatTable<any>;
-  @ViewChild('speciesChips', {static: true}) speciesChips: MatChipList;
+  @ViewChild('animalTypeChips', {static: true}) animalTypeChips: MatChipList;
   @ViewChild('problemChips', {static: true}) problemChips: MatChipList;
   @Input() recordForm: FormGroup;
 
-  animalArrayDisplayedColumns: string[] = ["select", "species", "mainProblem", "tagNo", "delete"];
+  animalArrayDisplayedColumns: string[] = ["select", "animalType", "mainProblem", "tagNo", "delete"];
 
-  //problemArray: FormArray;
-  animalArray:FormArray; //: Animal[] = [{position: 1, speciesId: null, species: "", problems: this.problemArray, problemsString: "", tagNumber: ""}];
-
+  animalArray:FormArray;
   currentAnimalChip = "";
 
-  animalDataSource:MatTableDataSource<any>;// = new MatTableDataSource<Animal>(this.animalArray);
-
-  selection;// = new SelectionModel<Animal>(false, [this.animalDataSource.data[0]]);
-
+  animalDataSource:MatTableDataSource<any>;
+  selection;
   tagNumber: string;
 
-  constructor(public dialog: MatDialog, private fb: FormBuilder, private dropdown: DropdownService) {}
+  constructor(public dialog: MatDialog,
+    private fb: FormBuilder,
+    private dropdown: DropdownService) {}
 
   ngOnInit()
   {
@@ -77,8 +71,8 @@ export class AnimalSelectionComponent implements OnInit{
   {
     let animal = this.fb.group({
       position: [''],
-      speciesId: [''],
-      species: [''],
+      animalTypeId: [''],
+      animalType: [''],
       problems: this.fb.array([]),
       problemsString:['', Validators.required],
       tagNumber: ['']
@@ -148,7 +142,7 @@ export class AnimalSelectionComponent implements OnInit{
     this.currentAnimalChip = "";
 
     //Get all of the chip lists on the page and reset them all.
-    this.speciesChips.chips.forEach(chip =>
+    this.animalTypeChips.chips.forEach(chip =>
     {
       chip.selected = false;
       chip.disabled = false;
@@ -167,9 +161,9 @@ export class AnimalSelectionComponent implements OnInit{
   reloadChips(currentAnimal)
   {
 
-    this.speciesChips.chips.forEach(chip => {
+    this.animalTypeChips.chips.forEach(chip => {
 
-      currentAnimal.species == chip.value ? chip.toggleSelected() : null;
+      currentAnimal.animalType == chip.value ? chip.toggleSelected() : null;
       this.currentAnimalChip = chip.value;
 
     });
@@ -186,16 +180,16 @@ export class AnimalSelectionComponent implements OnInit{
     });
   }
 
-  toggleAnimalChip(speciesChip)
+  toggleAnimalChip(animalTypeChip)
   {
     //Wait for the next tick until evrything is updated.
     setTimeout(() =>
-    this.animalChipSelected(speciesChip)
+    this.animalChipSelected(animalTypeChip)
   )
 
   }
 
-  animalChipSelected(speciesChip)
+  animalChipSelected(animalTypeChip)
   {
     this.currentAnimalChip = "";
 
@@ -207,32 +201,32 @@ export class AnimalSelectionComponent implements OnInit{
       return;
     }
 
-    if(selectedCount == 1 && (speciesChip.selected ||
-      !(this.speciesChips.selected instanceof MatChip)))
+    if(selectedCount == 1 && (animalTypeChip.selected ||
+      !(this.animalTypeChips.selected instanceof MatChip)))
     {
     //There is only 1 row selected, so we can update the animal for that row
-    let speciesObject;
+    let animalTypeObject;
 
-     speciesObject = this.getAnimalFromObservable(speciesChip.value);
+     animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
 
     let currentAnimal = this.getCurrentAnimal();
 
-    currentAnimal.get("species").setValue(speciesChip.selected ? speciesObject.AnimalType : null);
-    currentAnimal.get("speciesId").setValue(speciesChip.selected ? speciesObject.AnimalTypeId : null);
+    currentAnimal.get("animalType").setValue(animalTypeChip.selected ? animalTypeObject.AnimalType : null);
+    currentAnimal.get("animalTypeId").setValue(animalTypeChip.selected ? animalTypeObject.AnimalTypeId : null);
 
-    this.currentAnimalChip = speciesChip.value;
+    this.currentAnimalChip = animalTypeChip.value;
 
     this.animalTable.renderRows();
 
-    this.hideIrrelevantChips(speciesChip);
+    this.hideIrrelevantChips(animalTypeChip);
 
     }
 
     //if there are no rows, then we need to add a new one
-    if(selectedCount == 0 && speciesChip.selected)
+    if(selectedCount == 0 && animalTypeChip.selected)
     {
 
-      this.currentAnimalChip = speciesChip.value;
+      this.currentAnimalChip = animalTypeChip.value;
 
       let currentAnimal = this.getAnimalFromObservable(this.currentAnimalChip);
 
@@ -244,8 +238,8 @@ export class AnimalSelectionComponent implements OnInit{
         let newAnimal = this.fb.group(
           {
             position: [position, Validators.required],
-            speciesId: [currentAnimal.AnimalTypeId, Validators.required],
-            species: [currentAnimal.AnimalType, Validators.required],
+            animalTypeId: [currentAnimal.AnimalTypeId, Validators.required],
+            animalType: [currentAnimal.AnimalType, Validators.required],
             problems: this.fb.array([]),
             problemsString: ['', Validators.required],
             tagNumber: ['']
@@ -260,7 +254,7 @@ export class AnimalSelectionComponent implements OnInit{
            row.get("position").value == position
            ));
 
-        this.hideIrrelevantChips(speciesChip);
+        this.hideIrrelevantChips(animalTypeChip);
     }
 
   }
@@ -269,9 +263,9 @@ export class AnimalSelectionComponent implements OnInit{
   {
       if(key.match(/^[A-Za-z]+$/))
       {
-        let currentAnimal = this.getCurrentAnimal().species || "";
+        let currentAnimal = this.getCurrentAnimal().animalType || "";
 
-        let chips = this.speciesChips.chips;
+        let chips = this.animalTypeChips.chips;
 
         let lastInstance = "";
         let currentIndex;
@@ -320,7 +314,7 @@ export class AnimalSelectionComponent implements OnInit{
       return;
     }
 
-    if(this.currentAnimalChip == "" && !(this.speciesChips.selected instanceof MatChip))
+    if(this.currentAnimalChip == "" && !(this.animalTypeChips.selected instanceof MatChip))
     {
       alert("Please select an animal");
       problemChip.selected = false;
@@ -334,11 +328,11 @@ export class AnimalSelectionComponent implements OnInit{
 
   }
 
-  hideIrrelevantChips(speciesChip)
+  hideIrrelevantChips(animalTypeChip)
   {
 
     let currentExclusions = this.exclusions.filter(animalType =>
-      animalType.animalType == speciesChip.value);
+      animalType.animalType == animalTypeChip.value);
 
     this.problemChips.chips.forEach(chip => {
 
@@ -347,7 +341,7 @@ export class AnimalSelectionComponent implements OnInit{
 
     });
 
-    if(!speciesChip.selected)
+    if(!animalTypeChip.selected)
     {
       return;
     }

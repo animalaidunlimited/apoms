@@ -13,8 +13,8 @@
 
     export interface Animal {
         position: number;
-        speciesId: string;
-        species: string;
+        animalTypeId: string;
+        animalType: string;
         problems: Problem[];
         problemsString: string;
         tagNumber: string;

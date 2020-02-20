@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { getCurrentTimeString } from '../../../../core/utils';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'thank-you-call',
@@ -12,12 +15,18 @@ export class ThankYouComponent implements OnInit {
 
   callerHappy;
   hasVisited;
+  maxDate;
+  officeStaff;
 
-  constructor(private fb: FormBuilder) {}
+  errorMatcher = new CrossFieldErrorMatcher();
+
+  constructor(private fb: FormBuilder,
+              private dropdown: DropdownService) {}
 
   ngOnInit() {
 
-    
+    this.maxDate = getCurrentTimeString();
+    this.officeStaff = this.dropdown.getOfficeStaff();
 
     this.thankYouForm = this.fb.group({
 
@@ -38,7 +47,7 @@ export class ThankYouComponent implements OnInit {
         hasVisited: [''],
 
 
-      })      
+      })
   });
 
   this.callerHappy   = this.thankYouForm.get("callDetails.callerHappy");

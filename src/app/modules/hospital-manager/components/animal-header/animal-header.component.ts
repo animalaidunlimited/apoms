@@ -20,9 +20,9 @@ export class AnimalHeaderComponent implements OnInit {
   currentArea:string = 'A Kennel'
   status:string;
 
-  public imageUrls: SafeUrl[];
+  imageUrls: SafeUrl[];
 
-  private lastObjectUrl: string;
+  lastObjectUrl: string;
 
 
   constructor(public dialog: MatDialog, private sanitizer: DomSanitizer){}
@@ -35,7 +35,7 @@ export class AnimalHeaderComponent implements OnInit {
 
   }
 
-  launchImageModal(): void {    
+  launchImageModal(): void {
 
 
     const dialogRef = this.dialog.open(ImageUploadDialog, {
@@ -47,7 +47,7 @@ export class AnimalHeaderComponent implements OnInit {
       if(result != null)
       {
       }
-      
+
     });
   }
 
@@ -75,8 +75,8 @@ export class AnimalHeaderComponent implements OnInit {
 
 private getPastedImage( event: ClipboardEvent ) : File | null {
     if (
-        event.clipboardData && 
-        event.clipboardData.files && 
+        event.clipboardData &&
+        event.clipboardData.files &&
         event.clipboardData.files.length &&
         this.isImageFile( event.clipboardData.files[ 0 ] )
         ) {

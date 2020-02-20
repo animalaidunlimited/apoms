@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service'
 import { FormGroup } from '@angular/forms';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
+import { getCurrentTimeString } from '../../../../core/utils';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({
   selector: 'patient-details',
@@ -10,16 +12,20 @@ import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-up
 })
 export class PatientDetailsComponent implements OnInit {
 
-  animalTypes;
+  animalTypes$;
   @Input() recordForm: FormGroup;
   dialog: any;
+  maxDate;
 
-  constructor(private dropdowns: DropdownService) { }
+  errorMatcher = new CrossFieldErrorMatcher();
+
+  constructor(private dropdown: DropdownService) { }
 
   ngOnInit() {
 
-    this.animalTypes = this.dropdowns.getAnimalTypes();
+    this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
     this.recordForm.get("patientStatus.currentArea").setValue("A Kennel");
+    this.maxDate = getCurrentTimeString();
   }
 
 

@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class UserOptionsService {
 
-  private homeCoordinates$;
-  private notifactionDuration;
+  homeCoordinates$;
+  notifactionDuration;
 
   constructor() { }
 

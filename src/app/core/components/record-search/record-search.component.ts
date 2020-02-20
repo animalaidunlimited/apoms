@@ -37,7 +37,7 @@ export class Search {
     [
       state("open",style({
       width: "525px"
-      
+
     })),
     state("closed", style({
       display: "none",
@@ -50,7 +50,7 @@ export class Search {
     transition("closed => open", [
       animate(".2s")
     ])
-    
+
   ])
 ]
 })
@@ -64,7 +64,7 @@ export class RecordSearchComponent implements OnInit{
   searchShowing = false;
 
   search = new Search();
-  
+
   options: SearchValue[] = [
       {"id":0, "searchValue": null, "name":null},
       {"id":1, "searchValue": "EmNo", "name":"Em. No."},
@@ -74,7 +74,7 @@ export class RecordSearchComponent implements OnInit{
       {"id":5, "searchValue": "CNo", "name":"Complainer No."},
       {"id":6, "searchValue": "Loc", "name":"Location"},
       {"id":7, "searchValue": "Area", "name":"Area"},
-      {"id":8, "searchValue": "species", "name":"Species"},
+      {"id":8, "searchValue": "AType", "name":"Animal Type"},
       {"id":9, "searchValue": "Prob", "name":"Problem"},
       {"id":10, "searchValue": "Result", "name":"Result"},
       {"id":11, "searchValue": "CLoc", "name":"Current Location"},
@@ -112,7 +112,7 @@ executeSearch()
 
   this.search.searchString = searchFieldArray.map(item => {
 
-    return item.searchField + ":" + item.searchTerm;    
+    return item.searchField + ":" + item.searchTerm;
 
   });
 

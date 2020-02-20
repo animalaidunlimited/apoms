@@ -10,7 +10,7 @@
 
     <div  [@expandSearchForm]="searchShowing ? 'open' : 'closed'" class="search-form" [formGroup]="searchForm">
 
-        <div formArrayName="searchRows" *ngFor="let item of searchForm.get('searchRows').controls; let i = index;">
+        <div formArrayName="searchRows" *ngFor="let item of searchForm.get('searchRows')?.controls; let i = index;">
             <div [formGroupName]="i">
 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">

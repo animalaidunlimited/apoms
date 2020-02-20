@@ -1,18 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabBarComponent } from './tab-bar.component';
+import { MaterialModule } from '../../../../material-module';
+//import { EmergencyRecordComponent } from '../emergency-record/emergency-record.component';
+import { EmergencyRecordModule } from '../emergency-record/emergency-record.module';
+import { RecordSearchModule } from 'src/app/core/components/record-search/record-search.module';
 
-import { EmergencyRecordComponent } from '../emergency-record/emergency-record.component'
+
 
 @NgModule({
     declarations: [
         TabBarComponent,
-        EmergencyRecordComponent,
-     
+       // EmergencyRecordComponent
+
     ],
     imports: [
         CommonModule,
+        EmergencyRecordModule,
+        MaterialModule,
+        RecordSearchModule
 
+    ],
+    exports: [
+        TabBarComponent
     ],
     entryComponents: [
       ],
