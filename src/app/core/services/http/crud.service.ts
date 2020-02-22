@@ -59,25 +59,18 @@ export abstract class CrudService<T = any> {
         return response;
     }
 
-
-
     public async post(body): Promise<any> {
 
         let response = null;
         try {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
-                // .post(`${this.url}/${this.endpoint}`, "")
-
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('POST', error);
         }
         return response;
     }
-
-
-
 
     public errorHandler(
         method: string,

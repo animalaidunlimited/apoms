@@ -36,21 +36,23 @@ export class CaseService extends CrudService {
               //TODO push this message to the user in snackbar
               console.log("We're online: online = " + online);
 
-              await this.postFromLocalStorage(this.storage.getItemArray("POST"))
-              .then((message) => {
-                console.log(message);
-              })
-              .catch((error) =>
-                console.log(error)
-              );
+              await this.postFromLocalStorage(this.storage.getItemArray("POST")).then((result) => {
 
-              await this.putFromLocalStorage(this.storage.getItemArray("PUT"))
-              .then((message) => {
-                console.log(message);
+                //TODO Push a message to the user
+                console.log("Synched new cases with server");
               })
-              .catch((error) =>
-                console.log(error)
-              );
+              .catch((error) => {
+                console.log(error);
+              });
+
+              await this.putFromLocalStorage(this.storage.getItemArray("PUT")).then((result) => {
+
+                //TODO Push a message to the user
+                console.log("Synched updated cases with server");
+              })
+              .catch((error) => {
+                console.log(error);
+              });
 
 
             } else {
@@ -61,63 +63,78 @@ export class CaseService extends CrudService {
           });
     }
 
-    public async updateCase(emergencyCase:EmergencyCase): Promise<any>{
-        if(this.online)
-        {
-            return await this.baseUpdateCase(emergencyCase);
-        }
-        else
-        {
-            return await this.saveToLocalDatabase("PUT", emergencyCase);
-        }
-    }
-
-    public async insertCase(emergencyCase:EmergencyCase): Promise<any>
-    {
-
-        if(this.online)
-        {
-            return await this.baseInsertCase(emergencyCase);
-        }
-        else
-        {
-            return await this.saveToLocalDatabase("POST", emergencyCase);
-        }
-    }
-
-  public async baseInsertCase(emergencyCase:EmergencyCase)
+  private async postFromLocalStorage(postsToSync)
   {
+    let promiseArray = postsToSync.map(async elem =>
+      await this.baseInsertCase(elem.value).then((result:EmergencyResponse) =>
+      {
+        //TODO deal with failures that will never make it into the database
+        if(result.status == "success" || result.status == "rejected" || result.status == "duplicate"){
+          this.storage.remove(elem.key);
+        }
+      }));
 
-      try {
-          this.response = await this.post({ emergencyCase }) as EmergencyResponse;
-
-          if(!this.response){
-              throw new Error(
-                "Unable to insert Emergency Case",
-              );
-          }
-          return this.response;
-      } catch (error) {
-          //console.error('Error during login request', error);
-          return Promise.reject(error);
-      }
+    return await Promise.all(promiseArray).then((result) => {return result});
   }
 
-  public async baseUpdateCase(emergencyCase:EmergencyCase)
+  private async putFromLocalStorage(putsToSync)
   {
-      try {
-          this.response = await this.put({ emergencyCase }) as EmergencyResponse;
-          if(!this.response){
-              throw new Error(
-                "Unable to update Emergency Case",
-              );
-          }
-          return this.response;
-      } catch (error) {
-          //console.error('Error during login request', error);
-          return Promise.reject(error);
-      }
+
+    let promiseArray = putsToSync.map(async elem =>
+      await this.baseUpdateCase(elem.value).then((result:EmergencyResponse) =>
+      {
+        //TODO deal with failures that will never make it into the database
+        if(result.status == "success" || result.status == "rejected" || result.status == "duplicate"){
+          this.storage.remove(elem.key);
+        }
+      })
+
+      );
+
+    return await Promise.all(promiseArray).then((result) => {return result});;
   }
+
+  public async baseInsertCase(emergencyCase:EmergencyCase): Promise<any>
+  {
+    return await this.post(emergencyCase);
+
+  }
+
+  public async updateCase(emergencyCase:EmergencyCase): Promise<any>{
+
+    return await this.baseUpdateCase(emergencyCase)
+    .catch(async (error) => {
+
+      if(error.status == 504 || !this.online)
+      {
+        //The server is offline, so let's save this to the database
+        return await this.saveToLocalDatabase("PUT", emergencyCase);
+      }
+      });
+  }
+
+  public async baseUpdateCase(emergencyCase:EmergencyCase): Promise<any>
+  {
+        return await this.put(emergencyCase);
+  }
+
+
+
+  public async insertCase(emergencyCase:EmergencyCase): Promise<any>
+  {
+    console.log(JSON.stringify(emergencyCase))
+    return await this.baseInsertCase(emergencyCase)
+    .catch(async (error) => {
+
+      if(error.status == 504 || !this.online)
+      {
+        //The server is offline, so let's save this to the database
+        return await this.saveToLocalDatabase("POST", emergencyCase);
+      }
+      });
+  }
+
+
 
   public async getCaseById(emergencyNumber:number)
   {
@@ -154,91 +171,6 @@ export class CaseService extends CrudService {
 
 
 
-  private async postFromLocalStorage(postsToSync)
-  {
-
-    return postsToSync.forEach(async element => {
-      return await this.baseInsertCase(element.value)
-      .then((res) =>
-      {
-        if(res.status == "success"){
-          try{
-            this.storage.remove(element.key);
-            return res;
-          }
-          catch(error)
-          {
-            console.log(error);
-            return Error("Error updating case");
-          }
-
-
-        };
-      })
-      .catch((error) => {
-        console.log("Error adding item: " + error);
-      });
-    });
-  }
-
-  private async putFromLocalStorage(putsToSync)
-  {
-
-    putsToSync.forEach(async element => {
-      let response = await this.baseUpdateCase(element.value)
-      .then((res) =>
-      {
-        if(res.status == "success"){
-          try{
-            this.storage.remove(element.key);
-            return res;
-          }
-          catch(error)
-          {
-            console.log(error);
-            return Error("Error updating case");
-          }
-
-        };
-      })
-      .catch((error) => {
-        console.log("Error updating item: " + error);
-      });
-
-      return response;
-
-    });
-
-
-
-  }
-
-  // private async syncInsertsWithRemote()
-  // {
-  //   let postArray = this.storage.getItemArray("POST");
-
-  //   await this.postFromLocalStorage(postArray)
-  //   .then(() => {
-  //     return Promise.resolve("Finished sending offline case inserts data to server");
-  //   }).catch((error) => {
-  //     return Promise.reject("An error occured when saving offline data to the server: " + error)
-  //   });
-
-  // }
-
-  // private async syncUpdatesWithRemote()
-  // {
-  //   console.log("Beginning sync with server");
-
-  //   let putArray = this.storage.getItemArray("PUT");
-
-  //   await this.putFromLocalStorage(putArray)
-  //   .then(() => {
-  //     return Promise.resolve("Finished sending offline case updates data to server");
-  //   }).catch((error) => {
-  //     return Promise.reject("An error occured when saving offline data to the server: " + error)
-  //   });
-  // }
 
   private async saveToLocalDatabase(key, body)
   {
