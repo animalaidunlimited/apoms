@@ -1,0 +1,88 @@
+<fieldset fxFlex class="form-sub-group">
+
+        <legend class="legend">Animal Details</legend>
+
+        <table mat-table #patientTable [dataSource]="patientDataSource" class="mat-elevation-z8">
+
+              <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+            </th>
+            <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? toggleRow(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+            </td>
+        </ng-container>
+
+            <ng-container matColumnDef="animalType">
+                <th mat-header-cell *matHeaderCellDef> animalType\Type </th>
+                <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("animalType").value}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mainProblem">
+                    <th mat-header-cell *matHeaderCellDef> Main Problem(s) </th>
+                    <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("problemsString").value}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tagNo">
+                    <th mat-header-cell *matHeaderCellDef> Tag Number </th>
+                    <td mat-cell *matCellDef="let element" (click)="updateTag(element)" style="cursor:pointer"> {{element.get("tagNumber").value}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>Delete</th>
+                <td mat-cell *matCellDef="let row">
+                <mat-icon (click)="deletePatientRow(row)" style="cursor:pointer">delete</mat-icon>
+
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;" (keydown.enter)="updateTag(row)"></tr>
+
+
+
+            </table>
+
+
+
+            <label class="label">Patient animalType\type</label>
+
+            <!-- <mat-chip-list #animalTypeChips fxFlex aria-label="Animal animalType\type" selectable>
+                    <mat-chip
+                    (click)="animalChipSelected(animalTypeChip)"
+                    (keydown.space)="animalChipSelected(animalTypeChip)"
+                    #animalTypeChip="matChip"
+                    *ngFor="let animalType of animalTypes">{{animalType.animalType}}</mat-chip>
+            </mat-chip-list> -->
+
+            <!-- (change)="animalChipSelected(animalTypeChip)"
+            (click)="animalTypeChip.toggleSelected(); animalChipSelected(animalTypeChip)"
+            (selectionChange)="animalChipSelected(animalTypeChip" -->
+
+            <!-- (click)="method1()" -->
+
+            <mat-chip-list #animalTypeChips aria-label="Patient animalType\type" selectable>
+                <mat-chip
+                (click)="animalTypeChip.toggleSelected()"
+                (keydown)="cycleChips($event.key)"
+                (selectionChange)="toggleAnimalChip(animalTypeChip)"
+                #animalTypeChip="matChip"
+                *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
+        </mat-chip-list>
+
+
+            <label class="label">Main problem(s)</label>
+
+            <mat-chip-list #problemChips fxFlex multiple selectable aria-label="Main problem(s)" >
+                    <mat-chip
+                    (click)="problemChip.toggleSelected(); problemChipSelected(problemChip)"
+                    #problemChip="matChip"
+                    *ngFor="let problem of problems">{{problem.problem}}</mat-chip>
+            </mat-chip-list>
+
+            <!-- (selectionChange)="problemChipSelected(problemChip)" -->
+      </fieldset>
