@@ -21,22 +21,22 @@ export class CallerDetailsComponent implements OnInit {
 
   updateValidators()
   {
-  
-    let complainerName = this.recordForm.get('complainerDetails.complainerName');
-    let complainerNumber = this.recordForm.get('complainerDetails.complainerNumber');  
-  
-    if((complainerName.value || complainerNumber.value) && !(complainerName.value && complainerNumber.value))
+
+    let CallerName = this.recordForm.get('CallerDetails.CallerName');
+    let CallerNumber = this.recordForm.get('CallerDetails.CallerNumber');
+
+    if((CallerName.value || CallerNumber.value) && !(CallerName.value && CallerNumber.value))
     {
-      !!complainerName.value == true  ? complainerNumber.setValidators([Validators.required])
-                              : complainerName.setValidators([Validators.required]); 
+      !!CallerName.value == true  ? CallerNumber.setValidators([Validators.required])
+                              : CallerName.setValidators([Validators.required]);
     }
 
-    complainerName.updateValueAndValidity({emitEvent: false });
-    complainerNumber.updateValueAndValidity({emitEvent: false });
+    CallerName.updateValueAndValidity({emitEvent: false });
+    CallerNumber.updateValueAndValidity({emitEvent: false });
   }
-  
 
-  onChanges(): void {  
+
+  onChanges(): void {
 
     this.recordForm.valueChanges.subscribe(val => {
 

@@ -1,4 +1,5 @@
     export interface EmergencyDetails {
+        emergencyCaseId: number;
         emergencyNumber: string;
         callDateTime: string;
         dispatcher: number;
@@ -11,7 +12,8 @@
         problemStripped: string;
         }
 
-    export interface Animal {
+    export interface Patient {
+        patientId: number;
         position: number;
         animalTypeId: string;
         animalType: string;
@@ -20,10 +22,11 @@
         tagNumber: string;
     }
 
-    export interface ComplainerDetails {
-        complainerName: string;
-        complainerNumber: string;
-        complainerAlternateNumber: string;
+    export interface CallerDetails {
+        CallerId: number;
+        CallerName: string;
+        CallerNumber: string;
+        CallerAlternateNumber: string;
     }
 
     export interface CallOutcome {
@@ -46,8 +49,8 @@
 
     export interface EmergencyForm {
         emergencyDetails: EmergencyDetails;
-        animals: Animal[];
-        complainerDetails: ComplainerDetails;
+        patients: Patient[];
+        callerDetails: CallerDetails;
         callOutcome: CallOutcome;
         locationDetails: LocationDetails;
         rescueDetails: RescueDetails;
