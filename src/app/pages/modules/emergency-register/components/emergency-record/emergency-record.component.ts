@@ -65,9 +65,10 @@ ngOnInit()
     }),
     patients: this.fb.array([]),
     CallerDetails: this.fb.group({
+      CallerId: [''],
       CallerName: ['', Validators.required],
       CallerNumber: ['', Validators.required],
-      CallerAlternateNumber: ['']
+      CallerAlternativeNumber: ['']
     }),
     callOutcome: this.fb.group({
       callOutcome: ['']

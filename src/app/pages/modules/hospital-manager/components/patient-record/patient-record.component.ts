@@ -40,7 +40,7 @@ export class PatientRecordComponent implements OnInit {
       CallerDetails: this.fb.group({
         CallerName: [''],
         CallerNumber: [''],
-        CallerAlternateNumber: ['']
+        CallerAlternativeNumber: ['']
       })
     }
     );
