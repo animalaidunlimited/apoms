@@ -39,3 +39,6 @@ mat-radio-button {
 .double-width {
   width: 350px;
 }
+.wide {
+  width: 262.5px;
+}

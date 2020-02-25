@@ -26,7 +26,7 @@
         CallerId: number;
         CallerName: string;
         CallerNumber: string;
-        CallerAlternateNumber: string;
+        CallerAlternativeNumber: string;
     }
 
     export interface CallOutcome {

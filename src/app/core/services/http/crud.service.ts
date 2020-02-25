@@ -1,4 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CallerNumberResponse } from '../../models/responses';
 
 
 export abstract class CrudService<T = any> {
@@ -21,6 +24,28 @@ export abstract class CrudService<T = any> {
             response = this.errorHandler('GET', error);
         }
         return response;
+    }
+
+    public getObservable(request: string): Observable<any> {
+        // let response = null;
+
+        console.log(`${this.url}/${this.endpoint}?${request}`);
+
+        // try {
+        //     response = this.http
+        //         .get(`${this.url}/${this.endpoint}?${request}`);
+        //         // .pipe(
+        //         //   map((res: Response) => {
+        //         //     return res.body;
+        //         //   })
+        //         //);
+        // } catch (error) {
+        //     response = this.errorHandler('GET', error);
+        // }
+        // return response;
+
+        return this.http
+        .get(`${this.url}/${this.endpoint}?${request}`);
     }
 
     public async getList(): Promise<T[] | null> {
