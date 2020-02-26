@@ -64,11 +64,11 @@ ngOnInit()
       code: ['', Validators.required]
     }),
     patients: this.fb.array([]),
-    CallerDetails: this.fb.group({
-      CallerId: [''],
-      CallerName: ['', Validators.required],
-      CallerNumber: ['', Validators.required],
-      CallerAlternativeNumber: ['']
+    callerDetails: this.fb.group({
+      callerId: [''],
+      callerName: ['', Validators.required],
+      callerNumber: ['', Validators.required],
+      callerAlternativeNumber: ['']
     }),
     callOutcome: this.fb.group({
       callOutcome: ['']
@@ -82,18 +82,18 @@ ngOnInit()
 updateValidators()
 {
 
-  let CallerName = this.recordForm.get('CallerDetails.CallerName');
-  let CallerNumber = this.recordForm.get('CallerDetails.CallerNumber');
+  let callerName = this.recordForm.get('callerDetails.callerName');
+  let callerNumber = this.recordForm.get('callerDetails.callerNumber');
   let dispatcher = this.recordForm.get("emergencyDetails.dispatcher");
 
-  if((CallerName.value || CallerNumber.value) && !(CallerName.value && CallerNumber.value))
+  if((callerName.value || callerNumber.value) && !(callerName.value && callerNumber.value))
   {
-    !!CallerName.value == true  ? CallerNumber.setValidators([Validators.required])
-                            : CallerName.setValidators([Validators.required]);
+    !!callerName.value == true  ? callerNumber.setValidators([Validators.required])
+                            : callerName.setValidators([Validators.required]);
   }
 
-  CallerName.updateValueAndValidity({emitEvent: false });
-  CallerNumber.updateValueAndValidity({emitEvent: false });
+  callerName.updateValueAndValidity({emitEvent: false });
+  callerNumber.updateValueAndValidity({emitEvent: false });
   dispatcher.updateValueAndValidity({emitEvent: false });
 }
 
@@ -125,7 +125,7 @@ onChanges(): void {
 
           //let resultBody = data as EmergencyResponse;
 
-          //this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
+          //this.openSnackBar(resultBody.emergencyNumber + " " + resultBody.status, "OK");
           })
           .catch((error) => {
             console.log(error);
@@ -140,7 +140,7 @@ onChanges(): void {
 
           //let resultBody = data as EmergencyResponse;
 
-          //this.openSnackBar(resultBody.EmergencyNumber + " " + resultBody.status, "OK");
+          //this.openSnackBar(resultBody.emergencyNumber + " " + resultBody.status, "OK");
           })
           .catch((error) => {
             console.log(error);

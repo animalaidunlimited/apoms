@@ -23,10 +23,10 @@
     }
 
     export interface CallerDetails {
-        CallerId: number;
-        CallerName: string;
-        CallerNumber: string;
-        CallerAlternativeNumber: string;
+        callerId: number;
+        callerName: string;
+        callerNumber: string;
+        callerAlternativeNumber: string;
     }
 
     export interface CallOutcome {

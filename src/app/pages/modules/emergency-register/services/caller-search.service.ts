@@ -18,16 +18,12 @@ export class CallerSearchService extends CrudService {
 
    public getCallerByNumber(number: string):Observable<any>{
 
-     let request = "number=" + number
-
-
+     let request = "number=" + number;
 
     return this.getObservable(request)
     .pipe(
       map((response:CallerNumberResponse) => {
         //console.log(JSON.stringify(response));
-        let d = new Date();
-        console.log(d + " - " + d.getMilliseconds());
         return response;
       })
     )

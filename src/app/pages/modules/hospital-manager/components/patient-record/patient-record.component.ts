@@ -37,10 +37,11 @@ export class PatientRecordComponent implements OnInit {
         suspectedRabies: [''],
         currentArea: [''],
       }),
-      CallerDetails: this.fb.group({
-        CallerName: [''],
-        CallerNumber: [''],
-        CallerAlternativeNumber: ['']
+      callerDetails: this.fb.group({
+        callerId: [''],
+        callerName: [''],
+        callerNumber: [''],
+        callerAlternativeNumber: ['']
       })
     }
     );
