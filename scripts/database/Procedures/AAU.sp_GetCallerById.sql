@@ -1,3 +1,7 @@
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCallerById!!
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetCallerById ( IN prm_CallerId INT, OUT prm_Success INT)
 BEGIN

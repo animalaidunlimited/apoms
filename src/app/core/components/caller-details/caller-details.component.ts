@@ -20,7 +20,7 @@ export class CallerDetailsComponent implements OnInit {
 
   public callerAutoComplete$;//TODO: type this Observable<Callers>;
 
-  CallerNumber;
+  callerNumber;
 
   constructor(private callerSearchService: CallerSearchService) { }
 
@@ -28,9 +28,9 @@ export class CallerDetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.CallerNumber = this.recordForm.get('CallerDetails.CallerNumber');
+    this.callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
-    this.callerAutoComplete$ = this.CallerNumber.valueChanges.pipe(
+    this.callerAutoComplete$ = this.callerNumber.valueChanges.pipe(
       startWith(''),
       // delay emits
       debounceTime(300),
@@ -50,10 +50,10 @@ export class CallerDetailsComponent implements OnInit {
   }
 
   lookup(value): Observable<Callers> {
-    return this.callerSearchService.getCallerByNumber(value.toLowerCase()).pipe(
+    return this.callerSearchService.getCallerByNumber(value).pipe(
       // map the item property of the github results as our return object
       map(results =>
-        //console.log(JSON.stringify(results.data))
+        //console.log(JSON.stringify(results))
         results.data
         ),
       // catch errors
@@ -66,19 +66,19 @@ export class CallerDetailsComponent implements OnInit {
   updateValidators()
   {
 
-    let CallerName = this.recordForm.get('CallerDetails.CallerName');
-    let CallerNumber = this.recordForm.get('CallerDetails.CallerNumber');
+    let callerName = this.recordForm.get('callerDetails.callerName');
+    let callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
 
 
-    if((CallerName.value || CallerNumber.value) && !(CallerName.value && CallerNumber.value))
+    if((callerName.value || callerNumber.value) && !(callerName.value && callerNumber.value))
     {
-      !!CallerName.value == true  ? CallerNumber.setValidators([Validators.required])
-                              : CallerName.setValidators([Validators.required]);
+      !!callerName.value == true  ? callerNumber.setValidators([Validators.required])
+                              : callerName.setValidators([Validators.required]);
     }
 
-    CallerName.updateValueAndValidity({emitEvent: false });
-    CallerNumber.updateValueAndValidity({emitEvent: false });
+    callerName.updateValueAndValidity({emitEvent: false });
+    callerNumber.updateValueAndValidity({emitEvent: false });
   }
 
 
@@ -98,10 +98,10 @@ export class CallerDetailsComponent implements OnInit {
   {
     let caller = $event.option.value;
 
-    this.recordForm.get('CallerDetails.CallerId').setValue(caller.CallerId);
-    this.recordForm.get('CallerDetails.CallerNumber').setValue(caller.Number);
-    this.recordForm.get('CallerDetails.CallerName').setValue(caller.Name);
-    this.recordForm.get('CallerDetails.CallerAlternativeNumber').setValue(caller.AlternativeNumber);
+    this.recordForm.get('callerDetails.callerId').setValue(caller.CallerId);
+    this.recordForm.get('callerDetails.callerNumber').setValue(caller.Number);
+    this.recordForm.get('callerDetails.callerName').setValue(caller.Name);
+    this.recordForm.get('callerDetails.callerAlternativeNumber').setValue(caller.AlternativeNumber);
 
 
   }

@@ -1,15 +1,15 @@
 export interface EmergencyResponse
 {
     status: string;
-    EmergencyNumber: number;
+    emergencyNumber: number;
 }
 
 export interface Caller
 {
-    CallerId: string;
-    Name: string;
-    Number: string;
-    AlternativeNumber: string;
+    callerId: string;
+    name: string;
+    number: string;
+    alternativeNumber: string;
 }
 
 export declare type Callers = Caller[];
