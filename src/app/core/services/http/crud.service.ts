@@ -29,8 +29,6 @@ export abstract class CrudService<T = any> {
     public getObservable(request: string): Observable<any> {
         // let response = null;
 
-        console.log(`${this.url}/${this.endpoint}?${request}`);
-
         // try {
         //     response = this.http
         //         .get(`${this.url}/${this.endpoint}?${request}`);

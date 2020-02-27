@@ -142,6 +142,9 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Caller` (
   UNIQUE INDEX `Caller_UNIQUE` (`Name` ASC, `Number` ASC) VISIBLE)
 ENGINE = InnoDB;
 
+INSERT INTO AAU.Caller (Name, PreferredName, Number, AlternativeNumber, Email, Address) VALUES
+('Unknown caller','Unknown caller','',null,'Unknown email','Unknown address');
+
 
 -- -----------------------------------------------------
 -- Table `AAU`.`Rescuer`

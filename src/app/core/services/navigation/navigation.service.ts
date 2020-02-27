@@ -59,7 +59,6 @@ export class NavigationService {
     }
 
     public popFromStack() {
-        console.log('popped');
         this.navigationStack.pop();
     }
 

@@ -37,23 +37,19 @@ export class CallerDetailsComponent implements OnInit {
       // use switch map so as to cancel previous subscribed events, before creating new one
       switchMap(value => {
         if (value !== '') {
-          console.log("value: " + value);
           return this.lookup(value);
-          //return this.lookup(value);
         } else {
           // if no value is present, return null
           return of(null);
         }
       })
     )
-    //.subscribe(callerAutoComplete => this.callerAutoComplete$ = callerAutoComplete);
   }
 
   lookup(value): Observable<Callers> {
     return this.callerSearchService.getCallerByNumber(value).pipe(
       // map the item property of the github results as our return object
       map(results =>
-        //console.log(JSON.stringify(results))
         results.data
         ),
       // catch errors

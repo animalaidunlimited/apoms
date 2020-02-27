@@ -34,14 +34,20 @@ DECLARE vOrganisationId INT;
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
+SET vOrganisationId = 0;
+
 SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
 
-IF vEmNoExists = 0 THEN
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
 
 START TRANSACTION;
 
+IF vEmNoExists = 0 THEN
+
 INSERT INTO AAU.EmergencyCase
 (
+	OrganisationId,
 	EmergencyNumber,
 	CallDateTime,
 	DispatcherId,
@@ -59,6 +65,7 @@ INSERT INTO AAU.EmergencyCase
 )
 VALUES
 (
+	vOrganisationId,
 	prm_EmergencyNumber,
 	prm_CallDateTime,
 	prm_DispatcherId,
@@ -78,9 +85,7 @@ VALUES
 COMMIT;
 
 	SELECT 1 INTO prm_Success;
-    SELECT LAST_INSERT_ID() INTO prm_EmergencyCaseId;
-  
-	SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+    SELECT LAST_INSERT_ID() INTO prm_EmergencyCaseId;	
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username,prm_CallerId,'EmergencyCase','Insert', NOW());
