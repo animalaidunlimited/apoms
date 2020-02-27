@@ -23,7 +23,6 @@ export class CallerSearchService extends CrudService {
     return this.getObservable(request)
     .pipe(
       map((response:CallerNumberResponse) => {
-        //console.log(JSON.stringify(response));
         return response;
       })
     )

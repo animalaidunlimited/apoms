@@ -8,9 +8,9 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { AnimalType } from 'src/app/core/models/animal-type';
 
 export interface Problem {
-  id: number;
-  problem: string;
-  problemStripped: string;
+  ProblemId: number;
+  Problem: string;
+  ProblemStripped: string;
   }
 
   export interface Patient {
@@ -386,13 +386,13 @@ export class AnimalSelectionComponent implements OnInit{
     //Get the current list of problems and replace the existing problem array
 
     let problemsObject:Problem = this.problems.find(item =>
-      item.problem == problemChip.value
+      item.Problem == problemChip.value
       );
 
     let problemsGroup = this.fb.group({
-      id: [problemsObject.id, Validators.required],
-      problem: [problemsObject.problem, Validators.required],
-      problemStripped: [problemsObject.problemStripped, Validators.required]
+      problemId: [problemsObject.ProblemId, Validators.required],
+      problem: [problemsObject.Problem, Validators.required],
+      problemStripped: [problemsObject.ProblemStripped, Validators.required]
     });
 
     let currentPatient:FormGroup = this.getcurrentPatient();
@@ -403,7 +403,7 @@ export class AnimalSelectionComponent implements OnInit{
     let problems:FormArray = currentPatient.get('problems') as FormArray;
 
     let problemIndex = problems.value.findIndex(problem =>
-        problem.id == problemsObject.id)
+        problem.problemId == problemsObject.ProblemId)
 
 
     problemChip.selected ?
@@ -419,7 +419,6 @@ export class AnimalSelectionComponent implements OnInit{
 
   updateTag(currentPatient)
   {
-    console.log(this.recordForm)
     this.selection.isSelected(currentPatient) ? null : this.toggleRow(currentPatient);
 
     this.openDialog(currentPatient);
