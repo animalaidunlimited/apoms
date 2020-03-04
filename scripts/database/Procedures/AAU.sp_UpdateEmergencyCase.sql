@@ -5,6 +5,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCase!!
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
+									IN prm_EmergencyCaseId INT,
 									IN prm_EmergencyNumber INT,
 									IN prm_CallDateTime DATETIME,
 									IN prm_DispatcherId INT,
@@ -20,6 +21,7 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
 									IN prm_IsDeleted BOOLEAN,
+                                    IN prm_DeletedDate DATETIME,
 									IN prm_UserName VARCHAR(64),
 									OUT prm_OutEmergencyCaseId INT,
 									OUT prm_Success VARCHAR(64))
@@ -51,7 +53,7 @@ START TRANSACTION;
 						CallDateTime           = prm_CallDateTime,
 						DispatcherId           = prm_DispatcherId,
 						EmergencyCodeId        = prm_EmergencyCodeId,
-						CallerId           = prm_CallerId,
+						CallerId           	   = prm_CallerId,
 						CallOutcomeId          = prm_CallOutcomeId,
 						Location               = prm_Location,
 						Latitude               = prm_Latitude,
@@ -61,7 +63,8 @@ START TRANSACTION;
 						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
 						RescueTime             = prm_RescueTime,
 						AdmissionTime          = prm_AdmissionTime,
-						IsDeleted			   = prm_IsDeleted
+						IsDeleted			   = prm_IsDeleted,
+                        DeletedDate			   = prm_DeletedDate
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 COMMIT;

@@ -5,12 +5,13 @@ import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-fie
 import { getCurrentTimeString } from '../../../../../core/utils';
 import { Observable } from 'rxjs';
 
-import { DropdownService, AnimalTypeResponse } from 'src/app/core/services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
+import { EmergencyCase, Patient } from 'src/app/core/models/emergency-record';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material';
-import { EmergencyResponse } from 'src/app/core/models/responses';
+import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
+import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
 
 
 @Component({
@@ -43,6 +44,7 @@ export class EmergencyRecordComponent implements OnInit{
     private dropdowns: DropdownService,
     private userOptions: UserOptionsService,
     private _snackBar: MatSnackBar,
+    private emergencyNumberValidator: UniqueEmergencyNumberValidator,
     private caseService: CaseService) {}
 
 ngOnInit()
@@ -58,7 +60,8 @@ ngOnInit()
 
     emergencyDetails: this.fb.group({
       emergencyCaseId: [''],
-      emergencyNumber: ['45675', Validators.required],
+      emergencyNumber: ['', Validators.required,
+      this.emergencyNumberValidator.validate()],
       callDateTime: [getCurrentTimeString(), Validators.required],
       dispatcher: ['', Validators.required],
       code: ['', Validators.required]
@@ -75,6 +78,9 @@ ngOnInit()
     })
   }
   );
+
+
+
 
   this.onChanges();
 }
@@ -110,6 +116,93 @@ onChanges(): void {
     });
   }
 
+  check()
+  {
+    console.log(this.recordForm.get("emergencyDetails"));
+  }
+
+  getCaseSaveMessage(resultBody:EmergencyResponse){
+
+    let result = {
+      message : "Other error - See admin\n",
+      failure : 0
+    }
+
+     //Check the record succeeded
+     if(resultBody.emergencyCaseSuccess == 1){
+      result.message = "Success";
+     }
+
+     else if(resultBody.emergencyCaseSuccess == 2)
+     {
+      result.message = "Error adding the record: Duplicate record\n";
+      result.failure ++;
+     }
+
+     //Check the caller succeeded
+     if(resultBody.callerSuccess == 1){
+      result.message += "";
+
+     }
+     else if (resultBody.callerSuccess == 2){
+      result.message += "Error adding the caller: Duplicate record \n";
+      result.failure ++;
+     }
+     else {
+      result.message += "Other error - See admin\n";
+      result.failure ++;
+     }
+
+
+
+     //Check all of the patients and their problems succeeded
+
+     //If then don't succeed, build and show an error message
+     resultBody.patients.forEach((patient:PatientResponse) => {
+
+       if(patient.success == 1){
+        result.message += "";
+
+         let patientFormArray = this.recordForm.get("patients").controls;
+
+         patientFormArray.forEach((currentPatient) => {
+
+           if(currentPatient.get("position").value == patient.position)
+           {
+             currentPatient.get("patientId").setValue(patient.patientId);
+           }
+
+         });
+       }
+       else{
+        result.message += "Error adding the patient: " +
+       (patient.success == 2 ? "Duplicate record \n" : "Other error - See admin\n");
+
+       result.failure ++;
+       }
+
+
+       patient.problems.forEach((problem:ProblemResponse) => {
+
+        if(problem.success == 1){
+        result.message += ""
+       }
+       else if (problem.success == 2){
+        result.message += "Error adding the patient: Duplicate record \n";
+        result.failure ++;
+       }
+       else{
+        result.message += "Error adding the patient: Other error - See admin \n";
+        result.failure ++;
+       }
+
+       })
+
+     });
+
+     return result;
+  }
+
   async saveForm()
   {
   //  if(this.recordForm.valid)
@@ -121,11 +214,18 @@ onChanges(): void {
       {
         await this.caseService.insertCase(emergencyForm)
         .then((data) => {
-          console.log(data);
 
-          //let resultBody = data as EmergencyResponse;
+          let resultBody = data as EmergencyResponse;
 
-          //this.openSnackBar(resultBody.emergencyNumber + " " + resultBody.status, "OK");
+          this.recordForm.get('emergencyDetails.emergencyCaseId').setValue(resultBody.emergencyCaseId);
+          this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
+
+          var messageResult = this.getCaseSaveMessage(resultBody);
+
+          if(resultBody.emergencyCaseSuccess == 1){
+            this.openSnackBar("Case inserted successfully", "OK")
+          }
+
           })
           .catch((error) => {
             console.log(error);
@@ -136,11 +236,16 @@ onChanges(): void {
       {
         await this.caseService.updateCase(emergencyForm)
         .then((data) => {
-          console.log(data);
 
-          //let resultBody = data as EmergencyResponse;
+          let resultBody = data as EmergencyResponse;
 
-          //this.openSnackBar(resultBody.emergencyNumber + " " + resultBody.status, "OK");
+          this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
+
+          var messageResult = this.getCaseSaveMessage(resultBody);
+
+          if(messageResult.failure == 0){
+            this.openSnackBar("Case updateted successfully", "OK")
+          }
           })
           .catch((error) => {
             console.log(error);

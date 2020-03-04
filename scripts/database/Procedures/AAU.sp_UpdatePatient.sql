@@ -11,6 +11,7 @@ CREATE PROCEDURE AAU.sp_UpdatePatient(
 									IN prm_Position INT,
 									IN prm_AnimalTypeId INT,
 									IN prm_TagNumber varchar(5),
+                                    IN prm_IsDeleted boolean,
                                     OUT prm_OutPatientId INT,
 									OUT prm_Success INT)
 BEGIN
@@ -41,7 +42,13 @@ START TRANSACTION;
 	UPDATE AAU.Patient SET
 			Position		= prm_Position,
 			AnimalTypeId	= prm_AnimalTypeId,
-			TagNumber		= prm_TagNumber
+			TagNumber		= prm_TagNumber,
+            IsDeleted		= prm_IsDeleted,
+            DeletedDate		= CASE
+								WHEN prm_IsDeleted = FALSE THEN NULL
+                                WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
+							  END
+								
 	WHERE PatientId = prm_PatientId;
    
 COMMIT;         

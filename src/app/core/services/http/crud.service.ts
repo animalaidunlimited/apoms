@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { CallerNumberResponse } from '../../models/responses';
 
 
@@ -27,23 +27,23 @@ export abstract class CrudService<T = any> {
     }
 
     public getObservable(request: string): Observable<any> {
-        // let response = null;
-
-        // try {
-        //     response = this.http
-        //         .get(`${this.url}/${this.endpoint}?${request}`);
-        //         // .pipe(
-        //         //   map((res: Response) => {
-        //         //     return res.body;
-        //         //   })
-        //         //);
-        // } catch (error) {
-        //     response = this.errorHandler('GET', error);
-        // }
-        // return response;
 
         return this.http
         .get(`${this.url}/${this.endpoint}?${request}`);
+    }
+
+    public getByField(subEndpoint: string, request: string): Observable<any> {
+
+        return timer(200)
+        .pipe(
+          switchMap(() => {
+            // Check if username is available
+            return this.http
+        .get(`${this.url}/${this.endpoint}/${subEndpoint}?${request}`);
+          })
+        );
+
+
     }
 
     public async getList(): Promise<T[] | null> {

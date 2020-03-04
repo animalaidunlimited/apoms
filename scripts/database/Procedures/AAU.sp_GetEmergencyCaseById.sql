@@ -1,3 +1,7 @@
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCaseById!!
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetEmergencyCaseById( IN prm_EmergencyCaseId INT, OUT prm_Success INT)
 BEGIN

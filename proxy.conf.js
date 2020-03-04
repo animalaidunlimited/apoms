@@ -5,9 +5,11 @@ const PROXY_CONFIG = [
             "/Case",
             "/EmergencyRegister",
             "/Health",
-            "/Caller"
+            "/Caller",
+            "/Patient"
         ],
         target: "http://localhost:8080",
+        changeOrigin: "true",
         secure: false
     }
 ]

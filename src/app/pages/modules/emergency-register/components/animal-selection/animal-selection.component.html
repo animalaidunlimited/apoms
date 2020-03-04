@@ -35,14 +35,16 @@
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef>Delete</th>
                 <td mat-cell *matCellDef="let row">
-                <mat-icon (click)="deletePatientRow(row)" style="cursor:pointer">delete</mat-icon>
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="!row.get('deleted').value" style="cursor:pointer">delete</mat-icon>
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="row.get('deleted').value" style="cursor:pointer">undo</mat-icon>
 
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;" (keydown.enter)="updateTag(row)"></tr>
-
+            <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;"
+            [class.deleted]="row.get('deleted').value"
+            (keydown.enter)="updateTag(row)"></tr>
 
 
             </table>

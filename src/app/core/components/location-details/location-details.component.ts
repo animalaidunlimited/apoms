@@ -42,8 +42,6 @@ export class LocationDetailsComponent implements OnInit {
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
   @ViewChild('addressSearch', {static: false}) addresstext: any;
 
-
-
   ngOnInit() {
 
     this.recordForm.addControl(
@@ -96,6 +94,8 @@ invokeEvent(place: Object) {
 
     let result = place as google.maps.places.PlaceResult;
 
+    this.animalLocation.setValue(result.formatted_address);
+
     this.updateLocation(result.geometry.location.lat(), result.geometry.location.lng());
 }
 
@@ -108,10 +108,10 @@ invokeEvent(place: Object) {
     this.markers[0].longitude = iLongitude;
   }
 
-  markerDragEnd(marker, $event)
+  markerDragEnd($event)
   {
-    this.latitude.setValue(marker.latitude);
-    this.longitude.setValue(marker.longitude);
+    this.latitude.setValue($event.coords.lat);
+    this.longitude.setValue($event.coords.lng);
   }
 
   performSearch($event)
@@ -127,6 +127,7 @@ invokeEvent(place: Object) {
     addressSearcher.findPlaceFromQuery(searchRequest,(results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
+          this.animalLocation.setValue(results.formatted_address);
           this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
         }
       }
