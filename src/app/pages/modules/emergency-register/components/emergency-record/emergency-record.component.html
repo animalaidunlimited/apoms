@@ -12,7 +12,11 @@
 
                                 <mat-form-field>
                                         <input formControlName="emergencyNumber" type="text" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput cdkFocusInitial>
-                                </mat-form-field>
+
+                                        <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber').errors?.emergencyNumberTaken">
+                                            The emergency number already exists.
+                                        </mat-error>
+                                    </mat-form-field>
 
                                 <mat-form-field>
                                         <input formControlName="callDateTime" name="callDateTime" type="datetime-local" [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>

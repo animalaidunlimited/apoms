@@ -1,5 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { FormBuilder } from '@angular/forms';
 
 export interface DialogData {
   tagNumber: string;
@@ -11,14 +13,27 @@ export interface DialogData {
   styleUrls: ['./tag-number-dialog.component.scss']
 })
 
-export class TagNumberDialog {
+export class TagNumberDialog implements OnInit{
 
   constructor(
     public dialogRef: MatDialogRef<TagNumberDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private fb: FormBuilder,
+    private uniqueTagNumberValidator: UniqueTagNumberValidator) {}
+
+    tagForm;
+
+    ngOnInit()
+{
+
+  this.tagForm = this.fb.group({
+    tagNumber: [this.data.tagNumber,,this.uniqueTagNumberValidator.validate()]
+
+  })
+}
 
   onCancel(): void {
-    
+
     this.dialogRef.close();
   }
 

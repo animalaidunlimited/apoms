@@ -25,26 +25,7 @@ export class CallerSearchService extends CrudService {
       map((response:CallerNumberResponse) => {
         return response;
       })
-    )
-    ;
+    );
 
    }
-
-  // getCallerByNumber(query: string): Observable<CallerNumberResponse> {
-  //   const url = 'http://localhost:4500/Caller?number=8905';
-  //   return this.http
-  //     .get<CallerNumberResponse>(url, {
-  //       observe: 'response',
-  //       params: {
-  //         q: query,
-  //         sort: 'number',
-  //         order: 'desc'
-  //       }
-  //     })
-  //     .pipe(
-  //       map(res => {
-  //         return res.body;
-  //       })
-  //     );
-  // }
 }

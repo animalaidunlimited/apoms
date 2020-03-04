@@ -26,7 +26,7 @@
                     [longitude]="marker.longitude"
                     [label]="marker.label"
                     [markerDraggable]="marker.draggable"
-                    (dragEnd)="markerDragEnd(marker, $event)"></agm-marker>
+                    (dragEnd)="markerDragEnd($event)"></agm-marker>
           <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
         </agm-map>
       </div>

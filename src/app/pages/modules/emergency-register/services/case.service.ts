@@ -6,6 +6,8 @@ import { EmergencyResponse } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { v4 as uuid } from 'uuid';
+import { map, debounceTime, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -68,8 +70,7 @@ export class CaseService extends CrudService {
     let promiseArray = postsToSync.map(async elem =>
       await this.baseInsertCase(elem.value).then((result:EmergencyResponse) =>
       {
-        //TODO deal with failures that will never make it into the database
-        if(result.status == "success" || result.status == "rejected" || result.status == "duplicate"){
+        if(result.emergencyCaseSuccess == 1 || result.emergencyCaseSuccess == 3 || result.emergencyCaseSuccess == 2){
           this.storage.remove(elem.key);
         }
       }));
@@ -83,8 +84,7 @@ export class CaseService extends CrudService {
     let promiseArray = putsToSync.map(async elem =>
       await this.baseUpdateCase(elem.value).then((result:EmergencyResponse) =>
       {
-        //TODO deal with failures that will never make it into the database
-        if(result.status == "success" || result.status == "rejected" || result.status == "duplicate"){
+        if(result.emergencyCaseSuccess == 1 || result.emergencyCaseSuccess == 3 || result.emergencyCaseSuccess == 2){
           this.storage.remove(elem.key);
         }
       })
@@ -142,14 +142,14 @@ export class CaseService extends CrudService {
 
 
 
-  public async getCaseById(emergencyNumber:number)
+  public async getCaseById(emergencyCaseId:number)
   {
       try {
 
-          this.response = await this.getById(emergencyNumber) as EmergencyResponse;
+          this.response = await this.getById(emergencyCaseId) as EmergencyResponse;
           if(!this.response){
               throw new Error(
-                  "Unable to get Case with ID: emergencyNumber: " + emergencyNumber,
+                  "Unable to get Case with ID: " + emergencyCaseId,
               );
           }
           return this.response;
@@ -158,6 +158,8 @@ export class CaseService extends CrudService {
           return Promise.reject(error);
       }
   }
+
+
 
   public async deleteById(emergencyNumber:number)
   {
@@ -175,8 +177,16 @@ export class CaseService extends CrudService {
       }
   }
 
+  public checkEmergencyNumberExists(emergencyNumber:string):Observable<any>
+  {
+    let emergencyNumberQuery = "EmergencyNumber=" + emergencyNumber;
 
-
+    return this.getByField("CheckEmergencyNumberExists", emergencyNumberQuery)
+    .pipe(
+      map(value => {
+        return value})
+    );
+  }
 
   private async saveToLocalDatabase(key, body)
   {

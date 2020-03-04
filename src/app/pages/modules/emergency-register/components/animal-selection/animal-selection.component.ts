@@ -6,6 +6,8 @@ import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.componen
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
+import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+
 
 export interface Problem {
   ProblemId: number;
@@ -20,6 +22,8 @@ export interface Problem {
     problems: Problem[];
     problemsString: string;
     tagNumber: string;
+    updated: boolean;
+    deleted: boolean;
   }
 
 @Component({
@@ -51,13 +55,16 @@ export class AnimalSelectionComponent implements OnInit{
 
   constructor(public dialog: MatDialog,
     private fb: FormBuilder,
+    private tagNumberValidator: UniqueTagNumberValidator,
     private dropdown: DropdownService) {}
 
   ngOnInit()
   {
     this.initPatientArray();
 
-    this.patientDataSource = new MatTableDataSource((this.recordForm.get('patients') as FormArray).controls);
+    let patients = (this.recordForm.get('patients') as FormArray).controls;
+
+    this.patientDataSource = new MatTableDataSource(patients);
 
     this.selection = new SelectionModel<any>(false, [this.patientDataSource.data[0]]);
 
@@ -70,12 +77,15 @@ export class AnimalSelectionComponent implements OnInit{
   initPatientArray()
   {
     let patient = this.fb.group({
+      patientId: [null],
       position: [''],
       animalTypeId: [''],
       animalType: [''],
       problems: this.fb.array([]),
       problemsString:['', Validators.required],
-      tagNumber: ['']
+      tagNumber: ['', ,this.tagNumberValidator.validate()],
+      updated: [true, Validators.required],
+      deleted: [false, Validators.required]
     });
 
     patient.get('position').setValue(1);
@@ -83,24 +93,6 @@ export class AnimalSelectionComponent implements OnInit{
     this.patientArray = this.recordForm.get('patients') as FormArray;
 
     this.patientArray.push(patient);
-  }
-
-  openDialog(currentPatient): void {
-
-    const dialogRef = this.dialog.open(TagNumberDialog, {
-      width: '250px',
-      data: {tagNumber: currentPatient.tagNumber}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-
-      if(result != null)
-      {
-        let currentPatient = this.getcurrentPatient();
-        currentPatient.tagNumber = result;
-      }
-
-    });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -117,7 +109,6 @@ export class AnimalSelectionComponent implements OnInit{
     this.clearChips();
     this.selection.selected.length != 0 ? this.reloadChips(this.getcurrentPatient()) :
     null;
-
 
   }
 
@@ -182,10 +173,7 @@ export class AnimalSelectionComponent implements OnInit{
 
   toggleAnimalChip(animalTypeChip)
   {
-    //Wait for the next tick until evrything is updated.
-    setTimeout(() =>
     this.animalChipSelected(animalTypeChip)
-  )
 
   }
 
@@ -207,14 +195,18 @@ export class AnimalSelectionComponent implements OnInit{
     //There is only 1 row selected, so we can update the animal for that row
     let animalTypeObject;
 
-     animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
+
+    animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
 
     let currentPatient = this.getcurrentPatient();
 
     currentPatient.get("animalType").setValue(animalTypeChip.selected ? animalTypeObject.AnimalType : null);
+
     currentPatient.get("animalTypeId").setValue(animalTypeChip.selected ? animalTypeObject.AnimalTypeId : null);
 
     this.currentPatientChip = animalTypeChip.value;
+
+
 
     this.patientTable.renderRows();
 
@@ -231,22 +223,26 @@ export class AnimalSelectionComponent implements OnInit{
       let currentPatient = this.getAnimalFromObservable(this.currentPatientChip);
 
 
+
+
       //this.animalTypes$.pipe(filter(type => type.AnimalType == this.currentPatientChip));
 
         let position:number = (this.patientDataSource.data.length + 1);
 
         let newPatient = this.fb.group(
           {
+            patientId: [null],
             position: [position, Validators.required],
             animalTypeId: [currentPatient.AnimalTypeId, Validators.required],
             animalType: [currentPatient.AnimalType, Validators.required],
             problems: this.fb.array([]),
             problemsString: ['', Validators.required],
-            tagNumber: ['']
+            tagNumber: [''],
+            updated: [true, Validators.required],
+            deleted: [false, Validators.required]
           });
-
-        //this.patientArray.push(newPatient);
         this.patientArray.push(newPatient);
+
         this.patientTable.renderRows();
 
         //Set the new row to be selected
@@ -254,7 +250,7 @@ export class AnimalSelectionComponent implements OnInit{
            row.get("position").value == position
            ));
 
-        this.hideIrrelevantChips(animalTypeChip);
+      this.hideIrrelevantChips(animalTypeChip);
     }
 
   }
@@ -371,7 +367,12 @@ export class AnimalSelectionComponent implements OnInit{
 
   deletePatientRow(row)
   {
-    this.patientArray.removeAt(row.position - 1);
+
+    let position = row.get("position").value;
+
+    let deleted = row.get("deleted").value
+
+    this.patientArray.controls[position - 1].get("deleted").setValue(!deleted);
 
     this.clearChips();
 
@@ -419,9 +420,35 @@ export class AnimalSelectionComponent implements OnInit{
 
   updateTag(currentPatient)
   {
+    console.log(currentPatient.position)
+
     this.selection.isSelected(currentPatient) ? null : this.toggleRow(currentPatient);
 
-    this.openDialog(currentPatient);
+    this.openDialog(currentPatient.value);
+  }
+
+  openDialog(event): void {
+
+    let currentPatient:Patient = event;
+
+    const dialogRef = this.dialog.open(TagNumberDialog, {
+      width: '250px',
+      data: {tagNumber: currentPatient.tagNumber}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if(result.value != null)
+      {
+
+        let currentPatient:FormGroup = this.getcurrentPatient();
+        currentPatient.get("tagNumber").setValue(result.value);
+
+        this.patientTable.renderRows();
+
+      }
+
+    });
   }
 
   getAnimalFromObservable(name: string)

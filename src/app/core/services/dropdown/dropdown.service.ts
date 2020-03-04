@@ -15,8 +15,7 @@ export interface AnimalTypeResponse {
 })
 export class DropdownService {
 
-  rescuer1$;
-  rescuer2$;
+  rescuer$;
   areas$:any[];
   dispatchers$;
   outcomes$;
@@ -71,8 +70,8 @@ export class DropdownService {
   // getAnimalTypes() {
   //   if (!this.animalTypes$)
   //   {
-  //     this.animalTypes$ = [{"id": 1,"animalType": "Dog"},	{"id": 2,"animalType": "Puppy"},	{"id": 3,"animalType": "Cow"},	{"id": 4,"animalType": "Bull"},	{"id": 5,"animalType": "Calf"},	{"id": 6,"animalType": "Donkey"},	{"id": 7,"animalType": "Cat"},	{"id": 8,"animalType": "Bird"},	{"id": 9,"animalType": "Goat"},	{"id": 10,"animalType": "Pig"},	{"id": 11,"animalType": "Kitten"},	{"id": 12,"animalType": "Sheep"},	{"id": 13,"animalType": "Buffalo"},	{"id": 14,"animalType": "Parrot"},	{"id": 15,"animalType": "Squirrel"},	{"id": 16,"animalType": "Fox"},	{"id": 17,"animalType": "Camel"},	{"id": 18,"animalType": "Pigeon"},	{"id": 19,"animalType": "Sparrow"},{"id": 20,"animalType": "Horse"},{"id": 21,"animalType": "Tortoise"},{"id": 22,"animalType": "Chicken"}];
-  //   }
+  //     this.animalTypes$ = [{"AnimalTypeId": 1,"AnimalType": "Dog"},	{"AnimalTypeId": 2,"AnimalType": "Puppy"},	{"AnimalTypeId": 3,"AnimalType": "Cow"},	{"AnimalTypeId": 4,"AnimalType": "Bull"},	{"AnimalTypeId": 5,"AnimalType": "Calf"},	{"AnimalTypeId": 6,"AnimalType": "Donkey"},	{"AnimalTypeId": 7,"AnimalType": "Cat"},	{"AnimalTypeId": 8,"AnimalType": "Bird"},	{"AnimalTypeId": 9,"AnimalType": "Goat"},	{"AnimalTypeId": 10,"AnimalType": "Pig"},	{"AnimalTypeId": 11,"AnimalType": "Kitten"},	{"AnimalTypeId": 12,"AnimalType": "Sheep"},	{"AnimalTypeId": 13,"AnimalType": "Buffalo"},	{"AnimalTypeId": 14,"AnimalType": "Parrot"},	{"AnimalTypeId": 15,"AnimalType": "Squirrel"},	{"AnimalTypeId": 16,"AnimalType": "Fox"},	{"AnimalTypeId": 17,"AnimalType": "Camel"},	{"AnimalTypeId": 18,"AnimalType": "Pigeon"},	{"AnimalTypeId": 19,"AnimalType": "Sparrow"},{"AnimalTypeId": 20,"AnimalType": "Horse"},{"AnimalTypeId": 21,"AnimalType": "Tortoise"},{"AnimalTypeId": 22,"AnimalType": "Chicken"}];
+  //  }
 
   //   return this.animalTypes$;
   // }
@@ -141,22 +140,18 @@ export class DropdownService {
     return this.outcomes$;
   }
 
-  getRescuer1List() {
-    if (!this.rescuer1$)
+  getRescuerList() {
+    if (!this.rescuer$)
     {
-      this.rescuer1$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},{"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},{"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"}]
+      this.rescuer$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},
+      {"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},
+      {"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"},{"id": 8, "name": "Nandu"},{"id": 9, "name": "Ganpat"},
+      {"id": 10, "name": "Sanjay"},{"id": 11, "name": "Mahender"},{"id": 12, "name": "Pushkar"},
+      {"id": 13, "name": "Vinod"},{"id": 14, "name": "Deendeyal"},{"id": 15, "name": "Heera"},
+      {"id": 16, "name": "Dharmendra"},{"id": 17, "name": "Kamlesh"},{"id": 18, "name": "Self"}]
     }
 
-    return this.rescuer1$;
-  }
-
-  getRescuer2List() {
-    if (!this.rescuer2$)
-    {
-      this.rescuer2$ = [{"id": null,"name":null},{"id": 1, "name": "Nandu"},{"id": 2, "name": "Ganpat"},{"id": 3, "name": "Sanjay"},{"id": 4, "name": "Mahender"},{"id": 5, "name": "Pushkar"},{"id": 7, "name": "Vinod"},{"id": 8, "name": "Deendeyal"},{"id": 9, "name": "Heera"},{"id": 10, "name": "Dharmendra"},{"id": 11, "name": "Kamlesh"},{"id": 12, "name": "Self"}]
-    }
-
-    return this.rescuer2$;
+    return this.rescuer$;
   }
 
 }

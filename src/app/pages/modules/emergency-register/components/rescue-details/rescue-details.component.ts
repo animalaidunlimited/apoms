@@ -39,8 +39,8 @@ export class RescueDetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.rescuer1List = this.dropdowns.getRescuer1List();
-    this.rescuer2List = this.dropdowns.getRescuer2List();
+    this.rescuer1List = this.dropdowns.getRescuerList();
+    this.rescuer2List = this.dropdowns.getRescuerList();
 
     this.recordForm.addControl(
 
