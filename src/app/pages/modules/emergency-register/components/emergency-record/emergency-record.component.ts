@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-field-error-matcher';
 
@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
-import { EmergencyCase, Patient } from 'src/app/core/models/emergency-record';
+import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material';
 import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
@@ -22,6 +22,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 
 export class EmergencyRecordComponent implements OnInit{
 
+
   recordForm;
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -30,9 +31,11 @@ export class EmergencyRecordComponent implements OnInit{
 
   notificationDurationSeconds;
 
-  dispatchers;
-  outcomes;
+  dispatchers$;
+  callOutcomes$;
+  emergencyCodes$
   areas: any[];
+
 
   callDateTime = getCurrentTimeString();
   rescueTime:string;
@@ -51,8 +54,9 @@ ngOnInit()
 {
 
   this.areas = this.dropdowns.getAreas();
-  this.dispatchers = this.dropdowns.getDispatchers();
-  this.outcomes = this.dropdowns.getOutcomes();
+  this.dispatchers$ = this.dropdowns.getDispatchers();
+  this.callOutcomes$ = this.dropdowns.getCallOutcomes();
+  this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
   this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -116,11 +120,6 @@ onChanges(): void {
     });
   }
 
-  check()
-  {
-    console.log(this.recordForm.get("emergencyDetails"));
-  }
-
   getCaseSaveMessage(resultBody:EmergencyResponse){
 
     let result = {
@@ -152,8 +151,6 @@ onChanges(): void {
       result.message += "Other error - See admin\n";
       result.failure ++;
      }
-
-
 
      //Check all of the patients and their problems succeeded
 
@@ -205,8 +202,8 @@ onChanges(): void {
 
   async saveForm()
   {
-  //  if(this.recordForm.valid)
-  //  {
+   if(this.recordForm.valid)
+   {
       let emergencyForm: EmergencyCase = Object.assign({}, {"emergencyForm" : this.recordForm.value});
 
 
@@ -222,7 +219,9 @@ onChanges(): void {
 
           var messageResult = this.getCaseSaveMessage(resultBody);
 
-          if(resultBody.emergencyCaseSuccess == 1){
+          console.log(messageResult);
+
+          if(messageResult.failure == 0){
             this.openSnackBar("Case inserted successfully", "OK")
           }
 
@@ -255,7 +254,7 @@ onChanges(): void {
 
 
 
-   // }
+   }
 
   }
 
@@ -263,6 +262,10 @@ onChanges(): void {
     this._snackBar.open(message, action, {
       duration: this.notificationDurationSeconds * 1000,
     });
+  }
+
+  showForm(){
+    console.log(this.recordForm);
   }
 
 

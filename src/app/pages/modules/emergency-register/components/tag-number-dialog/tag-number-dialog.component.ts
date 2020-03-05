@@ -2,9 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { FormBuilder } from '@angular/forms';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 export interface DialogData {
   tagNumber: string;
+  duplicate: boolean;
 }
 
 @Component({
@@ -14,6 +16,8 @@ export interface DialogData {
 })
 
 export class TagNumberDialog implements OnInit{
+
+  errorMatcher = new CrossFieldErrorMatcher();
 
   constructor(
     public dialogRef: MatDialogRef<TagNumberDialog>,
@@ -28,12 +32,10 @@ export class TagNumberDialog implements OnInit{
 
   this.tagForm = this.fb.group({
     tagNumber: [this.data.tagNumber,,this.uniqueTagNumberValidator.validate()]
-
   })
 }
 
   onCancel(): void {
-
     this.dialogRef.close();
   }
 

@@ -9,8 +9,8 @@
                     <mat-select formControlName="rescuer1" [errorStateMatcher]="errorMatcher">
 
                     <!-- <mat-select formControl="rescuer1" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                    <mat-option *ngFor="let rescuer1 of rescuer1List" [value]="rescuer1.id">
-                        {{rescuer1.name}}
+                    <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
+                        {{rescuer.Rescuer}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -20,8 +20,8 @@
                         <mat-select formControlName="rescuer2" [errorStateMatcher]="errorMatcher">
 
                         <!-- <mat-select formControl="rescuer2" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                        <mat-option *ngFor="let rescuer2 of rescuer2List" [value]="rescuer2.id">
-                            {{rescuer2.name}}
+                        <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
+                            {{rescuer.Rescuer}}
                         </mat-option>
                     </mat-select>
             </mat-form-field>

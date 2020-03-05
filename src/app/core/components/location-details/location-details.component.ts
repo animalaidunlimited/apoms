@@ -127,7 +127,7 @@ invokeEvent(place: Object) {
     addressSearcher.findPlaceFromQuery(searchRequest,(results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-          this.animalLocation.setValue(results.formatted_address);
+          this.animalLocation.setValue(results[0].formatted_address);
           this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
         }
       }

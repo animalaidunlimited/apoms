@@ -3,6 +3,11 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AnimalType } from '../../models/animal-type';
 import { map, shareReplay, catchError } from 'rxjs/operators';
+import { Problem } from '../../models/problem';
+import { Dispatcher } from '../../models/dispatcher';
+import { CallOutcome } from '../../models/call-outcome';
+import { Rescuer } from '../../models/rescuer';
+import { EmergencyCode } from '../../models/emergency-code';
 
 
 export interface AnimalTypeResponse {
@@ -15,15 +20,16 @@ export interface AnimalTypeResponse {
 })
 export class DropdownService {
 
-  rescuer$;
+  rescuers$:Observable<Rescuer[]>;
+  emergencyCodes$:Observable<EmergencyCode[]>;
   areas$:any[];
-  dispatchers$;
-  outcomes$;
+  dispatchers$:Observable<Dispatcher[]>;
+  callOutcomes$:Observable<CallOutcome[]>;
   crueltyIspectors$;
   antibiotics$;
   isoReasons$;
   animalTypes$:Observable<AnimalType[]>;
-  problems$;
+  problems$:Observable<Problem[]>;
   exclusions$;
   officeStaff$;
 
@@ -43,7 +49,33 @@ export class DropdownService {
   getExclusions() {
     if (!this.exclusions$)
     {
-      this.exclusions$ = [{"animalType":"Bird","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Buffalo","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Buffalo Calf","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Bull","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Calf","exclusionList":["Can't Fly","Shifted puppies","Pregnancy problem"]},{"animalType":"Camel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Cat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Chicken","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Cow","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Dog","exclusionList":["Can't Fly"]},{"animalType":"Donkey","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Fox","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Goat","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Horse","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Kitten","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Parrot","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Pig","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Pigeon","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Puppy","exclusionList":["Can't Fly"]},{"animalType":"Sheep","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Sparrow","exclusionList":["Horn/Hoof problem","Normal Behaviour - Biting","Penis Coming Out","Pregnancy problem","Shifted puppies"]},{"animalType":"Squirrel","exclusionList":["Can't Fly","Shifted puppies"]},{"animalType":"Tortoise","exclusionList":["Can't Fly","Shifted puppies"]}];
+      this.exclusions$ = [
+        {"animalType":"Bird","exclusionList":
+          ["Horn/hoof problem","Normal behaviour - biting","Penis coming out",
+          "Pregnancy problem","Shifted puppies"]},
+        {"animalType":"Buffalo","exclusionList":
+          ["Can't fly","Shifted puppies"]},
+        {"animalType":"Buffalo Calf","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Bull","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Calf","exclusionList":["Can't fly","Shifted puppies","Pregnancy problem"]},
+        {"animalType":"Camel","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]},
+        {"animalType":"Cat","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]},
+        {"animalType":"Chicken","exclusionList":["Horn/hoof problem","Normal behaviour - biting","Penis coming out","Pregnancy problem","Shifted puppies"]},
+        {"animalType":"Cow","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Dog","exclusionList":["Horn/hoof problem","Can't fly"]},
+        {"animalType":"Donkey","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Fox","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]},
+        {"animalType":"Goat","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Horse","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Kitten","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]},
+        {"animalType":"Parrot","exclusionList":["Horn/hoof problem","Normal behaviour - biting","Penis coming out","Pregnancy problem","Shifted puppies"]},
+        {"animalType":"Pig","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Pigeon","exclusionList":["Horn/hoof problem","Normal behaviour - biting","Penis coming out","Pregnancy problem","Shifted puppies"]},
+        {"animalType":"Puppy","exclusionList":["Horn/hoof problem","Can't fly"]},
+        {"animalType":"Sheep","exclusionList":["Can't fly","Shifted puppies"]},
+        {"animalType":"Sparrow","exclusionList":["Horn/hoof problem","Normal behaviour - biting","Penis coming out","Pregnancy problem","Shifted puppies"]},
+        {"animalType":"Squirrel","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]},
+        {"animalType":"Tortoise","exclusionList":["Horn/hoof problem","Can't fly","Shifted puppies"]}];
     }
 
     return this.exclusions$;
@@ -57,8 +89,8 @@ export class DropdownService {
     if (!this.animalTypes$)
     {
       this.animalTypes$ = this.http
-      .get<AnimalTypeResponse>("/Case/GetAnimalType").pipe(
-        map( (res) => {return res.data})//,
+      .get<AnimalType[]>("/Dropdown/AnimalTypes").pipe(
+        map( (res) => {return res})//,
         //shareReplay(1,10000)
       )
     }
@@ -76,15 +108,29 @@ export class DropdownService {
   //   return this.animalTypes$;
   // }
 
-  getProblems() {
+  // getProblems() {
+  //   if (!this.problems$)
+  //   {
+  //     this.problems$ =[{"ProblemId":1, "Problem": "Abnormal Behaviour","ProblemStripped": "AbnormalBehaviour"},{"ProblemId":2, "Problem": "Abnormal Walking", "ProblemStripped": "AbnormalWalking"},{"ProblemId":3, "Problem": "Abnormal Behaviour Biting", "ProblemStripped": "AbnormalBehaviourBiting"},{"ProblemId":4, "Problem": "Anorexia", "ProblemStripped": "Anorexia"},{"ProblemId":5, "Problem": "Blind", "ProblemStripped": "Blind"},{"ProblemId":6, "Problem": "Can't fly", "ProblemStripped": "Cantfly"},{"ProblemId":7, "Problem": "Circling", "ProblemStripped": "Circling"},{"ProblemId":8, "Problem": "Cruelty", "ProblemStripped": "Cruelty"},{"ProblemId":9, "Problem": "Diarrhea", "ProblemStripped": "Diarrhea"},{"ProblemId":10, "Problem": "Dull/Weakness", "ProblemStripped": "DullWeakness"},{"ProblemId":11, "Problem": "Ear problem", "ProblemStripped": "Earproblem"},{"ProblemId":12, "Problem": "Eye problem", "ProblemStripped": "Eyeproblem"},{"ProblemId":13, "Problem": "For ABC", "ProblemStripped": "ForABC"},{"ProblemId":14, "Problem": "Horn/hoof problem", "ProblemStripped": "HornHoofproblem"},{"ProblemId":15, "Problem": "Item Tied/Stuck on Body", "ProblemStripped": "ItemTiedStuckonBody"},{"ProblemId":16, "Problem": "Leg problem", "ProblemStripped": "Legproblem"},{"ProblemId":17, "Problem": "Mouth Open", "ProblemStripped": "MouthOpen"},{"ProblemId":18, "Problem": "Normal behaviour - biting", "ProblemStripped": "NormalBehaviour-Biting"},{"ProblemId":19, "Problem": "Nose Bleeding", "ProblemStripped": "NoseBleeding"},{"ProblemId":20, "Problem": "Orphan", "ProblemStripped": "Orphan"},{"ProblemId":21, "Problem": "Penis coming out", "ProblemStripped": "PenisComingOut"},{"ProblemId":22, "Problem": "Pregnancy problem", "ProblemStripped": "Pregnancyproblem"},{"ProblemId":23, "Problem": "Shifted puppies", "ProblemStripped": "Shiftedpuppies"},{"ProblemId":24, "Problem": "Recumbent", "ProblemStripped": "Recumbent"},{"ProblemId":25, "Problem": "Respiratory", "ProblemStripped": "Respiratory"},{"ProblemId":26, "Problem": "Rectal Prolapse", "ProblemStripped": "RectalProlapse"},{"ProblemId":27, "Problem": "Salivating/Foaming", "ProblemStripped": "SalivatingFoaming"},{"ProblemId":28, "Problem": "Seizure", "ProblemStripped": "Seizure"},{"ProblemId":29, "Problem": "Skin problem", "ProblemStripped": "Skinproblem"},{"ProblemId":30, "Problem": "Stomach problem/Collic", "ProblemStripped": "StomachproblemCollic"},{"ProblemId":31, "Problem": "Stuck/Trapped", "ProblemStripped": "StuckTrapped"},{"ProblemId":32, "Problem": "Swelling other than Leg/Abdominal Swelling", "ProblemStripped": "SwellingotherthanLegAbdominalSwelling"},{"ProblemId":33, "Problem": "Tick/Flea Infestation", "ProblemStripped": "TickFleaInfestation"},{"ProblemId":34, "Problem": "Tumor", "ProblemStripped": "Tumor"},{"ProblemId":35, "Problem": "Twitching", "ProblemStripped": "Twitching"},{"ProblemId":36, "Problem": "Very skinny", "ProblemStripped": "Veryskinny"},{"ProblemId":37, "Problem": "Vaginal/Penis Discharge/Bleeding", "ProblemStripped": "VaginalPenisDischargeBleeding"},{"ProblemId":38, "Problem": "Vomiting", "ProblemStripped": "Vomiting"},{"ProblemId":39, "Problem": "Vaginal Prolapse", "ProblemStripped": "VaginalProlapse"},{"ProblemId":40, "Problem": "Wound", "ProblemStripped": "Wound"},{"ProblemId":41, "Problem": "Shell Problem", "ProblemStripped": "ShellProblem"}];
+  // }
+
+  //   return this.problems$;
+  // }
+
+  getProblems(): Observable<Problem[]> {
+
     if (!this.problems$)
     {
-      this.problems$ =[{"ProblemId":1, "Problem": "Abnormal Behaviour","ProblemStripped": "AbnormalBehaviour"},{"ProblemId":2, "Problem": "Abnormal Walking", "ProblemStripped": "AbnormalWalking"},{"ProblemId":3, "Problem": "Abnormal Behaviour Biting", "ProblemStripped": "AbnormalBehaviourBiting"},{"ProblemId":4, "Problem": "Anorexia", "ProblemStripped": "Anorexia"},{"ProblemId":5, "Problem": "Blind", "ProblemStripped": "Blind"},{"ProblemId":6, "Problem": "Can't Fly", "ProblemStripped": "Cantfly"},{"ProblemId":7, "Problem": "Circling", "ProblemStripped": "Circling"},{"ProblemId":8, "Problem": "Cruelty", "ProblemStripped": "Cruelty"},{"ProblemId":9, "Problem": "Diarrhea", "ProblemStripped": "Diarrhea"},{"ProblemId":10, "Problem": "Dull/Weakness", "ProblemStripped": "DullWeakness"},{"ProblemId":11, "Problem": "Ear problem", "ProblemStripped": "Earproblem"},{"ProblemId":12, "Problem": "Eye problem", "ProblemStripped": "Eyeproblem"},{"ProblemId":13, "Problem": "For ABC", "ProblemStripped": "ForABC"},{"ProblemId":14, "Problem": "Horn/Hoof problem", "ProblemStripped": "HornHoofproblem"},{"ProblemId":15, "Problem": "Item Tied/Stuck on Body", "ProblemStripped": "ItemTiedStuckonBody"},{"ProblemId":16, "Problem": "Leg problem", "ProblemStripped": "Legproblem"},{"ProblemId":17, "Problem": "Mouth Open", "ProblemStripped": "MouthOpen"},{"ProblemId":18, "Problem": "Normal Behaviour - Biting", "ProblemStripped": "NormalBehaviour-Biting"},{"ProblemId":19, "Problem": "Nose Bleeding", "ProblemStripped": "NoseBleeding"},{"ProblemId":20, "Problem": "Orphan", "ProblemStripped": "Orphan"},{"ProblemId":21, "Problem": "Penis Coming Out", "ProblemStripped": "PenisComingOut"},{"ProblemId":22, "Problem": "Pregnancy problem", "ProblemStripped": "Pregnancyproblem"},{"ProblemId":23, "Problem": "Shifted puppies", "ProblemStripped": "Shiftedpuppies"},{"ProblemId":24, "Problem": "Recumbent", "ProblemStripped": "Recumbent"},{"ProblemId":25, "Problem": "Respiratory", "ProblemStripped": "Respiratory"},{"ProblemId":26, "Problem": "Rectal Prolapse", "ProblemStripped": "RectalProlapse"},{"ProblemId":27, "Problem": "Salivating/Foaming", "ProblemStripped": "SalivatingFoaming"},{"ProblemId":28, "Problem": "Seizure", "ProblemStripped": "Seizure"},{"ProblemId":29, "Problem": "Skin problem", "ProblemStripped": "Skinproblem"},{"ProblemId":30, "Problem": "Stomach problem/Collic", "ProblemStripped": "StomachproblemCollic"},{"ProblemId":31, "Problem": "Stuck/Trapped", "ProblemStripped": "StuckTrapped"},{"ProblemId":32, "Problem": "Swelling other than Leg/Abdominal Swelling", "ProblemStripped": "SwellingotherthanLegAbdominalSwelling"},{"ProblemId":33, "Problem": "Tick/Flea Infestation", "ProblemStripped": "TickFleaInfestation"},{"ProblemId":34, "Problem": "Tumor", "ProblemStripped": "Tumor"},{"ProblemId":35, "Problem": "Twitching", "ProblemStripped": "Twitching"},{"ProblemId":36, "Problem": "Very skinny", "ProblemStripped": "Veryskinny"},{"ProblemId":37, "Problem": "Vaginal/Penis Discharge/Bleeding", "ProblemStripped": "VaginalPenisDischargeBleeding"},{"ProblemId":38, "Problem": "Vomiting", "ProblemStripped": "Vomiting"},{"ProblemId":39, "Problem": "Vaginal Prolapse", "ProblemStripped": "VaginalProlapse"},{"ProblemId":40, "Problem": "Wound", "ProblemStripped": "Wound"}];
-  }
+      this.problems$ = this.http
+      .get<Problem[]>("/Dropdown/Problems").pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
+    }
 
     return this.problems$;
-  }
 
+  }
 
   getIsoReasons() {
     if (!this.isoReasons$)
@@ -122,36 +168,95 @@ export class DropdownService {
     return this.crueltyIspectors$;
   }
 
-  getDispatchers() {
+  // getDispatchers() {
+  //   if (!this.dispatchers$)
+  //   {
+  //     this.dispatchers$ = [{"id": 1,"name":"Heera Lal"},{"id": 2,"name":"Kalpit"},{"id": 3,"name":"Kalu Singh"},{"id": 4,"name":"Manoj"},{"id": 5,"name":"Prakash"},]
+  //   }
+
+  //   return this.dispatchers$;
+  // }
+
+  getDispatchers(): Observable<Dispatcher[]> {
+
     if (!this.dispatchers$)
     {
-      this.dispatchers$ = [{"id": 1,"name":"Heera Lal"},{"id": 2,"name":"Kalpit"},{"id": 3,"name":"Kalu Singh"},{"id": 4,"name":"Manoj"},{"id": 5,"name":"Prakash"},]
+      this.dispatchers$ = this.http
+      .get<Dispatcher[]>("/Dropdown/Dispatchers").pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
     }
 
     return this.dispatchers$;
+
   }
 
-  getOutcomes() {
-    if (!this.outcomes$)
+  // getOutcomes() {
+  //   if (!this.outcomes$)
+  //   {
+  //     this.outcomes$ = [{"id": 1,"outcome": "Admission"},{"id": 2,"outcome": "Animal died (Caller informed)"},{"id": 3,"outcome": "Animal good (rescue not needed)"},{"id": 4,"outcome": "Animal gone (Caller informed)"},{"id": 5,"outcome": "Animal taken to polyclinic or zoo"},{"id": 6,"outcome": "Animal treated on site"},{"id": 7,"outcome": "Caller called back (rescue no longer required)"},{"id": 8,"outcome": "Caller not reachable"},{"id": 9,"outcome": "Cruelty staff informed - Animal not rescued"},{"id": 10,"outcome": "Died in ambulance"},{"id": 11,"outcome": "Found dead"},{"id": 12,"outcome": "Failure to catch"},{"id": 13,"outcome": "Medicine given to Caller"},{"id": 14,"outcome": "Owner found (rescue no longer required)"},{"id": 15,"outcome": "Rescued/resolved"},{"id": 16,"outcome": "Same As"},{"id": 17,"outcome": "Staff can't find animal"},{"id": 18,"outcome": "Street treatment approved by ST manager"},{"id": 19,"outcome": "Third party rescued,"}];
+  //   }
+
+  //   return this.outcomes$;
+  // }
+
+  getCallOutcomes(): Observable<CallOutcome[]> {
+
+    if (!this.callOutcomes$)
     {
-      this.outcomes$ = [{"id": 1,"outcome": "Admission"},{"id": 2,"outcome": "Animal died (Caller informed)"},{"id": 3,"outcome": "Animal good (rescue not needed)"},{"id": 4,"outcome": "Animal gone (Caller informed)"},{"id": 5,"outcome": "Animal taken to polyclinic or zoo"},{"id": 6,"outcome": "Animal treated on site"},{"id": 7,"outcome": "Caller called back (rescue no longer required)"},{"id": 8,"outcome": "Caller not reachable"},{"id": 9,"outcome": "Cruelty staff informed - Animal not rescued"},{"id": 10,"outcome": "Died in ambulance"},{"id": 11,"outcome": "Found dead"},{"id": 12,"outcome": "Failure to catch"},{"id": 13,"outcome": "Medicine given to Caller"},{"id": 14,"outcome": "Owner found (rescue no longer required)"},{"id": 15,"outcome": "Rescued/resolved"},{"id": 16,"outcome": "Same As"},{"id": 17,"outcome": "Staff can't find animal"},{"id": 18,"outcome": "Street treatment approved by ST manager"},{"id": 19,"outcome": "Third party rescued,"}];
+      this.callOutcomes$ = this.http
+      .get<CallOutcome[]>("/Dropdown/CallOutcomes").pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
     }
 
-    return this.outcomes$;
+    return this.callOutcomes$;
+
   }
 
-  getRescuerList() {
-    if (!this.rescuer$)
+  // getRescuerList() {
+  //   if (!this.rescuer$)
+  //   {
+  //     this.rescuer$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},
+  //     {"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},
+  //     {"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"},{"id": 8, "name": "Nandu"},{"id": 9, "name": "Ganpat"},
+  //     {"id": 10, "name": "Sanjay"},{"id": 11, "name": "Mahender"},{"id": 12, "name": "Pushkar"},
+  //     {"id": 13, "name": "Vinod"},{"id": 14, "name": "Deendeyal"},{"id": 15, "name": "Heera"},
+  //     {"id": 16, "name": "Dharmendra"},{"id": 17, "name": "Kamlesh"},{"id": 18, "name": "Self"}]
+  //   }
+
+  //   return this.rescuer$;
+  // }
+
+  getRescuers(): Observable<Rescuer[]> {
+
+    if (!this.rescuers$)
     {
-      this.rescuer$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},
-      {"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},
-      {"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"},{"id": 8, "name": "Nandu"},{"id": 9, "name": "Ganpat"},
-      {"id": 10, "name": "Sanjay"},{"id": 11, "name": "Mahender"},{"id": 12, "name": "Pushkar"},
-      {"id": 13, "name": "Vinod"},{"id": 14, "name": "Deendeyal"},{"id": 15, "name": "Heera"},
-      {"id": 16, "name": "Dharmendra"},{"id": 17, "name": "Kamlesh"},{"id": 18, "name": "Self"}]
+      this.rescuers$ = this.http
+      .get<Rescuer[]>("/Dropdown/Rescuers").pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
     }
 
-    return this.rescuer$;
+    return this.rescuers$;
+
   }
 
+  getEmergencyCodes(): Observable<EmergencyCode[]> {
+
+    if (!this.emergencyCodes$)
+    {
+      this.emergencyCodes$ = this.http
+      .get<EmergencyCode[]>("/Dropdown/EmergencyCodes").pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
+    }
+
+    return this.emergencyCodes$;
+
+  }
 }

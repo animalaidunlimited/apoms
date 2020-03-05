@@ -2,7 +2,7 @@ const PROXY_CONFIG = [
     {
         context: [
             "/Auth",
-            "/Case",
+            "/Dropdown",
             "/EmergencyRegister",
             "/Health",
             "/Caller",

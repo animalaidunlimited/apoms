@@ -20,6 +20,9 @@ table {
 .deleted {
   background-color: gray;
 }
+.duplicate {
+  color: red;
+}
 .mat-chip {
   font-weight: unset !important;
 }

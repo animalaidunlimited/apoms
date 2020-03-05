@@ -13,7 +13,6 @@ export class UniqueEmergencyNumberValidator {
       return this.caseService.checkEmergencyNumberExists(control.value)
         .pipe(
           map(res => {
-            //console.log(res.l)
             // if username is already taken
             if (res[0]["@success"] == "1") {
               // return error

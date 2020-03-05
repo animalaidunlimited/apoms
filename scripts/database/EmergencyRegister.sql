@@ -51,6 +51,8 @@ INSERT INTO AAU.Dispatcher (OrganisationId, Dispatcher) VALUES (1,"Manoj");
 INSERT INTO AAU.Dispatcher (OrganisationId, Dispatcher) VALUES (1,"Prakash");
 
 
+
+
 -- -----------------------------------------------------
 -- Table `AAU`.`EmergencyCode`
 -- -----------------------------------------------------
@@ -84,6 +86,8 @@ CREATE TABLE IF NOT EXISTS `AAU`.`CallOutcome` (
   `CallOutcomeId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `CallOutcome` VARCHAR(128) NOT NULL,
+  `IsDeleted` BOOLEAN NOT NULL,
+  `DeletedDate` DATE NULL,
   PRIMARY KEY (`CallOutcomeId`),
   INDEX `FK_CallOutcomeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
   CONSTRAINT `FK_CallOutcomeOrganisationId_OrganisationOrganisationId`
@@ -91,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `AAU`.`CallOutcome` (
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `CallOutcome_UNIQUE` (`CallOutcome` ASC) VISIBLE)
+  UNIQUE INDEX `CallOutcome_UNIQUE` (`CallOutcome` ASC, `OrganisationId` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 INSERT INTO AAU.CallOutcome (OrganisationId, CallOutcome) VALUE (1, "Admission");
