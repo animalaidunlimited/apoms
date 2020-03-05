@@ -3,7 +3,6 @@ import { CrudService } from '../core/services/http/crud.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
-import { OnlineStatusService } from '../core/services/online-status.service';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response{
@@ -31,7 +30,6 @@ export class AuthService extends CrudService {
 
     public async login(username: string, password: string) {
         try {
-            console.log("I'm trying to log in!!");
             this.response = await this.post({ username, password }) as Response;
             this.token = this.response.token || "";
             if(!this.response.success){

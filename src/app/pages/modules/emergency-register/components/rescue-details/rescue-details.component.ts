@@ -34,13 +34,11 @@ export class RescueDetailsComponent implements OnInit {
   // constructor(private errorMatcher: CrossFieldErrorMatcher) {}
 
 
-  rescuer1List;
-  rescuer2List;
+  rescuers$;
 
   ngOnInit() {
 
-    this.rescuer1List = this.dropdowns.getRescuerList();
-    this.rescuer2List = this.dropdowns.getRescuerList();
+    this.rescuers$ = this.dropdowns.getRescuers();
 
     this.recordForm.addControl(
 

@@ -25,20 +25,19 @@
                                 <mat-form-field>
                                         <mat-label>Dispatcher</mat-label>
                                         <mat-select formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-                                            <mat-option *ngFor="let dispatcher of dispatchers" [value]="dispatcher.id">
-                                                {{dispatcher.name}}
+                                            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.DispatcherId">
+                                                {{dispatcher.Dispatcher}}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
 
                                     <mat-form-field>
-                                            <mat-label>Code</mat-label>
-                                            <mat-select formControlName="code" [errorStateMatcher]="errorMatcher">
-                                                <mat-option [value]=""></mat-option>
-                                                <mat-option [value]="1">Red</mat-option>
-                                                <mat-option [value]="2">Yellow</mat-option>
-                                                <mat-option [value]="3">Green</mat-option>
-                                            </mat-select>
+                                        <mat-label>Code</mat-label>
+                                        <mat-select formControlName="code" [errorStateMatcher]="errorMatcher">
+                                            <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code.EmergencyCodeId">
+                                                {{code.EmergencyCode}}
+                                            </mat-option>
+                                        </mat-select>
                                         </mat-form-field>
 
                                 </div>
@@ -64,8 +63,8 @@
                     <mat-form-field class="extra-wide">
                             <mat-label>Call Outcome</mat-label>
                             <mat-select formControlName="callOutcome">
-                                <mat-option *ngFor="let outcome of outcomes" [value]="outcome.id">
-                                    {{outcome.outcome}}
+                                <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.CallOutcomeId">
+                                    {{outcome.CallOutcome}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -73,8 +72,9 @@
               </fieldset>
 
               <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
-                <button mat-raised-button color="primary" type="submit">Save</button>
-                <button mat-raised-button color="primary">Reset</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid">Save</button>
+                <button mat-raised-button color="primary" type="reset">Reset</button>
+                <button mat-raised-button color="primary" (click)="showForm()" >test</button>
               </div>
 
             </div>

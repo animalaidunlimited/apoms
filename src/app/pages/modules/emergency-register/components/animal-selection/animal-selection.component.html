@@ -1,6 +1,6 @@
 <fieldset fxFlex class="form-sub-group">
 
-        <legend class="legend">Animal Details</legend>
+        <legend class="legend">Patient Details</legend>
 
         <table mat-table #patientTable [dataSource]="patientDataSource" class="mat-elevation-z8">
 
@@ -18,7 +18,7 @@
         </ng-container>
 
             <ng-container matColumnDef="animalType">
-                <th mat-header-cell *matHeaderCellDef> animalType\Type </th>
+                <th mat-header-cell *matHeaderCellDef> Species </th>
                 <td mat-cell *matCellDef="let element" (click)="toggleRow(element)"> {{element.get("animalType").value}} </td>
             </ng-container>
 
@@ -29,7 +29,10 @@
 
             <ng-container matColumnDef="tagNo">
                     <th mat-header-cell *matHeaderCellDef> Tag Number </th>
-                    <td mat-cell *matCellDef="let element" (click)="updateTag(element)" style="cursor:pointer"> {{element.get("tagNumber").value}} </td>
+                    <td mat-cell *matCellDef="let element"
+                    (click)="updateTag(element)"
+                    [class.duplicate]="!element.get('duplicateTag').value"
+                    style="cursor:pointer"> {{element.get("tagNumber").value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="delete">
@@ -51,7 +54,7 @@
 
 
 
-            <label class="label">Patient animalType\type</label>
+            <label class="label">Species</label>
 
             <!-- <mat-chip-list #animalTypeChips fxFlex aria-label="Animal animalType\type" selectable>
                     <mat-chip
@@ -83,7 +86,7 @@
                     <mat-chip
                     (click)="problemChip.toggleSelected(); problemChipSelected(problemChip)"
                     #problemChip="matChip"
-                    *ngFor="let problem of problems">{{problem.Problem}}</mat-chip>
+                    *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>
             </mat-chip-list>
 
             <!-- (selectionChange)="problemChipSelected(problemChip)" -->

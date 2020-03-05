@@ -9,7 +9,6 @@
     export interface Problem {
         id: number;
         problem: string;
-        problemStripped: string;
         }
 
     export interface Patient {
