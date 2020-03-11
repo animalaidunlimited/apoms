@@ -3,8 +3,8 @@ $standard-height: 48px;
 
 .er-case-search-box
 {
-    cursor: pointer;
-    width: $standard-width * 3;
+    width: $standard-width * 3 !important;
+    min-width: $standard-width;
     padding-bottom: 1px;
 }
 
@@ -44,3 +44,22 @@ $standard-height: 48px;
 {
     font-family: arial !important;
 }
+
+.emergency-card {
+    max-width: 200px;
+    margin-bottom: 20px;
+  }
+
+  .mat-card-header{
+      background-color: rgb(190, 204, 211);
+      text-align: center;
+  }
+
+  .emergency-card-footer{
+    background-color: rgb(190, 204, 211);
+    text-align: center;
+}
+
+// .mat-card{
+//     padding: 0px 16px 0px 0px;
+// }

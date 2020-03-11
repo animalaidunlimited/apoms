@@ -188,6 +188,16 @@ export class CaseService extends CrudService {
     );
   }
 
+  public searchCases(searchString: string):Observable<any>{
+
+    return this.http
+      .get<any[]>(`/EmergencyRegister/?${searchString}`).pipe(
+        map( (res) => {return res})//,
+        //shareReplay(1,10000)
+      )
+
+  }
+
   private async saveToLocalDatabase(key, body)
   {
     //Make a unique identified so we don't overwrite anything in local storage.
