@@ -1,9 +1,9 @@
 <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'">
     <span matPrefix (click)="executeSearch()">
-        <mat-icon matSuffix>search</mat-icon>
+        <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
     </span>
-    <input [(ngModel)]="search.searchString" type="text" (keyup.enter)="executeSearch()" matInput>
-    <mat-icon matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
+    <input class="er-case-search-box" autocomplete="off" [(ngModel)]="search.searchString" type="text" (keyup.enter)="executeSearch()" matInput>
+    <mat-icon style="cursor: pointer;" matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
 </mat-form-field>
 
 
@@ -24,7 +24,7 @@
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField">
-                                <mat-option *ngFor="let option of options" [value]="option.searchValue">
+                                <mat-option *ngFor="let option of options" [value]="option">
                                     {{option.name}}
                                 </mat-option>
                             </mat-select>
@@ -49,3 +49,32 @@
         </button>
     </div>
 
+<div>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+
+    <mat-card *ngFor="let result of searchResults$ | async" class="emergency-card">
+        <mat-card-header class="emergency-card-header">
+          <!-- <div mat-card-avatar class="example-header-image"></div> -->
+          <mat-card-title>{{result.EmergencyNumber}} - {{result.TagNumber}}</mat-card-title>
+          <mat-card-subtitle>{{result.CallDateTime | date}}</mat-card-subtitle>
+        </mat-card-header>
+        <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+        <mat-card-content>
+          {{result.Name}} - {{result.Number}}
+
+          {{result.AnimalType}}
+
+          {{result.Location}}
+        </mat-card-content>
+        <mat-card-actions style="text-align: center;">
+          <button mat-button>Open</button>
+        </mat-card-actions>
+        <mat-card-footer class="emergency-card-footer">
+            A Kennel
+        </mat-card-footer>
+      </mat-card>
+
+    </div>
+
+</div>

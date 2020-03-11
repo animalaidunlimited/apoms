@@ -11,10 +11,6 @@ import { Problem } from 'src/app/core/models/problem';
 import { Patient } from 'src/app/core/models/patients';
 
 
-
-
-
-
 @Component({
   selector: 'animal-selection',
   templateUrl: './animal-selection.component.html',

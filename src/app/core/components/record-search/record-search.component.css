@@ -1,6 +1,6 @@
 .er-case-search-box {
-  cursor: pointer;
-  width: 525px;
+  width: 525px !important;
+  min-width: 175px;
   padding-bottom: 1px;
 }
 .search-form {
@@ -30,4 +30,16 @@
 }
 .ngx-flexible-select-option {
   font-family: arial !important;
+}
+.emergency-card {
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+.mat-card-header {
+  background-color: #beccd3;
+  text-align: center;
+}
+.emergency-card-footer {
+  background-color: #beccd3;
+  text-align: center;
 }
