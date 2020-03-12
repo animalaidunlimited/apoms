@@ -24,7 +24,7 @@
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField">
-                                <mat-option *ngFor="let option of options" [value]="option">
+                                <mat-option *ngFor="let option of options" #id{{i}} [value]="option.id">
                                     {{option.name}}
                                 </mat-option>
                             </mat-select>
@@ -33,7 +33,7 @@
                     </div>
                     <div fxFlex>
                         <mat-form-field>
-                            <input type="text" formControlName="searchTerm" matInput placeholder="Search Value">
+                            <input formControlName="searchTerm" matInput>
                         </mat-form-field>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
           {{result.Location}}
         </mat-card-content>
         <mat-card-actions style="text-align: center;">
-          <button mat-button>Open</button>
+          <button mat-button (click)="openCase(result.EmergencyCaseId)">Open</button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
             A Kennel
