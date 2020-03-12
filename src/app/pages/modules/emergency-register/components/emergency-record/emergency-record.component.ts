@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-field-error-matcher';
 
@@ -22,6 +22,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 
 export class EmergencyRecordComponent implements OnInit{
 
+  @Input() emergencyCaseId;
 
   recordForm;
 
@@ -53,6 +54,7 @@ export class EmergencyRecordComponent implements OnInit{
 ngOnInit()
 {
 
+
   this.areas = this.dropdowns.getAreas();
   this.dispatchers$ = this.dropdowns.getDispatchers();
   this.callOutcomes$ = this.dropdowns.getCallOutcomes();
@@ -63,8 +65,8 @@ ngOnInit()
   this.recordForm = this.fb.group({
 
     emergencyDetails: this.fb.group({
-      emergencyCaseId: [''],
-      emergencyNumber: ['', Validators.required,
+      emergencyCaseId: [this.emergencyCaseId],
+      emergencyNumber: [, Validators.required,
       this.emergencyNumberValidator.validate()],
       callDateTime: [getCurrentTimeString(), Validators.required],
       dispatcher: ['', Validators.required],

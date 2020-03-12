@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormArray} from '@angular/forms';
+import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import { trigger, state, style, animate, transition} from '@angular/animations';
 import { CaseService } from 'src/app/pages/modules/emergency-register/services/case.service';
 
 export interface SearchValue {
   id: number;
+  inputType: string;
   searchValue: string;
   databaseField: string;
   name: string;
@@ -58,6 +59,9 @@ export class Search {
 })
 export class RecordSearchComponent implements OnInit{
 
+  @Output()
+  public onOpenEmergencyCase = new EventEmitter<string>();
+
   searchFieldForm = new FormControl();
 
   searchForm:FormGroup;
@@ -68,22 +72,20 @@ export class RecordSearchComponent implements OnInit{
   search = new Search();
 
   options: SearchValue[] = [
-      {"id":0, "searchValue": null, "databaseField":null, "name":null},
-      {"id":1, "searchValue": "EmNo", "databaseField":"ec.EmergencyNumber", "name":"Em. No."},
-      {"id":2, "searchValue": "Date", "databaseField":"ec.CallDateTime", "name":"Date"},
-      {"id":3, "searchValue": "TagNo", "databaseField":"p.TagNumber", "name":"Tag No."},
-      {"id":4, "searchValue": "CName", "databaseField":"c.Name", "name":"Caller Name"},
-      {"id":5, "searchValue": "CNo", "databaseField":"c.Number", "name":"Caller No."},
-      {"id":6, "searchValue": "Loc", "databaseField":"ec.Location", "name":"Location"},
-      {"id":7, "searchValue": "Area", "databaseField":"", "name":"Area"},
-      {"id":8, "searchValue": "AType", "databaseField":"at.AnimalType", "name":"Animal Type"},
-      {"id":9, "searchValue": "Prob", "databaseField":"pp.Problem", "name":"Problem"},
-      {"id":10, "searchValue": "Result", "databaseField":"o.Outcome", "name":"Result"},
-      {"id":11, "searchValue": "CLoc", "databaseField":"", "name":"Current Location"},
-      {"id":12, "searchValue": "RD", "databaseField":"p.ReleaseDate", "name":"Release Date"},
-      {"id":13, "searchValue": "DD", "databaseField":"p.DiedDate", "name":"Died Date"}
-  ];
-
+    {"id":0, "inputType":"text", "searchValue": null, "databaseField":null, "name":null},
+    {"id":1, "inputType":"text", "searchValue": "emno", "databaseField":"ec.EmergencyNumber", "name":"Em. No."},
+    {"id":2, "inputType":"date", "searchValue": "date", "databaseField":"CAST(ec.CallDateTime AS DATE)", "name":"Date"},
+    {"id":3, "inputType":"text", "searchValue": "tagno", "databaseField":"p.TagNumber", "name":"Tag No."},
+    {"id":4, "inputType":"text", "searchValue": "cname", "databaseField":"c.Name", "name":"Caller Name"},
+    {"id":5, "inputType":"text", "searchValue": "cnumber", "databaseField":"c.Number", "name":"Caller No."},
+    {"id":6, "inputType":"text", "searchValue": "location", "databaseField":"ec.Location", "name":"Location"},
+    {"id":7, "inputType":"text", "searchValue": "area", "databaseField":"", "name":"Area"},
+    {"id":8, "inputType":"text", "searchValue": "species", "databaseField":"at.AnimalType", "name":"Animal Type"},
+    {"id":9, "inputType":"text", "searchValue": "problem", "databaseField":"pp.Problem", "name":"Problem"},
+    {"id":10, "inputType":"text", "searchValue": "outcome", "databaseField":"o.Outcome", "name":"Result"},
+    {"id":11, "inputType":"text", "searchValue": "cloc", "databaseField":"", "name":"Current Location"},
+    {"id":12, "inputType":"date", "searchValue": "releasedate", "databaseField":"CAST(p.ReleaseDate AS DATE)", "name":"Release Date"},
+    {"id":13, "inputType":"date", "searchValue": "dieddate", "databaseField":"CAST(p.DiedDate AS DATE)", "name":"Died Date"}];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -94,14 +96,15 @@ export class RecordSearchComponent implements OnInit{
   ngOnInit() {
 
         this.searchForm = this.formBuilder.group({
-        searchRows: this.formBuilder.array([ this.createItem() ])
+        searchRows: this.formBuilder.array([])
+
       });
   }
 
-  createItem(): FormGroup {
+  createItem(field:any, term:any): FormGroup {
     return this.formBuilder.group({
-      searchField: '',
-      searchTerm: ''
+      searchField: [field, Validators.required],
+      searchTerm: [term, Validators.required]
     });
   }
 
@@ -114,47 +117,27 @@ export class RecordSearchComponent implements OnInit{
 executeSearch()
 {
 
-  this.searchRows = this.searchForm.get('searchRows') as FormArray;
-  var searchFieldArray = this.searchRows.value;
+  if(this.searchShowing){
+    this.searchShowing = !this.searchShowing;
+    this.search.searchString = this.getSearchString();
+  }
+  else {
+    this.updateSearchArray();
+  }
 
-  let ampersandRequired = searchFieldArray.filter(item => item.searchTerm != "").length > 0 ? "&" : "";
+  let searchArray = this.getSearchArray();
 
-  let searchArrayString = ampersandRequired + searchFieldArray.map(item => {
+  let searchQuery = searchArray.map(item => {
 
-    return item.searchTerm ? item.searchField.databaseField + "=" + encodeURIComponent(item.searchTerm) : "";
+    let splitItem = item.split(":");
 
-  }).join("&").replace(" ", "+");
+    let option = this.options.find(option => option.searchValue == splitItem[0].toLowerCase());
 
-  let tagStart = this.search.searchString.indexOf("&") == -1 ? this.search.searchString.length : this.search.searchString.indexOf("&");
+    return option.databaseField + "=" + encodeURIComponent(splitItem[1].trim());
 
-  let searchQuery = "p.TagNumber=" + this.search.searchString.substr(0,tagStart).replace("TagNo=","") + searchArrayString;
+  }).join("&");
 
-
-  let firstItem = this.search.searchString.indexOf(searchFieldArray[0].searchField.searchValue) == -1
-  ? this.search.searchString.length
-  : this.search.searchString.indexOf(searchFieldArray[0].searchField.searchValue);
-
-console.log("searchFieldArray.length: " + JSON.stringify(searchFieldArray))
-
-let spaceRequired = searchFieldArray.filter(item => item.searchTerm != "").length > 0 ? " " : "";
-
-  let userSearchString = this.search.searchString.substr(0,firstItem).trim() + spaceRequired + searchFieldArray.map(item => {
-
-    return item.searchTerm ? item.searchField.searchValue + ":" + item.searchTerm : "";
-
-  }).join(" ");
-
-  this.search.searchString = userSearchString;
-
-if(this.searchShowing){
-  this.toggleSearchBox();
-}
-
-
-//TODO Implement search
-alert("Performing Search: " + searchQuery);
-
-
+//alert(searchQuery);
 
 this.searchResults$ = this.caseService.searchCases(searchQuery);
 
@@ -162,13 +145,83 @@ this.searchResults$ = this.caseService.searchCases(searchQuery);
 
 toggleSearchBox()
 {
+  if(this.searchShowing)
+  {
+    this.search.searchString = this.getSearchString();
+  }
+  else {
+    this.updateSearchArray();
+  }
+
   this.searchShowing = !this.searchShowing;
 }
+
+updateSearchArray(){
+
+  //If the field is empty we don't need to do anything.
+  if(!this.search.searchString){
+    return;
+  }
+
+
+  let searchArray = this.getSearchArray();
+
+  //Get the array of form elements and clear it out. We'll rebuild it from the
+  //search text box
+  this.searchRows = this.searchForm.get('searchRows') as FormArray;
+  this.searchRows.clear();
+
+  //Rebuild the search array form the search field
+  searchArray.forEach(item => {
+
+    let splitItem = item.split(":");
+
+    let option = this.options.find(option => option.searchValue == splitItem[0].toLowerCase());
+
+    this.searchRows.push(this.createItem(option.id,splitItem[1].trim()));
+
+  });
+}
+
+getSearchArray(){
+    //Filter out any empty values and then create a regex string which uses
+  //the searchValue from the options array as a delimiter. This way we get a nice list
+  //of all the search fields
+  let regex = this.options.filter((option) => option.searchValue != null).map(item =>{
+    return "(?=" + item.searchValue + ")"
+  }).join("|");
+
+  let delimiter = new RegExp(regex);
+
+  let toSplit = (this.search.searchString.toLowerCase().search(delimiter) != 0 ? "tagno:" : "") + this.search.searchString;
+
+  return toSplit.split(delimiter);
+}
+
+getSearchString(){
+
+//Get the search array
+let searchArray = this.searchForm.get('searchRows') as FormArray;
+
+//Create a nice string of all of the values for the user to look at
+let searchText = searchArray.controls.map(item => {
+
+  let option = this.options.find(option => option.id == item.value.searchField)
+
+  return option.searchValue + ":" + item.value.searchTerm;
+
+}).join(' ');
+
+//Put the formatted string back into the text box.
+return searchText;
+
+}
+
 
 addRow() {
 
   this.searchRows = this.searchForm.get('searchRows') as FormArray;
-  this.searchRows.push(this.createItem());
+  this.searchRows.push(this.createItem('',''));
 
 }
 
@@ -176,4 +229,12 @@ removeRow(i)
 {
   this.searchRows.removeAt(i)
 }
+
+
+openCase(caseId)
+{
+  this.onOpenEmergencyCase.emit(caseId);
+  alert(caseId);
+}
+
 }
