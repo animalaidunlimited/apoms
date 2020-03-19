@@ -20,6 +20,7 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
+                                    IN prm_UpdateTime DATETIME,
 									OUT prm_EmergencyCaseId INT,
 									OUT prm_Success INT)
 BEGIN
@@ -30,20 +31,19 @@ Created On: 22/02/2020
 Purpose: Used to insert a new emergency case.
 */
 DECLARE vOrganisationId INT;
-
+DECLARE vUpdateTime DATETIME;
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
 SET vOrganisationId = 0;
 
-SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-
 START TRANSACTION;
 
-IF vEmNoExists = 0 THEN
+IF vEmNoExists = 0 AND prm_UpdateTime > vUpdateTime THEN
 
 INSERT INTO AAU.EmergencyCase
 (
@@ -61,7 +61,8 @@ INSERT INTO AAU.EmergencyCase
 	Rescuer2Id,
 	AmbulanceArrivalTime,
 	RescueTime,
-	AdmissionTime
+	AdmissionTime,
+    UpdateTime
 )
 VALUES
 (
@@ -79,7 +80,8 @@ VALUES
 	prm_Rescuer2Id,
 	prm_AmbulanceArrivalTime,
 	prm_RescueTime,
-	prm_AdmissionTime
+	prm_AdmissionTime,
+    prm_UpdateTime
 );
 
 COMMIT;
@@ -93,10 +95,13 @@ COMMIT;
 ELSEIF vEmNoExists >= 1 THEN
 
 	SELECT 2 INTO prm_Success; -- Duplicate
+    
+ELSEIF prm_UpdateTime < vUpdateTime THEN
 
-ELSE
+	SELECT 3 INTO prm_Success; -- Already updated
 
-	SELECT 3 INTO prm_Success; -- Other error
+ELSE 
+	SELECT 4 INTO prm_Success; -- Other error
 END IF;
 
 

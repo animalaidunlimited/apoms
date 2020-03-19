@@ -209,6 +209,7 @@ CREATE TABLE IF NOT EXISTS `AAU`.`EmergencyCase` (
   `RescueTime` DATETIME NULL,
   `AdmissionTime` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
+  `UpdateTime` DATETIME NOT NULL DEFAULT NOW(),
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`EmergencyCaseId`),

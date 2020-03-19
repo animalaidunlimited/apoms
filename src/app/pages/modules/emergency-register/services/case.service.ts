@@ -6,7 +6,7 @@ import { EmergencyResponse } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { v4 as uuid } from 'uuid';
-import { map, debounceTime, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -68,12 +68,16 @@ export class CaseService extends CrudService {
   private async postFromLocalStorage(postsToSync)
   {
     let promiseArray = postsToSync.map(async elem =>
-      await this.baseInsertCase(elem.value).then((result:EmergencyResponse) =>
+
+      // console.log(JSON.stringify(elem))
+
+      await this.baseInsertCase(JSON.parse(elem.value)).then((result:EmergencyResponse) =>
       {
         if(result.emergencyCaseSuccess == 1 || result.emergencyCaseSuccess == 3 || result.emergencyCaseSuccess == 2){
           this.storage.remove(elem.key);
         }
-      }));
+      })
+      );
 
     return await Promise.all(promiseArray).then((result) => {return result});
   }
@@ -96,6 +100,7 @@ export class CaseService extends CrudService {
 
   public async baseInsertCase(emergencyCase:EmergencyCase): Promise<any>
   {
+    console.log(JSON.stringify(emergencyCase));
     //Insert the new emergency record
     return await this.post(emergencyCase);
 
@@ -132,8 +137,11 @@ export class CaseService extends CrudService {
     )
     .catch(async (error) => {
 
+      console.log("An error occured - error: " + error.status);
+
       if(error.status == 504 || !this.online)
       {
+        console.log("Saving to local storage");
         //The server is offline, so let's save this to the database
         return await this.saveToLocalDatabase("POST", emergencyCase);
       }
@@ -191,7 +199,7 @@ export class CaseService extends CrudService {
   public searchCases(searchString: string):Observable<any>{
 
     return this.http
-      .get<any[]>(`/EmergencyRegister/?${searchString}`).pipe(
+      .get<any[]>(`/EmergencyRegister/SearchCases/?${searchString}`).pipe(
         map( (res) => {return res})//,
         //shareReplay(1,10000)
       )
@@ -205,11 +213,11 @@ export class CaseService extends CrudService {
 
     try {
       this.storage.save(key + guid, body);
-      return Promise.resolve("Record successfully saved to offline storage.");
+      return Promise.resolve({"status": "saved","message":"Record successfully saved to offline storage."});
     }
     catch(error)
     {
-      return Promise.reject("An error occured saving to offline storage: " + error);
+      return Promise.reject({"status": "error","message":"An error occured saving to offline storage: " + error});
     }
 
   }

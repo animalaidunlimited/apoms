@@ -73,7 +73,7 @@
             <mat-chip-list #animalTypeChips aria-label="Patient animalType\type" selectable>
                 <mat-chip
                 (click)="animalTypeChip.toggleSelected()"
-                (keydown)="cycleChips($event.key)"
+                (keydown)="cycleChips($event, 'animaltype', 'animalType')"
                 (selectionChange)="toggleAnimalChip(animalTypeChip)"
                 #animalTypeChip="matChip"
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
@@ -84,7 +84,9 @@
 
             <mat-chip-list #problemChips fxFlex multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
-                    (click)="problemChip.toggleSelected(); problemChipSelected(problemChip)"
+                    (click)="problemChip.toggleSelected();"
+                    (keydown)="focusProblemChip($event)"
+                    (selectionChange)="toggleProblemChip(problemChip)"
                     #problemChip="matChip"
                     *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>
             </mat-chip-list>

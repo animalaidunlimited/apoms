@@ -6,7 +6,8 @@ const PROXY_CONFIG = [
             "/EmergencyRegister",
             "/Health",
             "/Caller",
-            "/Patient"
+            "/Patient",
+            "/Login"
         ],
         target: "http://localhost:8080",
         changeOrigin: "true",
