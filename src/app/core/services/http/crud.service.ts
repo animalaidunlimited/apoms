@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { CallerNumberResponse } from '../../models/responses';
 
 
@@ -16,13 +16,13 @@ export abstract class CrudService<T = any> {
         let response = null;
         try {
             response = await this.http
-                // .get<G>(`${this.url}/${this.endpoint}/${request}`)
-                .get<G>(`${this.url}/${this.endpoint}`)
+                .get<G>(`${this.url}/${this.endpoint}` + request)
 
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('GET', error);
         }
+
         return response;
     }
 
@@ -51,7 +51,7 @@ export abstract class CrudService<T = any> {
     }
 
     public async getById(id: number | string): Promise<T | null> {
-        return this.get<T>('' + id);
+        return this.get<T>('/?id=' + id);
     }
 
     public async deleteById(id: number | string): Promise<any> {

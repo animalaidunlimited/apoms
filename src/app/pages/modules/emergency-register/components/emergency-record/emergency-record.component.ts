@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-field-error-matcher';
 
 import { getCurrentTimeString } from '../../../../../core/utils';
@@ -24,7 +24,7 @@ export class EmergencyRecordComponent implements OnInit{
 
   @Input() emergencyCaseId;
 
-  recordForm;
+  recordForm: FormGroup;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -70,7 +70,8 @@ ngOnInit()
       this.emergencyNumberValidator.validate()],
       callDateTime: [getCurrentTimeString(), Validators.required],
       dispatcher: ['', Validators.required],
-      code: ['', Validators.required]
+      code: ['', Validators.required],
+      updateTime: ['']
     }),
     patients: this.fb.array([]),
     callerDetails: this.fb.group({
@@ -84,6 +85,10 @@ ngOnInit()
     })
   }
   );
+
+  if(this.emergencyCaseId){
+    this.initialiseForm();
+  }
 
 
 
@@ -120,6 +125,22 @@ onChanges(): void {
       )
 
     });
+  }
+
+  async initialiseForm(){
+
+    let currentCase;
+
+    currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
+
+    //console.log(JSON.stringify(currentCase));
+
+    this.recordForm
+
+    this.recordForm.push(currentCase);
+
+
+
   }
 
   getCaseSaveMessage(resultBody:EmergencyResponse){
@@ -206,6 +227,10 @@ onChanges(): void {
   {
    if(this.recordForm.valid)
    {
+
+    this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
+
+
       let emergencyForm: EmergencyCase = Object.assign({}, {"emergencyForm" : this.recordForm.value});
 
 
@@ -214,17 +239,33 @@ onChanges(): void {
         await this.caseService.insertCase(emergencyForm)
         .then((data) => {
 
-          let resultBody = data as EmergencyResponse;
+          let messageResult = {
+            failure : 0
+          }
 
-          this.recordForm.get('emergencyDetails.emergencyCaseId').setValue(resultBody.emergencyCaseId);
-          this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
+          if(data.status == "saved"){
 
-          var messageResult = this.getCaseSaveMessage(resultBody);
+            messageResult.failure = 1;
+          }
+          else {
 
-          console.log(messageResult);
+            let resultBody = data as EmergencyResponse;
+
+            this.recordForm.get('emergencyDetails.emergencyCaseId').setValue(resultBody.emergencyCaseId);
+            this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
+
+            messageResult = this.getCaseSaveMessage(resultBody);
+
+          }
+
+
 
           if(messageResult.failure == 0){
-            this.openSnackBar("Case inserted successfully", "OK")
+            this.openSnackBar("Case inserted successfully", "OK");
+          }
+          else if (messageResult.failure == 1)
+          {
+            this.openSnackBar("Case saved offline", "OK");
           }
 
           })

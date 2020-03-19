@@ -9,7 +9,7 @@
         <mat-card-content>
             <form (keyup.enter)="login(username, password)">
                 <mat-form-field class="login-field">
-                    <input matInput placeholder="Username" name="username" [(ngModel)]="username" type="username" autocomplete="username username"/>
+                    <input matInput autocomplete="off" placeholder="Username" name="username" [(ngModel)]="username" type="username"/>
                 </mat-form-field>
                 <mat-form-field class="login-field">
                     <input matInput placeholder="Password" name="password" [(ngModel)]="password" type="password" autocomplete="current-password"/>

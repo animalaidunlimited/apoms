@@ -47,8 +47,6 @@ export class AnimalSelectionComponent implements OnInit{
   {
     this.initPatientArray();
 
-
-
     this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
     this.dropdown.getProblems().subscribe(problems => this.problems$ = problems);
@@ -62,10 +60,8 @@ export class AnimalSelectionComponent implements OnInit{
       if(items[0].patientId == null &&
         items[0].position == null
           ){
-            console.log("Here")
             this.initPatientArray();
             this.clearChips();
-
           }
     }
   });
@@ -101,6 +97,7 @@ export class AnimalSelectionComponent implements OnInit{
     this.patientDataSource = new MatTableDataSource(patients);
 
     this.selection = new SelectionModel<any>(false, [this.patientDataSource.data[0]]);
+    console.log(this.selection.selected);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -188,6 +185,11 @@ export class AnimalSelectionComponent implements OnInit{
     this.animalChipSelected(animalTypeChip);
   }
 
+  toggleProblemChip(problemChip)
+  {
+    this.problemChipSelected(problemChip);
+  }
+
   animalChipSelected(animalTypeChip)
   {
     this.currentPatientChip = "";
@@ -258,13 +260,47 @@ export class AnimalSelectionComponent implements OnInit{
 
   }
 
-  cycleChips(key)
-  {
-      if(key.match(/^[A-Za-z]+$/))
-      {
-        let currentPatient = this.getcurrentPatient().animalType || "";
+  focusProblemChip(event){
 
-        let chips = this.animalTypeChips.chips;
+    if(event.keyCode >= 65 && event.keyCode <= 90)
+    {
+      let chips = this.problemChips.chips;
+
+      // alert(event.key);
+
+      let foundChip = chips.filter(chips => {return chips.disabled == false}).find(chip => {
+        return chip.value.substr(0,1).toLowerCase() == event.key.toLowerCase()
+      });
+
+        if(foundChip){
+          foundChip.focus()
+        }
+
+    }
+
+
+
+
+  }
+
+
+
+  cycleChips(event, chipGroup:string, property:string)
+  {
+
+      if(event.keyCode >= 65 && event.keyCode <= 90)
+      {
+        let currentPatient = this.getcurrentPatient().get(property).value || "";
+
+        let chips;
+
+        if(chipGroup == "animaltype"){
+          chips = this.animalTypeChips.chips;
+        }
+        else if(chipGroup == "problem"){
+          chips = this.problemChips.chips;
+        }
+
 
         let lastInstance = "";
         let currentIndex;
@@ -272,6 +308,7 @@ export class AnimalSelectionComponent implements OnInit{
         //Get the last value of the current key (e.g. last animal beginning with p)
         //Also get the index of the current item
         chips.forEach((item, index) => {
+
           if(item.value.substr(0,1).toLowerCase() == currentPatient.substr(0,1).toLowerCase())
           {
             lastInstance =  item.value;
@@ -296,13 +333,61 @@ export class AnimalSelectionComponent implements OnInit{
 
         //Get the chip we need
         let currentKeyChip = currentArray.find(chip => {
-          return chip.value.substr(0,1).toLowerCase() == key.toLowerCase()
+          return chip.value.substr(0,1).toLowerCase() == event.key.toLowerCase()
         });
 
         currentKeyChip.selected = true;
       }
 
   }
+
+  // cycleChips(key)
+  // {
+
+  //     if(key.match(/^[A-Za-z]+$/))
+  //     {
+  //       let currentPatient = this.getcurrentPatient().get("animalType").value || "";
+
+  //       let chips = this.animalTypeChips.chips;
+
+  //       let lastInstance = "";
+  //       let currentIndex;
+
+  //       //Get the last value of the current key (e.g. last animal beginning with p)
+  //       //Also get the index of the current item
+  //       chips.forEach((item, index) => {
+
+  //         if(item.value.substr(0,1).toLowerCase() == currentPatient.substr(0,1).toLowerCase())
+  //         {
+  //           lastInstance =  item.value;
+  //         }
+
+  //         if(item.value == currentPatient)
+  //         {
+  //           currentIndex = index;
+  //         }
+
+  //       })
+
+  //       //Filter out any previous records so we can go directly to the next one in the list
+  //       let currentArray = chips.filter((chip, index) => {
+
+  //         return !(chip.value.substr(0,1).toLowerCase() == currentPatient.substr(0,1).toLowerCase()
+  //         && index <= currentIndex)
+  //         || currentPatient == ""
+  //         || lastInstance == currentPatient
+
+  //       })
+
+  //       //Get the chip we need
+  //       let currentKeyChip = currentArray.find(chip => {
+  //         return chip.value.substr(0,1).toLowerCase() == key.toLowerCase()
+  //       });
+
+  //       currentKeyChip.selected = true;
+  //     }
+
+  // }
 
   problemChipSelected(problemChip)
   {
@@ -366,6 +451,8 @@ export class AnimalSelectionComponent implements OnInit{
 
   getcurrentPatient()
   {
+    //TODO: Check how many times this is being called and make sure it's not being called
+    //excessively
     return this.selection.selected[0];
   }
 

@@ -217,7 +217,6 @@ return searchText;
 
 }
 
-
 addRow() {
 
   this.searchRows = this.searchForm.get('searchRows') as FormArray;
@@ -230,11 +229,9 @@ removeRow(i)
   this.searchRows.removeAt(i)
 }
 
-
 openCase(caseId)
 {
   this.onOpenEmergencyCase.emit(caseId);
-  alert(caseId);
 }
 
 }

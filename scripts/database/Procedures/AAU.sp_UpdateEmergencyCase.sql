@@ -20,6 +20,7 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
+                                    IN prm_UpdateTime DATETIME,
 									IN prm_IsDeleted BOOLEAN,
                                     IN prm_DeletedDate DATETIME,
 									IN prm_UserName VARCHAR(64),
@@ -34,6 +35,7 @@ Purpose: Used to update a case.
 */
 
 DECLARE vOrganisationId INT;
+DECLARE vUpdateTime DATETIME;
 
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
@@ -42,9 +44,11 @@ SELECT prm_EmergencyCaseId INTO prm_OutEmergencyCaseId;
 
 SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyCaseId <> prm_EmergencyCaseId AND EmergencyNumber = prm_EmergencyNumber;
 
+SELECT IFNULL(MAX(UpdateTime), '1901-01-01') INTO vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-IF vEmNoExists = 0 THEN
+IF vEmNoExists = 0 AND prm_UpdateTime > vUpdateTime THEN
 
 START TRANSACTION;
 
@@ -64,7 +68,8 @@ START TRANSACTION;
 						RescueTime             = prm_RescueTime,
 						AdmissionTime          = prm_AdmissionTime,
 						IsDeleted			   = prm_IsDeleted,
-                        DeletedDate			   = prm_DeletedDate
+                        DeletedDate			   = prm_DeletedDate,
+                        UpdateTime			   = prm_UpdateTime
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 COMMIT;
@@ -78,9 +83,12 @@ ELSEIF vEmNoExists >= 1 THEN
 
 	SELECT 2 INTO prm_Success;
 
-ELSE
+ELSEIF prm_UpdateTime < vUpdateTime THEN
 
-	SELECT 3 INTO prm_Success;
+	SELECT 3 INTO prm_Success; -- Already updated
+
+ELSE 
+	SELECT 4 INTO prm_Success; -- Other error
 END IF;
 
 END$$
