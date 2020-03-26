@@ -30,9 +30,9 @@ IF vPatientProblemCount = 0 THEN
 START TRANSACTION;
 
 INSERT INTO AAU.PatientProblem
-		(OrganisationId, PatientId, ProblemId)
+		(PatientId, OrganisationId, ProblemId)
 	VALUES
-		(vOrganisationId, prm_PatientId, prm_ProblemId);
+		(prm_PatientId, vOrganisationId, prm_ProblemId);
 		
 COMMIT;
         

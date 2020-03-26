@@ -81,7 +81,7 @@ ngOnInit()
   if(this.emergencyCaseId){
     this.initialiseForm();
   }
-  
+
   this.onChanges();
 }
 
@@ -291,10 +291,6 @@ onChanges(): void {
     this._snackBar.open(message, action, {
       duration: this.notificationDurationSeconds * 1000,
     });
-  }
-
-  showForm(){
-    console.log(this.recordForm);
   }
 
 }

@@ -87,8 +87,11 @@ ELSEIF prm_UpdateTime < vUpdateTime THEN
 
 	SELECT 3 INTO prm_Success; -- Already updated
 
-ELSE 
-	SELECT 4 INTO prm_Success; -- Other error
+ELSEIF prm_UpdateTime > vUpdateTime THEN
+	SELECT 4 INTO prm_Success; -- Emergency record already updated another time.
+    
+ELSE
+	SELECT 5 INTO prm_Success; -- Other error   
 END IF;
 
 END$$

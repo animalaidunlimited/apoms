@@ -19,15 +19,15 @@ export class TabBarComponent {
     this.tabs.splice(index, 1);
   }
 
-  addTab(caseId:number) {
-      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "value":`New Call*`, "emergencyCaseId":caseId});
+  addTab(caseId:number, emergencyNumber:string) {
+      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "value":emergencyNumber, "emergencyCaseId":caseId});
       this.selected.setValue(this.tabs.length - 1);
   }
 
-  public openCase(caseId: number) {
-
+  public openCase(object: any) {
+    
     //TODO check if the case already exists and go to the tab if it does.
     //Otherwise add a new tab
-    this.addTab(caseId);
+    this.addTab(object.caseId, object.emergencyNumber);
  }
 }
