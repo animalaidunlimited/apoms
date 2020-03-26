@@ -7,7 +7,7 @@
     }
 
     export interface Problem {
-        id: number;
+        problemId: number;
         problem: string;
         }
 
@@ -19,6 +19,9 @@
         problems: Problem[];
         problemsString: string;
         tagNumber: string;
+        duplicateTag: boolean;
+        updated: boolean;
+        deleted: boolean;
     }
 
     export interface CallerDetails {

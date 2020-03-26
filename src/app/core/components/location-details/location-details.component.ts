@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { map, startWith } from 'rxjs/operators';
+import { Location } from '../../models/responses';
 
 import { UserOptionsService } from '../../services/user-options.service';
 
-import {Location, Appearance} from '@angular-material-extensions/google-maps-autocomplete';
+import { LocationDetailsService } from './location-details.service';
 
 export interface marker {
 	latitude: number;
@@ -27,13 +26,16 @@ export class LocationDetailsComponent implements OnInit {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  constructor(private dropdowns: DropdownService,
+  constructor(
+    private locationService: LocationDetailsService,
     private fb: FormBuilder,
     private userOptions: UserOptionsService) { }
 
   zoom: number;
   latitude: AbstractControl;
   longitude: AbstractControl;
+
+  location$: Location;
 
   animalLocation;
 
@@ -46,15 +48,22 @@ export class LocationDetailsComponent implements OnInit {
 
     this.recordForm.addControl(
       "locationDetails", this.fb.group({
-        animalLocation: ['', Validators.required],
-        latitude: ['', Validators.required],
-        longitude: ['', Validators.required],
+        location: ["", Validators.required],
+        latitude: ["", Validators.required],
+        longitude: ["", Validators.required],
       })
     );
 
+    this.locationService.getLocationByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
+    .subscribe((location: Location) => {
+
+      this.recordForm.patchValue(location);
+
+    });
+
     this.latitude = this.recordForm.get("locationDetails.latitude");
     this.longitude = this.recordForm.get("locationDetails.longitude");
-    this.animalLocation = this.recordForm.get("locationDetails.animalLocation");
+    this.animalLocation = this.recordForm.get("locationDetails.location");
 
     let coordinates = this.userOptions.getCoordinates() as Location;
     this.latitude.setValue(coordinates.latitude);

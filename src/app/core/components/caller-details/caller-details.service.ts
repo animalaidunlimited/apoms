@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { CrudService } from 'src/app/core/services/http/crud.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CallerNumberResponse } from '../../../../core/models/responses';
 import { map } from 'rxjs/operators';
+import { CallerNumberResponse, Caller } from '../../models/responses';
+import { CrudService } from '../../services/http/crud.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CallerSearchService extends CrudService {
+export class CallerDetailsService extends CrudService {
 
   constructor(http: HttpClient) {
     super(http)
@@ -18,7 +18,7 @@ export class CallerSearchService extends CrudService {
 
    public getCallerByNumber(number: string):Observable<any>{
 
-     let request = "number=" + number;
+     let request = "?number=" + number;
 
     return this.getObservable(request)
     .pipe(
@@ -28,4 +28,17 @@ export class CallerSearchService extends CrudService {
     );
 
    }
+
+   public getCallerByEmergencyCaseId(number: string):Observable<any>{
+
+    let request = "?emergencyCaseId=" + number;
+
+   return this.getObservable(request)
+   .pipe(
+     map((response:Caller) => {
+       return response;
+     })
+   );
+
+  }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-field-error-matcher';
 
 import { getCurrentTimeString } from '../../../../../core/utils';
@@ -66,19 +66,11 @@ ngOnInit()
 
     emergencyDetails: this.fb.group({
       emergencyCaseId: [this.emergencyCaseId],
-      emergencyNumber: [, Validators.required,
-      this.emergencyNumberValidator.validate()],
+      emergencyNumber: [, Validators.required, this.emergencyNumberValidator.validate(this.emergencyCaseId)],
       callDateTime: [getCurrentTimeString(), Validators.required],
       dispatcher: ['', Validators.required],
       code: ['', Validators.required],
       updateTime: ['']
-    }),
-    patients: this.fb.array([]),
-    callerDetails: this.fb.group({
-      callerId: [''],
-      callerName: ['', Validators.required],
-      callerNumber: ['', Validators.required],
-      callerAlternativeNumber: ['']
     }),
     callOutcome: this.fb.group({
       callOutcome: ['']
@@ -89,10 +81,7 @@ ngOnInit()
   if(this.emergencyCaseId){
     this.initialiseForm();
   }
-
-
-
-
+  
   this.onChanges();
 }
 
@@ -133,11 +122,17 @@ onChanges(): void {
 
     currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
 
-    //console.log(JSON.stringify(currentCase));
+    let model = currentCase;
 
-    this.recordForm
+    //add in the patients and their problems
 
-    this.recordForm.push(currentCase);
+
+
+    this.recordForm.patchValue(model);
+
+    // this.recordForm.patchValue(JSON.parse(currentCase[0][0].Result));
+
+    // this.recordForm.push();
 
 
 
@@ -183,9 +178,9 @@ onChanges(): void {
        if(patient.success == 1){
         result.message += "";
 
-         let patientFormArray = this.recordForm.get("patients").controls;
+         let patientFormArray = this.recordForm.get("patients") as FormArray;
 
-         patientFormArray.forEach((currentPatient) => {
+         patientFormArray.controls.forEach((currentPatient) => {
 
            if(currentPatient.get("position").value == patient.position)
            {
@@ -230,9 +225,7 @@ onChanges(): void {
 
     this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
 
-
-      let emergencyForm: EmergencyCase = Object.assign({}, {"emergencyForm" : this.recordForm.value});
-
+      let emergencyForm =  {"emergencyForm" : this.recordForm.value} as EmergencyCase;
 
       if(!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId)
       {
@@ -255,10 +248,7 @@ onChanges(): void {
             this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
 
             messageResult = this.getCaseSaveMessage(resultBody);
-
           }
-
-
 
           if(messageResult.failure == 0){
             this.openSnackBar("Case inserted successfully", "OK");
@@ -294,11 +284,7 @@ onChanges(): void {
           });
 
       }
-
-
-
-   }
-
+    }
   }
 
   openSnackBar(message: string, action: string) {
@@ -310,6 +296,5 @@ onChanges(): void {
   showForm(){
     console.log(this.recordForm);
   }
-
 
 }

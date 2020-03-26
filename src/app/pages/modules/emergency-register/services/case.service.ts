@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CrudService } from 'src/app/core/services/http/crud.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { EmergencyResponse } from 'src/app/core/models/responses';
+import { EmergencyResponse, RescueDetails } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { v4 as uuid } from 'uuid';
@@ -100,7 +100,6 @@ export class CaseService extends CrudService {
 
   public async baseInsertCase(emergencyCase:EmergencyCase): Promise<any>
   {
-    console.log(JSON.stringify(emergencyCase));
     //Insert the new emergency record
     return await this.post(emergencyCase);
 
@@ -185,9 +184,10 @@ export class CaseService extends CrudService {
       }
   }
 
-  public checkEmergencyNumberExists(emergencyNumber:string):Observable<any>
+  public checkEmergencyNumberExists(emergencyNumber:number, emergencyCaseId:number):Observable<any>
   {
-    let emergencyNumberQuery = "EmergencyNumber=" + emergencyNumber;
+    let emergencyNumberQuery =  "EmergencyNumber=" + emergencyNumber +
+                                "&EmergencyCaseId=" + emergencyCaseId;
 
     return this.getByField("CheckEmergencyNumberExists", emergencyNumberQuery)
     .pipe(
@@ -198,12 +198,20 @@ export class CaseService extends CrudService {
 
   public searchCases(searchString: string):Observable<any>{
 
-    return this.http
-      .get<any[]>(`/EmergencyRegister/SearchCases/?${searchString}`).pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
-      )
+    // return this.http
+    //   .get<any[]>(`/EmergencyRegister/SearchCases/?${searchString}`).pipe(
+    //     map( (res) => {return res})//,
+    //     //shareReplay(1,10000)
+    //   )
 
+    let request = "/SearchCases/?" + searchString;
+
+    return this.getObservable(request)
+    .pipe(
+      map((response:RescueDetails) => {
+        return response;
+      })
+    );
   }
 
   private async saveToLocalDatabase(key, body)
@@ -221,6 +229,18 @@ export class CaseService extends CrudService {
     }
 
   }
-}
 
+  public getRescueDetailsByEmergencyCaseId(emergencyCaseId: number):Observable<any>{
+
+    let request = "/RescueDetails?emergencyCaseId=" + emergencyCaseId;
+
+    return this.getObservable(request)
+    .pipe(
+      map((response:RescueDetails) => {
+        return response;
+      })
+    );
+
+  }
+}
 

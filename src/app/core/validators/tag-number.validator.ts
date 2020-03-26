@@ -8,16 +8,19 @@ import { PatientService } from 'src/app/pages/modules/emergency-register/service
 export class UniqueTagNumberValidator {
   constructor(private patientService: PatientService) {}
 
-  validate(): AsyncValidatorFn {
+  validate(emergencyCaseId:number, patientId:number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
-      return this.patientService.checkTagNumberExists(control.value)
+
+      return this.patientService.checkTagNumberExists(control.value, emergencyCaseId, patientId)
         .pipe(
           map(res => {
+
             // if tag number is already taken
             if (res[0]["@success"] == "1") {
               // return error
               return { 'tagNumberTaken': true};
             }
+
           })
         );
     };

@@ -3,11 +3,11 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AnimalType } from '../../models/animal-type';
 import { map, shareReplay, catchError } from 'rxjs/operators';
-import { Problem } from '../../models/problem';
 import { Dispatcher } from '../../models/dispatcher';
 import { CallOutcome } from '../../models/call-outcome';
 import { Rescuer } from '../../models/rescuer';
 import { EmergencyCode } from '../../models/emergency-code';
+import { ProblemDropdownResponse } from '../../models/responses';
 
 
 export interface AnimalTypeResponse {
@@ -29,7 +29,7 @@ export class DropdownService {
   antibiotics$;
   isoReasons$;
   animalTypes$:Observable<AnimalType[]>;
-  problems$:Observable<Problem[]>;
+  problems$:Observable<ProblemDropdownResponse[]>;
   exclusions$;
   officeStaff$;
 
@@ -117,12 +117,12 @@ export class DropdownService {
   //   return this.problems$;
   // }
 
-  getProblems(): Observable<Problem[]> {
+  getProblems(): Observable<ProblemDropdownResponse[]> {
 
     if (!this.problems$)
     {
       this.problems$ = this.http
-      .get<Problem[]>("/Dropdown/Problems").pipe(
+      .get<ProblemDropdownResponse[]>("/Dropdown/Problems").pipe(
         map( (res) => {return res})//,
         //shareReplay(1,10000)
       )
