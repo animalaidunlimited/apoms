@@ -58,12 +58,15 @@
 
             <mat-chip-list #animalTypeChips aria-label="Patient animalType\type" selectable>
                 <mat-chip
-                (click)="animalTypeChip.toggleSelected()"
+                (click)="animalChipSelected(animalTypeChip)"
                 (keydown)="cycleChips($event, 'animaltype', 'animalType')"
-                (selectionChange)="animalChipSelected(animalTypeChip)"
+
                 #animalTypeChip="matChip"
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
         </mat-chip-list>
+
+        <!-- (click)="animalTypeChip.toggleSelected()" -->
+        <!-- (selectionChange)="animalChipSelected(animalTypeChip)" -->
 
 
             <label class="label">Main problem(s)</label>
