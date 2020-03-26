@@ -10,8 +10,6 @@ import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.val
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { Problem } from 'src/app/core/models/problem';
-import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -59,14 +57,9 @@ export class AnimalSelectionComponent implements OnInit{
 
     this.emergencyCaseId = this.recordForm.get("emergencyDetails.emergencyCaseId").value;
 
-    this.loadPatientArray(this.emergencyCaseId);
-
-
-    // this.initPatientArray();
-
     //if we have a case id we're doing a reload. Otherwise this is a new case.
-    // this.emergencyCaseId ?
-    //   this.loadPatientArray(this.emergencyCaseId):null;
+    this.emergencyCaseId ?
+      this.loadPatientArray(this.emergencyCaseId):this.initPatientArray();
 
     this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
@@ -86,7 +79,7 @@ export class AnimalSelectionComponent implements OnInit{
         if(items[0].patientId == null &&
           items[0].position == null
             ){
-              // this.initPatientArray();
+              this.initPatientArray();
               this.clearChips();
             }
       }
@@ -96,13 +89,6 @@ export class AnimalSelectionComponent implements OnInit{
   getEmptyPatient(){
 
     let problems = this.fb.array([])
-
-    let newProblem =  this.fb.group({
-      problemId: [],
-      problem: [""]
-    })
-
-    problems.push(newProblem);
 
     return this.getPatient(problems, 1, true, 0);
 
@@ -125,7 +111,7 @@ export class AnimalSelectionComponent implements OnInit{
 
     });
 
-return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
+  return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
   }
 
@@ -136,16 +122,13 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
       position: [position],
       animalTypeId: [''],
       animalType: [''],
-      problems: this.fb.array([]),
+      problems: problems,
       problemsString:['', Validators.required],
       tagNumber: ['', ,this.tagNumberValidator.validate(this.emergencyCaseId, patientId)],
       duplicateTag: [false, Validators.required],
       updated: [isUpdate, Validators.required],
       deleted: [false, Validators.required]
     });
-
-    //Unable to add these directly to the above for some reason!!
-    problems.controls.forEach(patient => {(newPatient.get("problems") as FormArray).push(patient)});
 
     return newPatient;
   }
@@ -155,13 +138,7 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
           this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
           .subscribe((patients: Patients) => {
 
-            // this.recordForm.addControl(
-            //   "patients", this.fb.array([])
-            // );
-
             let patientArray = this.recordForm.get("patients") as FormArray;
-
-            // this.patientArray.clear();
 
             patients.patients.forEach((patient) => {
 
@@ -176,11 +153,8 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
             this.recordForm.patchValue(patients);
 
-
           },
-          // The 2nd callback handles errors.
           (err) => console.error(err),
-          // The 3rd callback handles the "complete" event.
           () => this.resetTableDataSource()
 
           );
@@ -188,20 +162,23 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
   }
 
-  // initPatientArray()
-  // {
-  //   this.patientArray = this.recordForm.get('patients') as FormArray;
+  initPatientArray()
+  {
+    this.patientArray = this.recordForm.get('patients') as FormArray;
 
-  //   this.patientArray.clear();
+    this.patientArray.clear();
 
-  //   let patient = this.getEmptyPatient();
+    let patient = this.getEmptyPatient();
 
-  //   this.patientArray.push(patient);
+    this.patientArray.push(patient);
 
-  //   this.resetTableDataSource();
-  //   this.subscribeToChanges();
+    this.resetTableDataSource();
 
-  // }
+    this.setSelected(1);
+
+    this.subscribeToChanges();
+
+  }
 
   resetTableDataSource()
   {
@@ -210,8 +187,6 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
     this.patientDataSource = new MatTableDataSource(patients);
 
     this.selection = new SelectionModel<Patient>(false, []);
-
-    // this.subscribeToChanges();
 
   }
 
@@ -281,7 +256,11 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
       this.animalTypeChips.chips.forEach(chip => {
 
-        currentAnimal == chip.value ? (chip.toggleSelected(), this.currentPatientChip = chip.value) : chip.deselect;
+        currentAnimal == chip.value ?
+            ( chip.toggleSelected(),
+              this.hideIrrelevantChips(chip),
+              this.currentPatientChip = chip.value
+            ) : chip.deselect;
 
       });
 
@@ -304,9 +283,12 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
   animalChipSelected(animalTypeChip)
   {
 
-    this.currentPatientChip = "";
+    animalTypeChip.toggleSelected();
 
-    var selectedCount:number = this.selection.selected.length;
+
+    this.currentPatientChip = undefined;
+
+    let selectedCount:number = this.selection.selected.length;
 
     if(selectedCount > 1)
     {
@@ -314,10 +296,13 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
       return;
     }
 
-    this.currentPatientChip = animalTypeChip.value;
+    this.currentPatientChip = animalTypeChip.isSelected ? animalTypeChip.value : undefined;
 
-    if(selectedCount == 1 && (animalTypeChip.selected ||
-      !(this.animalTypeChips.selected instanceof MatChip)))
+    if(selectedCount == 1 &&
+      (
+        animalTypeChip.selected ||
+      !(this.animalTypeChips.selected instanceof MatChip)
+      ))
     {
 
     //There is only 1 row selected, so we can update the animal for that row
@@ -331,8 +316,7 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
     currentPatient.get("animalTypeId").setValue(animalTypeChip.selected ? animalTypeObject.AnimalTypeId : null);
 
-
-
+    this.hideIrrelevantChips(animalTypeChip);
     }
 
     //if there are no rows, then we need to add a new one
@@ -352,10 +336,8 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
         this.setSelected(position);
     }
-
-    // this.hideIrrelevantChips(animalTypeChip);
+    this.hideIrrelevantChips(animalTypeChip);
     this.patientTable.renderRows();
-
   }
 
   setSelected(position:number){
@@ -380,9 +362,7 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
         if(foundChip){
           foundChip.focus()
         }
-
     }
-
   }
 
   cycleChips(event, chipGroup:string, property:string)
@@ -408,13 +388,11 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
         //Also get the index of the current item
         chips.forEach((item, index) => {
 
-          if(item.value.substr(0,1).toLowerCase() == currentPatient.substr(0,1).toLowerCase())
-          {
+          if(item.value.substr(0,1).toLowerCase() == currentPatient.substr(0,1).toLowerCase()){
             lastInstance =  item.value;
           }
 
-          if(item.value == currentPatient)
-          {
+          if(item.value == currentPatient){
             currentIndex = index;
           }
 
@@ -445,13 +423,15 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
     problemChip.toggleSelected();
 
+
     if(!problemChip.selectable && problemChip.selected)
     {
       problemChip.selected = false;
       return;
     }
 
-    if(this.currentPatientChip == "" && !(this.animalTypeChips.selected instanceof MatChip))
+    if(!this.currentPatientChip && !(this.animalTypeChips.selected instanceof MatChip)
+    )
     {
       alert("Please select an animal");
       problemChip.selected = false;
@@ -465,6 +445,7 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
 
   hideIrrelevantChips(animalTypeChip)
   {
+
     let currentExclusions = this.exclusions.filter(animalType =>
       animalType.animalType == animalTypeChip.value);
 
@@ -489,8 +470,6 @@ return this.getPatient(problems, patient.position, isUpdate, patient.patientId);
           chip.disabled = true;
           chip.selectable = false;
           chip.selected = false;
-          this.updatePatientProblemArray(chip);
-
         }
       })
     );
