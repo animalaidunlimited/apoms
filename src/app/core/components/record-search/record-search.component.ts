@@ -60,7 +60,7 @@ export class Search {
 export class RecordSearchComponent implements OnInit{
 
   @Output()
-  public onOpenEmergencyCase = new EventEmitter<string>();
+  public onOpenEmergencyCase = new EventEmitter<any>();
 
   searchFieldForm = new FormControl();
 
@@ -229,9 +229,9 @@ removeRow(i)
   this.searchRows.removeAt(i)
 }
 
-openCase(caseId)
+openCase(caseId, emergencyNumber)
 {
-  this.onOpenEmergencyCase.emit(caseId);
+  this.onOpenEmergencyCase.emit({caseId: caseId, emergencyNumber: emergencyNumber});
 }
 
 }

@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_DeletePatientById!!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_DeletePatientById(IN prm_PatientId INT, IN prm_Username VARCHAR(64), OUT prm_Success INT)
+CREATE PROCEDURE AAU.sp_DeletePatientById(IN prm_Username VARCHAR(64), IN prm_PatientId INT, OUT prm_OutPatientId INT, OUT prm_Success INT)
 BEGIN
 
 /*
@@ -16,6 +16,8 @@ DECLARE vOrganisationId INT;
 
 DECLARE vPatientCount INT;
 SET vPatientCount = 0;
+
+SELECT prm_PatientId INTO prm_OutPatientId;
 
 SELECT COUNT(1) INTO vPatientCount FROM AAU.Patient WHERE PatientId = prm_PatientId;
                                                     
@@ -36,7 +38,7 @@ SELECT 1 INTO prm_Success;
   SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
   INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username,prm_CallerId,'Caller','Delete', NOW());
+	VALUES (vOrganisationId,prm_Username,prm_PatientId,'Patient','Delete', NOW());
     
 ELSE
 

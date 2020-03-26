@@ -79,6 +79,7 @@ export class AnimalSelectionComponent implements OnInit{
         if(items[0].patientId == null &&
           items[0].position == null
             ){
+              console.log("Calling");
               this.initPatientArray();
               this.clearChips();
             }
@@ -488,8 +489,20 @@ export class AnimalSelectionComponent implements OnInit{
 
     let deleted = row.get("deleted").value
 
-    this.patientArray.controls[position - 1].get("deleted").setValue(!deleted);
+    let patients = this.recordForm.get("patients") as FormArray;
 
+    let removeIndex = patients.controls.findIndex(patient => patient.get("position").value != position);
+
+    //if there's no patient id and we click delete, let's get rid of the patient.
+    if(!row.get("patientId").value){
+      patients.removeAt(removeIndex)
+    }
+    else{
+      let currentPatient = patients.controls.find(patient => patient.get("position").value == position);
+
+      currentPatient.get("deleted").setValue(!deleted);
+      currentPatient.get("updated").setValue(true);
+    }
     this.clearChips();
 
     this.patientTable.renderRows();
@@ -522,6 +535,7 @@ export class AnimalSelectionComponent implements OnInit{
 
         if(problemChip.selected && problemIndex == -1){
           problems.push(problemsGroup);
+          currentPatient.get("updated").setValue(true);
         }
 
         if(!problemChip.selected){
