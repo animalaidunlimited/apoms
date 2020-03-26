@@ -8,9 +8,9 @@ import { CaseService } from 'src/app/pages/modules/emergency-register/services/c
 export class UniqueEmergencyNumberValidator {
   constructor(private caseService: CaseService) {}
 
-  validate(): AsyncValidatorFn {
+  validate(emergencyCaseId:number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
-      return this.caseService.checkEmergencyNumberExists(control.value)
+      return this.caseService.checkEmergencyNumberExists(control.value, emergencyCaseId)
         .pipe(
           map(res => {
             // if username is already taken

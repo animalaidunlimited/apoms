@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup, Validators, FormControl, AbstractControl, FormBuilder } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { Callers } from '../../models/responses';
+import { Callers, Caller } from '../../models/responses';
 import { startWith, debounceTime, switchMap, map, catchError, tap } from 'rxjs/operators';
-import { CallerSearchService } from 'src/app/pages/modules/emergency-register/services/caller-search.service';
+import { CallerDetailsService } from './caller-details.service';
 
 @Component({
   selector: 'caller-details',
@@ -21,12 +21,29 @@ export class CallerDetailsComponent implements OnInit {
   public callerAutoComplete$;//TODO: type this Observable<Callers>;
 
   callerNumber;
+  caller$:Caller;
 
-  constructor(private callerSearchService: CallerSearchService) { }
-
-  options: string[] = ['One', 'Two', 'Three'];
+  constructor(
+    private callerService: CallerDetailsService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
+
+    this.recordForm.addControl(
+      "callerDetails", this.fb.group({
+        callerId: [],
+        callerName: ["", Validators.required],
+        callerNumber: ["", Validators.required],
+        callerAlternativeNumber: [""]
+      })
+    );
+
+
+    this.callerService.getCallerByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
+    .subscribe((caller: Caller) => {
+
+      this.recordForm.patchValue(caller);
+    });
 
     this.callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
@@ -47,12 +64,10 @@ export class CallerDetailsComponent implements OnInit {
   }
 
   lookup(value): Observable<Callers> {
-    return this.callerSearchService.getCallerByNumber(value).pipe(
-      // map the item property of the github results as our return object
+    return this.callerService.getCallerByNumber(value).pipe(
       map(results =>
         results.data
         ),
-      // catch errors
       catchError(_ => {
         return of(null);
       })
@@ -64,8 +79,6 @@ export class CallerDetailsComponent implements OnInit {
 
     let callerName = this.recordForm.get('callerDetails.callerName');
     let callerNumber = this.recordForm.get('callerDetails.callerNumber');
-
-
 
     if((callerName.value || callerNumber.value) && !(callerName.value && callerNumber.value))
     {
@@ -99,8 +112,5 @@ export class CallerDetailsComponent implements OnInit {
     this.recordForm.get('callerDetails.callerName').setValue(caller.Name);
     this.recordForm.get('callerDetails.callerAlternativeNumber').setValue(caller.AlternativeNumber);
 
-
   }
-
-
 }

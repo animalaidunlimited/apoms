@@ -1,6 +1,7 @@
 import { Problem } from './problem';
 
 export interface Patient {
+    patientId: number;
     position: number;
     animalTypeId: number;
     animalType: string;
@@ -11,3 +12,8 @@ export interface Patient {
     updated: boolean;
     deleted: boolean;
   }
+
+
+  export interface Patients {
+    patients: Patient[];
+}

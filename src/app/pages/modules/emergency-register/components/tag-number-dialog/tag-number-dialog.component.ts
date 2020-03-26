@@ -6,6 +6,8 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 
 export interface DialogData {
   tagNumber: string;
+  emergencyCaseId: number;
+  patientId: number;
   duplicate: boolean;
 }
 
@@ -30,8 +32,11 @@ export class TagNumberDialog implements OnInit{
     ngOnInit()
 {
 
+  console.log("dialog: " + this.data.emergencyCaseId + " - " + this.data.patientId)
+
   this.tagForm = this.fb.group({
-    tagNumber: [this.data.tagNumber,,this.uniqueTagNumberValidator.validate()]
+    tagNumber: [this.data.tagNumber,,
+        this.uniqueTagNumberValidator.validate(this.data.emergencyCaseId, this.data.patientId)]
   })
 }
 

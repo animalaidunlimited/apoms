@@ -1,4 +1,4 @@
 export interface Problem {
-  ProblemId: number;
-  Problem: string;
+  problemId: number;
+  problem: string;
   }

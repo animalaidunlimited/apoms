@@ -29,7 +29,7 @@ export abstract class CrudService<T = any> {
     public getObservable(request: string): Observable<any> {
 
         return this.http
-        .get(`${this.url}/${this.endpoint}?${request}`);
+        .get(`${this.url}/${this.endpoint}${request}`);
     }
 
     public getByField(subEndpoint: string, request: string): Observable<any> {
@@ -71,6 +71,9 @@ export abstract class CrudService<T = any> {
 
 
     public async put(body): Promise<any> {
+
+        console.log(JSON.stringify(body))
+
         let response = null;
         try {
             response = await this.http

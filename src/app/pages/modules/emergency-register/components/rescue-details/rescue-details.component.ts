@@ -3,6 +3,8 @@ import { getCurrentTimeString } from '../../../../../core/utils';
 import { CrossFieldErrorMatcher } from '../../../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { CaseService } from '../../services/case.service';
+import { RescueDetails } from 'src/app/core/models/responses';
 
 @Component({
   selector: 'rescue-details',
@@ -30,26 +32,36 @@ export class RescueDetailsComponent implements OnInit {
   callDateTime;
 
   constructor(private dropdowns: DropdownService,
+    private caseService: CaseService,
     private fb: FormBuilder) {}
   // constructor(private errorMatcher: CrossFieldErrorMatcher) {}
 
 
   rescuers$;
+  rescueDetails$
 
   ngOnInit() {
 
     this.rescuers$ = this.dropdowns.getRescuers();
 
     this.recordForm.addControl(
+      "rescueDetails", this.fb.group({
+        rescuer1: [''],
+        rescuer2: [''],
+        ambulanceArrivalTime: [''],
+        rescueTime: [''],
+        admissionTime: ['']
+      }));
 
-    "rescueDetails", this.fb.group({
-      rescuer1: [''],
-      rescuer2: [''],
-      ambulanceArrivalTime: [''],
-      rescueTime: [''],
-      admissionTime: ['']
-    })
-    )
+    this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
+    .subscribe((rescueDetails: RescueDetails) => {
+      
+      this.recordForm.patchValue(rescueDetails);
+
+    });
+
+
+
 
     this.rescuer1             = this.recordForm.get("rescueDetails.rescuer1");
     this.rescuer2             = this.recordForm.get("rescueDetails.rescuer2");

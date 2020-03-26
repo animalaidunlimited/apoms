@@ -7,7 +7,8 @@ const PROXY_CONFIG = [
             "/Health",
             "/Caller",
             "/Patient",
-            "/Login"
+            "/Login",
+            "/Location"
         ],
         target: "http://localhost:8080",
         changeOrigin: "true",
