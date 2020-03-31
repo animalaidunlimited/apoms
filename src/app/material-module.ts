@@ -43,7 +43,6 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
-import {NgxFlexibleSelectModule} from 'ngx-flexible-select';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
@@ -53,7 +52,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     CdkTableModule,
     CdkTreeModule,
     DragDropModule,
-    FlexLayoutModule,    
+    FlexLayoutModule,
     FormsModule,
     MatAutocompleteModule,
     MatBadgeModule,
@@ -91,12 +90,11 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    NgxFlexibleSelectModule,
     PortalModule,
     ReactiveFormsModule,
     ScrollingModule,
-    
-    
+
+
   ]
 })
 export class MaterialModule {}

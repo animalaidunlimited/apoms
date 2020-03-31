@@ -40,7 +40,7 @@ export class LocationDetailsComponent implements OnInit {
   markers: marker[] = [];
 
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
-  @ViewChild('addressSearch', {static: false}) addresstext: any;
+  @ViewChild('addressSearch') addresstext: any;
 
   ngOnInit() {
 
