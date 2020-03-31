@@ -19,15 +19,19 @@ export class TabBarComponent {
     this.tabs.splice(index, 1);
   }
 
-  addTab(caseId:number, emergencyNumber:string) {
-      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "value":emergencyNumber, "emergencyCaseId":caseId});
+  addTab(emergencyCaseId:number, emergencyNumber:string) {
+      this.tabs.splice(this.tabs.length, 0, {"id":this.tabs.length, "value":emergencyNumber, "emergencyCaseId":emergencyCaseId});
+
       this.selected.setValue(this.tabs.length - 1);
   }
 
   public openCase(object: any) {
-    
-    //TODO check if the case already exists and go to the tab if it does.
-    //Otherwise add a new tab
-    this.addTab(object.caseId, object.emergencyNumber);
+
+    let tabExists = this.tabs.find(card => card.emergencyCaseId == object.emergencyCaseId)
+
+    tabExists ?
+      this.selected.setValue(tabExists.id)
+      :
+      this.addTab(object.emergencyCaseId, object.emergencyNumber);
  }
 }

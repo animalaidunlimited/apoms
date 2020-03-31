@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CallerNumberResponse, Caller } from '../../models/responses';
+import { Caller, Callers } from '../../models/responses';
 import { CrudService } from '../../services/http/crud.service';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class CallerDetailsService extends CrudService {
 
     return this.getObservable(request)
     .pipe(
-      map((response:CallerNumberResponse) => {
+      map((response:Callers) => {
         return response;
       })
     );

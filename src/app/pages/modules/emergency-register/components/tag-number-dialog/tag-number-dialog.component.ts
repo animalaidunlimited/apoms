@@ -32,12 +32,11 @@ export class TagNumberDialog implements OnInit{
     ngOnInit()
 {
 
-  console.log("dialog: " + this.data.emergencyCaseId + " - " + this.data.patientId)
-
   this.tagForm = this.fb.group({
     tagNumber: [this.data.tagNumber,,
         this.uniqueTagNumberValidator.validate(this.data.emergencyCaseId, this.data.patientId)]
-  })
+  });
+
 }
 
   onCancel(): void {

@@ -280,9 +280,26 @@ CREATE TABLE IF NOT EXISTS `AAU`.`AnimalType` (
     ON UPDATE NO ACTION
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `AAU`.`PatientStatus`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `AAU`.`PatientStatus` (
+PatientStatusId INT NOT NULL AUTO_INCREMENT,
+OrganisationId INT NOT NULL,
+PatientStatus VARCHAR(32) NOT NULL,
+IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
+PRIMARY KEY (`PatientStatusId`)
+);
+
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'In Patient');
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'Released');
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'Died');
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'Adopted');
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'Fostered');
+INSERT INTO `AAU`.`PatientStatus` (OrganisationId,PatientStatus) VALUES (1,'Escaped');
 
 -- -----------------------------------------------------
--- Table `AAU`.`Animal`
+-- Table `AAU`.`Patient`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `AAU`.`Patient` (
   `PatientId` INT NOT NULL AUTO_INCREMENT,
@@ -291,6 +308,10 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Patient` (
   `Position` INT NOT NULL,
   `AnimalTypeId` INT NOT NULL,
   `TagNumber` VARCHAR(5) NULL,
+  `PatientStatusId` INT NOT NULL DEFAULT 1,
+  `PatientStatusDate` DATE NOT NULL,
+  `PN` CHAR(1),
+  `SuspectedRabies` TINYINT,
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
@@ -298,7 +319,11 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Patient` (
   UNIQUE INDEX `PatientTagNumber_UNIQUE` (`TagNumber` ASC, `OrganisationId` ASC) VISIBLE,
   INDEX `FK_PatientEmergencyCaseId_EmergencyCaseEmeregncyCaseId_idx` (`EmergencyCaseId` ASC) VISIBLE,
   INDEX `FK_PatientAnimalTypeId_AnimalTypeAnimalTypeId_idx` (`AnimalTypeId` ASC) VISIBLE,
-  INDEX `FK_PatientOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_PatientOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE, 
+   CONSTRAINT `FK_PatientStatusId_PatientStatusPatientStatusId`
+    FOREIGN KEY (`PatientStatusId`)
+    REFERENCES `AAU`.`PatientStatus` (`PatientStatusId`)
+    ON DELETE NO ACTION, 
   CONSTRAINT `FK_PatientOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)

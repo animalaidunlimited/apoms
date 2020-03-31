@@ -2,6 +2,7 @@ import { Problem } from './problem';
 
 export interface Patient {
     patientId: number;
+    createdDate: string | Date;
     position: number;
     animalTypeId: number;
     animalType: string;
@@ -9,6 +10,8 @@ export interface Patient {
     problemsString: string;
     tagNumber: string;
     duplicateTag: boolean;
+    patientStatusId: number;
+    patientStatusDate: string | Date;
     updated: boolean;
     deleted: boolean;
   }

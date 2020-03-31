@@ -16,7 +16,7 @@
 
 
     <div fxFlex>
-        <agm-map [latitude]="latitude.value" [longitude]="longitude.value" [zoom]="zoom"
+        <agm-map [latitude]="this.recordForm.get('locationDetails.latitude').value" [longitude]="this.recordForm.get('locationDetails.longitude').value" [zoom]="zoom"
         [usePanning]="true"
         [fullscreenControl]="true">
             <agm-marker

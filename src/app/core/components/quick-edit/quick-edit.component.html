@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Quick update - {{data.tagNumber}}</h1>
+
+<div mat-dialog-content>
+
+<patient-status [patientId]="patientId" #patient></patient-status>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="patientStatusForm" (click)="patient.onSave()" cdkFocusInitial>Save</button>
+</div>

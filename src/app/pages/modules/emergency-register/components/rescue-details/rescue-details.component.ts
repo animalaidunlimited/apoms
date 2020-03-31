@@ -55,13 +55,10 @@ export class RescueDetailsComponent implements OnInit {
 
     this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
     .subscribe((rescueDetails: RescueDetails) => {
-      
+
       this.recordForm.patchValue(rescueDetails);
 
     });
-
-
-
 
     this.rescuer1             = this.recordForm.get("rescueDetails.rescuer1");
     this.rescuer2             = this.recordForm.get("rescueDetails.rescuer2");
@@ -73,7 +70,6 @@ export class RescueDetailsComponent implements OnInit {
     this.updateTimes();
 
     this.onChanges();
-
   }
 
 updateValidators()
@@ -97,7 +93,7 @@ updateValidators()
   }
 
   //if ambulance arrived then rescuer1, rescuer2, resuce time required
-  if(this.ambulanceArrivalTime.value != "")
+  if(this.ambulanceArrivalTime.value)
   {
     this.rescuer2.setValidators([Validators.required]);
     this.rescuer1.setValidators([Validators.required]);
@@ -115,7 +111,7 @@ updateValidators()
     this.ambulanceArrivalTime.setErrors({ "ambulanceArrivalBeforeCallDatetime" : true});
   }
 
-  if(this.ambulanceArrivalTime > this.rescueTime && this.rescueTime.value != "" && this.ambulanceArrivalTime.value != "")
+  if(this.ambulanceArrivalTime.value > this.rescueTime.value && this.rescueTime.value != "" && this.ambulanceArrivalTime.value != "")
   {
     this.ambulanceArrivalTime.setErrors({ "ambulanceArrivalAfterRescue" : true});
   }
@@ -136,14 +132,30 @@ updateValidators()
     this.rescuer2.setValidators([Validators.required]);
     this.rescuer1.setValidators([Validators.required]);
 
-    this.rescueTime.setValidators([Validators.required]);
-    this.rescueTime.updateValueAndValidity({emitEvent: false });
+    if(this.rescueTime.value < this.callDateTime.value){
+      this.rescueTime.setErrors({ "rescueBeforeCallDatetime": true});
+    }
+    else{
+      this.rescueTime.setValidators([Validators.required]);
+      this.rescueTime.updateValueAndValidity({emitEvent: false });
+    }
   }
 
-  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value)
+  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value != "")
   {
-    this.rescueTime.setErrors({"rescueAfterAdmission": true});
+    this.rescueTime.setErrors({ "rescueAfterAdmission": true});
     this.admissionTime.setErrors({ "rescueAfterAdmission" : true});
+  }
+
+  //When we select admission, we need to check that we have rescue details
+  if(this.recordForm.get("callOutcome.callOutcome").value == 1){
+    this.rescuer2.setValidators([Validators.required]);
+    this.rescuer1.setValidators([Validators.required]);
+
+    this.rescueTime.setValidators([Validators.required]);
+    this.rescueTime.updateValueAndValidity({emitEvent: false });
+    this.admissionTime.setValidators([Validators.required]);
+    this.admissionTime.updateValueAndValidity({emitEvent: false });
   }
 
   this.rescuer1.updateValueAndValidity({emitEvent: false });

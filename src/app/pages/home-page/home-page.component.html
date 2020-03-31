@@ -2,16 +2,35 @@
 <div fxLayout="column" fxLayoutAlign="space-evenly center" style="width: 100%; height: 100%" >
 
   <div fxLayout="row wrap" fxLayoutAlign="space-around center" style="width: 100%; height: 50%">
-    <img src="assets/images/emergency_register.png" width="250" height="250" alt="Emergency Register"/>
-    <img src="assets/images/hospital_manager.png" width="250" height="250" alt="Hospital Manager"/>
-    <img src="assets/images/census.png" width="250" height="250" alt="Census"/>
+    <a routerLink="/nav/emergency-register">
+      <img src="assets/images/emergency_register.png" width="250" height="250" alt="Emergency Register"/>
+    </a>
+
+    <a routerLink="/nav/hospital-manager">
+      <img src="assets/images/hospital_manager.png" width="250" height="250" alt="Hospital Manager"/>
+    </a>
+
+    <a routerLink="/nav/census">
+      <img src="assets/images/census.png" width="250" height="250" alt="Census"/>
+    </a>
+
 
   </div>
 
   <div fxLayout="row wrap" fxLayoutAlign="space-around center" style="width: 100%; height: 50%">
+
+    <a routerLink="/nav/surgery-register">
     <img src="assets/images/surgery_register.png" width="250" height="250" alt="Surgery Register"/>
+  </a>
+
+  <a routerLink="/nav/case-list">
     <img src="assets/images/street_treat.png" width="250" height="250" alt="Street Treat"/>
+  </a>
+
+  <a routerLink="/nav/reporting">
     <img src="assets/images/report.png" width="250" height="250" alt="Reports"/>
+  </a>
+
 
   </div>
 </div>

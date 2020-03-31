@@ -1,14 +1,22 @@
+<form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
+
 <mat-tab-group>
     <mat-tab label="Home">
-        
-        
+
+
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
         <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
             <animal-header [recordForm]="recordForm"></animal-header>
             <patient-details [recordForm]="recordForm"></patient-details>
+
+            <fieldset class="form-sub-group" autocomplete=false>
+                <legend class="legend">Status</legend>
+                <patient-status [patientId]="patientId"></patient-status>
+            </fieldset>
+
             <caller-details [recordForm]="recordForm"></caller-details>
-            
+
 
         </div>
 
@@ -35,3 +43,5 @@
         <cruelty-details></cruelty-details>
     </mat-tab>
   </mat-tab-group>
+
+</form>

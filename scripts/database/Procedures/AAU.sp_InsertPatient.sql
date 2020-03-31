@@ -27,7 +27,6 @@ SET vPatientExists = 0;
 SET vTagExists = 0;
 
 
-
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND Position = prm_Position;
 
 SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
@@ -40,7 +39,7 @@ START TRANSACTION;
 
 	INSERT INTO AAU.Patient
 		(
-        OrganisationId,
+        OrganisationId,        
         EmergencyCaseId,
 		Position,
 		AnimalTypeId,
@@ -48,7 +47,7 @@ START TRANSACTION;
 		)
 		VALUES
 		(
-        vOrganisationId,
+        vOrganisationId,        
         prm_EmergencyCaseId,
 		prm_Position,
 		prm_AnimalTypeId,

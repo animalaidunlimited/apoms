@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AnimalType } from '../../models/animal-type';
-import { map, shareReplay, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Dispatcher } from '../../models/dispatcher';
-import { CallOutcome } from '../../models/call-outcome';
+import { CallOutcomeResponse } from '../../models/call-outcome';
 import { Rescuer } from '../../models/rescuer';
 import { EmergencyCode } from '../../models/emergency-code';
-import { ProblemDropdownResponse } from '../../models/responses';
+import { ProblemDropdownResponse, PatientStatus } from '../../models/responses';
 
 
 export interface AnimalTypeResponse {
@@ -24,7 +24,7 @@ export class DropdownService {
   emergencyCodes$:Observable<EmergencyCode[]>;
   areas$:any[];
   dispatchers$:Observable<Dispatcher[]>;
-  callOutcomes$:Observable<CallOutcome[]>;
+  callOutcomes$:Observable<CallOutcomeResponse[]>;
   crueltyIspectors$;
   antibiotics$;
   isoReasons$;
@@ -32,6 +32,7 @@ export class DropdownService {
   problems$:Observable<ProblemDropdownResponse[]>;
   exclusions$;
   officeStaff$;
+  patientStates$:Observable<PatientStatus[]>;
 
 
   constructor(private http: HttpClient) {
@@ -123,8 +124,7 @@ export class DropdownService {
     {
       this.problems$ = this.http
       .get<ProblemDropdownResponse[]>("/Dropdown/Problems").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
+        map( (res) => {return res})
       )
     }
 
@@ -168,67 +168,31 @@ export class DropdownService {
     return this.crueltyIspectors$;
   }
 
-  // getDispatchers() {
-  //   if (!this.dispatchers$)
-  //   {
-  //     this.dispatchers$ = [{"id": 1,"name":"Heera Lal"},{"id": 2,"name":"Kalpit"},{"id": 3,"name":"Kalu Singh"},{"id": 4,"name":"Manoj"},{"id": 5,"name":"Prakash"},]
-  //   }
-
-  //   return this.dispatchers$;
-  // }
-
   getDispatchers(): Observable<Dispatcher[]> {
 
     if (!this.dispatchers$)
     {
       this.dispatchers$ = this.http
       .get<Dispatcher[]>("/Dropdown/Dispatchers").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
+        map( (res) => {return res})
       )
     }
-
     return this.dispatchers$;
 
   }
 
-  // getOutcomes() {
-  //   if (!this.outcomes$)
-  //   {
-  //     this.outcomes$ = [{"id": 1,"outcome": "Admission"},{"id": 2,"outcome": "Animal died (Caller informed)"},{"id": 3,"outcome": "Animal good (rescue not needed)"},{"id": 4,"outcome": "Animal gone (Caller informed)"},{"id": 5,"outcome": "Animal taken to polyclinic or zoo"},{"id": 6,"outcome": "Animal treated on site"},{"id": 7,"outcome": "Caller called back (rescue no longer required)"},{"id": 8,"outcome": "Caller not reachable"},{"id": 9,"outcome": "Cruelty staff informed - Animal not rescued"},{"id": 10,"outcome": "Died in ambulance"},{"id": 11,"outcome": "Found dead"},{"id": 12,"outcome": "Failure to catch"},{"id": 13,"outcome": "Medicine given to Caller"},{"id": 14,"outcome": "Owner found (rescue no longer required)"},{"id": 15,"outcome": "Rescued/resolved"},{"id": 16,"outcome": "Same As"},{"id": 17,"outcome": "Staff can't find animal"},{"id": 18,"outcome": "Street treatment approved by ST manager"},{"id": 19,"outcome": "Third party rescued,"}];
-  //   }
-
-  //   return this.outcomes$;
-  // }
-
-  getCallOutcomes(): Observable<CallOutcome[]> {
+  getCallOutcomes(): Observable<CallOutcomeResponse[]> {
 
     if (!this.callOutcomes$)
     {
       this.callOutcomes$ = this.http
-      .get<CallOutcome[]>("/Dropdown/CallOutcomes").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
+      .get<CallOutcomeResponse[]>("/Dropdown/CallOutcomes").pipe(
+        map( (res) => {return res})
       )
     }
-
     return this.callOutcomes$;
 
   }
-
-  // getRescuerList() {
-  //   if (!this.rescuer$)
-  //   {
-  //     this.rescuer$ = [{"id": null,"name":null},{"id": 1, "name": "Baghat Singh"},
-  //     {"id": 2, "name": "Jagdish"},{"id": 3, "name": "Kalu Singh"},{"id": 4, "name": "Laxman Singh"},
-  //     {"id": 5, "name": "Kamlesh"},{"id": 6, "name": "Devi Singh"},{"id": 7, "name": "Self"},{"id": 8, "name": "Nandu"},{"id": 9, "name": "Ganpat"},
-  //     {"id": 10, "name": "Sanjay"},{"id": 11, "name": "Mahender"},{"id": 12, "name": "Pushkar"},
-  //     {"id": 13, "name": "Vinod"},{"id": 14, "name": "Deendeyal"},{"id": 15, "name": "Heera"},
-  //     {"id": 16, "name": "Dharmendra"},{"id": 17, "name": "Kamlesh"},{"id": 18, "name": "Self"}]
-  //   }
-
-  //   return this.rescuer$;
-  // }
 
   getRescuers(): Observable<Rescuer[]> {
 
@@ -236,8 +200,7 @@ export class DropdownService {
     {
       this.rescuers$ = this.http
       .get<Rescuer[]>("/Dropdown/Rescuers").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
+        map( (res) => {return res})
       )
     }
 
@@ -251,12 +214,21 @@ export class DropdownService {
     {
       this.emergencyCodes$ = this.http
       .get<EmergencyCode[]>("/Dropdown/EmergencyCodes").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
+        map( (res) => {return res})
       )
     }
-
     return this.emergencyCodes$;
+  }
 
+  getPatientStates(): Observable<PatientStatus[]> {
+
+    if (!this.patientStates$)
+    {
+      this.patientStates$ = this.http
+      .get<PatientStatus[]>("/Dropdown/PatientStates").pipe(
+        map( (res) => {return res})
+      )
+    }
+    return this.patientStates$;
   }
 }

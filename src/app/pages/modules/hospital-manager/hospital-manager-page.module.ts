@@ -11,8 +11,6 @@ import { RecordSearchModule } from '../../../core/components/record-search/recor
 import { CallerDetailsModule } from '../../../core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from '../../../core/components/location-details/location-details.module';
 
-import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
-
 import { CensusDetailsComponent } from './components/census-details/census-details.component';
 
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
@@ -22,6 +20,8 @@ import { OutcomeComponent } from './components/outcome/outcome.component';
 import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
+import { PatientStatusModule } from 'src/app/core/components/patient-status/patient-status.module';
+import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
 
 
 
@@ -47,7 +47,8 @@ import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/
     RecordSearchModule,
     LocationDetailsModule,
     CallerDetailsModule,
-    ThumbnailSliderModule
+    ThumbnailSliderModule,
+    PatientStatusModule
   ],
   exports: [
   ]

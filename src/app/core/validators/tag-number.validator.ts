@@ -15,18 +15,17 @@ export class UniqueTagNumberValidator {
         .pipe(
           map(res => {
 
-            // if tag number is already taken
-            if (res[0]["@success"] == "1") {
-              // return error
-              return { 'tagNumberTaken': true};
+            if(res){
+              // if tag number is already taken
+              if (res[0]["@success"] == "1") {
+                // return error
+                return { 'tagNumberTaken': true};
+              }
             }
-
           })
         );
     };
-
   }
-
 }
 
 

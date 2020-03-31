@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 
 @Component({
@@ -10,21 +10,35 @@ export class PatientRecordComponent implements OnInit {
 
   recordForm;
 
+  @Input() emergencyCaseId:number;
+  @Input() patientId:number;
+  @Input() tagNumber:string;
+  @Input() currentLocation:string;
+
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
 
+    console.log(this.tagNumber);
+    console.log(this.currentLocation);
+
 
     this.recordForm = this.fb.group({
 
+      emergencyDetails: this.fb.group({
+        emergencyCaseId: [this.emergencyCaseId],
+      }),
+
       patientDetails: this.fb.group({
-        emergencyNumber: ['45675', Validators.required],
+        patientId: [this.patientId],
+        emergencyNumber: [, Validators.required],
         admissionTime: [, Validators.required],
         animalType: ['', Validators.required],
         mainProblems: ['', Validators.required],
-        tagNumber: ['', Validators.required],
+        tagNumber: [this.tagNumber, Validators.required],
         description: ['', Validators.required],
+        currentLocation: [this.currentLocation],
         sex: ['']
 
       }),
@@ -34,8 +48,7 @@ export class PatientRecordComponent implements OnInit {
         diedDate: [''],
         escapeDate: [''],
         PN: [''],
-        suspectedRabies: [''],
-        currentArea: [''],
+        suspectedRabies: ['']
       }),
       callerDetails: this.fb.group({
         callerId: [''],
