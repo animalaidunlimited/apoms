@@ -4,17 +4,17 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../material-module';
 
 import { ThumbnailSliderComponent } from '../thumbnail-slider/thumbnail-slider.component'
-import { NgxGalleryModule } from 'ngx-gallery';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 @NgModule({
-    declarations: [        
+    declarations: [
         ThumbnailSliderComponent,
-           
+
     ],
     imports: [
         CommonModule,
         MaterialModule,
-        NgxGalleryModule  
+        NgxGalleryModule
     ],
     exports: [
         ThumbnailSliderComponent

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
+import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@kolkov/ngx-gallery';
 
 
 @Component({
@@ -23,13 +23,13 @@ export class ThumbnailSliderComponent implements OnInit {
         arrowNextIcon: "fa fa-chevron-right",
         closeIcon: "fa fa-times",
         width: '100%',
-        height: '125px',        
+        height: '125px',
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Slide,
         previewCloseOnClick: true,
-        thumbnailActions: [{icon: 'fa fa-times', onClick: this.deleteImage.bind(this), titleText: 'delete'}],     
+        thumbnailActions: [{icon: 'fa fa-times', onClick: this.deleteImage.bind(this), titleText: 'delete'}],
         image: false
-        
+
       },
      // max-width 800
 
@@ -72,12 +72,12 @@ export class ThumbnailSliderComponent implements OnInit {
         small: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
         medium: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
         big: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3'
-      },      
+      },
     ];
   }
 
   deleteImage(event, index): void {
-    this.galleryImages.splice(index, 1); 
+    this.galleryImages.splice(index, 1);
   }
 
 }
