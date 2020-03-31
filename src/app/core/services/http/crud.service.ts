@@ -42,8 +42,6 @@ export abstract class CrudService<T = any> {
         .get(`${this.url}/${this.endpoint}/${subEndpoint}?${request}`);
           })
         );
-
-
     }
 
     public async getList(): Promise<T[] | null> {
@@ -66,13 +64,7 @@ export abstract class CrudService<T = any> {
         return response;
     }
 
-
-
-
-
     public async put(body): Promise<any> {
-
-        console.log(JSON.stringify(body))
 
         let response = null;
         try {

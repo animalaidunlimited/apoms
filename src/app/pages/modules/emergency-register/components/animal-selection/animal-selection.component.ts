@@ -42,7 +42,8 @@ export class AnimalSelectionComponent implements OnInit{
 
   patientDataSource:MatTableDataSource<AbstractControl>;
 
-  constructor(public dialog: MatDialog,
+  constructor(
+    public dialog: MatDialog,
     private fb: FormBuilder,
     private patientService: PatientService,
     private tagNumberValidator: UniqueTagNumberValidator,
@@ -79,7 +80,6 @@ export class AnimalSelectionComponent implements OnInit{
         if(items[0].patientId == null &&
           items[0].position == null
             ){
-              console.log("Calling");
               this.initPatientArray();
               this.clearChips();
             }
@@ -147,6 +147,7 @@ export class AnimalSelectionComponent implements OnInit{
               patient.deleted = !!+patient.deleted;
 
               let newPatient = this.populatePatient(true, patient);
+
 
               patientArray.push(newPatient);
 
@@ -350,7 +351,7 @@ export class AnimalSelectionComponent implements OnInit{
 
   }
 
-  focusProblemChip(event){
+  focusProblemChip(event, problemChip){
 
     if(event.keyCode >= 65 && event.keyCode <= 90)
     {
@@ -364,6 +365,12 @@ export class AnimalSelectionComponent implements OnInit{
           foundChip.focus()
         }
     }
+    else if(event.keyCode == 13)
+    {
+      this.problemChipSelected(problemChip);
+    }
+
+
   }
 
   cycleChips(event, chipGroup:string, property:string)
@@ -414,14 +421,14 @@ export class AnimalSelectionComponent implements OnInit{
           return chip.value.substr(0,1).toLowerCase() == event.key.toLowerCase()
         });
 
-        currentKeyChip.selected = true;
+        this.animalChipSelected(currentKeyChip)
       }
+
 
   }
 
   problemChipSelected(problemChip)
   {
-
     problemChip.toggleSelected();
 
 
@@ -563,7 +570,11 @@ export class AnimalSelectionComponent implements OnInit{
 
     const dialogRef = this.dialog.open(TagNumberDialog, {
       width: '250px',
-      data: {tagNumber: currentPatient.tagNumber, emergencyCaseId: this.emergencyCaseId, patientId: currentPatient.patientId, duplicateTag: currentPatient.duplicateTag}
+      data: {
+        tagNumber: currentPatient.tagNumber,
+        emergencyCaseId: this.emergencyCaseId,
+        patientId: currentPatient.patientId,
+        duplicateTag: currentPatient.duplicateTag}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -573,6 +584,7 @@ export class AnimalSelectionComponent implements OnInit{
         let currentPatient = this.getcurrentPatient();
         currentPatient.get("tagNumber").setValue(result.value);
         currentPatient.get("duplicateTag").setValue(!(result.status == "VALID"));
+        currentPatient.get("updated").setValue(true);
         this.patientTable.renderRows();
       }
     });

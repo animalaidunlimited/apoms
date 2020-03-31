@@ -1,4 +1,4 @@
-export interface CallOutcome {
+export interface CallOutcomeResponse {
     CallOutcomeId: number;
     CallOutcome: string;
     }

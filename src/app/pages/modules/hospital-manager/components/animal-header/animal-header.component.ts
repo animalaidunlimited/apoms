@@ -16,8 +16,6 @@ export class AnimalHeaderComponent implements OnInit {
 
   @Input() recordForm: FormGroup;
 
-  tagNumber:string = 'A378';
-  currentArea:string = 'A Kennel'
   status:string;
 
   imageUrls: SafeUrl[];

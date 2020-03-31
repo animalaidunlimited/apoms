@@ -86,11 +86,11 @@
                     <input formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
 
                     <mat-error *ngIf="admissionTime.hasError('admissionBeforeCallDatetime')">
-                        Rescue before call!
+                        Admission before call!
                         </mat-error>
 
                     <mat-error *ngIf="admissionTime.hasError('rescueAfterAdmission')">
-                        Rescue after Admission!
+                        Rescue after admission!
                     </mat-error>
             </mat-form-field>
 

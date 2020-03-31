@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CrudService } from 'src/app/core/services/http/crud.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { EmergencyResponse, RescueDetails } from 'src/app/core/models/responses';
+import { EmergencyResponse, RescueDetails, SearchResponse } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { v4 as uuid } from 'uuid';
@@ -198,17 +198,11 @@ export class CaseService extends CrudService {
 
   public searchCases(searchString: string):Observable<any>{
 
-    // return this.http
-    //   .get<any[]>(`/EmergencyRegister/SearchCases/?${searchString}`).pipe(
-    //     map( (res) => {return res})//,
-    //     //shareReplay(1,10000)
-    //   )
-
     let request = "/SearchCases/?" + searchString;
 
     return this.getObservable(request)
     .pipe(
-      map((response:RescueDetails) => {
+      map((response:SearchResponse) => {
         return response;
       })
     );

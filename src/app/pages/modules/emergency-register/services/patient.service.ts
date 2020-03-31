@@ -43,4 +43,28 @@ export class PatientService extends CrudService  {
    );
 
   }
+
+  public getPatientByPatientId(patientId: number):Observable<any>{
+
+    let request = "?patientId=" + patientId;
+
+   return this.getObservable(request)
+   .pipe(
+     map((response:Patient[]) => {
+       return response;
+     })
+   );
+
+  }
+
+  public async updatePatientStatus(patient:any){
+
+          return await this.put(patient).then((data) => {
+            return data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });;
+
+  }
 }

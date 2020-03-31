@@ -31,12 +31,12 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 
 -- Get the existing tag number for this patient, so we can check that they're not switching to another tag
 -- number on the same emergency case
-SELECT EmergencyCaseId, TagNumber INTO vEmergencyCaseId, vTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+SELECT EmergencyCaseId, TagNumber INTO vEmergencyCaseId, vTagNumber FROM AAU.Patient WHERE PatientId = IFNULL(prm_PatientId,0);
 
-SELECT COUNT(1) INTO vNewTagNumberCount FROM AAU.Patient WHERE TagNumber = vTagNumber
+SELECT COUNT(1) INTO vNewTagNumberCount FROM AAU.Patient WHERE TagNumber = prm_TagNumber
 													AND OrganisationId = vOrganisationId
                                                     AND EmergencyCaseId = prm_EmergencyCaseId
-                                                    AND vTagNumber <> prm_TagNumber;
+                                                    AND PatientId <> IFNULL(prm_PatientId,0);
 
 SELECT COUNT(1) INTO vTagNumberCount FROM AAU.Patient WHERE TagNumber = prm_TagNumber
 													AND OrganisationId = vOrganisationId
@@ -44,7 +44,7 @@ SELECT COUNT(1) INTO vTagNumberCount FROM AAU.Patient WHERE TagNumber = prm_TagN
                                                     OR vNewTagNumberCount = 1);
                                                   
                                                     
-IF vTagNumberCount = 0 THEN
+IF vTagNumberCount = 0 AND vNewTagNumberCount = 0 THEN
         
 SELECT 0 INTO prm_Success;
 

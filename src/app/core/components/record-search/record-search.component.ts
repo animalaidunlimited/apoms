@@ -2,6 +2,8 @@ import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import { trigger, state, style, animate, transition} from '@angular/animations';
 import { CaseService } from 'src/app/pages/modules/emergency-register/services/case.service';
+import { MatDialog } from '@angular/material';
+import { QuickEditDialog } from '../quick-edit/quick-edit.component';
 
 export interface SearchValue {
   id: number;
@@ -88,6 +90,7 @@ export class RecordSearchComponent implements OnInit{
     {"id":13, "inputType":"date", "searchValue": "dieddate", "databaseField":"CAST(p.DiedDate AS DATE)", "name":"Died Date"}];
 
   constructor(
+    public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private caseService: CaseService) {}
 
@@ -97,8 +100,10 @@ export class RecordSearchComponent implements OnInit{
 
         this.searchForm = this.formBuilder.group({
         searchRows: this.formBuilder.array([])
-
       });
+
+      // this.searchResults$ = [{EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675},
+      // {EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675}];
   }
 
   createItem(field:any, term:any): FormGroup {
@@ -137,9 +142,9 @@ executeSearch()
 
   }).join("&");
 
-//alert(searchQuery);
-
 this.searchResults$ = this.caseService.searchCases(searchQuery);
+
+
 
 }
 
@@ -221,7 +226,6 @@ addRow() {
 
   this.searchRows = this.searchForm.get('searchRows') as FormArray;
   this.searchRows.push(this.createItem('',''));
-
 }
 
 removeRow(i)
@@ -229,9 +233,31 @@ removeRow(i)
   this.searchRows.removeAt(i)
 }
 
-openCase(caseId, emergencyNumber)
+openCase(emergencyCaseId:number, emergencyNumber:number, patientId:number, tagNumber:string, currentLocation:string)
 {
-  this.onOpenEmergencyCase.emit({caseId: caseId, emergencyNumber: emergencyNumber});
+  this.onOpenEmergencyCase.emit({emergencyCaseId: emergencyCaseId,
+    emergencyNumber: emergencyNumber,
+    patientId: patientId,
+    tagNumber: tagNumber,
+    currentLocation: currentLocation});
+}
+
+loadHospitalRecord(emergencyCaseId, emergencyNumber){
+
+  alert("Open the hospital manager record");
+}
+
+quickUpdate(patientId:number, tagNumber:string){
+  this.openDialog(patientId,tagNumber);
+}
+
+openDialog(patientId:number, tagNumber:string): void {
+
+  const dialogRef = this.dialog.open(QuickEditDialog, {
+    width: '500px',
+    data: {patientId:patientId, tagNumber:tagNumber}
+  });
+
 }
 
 }

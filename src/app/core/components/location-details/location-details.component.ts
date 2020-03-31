@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { Location } from '../../models/responses';
+import { Location, LocationResponse } from '../../models/responses';
 
 import { UserOptionsService } from '../../services/user-options.service';
 
@@ -37,8 +37,6 @@ export class LocationDetailsComponent implements OnInit {
 
   location$: Location;
 
-  animalLocation;
-
   markers: marker[] = [];
 
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
@@ -55,29 +53,22 @@ export class LocationDetailsComponent implements OnInit {
     );
 
     this.locationService.getLocationByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe((location: Location) => {
+    .subscribe((location: LocationResponse) => {
 
       this.recordForm.patchValue(location);
 
+        if(location.locationDetails){
+          this.initialiseLocation(location.locationDetails);
+          this.updateLocation(location.locationDetails.latitude, location.locationDetails.longitude);
+        }
+
     });
 
-    this.latitude = this.recordForm.get("locationDetails.latitude");
-    this.longitude = this.recordForm.get("locationDetails.longitude");
-    this.animalLocation = this.recordForm.get("locationDetails.location");
+    if(this.recordForm.get("locationDetails.latitude").value == ""){
 
-    let coordinates = this.userOptions.getCoordinates() as Location;
-    this.latitude.setValue(coordinates.latitude);
-    this.longitude.setValue(coordinates.longitude);
-    this.zoom = 13;
-
-    let marker:marker = {
-      latitude: coordinates.latitude,
-      longitude: coordinates.longitude,
-      label: "",
-      draggable: true
+      let coordinates = this.userOptions.getCoordinates() as Location;
+      this.initialiseLocation(coordinates);
     }
-
-    this.markers.push(marker);
   }
 
   ngAfterViewInit() {
@@ -88,6 +79,7 @@ export class LocationDetailsComponent implements OnInit {
 getPlaceAutocomplete() {
     const autocomplete = new google.maps.places.Autocomplete(this.addresstext.nativeElement,
         {
+          //TODO update this based on the settings of the user
             componentRestrictions: { country: 'IN' },
             types: ["geocode"]
         });
@@ -103,24 +95,41 @@ invokeEvent(place: Object) {
 
     let result = place as google.maps.places.PlaceResult;
 
-    this.animalLocation.setValue(result.formatted_address);
+    this.recordForm.get("locationDetails.location").setValue(result.formatted_address);
 
     this.updateLocation(result.geometry.location.lat(), result.geometry.location.lng());
 }
 
-  updateLocation(iLatitude:number, iLongitude:number)
-  {
-    this.latitude.setValue(iLatitude);
-    this.longitude.setValue(iLongitude);
+initialiseLocation(coordinates:Location){
 
-    this.markers[0].latitude = iLatitude;
-    this.markers[0].longitude = iLongitude;
+  this.zoom = 13;
+
+  this.markers = [];
+
+  let marker:marker = {
+    latitude: coordinates.latitude,
+    longitude: coordinates.longitude,
+    label: "",
+    draggable: true
+  }
+
+  this.markers.push(marker);
+  this.updateLocation(coordinates.latitude, coordinates.longitude);
+}
+
+  updateLocation(latitude:number, longitude:number)
+  {
+    this.recordForm.get("locationDetails.latitude").setValue(latitude);
+    this.recordForm.get("locationDetails.longitude").setValue(longitude);
+
+    this.markers[0].latitude = latitude;
+    this.markers[0].longitude = longitude;
   }
 
   markerDragEnd($event)
   {
-    this.latitude.setValue($event.coords.lat);
-    this.longitude.setValue($event.coords.lng);
+    this.recordForm.get("locationDetails.latitude").setValue($event.coords.lat);
+    this.recordForm.get("locationDetails.longitude").setValue($event.coords.lng);
   }
 
   performSearch($event)
@@ -129,14 +138,15 @@ invokeEvent(place: Object) {
     const addressSearcher = new google.maps.places.PlacesService(this.addresstext.nativeElement);
 
     var searchRequest = {
-      query: this.animalLocation.value,
-      fields: ['name', 'geometry'],
+      query: this.recordForm.get("locationDetails.location").value,
+      fields: ['name', 'geometry', 'formatted_address'],
     };
 
     addressSearcher.findPlaceFromQuery(searchRequest,(results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-          this.animalLocation.setValue(results[0].formatted_address);
+
+          this.recordForm.get("locationDetails.location").setValue(results[0].formatted_address);
           this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
         }
       }

@@ -118,24 +118,9 @@ onChanges(): void {
 
   async initialiseForm(){
 
-    let currentCase;
+    let currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
 
-    currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
-
-    let model = currentCase;
-
-    //add in the patients and their problems
-
-
-
-    this.recordForm.patchValue(model);
-
-    // this.recordForm.patchValue(JSON.parse(currentCase[0][0].Result));
-
-    // this.recordForm.push();
-
-
-
+    this.recordForm.patchValue(currentCase);
   }
 
   getCaseSaveMessage(resultBody:EmergencyResponse){

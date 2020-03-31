@@ -74,7 +74,7 @@
             <mat-chip-list #problemChips fxFlex multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
                     (click)="problemChipSelected(problemChip)"
-                    (keydown)="focusProblemChip($event)"
+                    (keydown)="focusProblemChip($event, problemChip)"
 
                     #problemChip="matChip"
                     *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>

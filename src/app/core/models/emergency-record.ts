@@ -1,27 +1,11 @@
+import { Patient } from './patients';
+
     export interface EmergencyDetails {
         emergencyCaseId: number;
         emergencyNumber: string;
-        callDateTime: string;
+        callDateTime: string | Date;
         dispatcher: number;
         code: number;
-    }
-
-    export interface Problem {
-        problemId: number;
-        problem: string;
-        }
-
-    export interface Patient {
-        patientId: number;
-        position: number;
-        animalTypeId: string;
-        animalType: string;
-        problems: Problem[];
-        problemsString: string;
-        tagNumber: string;
-        duplicateTag: boolean;
-        updated: boolean;
-        deleted: boolean;
     }
 
     export interface CallerDetails {
@@ -42,11 +26,11 @@
     }
 
     export interface RescueDetails {
-        rescuer1: string;
-        rescuer2: string;
-        ambulanceArrivalTime: string;
-        rescueTime: string;
-        admissionTime: string;
+        rescuer1: number;
+        rescuer2: number;
+        ambulanceArrivalTime: string | Date;
+        rescueTime: string | Date;
+        admissionTime: string | Date;
     }
 
     export interface EmergencyForm {

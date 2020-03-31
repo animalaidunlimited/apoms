@@ -1,4 +1,3 @@
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 
 export interface EmergencyResponse
 {
@@ -31,6 +30,11 @@ export interface SearchFieldResponse
     sucess: string;
 }
 
+export interface LocationResponse
+{
+    locationDetails: Location;
+}
+
 export interface Location
 {
     location: string;
@@ -48,10 +52,10 @@ export interface RescueDetails{
 
 export interface Caller
 {
-    callerId: string;
-    name: string;
-    number: string;
-    alternativeNumber: string;
+    CallerId: string;
+    Name: string;
+    Number: string;
+    AlternativeNumber: string;
 }
 
 export declare type Callers = Caller[];
@@ -59,4 +63,28 @@ export declare type Callers = Caller[];
 export interface CallerNumberResponse
 {
     callers: Callers;
+}
+
+export interface SearchResponse{
+    EmergencyCaseId: number;
+    EmergencyNumber: number;
+    CallDateTime: string;
+    CallerId: number;
+    Name: string;
+    Number: string;
+    AnimalTypeId: number;
+    AnimalType: string;
+    PatientId: number;
+    TagNumber: string;
+    CallOutcomeId: number;
+    Location: string;
+    Latitude: number;
+    Longitude: number;
+    CurrentLocation: string;
+}
+
+export interface PatientStatus{
+    PatientId: number;
+    PatientStatusId: number;
+    PatientStatusDate: Date;
 }
