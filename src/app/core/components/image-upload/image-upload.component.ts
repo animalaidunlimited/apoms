@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'image-upload',
@@ -14,11 +14,11 @@ export class ImageUploadDialog implements OnInit {
   }
 
   onCancel(): void {
-    
+
     this.dialogRef.close();
   }
 
 
 
-  
+
 }

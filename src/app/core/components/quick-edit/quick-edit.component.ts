@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 export interface DialogData {
@@ -14,6 +14,7 @@ export interface DialogData {
 export class QuickEditDialog implements OnInit {
 
   patientId:number;
+  @Input() patientStatusForm;
 
   constructor(
     public dialogRef: MatDialogRef<QuickEditDialog>,

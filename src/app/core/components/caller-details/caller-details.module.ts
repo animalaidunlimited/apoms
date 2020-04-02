@@ -6,18 +6,16 @@ import { MaterialModule } from '../../../material-module';
 import { CallerDetailsComponent } from '../caller-details/caller-details.component'
 
 @NgModule({
-    declarations: [        
+    declarations: [
         CallerDetailsComponent,
-           
+
     ],
     imports: [
         CommonModule,
-        MaterialModule      
+        MaterialModule
     ],
     exports: [
         CallerDetailsComponent
     ],
-    entryComponents: [
-      ],
 })
 export class CallerDetailsModule {}

@@ -20,7 +20,5 @@ import { PatientStatusComponent } from '../patient-status/patient-status.compone
     exports: [
         PatientStatusComponent
     ],
-    entryComponents: [
-      ],
 })
 export class PatientStatusModule {}

@@ -14,7 +14,6 @@ import { PatientStatusModule } from '../patient-status/patient-status.module';
         RecordSearchComponent,
         QuickEditDialog
 
-
     ],
     imports: [
         CommonModule,
@@ -24,9 +23,5 @@ import { PatientStatusModule } from '../patient-status/patient-status.module';
     exports: [
         RecordSearchComponent
     ],
-    entryComponents: [
-        QuickEditDialog,
-        PatientStatusComponent
-      ],
 })
 export class RecordSearchModule {}

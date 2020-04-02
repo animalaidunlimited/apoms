@@ -24,10 +24,10 @@ const routes: Routes = [{path: 'settings',loadChildren: () =>
                 import('./pages/census-page/census-page.module').then(
                     m => m.CensusPageModule,
                 ),},{path: 'hospital-manager',loadChildren: () =>
-                import('./pages/modules/hospital-manager/hospital-manager-page.module').then(
+                import('./modules/hospital-manager/hospital-manager-page.module').then(
                     m => m.HospitalManagerPageModule,
                 ),},{path: 'emergency-register',loadChildren: () =>
-                import('./pages/modules/emergency-register/emergency-register-page.module').then(
+                import('./modules/emergency-register/emergency-register-page.module').then(
                     m => m.EmergencyRegisterPageModule,
                 ),},
     {

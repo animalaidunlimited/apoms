@@ -1,8 +1,8 @@
 import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import { trigger, state, style, animate, transition} from '@angular/animations';
-import { CaseService } from 'src/app/pages/modules/emergency-register/services/case.service';
-import { MatDialog } from '@angular/material';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { MatDialog } from '@angular/material/dialog';
 import { QuickEditDialog } from '../quick-edit/quick-edit.component';
 
 export interface SearchValue {
@@ -23,23 +23,27 @@ export class Search {
   styleUrls: ['./record-search.component.scss'],
   animations:
   [
-    trigger("expandSearch",
-    [
-      state("open",style({
-      width: "525px"
-    })),
-    state("closed", style({
-      width: "175px"
-    })),
-    transition("open => closed", [
-      animate(".2s")
-    ]),
-    transition("closed => open", [
-      animate(".2s")
-    ])
-  ]),
+  //   trigger("expandSearch",
+  //   [
+  //     state("open",style({
+  //     width: "525px"
+  //   })),
+  //   state("closed", style({
+  //     // width: "175px"
+  //   })),
+  //   transition("open => closed", [
+  //     animate(".2s")
+  //   ]),
+  //   transition("closed => open", [
+  //     animate(".2s")
+  //   ])
+  // ]),
     trigger("expandSearchForm",
     [
+      state("void", style({
+        display: "none",
+        height: "0px",
+      })),
       state("open",style({
       width: "525px"
 
@@ -47,12 +51,8 @@ export class Search {
     state("closed", style({
       display: "none",
       height: "0px",
-      width: "0px"
     })),
-    transition("open => closed", [
-      animate(".2s")
-    ]),
-    transition("closed => open", [
+    transition("open <=> closed", [
       animate(".2s")
     ])
 
@@ -69,7 +69,7 @@ export class RecordSearchComponent implements OnInit{
   searchForm:FormGroup;
   searchRows:FormArray;
 
-  searchShowing = false;
+  searchShowing:boolean = false;
 
   search = new Search();
 
@@ -102,11 +102,14 @@ export class RecordSearchComponent implements OnInit{
         searchRows: this.formBuilder.array([])
       });
 
+      this.searchShowing = false;
+
       // this.searchResults$ = [{EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675},
       // {EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675}];
   }
 
   createItem(field:any, term:any): FormGroup {
+
     return this.formBuilder.group({
       searchField: [field, Validators.required],
       searchTerm: [term, Validators.required]
@@ -143,7 +146,6 @@ executeSearch()
   }).join("&");
 
 this.searchResults$ = this.caseService.searchCases(searchQuery);
-
 
 
 }
@@ -186,6 +188,7 @@ updateSearchArray(){
     this.searchRows.push(this.createItem(option.id,splitItem[1].trim()));
 
   });
+
 }
 
 getSearchArray(){
@@ -226,11 +229,12 @@ addRow() {
 
   this.searchRows = this.searchForm.get('searchRows') as FormArray;
   this.searchRows.push(this.createItem('',''));
+
 }
 
 removeRow(i)
 {
-  this.searchRows.removeAt(i)
+  this.searchRows.removeAt(i);
 }
 
 openCase(emergencyCaseId:number, emergencyNumber:number, patientId:number, tagNumber:string, currentLocation:string)

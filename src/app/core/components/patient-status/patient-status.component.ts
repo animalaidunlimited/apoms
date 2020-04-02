@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
-import { PatientService } from 'src/app/pages/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { UserOptionsService } from '../../services/user-options.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../utils';
@@ -49,7 +49,7 @@ export class PatientStatusComponent implements OnInit {
         patientStatusId: ["", Validators.required],
         patientStatusDate: ["", Validators.required],
         PN: [""],
-        suspectedRabies: [""]
+        suspectedRabies: [false]
       });
 
       this.patientStates$ = this.dropdowns.getPatientStates();
