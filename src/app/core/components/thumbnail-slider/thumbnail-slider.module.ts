@@ -19,7 +19,5 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     exports: [
         ThumbnailSliderComponent
     ],
-    entryComponents: [
-      ],
 })
 export class ThumbnailSliderModule {}

@@ -30,7 +30,6 @@ export class AuthService extends CrudService {
 
     public async login(username: string, password: string) {
         try {
-            console.log("Attempting login");
             this.response = await this.post({ username, password }) as Response;
             this.token = this.response.token || "";
             if(!this.response.success){

@@ -25,10 +25,6 @@ import { environment } from '../environments/environment';
         HttpClientModule,
         MaterialModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-
-
-
-
     ],
     exports: [
 

@@ -58,3 +58,7 @@ mat-radio-button{
 .wide{
   width: $standard-width * 1.5;
 }
+
+.mat-tab-label .mat-tab-label-content{
+  margin-left: 24px !important;
+}

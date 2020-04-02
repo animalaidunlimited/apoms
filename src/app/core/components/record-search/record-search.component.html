@@ -1,4 +1,6 @@
-<mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'">
+<!-- <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'"> -->
+    <mat-form-field class="er-case-search-box" >
+
     <span matPrefix (click)="executeSearch()">
         <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
     </span>
@@ -7,8 +9,8 @@
 </mat-form-field>
 
 
-
-    <div  [@expandSearchForm]="searchShowing ? 'open' : 'closed'" class="search-form" [formGroup]="searchForm">
+    <div [@expandSearchForm]="searchShowing ? 'open' : 'closed'"
+    class="search-form" [formGroup]="searchForm">
 
         <div formArrayName="searchRows" *ngFor="let item of searchForm.get('searchRows')?.controls; let i = index;">
             <div [formGroupName]="i">
@@ -18,6 +20,7 @@
                         <mat-icon style="cursor: pointer; margin-left:15px;" (click)="removeRow(i)">
                             remove_circle_outline</mat-icon>
                     </div>
+
 
                     <div fxFlex>
 
@@ -30,7 +33,7 @@
                             </mat-select>
                         </mat-form-field>
 
-                        
+
 
                     </div>
                     <div fxFlex>

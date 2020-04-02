@@ -6,30 +6,35 @@
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
 
 
+
         <mat-form-field style="width: 100%">
             <input matInput type="text"
             placeholder="Animal location"
             formControlName="location"
+            (keydown.enter)="performSearch()"
             [errorStateMatcher]="errorMatcher" #addressSearch>
-            <mat-icon matSuffix (click)="performSearch($event)" style="cursor: pointer">search</mat-icon>
+            <mat-icon matSuffix (click)="performSearch()" style="cursor: pointer">search</mat-icon>
+
           </mat-form-field>
 
+      <div fxFlex>
 
-    <div fxFlex>
-        <!-- <agm-map [latitude]="this.recordForm.get('locationDetails.latitude').value" [longitude]="this.recordForm.get('locationDetails.longitude').value" [zoom]="zoom"
-        [usePanning]="true"
-        [fullscreenControl]="true">
-            <agm-marker
-                    *ngFor="let marker of markers;"
-                    (markerClick)="clickedMarker(marker.label, i)"
-                    [latitude]="marker.latitude"
-                    [longitude]="marker.longitude"
-                    [label]="marker.label"
-                    [markerDraggable]="marker.draggable"
-                    (dragEnd)="markerDragEnd($event)"></agm-marker>
-          <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
-        </agm-map> -->
-      </div>
+        <google-map [zoom]="zoom"
+                    [center]="center"
+                    [mapTypeId]="mapTypeId"
+                    height="150px"
+                    width="100%">
+          <map-marker
+              *ngFor="let marker of markers"
+              [position]="marker.position"
+              [label]="marker.label"
+              [options]="marker.options"
+              (mapDragend)="markerDragEnd($event)">
+          </map-marker>
+
+        </google-map>
+
+    </div>
 
     </div>
 

@@ -7,11 +7,15 @@ import { UserOptionsService } from '../../services/user-options.service';
 
 import { LocationDetailsService } from './location-details.service';
 
+export interface position{
+  lat: number;
+  lng: number
+}
+
 export interface marker {
-	latitude: number;
-	longitude: number;
+	position: position;
 	label?: string;
-	draggable: boolean;
+	options: any;
 }
 
 @Component({
@@ -26,6 +30,9 @@ export class LocationDetailsComponent implements OnInit {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
+  mapTypeId: google.maps.MapTypeId;
+  center: google.maps.LatLngLiteral
+
   constructor(
     private locationService: LocationDetailsService,
     private fb: FormBuilder,
@@ -39,6 +46,7 @@ export class LocationDetailsComponent implements OnInit {
 
   markers: marker[] = [];
 
+
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
   @ViewChild('addressSearch') addresstext: any;
 
@@ -51,6 +59,8 @@ export class LocationDetailsComponent implements OnInit {
         longitude: ["", Validators.required],
       })
     );
+
+
 
     this.locationService.getLocationByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
     .subscribe((location: LocationResponse) => {
@@ -71,9 +81,14 @@ export class LocationDetailsComponent implements OnInit {
     }
   }
 
+
   ngAfterViewInit() {
 
-      this.getPlaceAutocomplete();
+    this.getPlaceAutocomplete();
+
+    //TODO review this after the below issue is closed:
+    //https://github.com/angular/components/pull/18967
+    this.mapTypeId = google.maps.MapTypeId.ROADMAP;
 }
 
 getPlaceAutocomplete() {
@@ -107,10 +122,9 @@ initialiseLocation(coordinates:Location){
   this.markers = [];
 
   let marker:marker = {
-    latitude: coordinates.latitude,
-    longitude: coordinates.longitude,
+    position: {lat : coordinates.latitude, lng : coordinates.longitude},
     label: "",
-    draggable: true
+    options: {draggable: true}
   }
 
   this.markers.push(marker);
@@ -122,17 +136,21 @@ initialiseLocation(coordinates:Location){
     this.recordForm.get("locationDetails.latitude").setValue(latitude);
     this.recordForm.get("locationDetails.longitude").setValue(longitude);
 
-    this.markers[0].latitude = latitude;
-    this.markers[0].longitude = longitude;
+    this.markers[0].position = {lat: latitude, lng: longitude}
+
+    this.center = {lat : latitude, lng : longitude};
   }
 
-  markerDragEnd($event)
+  markerDragEnd(event: google.maps.MouseEvent)
   {
-    this.recordForm.get("locationDetails.latitude").setValue($event.coords.lat);
-    this.recordForm.get("locationDetails.longitude").setValue($event.coords.lng);
+    let position = event.latLng.toJSON();
+    this.recordForm.get("locationDetails.latitude").setValue(position.lat);
+    this.recordForm.get("locationDetails.longitude").setValue(position.lng);
+
+    this.center = {lat : position.lat, lng : position.lng};
   }
 
-  performSearch($event)
+  performSearch()
   {
 
     const addressSearcher = new google.maps.places.PlacesService(this.addresstext.nativeElement);
@@ -146,11 +164,14 @@ initialiseLocation(coordinates:Location){
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
 
-          this.recordForm.get("locationDetails.location").setValue(results[0].formatted_address);
-          this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng())
+          // this.recordForm.get("locationDetails.location").setValue(results[0].formatted_address);
+          this.updateLocation(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+
         }
       }
     });
+
+
 
   }
 
