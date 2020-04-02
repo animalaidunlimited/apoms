@@ -48,8 +48,14 @@ export abstract class CrudService<T = any> {
         return this.get<T[]>('list');
     }
 
-    public async getById(id: number | string): Promise<T | null> {
-        return this.get<T>('/?id=' + id);
+    public getById(id: number | string): Observable<any | null> {
+
+        return timer(200)
+        .pipe(
+          switchMap(() => {
+            return this.http.get(`${this.url}/${this.endpoint}/?id=${id}`);
+          })
+        );
     }
 
     public async deleteById(id: number | string): Promise<any> {
