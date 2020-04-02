@@ -149,21 +149,12 @@ export class CaseService extends CrudService {
 
 
 
-  public async getCaseById(emergencyCaseId:number)
+  public getCaseById(emergencyCaseId:number)
   {
-      try {
-
-          this.response = await this.getById(emergencyCaseId) as EmergencyResponse;
-          if(!this.response){
-              throw new Error(
-                  "Unable to get Case with ID: " + emergencyCaseId,
-              );
-          }
-          return this.response;
-      } catch (error) {
-          //console.error('Error during login request', error);
-          return Promise.reject(error);
-      }
+    return this.getById(emergencyCaseId).pipe(
+      map(value => {
+        return value})
+    );
   }
 
 

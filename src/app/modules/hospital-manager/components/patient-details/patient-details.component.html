@@ -1,22 +1,22 @@
-<fieldset [formGroup]="recordForm.get('patientDetails')" class="form-sub-group">
+<fieldset [formGroup]="recordForm" class="form-sub-group">
 
     <legend class="legend">Patient Details</legend>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
-    <mat-form-field>
-            <input formControlName="emergencyNumber" type="text" placeholder="Emergency number" matInput>
+    <mat-form-field formGroupName="emergencyDetails">
+            <input  formControlName="emergencyNumber" type="text" placeholder="Emergency number" matInput>
     </mat-form-field>
 
-    <mat-form-field>
-            <input formControlName="admissionTime" name="admissionTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Admission time" matInput>
+    <mat-form-field formGroupName="rescueDetails">
+            <input  formControlName="admissionTime" name="admissionTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Admission time" matInput>
     </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>animalType</mat-label>
-        <mat-select formControlName="animalType" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let type of animalTypes$" [value]="type.id">
-                {{type.animalType}}
+    <mat-form-field formGroupName="patientDetails">
+        <mat-label>Animal type</mat-label>
+        <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
+                {{type.AnimalType}}
             </mat-option>
         </mat-select>
     </mat-form-field>
@@ -29,18 +29,21 @@
 
         <div fxLayout="row flex" fxLayoutGap="20px" fxLayoutAlign="space-between start">
 
-        <mat-form-field class="wide">
+        <mat-form-field formGroupName="patientDetails" class="wide">
                 <input formControlName="mainProblems" type="text" placeholder="Main Problem(s)" matInput>
         </mat-form-field>
 
-        <mat-radio-group formControlName="sex" aria-labelledby="sex-label">
+
+<ng-container formGroupName="patientDetails">
+        <mat-radio-group  formControlName="sex" aria-labelledby="sex-label">
             <mat-radio-button value="0">Female</mat-radio-button>
             <mat-radio-button value="1">Male</mat-radio-button>
         </mat-radio-group>
+    </ng-container>
 
     </div>
 
-        <mat-form-field class="wide">
+        <mat-form-field formGroupName="patientDetails" class="wide">
                 <input formControlName="description" type="text" placeholder="Description" matInput>
         </mat-form-field>
 

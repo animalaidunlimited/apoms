@@ -116,11 +116,18 @@ onChanges(): void {
     });
   }
 
-  async initialiseForm(){
+  initialiseForm(){
 
-    let currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
+    // let currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
 
-    this.recordForm.patchValue(currentCase);
+    this.caseService
+    .getCaseById(this.emergencyCaseId)
+    .subscribe(result => {
+      console.log(result);
+      this.recordForm.patchValue(result);
+    });
+
+
   }
 
   getCaseSaveMessage(resultBody:EmergencyResponse){

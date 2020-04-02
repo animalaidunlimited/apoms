@@ -3,6 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 
 @Component({
   selector: 'animal-header',
@@ -23,14 +25,17 @@ export class AnimalHeaderComponent implements OnInit {
   lastObjectUrl: string;
 
 
-  constructor(public dialog: MatDialog, private sanitizer: DomSanitizer){}
+  constructor(
+    public dialog: MatDialog,
+    private sanitizer: DomSanitizer,
+
+    ){}
 
   ngOnInit() {
 
     this.status = this.recordForm.get('patientStatus.status').value;
     this.imageUrls = ["../../../../../assets/images/image_placeholder.png"];
     this.lastObjectUrl = "";
-
   }
 
   launchImageModal(): void {

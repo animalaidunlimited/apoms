@@ -10,12 +10,12 @@
                 <ng-template mat-tab-label >
                 {{tab.value}}
 
-                <mat-icon *ngIf="i > 0" class="tab-icon"
+                <mat-icon class="tab-icon"
                         (click)="removeTab(i)">{{tab.icon}}</mat-icon>
                 </ng-template>
 
-                    <!-- <record-search *ngIf="i == 0" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search> -->
-                    <!-- <patient-record *ngIf="i > 0" [emergencyCaseId]="tab.emergencyCaseId" [patientId]="tab.patientId" [tagNumber]="tab.tagNumber" [currentLocation]="currentLocation" class="tab-icon"></patient-record> -->
+                    <record-search *ngIf="i == 0" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
+                    <patient-record *ngIf="i > 0" [emergencyCaseId]="tab.emergencyCaseId" [patientId]="tab.patientId" [tagNumber]="tab.tagNumber" [currentLocation]="currentLocation" class="tab-icon"></patient-record>
 
 
                 </mat-tab>

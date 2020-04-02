@@ -28,14 +28,8 @@ export class PatientRecordComponent implements OnInit {
 
       patientDetails: this.fb.group({
         patientId: [this.patientId],
-        emergencyNumber: [, Validators.required],
-        admissionTime: [, Validators.required],
-        animalType: ['', Validators.required],
-        mainProblems: ['', Validators.required],
         tagNumber: [this.tagNumber, Validators.required],
-        description: ['', Validators.required],
         currentLocation: [this.currentLocation],
-        sex: ['']
 
       }),
       patientStatus: this.fb.group({
