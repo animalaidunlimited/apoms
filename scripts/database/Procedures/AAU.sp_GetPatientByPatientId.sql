@@ -15,20 +15,22 @@ Purpose: Used to return a Patient by ID.
 SELECT	    
 
 JSON_MERGE_PRESERVE(
-	JSON_OBJECT("PatientId", PatientId),
-	JSON_OBJECT("position", Position),
-	JSON_OBJECT("animalTypeId", AnimalTypeId),
-	JSON_OBJECT("tagNumber", TagNumber),
-    JSON_OBJECT("createdDate", DATE_FORMAT(CreatedDate,"%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("patientStatusId", PatientStatusId),
-	JSON_OBJECT("patientStatusDate", DATE_FORMAT(PatientStatusDate, "%Y-%m-%d")),
-	JSON_OBJECT("isDeleted", IsDeleted),
-    JSON_OBJECT("PN", PN),
-    JSON_OBJECT("suspectedRabies", SuspectedRabies)
+	JSON_OBJECT("PatientId", p.PatientId),
+	JSON_OBJECT("position", p.Position),
+	JSON_OBJECT("animalTypeId", p.AnimalTypeId),
+	JSON_OBJECT("tagNumber", p.TagNumber),
+    JSON_OBJECT("createdDate", DATE_FORMAT(p.CreatedDate,"%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("patientStatusId", p.PatientStatusId),
+	JSON_OBJECT("patientStatusDate", DATE_FORMAT(p.PatientStatusDate, "%Y-%m-%d")),
+	JSON_OBJECT("isDeleted", p.IsDeleted),
+    JSON_OBJECT("PN", p.PN),
+    JSON_OBJECT("suspectedRabies", p.SuspectedRabies),
+    JSON_OBJECT("currentLocation", ps.PatientStatus)
 ) AS Result   
     
-FROM AAU.Patient
-WHERE PatientId = prm_PatientId;
+FROM AAU.Patient p
+INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
+WHERE p.PatientId = prm_PatientId;
 
 
 

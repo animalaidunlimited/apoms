@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SearchResponse, searchResponseWrapper } from 'src/app/core/models/responses';
 
 @Component({
   selector: 'tab-bar',
@@ -34,14 +35,15 @@ export class TabBarComponent {
       this.selected.setValue(this.tabs.length - 1);
   }
 
-  public openCase(object: any) {
+  public openCase(result: searchResponseWrapper) {
 
-    let tabExists = this.tabs.find(card => card.emergencyCaseId == object.emergencyCaseId);
+
+    let tabExists = this.tabs.find(card => card.emergencyCaseId == result.caseSearchResult.EmergencyCaseId);
 
     tabExists ?
       this.selected.setValue(tabExists.id)
       :
-      this.addTab(object.emergencyCaseId, object.emergencyNumber);
+      this.addTab(result.caseSearchResult.EmergencyCaseId, result.caseSearchResult.EmergencyNumber.toString());
 
  }
 }

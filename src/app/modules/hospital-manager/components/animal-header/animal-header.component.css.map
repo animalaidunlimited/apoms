@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAIA,AAAA,eAAe,CACf;EACE,MAAM,EAAE,SAAS;EACjB,aAAa,EAAE,GAAG;EAClB,YAAY,EARC,OAAO;EASpB,YAAY,EAAC,GAAG;EAChB,aAAa,EAAC,GAAG;CAClB;;AAED,AAAA,WAAW,CAAA;EACX,SAAS,EAAE,GAAG;EACd,KAAK,EAdiB,OAAO;CAe5B;;AAED,AAAA,aAAa,CAAA;EACX,SAAS,EAAE,GAAG;EACd,KAAK,EAnBe,OAAO;CAoB5B;;AAED,AAAA,mBAAmB,CAAA;EACjB,KAAK,EAvBe,OAAO;CAwB5B",
+    "sources": [
+        "animal-header.component.scss"
+    ],
+    "names": [],
+    "file": "animal-header.component.css"
+}

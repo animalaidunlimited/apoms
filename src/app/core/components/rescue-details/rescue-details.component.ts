@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { getCurrentTimeString } from '../../../../core/utils';
-import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
+import { getCurrentTimeString } from '../../utils';
+import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { CaseService } from '../../services/case.service';
+import { CaseService } from '../../../modules/emergency-register/services/case.service';
 import { RescueDetails } from 'src/app/core/models/responses';
 
 @Component({
@@ -67,6 +67,7 @@ export class RescueDetailsComponent implements OnInit {
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
 
+
     this.updateTimes();
 
     this.onChanges();
@@ -74,6 +75,7 @@ export class RescueDetailsComponent implements OnInit {
 
 updateValidators()
 {
+
  this.ambulanceArrivalTime.clearValidators();
  this.rescueTime.clearValidators();
  this.admissionTime.clearValidators();
@@ -170,7 +172,6 @@ onChanges(): void {
       setTimeout(() =>
         this.updateValidators()
       )
-
     });
   }
 

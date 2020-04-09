@@ -3,7 +3,6 @@ import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 
 import { getCurrentTimeString } from '../../../../core/utils';
-import { Observable } from 'rxjs';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
@@ -28,19 +27,15 @@ export class EmergencyRecordComponent implements OnInit{
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  filteredAreas: Observable<any[]>;
+  // filteredAreas: Observable<any[]>;
 
-  notificationDurationSeconds;
+  notificationDurationSeconds:number;
 
-  dispatchers$;
+
   callOutcomes$;
-  emergencyCodes$
-  areas: any[];
 
+  // areas: any[];
 
-  callDateTime = getCurrentTimeString();
-  rescueTime:string;
-  admissionTime:string;
   currentTime:string;
 
   constructor(
@@ -55,10 +50,10 @@ ngOnInit()
 {
 
 
-  this.areas = this.dropdowns.getAreas();
-  this.dispatchers$ = this.dropdowns.getDispatchers();
+  // this.areas = this.dropdowns.getAreas();
+
   this.callOutcomes$ = this.dropdowns.getCallOutcomes();
-  this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+
 
   this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -66,10 +61,6 @@ ngOnInit()
 
     emergencyDetails: this.fb.group({
       emergencyCaseId: [this.emergencyCaseId],
-      emergencyNumber: [, Validators.required, this.emergencyNumberValidator.validate(this.emergencyCaseId)],
-      callDateTime: [getCurrentTimeString(), Validators.required],
-      dispatcher: ['', Validators.required],
-      code: ['', Validators.required],
       updateTime: ['']
     }),
     callOutcome: this.fb.group({
@@ -123,7 +114,6 @@ onChanges(): void {
     this.caseService
     .getCaseById(this.emergencyCaseId)
     .subscribe(result => {
-      console.log(result);
       this.recordForm.patchValue(result);
     });
 

@@ -51,28 +51,29 @@ export class ThumbnailSliderComponent implements OnInit {
 
     this.galleryImages = [
       {
-        small: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-        medium: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-        big: 'https://preview.ibb.co/jrsA6R/img12.jpg'
+
+        small: "../../../../../assets/images/image_placeholder.png",
+        medium: "../../../../../assets/images/image_placeholder.png",
+        big: "../../../../../assets/images/image_placeholder.png"
       },
-      {
-        small: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-        medium: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-        big: 'https://preview.ibb.co/kPE1D6/clouds.jpg'
-      },
-      {
-        small: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-        medium: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-        big: 'https://preview.ibb.co/mwsA6R/img7.jpg'
-      },{
-        small: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-        medium: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-        big: 'https://preview.ibb.co/kZGsLm/img8.jpg'
-      },{
-        small: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
-        medium: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
-        big: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3'
-      },
+      // {
+      //   small: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
+      //   medium: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
+      //   big: 'https://preview.ibb.co/kPE1D6/clouds.jpg'
+      // },
+      // {
+      //   small: 'https://preview.ibb.co/mwsA6R/img7.jpg',
+      //   medium: 'https://preview.ibb.co/mwsA6R/img7.jpg',
+      //   big: 'https://preview.ibb.co/mwsA6R/img7.jpg'
+      // },{
+      //   small: 'https://preview.ibb.co/kZGsLm/img8.jpg',
+      //   medium: 'https://preview.ibb.co/kZGsLm/img8.jpg',
+      //   big: 'https://preview.ibb.co/kZGsLm/img8.jpg'
+      // },{
+      //   small: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
+      //   medium: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3',
+      //   big: 'https://drive.google.com/uc?id=0B1iFzEx71zBabGR5VXA5cXZ1UGFqQXlfWGJwaHktMlphX2p3'
+      // },
     ];
   }
 

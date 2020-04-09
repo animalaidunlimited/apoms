@@ -1,10 +1,12 @@
 .er-case-search-box {
-  width: 525px !important;
-  min-width: 175px;
+  max-width: 525px !important;
+  width: 97%;
   padding-bottom: 1px;
 }
+
 .search-form {
-  width: 525px;
+  width: 97%;
+  max-width: 525px;
   border: 1px rgba(0, 0, 0, 0.36) solid;
   border-radius: 4px;
   position: relative;
@@ -12,6 +14,7 @@
   padding-bottom: 40px;
   margin-top: -17px;
 }
+
 .er-search-button {
   position: absolute;
   bottom: 0px;
@@ -19,10 +22,12 @@
   margin-bottom: 5px;
   margin-right: 5px;
 }
+
 .search-row {
   margin: 15px;
   height: 48px;
 }
+
 .add-search-row {
   margin-left: 15px;
   margin-right: 15px;
@@ -32,28 +37,34 @@
   top: 15px;
   cursor: pointer;
 }
+
 .ngx-flexible-select-option {
   font-family: arial !important;
 }
+
 .emergency-card {
-  max-width: 200px;
+  max-width: 220px;
   margin: 0px 0px 17px 17px !important;
   border-radius: 8px;
   padding: 0px;
 }
+
 .mat-card-header {
   background-color: #607d8b;
   height: 40px;
   border-radius: 8px 8px 0px 0px;
   padding-top: 10px;
 }
+
 .mat-card-title {
   color: white;
   font-weight: bold;
 }
+
 .mat-card-content {
   margin-bottom: 0px;
 }
+
 .circle-button {
   position: absolute;
   width: 56px;
@@ -64,11 +75,14 @@
   font-weight: bold;
   right: 10px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid #ffffff;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 .location {
   font-style: normal;
   font-weight: bold;
@@ -77,52 +91,70 @@
   color: #607d8b;
   padding: 10px 10px 0px 10px;
 }
+
 .location-line {
   stroke: #607d8b;
   stroke-width: 4;
 }
+
 .details-container {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
   display: inline-flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
+
 .name {
   margin: 10px 0px 0px 10px;
 }
+
 .telephone {
   float: left;
   margin: 10px 0px 0px 10px;
 }
+
 .telephone-dash-container {
   height: 100%;
 }
+
 .telephone-dash {
   stroke: #607d8b;
   stroke-width: 4;
 }
+
 .animal {
   margin: 10px 0px 0px 10px;
 }
+
 .animal-location {
   margin: 10px 0px 10px 10px;
 }
+
 .elipse {
   position: absolute;
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid #ffffff;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 .emergency-card-footer {
   background-color: #607d8b;
   text-align: center;
   border-radius: 8px 8px 8px 8px;
 }
+
 .mat-card-actions {
   margin: 0px;
 }
+
 .mat-card-footer {
   background-color: #607d8b;
   text-align: center;
@@ -132,3 +164,4 @@
   margin: 0px;
   color: white;
 }
+/*# sourceMappingURL=record-search.component.css.map */

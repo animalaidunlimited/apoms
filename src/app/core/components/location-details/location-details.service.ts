@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CrudService } from '../../services/http/crud.service';
+import { APIService } from '../../services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class LocationDetailsService extends CrudService {
+export class LocationDetailsService extends APIService {
 
   constructor(http: HttpClient) {
     super(http)

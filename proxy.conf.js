@@ -10,9 +10,9 @@ const PROXY_CONFIG = [
             "/Login",
             "/Location"
         ],
-        target: "http://localhost:8080",
+        target: "https://streettreat.appspot.com/",
         changeOrigin: "true",
-        secure: false
+        secure: true
     }
 ]
 

@@ -5,23 +5,31 @@
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .legend {
   color: #626262;
   font-size: 12pt;
 }
+
 .wide {
-  width: 365px;
+  max-width: 365px;
 }
+
 .extra-wide {
-  width: 378px !important;
+  max-width: 378px !important;
 }
+
 .label {
   color: currentColor;
-  align-self: center;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
 }
+
 .extra-padding {
   margin-top: 20px !important;
   margin-bottom: 20px !important;
 }
+/*# sourceMappingURL=emergency-record.component.css.map */

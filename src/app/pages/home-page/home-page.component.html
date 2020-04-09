@@ -1,35 +1,46 @@
 
-<div fxLayout="column" fxLayoutAlign="space-evenly center" style="width: 100%; height: 100%" >
+<div fxLayout="column" fxLayoutAlign="space-evenly center" >
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-around center" style="width: 100%; height: 50%">
-    <a routerLink="/nav/emergency-register">
-      <img src="assets/images/emergency_register.png" width="250" height="250" alt="Emergency Register"/>
+  <div fxFlex=50 fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-evenly center" fxFlex>
+
+    <div fxFlex>
+      <a routerLink="/nav/emergency-register">
+      <img src="assets/images/emergency_register.png" class="link-image" alt="Emergency Register"/>
+    </a>
+    </div>
+    <div fxFlex>
+      <a routerLink="/nav/hospital-manager">
+      <img src="assets/images/hospital_manager.png" class="link-image" alt="Hospital Manager"/>
+    </a>
+    </div>
+    <div fxFlex>
+      <a routerLink="/nav/census">
+      <img src="assets/images/census.png" class="link-image" alt="Census"/>
     </a>
 
-    <a routerLink="/nav/hospital-manager">
-      <img src="assets/images/hospital_manager.png" width="250" height="250" alt="Hospital Manager"/>
-    </a>
-
-    <a routerLink="/nav/census">
-      <img src="assets/images/census.png" width="250" height="250" alt="Census"/>
-    </a>
-
-
+    </div>
   </div>
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-around center" style="width: 100%; height: 50%">
+  <div fxFlex=50 fxLayout="row" fxLayout.xs="column" fxFlex>
 
+  <div fxFlex>
     <a routerLink="/nav/surgery-register">
-    <img src="assets/images/surgery_register.png" width="250" height="250" alt="Surgery Register"/>
+    <img src="assets/images/surgery_register.png" class="link-image" alt="Surgery Register"/>
   </a>
 
-  <a routerLink="/nav/case-list">
-    <img src="assets/images/street_treat.png" width="250" height="250" alt="Street Treat"/>
+  </div>
+  <div fxFlex>
+    <a routerLink="/nav/case-list">
+    <img src="assets/images/street_treat.png" class="link-image" alt="Street Treat"/>
   </a>
 
-  <a routerLink="/nav/reporting">
-    <img src="assets/images/report.png" width="250" height="250" alt="Reports"/>
+  </div>
+  <div fxFlex>
+    <a routerLink="/nav/reporting">
+    <img src="assets/images/report.png" class="link-image" alt="Reports"/>
   </a>
+
+  </div>
 
 
   </div>

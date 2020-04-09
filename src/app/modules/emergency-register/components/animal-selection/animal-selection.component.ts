@@ -12,7 +12,6 @@ import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
 
-
 @Component({
   selector: 'animal-selection',
   templateUrl: './animal-selection.component.html',
@@ -58,6 +57,8 @@ export class AnimalSelectionComponent implements OnInit{
     );
 
     this.emergencyCaseId = this.recordForm.get("emergencyDetails.emergencyCaseId").value;
+
+
 
     //if we have a case id we're doing a reload. Otherwise this is a new case.
     this.emergencyCaseId ?
@@ -137,8 +138,12 @@ export class AnimalSelectionComponent implements OnInit{
 
   loadPatientArray(emergencyCaseId:number){
 
+    console.log(emergencyCaseId);
+
           this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
           .subscribe((patients: Patients) => {
+
+            console.log(patients);
 
             let patientArray = this.recordForm.get("patients") as FormArray;
 

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "nav-toolbar.component.scss"
+    ],
+    "names": [],
+    "file": "nav-toolbar.component.css"
+}

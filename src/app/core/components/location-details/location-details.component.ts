@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
-
+import { environment } from '../../../../environments/environment';
 import { UserOptionsService } from '../../services/user-options.service';
 
 import { LocationDetailsService } from './location-details.service';
@@ -30,7 +30,7 @@ export class LocationDetailsComponent implements OnInit {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  mapTypeId: google.maps.MapTypeId;
+  // mapTypeId: google.maps.MapTypeId;
   center: google.maps.LatLngLiteral
 
   constructor(
@@ -60,8 +60,6 @@ export class LocationDetailsComponent implements OnInit {
       })
     );
 
-
-
     this.locationService.getLocationByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
     .subscribe((location: LocationResponse) => {
 
@@ -88,7 +86,7 @@ export class LocationDetailsComponent implements OnInit {
 
     //TODO review this after the below issue is closed:
     //https://github.com/angular/components/pull/18967
-    this.mapTypeId = google.maps.MapTypeId.ROADMAP;
+    // this.mapTypeId = google.maps.MapTypeId.ROADMAP;
 }
 
 getPlaceAutocomplete() {
@@ -104,6 +102,8 @@ getPlaceAutocomplete() {
         this.invokeEvent(place);
     });
 }
+
+
 
 invokeEvent(place: Object) {
     this.setAddress.emit(place);
@@ -176,3 +176,7 @@ initialiseLocation(coordinates:Location){
   }
 
 }
+
+
+
+

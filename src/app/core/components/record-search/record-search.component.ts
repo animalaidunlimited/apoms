@@ -4,6 +4,7 @@ import { trigger, state, style, animate, transition} from '@angular/animations';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuickEditDialog } from '../quick-edit/quick-edit.component';
+import { SearchResponse } from '../../models/responses';
 
 export interface SearchValue {
   id: number;
@@ -45,7 +46,7 @@ export class Search {
         height: "0px",
       })),
       state("open",style({
-      width: "525px"
+      width: "97%"
 
     })),
     state("closed", style({
@@ -237,13 +238,9 @@ removeRow(i)
   this.searchRows.removeAt(i);
 }
 
-openCase(emergencyCaseId:number, emergencyNumber:number, patientId:number, tagNumber:string, currentLocation:string)
+openCase(caseSearchResult:SearchResponse)
 {
-  this.onOpenEmergencyCase.emit({emergencyCaseId: emergencyCaseId,
-    emergencyNumber: emergencyNumber,
-    patientId: patientId,
-    tagNumber: tagNumber,
-    currentLocation: currentLocation});
+  this.onOpenEmergencyCase.emit({caseSearchResult});
 }
 
 loadHospitalRecord(emergencyCaseId, emergencyNumber){

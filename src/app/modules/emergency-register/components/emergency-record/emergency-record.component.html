@@ -4,49 +4,12 @@
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
                 <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
-                        <fieldset [formGroup]="recordForm.get('emergencyDetails')" class="form-sub-group">
 
-                                <legend class="legend">Emergency Details</legend>
+                    <emergency-details [recordForm]="recordForm"></emergency-details>
 
-                                <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+                    <animal-selection [recordForm]="recordForm"></animal-selection>
 
-                                <mat-form-field>
-                                        <input formControlName="emergencyNumber" type="text" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput cdkFocusInitial>
-
-                                        <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber').errors?.emergencyNumberTaken">
-                                            The emergency number already exists.
-                                        </mat-error>
-                                    </mat-form-field>
-
-                                <mat-form-field>
-                                        <input formControlName="callDateTime" name="callDateTime" type="datetime-local" [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
-                                </mat-form-field>
-
-                                <mat-form-field>
-                                    <mat-label>Dispatcher</mat-label>
-                                    <mat-select formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-                                        <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.DispatcherId">
-                                            {{dispatcher.Dispatcher}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-
-                                    <mat-form-field>
-                                        <mat-label>Code</mat-label>
-                                        <mat-select formControlName="code" [errorStateMatcher]="errorMatcher">
-                                            <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code.EmergencyCodeId">
-                                                {{code.EmergencyCode}}
-                                            </mat-option>
-                                        </mat-select>
-                                        </mat-form-field>
-
-                                </div>
-
-                              </fieldset>
-
-                              <animal-selection [recordForm]="recordForm"></animal-selection>
-
-                        </div>
+                </div>
 
         <div fxLayout="column" fxFlex="0 1 43" fxLayoutGap="5px" fxLayoutAlign="start">
 
@@ -54,7 +17,7 @@
 
             <location-details [recordForm]="recordForm"></location-details>
 
-            <rescue-details [recordForm]="recordForm" ></rescue-details>
+            <rescue-details [recordForm]="recordForm"></rescue-details>
 
               <fieldset [formGroup]="recordForm.get('callOutcome')" class="form-sub-group">
 

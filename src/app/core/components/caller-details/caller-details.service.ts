@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Caller, Callers } from '../../models/responses';
-import { CrudService } from '../../services/http/crud.service';
+import { APIService } from '../../services/http/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CallerDetailsService extends CrudService {
+export class CallerDetailsService extends APIService {
 
   constructor(http: HttpClient) {
     super(http)

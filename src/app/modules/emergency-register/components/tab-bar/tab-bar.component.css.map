@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,cAAc,CACd;EACI,OAAO,EAAE,CAAC;CACb;;AAED,AAAA,sBAAsB,CAAA;EAClB,MAAM,EAAE,IAAI;EACZ,KAAK,EAAE,IAAI;CACd",
+    "sources": [
+        "tab-bar.component.scss"
+    ],
+    "names": [],
+    "file": "tab-bar.component.css"
+}

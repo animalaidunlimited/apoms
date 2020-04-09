@@ -3,14 +3,15 @@ $standard-height: 48px;
 
 .er-case-search-box
 {
-    width: $standard-width * 3 !important;
-    min-width: $standard-width;
+    max-width: $standard-width * 3 !important;
+    width: 97%;
     padding-bottom: 1px;
 }
 
 
 .search-form{
-    width: $standard-width * 3;
+    width: 97%;
+    max-width: $standard-width * 3;
     border: 1px rgba(0, 0, 0, 0.36) solid;
     border-radius: 4px;
     position: relative;
@@ -51,7 +52,7 @@ $standard-height: 48px;
 
 
 .emergency-card {
-    max-width: 200px;
+    max-width: 220px;
     margin: 0px 0px 17px 17px !important;
     border-radius: 8px;
     padding: 0px;

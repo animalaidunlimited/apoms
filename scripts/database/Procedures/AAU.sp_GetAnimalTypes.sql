@@ -11,7 +11,7 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-SELECT AnimalTypeId, AnimalType FROM AAU.AnimalType WHERE OrganisationId = 1;
+SELECT AnimalTypeId, AnimalType FROM AAU.AnimalType WHERE OrganisationId = vOrganisationId;
 
 END$$
 DELIMITER ;
