@@ -1,9 +1,9 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetProblem!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetProblems!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetProblem(IN prm_username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetProblems(IN prm_username VARCHAR(45))
 BEGIN
 
 DECLARE vOrganisationId INT;

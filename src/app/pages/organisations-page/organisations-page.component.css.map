@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "organisations-page.component.scss"
+    ],
+    "names": [],
+    "file": "organisations-page.component.css"
+}

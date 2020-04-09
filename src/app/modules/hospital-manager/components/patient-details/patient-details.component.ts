@@ -25,8 +25,7 @@ export class PatientDetailsComponent implements OnInit {
 
   constructor(private dropdown: DropdownService,
     private patientService: PatientService,
-    private fb: FormBuilder,
-    private caseService: CaseService) { }
+    private fb: FormBuilder) { }
 
   ngOnInit() {
 
@@ -39,24 +38,7 @@ export class PatientDetailsComponent implements OnInit {
     patientDetails.addControl("description", new FormControl('', Validators.required));
     patientDetails.addControl("sex", new FormControl('', Validators.required));
 
-
-    let emergencyDetails = this.recordForm.get("emergencyDetails") as FormGroup;
-    emergencyDetails.addControl("emergencyNumber", new FormControl('', Validators.required));
-
-
-    this.recordForm.addControl(
-      "rescueDetails", this.fb.group({
-        "admissionTime" : ['', Validators.required]
-    }));
-
     this.maxDate = getCurrentTimeString();
-
-    this.caseService
-    .getCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe(result => {
-      // console.log(result);
-      this.recordForm.patchValue(result);
-    });
 
     this.patientService
     .getPatientByPatientId(this.recordForm.get("patientDetails.patientId").value)
@@ -65,14 +47,31 @@ export class PatientDetailsComponent implements OnInit {
       this.recordForm.get("patientDetails.animalTypeId").setValue(result.animalTypeId)
     });
 
-    this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe((rescueDetails: RescueDetails) => {
-      // console.log(rescueDetails);
-      this.recordForm.patchValue(rescueDetails);
+    // let emergencyDetails = this.recordForm.get("emergencyDetails") as FormGroup;
+    // emergencyDetails.addControl("emergencyNumber", new FormControl('', Validators.required));
 
-    });
 
-    console.log(this.recordForm);
+    // this.recordForm.addControl(
+    //   "rescueDetails", this.fb.group({
+    //     "admissionTime" : ['', Validators.required]
+    // }));
+
+
+    // this.caseService
+    // .getCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
+    // .subscribe(result => {
+    //   this.recordForm.patchValue(result);
+    // });
+
+    // this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
+    // .subscribe((rescueDetails: RescueDetails) => {
+    //   this.recordForm.patchValue(rescueDetails);
+    // });
+
+
+
+
+
 
 
   }

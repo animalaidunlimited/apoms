@@ -1,8 +1,8 @@
 <div class="tab-container">
 
     <div>
-        <mat-tab-group [selectedIndex]="selected.value">
-        <!-- (selectedIndexChange)="selected.setValue($event)"> -->
+        <mat-tab-group [selectedIndex]="selected.value"
+        (selectedIndexChange)="selected.setValue($event)">
 
                 <mat-tab *ngFor="let tab of tabs; let i = index"
                 label="{{tab}}">
@@ -15,14 +15,13 @@
                 </ng-template>
 
                     <record-search *ngIf="i == 0" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
-                    <patient-record *ngIf="i > 0" [emergencyCaseId]="tab.emergencyCaseId" [patientId]="tab.patientId" [tagNumber]="tab.tagNumber" [currentLocation]="currentLocation" class="tab-icon"></patient-record>
-
+                    <patient-record *ngIf="i > 0" [incomingPatient]="tab" class="tab-icon"></patient-record>
 
                 </mat-tab>
 
                 <mat-tab disabled>
                 <ng-template mat-tab-label>
-                        <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addTab(0,0,'New Call*')">
+                        <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addEmptyTab('New *')">
                         <mat-icon >add_circle</mat-icon>
                         </button>
                 </ng-template>

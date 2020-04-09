@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { EmergencyRegisterPageRoutingModule } from './emergency-register-page-routing.module';
 import { EmergencyRegisterPageComponent } from './pages/emergency-register-page/emergency-register-page.component';
 
-import { MaterialModule } from '../../material-module';
-
-import { TabBarModule } from './components/tab-bar/tab-bar.module'
 
 import { FormsModule } from '@angular/forms';
+import { MaterialModule } from '../../material-module';
+import { TabBarModule } from './components/tab-bar/tab-bar.module';
 
 @NgModule({
   declarations: [

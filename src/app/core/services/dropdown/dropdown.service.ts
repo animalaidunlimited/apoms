@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { AnimalType } from '../../models/animal-type';
 import { map } from 'rxjs/operators';
 import { Dispatcher } from '../../models/dispatcher';
@@ -8,6 +7,8 @@ import { CallOutcomeResponse } from '../../models/call-outcome';
 import { Rescuer } from '../../models/rescuer';
 import { EmergencyCode } from '../../models/emergency-code';
 import { ProblemDropdownResponse, PatientStatus } from '../../models/responses';
+import { APIService } from '../http/api.service';
+import { HttpClient } from '@angular/common/http';
 
 
 export interface AnimalTypeResponse {
@@ -18,7 +19,9 @@ export interface AnimalTypeResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class DropdownService {
+export class DropdownService extends APIService{
+
+  endpoint = "Dropdown";
 
   rescuers$:Observable<Rescuer[]>;
   emergencyCodes$:Observable<EmergencyCode[]>;
@@ -35,8 +38,9 @@ export class DropdownService {
   patientStates$:Observable<PatientStatus[]>;
 
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(http: HttpClient) {
+    super(http)
+   }
 
   getOfficeStaff(){
     if (!this.officeStaff$)
@@ -87,14 +91,23 @@ export class DropdownService {
   //a new case
   getAnimalTypes(): Observable<AnimalType[]> {
 
+    let request = "/AnimalTypes";
+
     if (!this.animalTypes$)
     {
-      this.animalTypes$ = this.http
-      .get<AnimalType[]>("/Dropdown/AnimalTypes").pipe(
-        map( (res) => {return res})//,
-        //shareReplay(1,10000)
-      )
+      this.animalTypes$ = this.getObservable(request)
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
     }
+
+          // this.animalTypes$ = this.http
+      // .get<AnimalType[]>("/Dropdown/AnimalTypes").pipe(
+      //   map( (res) => {return res})//,
+      //   //shareReplay(1,10000)
+      // )
 
     return this.animalTypes$;
 
@@ -120,12 +133,16 @@ export class DropdownService {
 
   getProblems(): Observable<ProblemDropdownResponse[]> {
 
+    let request = "/Problems";
+
     if (!this.problems$)
     {
-      this.problems$ = this.http
-      .get<ProblemDropdownResponse[]>("/Dropdown/Problems").pipe(
-        map( (res) => {return res})
-      )
+      this.problems$ = this.getObservable(request)
+      .pipe(
+        map((response:ProblemDropdownResponse[]) => {
+          return response;
+        })
+      );
     }
 
     return this.problems$;
@@ -170,25 +187,34 @@ export class DropdownService {
 
   getDispatchers(): Observable<Dispatcher[]> {
 
+    let request = "/Dispatchers";
+
     if (!this.dispatchers$)
     {
-      this.dispatchers$ = this.http
-      .get<Dispatcher[]>("/Dropdown/Dispatchers").pipe(
-        map( (res) => {return res})
-      )
+      this.dispatchers$ = this.getObservable(request)
+      .pipe(
+        map((response:Dispatcher[]) => {
+          return response;
+        })
+      );
     }
+
     return this.dispatchers$;
 
   }
 
   getCallOutcomes(): Observable<CallOutcomeResponse[]> {
 
+    let request = "/CallOutcomes";
+
     if (!this.callOutcomes$)
     {
-      this.callOutcomes$ = this.http
-      .get<CallOutcomeResponse[]>("/Dropdown/CallOutcomes").pipe(
-        map( (res) => {return res})
-      )
+      this.callOutcomes$ = this.getObservable(request)
+      .pipe(
+        map((response:CallOutcomeResponse[]) => {
+          return response;
+        })
+      );
     }
     return this.callOutcomes$;
 
@@ -196,12 +222,16 @@ export class DropdownService {
 
   getRescuers(): Observable<Rescuer[]> {
 
+    let request = "/Rescuers";
+
     if (!this.rescuers$)
     {
-      this.rescuers$ = this.http
-      .get<Rescuer[]>("/Dropdown/Rescuers").pipe(
-        map( (res) => {return res})
-      )
+      this.rescuers$ = this.getObservable(request)
+      .pipe(
+        map((response:Rescuer[]) => {
+          return response;
+        })
+      );
     }
 
     return this.rescuers$;
@@ -210,25 +240,35 @@ export class DropdownService {
 
   getEmergencyCodes(): Observable<EmergencyCode[]> {
 
+    let request = "/EmergencyCodes";
+
     if (!this.emergencyCodes$)
     {
-      this.emergencyCodes$ = this.http
-      .get<EmergencyCode[]>("/Dropdown/EmergencyCodes").pipe(
-        map( (res) => {return res})
-      )
+      this.emergencyCodes$ = this.getObservable(request)
+      .pipe(
+        map((response:EmergencyCode[]) => {
+          return response;
+        })
+      );
     }
+
     return this.emergencyCodes$;
   }
 
   getPatientStates(): Observable<PatientStatus[]> {
 
+    let request = "/PatientStates";
+
     if (!this.patientStates$)
     {
-      this.patientStates$ = this.http
-      .get<PatientStatus[]>("/Dropdown/PatientStates").pipe(
-        map( (res) => {return res})
-      )
+      this.patientStates$ = this.getObservable(request)
+      .pipe(
+        map((response:PatientStatus[]) => {
+          return response;
+        })
+      );
     }
+
     return this.patientStates$;
   }
 }

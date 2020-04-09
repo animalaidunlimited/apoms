@@ -5,20 +5,31 @@
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .mat-radio-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   color: #626262;
-  justify-content: start center;
+  -webkit-box-pack: start center;
+      -ms-flex-pack: start center;
+          justify-content: start center;
   padding-bottom: 25px;
   padding-top: 25px;
 }
+
 mat-radio-button {
   margin-right: 15px;
 }
+
 .label {
-  align-self: center;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
   color: #626262;
 }
+
 .wide {
-  width: 380px;
+  max-width: 380px;
 }
+/*# sourceMappingURL=patient-details.component.css.map */

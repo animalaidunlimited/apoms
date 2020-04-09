@@ -1,0 +1,11 @@
+{
+    "version": 3,
+    "mappings": "AEq5CA,mCAAmC;AAuiDnC,4CAA4C;AAwC5C,sBAAsB",
+    "sources": [
+        "logo.component.scss",
+        "../../../../variables.scss",
+        "../../../../../node_modules/@angular/material/_theming.scss"
+    ],
+    "names": [],
+    "file": "logo.component.css"
+}

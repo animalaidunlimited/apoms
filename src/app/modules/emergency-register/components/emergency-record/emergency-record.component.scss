@@ -21,12 +21,12 @@ $standard-width: 180px;
 
 .wide
 {
-  width: $standard-width * 2 + 5px;
+  max-width: $standard-width * 2 + 5px;
 }
 
 .extra-wide
 {
-  width: $standard-width * 2.1 !important;
+  max-width: $standard-width * 2.1 !important;
 }
 
 

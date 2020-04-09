@@ -29,8 +29,6 @@ export class PatientStatusComponent implements OnInit {
     private fb: FormBuilder
     ) {}
 
-
-
     patientStatusForm;
     currentTime;
     tagNumber;

@@ -11,6 +11,8 @@ export class UniqueEmergencyNumberValidator {
   validate(emergencyCaseId:number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
 
+
+
       return this.caseService.checkEmergencyNumberExists(control.value, emergencyCaseId)
         .pipe(
           map(res => {

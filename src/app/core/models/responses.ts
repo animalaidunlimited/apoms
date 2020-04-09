@@ -65,6 +65,10 @@ export interface CallerNumberResponse
     callers: Callers;
 }
 
+export interface searchResponseWrapper{
+    caseSearchResult: SearchResponse;
+}
+
 export interface SearchResponse{
     EmergencyCaseId: number;
     EmergencyNumber: number;
@@ -76,7 +80,7 @@ export interface SearchResponse{
     AnimalType: string;
     PatientId: number;
     TagNumber: string;
-    CallOutcomeId: number;
+    CallOutcome: number;
     Location: string;
     Latitude: number;
     Longitude: number;
@@ -88,3 +92,5 @@ export interface PatientStatus{
     PatientStatusId: number;
     PatientStatusDate: Date;
 }
+
+

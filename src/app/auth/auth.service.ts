@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CrudService } from '../core/services/http/crud.service';
+import { APIService } from '../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
@@ -15,7 +15,7 @@ export interface Response{
     providedIn: 'root',
 })
 
-export class AuthService extends CrudService {
+export class AuthService extends APIService {
     endpoint = 'Auth';
     token: string;
     response: Response;

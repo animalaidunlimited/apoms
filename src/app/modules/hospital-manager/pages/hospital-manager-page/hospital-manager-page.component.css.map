@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "hospital-manager-page.component.scss"
+    ],
+    "names": [],
+    "file": "hospital-manager-page.component.css"
+}

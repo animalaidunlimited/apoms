@@ -1,12 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CallerNumberResponse } from '../../models/responses';
+import { environment } from '../../../../environments/environment';
 
 
-export abstract class CrudService<T = any> {
+export abstract class APIService<T = any> {
     abstract endpoint;
-    url = '';
+    url = environment.API_URL;
 
     protected constructor(
         protected http: HttpClient

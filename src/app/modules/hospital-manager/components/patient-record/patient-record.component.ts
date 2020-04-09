@@ -1,5 +1,6 @@
 import { Component, OnInit, Input} from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 
 @Component({
   selector: 'patient-record',
@@ -8,12 +9,9 @@ import { Validators, FormBuilder } from '@angular/forms';
 })
 export class PatientRecordComponent implements OnInit {
 
-  recordForm;
+  recordForm:FormGroup;
 
-  @Input() emergencyCaseId:number;
-  @Input() patientId:number;
-  @Input() tagNumber:string;
-  @Input() currentLocation:string;
+  @Input() incomingPatient:SearchRecordTab;
 
 
   constructor(private fb: FormBuilder) {}
@@ -23,13 +21,15 @@ export class PatientRecordComponent implements OnInit {
     this.recordForm = this.fb.group({
 
       emergencyDetails: this.fb.group({
-        emergencyCaseId: [this.emergencyCaseId],
+        emergencyCaseId: [this.incomingPatient.emergencyCaseId],
+        emergencyNumber: [this.incomingPatient.emergencyNumber],
+        callDateTime: [this.incomingPatient.callDateTime]
       }),
 
       patientDetails: this.fb.group({
-        patientId: [this.patientId],
-        tagNumber: [this.tagNumber, Validators.required],
-        currentLocation: [this.currentLocation],
+        patientId: [this.incomingPatient.patientId],
+        tagNumber: [this.incomingPatient.tagNumber, Validators.required],
+        currentLocation: [this.incomingPatient.currentLocation],
 
       }),
       patientStatus: this.fb.group({
@@ -45,9 +45,12 @@ export class PatientRecordComponent implements OnInit {
         callerName: [''],
         callerNumber: [''],
         callerAlternativeNumber: ['']
+      }),
+      callOutcome: this.fb.group({
+        callOutcome: [this.incomingPatient.callOutcome]
       })
-    }
-    );
+    });
+
 
   }
 

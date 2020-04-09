@@ -4,8 +4,9 @@ body {
     margin: 0 !important;
 }
 
-
-// @import '~font-awesome/css/font-awesome.css';
+// mat-form-field {
+//   max-width: 100%;
+// }
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
@@ -24,8 +25,6 @@ $standard-width: 175px;
   margin-right: 8px !important;
   margin-top: 10px !important;
   margin-bottom: 10px !important;
-  width: $standard-width;
-  box-sizing: unset !important;
 }
 
 .mat-radio-group{
@@ -48,17 +47,21 @@ mat-radio-button{
 }
 
 .extra-wide{
-  width: $standard-width * 3;
+  // width: $standard-width * 3;
 }
 
 .double-width{
-  width: $standard-width * 2;
+  // width: $standard-width * 2;
 }
 
 .wide{
-  width: $standard-width * 1.5;
+  // width: $standard-width * 1.5;
 }
 
 .mat-tab-label .mat-tab-label-content{
   margin-left: 24px !important;
+}
+
+.mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
+  transform: none !important;
 }

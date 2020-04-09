@@ -4,6 +4,8 @@
 
 export const environment = {
     production: false,
+    API_URL: '',
+    googleMapsAPIKey:'<Google Maps API Key>',
 };
 
 /*

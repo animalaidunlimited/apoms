@@ -1,17 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SearchResponse, searchResponseWrapper } from 'src/app/core/models/responses';
 
 @Component({
   selector: 'hospital-manager-tab-bar',
   templateUrl: './hospital-manager-tab-bar.component.html',
   styleUrls: ['./hospital-manager-tab-bar.component.scss']
 })
-export class HospitalManagerTabBarComponent {
+export class HospitalManagerTabBarComponent implements OnInit {
 
-  tabs = [{"id":0, "value": "Search", "emergencyCaseId": 0, "patientId": 0,
-          "tagNumber": "", "currentLocation": "", "icon": ""}];
+  tabs = [];
 
   selected = new FormControl(0);
+
+  ngOnInit(){
+
+    this.addEmptyTab("Search");
+
+  }
+
+  addEmptyTab(value:string){
+
+    this.tabs.push({"id":0, "value": value, "emergencyCaseId": 0, "emergencyNumber":0, "patientId": 0,
+    "tagNumber": "", "currentLocation": "", "callDateTime":"", "callOutcome": 0, "icon": ""});
+
+    this.selected.setValue(this.tabs.length - 1);
+  }
 
   removeTab(index: number) {
 
@@ -20,27 +34,31 @@ export class HospitalManagerTabBarComponent {
     }
   }
 
-  addTab(emergencyCaseId:number, patientId:number, tagNumber:string, currentLocation:string) {
+  addTab(searchResult:searchResponseWrapper) {
+
       this.tabs.splice(this.tabs.length, 0,
         {
           "id":this.tabs.length,
-          "value":tagNumber,
-          "emergencyCaseId": emergencyCaseId,
-          "patientId": patientId,
-          "tagNumber": tagNumber,
-          "currentLocation": currentLocation,
+          "value":searchResult.caseSearchResult.TagNumber,
+          "emergencyCaseId": searchResult.caseSearchResult.EmergencyCaseId,
+          "emergencyNumber": searchResult.caseSearchResult.EmergencyNumber,
+          "patientId": searchResult.caseSearchResult.PatientId,
+          "tagNumber": searchResult.caseSearchResult.TagNumber,
+          "currentLocation": searchResult.caseSearchResult.CurrentLocation,
+          "callDateTime": searchResult.caseSearchResult.CallDateTime,
+          "callOutcome": searchResult.caseSearchResult.CallOutcome,
           "icon": "close"
     });
       this.selected.setValue(this.tabs.length - 1);
   }
 
-  public openCase(object: any) {
+  public openCase(result: searchResponseWrapper) {
 
-    let tabExists = this.tabs.find(card => card.emergencyCaseId == object.emergencyCaseId)
+    let tabExists = this.tabs.find(card => card.emergencyCaseId == result.caseSearchResult.EmergencyCaseId)
 
     tabExists ?
       this.selected.setValue(tabExists.id)
       :
-      this.addTab(object.emergencyCaseId, object.patientId, object.tagNumber, object.currentLocation);
+      this.addTab(result);
  }
 }

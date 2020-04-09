@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAIA,AAAA,eAAe,CACf;EACE,MAAM,EAAE,SAAS;EACjB,aAAa,EAAE,GAAG;EAClB,YAAY,EARC,OAAO;EASpB,YAAY,EAAC,GAAG;EAChB,aAAa,EAAC,GAAG;CAClB",
+    "sources": [
+        "location-details.component.scss"
+    ],
+    "names": [],
+    "file": "location-details.component.css"
+}

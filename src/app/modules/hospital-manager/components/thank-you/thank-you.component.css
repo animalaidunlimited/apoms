@@ -1,3 +1,6 @@
 .form-sub-group {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
+/*# sourceMappingURL=thank-you.component.css.map */

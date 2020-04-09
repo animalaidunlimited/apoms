@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CrudService } from 'src/app/core/services/http/crud.service';
+import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { Patient } from 'src/app/core/models/patients';
 @Injectable({
   providedIn: 'root'
 })
-export class PatientService extends CrudService  {
+export class PatientService extends APIService  {
 
   constructor(http: HttpClient) {
     super(http)
@@ -38,6 +38,7 @@ export class PatientService extends CrudService  {
    return this.getObservable(request)
    .pipe(
      map((response:Patient[]) => {
+       console.log(response);
        return response;
      })
    );

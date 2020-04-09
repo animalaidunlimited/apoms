@@ -16,13 +16,16 @@ USE `AAU` ;
 
 CREATE TABLE IF NOT EXISTS `AAU`.`Organisation` (
 OrganisationId INT  NOT NULL AUTO_INCREMENT,
-Organisation VARCHAR(100) NOT NULL
+Organisation VARCHAR(100) NOT NULL,
+PRIMARY KEY (`OrganisationId`)
 );
 
 INSERT INTO AAU.Organisation (Organisation) VALUES ('Animal Aid Charitable Trust');
 INSERT INTO AAU.Organisation (Organisation) VALUES ('Sarvoham');
 INSERT INTO AAU.Organisation (Organisation) VALUES ('Helping Hands For Animals');
 
+ALTER TABLE `AAU`.`Logging` 
+CHANGE COLUMN `OrganisationId` `OrganisationId` INT(11) NOT NULL DEFAULT 1 ;
 
 -- -----------------------------------------------------
 -- Table `AAU`.`Dispatcher`
@@ -35,13 +38,13 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Dispatcher` (
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`DispatcherId`),
-  INDEX `FK_DispatcherOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_DispatcherOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_DispatcherOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `Dispatcher_UNIQUE` (`Dispatcher` ASC) VISIBLE)
+  UNIQUE INDEX `Dispatcher_UNIQUE` (`Dispatcher` ASC))
 ENGINE = InnoDB;
 
 INSERT INTO AAU.Dispatcher (OrganisationId, Dispatcher) VALUES (1,"Heera Lal");
@@ -64,13 +67,13 @@ CREATE TABLE IF NOT EXISTS `AAU`.`EmergencyCode` (
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`EmergencyCodeId`),
-  INDEX `FK_EmergencyCodeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_EmergencyCodeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_EmergencyCodeOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `EmergencyCode_UNIQUE` (`EmergencyCode` ASC) VISIBLE)
+  UNIQUE INDEX `EmergencyCode_UNIQUE` (`EmergencyCode` ASC))
 ENGINE = InnoDB;
 
 INSERT INTO `AAU`.`EmergencyCode` (OrganisationId, EmergencyCode) VALUES (1, "Red");
@@ -86,16 +89,16 @@ CREATE TABLE IF NOT EXISTS `AAU`.`CallOutcome` (
   `CallOutcomeId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `CallOutcome` VARCHAR(128) NOT NULL,
-  `IsDeleted` BOOLEAN NOT NULL,
+  `IsDeleted` BOOLEAN NOT NULL DEFAULT 0,
   `DeletedDate` DATE NULL,
   PRIMARY KEY (`CallOutcomeId`),
-  INDEX `FK_CallOutcomeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_CallOutcomeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) ,
   CONSTRAINT `FK_CallOutcomeOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `CallOutcome_UNIQUE` (`CallOutcome` ASC, `OrganisationId` ASC) VISIBLE)
+  UNIQUE INDEX `CallOutcome_UNIQUE` (`CallOutcome` ASC, `OrganisationId` ASC))
 ENGINE = InnoDB;
 
 INSERT INTO AAU.CallOutcome (OrganisationId, CallOutcome) VALUE (1, "Admission");
@@ -134,20 +137,25 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Caller` (
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
-  PRIMARY KEY (`CallerId`),
-  INDEX `IX_Caller_Phone` (`Number` ASC) INVISIBLE,
-  INDEX `IX_Caller_Name` (`Name` ASC) VISIBLE,
-  INDEX `FK_CallOutcomeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
-  CONSTRAINT `FK_CallOutcomeOrganisationId_OrganisationOrganisationId`
-    FOREIGN KEY (`OrganisationId`)
-    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  UNIQUE INDEX `Caller_UNIQUE` (`Name` ASC, `Number` ASC) VISIBLE)
+  PRIMARY KEY (`CallerId`))
 ENGINE = InnoDB;
 
-INSERT INTO AAU.Caller (Name, PreferredName, Number, AlternativeNumber, Email, Address) VALUES
-('Unknown caller','Unknown caller','',null,'Unknown email','Unknown address');
+ALTER TABLE `AAU`.`Caller` 
+ADD INDEX `IX_Number` (`Number` ASC),
+ADD INDEX `IX_Name` (`Name` ASC),
+ADD INDEX `Caller_UNIQUE` (`Name` ASC, `Number` ASC),
+ADD INDEX `FK_CallOutcomeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC);
+
+ALTER TABLE `AAU`.`Caller` 
+ADD CONSTRAINT `FK_CallOutcomeOrganisationId_OrganisationOrganisationIdx`
+  FOREIGN KEY (`OrganisationId`)
+  REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+INSERT INTO `AAU`.`Caller` (OrganisationId, Name, PreferredName, Number, AlternativeNumber, Email, Address) VALUES
+(1, 'Unknown caller','Unknown caller','',null,'Unknown email','Unknown address');
 
 
 -- -----------------------------------------------------
@@ -161,13 +169,13 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Rescuer` (
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`RescuerId`),
-  INDEX `FK_RescuerOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_RescuerOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_RescuerOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `Rescuer_UNIQUE` (`Rescuer` ASC) VISIBLE)
+  UNIQUE INDEX `Rescuer_UNIQUE` (`Rescuer` ASC))
 ENGINE = InnoDB;
 
 INSERT INTO AAU.Rescuer (OrganisationId, Rescuer) VALUES (1, "Baghat Singh");
@@ -213,20 +221,19 @@ CREATE TABLE IF NOT EXISTS `AAU`.`EmergencyCase` (
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`EmergencyCaseId`),
-  UNIQUE INDEX `EmergencyNumber_UNIQUE` (`EmergencyNumber` ASC) VISIBLE,
-  INDEX `DK_EmergencyCaseDispatcherId_DispatcherDispatcherId_idx` (`DispatcherId` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeI_idx` (`EmergencyCodeId` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseCallOutcomeId_CaseOutcomeCaseOutcomeId_idx` (`CallOutcomeId` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseCallerId_CallerCallerId_idx` (`CallerId` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseRescuer1_RescuerRescuerId_idx` (`Rescuer1Id` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseRescuer2_RescuerRescuerId_idx` (`Rescuer2Id` ASC) VISIBLE,
-  INDEX `FK_EmergencyCaseOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  UNIQUE INDEX `EmergencyNumber_UNIQUE` (`EmergencyNumber` ASC),
+  INDEX `DK_EmergencyCaseDispatcherId_DispatcherDispatcherId_idx` (`DispatcherId` ASC),
+  INDEX `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeI_idx` (`EmergencyCodeId` ASC),
+  INDEX `FK_EmergencyCaseCallOutcomeId_CaseOutcomeCaseOutcomeId_idx` (`CallOutcomeId` ASC),
+  INDEX `FK_EmergencyCaseCallerId_CallerCallerId_idx` (`CallerId` ASC),
+  INDEX `FK_EmergencyCaseRescuer1_RescuerRescuerId_idx` (`Rescuer1Id` ASC),
+  INDEX `FK_EmergencyCaseRescuer2_RescuerRescuerId_idx` (`Rescuer2Id` ASC),
+  INDEX `FK_EmergencyCaseOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_EmergencyCaseOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  UNIQUE INDEX `Rescuer_UNIQUE` (`Rescuer` ASC) VISIBLE)
   CONSTRAINT `FK_EmergencyCaseDispatcherId_DispatcherDispatcherId`
     FOREIGN KEY (`DispatcherId`)
     REFERENCES `AAU`.`Dispatcher` (`DispatcherId`)
@@ -268,17 +275,20 @@ CREATE TABLE IF NOT EXISTS `AAU`.`AnimalType` (
   `OrganisationId` INT NOT NULL,
   `AnimalType` VARCHAR(45) NOT NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
+  `StreetTreatOnly` TINYINT NOT NULL DEFAULT 0,
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`AnimalTypeId`),
-  UNIQUE INDEX `AnimalType_UNIQUE` (`AnimalType` ASC) VISIBLE),
-  INDEX `FK_AnimalTypeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  UNIQUE INDEX `AnimalType_UNIQUE` (`AnimalType` ASC),
+  INDEX `FK_AnimalTypeOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_AnimalTypeOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+UPDATE `AAU`.`AnimalType` SET `StreetTreatOnly` = 1 WHERE `AnimalTypeId` > -1;
 
 -- -----------------------------------------------------
 -- Table `AAU`.`PatientStatus`
@@ -309,17 +319,17 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Patient` (
   `AnimalTypeId` INT NOT NULL,
   `TagNumber` VARCHAR(5) NULL,
   `PatientStatusId` INT NOT NULL DEFAULT 1,
-  `PatientStatusDate` DATE NOT NULL,
+  `PatientStatusDate` DATE NULL,
   `PN` CHAR(1),
   `SuspectedRabies` TINYINT,
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`PatientId`),
-  UNIQUE INDEX `PatientTagNumber_UNIQUE` (`TagNumber` ASC, `OrganisationId` ASC) VISIBLE,
-  INDEX `FK_PatientEmergencyCaseId_EmergencyCaseEmeregncyCaseId_idx` (`EmergencyCaseId` ASC) VISIBLE,
-  INDEX `FK_PatientAnimalTypeId_AnimalTypeAnimalTypeId_idx` (`AnimalTypeId` ASC) VISIBLE,
-  INDEX `FK_PatientOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE, 
+  UNIQUE INDEX `PatientTagNumber_UNIQUE` (`TagNumber` ASC, `OrganisationId` ASC),
+  INDEX `FK_PatientEmergencyCaseId_EmergencyCaseEmeregncyCaseId_idx` (`EmergencyCaseId` ASC),
+  INDEX `FK_PatientAnimalTypeId_AnimalTypeAnimalTypeId_idx` (`AnimalTypeId` ASC),
+  INDEX `FK_PatientOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC), 
    CONSTRAINT `FK_PatientStatusId_PatientStatusPatientStatusId`
     FOREIGN KEY (`PatientStatusId`)
     REFERENCES `AAU`.`PatientStatus` (`PatientStatusId`)
@@ -353,12 +363,12 @@ CREATE TABLE IF NOT EXISTS `AAU`.`Problem` (
   `IsDeleted` BOOLEAN NOT NULL DEFAULT FALSE,
   `DeletedDate` DATETIME NULL,
   PRIMARY KEY (`ProblemId`),
-  UNIQUE INDEX `Problem_UNIQUE` (`Problem` ASC) VISIBLE),
-  INDEX `FK_ProblemOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  UNIQUE INDEX `Problem_UNIQUE` (`Problem` ASC),
+  INDEX `FK_ProblemOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_ProblemOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
-    ON DELETE NO ACTION
+    ON DELETE NO ACTION)
 ENGINE = InnoDB;
 
 INSERT INTO AAU.Problem (OrganisationId, Problem, ProblemStripped) VALUES (1, "Abnormal behaviour","AbnormalBehaviour");
@@ -411,8 +421,8 @@ CREATE TABLE IF NOT EXISTS `AAU`.`PatientProblem` (
   `ProblemId` INT NOT NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
   PRIMARY KEY (`PatientId`, `ProblemId`),
-  INDEX `FK_PatientProblemProblemId_ProblemProblemId_idx` (`ProblemId` ASC) VISIBLE,
-  INDEX `FK_PatientProblemOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  INDEX `FK_PatientProblemProblemId_ProblemProblemId_idx` (`ProblemId` ASC),
+  INDEX `FK_PatientProblemOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_PatientProblemOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
@@ -432,19 +442,19 @@ ENGINE = InnoDB;
 ALTER TABLE `AAU`.`Logging` 
 ADD COLUMN `OrganisationId` INT(11) AFTER `LoggingId`;
 UPDATE `AAU`.`Logging` SET OrganisationId = 1 WHERE LoggingId != -1;
-ALTER TABLE AAU.Logging ALTER OrganisationId INT NOT NULL;
+ALTER TABLE AAU.Logging MODIFY OrganisationId INT NOT NULL;
 
 ALTER TABLE `AAU`.`AnimalType` ADD COLUMN OrganisationId INT AFTER AnimalTypeId;
 UPDATE `AAU`.`AnimalType` SET OrganisationId = 1 WHERE AnimalTypeId != -1;
-ALTER TABLE `AAU`.`AnimalType` ALTER OrganisationId INT NOT NULL;
+ALTER TABLE `AAU`.`AnimalType` MODIFY OrganisationId INT NOT NULL;
 
 ALTER TABLE `AAU`.`User` ADD COLUMN OrganisationId INT AFTER UserId;
 UPDATE `AAU`.`User` SET OrganisationId = 1 WHERE UserId != -1;
-ALTER TABLE `AAU`.`User` ALTER OrganisationId INT NOT NULL;
+ALTER TABLE `AAU`.`User` MODIFY OrganisationId INT NOT NULL;
 
 
 ALTER TABLE `AAU`.`User` 
-ADD UNIQUE INDEX `UQ_UserName` (`UserName` ASC) VISIBLE;
+ADD UNIQUE INDEX `UQ_UserName` (`UserName` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

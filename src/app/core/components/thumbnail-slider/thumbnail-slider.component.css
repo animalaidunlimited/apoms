@@ -6,21 +6,32 @@
   padding-right: 5px;
   text-align: center;
 }
+
 .mat-tab-body-content {
-  transform: none !important;
+  -webkit-transform: none !important;
+          transform: none !important;
 }
+
 .gallery-wrapper {
   text-align: center;
 }
+
 .gallery-wrapper .ngx-gallery {
   display: inline-block;
   margin-bottom: 20px;
   height: 100%;
   width: 100%;
+  /* width: 500px;
+     height: 400px;
+     border-color: #4a89ff;*/
 }
+
 .mat-drawer-inner-container {
-  box-sizing: unset !important;
+  -webkit-box-sizing: unset !important;
+          box-sizing: unset !important;
 }
+
 .legend {
   text-align: start !important;
 }
+/*# sourceMappingURL=thumbnail-slider.component.css.map */

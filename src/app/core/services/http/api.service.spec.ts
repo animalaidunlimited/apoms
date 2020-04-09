@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CrudService } from './crud.service';
+import { APIService } from '../../services/http/api.service'
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -8,14 +8,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 @Injectable({
     providedIn: 'root',
 })
-class TestCrud extends CrudService {
+class TestAPI extends APIService {
     endpoint = '';
     constructor(http: HttpClient) {
         super(http);
     }
 }
 
-describe('CrudService', () => {
+describe('APIService', () => {
     beforeEach(() =>
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -23,7 +23,7 @@ describe('CrudService', () => {
     );
 
     it('should be created', () => {
-        const service: CrudService = TestBed.get(TestCrud);
+        const service: APIService = TestBed.get(TestAPI);
         expect(service).toBeTruthy();
     });
 });

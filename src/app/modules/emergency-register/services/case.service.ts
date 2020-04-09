@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CrudService } from 'src/app/core/services/http/crud.service';
+import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, RescueDetails, SearchResponse } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CaseService extends CrudService {
+export class CaseService extends APIService {
 
   constructor(
     http: HttpClient,
@@ -194,6 +194,7 @@ export class CaseService extends CrudService {
     return this.getObservable(request)
     .pipe(
       map((response:SearchResponse) => {
+        console.log(response);
         return response;
       })
     );

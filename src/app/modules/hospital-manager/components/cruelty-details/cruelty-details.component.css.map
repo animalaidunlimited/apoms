@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,eAAe,CACf;EACI,KAAK,EAAE,WAAW;CACrB",
+    "sources": [
+        "cruelty-details.component.scss"
+    ],
+    "names": [],
+    "file": "cruelty-details.component.css"
+}

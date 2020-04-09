@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,cAAc,CACd;EACI,OAAO,EAAE,CAAC;CACb;;AAGD,AAAA,sBAAsB,CAAA;EAClB,MAAM,EAAE,IAAI;EACZ,KAAK,EAAE,IAAI;CACd",
+    "sources": [
+        "hospital-manager-tab-bar.component.scss"
+    ],
+    "names": [],
+    "file": "hospital-manager-tab-bar.component.css"
+}

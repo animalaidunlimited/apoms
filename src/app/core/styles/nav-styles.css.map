@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AACI,mBADe,CACf,yBAAyB,CAAC;EACtB,OAAO,EAAE,UAAU;CACtB",
+    "sources": [
+        "nav-styles.scss"
+    ],
+    "names": [],
+    "file": "nav-styles.css"
+}

@@ -22,6 +22,8 @@ import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-up
 import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
 import { PatientStatusModule } from 'src/app/core/components/patient-status/patient-status.module';
 import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
+import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
+import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 
 
 
@@ -47,7 +49,9 @@ import { PatientDetailsComponent } from './components/patient-details/patient-de
     LocationDetailsModule,
     CallerDetailsModule,
     ThumbnailSliderModule,
-    PatientStatusModule
+    PatientStatusModule,
+    RescueDetailsModule,
+    EmergencyDetailsModule
   ],
   exports: [
   ]

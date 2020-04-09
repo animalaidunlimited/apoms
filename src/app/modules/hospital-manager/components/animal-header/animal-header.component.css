@@ -5,14 +5,18 @@
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .tag-number {
   font-size: 3em;
   color: #626262;
 }
+
 .current-area {
   font-size: 2em;
   color: #626262;
 }
+
 .primary-font-color {
   color: #626262;
 }
+/*# sourceMappingURL=animal-header.component.css.map */

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "emergency-details.component.scss"
+    ],
+    "names": [],
+    "file": "emergency-details.component.css"
+}
