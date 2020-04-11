@@ -47,15 +47,19 @@ mat-radio-button{
 }
 
 .extra-wide{
-  // width: $standard-width * 3;
+  width: $standard-width * 3;
 }
 
 .double-width{
-  // width: $standard-width * 2;
+  width: $standard-width * 2;
 }
 
 .wide{
-  // width: $standard-width * 1.5;
+  width: $standard-width * 1.5;
+}
+
+.mat-raised-button{
+  width: $standard-width;
 }
 
 .mat-tab-label .mat-tab-label-content{

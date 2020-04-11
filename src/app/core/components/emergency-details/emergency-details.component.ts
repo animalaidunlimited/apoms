@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../utils';
@@ -14,6 +14,7 @@ import { UniqueEmergencyNumberValidator } from '../../validators/emergency-numbe
 export class EmergencyDetailsComponent implements OnInit {
 
   @Input() recordForm:FormGroup;
+  @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
   errorMatcher = new CrossFieldErrorMatcher();
 
   dispatchers$;
@@ -42,6 +43,14 @@ export class EmergencyDetailsComponent implements OnInit {
     .subscribe(result => {
       this.recordForm.patchValue(result);
     });
+
+    this.recordForm.get("emergencyDetails.emergencyNumber").valueChanges.subscribe(val => {
+      this.updateEmergencyNumber(val);
+    });
+  }
+
+  updateEmergencyNumber(emergencyNumber:number){
+    this.onLoadEmergencyNumber.emit(emergencyNumber);
   }
 
 }

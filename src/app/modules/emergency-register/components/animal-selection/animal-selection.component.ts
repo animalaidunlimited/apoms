@@ -138,12 +138,8 @@ export class AnimalSelectionComponent implements OnInit{
 
   loadPatientArray(emergencyCaseId:number){
 
-    console.log(emergencyCaseId);
-
           this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
           .subscribe((patients: Patients) => {
-
-            console.log(patients);
 
             let patientArray = this.recordForm.get("patients") as FormArray;
 

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../material-module';
 
+import {GoogleMapsModule} from '@angular/google-maps';
+
 import { LocationDetailsComponent } from '../location-details/location-details.component'
 
 @NgModule({
@@ -11,9 +13,8 @@ import { LocationDetailsComponent } from '../location-details/location-details.c
     ],
     imports: [
         CommonModule,
-        MaterialModule
-
-
+        MaterialModule,
+        GoogleMapsModule
     ],
     exports: [
         LocationDetailsComponent

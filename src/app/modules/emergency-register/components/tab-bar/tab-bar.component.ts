@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SearchResponse, searchResponseWrapper } from 'src/app/core/models/responses';
+import { searchResponseWrapper } from 'src/app/core/models/responses';
 
 @Component({
   selector: 'tab-bar',
@@ -9,17 +9,17 @@ import { SearchResponse, searchResponseWrapper } from 'src/app/core/models/respo
 })
 
 
-export class TabBarComponent {
+export class TabBarComponent implements OnInit {
 
   tabs = [{"id":0, "value": "Search", "emergencyCaseId": 0, "icon":""}];
 
   selected = new FormControl(0);
 
-  // ngOnInit()
-  // {
+  ngOnInit()
+  {
     // this.tabs.push({"id":0, "value": "Search", "emergencyCaseId": 0, "icon":""});
     // this.tabs.push({"id":1, "value": "70008", "emergencyCaseId": 51, "icon":""});
-  // }
+  }
 
   removeTab(index: number) {
     //TODO find out why the ngif in the mat-label causes and error and fix
@@ -44,6 +44,11 @@ export class TabBarComponent {
       this.selected.setValue(tabExists.id)
       :
       this.addTab(result.caseSearchResult.EmergencyCaseId, result.caseSearchResult.EmergencyNumber.toString());
+
+ }
+
+ public updateEmergencyNumber(emergencyNumber:number){
+   this.tabs[this.selected.value].value = emergencyNumber.toString();
 
  }
 }
