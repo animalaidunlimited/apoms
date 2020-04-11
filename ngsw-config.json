@@ -39,7 +39,7 @@
   }, {
     "name": "api-performance",
     "urls": [
-      "/Case/**"
+      "/Dropdown/**"
     ],
     "cacheConfig": {
       "maxSize": 100,

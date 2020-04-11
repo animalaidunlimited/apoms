@@ -30,6 +30,18 @@ mat-radio-button {
   margin-top: 20px !important;
   margin-bottom: 20px !important;
 }
+.extra-wide {
+  width: 525px;
+}
+.double-width {
+  width: 350px;
+}
+.wide {
+  width: 262.5px;
+}
+.mat-raised-button {
+  width: 175px;
+}
 .mat-tab-label .mat-tab-label-content {
   margin-left: 24px !important;
 }

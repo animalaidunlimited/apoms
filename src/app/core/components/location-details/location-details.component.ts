@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
-import { environment } from '../../../../environments/environment';
 import { UserOptionsService } from '../../services/user-options.service';
 
 import { LocationDetailsService } from './location-details.service';
@@ -116,7 +115,7 @@ invokeEvent(place: Object) {
 }
 
 initialiseLocation(coordinates:Location){
-
+  
   this.zoom = 13;
 
   this.markers = [];

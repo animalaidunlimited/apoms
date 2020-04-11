@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 
@@ -22,19 +22,16 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 export class EmergencyRecordComponent implements OnInit{
 
   @Input() emergencyCaseId;
+  @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
 
   recordForm: FormGroup;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  // filteredAreas: Observable<any[]>;
-
   notificationDurationSeconds:number;
 
 
   callOutcomes$;
-
-  // areas: any[];
 
   currentTime:string;
 
@@ -49,11 +46,7 @@ export class EmergencyRecordComponent implements OnInit{
 ngOnInit()
 {
 
-
-  // this.areas = this.dropdowns.getAreas();
-
   this.callOutcomes$ = this.dropdowns.getCallOutcomes();
-
 
   this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -72,6 +65,8 @@ ngOnInit()
   if(this.emergencyCaseId){
     this.initialiseForm();
   }
+
+
 
   this.onChanges();
 }
@@ -273,6 +268,10 @@ onChanges(): void {
     this._snackBar.open(message, action, {
       duration: this.notificationDurationSeconds * 1000,
     });
+  }
+
+  emergencyNumberUpdated(emergencyNumber:number){
+    this.onLoadEmergencyNumber.emit(emergencyNumber);
   }
 
 }

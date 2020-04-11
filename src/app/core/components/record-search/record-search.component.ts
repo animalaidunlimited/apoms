@@ -62,8 +62,7 @@ export class Search {
 })
 export class RecordSearchComponent implements OnInit{
 
-  @Output()
-  public onOpenEmergencyCase = new EventEmitter<any>();
+  @Output() public onOpenEmergencyCase = new EventEmitter<any>();
 
   searchFieldForm = new FormControl();
 

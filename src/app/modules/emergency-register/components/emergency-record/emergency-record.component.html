@@ -1,11 +1,11 @@
 
-<form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
+<form [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
 
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
                 <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
 
-                    <emergency-details [recordForm]="recordForm"></emergency-details>
+                    <emergency-details [recordForm]="recordForm" (onLoadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
                     <animal-selection [recordForm]="recordForm"></animal-selection>
 

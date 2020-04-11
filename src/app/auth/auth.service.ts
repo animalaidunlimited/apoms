@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { APIService } from '../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
+import { BootController } from '../../boot-controller';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response{
@@ -21,7 +22,7 @@ export class AuthService extends APIService {
     response: Response;
     redirectUrl: string;
 
-    constructor(http: HttpClient,private storage: StorageService
+    constructor(http: HttpClient,private ngZone: NgZone,private storage: StorageService
         ) {
         super(http);
         this.token = this.storage.read(AUTH_TOKEN) || '';
@@ -67,6 +68,9 @@ export class AuthService extends APIService {
     public logout() {
         this.token = '';
         this.storage.remove(AUTH_TOKEN);
+        
+        this.ngZone.runOutsideAngular(() => BootController.getbootControl().restart());
+
     }
 
     public isLogged(): boolean {
