@@ -53,4 +53,13 @@ export class EmergencyDetailsComponent implements OnInit {
     this.onLoadEmergencyNumber.emit(emergencyNumber);
   }
 
+  setInitialTime(){
+    let currentTime = this.recordForm.get("emergencyDetails.callDateTime");
+
+    if(!currentTime.value){
+      currentTime.setValue(getCurrentTimeString());
+    }
+
+  }
+
 }

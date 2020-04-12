@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { Callers, Caller } from '../../models/responses';
 import { startWith, debounceTime, switchMap, map, catchError, tap } from 'rxjs/operators';
 import { CallerDetailsService } from './caller-details.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'caller-details',
@@ -33,11 +34,10 @@ export class CallerDetailsComponent implements OnInit {
       "callerDetails", this.fb.group({
         callerId: [],
         callerName: ["", Validators.required],
-        callerNumber: ["", Validators.required],
-        callerAlternativeNumber: [""]
+        callerNumber: ["", [Validators.required, Validators.pattern("^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$")]],
+        callerAlternativeNumber: ["",Validators.pattern("^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$")]
       })
     );
-
 
     this.callerService.getCallerByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
     .subscribe((caller: Caller) => {
@@ -104,7 +104,7 @@ export class CallerDetailsComponent implements OnInit {
     });
   }
 
-  setCallerDetails($event)
+  setCallerDetails($event:MatAutocompleteSelectedEvent)
   {
     let caller = $event.option.value;
 

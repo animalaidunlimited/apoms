@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HospitalManagerPageComponent } from './hospital-manager-page.component';
+import { HospitalManagerTabBarComponent } from '../../components/hospital-manager-tab-bar/hospital-manager-tab-bar.component';
 
 describe('HospitalManagerPageComponent', () => {
   let component: HospitalManagerPageComponent;
@@ -8,7 +9,7 @@ describe('HospitalManagerPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HospitalManagerPageComponent ]
+      declarations: [ HospitalManagerPageComponent, HospitalManagerTabBarComponent ]
     })
     .compileComponents();
   }));
