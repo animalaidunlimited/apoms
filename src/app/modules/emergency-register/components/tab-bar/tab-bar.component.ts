@@ -48,7 +48,7 @@ export class TabBarComponent implements OnInit {
  }
 
  public updateEmergencyNumber(emergencyNumber:number){
-   this.tabs[this.selected.value].value = emergencyNumber.toString();
+   this.tabs[this.selected.value].value = (emergencyNumber || "New Case*").toString();
 
  }
 }

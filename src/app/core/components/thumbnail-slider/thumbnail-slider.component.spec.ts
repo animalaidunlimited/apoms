@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ThumbnailSliderComponent } from './thumbnail-slider.component';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 describe('ThumbnailSliderComponent', () => {
   let component: ThumbnailSliderComponent;
@@ -8,6 +9,7 @@ describe('ThumbnailSliderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [NgxGalleryModule],
       declarations: [ ThumbnailSliderComponent ]
     })
     .compileComponents();
