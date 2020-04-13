@@ -8,10 +8,10 @@ import { searchResponseWrapper } from 'src/app/core/models/responses';
   styleUrls: ['./tab-bar.component.scss']
 })
 
-
 export class TabBarComponent implements OnInit {
 
-  tabs = [{"id":0, "value": "Search", "emergencyCaseId": 0, "icon":""}];
+  tabs = [{"id":0, "value": "Board", "emergencyCaseId": 0, "icon":""},
+          {"id":1, "value": "Search", "emergencyCaseId": 0, "icon":""}];
 
   selected = new FormControl(0);
 

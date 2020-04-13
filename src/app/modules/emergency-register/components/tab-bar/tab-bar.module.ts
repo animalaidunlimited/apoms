@@ -6,12 +6,13 @@ import { RecordSearchModule } from 'src/app/core/components/record-search/record
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { MaterialModule } from 'src/app/material-module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
+import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstanding-case-board.component';
 
 
 @NgModule({
     declarations: [
         TabBarComponent,
-
+        OutstandingCaseBoardComponent,
     ],
     imports: [
         CommonModule,
