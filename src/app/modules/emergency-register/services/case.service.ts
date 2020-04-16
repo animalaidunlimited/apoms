@@ -216,17 +216,33 @@ export class CaseService extends APIService {
 
   }
 
-  public getRescueDetailsByEmergencyCaseId(emergencyCaseId: number):Observable<any>{
 
-    let request = "/RescueDetails?emergencyCaseId=" + emergencyCaseId;
+
+  public getReceived():Observable<any>{
+
+    let request = "/Received";
 
     return this.getObservable(request)
     .pipe(
-      map((response:RescueDetails) => {
+      map((response) => {
         return response;
       })
     );
 
   }
+
+  public getAssigned():Observable<any>{
+
+    let request = "/Assigned";
+
+    return this.getObservable(request)
+    .pipe(
+      map((response) => {
+        return response;
+      })
+    );
+
+  }
+
 }
 

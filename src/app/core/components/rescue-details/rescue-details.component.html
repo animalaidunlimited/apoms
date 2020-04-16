@@ -1,8 +1,4 @@
-<form [formGroup]="recordForm.get('rescueDetails')" class="form-sub-group">
-
-
-
-    <legend class="legend">Rescue Details</legend>
+<form [formGroup]="recordForm.get('rescueDetails')">
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
@@ -69,7 +65,7 @@
                 </mat-error>
         </mat-form-field>
 
-            <mat-form-field>
+        <mat-form-field>
                     <input formControlName="rescueTime" type="datetime-local" name="rescueTime"
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
                     (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput>

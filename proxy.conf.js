@@ -4,13 +4,14 @@ const PROXY_CONFIG = [
             "/Auth",
             "/Dropdown",
             "/EmergencyRegister",
+            "/RescueDetails",
             "/Health",
             "/Caller",
             "/Patient",
             "/Login",
             "/Location"
         ],
-        target: "https://streettreat.appspot.com/",
+        target: "http://localhost:8080/",
         changeOrigin: "true",
         secure: true
     }

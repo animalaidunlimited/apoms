@@ -27,7 +27,15 @@
 
             <caller-details [recordForm]="recordForm"></caller-details>
             <location-details [recordForm]="recordForm"></location-details>
-            <rescue-details [recordForm]="recordForm" ></rescue-details>
+
+            <fieldset class="form-sub-group" autocomplete=false>
+                <legend class="legend">Rescue details</legend>
+                <rescue-details
+                    [recordForm]="recordForm"
+                    [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId').value">
+                </rescue-details>
+             </fieldset>
+
             <census-details></census-details>
             <surgery-details></surgery-details>
 

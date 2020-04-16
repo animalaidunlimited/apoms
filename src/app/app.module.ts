@@ -12,7 +12,6 @@ import { MaterialModule } from './material-module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-
 @NgModule({
     declarations: [
         AppComponent,

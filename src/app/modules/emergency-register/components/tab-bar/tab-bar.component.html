@@ -1,7 +1,6 @@
-<!-- <div class="tab-container"> -->
 
-        <mat-tab-group [selectedIndex]="selected.value"
-                (selectedIndexChange)="selected.setValue($event)">
+<mat-tab-group [selectedIndex]="selected.value"
+        (selectedIndexChange)="selected.setValue($event)">
 
         <mat-tab *ngFor="let tab of tabs; let index = index"
         label="tab">
@@ -16,6 +15,7 @@
 
         </mat-tab>
 
+        <!-- TODO: Fix the positioning of the icon to the middle of the tab. It's off to the right at the moment -->
         <mat-tab disabled>
         <ng-template mat-tab-label>
                 <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addTab(0,'New Call*')">
@@ -24,8 +24,5 @@
         </ng-template>
         </mat-tab>
 
-        </mat-tab-group>
-
-
-<!-- </div> -->
+</mat-tab-group>
 

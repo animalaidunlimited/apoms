@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "",
     "sources": [
-        "quick-edit.component.scss"
+        "patient-edit.component.scss"
     ],
     "names": [],
-    "file": "quick-edit.component.css"
+    "file": "patient-edit.component.css"
 }

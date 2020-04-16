@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { BoardSocketService } from '../../services/board-socket.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
+import { FormBuilder } from '@angular/forms';
+import { OutstandingCase } from 'src/app/core/models/outstanding-case';
+import { filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
+
 
 @Component({
   selector: 'outstanding-case-board',
@@ -8,53 +17,115 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class OutstandingCaseBoardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public rescueDialog: MatDialog,
+    private fb: FormBuilder,
+    private socketService: BoardSocketService) { }
+
+  outstandingCases:OutstandingCase[];
+  received:OutstandingCase[];
+  assigned:OutstandingCase[];
+  arrived:OutstandingCase[];
+  rescued:OutstandingCase[];
+  admitted:OutstandingCase[];
+
+  // swimlanes = ["A", "B", "C", "D"];
+
+  swimlanes = [
+    {"key":"received", "name":"Received", "array": []},
+    {"key": "assigned", "name": "Assigned", "array": []},
+    {"key": "arrived", "name": "Arrived", "array": []},
+    {"key": "rescued", "name": "Rescued", "array": []},
+    {"key": "admitted", "name": "Admitted", "array": []}];
 
   ngOnInit(): void {
+
+    this.setupConnection();
+
   }
 
-  received = [
-    '14324',
-    '14325',
-    '14326',
-    '14327'
-  ];
+  async setupConnection(){
 
-  assigned = [
-    '14335',
-    '14397',
-    '14353',
-    '14391'
-  ];
+    await this.socketService.setupSocketConnection().then();
 
-  arrived = [
-    '14345',
-    '14323',
-    '14367',
-    '14398'
-  ];
+    this.socketService.getOutstandingRescues().subscribe(outstandingCases =>
 
-  rescued = [
-    '14249',
-    '14535',
-    '14456'
-  ];
+      this.setOutstandingCases(outstandingCases)
+      );
 
-  admitted = [
-    '14452',
-    '14362',
-    '14167'
-  ];
+  }
+
+  setOutstandingCases(outstandingCases:OutstandingCase[]){
+
+    this.received = outstandingCases.filter(outstandingCase => outstandingCase.RescueStatus === 1);
+    this.assigned = outstandingCases.filter(outstandingCase => outstandingCase.RescueStatus === 2);
+    this.arrived = outstandingCases.filter(outstandingCase => outstandingCase.RescueStatus === 3);
+    this.rescued = outstandingCases.filter(outstandingCase => outstandingCase.RescueStatus === 4);
+    this.admitted = outstandingCases.filter(outstandingCase => outstandingCase.RescueStatus === 5);
+
+
+   this.swimlanes = [
+          {"key":"received", "name":"Received", "array": [this.received]},
+          {"key": "assigned", "name": "Assigned", "array": [this.assigned]},
+          {"key": "arrived", "name": "Arrived", "array": [this.arrived]},
+          {"key": "rescued", "name": "Rescued", "array": [this.rescued]},
+          {"key": "admitted", "name": "Admitted", "array": [this.admitted]}];
+
+  }
+
+
 
   drop(event: CdkDragDrop<string[]>) {
+
+
+
+
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+      try{
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      }
+      catch(e){
+        console.log(e)
+      }
     } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+
+      try{
+        this.openRescueEdit(event.container.data[event.previousIndex]);
+
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+      }
+      catch(e){
+        console.log(e)
+      }
     }
+  }
+
+  openRescueEdit(outstandingCase:OutstandingCase){
+
+
+    let recordForm = this.fb.group({
+
+      emergencyDetails: this.fb.group({
+        emergencyCaseId: [outstandingCase.EmergencyCaseId],
+        callDateTime: [''],
+        updateTime: ['']
+      }),
+      callOutcome: this.fb.group({
+        callOutcome: ['']
+      })
+    }
+    );
+
+    this.rescueDialog.open(RescueDetailsDialogComponent, {
+      width: '500px',
+      height: '500px',
+      data: {emergencyCaseId:outstandingCase.EmergencyCaseId, recordForm:recordForm}
+    });
+
   }
 
 }

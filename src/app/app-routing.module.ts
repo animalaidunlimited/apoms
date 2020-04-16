@@ -26,7 +26,8 @@ const routes: Routes = [{path: 'settings',loadChildren: () =>
                 ),},{path: 'hospital-manager',loadChildren: () =>
                 import('./modules/hospital-manager/hospital-manager-page.module').then(
                     m => m.HospitalManagerPageModule,
-                ),},{path: 'emergency-register',loadChildren: () =>
+                ),},
+                {path: 'emergency-register',loadChildren: () =>
                 import('./modules/emergency-register/emergency-register-page.module').then(
                     m => m.EmergencyRegisterPageModule,
                 ),},

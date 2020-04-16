@@ -7,17 +7,17 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'quick-edit',
-  templateUrl: './quick-edit.component.html',
-  styleUrls: ['./quick-edit.component.scss']
+  selector: 'patient-edit',
+  templateUrl: './patient-edit.component.html',
+  styleUrls: ['./patient-edit.component.scss']
 })
-export class QuickEditDialog implements OnInit {
-
+export class PatientEditDialog implements OnInit {
+  
   patientId:number;
   @Input() patientStatusForm;
 
   constructor(
-    public dialogRef: MatDialogRef<QuickEditDialog>,
+    public dialogRef: MatDialogRef<PatientEditDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) {}
 

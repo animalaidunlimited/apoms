@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuickEditDialog } from './quick-edit.component';
+import { PatientEditDialog } from './patient-edit.component';
 
 import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PatientStatusModule } from '../patient-status/patient-status.module';
@@ -9,9 +9,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('QuickEditDialog', () => {
-  let component: QuickEditDialog;
-  let fixture: ComponentFixture<QuickEditDialog>;
+describe('PatientEditDialog', () => {
+  let component: PatientEditDialog;
+  let fixture: ComponentFixture<PatientEditDialog>;
 
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
@@ -20,7 +20,7 @@ describe('QuickEditDialog', () => {
 
   const dialogData = {};
 
-  let dialog: MatDialogRef<QuickEditDialog>;
+  let dialog: MatDialogRef<PatientEditDialog>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,13 +33,13 @@ describe('QuickEditDialog', () => {
         provide: MatDialogRef,
         useValue: mockDialogRef
       }],
-      declarations: [ QuickEditDialog ]
+      declarations: [ PatientEditDialog ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickEditDialog);
+    fixture = TestBed.createComponent(PatientEditDialog);
     component = fixture.componentInstance;
     dialog = TestBed.get(MatDialog);
     fixture.detectChanges();
