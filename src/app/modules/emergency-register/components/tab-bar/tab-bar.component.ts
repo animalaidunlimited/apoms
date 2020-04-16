@@ -23,7 +23,7 @@ export class TabBarComponent implements OnInit {
 
   removeTab(index: number) {
     //TODO find out why the ngif in the mat-label causes and error and fix
-    if(index > 0 && index < this.tabs.length){
+    if(index > 1 && index < this.tabs.length){
       this.tabs.splice(index, 1);
     }
   }

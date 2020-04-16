@@ -40,7 +40,6 @@ export class EmergencyRecordComponent implements OnInit{
     private dropdowns: DropdownService,
     private userOptions: UserOptionsService,
     private _snackBar: MatSnackBar,
-    private emergencyNumberValidator: UniqueEmergencyNumberValidator,
     private caseService: CaseService) {}
 
 ngOnInit()

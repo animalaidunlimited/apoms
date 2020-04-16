@@ -1,13 +1,80 @@
 <div cdkDropListGroup>
-    <div class="drag-drop-container">
-      <h2>Received</h2>
+    <div class="drag-drop-container" *ngFor="let lane of swimlanes">
+      <h2>{{lane.name}}</h2>
 
       <div
+        cdkDropList
+        [cdkDropListData]="lane.array[0]"
+        class="drag-drop-list"
+        (cdkDropListDropped)="drop($event)">
+        <!-- class="drag-drop-box" -->
+        <div
+
+
+        *ngFor="let outstandingCase of lane.array[0]" cdkDrag>
+
+          <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+
+                {{outstandingCase.EmergencyNumber}}
+              </mat-panel-title>
+              <mat-panel-description>
+                <span class ="dot" [ngClass]="{
+                  'dot-red' : outstandingCase.EmergencyCodeId == 1,
+                  'dot-green' : outstandingCase.EmergencyCodeId == 2,
+                  'dot-yellow' : outstandingCase.EmergencyCodeId == 3}">
+                </span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            {{outstandingCase.Rescuer1}}
+            {{outstandingCase.Rescuer1ImageURL}}
+            {{outstandingCase.Rescuer2}}
+            {{outstandingCase.Rescuer2ImageURL}}
+
+            Caller: {{outstandingCase.CallerName}}
+            Caller Number: {{outstandingCase.CallerNumber}}
+
+            Call Date: {{outstandingCase.CallDateTime}}
+
+            Location: {{outstandingCase.Location}}
+
+
+
+
+          </mat-expansion-panel>
+
+
+
+
+        </div>
+      </div>
+
+    </div>
+
+
+      <!-- <div
         cdkDropList
         [cdkDropListData]="received"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let case of received" cdkDrag>{{case}}</div>
+        <div class="drag-drop-box" *ngFor="let case of received" cdkDrag>
+          <mat-icon (click)="openRescueEdit(case)" style="cursor:'pointer'">departure_board</mat-icon>
+
+          <ng-template>
+            {{case.emergencyNumber}}
+
+          </ng-template>
+
+
+          <span class ="dot" [ngClass]="{
+            'dot-red' : case.code == 1,
+            'dot-green' : case.code == 2,
+            'dot-yellow' : case.code == 3}">
+          </span>
+        </div>
       </div>
     </div>
 
@@ -19,7 +86,13 @@
         [cdkDropListData]="assigned"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let case of assigned" cdkDrag>{{case}}</div>
+        <div class="drag-drop-box" *ngFor="let case of assigned" cdkDrag>{{case.emergencyNumber}}
+        <span class ="dot" [ngClass]="{
+          'dot-red' : case.code == 1,
+          'dot-green' : case.code == 2,
+          'dot-yellow' : case.code == 3}">
+        </span>
+      </div>
       </div>
     </div>
 
@@ -57,5 +130,7 @@
           (cdkDropListDropped)="drop($event)">
           <div class="drag-drop-box" *ngFor="let case of admitted" cdkDrag>{{case}}</div>
         </div>
-      </div>
+      </div> -->
+
+
   </div>

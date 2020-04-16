@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { getCurrentTimeString } from '../../utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { CaseService } from '../../../modules/emergency-register/services/case.service';
-import { RescueDetails } from 'src/app/core/models/responses';
+import { RescueDetailsParent } from 'src/app/core/models/responses';
+import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 
 @Component({
   selector: 'rescue-details',
@@ -14,7 +14,9 @@ import { RescueDetails } from 'src/app/core/models/responses';
 
 export class RescueDetailsComponent implements OnInit {
 
+  @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
+
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -24,23 +26,25 @@ export class RescueDetailsComponent implements OnInit {
   currentRescueTime;
   currentTime;
 
-  rescuer1;
-  rescuer2;
-  ambulanceArrivalTime;
-  rescueTime;
-  admissionTime;
-  callDateTime;
+  rescuer1:AbstractControl;
+  rescuer2:AbstractControl;
+  ambulanceArrivalTime:AbstractControl;
+  rescueTime:AbstractControl;
+  admissionTime:AbstractControl;
+  callDateTimeForm:AbstractControl;
+  callOutcome:AbstractControl;
+  callDateTime:AbstractControl;
 
   constructor(private dropdowns: DropdownService,
-    private caseService: CaseService,
-    private fb: FormBuilder) {}
-  // constructor(private errorMatcher: CrossFieldErrorMatcher) {}
-
+    private rescueDetailsService: RescueDetailsService,
+    private fb: FormBuilder,) {}
 
   rescuers$;
   rescueDetails$
 
   ngOnInit() {
+
+
 
     this.rescuers$ = this.dropdowns.getRescuers();
 
@@ -53,10 +57,11 @@ export class RescueDetailsComponent implements OnInit {
         admissionTime: ['']
       }));
 
-    this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe((rescueDetails: RescueDetails) => {
+    this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
+    .subscribe((rescueDetails: RescueDetailsParent) => {
 
       this.recordForm.patchValue(rescueDetails);
+      console.log(rescueDetails);
 
     });
 
@@ -66,7 +71,7 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-
+    this.callOutcome          = this.recordForm.get("callOutcome.callOutcome");
 
     this.updateTimes();
 
@@ -150,7 +155,7 @@ updateValidators()
   }
 
   //When we select admission, we need to check that we have rescue details
-  if(this.recordForm.get("callOutcome.callOutcome").value == 1){
+  if(this.callOutcome.value == "Admission"){
     this.rescuer2.setValidators([Validators.required]);
     this.rescuer1.setValidators([Validators.required]);
 
@@ -166,6 +171,7 @@ updateValidators()
 
 onChanges(): void {
 
+
     this.recordForm.valueChanges.subscribe(val => {
 
       //The values won't have bubbled up to the parent yet, so wait for one tick
@@ -177,7 +183,7 @@ onChanges(): void {
 
   setInitialTime(event)
   {
-    this.currentCallDateTime = this.callDateTime.value;
+    this.currentCallDateTime = this.callDateTime;
 
     let currentTime;
 
@@ -191,7 +197,7 @@ onChanges(): void {
 
   updateTimes()
   {
-    this.currentCallDateTime = this.callDateTime.value;
+    this.currentCallDateTime = this.callDateTime;
 
     let currentTime = getCurrentTimeString();
 
@@ -202,6 +208,17 @@ onChanges(): void {
     this.currentTime = currentTime;
   }
 
+  async onSave(){
 
+    this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
+
+    console.log("Saving");
+
+    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data) => {
+      console.log(data);
+    });
+
+
+  }
 
 }

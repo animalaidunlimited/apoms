@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 
 import { RecordSearchComponent } from './record-search.component';
-import { QuickEditDialog } from '../quick-edit/quick-edit.component';
+import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
@@ -23,7 +23,7 @@ describe('RecordSearchComponent', () => {
 
   const dialogData = {};
 
-  let dialog: MatDialogRef<QuickEditDialog>;
+  let dialog: MatDialogRef<PatientEditDialog>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

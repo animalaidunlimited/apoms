@@ -3,8 +3,9 @@ import {FormBuilder, FormControl, FormGroup, FormArray, Validators} from '@angul
 import { trigger, state, style, animate, transition} from '@angular/animations';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
-import { QuickEditDialog } from '../quick-edit/quick-edit.component';
 import { SearchResponse } from '../../models/responses';
+import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
+import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 
 export interface SearchValue {
   id: number;
@@ -91,6 +92,7 @@ export class RecordSearchComponent implements OnInit{
 
   constructor(
     public dialog: MatDialog,
+    public rescueDialog: MatDialog,
     private formBuilder: FormBuilder,
     private caseService: CaseService) {}
 
@@ -248,16 +250,22 @@ loadHospitalRecord(emergencyCaseId, emergencyNumber){
 }
 
 quickUpdate(patientId:number, tagNumber:string){
-  this.openDialog(patientId,tagNumber);
-}
 
-openDialog(patientId:number, tagNumber:string): void {
-
-  const dialogRef = this.dialog.open(QuickEditDialog, {
+  this.dialog.open(PatientEditDialog, {
     width: '500px',
     data: {patientId:patientId, tagNumber:tagNumber}
   });
 
 }
+
+rescueUpdate(emergencyCaseId:number, callDateTime:Date | string, callOutcome:number){
+
+  this.rescueDialog.open(RescueDetailsComponent, {
+    width: '500px',
+    data: {emergencyCaseId:emergencyCaseId, callDateTime:callDateTime, callOutcome:callOutcome}
+  });
+
+}
+
 
 }

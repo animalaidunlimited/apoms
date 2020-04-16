@@ -1,3 +1,4 @@
+import { CallOutcome, EmergencyDetails } from './emergency-record';
 
 export interface EmergencyResponse
 {
@@ -40,6 +41,12 @@ export interface Location
     location: string;
     latitude: number;
     longitude: number;
+}
+
+export interface RescueDetailsParent {
+    callOutcome: CallOutcome;
+    rescueDetails: RescueDetails;
+    emergencyDetails: EmergencyDetails;
 }
 
 export interface RescueDetails{

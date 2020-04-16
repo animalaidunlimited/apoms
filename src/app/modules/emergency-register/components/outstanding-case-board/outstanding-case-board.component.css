@@ -45,3 +45,18 @@
   .drag-drop-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+.dot {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-red {
+  background-color: red;
+}
+.dot-green {
+  background-color: green;
+}
+.dot-yellow {
+  background-color: gold;
+}

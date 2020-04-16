@@ -109,8 +109,12 @@
             (click)="quickUpdate(result.PatientId, result.TagNumber)">
                 <mat-icon>event</mat-icon>
             </button>
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update rescue details"
+            (click)="rescueUpdate(result.EmergencyCaseId)">
+                <mat-icon>departure_board</mat-icon>
+            </button>
             <button mat-icon-button color="primary" routerLink="/nav/hospital-manager" style="cursor:pointer;" aria-label="Hospital record"
-            (click)="loadHospitalRecord(result.EmergencyCaseId, result.EmergencyNumber)">
+            (click)="loadHospitalRecord(result.EmergencyCaseId, result.CallDateTime, result.CallOutcomeId)">
                 <mat-icon>local_hospital</mat-icon>
             </button>
         </mat-card-actions>

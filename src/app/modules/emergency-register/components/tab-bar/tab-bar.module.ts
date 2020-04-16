@@ -7,11 +7,14 @@ import { RescueDetailsModule } from 'src/app/core/components/rescue-details/resc
 import { MaterialModule } from 'src/app/material-module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstanding-case-board.component';
+import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
+
 
 
 @NgModule({
     declarations: [
         TabBarComponent,
+        RescueDetailsDialogComponent,
         OutstandingCaseBoardComponent,
     ],
     imports: [
@@ -20,7 +23,7 @@ import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstan
         RecordSearchModule,
         RescueDetailsModule,
         EmergencyDetailsModule,
-        MaterialModule
+        MaterialModule,
     ],
     exports: [
         TabBarComponent
