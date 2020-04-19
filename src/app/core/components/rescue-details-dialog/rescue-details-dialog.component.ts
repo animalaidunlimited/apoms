@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
+import { UpdatedRescue } from '../../models/outstanding-case';
 
 export interface DialogData {
   emergencyCaseId: number;
@@ -14,7 +15,7 @@ export interface DialogData {
 })
 export class RescueDetailsDialogComponent implements OnInit {
 
-  @Input() rescueDetailsForm;
+  result:UpdatedRescue;
 
   constructor(
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
@@ -25,7 +26,11 @@ export class RescueDetailsDialogComponent implements OnInit {
    }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.result);
+  }
+
+  resultReceived($event){
+    this.dialogRef.close($event);
   }
 
 }

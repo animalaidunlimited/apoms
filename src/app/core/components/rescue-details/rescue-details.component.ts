@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { getCurrentTimeString } from '../../utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { UpdatedRescue } from '../../models/outstanding-case';
 
 @Component({
   selector: 'rescue-details',
@@ -16,7 +17,7 @@ export class RescueDetailsComponent implements OnInit {
 
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
-
+  @Output() public onResult = new EventEmitter<UpdatedRescue>();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -25,6 +26,8 @@ export class RescueDetailsComponent implements OnInit {
   currentAmbulanceArrivalTime;
   currentRescueTime;
   currentTime;
+
+
 
   rescuer1:AbstractControl;
   rescuer2:AbstractControl;
@@ -61,7 +64,6 @@ export class RescueDetailsComponent implements OnInit {
     .subscribe((rescueDetails: RescueDetailsParent) => {
 
       this.recordForm.patchValue(rescueDetails);
-      console.log(rescueDetails);
 
     });
 
@@ -212,11 +214,12 @@ onChanges(): void {
 
     this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
 
-    console.log("Saving");
+    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdatedRescue) =>
 
-    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data) => {
-      console.log(data);
-    });
+      this.onResult.emit(data)
+
+    );
+
 
 
   }
