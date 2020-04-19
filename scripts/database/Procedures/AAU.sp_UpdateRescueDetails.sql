@@ -12,7 +12,9 @@ CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
                                     IN prm_UpdateTime DATETIME,
-									OUT prm_Success INT)
+									OUT prm_Success INT,
+                                    OUT prm_SocketEndPoint CHAR(3),
+                                    OUT prm_RescueStatus INT)
 BEGIN
 
 /*
@@ -21,15 +23,18 @@ Created On: 29/03/2020
 Purpose: Used to update the status of a patient.
 */
 
-DECLARE vOrganisationId INT;
 DECLARE vUpdateTime DATETIME;
+DECLARE vOrganisationId INT;
 
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
 SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
 
 IF vEmNoExists = 1 AND prm_UpdateTime > vUpdateTime THEN
 
@@ -49,7 +54,9 @@ COMMIT;
     SELECT 1 INTO prm_Success;
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails','Update', NOW());    
+       
+    SET prm_RescueStatus = AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime);
 
 ELSEIF vEmNoExists > 1 THEN
 

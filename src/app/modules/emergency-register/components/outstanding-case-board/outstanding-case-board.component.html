@@ -4,14 +4,12 @@
 
       <div
         cdkDropList
-        [cdkDropListData]="lane.array[0]"
+        [cdkDropListData]="lane.array"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <!-- class="drag-drop-box" -->
         <div
 
-
-        *ngFor="let outstandingCase of lane.array[0]" cdkDrag>
+        *ngFor="let outstandingCase of lane.array" cdkDrag>
 
           <mat-expansion-panel hideToggle>
             <mat-expansion-panel-header>
@@ -41,13 +39,7 @@
 
             Location: {{outstandingCase.Location}}
 
-
-
-
           </mat-expansion-panel>
-
-
-
 
         </div>
       </div>

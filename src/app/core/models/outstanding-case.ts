@@ -1,3 +1,4 @@
+import { NumberValueAccessor } from '@angular/forms';
 
 export interface OutstandingCase
 {
@@ -16,4 +17,10 @@ export interface OutstandingCase
     CallerName: string
     CallerNumber: string
     RescueStatus: number;
+}
+
+export interface UpdatedRescue{
+    success:number;
+    emergencyCaseId:number;
+    rescueStatus:number;
 }
