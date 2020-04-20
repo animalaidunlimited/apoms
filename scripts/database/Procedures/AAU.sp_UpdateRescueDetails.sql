@@ -25,11 +25,12 @@ Purpose: Used to update the status of a patient.
 
 DECLARE vUpdateTime DATETIME;
 DECLARE vOrganisationId INT;
+DECLARE vCallOutcomeId INT;
 
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(CallOutcomeId) INTO vEmNoExists, vUpdateTime, vCallOutcomeId FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
 FROM AAU.User u 
@@ -52,11 +53,13 @@ START TRANSACTION;
 COMMIT;
 
     SELECT 1 INTO prm_Success;
+    
+        SET prm_RescueStatus = AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime, vCallOutcomeId);
+
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails','Update', NOW());    
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails','Update ' & CAST(prm_RescueStatus AS CHAR(1)), NOW());    
        
-    SET prm_RescueStatus = AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime);
 
 ELSEIF vEmNoExists > 1 THEN
 

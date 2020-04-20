@@ -1,5 +1,7 @@
 <div cdkDropListGroup>
     <div class="drag-drop-container" *ngFor="let lane of swimlanes">
+
+
       <h2>{{lane.name}}</h2>
 
       <div
@@ -7,14 +9,12 @@
         [cdkDropListData]="lane.array"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <div
-
-        *ngFor="let outstandingCase of lane.array" cdkDrag>
+        <div *ngFor="let outstandingCase of lane.array" cdkDrag>
 
           <mat-expansion-panel hideToggle>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+                <mat-icon (click)="openRescueEditAndMove(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
 
                 {{outstandingCase.EmergencyNumber}}
               </mat-panel-title>
@@ -44,85 +44,6 @@
         </div>
       </div>
 
-    </div>
-
-
-      <!-- <div
-        cdkDropList
-        [cdkDropListData]="received"
-        class="drag-drop-list"
-        (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let case of received" cdkDrag>
-          <mat-icon (click)="openRescueEdit(case)" style="cursor:'pointer'">departure_board</mat-icon>
-
-          <ng-template>
-            {{case.emergencyNumber}}
-
-          </ng-template>
-
-
-          <span class ="dot" [ngClass]="{
-            'dot-red' : case.code == 1,
-            'dot-green' : case.code == 2,
-            'dot-yellow' : case.code == 3}">
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="drag-drop-container">
-      <h2>Assigned</h2>
-
-      <div
-        cdkDropList
-        [cdkDropListData]="assigned"
-        class="drag-drop-list"
-        (cdkDropListDropped)="drop($event)">
-        <div class="drag-drop-box" *ngFor="let case of assigned" cdkDrag>{{case.emergencyNumber}}
-        <span class ="dot" [ngClass]="{
-          'dot-red' : case.code == 1,
-          'dot-green' : case.code == 2,
-          'dot-yellow' : case.code == 3}">
-        </span>
-      </div>
-      </div>
-    </div>
-
-    <div class="drag-drop-container">
-        <h2>Arrived</h2>
-
-        <div
-          cdkDropList
-          [cdkDropListData]="arrived"
-          class="drag-drop-list"
-          (cdkDropListDropped)="drop($event)">
-          <div class="drag-drop-box" *ngFor="let case of arrived" cdkDrag>{{case}}</div>
-        </div>
-      </div>
-
-      <div class="drag-drop-container">
-        <h2>Rescued</h2>
-
-        <div
-          cdkDropList
-          [cdkDropListData]="rescued"
-          class="drag-drop-list"
-          (cdkDropListDropped)="drop($event)">
-          <div class="drag-drop-box" *ngFor="let case of rescued" cdkDrag>{{case}}</div>
-        </div>
-      </div>
-
-      <div class="drag-drop-container">
-        <h2>Admitted</h2>
-
-        <div
-          cdkDropList
-          [cdkDropListData]="admitted"
-          class="drag-drop-list"
-          (cdkDropListDropped)="drop($event)">
-          <div class="drag-drop-box" *ngFor="let case of admitted" cdkDrag>{{case}}</div>
-        </div>
-      </div> -->
 
 
   </div>

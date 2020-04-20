@@ -5,6 +5,7 @@ import { UpdatedRescue } from '../../models/outstanding-case';
 
 export interface DialogData {
   emergencyCaseId: number;
+  emergencyNumber: number;
   recordForm: FormGroup;
 }
 
