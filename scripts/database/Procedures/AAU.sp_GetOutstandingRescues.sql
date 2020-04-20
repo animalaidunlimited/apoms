@@ -28,7 +28,7 @@ SELECT
 	r2.ImageUrl `Rescuer2ImageURL`,
 	c.Name `CallerName`,
 	c.Number `CallerNumber`,
-    AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec.RescueTime, ec.AdmissionTime) `RescueStatus`
+    AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec.RescueTime, ec.AdmissionTime, ec.CallOutcomeId) `RescueStatus`
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.Rescuer r1 ON r1.RescuerId = ec.Rescuer1Id
