@@ -10,13 +10,15 @@ export interface OutstandingCase
     Location: string
     Latitude: number;
     Longitude: number;
-    Rescuer1: string
-    Rescuer1ImageURL: string
-    Rescuer2: string
-    Rescuer2ImageURL: string
-    CallerName: string
-    CallerNumber: string
+    Rescuer1: string;
+    Rescuer1ImageURL: string;
+    Rescuer2: string;
+    Rescuer2ImageURL: string;
+    CallerName: string;
+    CallerNumber: string;
     RescueStatus: number;
+    Moved: boolean;
+    SearchCandidate: boolean;
 }
 
 export interface UpdatedRescue{

@@ -1,3 +1,19 @@
+<div [formGroup]="searchForm">
+
+<mat-form-field class="search-box" >
+
+  <span matPrefix>
+      <mat-icon matSuffix>search</mat-icon>
+  </span>
+  <input class="search-box" formControlName="searchTerm" autocomplete="off" type="text" matInput>
+  <button mat-button *ngIf="searchForm.get('searchTerm').value"
+   matSuffix mat-icon-button aria-label="Clear" (click)="searchForm.get('searchTerm').setValue('')">
+   <mat-icon>close</mat-icon>
+  </button>
+ </mat-form-field>
+</div>
+
+
 <div cdkDropListGroup>
     <div class="drag-drop-container" *ngFor="let lane of swimlanes">
 
@@ -9,12 +25,20 @@
         [cdkDropListData]="lane.array"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <div *ngFor="let outstandingCase of lane.array" cdkDrag>
+        <div *ngFor="let outstandingCase of lane.array"
+
+        cdkDrag>
+
+        <!-- [ngClass]="{'moved' : outstandingCase.Moved == true}" -->
 
           <mat-expansion-panel hideToggle>
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header
+            [@rescueMoved]="outstandingCase.Moved ? 'moved' : 'still'"
+            [ngClass]="{'search-candidate' : outstandingCase.SearchCandidate == true}"
+
+            >
               <mat-panel-title>
-                <mat-icon (click)="openRescueEditAndMove(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+                <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
 
                 {{outstandingCase.EmergencyNumber}}
               </mat-panel-title>
