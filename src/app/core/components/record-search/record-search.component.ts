@@ -25,21 +25,6 @@ export class Search {
   styleUrls: ['./record-search.component.scss'],
   animations:
   [
-  //   trigger("expandSearch",
-  //   [
-  //     state("open",style({
-  //     width: "525px"
-  //   })),
-  //   state("closed", style({
-  //     // width: "175px"
-  //   })),
-  //   transition("open => closed", [
-  //     animate(".2s")
-  //   ]),
-  //   transition("closed => open", [
-  //     animate(".2s")
-  //   ])
-  // ]),
     trigger("expandSearchForm",
     [
       state("void", style({

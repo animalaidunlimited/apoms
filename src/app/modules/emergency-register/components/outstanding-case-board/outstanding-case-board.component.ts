@@ -3,21 +3,43 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { BoardSocketService } from '../../services/board-socket.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue } from 'src/app/core/models/outstanding-case';
-import { Subscription, of, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { debounceTime, startWith } from 'rxjs/operators';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 export interface Swimlane{
-  key:string;
+  label:string;
   state:number;
   name:string;
-  array:OutstandingCase[]
+  array:OutstandingCase[];
 }
 
 @Component({
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
-  styleUrls: ['./outstanding-case-board.component.scss']
+  styleUrls: ['./outstanding-case-board.component.scss'],
+  animations:
+  [
+    trigger("rescueMoved",
+    [
+      state("void", style({
+        background: "transparent"
+      })),
+      state("moved",style({
+        background: "lightsteelblue"
+
+    })),
+    state("still", style({
+      background: "transparent"
+    })),
+    transition("moved <=> still", [
+      animate("5s")
+    ])
+
+  ])
+]
 })
 export class OutstandingCaseBoardComponent implements OnInit {
 
@@ -25,9 +47,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
     private socketService: BoardSocketService) { }
-
-
-  outstandingCases:OutstandingCase[];
 
   received:OutstandingCase[];
   assigned:OutstandingCase[];
@@ -39,7 +58,23 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   swimlanes:Swimlane[] = [];
 
+  searchForm:FormGroup;
+
   ngOnInit(): void {
+
+    this.searchForm = this.fb.group({
+      searchTerm: ['']
+    });
+
+    this.searchForm.get("searchTerm").valueChanges
+    .pipe(
+      debounceTime(250),
+      startWith('')
+    )
+    .subscribe(value => {
+      this.onSearchChange(value);
+    })
+
 
     this.setupConnection();
   }
@@ -60,47 +95,43 @@ export class OutstandingCaseBoardComponent implements OnInit {
       );
   }
 
-  updateRescueStatus(updated:UpdatedRescue){
+  updateRescueStatus(updatedRescue:UpdatedRescue){
 
-    //Find the existing record
-    let updateIndex = this.outstandingCases.findIndex(elem => elem.EmergencyCaseId == updated.emergencyCaseId);
+    //search the swimlanes for the existing rescue
+    this.swimlanes.forEach(lane =>
+      lane.array.forEach((rescue, index) => {
+        if(rescue.EmergencyCaseId === updatedRescue.emergencyCaseId){
 
-    //Get the current status so we can find the swimlane it's in
-    let currentSwimlane = this.outstandingCases[updateIndex].RescueStatus;
+          //Update the rescue status
+          rescue.RescueStatus = updatedRescue.rescueStatus;
+          this.setMoved(rescue.EmergencyCaseId, true, false);
 
-    //get the index in the current lane
-    let laneIndex = this.swimlanes[currentSwimlane - 1].array.findIndex(item => item.EmergencyCaseId === updated.emergencyCaseId);
-
-    //Remove it from the old array and update the rescue status
-    let moveItem = this.swimlanes[currentSwimlane - 1].array.splice(laneIndex, 1)[0];
-    moveItem.RescueStatus = updated.rescueStatus;
-
-    //put it into the new lane.
-    this.swimlanes[updated.rescueStatus - 1].array.push(moveItem);
+          //Remove the item from the existing swimlane
+          //and push it into the new swimlane
+          this.swimlanes[updatedRescue.rescueStatus - 1].array
+          .push(lane.array.splice(index, 1)[0]);
+        }
+      })
+      )
   }
 
   populate(outstandingCases:OutstandingCase[]){
 
-    this.outstandingCases = [];
-
-    outstandingCases.forEach(item => this.outstandingCases.push(item));
-
     //These must remain in order as per below as this order is used elsewhere
-    this.received = this.filterOutstandingByRescueStatus(this.outstandingCases, 1, "Received");
-    this.assigned = this.filterOutstandingByRescueStatus(this.outstandingCases, 2, "Assigned");
-    this.arrived  = this.filterOutstandingByRescueStatus(this.outstandingCases, 3, "Arrived");
-    this.rescued  = this.filterOutstandingByRescueStatus(this.outstandingCases, 4, "Rescued");
-    this.admitted = this.filterOutstandingByRescueStatus(this.outstandingCases, 5, "Admitted");
+    this.received = this.filterOutstandingByRescueStatus(outstandingCases, 1, "Received");
+    this.assigned = this.filterOutstandingByRescueStatus(outstandingCases, 2, "Assigned");
+    this.arrived  = this.filterOutstandingByRescueStatus(outstandingCases, 3, "Arrived");
+    this.rescued  = this.filterOutstandingByRescueStatus(outstandingCases, 4, "Rescued");
+    this.admitted = this.filterOutstandingByRescueStatus(outstandingCases, 5, "Admitted");
 
     this.subscription.unsubscribe();
-
   }
 
   filterOutstandingByRescueStatus(outstandingCases:OutstandingCase[], state:number, name:string){
 
     let newList = outstandingCases.filter(item => item.RescueStatus === state);
 
-    this.swimlanes.push({"key":name.toLowerCase(), "state": state, "name":name, "array": newList});
+    this.swimlanes.push({"label":name.toLowerCase(), "state": state, "name":name, "array": newList});
 
     return newList;
   }
@@ -119,6 +150,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       try{
 
+        //We need to move the item first when moving by drag so that the rescue
+        //waits in its new swimlane until it either succeeds or fails and is moved back
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
@@ -135,32 +168,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     }
   }
 
-  openRescueEditAndMove(outstandingCase:OutstandingCase){
-
-    this.openRescueEdit(outstandingCase).subscribe((result:UpdatedRescue) =>
-    this.programmaticRescueMove(result, outstandingCase)
-    );
-
-  }
-
-  programmaticRescueMove(result:UpdatedRescue, outstandingCase:OutstandingCase){
-
-    if(result?.success === 1){
-      //Find the index of the case we're moving
-      let currentIndex = this.swimlanes[outstandingCase.RescueStatus - 1].array.findIndex(item => item.EmergencyCaseId == outstandingCase.EmergencyCaseId);
-
-      //Go to the old swimlane and remove the case
-      this.swimlanes[outstandingCase.RescueStatus - 1].array.splice(currentIndex, 1);
-
-      //Update the rescue status of the case. This will get reloaded later, but let's
-      //update it for completeness.
-      outstandingCase.RescueStatus = result.rescueStatus;
-
-      //Move the case to the new swimlane
-      this.swimlanes[result.rescueStatus - 1].array.push(outstandingCase);
-    }
-  }
-
   moveRescue(event:any, result:UpdatedRescue){
 
             //Check to see if we were successful and transfer back if not
@@ -173,12 +180,13 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
             if(result?.success === 1){
 
-              console.log(result.rescueStatus - 1)
-
               //Update our base array
-              let toUpdate = this.swimlanes[result.rescueStatus - 1].array.findIndex(elem => elem.EmergencyCaseId == result.emergencyCaseId)
-
-              this.swimlanes[result.rescueStatus - 1].array[toUpdate].RescueStatus = result.rescueStatus;
+              this.swimlanes[result.rescueStatus - 1].array.forEach(rescue => {
+                if(rescue.EmergencyCaseId === result.emergencyCaseId){
+                  rescue.RescueStatus = result.rescueStatus;
+                  this.setMoved(rescue.EmergencyCaseId, true, false)
+                }
+              });
             }
 
   }
@@ -212,4 +220,45 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
+  setMoved(emergencyCaseId:number, moved:boolean, timeout:boolean){
+
+
+    //Search through the swimlanes for the rescue
+    this.swimlanes.forEach(swimlane =>
+      swimlane.array.forEach(rescue =>{
+        if(rescue.EmergencyCaseId == emergencyCaseId){
+
+          rescue.Moved = moved;
+
+          if(!timeout){
+            setTimeout(() => this.setMoved(emergencyCaseId, false, true), 3500)
+          }
+        }
+      }))
+  }
+
+  onSearchChange(searchValue: string): void {
+
+
+
+    this.swimlanes.forEach(swimlane => {
+
+      swimlane.array.forEach(rescue => {
+
+        rescue.SearchCandidate = false;
+
+        //Because we can't use an observable as the source for the board, we need to add a
+        //flag to the records that match our search.
+        if(
+          Object.keys(rescue)
+          .reduce((currentTerm: string, key: string) => {
+            return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
+          }, '').toLowerCase().indexOf(searchValue) > -1
+          && searchValue !== ""
+        ){
+          rescue.SearchCandidate = true;
+        }
+      })
+    })
+  }
 }
