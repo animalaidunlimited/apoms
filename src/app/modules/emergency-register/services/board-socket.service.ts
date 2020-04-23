@@ -3,7 +3,7 @@ import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { OutstandingCase, UpdatedRescue } from 'src/app/core/models/outstanding-case';
+import { UpdatedRescue, OutstandingCaseResponse } from 'src/app/core/models/outstanding-case';
 
 
 @Injectable({
@@ -23,13 +23,16 @@ export class BoardSocketService {
 
   }
 
-  getOutstandingRescues():Observable<OutstandingCase[]>
+  getOutstandingRescues():Observable<OutstandingCaseResponse>
   {
 
-    let observable:Observable<OutstandingCase[]> = new Observable(observer => {
+    let observable:Observable<OutstandingCaseResponse> = new Observable(observer => {
 
-      this.socket.on('OUTSTANDING_RESCUES', (data: OutstandingCase[]) => {
-        observer.next(data);
+      this.socket.on('OUTSTANDING_RESCUES', (data: any) => {
+
+        //TODO fix this. For some reason these needs to be parsed instead of being able to
+        //cast directly to the type
+        observer.next(JSON.parse(data));
       });
       // return () => {
       //   this.socket.disconnect();

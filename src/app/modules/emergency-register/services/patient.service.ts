@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient } from 'src/app/core/models/patients';
+import { SurgeryDetailsComponent } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,6 @@ export class PatientService extends APIService  {
    return this.getObservable(request)
    .pipe(
      map((response:Patient[]) => {
-       console.log(response);
        return response;
      })
    );

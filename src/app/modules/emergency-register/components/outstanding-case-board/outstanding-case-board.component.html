@@ -2,70 +2,109 @@
 
 <mat-form-field class="search-box" >
 
+
   <span matPrefix>
-      <mat-icon matSuffix>search</mat-icon>
+      <mat-icon matSuffix style="cursor: pointer;">search</mat-icon>
   </span>
   <input class="search-box" formControlName="searchTerm" autocomplete="off" type="text" matInput>
   <button mat-button *ngIf="searchForm.get('searchTerm').value"
-   matSuffix mat-icon-button aria-label="Clear" (click)="searchForm.get('searchTerm').setValue('')">
+   matSuffix mat-icon-button aria-label="Clear"
+   (click)="searchForm.get('searchTerm').setValue('')"
+   >
    <mat-icon>close</mat-icon>
   </button>
  </mat-form-field>
 </div>
 
 
+
 <div cdkDropListGroup>
-    <div class="drag-drop-container" *ngFor="let lane of swimlanes">
+    <div class="drag-drop-container" *ngFor="let lane of outstandingCases">
 
 
-      <h2>{{lane.name}}</h2>
+      <h2>{{lane.rescueStatusName}}</h2>
 
-      <div
+      <div >
+
+        <div
+        class="rescue-group-container"
+        *ngFor="let rescuerGroup of lane.rescuerGroups">
+
+        <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
+        <div fxFlex="none" class="avatar-circle" *ngIf="rescuerGroup.rescuer1Abbreviation">
+          <span class="initials">{{rescuerGroup.rescuer1Abbreviation}}</span>
+        </div>
+        <div fxFlex="none" class="avatar-circle" *ngIf="rescuerGroup.rescuer2Abbreviation">
+          <span class="initials">{{rescuerGroup.rescuer2Abbreviation}}</span>
+        </div>
+        </div>
+
+        <div
         cdkDropList
-        [cdkDropListData]="lane.array"
+        [cdkDropListData]="rescuerGroup.rescues"
         class="drag-drop-list"
         (cdkDropListDropped)="drop($event)">
-        <div *ngFor="let outstandingCase of lane.array"
+        <div
 
-        cdkDrag>
+        *ngFor="let outstandingCase of rescuerGroup.rescues" cdkDrag>
 
-        <!-- [ngClass]="{'moved' : outstandingCase.Moved == true}" -->
+        <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
+          <mat-expansion-panel-header
+          fxLayout="row"
+          [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'"
+          [ngClass]="{'search-candidate' : outstandingCase.searchCandidate == true}">
 
-          <mat-expansion-panel hideToggle>
-            <mat-expansion-panel-header
-            [@rescueMoved]="outstandingCase.Moved ? 'moved' : 'still'"
-            [ngClass]="{'search-candidate' : outstandingCase.SearchCandidate == true}"
+          <div fxFlex="15">
+            <!-- <mat-panel-title fxFlex> -->
+              <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+            </div>
+            <div fxFlex style="text-align: center;">
+              {{outstandingCase.emergencyNumber}}
+            </div>
+            <!-- </mat-panel-title> -->
+            <!-- <mat-panel-description> -->
+              <div fxFlex="none"
+              class ="dot" [ngClass]="{
+                'dot-red' : outstandingCase.emergencyCodeId == 1,
+                'dot-green' : outstandingCase.emergencyCodeId == 2,
+                'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
+              </div>
 
-            >
-              <mat-panel-title>
-                <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+            <!-- </mat-panel-description> -->
 
-                {{outstandingCase.EmergencyNumber}}
-              </mat-panel-title>
-              <mat-panel-description>
-                <span class ="dot" [ngClass]="{
-                  'dot-red' : outstandingCase.EmergencyCodeId == 1,
-                  'dot-green' : outstandingCase.EmergencyCodeId == 2,
-                  'dot-yellow' : outstandingCase.EmergencyCodeId == 3}">
-                </span>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
+          </mat-expansion-panel-header>
 
-            {{outstandingCase.Rescuer1}}
-            {{outstandingCase.Rescuer1ImageURL}}
-            {{outstandingCase.Rescuer2}}
-            {{outstandingCase.Rescuer2ImageURL}}
+          <div fxLayout="column" fxLayoutAlign="space-around start" >
+            <div class="name">{{outstandingCase.callerName}}</div>
 
-            Caller: {{outstandingCase.CallerName}}
-            Caller Number: {{outstandingCase.CallerNumber}}
+            <div fxLayout="row" fxLayoutAlign="start center" >
+                <div class="telephone-dash-container">
+                    <svg height="11" width="25">
+                    <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                    Sorry, your browser does not support inline SVG.
+                    </svg>
+                </div>
 
-            Call Date: {{outstandingCase.CallDateTime}}
+                <div class="telephone">{{outstandingCase.callerNumber}}</div>
+            </div>
 
-            Location: {{outstandingCase.Location}}
 
-          </mat-expansion-panel>
+            <div class="CallDateTime">{{outstandingCase.callDateTime}}</div>
+            <div class="animal-location">{{outstandingCase.location}}</div>
+        </div>
+
+
+        </mat-expansion-panel>
 
         </div>
+
+
+
+        </div>
+
+      </div>
+
+
       </div>
 
 
