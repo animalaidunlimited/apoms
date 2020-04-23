@@ -1,28 +1,44 @@
-import { NumberValueAccessor } from '@angular/forms';
+export interface OutstandingRescue {
+    rescueStatus: number;
+    rescuer1: number;
+    rescuer2: number;
+    callDateTime: string;
+    callOutcomeId: any;
+    callerName: string;
+    callerNumber: string;
+    emergencyCaseId: number;
+    emergencyCodeId: number;
+    emergencyNumber: number;
+    latitude: number;
+    location: string;
+    longitude: number;
+    moved:boolean;
+    searchCandidate:boolean;
+}
 
-export interface OutstandingCase
-{
-    EmergencyCaseId: number;
-    EmergencyNumber: number;
-    EmergencyCodeId: number;
-    CallDateTime: string | Date;
-    CallOutcomeId: number;
-    Location: string
-    Latitude: number;
-    Longitude: number;
-    Rescuer1: string;
-    Rescuer1ImageURL: string;
-    Rescuer2: string;
-    Rescuer2ImageURL: string;
-    CallerName: string;
-    CallerNumber: string;
-    RescueStatus: number;
-    Moved: boolean;
-    SearchCandidate: boolean;
+export interface RescuerGroup {
+    rescuer1: number;
+    rescuer1Abbreviation: string;
+    rescuer2: number;
+    rescuer2Abbreviation: string;
+    rescues: OutstandingRescue[];
+}
+
+export interface OutstandingCase {
+    rescueStatus: number;
+    rescuerGroups: RescuerGroup[];
+}
+
+export interface OutstandingCaseResponse {
+    outstandingRescues: OutstandingCase[];
 }
 
 export interface UpdatedRescue{
     success:number;
     emergencyCaseId:number;
+    rescuer1Id:number;
+    rescuer1Abbreviation:string;
+    rescuer2Id:number;
+    rescuer2Abbreviation:string;
     rescueStatus:number;
 }

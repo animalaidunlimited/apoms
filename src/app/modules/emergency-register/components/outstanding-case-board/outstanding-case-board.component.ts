@@ -4,7 +4,7 @@ import { BoardSocketService } from '../../services/board-socket.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -34,8 +34,11 @@ export interface Swimlane{
     state("still", style({
       background: "transparent"
     })),
-    transition("moved <=> still", [
+    transition("moved => still", [
       animate("5s")
+    ]),
+    transition("still => moved", [
+      animate("0s")
     ])
 
   ])
@@ -48,6 +51,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private fb: FormBuilder,
     private socketService: BoardSocketService) { }
 
+  outstandingCases:OutstandingCase[];
   received:OutstandingCase[];
   assigned:OutstandingCase[];
   arrived:OutstandingCase[];
@@ -66,74 +70,144 @@ export class OutstandingCaseBoardComponent implements OnInit {
       searchTerm: ['']
     });
 
-    this.searchForm.get("searchTerm").valueChanges
-    .pipe(
-      debounceTime(250),
-      startWith('')
-    )
-    .subscribe(value => {
-      this.onSearchChange(value);
-    })
-
-
     this.setupConnection();
+
   }
 
   async setupConnection(){
 
     await this.socketService.setupSocketConnection();
 
-    this.subscription = await this.socketService.getOutstandingRescues().subscribe(outstandingCases =>
+    this.subscription = await this.socketService.getOutstandingRescues()
+      .subscribe(outstandingCases =>
 
-      this.populate(outstandingCases)
-
+      this.populate(outstandingCases.outstandingRescues)
     );
 
     this.socketService.getUpdatedRescues().subscribe((updatedRescue:UpdatedRescue) =>
 
-      this.updateRescueStatus(updatedRescue)
+      this.updateRescue(updatedRescue)
       );
+
+
+    this.searchForm.get("searchTerm").valueChanges
+      .pipe(
+        debounceTime(250),
+        startWith('')
+      )
+      .subscribe(value => {
+          this.onSearchChange(this.outstandingCases, value);
+      })
   }
 
-  updateRescueStatus(updatedRescue:UpdatedRescue){
+  updateRescue(updatedRescue:UpdatedRescue){
 
-    //search the swimlanes for the existing rescue
-    this.swimlanes.forEach(lane =>
-      lane.array.forEach((rescue, index) => {
-        if(rescue.EmergencyCaseId === updatedRescue.emergencyCaseId){
+    //Find the rescue and remove it from its current location.
+    let rescueToMove:OutstandingRescue = this.removeRescueById(this.outstandingCases, updatedRescue);
 
-          //Update the rescue status
-          rescue.RescueStatus = updatedRescue.rescueStatus;
-          this.setMoved(rescue.EmergencyCaseId, true, false);
+    //Update the old rescue with the new details.
+    rescueToMove.rescuer1 = updatedRescue.rescuer1Id;
+    rescueToMove.rescuer2 = updatedRescue.rescuer2Id;
+    rescueToMove.rescueStatus = updatedRescue.rescueStatus;
 
-          //Remove the item from the existing swimlane
-          //and push it into the new swimlane
-          this.swimlanes[updatedRescue.rescueStatus - 1].array
-          .push(lane.array.splice(index, 1)[0]);
-        }
+    //Check to see if the swimlane exists and insert if not
+    let laneExists = this.outstandingCases.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
+
+    let newRescueGroup:RescuerGroup = {
+      rescuer1: updatedRescue.rescuer1Id,
+      rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
+      rescuer2: updatedRescue.rescuer2Id,
+      rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
+      rescues: [rescueToMove],
+    };
+
+    if(!laneExists){
+
+      this.outstandingCases.push({
+        rescueStatus: updatedRescue.rescueStatus,
+        rescuerGroups: [newRescueGroup]
       })
-      )
+    }
+
+    //Check to see if the rescuers exist and insert if not
+    let rescuersExist = this.outstandingCases.find(rescueState => {
+
+      if(rescueState.rescueStatus === rescueToMove.rescueStatus)
+      {
+       return rescueState.rescuerGroups
+      .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
+                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id)
+      }
+    });
+
+    if(!rescuersExist){
+
+      this.outstandingCases.forEach(rescueState => {
+
+        if(rescueState.rescueStatus == updatedRescue.rescueStatus){
+
+          rescueState.rescuerGroups.push(newRescueGroup);
+        }
+      });
+    }
+
+    //Insert the rescue into its new home
+    if(rescuersExist && laneExists){
+      this.insertRescue(this.outstandingCases, rescueToMove);
+    }
+
+    //Set the rescue to show as moved
+    this.setMoved(this.outstandingCases, rescueToMove.emergencyCaseId, true, false);
+  }
+
+  insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
+
+    outstanding.forEach(status => {
+
+      if(status.rescueStatus === rescue.rescueStatus){
+
+        status.rescuerGroups.forEach(group => {
+
+          if(group.rescuer1 === rescue.rescuer1 && group.rescuer2 === rescue.rescuer2){
+            group.rescues.push(rescue);
+          }
+        });
+      }
+    });
+  }
+
+  removeRescueById(outstanding:OutstandingCase[], rescue:UpdatedRescue):OutstandingRescue {
+
+    //Search through the outstanding cases and remove the old case
+    let returnCase:OutstandingRescue;
+
+    outstanding.forEach(status => {
+
+        status.rescuerGroups.forEach((group,index) => {
+
+            let removeIndex = group.rescues
+                              .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
+
+            if(removeIndex > -1){
+              returnCase = group.rescues.splice(removeIndex, 1)[0];
+
+              //If the group is now empty, remove it.
+              if(group.rescues.length === 0){
+                status.rescuerGroups.splice(index,1);
+              }
+              return;
+            }
+          })
+    });
+
+    return returnCase;
   }
 
   populate(outstandingCases:OutstandingCase[]){
 
-    //These must remain in order as per below as this order is used elsewhere
-    this.received = this.filterOutstandingByRescueStatus(outstandingCases, 1, "Received");
-    this.assigned = this.filterOutstandingByRescueStatus(outstandingCases, 2, "Assigned");
-    this.arrived  = this.filterOutstandingByRescueStatus(outstandingCases, 3, "Arrived");
-    this.rescued  = this.filterOutstandingByRescueStatus(outstandingCases, 4, "Rescued");
-    this.admitted = this.filterOutstandingByRescueStatus(outstandingCases, 5, "Admitted");
+    this.outstandingCases = outstandingCases;
 
     this.subscription.unsubscribe();
-  }
-
-  filterOutstandingByRescueStatus(outstandingCases:OutstandingCase[], state:number, name:string){
-
-    let newList = outstandingCases.filter(item => item.RescueStatus === state);
-
-    this.swimlanes.push({"label":name.toLowerCase(), "state": state, "name":name, "array": newList});
-
-    return newList;
   }
 
   drop(event: CdkDragDrop<any>) {
@@ -159,7 +233,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
         this.openRescueEdit(event.container.data[event.currentIndex]).subscribe((result:UpdatedRescue) =>
           {
-            this.moveRescue(event, result)
+            if(result?.success !== 1){
+              transferArrayItem(event.container.data,
+                event.previousContainer.data,
+                event.currentIndex,
+                event.previousIndex);
+            }
           });
       }
       catch(e){
@@ -168,35 +247,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
     }
   }
 
-  moveRescue(event:any, result:UpdatedRescue){
-
-            //Check to see if we were successful and transfer back if not
-            if(result?.success !== 1){
-              transferArrayItem(event.container.data,
-                event.previousContainer.data,
-                event.currentIndex,
-                event.previousIndex);
-            }
-
-            if(result?.success === 1){
-
-              //Update our base array
-              this.swimlanes[result.rescueStatus - 1].array.forEach(rescue => {
-                if(rescue.EmergencyCaseId === result.emergencyCaseId){
-                  rescue.RescueStatus = result.rescueStatus;
-                  this.setMoved(rescue.EmergencyCaseId, true, false)
-                }
-              });
-            }
-
-  }
-
-  openRescueEdit(outstandingCase:OutstandingCase){
+  openRescueEdit(outstandingCase:OutstandingRescue){
 
     let recordForm = this.fb.group({
 
       emergencyDetails: this.fb.group({
-        emergencyCaseId: [outstandingCase.EmergencyCaseId],
+        emergencyCaseId: [outstandingCase.emergencyCaseId],
         callDateTime: [''],
         updateTime: ['']
       }),
@@ -210,8 +266,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
       width: '500px',
       height: '500px',
       data: {
-              emergencyCaseId:outstandingCase.EmergencyCaseId,
-              emergencyNumber:outstandingCase.EmergencyNumber,
+              emergencyCaseId:outstandingCase.emergencyCaseId,
+              emergencyNumber:outstandingCase.emergencyNumber,
               recordForm:recordForm
             }
     });
@@ -220,45 +276,56 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
-  setMoved(emergencyCaseId:number, moved:boolean, timeout:boolean){
+  setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
 
+    //Search for the rescue and update its moved flag depending on whether this function
+    //is being called by itself or not
+      if( o?.emergencyCaseId === emergencyCaseId ){
 
-    //Search through the swimlanes for the rescue
-    this.swimlanes.forEach(swimlane =>
-      swimlane.array.forEach(rescue =>{
-        if(rescue.EmergencyCaseId == emergencyCaseId){
+        o.moved = moved;
 
-          rescue.Moved = moved;
-
-          if(!timeout){
-            setTimeout(() => this.setMoved(emergencyCaseId, false, true), 3500)
-          }
+        if(!timeout){
+          setTimeout(() => this.setMoved(this.outstandingCases, emergencyCaseId, false, true), 3500)
         }
-      }))
+
+      }
+      var result, p;
+      for (p in o) {
+          if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
+              result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
+          }
+      }
+
   }
 
-  onSearchChange(searchValue: string): void {
+  onSearchChange(o:OutstandingCase[], searchValue: string): void {
 
+    if(!o){
+      return;
+    }
 
+    o.forEach(status =>
+      {
+        status.rescuerGroups.forEach(group => {
 
-    this.swimlanes.forEach(swimlane => {
+            group.rescues.forEach(rescue => {
 
-      swimlane.array.forEach(rescue => {
+              rescue.searchCandidate = false;
 
-        rescue.SearchCandidate = false;
-
-        //Because we can't use an observable as the source for the board, we need to add a
-        //flag to the records that match our search.
-        if(
-          Object.keys(rescue)
-          .reduce((currentTerm: string, key: string) => {
-            return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
-          }, '').toLowerCase().indexOf(searchValue) > -1
-          && searchValue !== ""
-        ){
-          rescue.SearchCandidate = true;
-        }
-      })
-    })
+              //Because we can't use an observable as the source for the board, we need to add a
+              //flag to the records that match our search.
+              if(
+                Object.keys(rescue)
+                .reduce((currentTerm: string, key: string) => {
+                  return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
+                }, '').toLowerCase().indexOf(searchValue) > -1
+                && searchValue !== ""
+              ){
+                console.log("Setting candidate");
+                rescue.searchCandidate = true;
+              }
+            });
+          });
+      });
   }
 }

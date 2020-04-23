@@ -5,9 +5,30 @@
   display: inline-block;
   vertical-align: top;
 }
+.rescue-group-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  background-color: lightsteelblue;
+  text-align: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+.initials {
+  position: relative;
+  top: 15px;
+  font-size: 30px;
+  line-height: 30px;
+  color: #fff;
+  font-weight: bold;
+}
 .drag-drop-list {
   border: solid 1px #ccc;
-  min-height: 60px;
+  min-height: 48px;
   background: white;
   border-radius: 4px;
   overflow: hidden;
@@ -65,4 +86,24 @@
 }
 .dot-yellow {
   background-color: gold;
+}
+.name {
+  margin: 10px 0px 0px 10px;
+}
+.telephone {
+  float: left;
+  margin: 10px 0px 0px 10px;
+}
+.telephone-dash-container {
+  height: 100%;
+}
+.telephone-dash {
+  stroke: #607d8b;
+  stroke-width: 4;
+}
+.CallDateTime {
+  margin: 10px 0px 0px 10px;
+}
+.animal-location {
+  margin: 10px 0px 10px 10px;
 }

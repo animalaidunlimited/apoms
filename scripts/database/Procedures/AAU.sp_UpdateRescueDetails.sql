@@ -2,6 +2,9 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateRescueDetails!!
 
+
+
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
 									IN prm_UserName VARCHAR(64),
@@ -14,7 +17,9 @@ CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
                                     IN prm_UpdateTime DATETIME,
 									OUT prm_Success INT,
                                     OUT prm_SocketEndPoint CHAR(3),
-                                    OUT prm_RescueStatus INT)
+                                    OUT prm_RescueStatus INT,
+                                    OUT prm_Rescuer1Abbreviation CHAR(2),
+                                    OUT prm_Rescuer2Abbreviation CHAR(2))
 BEGIN
 
 /*
@@ -54,11 +59,15 @@ COMMIT;
 
     SELECT 1 INTO prm_Success;
     
-        SET prm_RescueStatus = AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime, vCallOutcomeId);
+	SELECT AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime, vCallOutcomeId)
+    INTO prm_RescueStatus;
+    
+    SELECT Abbreviation INTO prm_Rescuer1Abbreviation FROM AAU.Rescuer WHERE RescuerId = prm_Rescuer1Id;
+    SELECT Abbreviation INTO prm_Rescuer2Abbreviation FROM AAU.Rescuer WHERE RescuerId = prm_Rescuer2Id;
 
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails','Update ' & CAST(prm_RescueStatus AS CHAR(1)), NOW());    
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails',CONCAT('Update ', prm_UpdateTime, ' ', vUpdateTime), NOW());    
        
 
 ELSEIF vEmNoExists > 1 THEN
