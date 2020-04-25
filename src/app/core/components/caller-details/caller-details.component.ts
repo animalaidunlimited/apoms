@@ -53,7 +53,7 @@ export class CallerDetailsComponent implements OnInit {
       debounceTime(300),
       // use switch map so as to cancel previous subscribed events, before creating new one
       switchMap(value => {
-        if (value !== '') {
+        if (value !== '' && !this.callerNumber.pristine) {
           return this.lookup(value);
         } else {
           // if no value is present, return null
