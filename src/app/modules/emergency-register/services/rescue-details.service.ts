@@ -21,13 +21,13 @@ export class RescueDetailsService extends APIService {
     redirectUrl: string;
 
 
-  public getRescueDetailsByEmergencyCaseId(emergencyCaseId: number):Observable<any>{
+  public getRescueDetailsByEmergencyCaseId(emergencyCaseId: number):Observable<RescueDetailsParent>{
 
     let request = "?emergencyCaseId=" + emergencyCaseId;
 
     return this.getObservable(request)
     .pipe(
-      map((response:RescueDetails) => {
+      map((response:RescueDetailsParent) => {
         return response;
       })
     );

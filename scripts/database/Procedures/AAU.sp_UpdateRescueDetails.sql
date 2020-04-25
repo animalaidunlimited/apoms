@@ -16,10 +16,7 @@ CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
 									IN prm_AdmissionTime DATETIME,
                                     IN prm_UpdateTime DATETIME,
 									OUT prm_Success INT,
-                                    OUT prm_SocketEndPoint CHAR(3),
-                                    OUT prm_RescueStatus INT,
-                                    OUT prm_Rescuer1Abbreviation CHAR(2),
-                                    OUT prm_Rescuer2Abbreviation CHAR(2))
+                                    OUT prm_SocketEndPoint CHAR(3))
 BEGIN
 
 /*
@@ -59,12 +56,7 @@ COMMIT;
 
     SELECT 1 INTO prm_Success;
     
-	SELECT AAU.fn_GetRescueStatus(prm_Rescuer1Id, prm_Rescuer2Id, prm_AmbulanceArrivalTime, prm_RescueTime, prm_AdmissionTime, vCallOutcomeId)
-    INTO prm_RescueStatus;
-    
-    SELECT Abbreviation INTO prm_Rescuer1Abbreviation FROM AAU.Rescuer WHERE RescuerId = prm_Rescuer1Id;
-    SELECT Abbreviation INTO prm_Rescuer2Abbreviation FROM AAU.Rescuer WHERE RescuerId = prm_Rescuer2Id;
-
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails',CONCAT('Update ', prm_UpdateTime, ' ', vUpdateTime), NOW());    

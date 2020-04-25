@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { BoardSocketService } from '../../services/board-socket.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 
 import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { SearchResponse } from 'src/app/core/models/responses';
 
 export interface Swimlane{
   label:string;
@@ -51,6 +52,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private fb: FormBuilder,
     private socketService: BoardSocketService) { }
 
+  @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+
   outstandingCases:OutstandingCase[];
   received:OutstandingCase[];
   assigned:OutstandingCase[];
@@ -84,7 +87,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       this.populate(outstandingCases.outstandingRescues)
     );
 
-    this.socketService.getUpdatedRescues().subscribe((updatedRescue:UpdatedRescue) =>
+    this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) =>
 
       this.updateRescue(updatedRescue)
       );
@@ -100,15 +103,17 @@ export class OutstandingCaseBoardComponent implements OnInit {
       })
   }
 
-  updateRescue(updatedRescue:UpdatedRescue){
+  updateRescue(updatedRescue:OutstandingRescue){
 
     //Find the rescue and remove it from its current location.
-    let rescueToMove:OutstandingRescue = this.removeRescueById(this.outstandingCases, updatedRescue);
+    // let rescueToMove:OutstandingRescue =
+    this.removeRescueById(this.outstandingCases, updatedRescue);
+
 
     //Update the old rescue with the new details.
-    rescueToMove.rescuer1 = updatedRescue.rescuer1Id;
-    rescueToMove.rescuer2 = updatedRescue.rescuer2Id;
-    rescueToMove.rescueStatus = updatedRescue.rescueStatus;
+    // rescueToMove.rescuer1Id = updatedRescue.rescuer1Id || null;
+    // rescueToMove.rescuer2Id = updatedRescue.rescuer2Id || null;
+    // rescueToMove.rescueStatus = updatedRescue.rescueStatus;
 
     //Check to see if the swimlane exists and insert if not
     let laneExists = this.outstandingCases.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
@@ -118,7 +123,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
       rescuer2: updatedRescue.rescuer2Id,
       rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
-      rescues: [rescueToMove],
+      rescues: [updatedRescue],
     };
 
     if(!laneExists){
@@ -132,7 +137,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     //Check to see if the rescuers exist and insert if not
     let rescuersExist = this.outstandingCases.find(rescueState => {
 
-      if(rescueState.rescueStatus === rescueToMove.rescueStatus)
+      if(rescueState.rescueStatus === updatedRescue.rescueStatus)
       {
        return rescueState.rescuerGroups
       .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
@@ -145,7 +150,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
       this.outstandingCases.forEach(rescueState => {
 
         if(rescueState.rescueStatus == updatedRescue.rescueStatus){
-
           rescueState.rescuerGroups.push(newRescueGroup);
         }
       });
@@ -153,11 +157,11 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     //Insert the rescue into its new home
     if(rescuersExist && laneExists){
-      this.insertRescue(this.outstandingCases, rescueToMove);
+      this.insertRescue(this.outstandingCases, updatedRescue);
     }
 
     //Set the rescue to show as moved
-    this.setMoved(this.outstandingCases, rescueToMove.emergencyCaseId, true, false);
+    this.setMoved(this.outstandingCases, updatedRescue.emergencyCaseId, true, false);
   }
 
   insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
@@ -168,7 +172,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
         status.rescuerGroups.forEach(group => {
 
-          if(group.rescuer1 === rescue.rescuer1 && group.rescuer2 === rescue.rescuer2){
+          if(group.rescuer1 === rescue.rescuer1Id && group.rescuer2 === rescue.rescuer2Id){
+
             group.rescues.push(rescue);
           }
         });
@@ -176,7 +181,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
   }
 
-  removeRescueById(outstanding:OutstandingCase[], rescue:UpdatedRescue):OutstandingRescue {
+  removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingRescue):OutstandingRescue {
 
     //Search through the outstanding cases and remove the old case
     let returnCase:OutstandingRescue;
@@ -189,6 +194,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
                               .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
 
             if(removeIndex > -1){
+
               returnCase = group.rescues.splice(removeIndex, 1)[0];
 
               //If the group is now empty, remove it.
@@ -321,11 +327,17 @@ export class OutstandingCaseBoardComponent implements OnInit {
                 }, '').toLowerCase().indexOf(searchValue) > -1
                 && searchValue !== ""
               ){
-                console.log("Setting candidate");
                 rescue.searchCandidate = true;
               }
             });
           });
       });
   }
+
+openCase(caseSearchResult:OutstandingRescue)
+{
+  this.onOpenEmergencyCase.emit(
+    { "caseSearchResult" : {"EmergencyCaseId" : caseSearchResult.emergencyCaseId,
+  "EmergencyNumber" : caseSearchResult.emergencyNumber}});
+}
 }

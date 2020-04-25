@@ -3,7 +3,8 @@ import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UpdatedRescue, OutstandingCaseResponse } from 'src/app/core/models/outstanding-case';
+import { UpdatedRescue, OutstandingCaseResponse, OutstandingRescue, OutstandingRescueResponse } from 'src/app/core/models/outstanding-case';
+import { RescueDetailsParent } from 'src/app/core/models/responses';
 
 
 @Injectable({
@@ -41,13 +42,13 @@ export class BoardSocketService {
     return observable;
   }
 
-  getUpdatedRescues():Observable<UpdatedRescue>
+  getUpdatedRescues():Observable<OutstandingRescue>
   {
 
-    let observable = new Observable<UpdatedRescue>(observer => {
+    let observable = new Observable<OutstandingRescue>(observer => {
 
-      this.socket.on('UPDATING_RESCUE', (data: UpdatedRescue) => {
-        observer.next(data);
+      this.socket.on('UPDATING_RESCUE', (data: any) => {
+        observer.next(JSON.parse(data));
       });
       // return () => {
       //   this.socket.disconnect();

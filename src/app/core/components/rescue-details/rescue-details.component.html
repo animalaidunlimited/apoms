@@ -4,7 +4,7 @@
 
             <mat-form-field>
                 <mat-label>Driver</mat-label>
-                    <mat-select formControlName="rescuer1" [errorStateMatcher]="errorMatcher">
+                    <mat-select formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
 
                     <!-- <mat-select formControl="rescuer1" [errorStateMatcher]="errorMatcher"></mat-select> -->
                     <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
@@ -15,7 +15,7 @@
 
             <mat-form-field>
                     <mat-label>Worker</mat-label>
-                        <mat-select formControlName="rescuer2" [errorStateMatcher]="errorMatcher">
+                        <mat-select formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
 
                         <!-- <mat-select formControl="rescuer2" [errorStateMatcher]="errorMatcher"></mat-select> -->
                         <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
