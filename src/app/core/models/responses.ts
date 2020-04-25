@@ -49,12 +49,17 @@ export interface RescueDetailsParent {
     emergencyDetails: EmergencyDetails;
 }
 
+
 export interface RescueDetails{
-    rescuer1: number;
-    rescuer2: number;
-    ambulanceArrivalTime: string;
-    admissionTime: string;
-    rescueTime: string;
+    rescueTime: string | Date;
+    rescuer1Id: number;
+    rescuer2Id: number;
+    admissionTime: string | Date;
+    rescuer1Colour: string;
+    rescuer2Colour: string;
+    ambulanceArrivalTime: string | Date;
+    rescuer1Abbreviation: string;
+    rescuer2Abbreviation: string;
 }
 
 export interface Caller

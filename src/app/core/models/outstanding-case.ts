@@ -1,20 +1,27 @@
 export interface OutstandingRescue {
-    rescueStatus: number;
-    rescuer1: number;
-    rescuer2: number;
-    callDateTime: string;
-    callOutcomeId: any;
-    callerName: string;
-    callerNumber: string;
-    emergencyCaseId: number;
-    emergencyCodeId: number;
-    emergencyNumber: number;
     latitude: number;
     location: string;
     longitude: number;
-    moved:boolean;
-    searchCandidate:boolean;
+    callerName: string;
+    rescuer1Id: number;
+    rescuer2Id: number;
+    callDateTime: string | Date;
+    callerNumber: string;
+    rescueStatus: number;
+    callOutcomeId: number;
+    rescuer1Colour: string;
+    rescuer2Colour: string;
+    emergencyCaseId: number;
+    emergencyCodeId: number;
+    emergencyNumber: number;
+    rescuer1Abbreviation: string;
+    rescuer2Abbreviation: string;
+
+    moved?:boolean;
+    searchCandidate?:boolean;
 }
+
+
 
 export interface RescuerGroup {
     rescuer1: number;
