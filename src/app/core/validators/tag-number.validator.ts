@@ -11,8 +11,6 @@ export class UniqueTagNumberValidator {
   validate(emergencyCaseId:number, patientId:number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
 
-      if(!control.pristine){
-
         return this.patientService.checkTagNumberExists(control.value, emergencyCaseId, patientId)
         .pipe(
           map(res => {
@@ -27,7 +25,6 @@ export class UniqueTagNumberValidator {
           })
         );
 
-      }
 
     };
   }

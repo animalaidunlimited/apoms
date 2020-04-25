@@ -194,7 +194,6 @@ export class CaseService extends APIService {
     return this.getObservable(request)
     .pipe(
       map((response:SearchResponse) => {
-        console.log(response);
         return response;
       })
     );
