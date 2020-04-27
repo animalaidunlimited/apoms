@@ -1,4 +1,4 @@
-<div [formGroup]="searchForm">
+<form [formGroup]="searchForm">
 
 <mat-form-field class="search-box" >
 
@@ -14,9 +14,8 @@
    <mat-icon>close</mat-icon>
   </button>
  </mat-form-field>
-</div>
 
-
+</form>
 
 <div cdkDropListGroup>
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases">
@@ -113,6 +112,8 @@
 
       </div>
 
-
+    </div>
 
   </div>
+
+

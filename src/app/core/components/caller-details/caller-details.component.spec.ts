@@ -17,9 +17,8 @@ describe('CallerDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MatFormFieldModule,MaterialModule,
+      imports: [HttpClientTestingModule, MatFormFieldModule, MaterialModule,
         NoopAnimationsModule,MatAutocompleteModule, FormsModule, ReactiveFormsModule],
-      providers: [],
       declarations: [ CallerDetailsComponent ]
     })
     .compileComponents();

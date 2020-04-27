@@ -30,10 +30,9 @@ export class EmergencyDetailsComponent implements OnInit {
     this.dispatchers$ = this.dropdowns.getDispatchers();
     this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
-
     let emergencyDetails = this.recordForm.get("emergencyDetails") as FormGroup;
 
-    emergencyDetails.addControl("emergencyNumber", new FormControl('', [Validators.required], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value)]));
+    emergencyDetails.addControl("emergencyNumber", new FormControl('', [Validators.required], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 1)]));
     emergencyDetails.addControl("callDateTime", new FormControl(getCurrentTimeString(), Validators.required));
     emergencyDetails.addControl("dispatcher", new FormControl('', Validators.required));
     emergencyDetails.addControl("code", new FormControl('', Validators.required));

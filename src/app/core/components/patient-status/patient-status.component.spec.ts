@@ -33,10 +33,53 @@ describe('PatientStatusComponent', () => {
 
     component.patientId = 1;
 
+
+
     fixture.detectChanges();
   }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('Invalid form - Missing values', () => {
+
+    let createdDate = new Date();
+
+    component.patientStatusForm.get("patientId").setValue(1);
+    component.patientStatusForm.get("tagNumber").setValue("B150");
+    component.patientStatusForm.get("createdDate").setValue(createdDate);
+
+    //Not set
+    //component.patientStatusForm.get("patientStatusId").setValue(null);
+    //component.patientStatusForm.get("patientStatusDate").setValue(null);
+
+    //Not requred
+    component.patientStatusForm.get("PN").setValue(null);
+    component.patientStatusForm.get("suspectedRabies").setValue(null);
+
+
+    expect(component.patientStatusForm.valid).toEqual(false);
+
+  });
+
+  it('Valid form - No Missing values', () => {
+
+    let createdDate = new Date();
+
+    component.patientStatusForm.get("patientId").setValue(1);
+    component.patientStatusForm.get("tagNumber").setValue("B150");
+    component.patientStatusForm.get("createdDate").setValue(createdDate);
+
+    component.patientStatusForm.get("patientStatusId").setValue(1);
+    component.patientStatusForm.get("patientStatusDate").setValue(createdDate);
+
+    //Not requred
+    component.patientStatusForm.get("PN").setValue(null);
+    component.patientStatusForm.get("suspectedRabies").setValue(null);
+
+
+    expect(component.patientStatusForm.valid).toEqual(false);
+
   });
 });

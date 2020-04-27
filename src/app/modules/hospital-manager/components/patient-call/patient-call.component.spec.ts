@@ -1,26 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThankYouComponent } from './thank-you.component';
+import { PatientCallComponent } from './patient-call.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { FormBuilder } from '@angular/forms';
 
-describe('ThankYouComponent', () => {
-  let component: ThankYouComponent;
-  let fixture: ComponentFixture<ThankYouComponent>;
+describe('PatientCallComponent', () => {
+  let component: PatientCallComponent;
+  let fixture: ComponentFixture<PatientCallComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [ ThankYouComponent ],
+      declarations: [ PatientCallComponent ],
       providers: [ FormBuilder ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ThankYouComponent);
+    fixture = TestBed.createComponent(PatientCallComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

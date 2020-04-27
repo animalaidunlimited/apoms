@@ -42,9 +42,6 @@ mat-radio-button {
 .mat-raised-button {
   width: 175px;
 }
-.mat-tab-label .mat-tab-label-content {
-  margin-left: 24px !important;
-}
 .mat-sidenav-container,
 .mat-sidenav-content,
 .mat-tab-body-content {
