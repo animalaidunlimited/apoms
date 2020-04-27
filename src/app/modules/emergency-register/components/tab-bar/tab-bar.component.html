@@ -7,7 +7,7 @@
 
                 <ng-template mat-tab-label>
                 {{tab.value}}
-                <mat-icon (click)="removeTab(index)">{{tab.icon}}</mat-icon>
+                <mat-icon *ngIf="index > 1" (click)="removeTab(index)">{{tab.icon}}</mat-icon>
                 </ng-template>
                 <outstanding-case-board *ngIf="index == 0" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
                 <record-search *ngIf="index == 1" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search>

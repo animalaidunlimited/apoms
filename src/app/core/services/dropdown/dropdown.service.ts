@@ -6,7 +6,7 @@ import { Dispatcher } from '../../models/dispatcher';
 import { CallOutcomeResponse } from '../../models/call-outcome';
 import { Rescuer } from '../../models/rescuer';
 import { EmergencyCode } from '../../models/emergency-code';
-import { ProblemDropdownResponse, PatientStatus } from '../../models/responses';
+import { ProblemDropdownResponse, PatientStatus, CallType, PatientCallOutcome } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -36,6 +36,8 @@ export class DropdownService extends APIService{
   exclusions$;
   officeStaff$;
   patientStates$:Observable<PatientStatus[]>;
+  callTypes$:Observable<CallType[]>;
+  patientCallOutcome$:Observable<PatientCallOutcome[]>;
 
 
   constructor(http: HttpClient) {
@@ -270,5 +272,39 @@ export class DropdownService extends APIService{
     }
 
     return this.patientStates$;
+  }
+
+  getCallTypes(): Observable<CallType[]> {
+
+    let request = "/CallTypes";
+
+    if (!this.callTypes$)
+    {
+      this.callTypes$ = this.getObservable(request)
+      .pipe(
+        map((response:CallType[]) => {
+          return response;
+        })
+      );
+    }
+
+    return this.callTypes$;
+  }
+
+  getPatientCallOutcomes(): Observable<PatientCallOutcome[]> {
+
+    let request = "/PatientCallOutcomes";
+
+    if (!this.patientCallOutcome$)
+    {
+      this.patientCallOutcome$ = this.getObservable(request)
+      .pipe(
+        map((response:PatientCallOutcome[]) => {
+          return response;
+        })
+      );
+    }
+
+    return this.patientCallOutcome$;
   }
 }

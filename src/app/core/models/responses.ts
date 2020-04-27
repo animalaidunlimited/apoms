@@ -105,4 +105,12 @@ export interface PatientStatus{
     PatientStatusDate: Date;
 }
 
+export interface CallType{
+    CallTypeId: number;
+    CallType: string;
+}
 
+export interface PatientCallOutcome{
+    PatientCallOutcomeId: number;
+    PatientCallOutcome: string;
+}

@@ -41,7 +41,47 @@ describe('EmergencyDetailsComponent', () => {
     fixture.detectChanges();
   }));
 
+  afterEach(function(done) {
+
+    component.recordForm.reset();
+    done();
+
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Valid form - all records', () => {
+    component.recordForm.get('emergencyDetails.emergencyNumber').setValue('70022');
+    component.recordForm.get('emergencyDetails.dispatcher').setValue("1");
+    component.recordForm.get('emergencyDetails.code').setValue("1");
+
+    expect(component.recordForm.get("emergencyDetails").valid).toEqual(true);
+  });
+
+  it('Invalid form - no records', () => {
+
+    expect(component.recordForm.get("emergencyDetails").valid).toEqual(false);
+  });
+
+  it('Invalid form - Missing code', () => {
+    component.recordForm.get('emergencyDetails.emergencyNumber').setValue(70022);
+
+    component.recordForm.get('emergencyDetails.dispatcher').setValue(1);
+
+    expect(component.recordForm.get("emergencyDetails").valid).toEqual(false);
+  });
+
+  it('Set Initial Time Works', () => {
+
+    component.setInitialTime();
+
+    let testTime = new Date();
+
+    component.recordForm.get("emergencyDetails.callDateTime").setValue(testTime)
+
+    expect(component.recordForm.get("emergencyDetails.callDateTime").value).toEqual(testTime)
+  });
+
 });

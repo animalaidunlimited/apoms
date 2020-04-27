@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { searchResponseWrapper } from 'src/app/core/models/responses';
 
@@ -14,6 +14,10 @@ export class TabBarComponent implements OnInit {
           {"id":1, "value": "Search", "emergencyCaseId": 0, "icon":""}];
 
   selected = new FormControl(0);
+
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit()
   {
@@ -32,7 +36,10 @@ export class TabBarComponent implements OnInit {
 
       this.tabs.push({"id":this.tabs.length, "value":emergencyNumber, "emergencyCaseId":emergencyCaseId, "icon":"close"});
 
+      // setTimeout(() => {
       this.selected.setValue(this.tabs.length - 1);
+      this.cdr.detectChanges();
+      // });
   }
 
   public openCase(result: searchResponseWrapper) {

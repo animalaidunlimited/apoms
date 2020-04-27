@@ -1,6 +1,6 @@
 <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
 
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="tabChanged($event)">
     <mat-tab label="Home">
 
 
@@ -42,12 +42,12 @@
             <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                 <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
                 <button mat-raised-button color="primary">Reset</button>
-              </div>
+            </div>
         </div>
     </div>
     </mat-tab>
-    <mat-tab label="Thank You">
-        <thank-you-call></thank-you-call>
+    <mat-tab label="Patient Calls">
+        <patient-call-call [patientId]="patientCallPatientId"></patient-call-call>
     </mat-tab>
     <mat-tab label="Outcome">
         <outcome></outcome>

@@ -16,7 +16,7 @@ export interface Patient {
     deleted: boolean;
   }
 
-
   export interface Patients {
     patients: Patient[];
 }
+

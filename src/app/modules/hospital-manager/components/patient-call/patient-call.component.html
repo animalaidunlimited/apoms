@@ -1,12 +1,47 @@
-    <fieldset [formGroup]="thankYouForm.get('callDetails')" class="form-sub-group">
+    <fieldset [formGroup]="patientCallForm.get('callDetails')" ng-submit="savePatientCallCall()" class="form-sub-group">
 
 
-    <legend class="legend">Thank you call</legend>
+    <legend class="legend">Patient calls</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <!-- *ngFor="let call of patientCallForm" -->
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Call date
+          </mat-panel-title>
+          <mat-panel-description>
+            <!-- {{currentCallType.CallType}} -->
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-form-field>
+            <mat-label>Call type</mat-label>
+            <mat-select formControlName="callType" [(value)]="currentCallType" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let callType of callTypes$ | async" [value]="callType">
+                    {{callType.CallType}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field >
+
+        <mat-form-field>
+            <mat-label>Call outcome</mat-label>
+            <mat-select formControlName="patientCallOutcome" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallOutcomeId">
+                    {{outcome.PatientCallOutcome}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field >
+
+
+        <button mat-raised-button color="primary">Save</button>
+
+      </mat-expansion-panel>
+
+    <!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
     <mat-form-field>
-        <input formControlName="call1Time" name="call1Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 1 time" matInput>
+        <input formControlName="call1Time" (focus)="setInitialTime($event)" name="call1Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 1 time" matInput>
     </mat-form-field>
 
     <mat-form-field>
@@ -31,7 +66,7 @@
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
     <mat-form-field>
-        <input formControlName="call2Time" name="call2Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 2 time" matInput>
+        <input formControlName="call2Time" (focus)="setInitialTime($event)" name="call2Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 2 time" matInput>
     </mat-form-field>
 
     <mat-form-field>
@@ -56,7 +91,7 @@
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
     <mat-form-field>
-        <input formControlName="call3Time" name="call3Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 3 time" matInput>
+        <input formControlName="call3Time" (focus)="setInitialTime($event)" name="call3Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 3 time" matInput>
     </mat-form-field>
 
     <mat-form-field>
@@ -126,7 +161,11 @@
     </mat-error>
 </mat-radio-group>
 
-</div>
+</div> -->
+
+
+<!-- <button mat-raised-button color="primary">Reset</button> -->
+
 
 </fieldset>
 

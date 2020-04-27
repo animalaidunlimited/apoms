@@ -27,8 +27,6 @@ export class RescueDetailsComponent implements OnInit {
   currentRescueTime;
   currentTime;
 
-
-
   rescuer1Id:AbstractControl;
   rescuer2Id:AbstractControl;
   ambulanceArrivalTime:AbstractControl;
@@ -47,14 +45,12 @@ export class RescueDetailsComponent implements OnInit {
 
   ngOnInit() {
 
-
-
     this.rescuers$ = this.dropdowns.getRescuers();
 
     this.recordForm.addControl(
       "rescueDetails", this.fb.group({
-        rescuer1Id: [''],
-        rescuer2Id: [''],
+        rescuer1Id: [],
+        rescuer2Id: [],
         ambulanceArrivalTime: [''],
         rescueTime: [''],
         admissionTime: ['']
@@ -67,8 +63,8 @@ export class RescueDetailsComponent implements OnInit {
 
     });
 
-    this.rescuer1Id             = this.recordForm.get("rescueDetails.rescuer1Id");
-    this.rescuer2Id             = this.recordForm.get("rescueDetails.rescuer2Id");
+    this.rescuer1Id           = this.recordForm.get("rescueDetails.rescuer1Id");
+    this.rescuer2Id           = this.recordForm.get("rescueDetails.rescuer2Id");
     this.ambulanceArrivalTime = this.recordForm.get("rescueDetails.ambulanceArrivalTime");
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
@@ -169,6 +165,8 @@ updateValidators()
 
   this.rescuer1Id.updateValueAndValidity({emitEvent: false });
   this.rescuer2Id.updateValueAndValidity({emitEvent: false });
+
+
 }
 
 onChanges(): void {

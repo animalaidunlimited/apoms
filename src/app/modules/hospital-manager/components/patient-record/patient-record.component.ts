@@ -1,6 +1,7 @@
 import { Component, OnInit, Input} from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'patient-record',
@@ -13,10 +14,14 @@ export class PatientRecordComponent implements OnInit {
 
   @Input() incomingPatient:SearchRecordTab;
 
+  patientCallPatientId:number;
+
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
+
+
 
     this.recordForm = this.fb.group({
 
@@ -53,6 +58,19 @@ export class PatientRecordComponent implements OnInit {
 
 
   }
+
+  tabChanged(event:MatTabChangeEvent){
+
+    //We can't lazt load these tabs, so only populate the ids when we want to load the data
+    if(event.tab.textLabel === "Patient Calls"){
+      this.patientCallPatientId = this.recordForm.get("patientDetails.patientId").value;
+    }
+
+
+  }
+
+
+
 
   saveForm()
   {

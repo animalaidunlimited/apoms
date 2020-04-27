@@ -3,9 +3,7 @@ import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UpdatedRescue, OutstandingCaseResponse, OutstandingRescue, OutstandingRescueResponse } from 'src/app/core/models/outstanding-case';
-import { RescueDetailsParent } from 'src/app/core/models/responses';
-
+import { OutstandingCaseResponse, OutstandingRescue } from 'src/app/core/models/outstanding-case';
 
 @Injectable({
   providedIn: 'root'

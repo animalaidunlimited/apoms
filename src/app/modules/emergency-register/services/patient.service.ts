@@ -68,4 +68,18 @@ export class PatientService extends APIService  {
           });;
 
   }
+
+  public getPatientCallCallsByPatientId(patientId: number):Observable<any>{
+
+    let request = "PatientCall?patientId=" + patientId;
+
+   return this.getObservable(request)
+   .pipe(
+     map((response:Patient[]) => {
+       return response;
+     })
+   );
+
+  }
+
 }
