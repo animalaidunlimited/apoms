@@ -38,6 +38,7 @@ export class CallerDetailsComponent implements OnInit {
         callerAlternativeNumber: ["",Validators.pattern("^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$")]
       })
     );
+    
 
     this.callerService.getCallerByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
     .subscribe((caller: Caller) => {

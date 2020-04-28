@@ -1,173 +1,86 @@
-    <fieldset [formGroup]="patientCallForm.get('callDetails')" ng-submit="savePatientCallCall()" class="form-sub-group">
+<fieldset [formGroup]="patientCallForm" class="form-sub-group">
 
 
     <legend class="legend">Patient calls</legend>
 
-    <!-- *ngFor="let call of patientCallForm" -->
+    <button mat-raised-button (click)="addPatientCall()" color="primary">Add call</button>
 
-    <mat-expansion-panel>
+    <div formArrayName="calls">
+    <mat-expansion-panel *ngFor="let call of patientCallForm.controls.calls.controls; let i = index">
+
+
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Call date
+            {{calls.controls[i].get('callTime').value | date: 'dd/MM/yyyy'}}
           </mat-panel-title>
           <mat-panel-description>
-            <!-- {{currentCallType.CallType}} -->
+            {{calls.controls[i].get('callType').value?.CallType}}   -    {{calls.controls[i].get('assignedTo').value?.FirstName}}
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <mat-form-field>
-            <mat-label>Call type</mat-label>
-            <mat-select formControlName="callType" [(value)]="currentCallType" [errorStateMatcher]="errorMatcher">
-                <mat-option *ngFor="let callType of callTypes$ | async" [value]="callType">
-                    {{callType.CallType}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field >
+            <div formGroupName="{{i}}">
 
-        <mat-form-field>
-            <mat-label>Call outcome</mat-label>
-            <mat-select formControlName="patientCallOutcome" [errorStateMatcher]="errorMatcher">
-                <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallOutcomeId">
-                    {{outcome.PatientCallOutcome}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field >
+            <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+
+            <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+            <mat-form-field >
+                <mat-label>Call type</mat-label>
+                <mat-select  formControlName="callType" [errorStateMatcher]="errorMatcher">
+                    <mat-option *ngFor="let callType of callTypes$ | async" [value]="callType">
+                        {{callType.CallType}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field >
+
+            <mat-form-field>
+                <mat-label>Call outcome</mat-label>
+                <mat-select formControlName="patientCallOutcome" [errorStateMatcher]="errorMatcher">
+                    <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallOutcomeId">
+                        {{outcome.PatientCallOutcome}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field >
+
+            <mat-form-field>
+                <input formControlName="callTime" type="datetime-local"
+                (focus)="setInitialTime('callTime', i)"
+                [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+            </mat-form-field>
+
+            </div>
+
+            <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
 
-        <button mat-raised-button color="primary">Save</button>
+            <mat-form-field>
+                <mat-label>Assigned to</mat-label>
+                <mat-select formControlName="assignedTo" [errorStateMatcher]="errorMatcher">
+                    <mat-option *ngFor="let asignee of assignedTo$ | async" [value]="asignee">
+                        {{asignee.FirstName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="positiveCallOutcome">Positive call outcome</mat-checkbox>
+
+            </div>
+
+
+            <mat-form-field style="width:100%">
+                <textarea style="width:100%" formControlName="comments" rows="2" placeholder="Comments" [errorStateMatcher]="errorMatcher" matInput></textarea>
+            </mat-form-field>
+
+        </div>
+
+    </div>
+
+
+        <button mat-raised-button (click)="savePatientCall()" color="primary">Save</button>
 
       </mat-expansion-panel>
 
-    <!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-
-    <mat-form-field>
-        <input formControlName="call1Time" (focus)="setInitialTime($event)" name="call1Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 1 time" matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 1 made by</mat-label>
-        <mat-select formControlName="call1MadeBy" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 1 outcome</mat-label>
-        <mat-select formControlName="call1Outcome" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-</div>
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-
-    <mat-form-field>
-        <input formControlName="call2Time" (focus)="setInitialTime($event)" name="call2Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 2 time" matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 2 made by</mat-label>
-        <mat-select formControlName="call2MadeBy" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 2 outcome</mat-label>
-        <mat-select formControlName="call2Outcome" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-</div>
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-
-    <mat-form-field>
-        <input formControlName="call3Time" (focus)="setInitialTime($event)" name="call3Time" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call 3 time" matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 3 made by</mat-label>
-        <mat-select formControlName="call3MadeBy" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Call 3 outcome</mat-label>
-        <mat-select formControlName="call3Outcome" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let staff of officeStaff" [value]="staff.id">
-                {{staff.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-</div>
-
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
-
-<label id="caller-happy-label" class="label" >Caller happy</label>
-
-<mat-radio-group formControlName="callerHappy" aria-labelledby="caller-happy-label">
-
-    <mat-radio-button value="1" checked>N/A</mat-radio-button>
-    <mat-radio-button value="2">Yes</mat-radio-button>
-    <mat-radio-button value="3">No</mat-radio-button>
-    <mat-error style="font-size: small; padding-left: 10px;" *ngIf="callerHappy.hasError('noCallerHappy')">
-        Pick Yes or No.
-    </mat-error>
-</mat-radio-group>
-
-</div>
-
-<div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start">
-
-
-
-    <mat-form-field class="extra-wide">
-        <input formControlName="fullAddress" type="text" placeholder="Caller full address" [errorStateMatcher]="errorMatcher" matInput>
-    </mat-form-field>
-
-    <mat-form-field class="extra-wide">
-        <input formControlName="area" type="text" placeholder="Caller area" [errorStateMatcher]="errorMatcher" matInput>
-    </mat-form-field>
-
-    <mat-form-field class="extra-wide">
-        <input formControlName="emailAddress" type="text" placeholder="Caller email" [errorStateMatcher]="errorMatcher" matInput>
-    </mat-form-field>
-
-</div>
-
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
-
-<label id="has-visited-label" class="label" >Has visited Animal Aid?</label>
-<mat-radio-group formControlName="hasVisited" aria-labelledby="has-visited-label">
-
-    <mat-radio-button value="1" checked>N/A</mat-radio-button>
-    <mat-radio-button value="2">Yes</mat-radio-button>
-    <mat-radio-button value="3">No</mat-radio-button>
-    <mat-error style="font-size: small; padding-left: 10px;" *ngIf="hasVisited.hasError('noCallerHappy')">
-        Pick Yes or No.
-    </mat-error>
-</mat-radio-group>
-
-</div> -->
-
-
-<!-- <button mat-raised-button color="primary">Reset</button> -->
-
+    </div>
 
 </fieldset>
 
-
-<!-- </fieldset> -->

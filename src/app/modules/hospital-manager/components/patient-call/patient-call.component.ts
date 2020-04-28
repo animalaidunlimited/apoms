@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl, FormArray, FormGroup, FormGroupDirective, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { MatOption } from '@angular/material/core';
 import { CallType, PatientCallOutcome } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
+import { User } from 'src/app/core/models/user';
 
 @Component({
   selector: 'patient-call-call',
@@ -25,6 +25,8 @@ export class PatientCallComponent implements OnInit {
   callTypes$:Observable<CallType[]>;
   callOutcomes$:Observable<PatientCallOutcome[]>;
 
+  assignedTo$:Observable<User[]>;
+
   currentCallType:CallType;
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -33,73 +35,79 @@ export class PatientCallComponent implements OnInit {
               private patientService: PatientService,
               private dropdown: DropdownService) {}
 
+  calls:FormArray;
+
   ngOnInit() {
 
-
+    this.assignedTo$ = this.dropdown.getCallStaff();
 
     this.maxDate = getCurrentTimeString();
     this.callTypes$ = this.dropdown.getCallTypes();
     this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
 
     this.patientCallForm = this.fb.group({
-      patientCalls : this.fb.group({
-          patientId: [this.patientId],
           calls: this.fb.array([])
-      })
     });
 
-    let calls = this.patientCallForm.get("patientCalls.calls") as FormArray;
+    this.calls = this.patientCallForm.get("calls");
 
-    calls.push(this.getNewCall());
+    this.calls.push(this.getNewCall());
 
-    console.log(this.patientCallForm);
-
-
-  // this.callerHappy   = this.patientCallForm.get("callDetails.callerHappy");
   // this.hasVisited   = this.patientCallForm.get("callDetails.hasVisited");
 
+  // let incomingPatientId = this.patientCallForm.get("patientCalls.patientId") as AbstractControl;
 
-  let incomingPatientId = this.patientCallForm.get("calls.patientId") as AbstractControl;
+  // incomingPatientId.valueChanges.subscribe(patientId => {
 
-  incomingPatientId.valueChanges.subscribe(patientId =>
+  //   if(patientId > 0){
 
-    this.patientService.getPatientCallCallsByPatientId(patientId).subscribe(calls =>
-      this.patientCallForm.patchValue(calls))
-
-    )
-
+  //     this.patientService.getPatientCallCallsByPatientId(patientId).subscribe(calls =>
+  //       this.patientCallForm.patchValue(calls))
+  //   }
+  // });
 }
 
 getNewCall(){
 
   return this.fb.group({
+      patientCallId: [],
       patientId: [this.patientId],
+      positiveCallOutcome: [''],
       callTime: [''],
-      callMadeBy: [''],
+      assignedTo: [''],
       callType: [],
-      patientCallOutcome: []
+      patientCallOutcome: [],
+      createdDate: [''],
+      createdBy: [''],
+      comments: [''],
+      updated: [true]
   })
-
-
-
 }
 
-setInitialTime(event) {
+setInitialTime(element:string, index:number) {
 
-  let currentTime;
+  let currentCall:FormGroup = this.patientCallForm.get("patientCalls.calls").controls[index] as FormGroup;
 
-  currentTime = this.patientCallForm.get("callDetails").get(event.target.name).value;
+  let currentElement:AbstractControl = currentCall.get(element);
+
+  let currentTime:string|Date = currentElement.value;
 
   if(!currentTime)
   {
-    this.patientCallForm.get("callDetails").get(event.target.name).setValue(getCurrentTimeString());
+    currentElement.setValue(getCurrentTimeString());
   }
  }
 
- savePatientCallCall(){
-   alert("Saving");
-
-   this.patientCallForm.push(this.getNewCall());
+ savePatientCall(){
+   this.patientService.savePatientCalls(this.patientCallForm.value);
  }
+
+ addPatientCall(){
+
+  this.calls.push(this.getNewCall());
+
+ }
+
+
 
 }

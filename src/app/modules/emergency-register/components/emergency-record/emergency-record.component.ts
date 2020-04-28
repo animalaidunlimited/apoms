@@ -1,18 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 
-import { getCurrentTimeString } from '../../../../core/utils';
-
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from 'src/app/core/models/call-outcome';
 import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
+import { getCurrentTimeString } from 'src/app/core/utils';
+import { EmergencyCase } from 'src/app/core/models/emergency-record';
 
 
 
@@ -73,7 +72,10 @@ ngOnInit()
 
   let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
-  callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
+  //TODO fix this so that it doesn't break the validity of the form
+  // callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
+
+  callOutcome.addControl("sameAsNumber", new FormControl(null));
 
   if(this.emergencyCaseId){
     this.initialiseForm();

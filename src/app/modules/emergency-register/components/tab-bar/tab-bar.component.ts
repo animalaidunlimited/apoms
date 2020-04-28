@@ -48,7 +48,8 @@ export class TabBarComponent implements OnInit {
     let tabExists = this.tabs.find(card => card.emergencyCaseId == result.caseSearchResult.EmergencyCaseId);
 
     tabExists ?
-      this.selected.setValue(tabExists.id)
+      (this.selected.setValue(tabExists.id),
+      this.cdr.detectChanges())
       :
       this.addTab(result.caseSearchResult.EmergencyCaseId, result.caseSearchResult.EmergencyNumber.toString());
 
@@ -56,6 +57,7 @@ export class TabBarComponent implements OnInit {
 
  public updateEmergencyNumber(emergencyNumber:number){
    this.tabs[this.selected.value].value = (emergencyNumber || "New Case*").toString();
+   this.cdr.detectChanges();
 
  }
 }

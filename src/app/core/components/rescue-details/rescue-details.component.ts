@@ -6,6 +6,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdatedRescue } from '../../models/outstanding-case';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'rescue-details',
