@@ -3,8 +3,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient } from 'src/app/core/models/patients';
-import { SurgeryDetailsComponent } from '../../hospital-manager/components/surgery-details/surgery-details.component';
+import { Patient, PatientCall } from 'src/app/core/models/patients';
 
 @Injectable({
   providedIn: 'root'
@@ -81,5 +80,36 @@ export class PatientService extends APIService  {
    );
 
   }
+
+  public async savePatientCalls(patientCalls:PatientCall[]){
+
+    patientCalls.forEach(async (patientCall:PatientCall) => {
+
+      if(patientCall.updated && patientCall.patientId) {
+
+        return await this.put(patientCall).then((data) => {
+          return data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      }
+      else if(patientCall.updated && !patientCall.patientId){
+
+        return await this.post(patientCall).then((data) => {
+          return data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      }
+
+    } )
+
+
+
+}
 
 }

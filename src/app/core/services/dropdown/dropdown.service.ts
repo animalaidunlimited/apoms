@@ -9,6 +9,7 @@ import { EmergencyCode } from '../../models/emergency-code';
 import { ProblemDropdownResponse, PatientStatus, CallType, PatientCallOutcome } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
+import { User } from '../../models/user';
 
 
 export interface AnimalTypeResponse {
@@ -23,18 +24,19 @@ export class DropdownService extends APIService{
 
   endpoint = "Dropdown";
 
-  rescuers$:Observable<Rescuer[]>;
+  rescuers$:Observable<User[]>;
   emergencyCodes$:Observable<EmergencyCode[]>;
   areas$:any[];
-  dispatchers$:Observable<Dispatcher[]>;
+  dispatchers$:Observable<User[]>;
   callOutcomes$:Observable<CallOutcomeResponse[]>;
-  crueltyIspectors$;
+  crueltyIspectors$:Observable<User[]>;
   antibiotics$;
   isoReasons$;
   animalTypes$:Observable<AnimalType[]>;
   problems$:Observable<ProblemDropdownResponse[]>;
   exclusions$;
-  officeStaff$;
+  officeStaff$:Observable<User[]>;
+  callStaff$:Observable<User[]>
   patientStates$:Observable<PatientStatus[]>;
   callTypes$:Observable<CallType[]>;
   patientCallOutcome$:Observable<PatientCallOutcome[]>;
@@ -44,13 +46,38 @@ export class DropdownService extends APIService{
     super(http)
    }
 
-  getOfficeStaff(){
+  getOfficeStaff(): Observable<User[]> {
+
+    let request = "/OfficeStaff";
+
     if (!this.officeStaff$)
     {
-      this.officeStaff$ = [{"id":1,"name":"Kiran"},{"id":2,"name":"Komal"}];
+      this.officeStaff$ = this.getObservable(request)
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
     }
 
     return this.officeStaff$;
+  }
+
+  getCallStaff(): Observable<User[]> {
+
+    let request = "/CallStaff";
+
+    if (!this.callStaff$)
+    {
+      this.callStaff$ = this.getObservable(request)
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+    }
+
+    return this.callStaff$;
   }
 
   getExclusions() {
@@ -148,7 +175,6 @@ export class DropdownService extends APIService{
     }
 
     return this.problems$;
-
   }
 
   getIsoReasons() {
@@ -178,16 +204,23 @@ export class DropdownService extends APIService{
     return this.areas$;
   }
 
-  getCrueltyInspectors() {
+  getCrueltyInspectors(): Observable<User[]> {
+
+    let request = "/CrueltyStaff";
+
     if (!this.crueltyIspectors$)
     {
-      this.crueltyIspectors$ = [{"id": 1,"crueltyInspector": "Deendeyal"},	{"id": 2,"crueltyInspector": "Raj"}];
-    }
+      this.crueltyIspectors$ = this.getObservable(request)
+      .pipe(
+        map((response:User[]) => {
+          return response;
+        })
+      );}
 
     return this.crueltyIspectors$;
   }
 
-  getDispatchers(): Observable<Dispatcher[]> {
+  getDispatchers(): Observable<User[]> {
 
     let request = "/Dispatchers";
 
@@ -195,7 +228,7 @@ export class DropdownService extends APIService{
     {
       this.dispatchers$ = this.getObservable(request)
       .pipe(
-        map((response:Dispatcher[]) => {
+        map((response:User[]) => {
           return response;
         })
       );
@@ -222,7 +255,7 @@ export class DropdownService extends APIService{
 
   }
 
-  getRescuers(): Observable<Rescuer[]> {
+  getRescuers(): Observable<User[]> {
 
     let request = "/Rescuers";
 
@@ -230,7 +263,7 @@ export class DropdownService extends APIService{
     {
       this.rescuers$ = this.getObservable(request)
       .pipe(
-        map((response:Rescuer[]) => {
+        map((response:User[]) => {
           return response;
         })
       );
@@ -307,4 +340,7 @@ export class DropdownService extends APIService{
 
     return this.patientCallOutcome$;
   }
+
+
+
 }

@@ -1,6 +1,7 @@
 .form-sub-group {
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
 }
-/*# sourceMappingURL=patient-call.component.css.map */
+.comments {
+  height: 100%;
+  box-sizing: border-box;
+}
