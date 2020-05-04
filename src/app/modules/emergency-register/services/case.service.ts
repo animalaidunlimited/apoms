@@ -243,5 +243,11 @@ export class CaseService extends APIService {
 
   }
 
+  public async updateCaseOutcome(outcomeDetails:any): Promise<any> {
+
+    return await this.put(outcomeDetails);
+
+  }
+
 }
 

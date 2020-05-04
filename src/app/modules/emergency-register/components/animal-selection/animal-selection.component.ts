@@ -37,6 +37,7 @@ export class AnimalSelectionComponent implements OnInit{
 
   selection;
   tagNumber: string;
+  validRow:boolean;
 
   emergencyCaseId:number;
 
@@ -57,8 +58,6 @@ export class AnimalSelectionComponent implements OnInit{
     );
 
     this.emergencyCaseId = this.recordForm.get("emergencyDetails.emergencyCaseId").value;
-
-
 
     //if we have a case id we're doing a reload. Otherwise this is a new case.
     this.emergencyCaseId ?
@@ -141,9 +140,7 @@ export class AnimalSelectionComponent implements OnInit{
           this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
           .subscribe((patients: Patients) => {
 
-            console.log(patients)
-
-            let patientArray = this.recordForm.get("patients") as FormArray;
+            this.patientArray = this.recordForm.get("patients") as FormArray;
 
             patients.patients.forEach((patient) => {
 
@@ -153,7 +150,7 @@ export class AnimalSelectionComponent implements OnInit{
               let newPatient = this.populatePatient(true, patient);
 
 
-              patientArray.push(newPatient);
+              this.patientArray.push(newPatient);
 
             });
 
@@ -338,6 +335,7 @@ export class AnimalSelectionComponent implements OnInit{
         newPatient.get("animalTypeId").setValue(currentPatient.AnimalTypeId);
         newPatient.get("animalType").setValue(currentPatient.AnimalType);
 
+
         this.patientArray.push(newPatient);
 
         this.setSelected(position);
@@ -502,7 +500,7 @@ export class AnimalSelectionComponent implements OnInit{
 
     let patients = this.recordForm.get("patients") as FormArray;
 
-    let removeIndex = patients.controls.findIndex(patient => patient.get("position").value != position);
+    let removeIndex = patients.controls.findIndex(patient => patient.get("position").value === position);
 
     //if there's no patient id and we click delete, let's get rid of the patient.
     if(!row.get("patientId").value){

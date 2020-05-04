@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetPatientByPatientId!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetPatientByPatientId ( IN prm_PatientId INT)
+CREATE PROCEDURE AAU.sp_GetPatientByPatientId( IN prm_PatientId INT)
 BEGIN
 
 /*
@@ -36,5 +36,3 @@ WHERE p.PatientId = prm_PatientId;
 
 END$$
 DELIMITER ;
-
--- CALL AAU.sp_GetPatientByPatientId(200)

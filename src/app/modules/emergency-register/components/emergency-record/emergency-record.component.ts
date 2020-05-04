@@ -1,19 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
-
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
-import { Observable } from 'rxjs';
-import { CallOutcomeResponse } from 'src/app/core/models/call-outcome';
-import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
 import { getCurrentTimeString } from 'src/app/core/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-
-
 
 @Component({
   selector: 'emergency-record',
@@ -30,32 +23,18 @@ export class EmergencyRecordComponent implements OnInit{
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  notificationDurationSeconds:number;
-
-  sameAs:boolean;
-  sameAsId:number;
-
-
-  callOutcomes$:Observable<CallOutcomeResponse[]>;
-  callOutcomes;
-
   currentTime:string;
 
-
-  currentOutcomeId:number;
+  notificationDurationSeconds:number;
 
   constructor(
     private fb: FormBuilder,
-    private dropdowns: DropdownService,
     private userOptions: UserOptionsService,
-    private _snackBar: MatSnackBar,
-    private emergencyNumberValidator:UniqueEmergencyNumberValidator,
+    private snackBar: MatSnackBar,
     private caseService: CaseService) {}
 
 ngOnInit()
 {
-
-  this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
   this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -70,31 +49,13 @@ ngOnInit()
     })
   });
 
-  let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
-
-  //TODO fix this so that it doesn't break the validity of the form
-  // callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
-
-  callOutcome.addControl("sameAsNumber", new FormControl(null));
-
   if(this.emergencyCaseId){
     this.initialiseForm();
   }
 
-  this.callOutcomes$.subscribe(callOutcome => {
 
-    this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
-
-  });
 }
 
-  outcomeChanged(){
-
-    this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
-
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.callOutcome').value;
-
-  }
 
   initialiseForm(){
 
@@ -189,6 +150,7 @@ ngOnInit()
 
   async saveForm()
   {
+
    if(this.recordForm.valid)
    {
 
@@ -200,6 +162,8 @@ ngOnInit()
       {
         await this.caseService.insertCase(emergencyForm)
         .then((data) => {
+
+
 
           let messageResult = {
             failure : 0
@@ -238,6 +202,8 @@ ngOnInit()
         await this.caseService.updateCase(emergencyForm)
         .then((data) => {
 
+
+          console.log(data);
           let resultBody = data as EmergencyResponse;
 
           this.recordForm.get('callerDetails.callerId').setValue(resultBody.callerId);
@@ -257,7 +223,7 @@ ngOnInit()
   }
 
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
+    this.snackBar.open(message, action, {
       duration: this.notificationDurationSeconds * 1000,
     });
   }

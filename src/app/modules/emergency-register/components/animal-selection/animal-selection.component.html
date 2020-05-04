@@ -47,6 +47,7 @@
             <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;"
             [class.deleted]="row.get('deleted').value"
+            [class.invalid-row]="row.invalid"
             (keydown.enter)="updateTag(row)"></tr>
 
 

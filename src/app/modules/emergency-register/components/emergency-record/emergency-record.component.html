@@ -28,37 +28,18 @@
 
             </fieldset>
 
-              <fieldset [formGroup]="recordForm.get('callOutcome')" class="form-sub-group">
+              <fieldset class="form-sub-group">
 
                     <legend class="legend">Call Outcome</legend>
 
-                    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+                    <emergency-case-outcome [recordForm]="recordForm"></emergency-case-outcome>
+                    <!-- <emergency-case-outcome ></emergency-case-outcome> -->
 
-                    <mat-form-field class="extra-wide">
-                        <mat-label>Call Outcome</mat-label>
-                        <mat-select formControlName="callOutcome" (selectionChange)="outcomeChanged()">
-                            <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.CallOutcomeId">
-                                {{outcome.CallOutcome}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="sameAs">
-
-                        <input formControlName="sameAsNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
-
-                        <mat-error *ngIf="recordForm.get('callOutcome.sameAsNumber').errors?.emergencyNumberTaken">
-                            The emergency number doesn't exist.
-                        </mat-error>
-                    </mat-form-field>
-
-                    </div>
 
               </fieldset>
 
               <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                 <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid">Save</button>
-
                 <button mat-raised-button color="primary" type="reset">Reset</button>
               </div>
 

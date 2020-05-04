@@ -24,6 +24,7 @@ import { PatientStatusModule } from 'src/app/core/components/patient-status/pati
 import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
+import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
 
 
 
@@ -36,6 +37,7 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
     CensusDetailsComponent,
     SurgeryDetailsComponent,
     PatientCallComponent,
+    PatientCallDialogComponent,
     CrueltyDetailsComponent,
     OutcomeComponent,
     AnimalHeaderComponent,

@@ -69,9 +69,6 @@
 .moved {
   background-color: lightsteelblue !important;
 }
-.search-candidate {
-  background-color: lightsteelblue !important;
-}
 .dot {
   height: 20px;
   width: 20px;
@@ -106,4 +103,11 @@
 }
 .animal-location {
   margin: 10px 0px 10px 10px;
+}
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled="true"])
+  .mat-expansion-panel-header:hover {
+  background-color: lightsteelblue !important;
 }

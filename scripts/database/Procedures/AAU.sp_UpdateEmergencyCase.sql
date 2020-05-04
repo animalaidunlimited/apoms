@@ -3,7 +3,6 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCase!!
 
 DELIMITER $$
-
 CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_EmergencyCaseId INT,
 									IN prm_EmergencyNumber INT,

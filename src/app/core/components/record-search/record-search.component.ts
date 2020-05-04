@@ -1,11 +1,12 @@
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import { trigger, state, style, animate, transition} from '@angular/animations';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
-import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
+import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
+import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
 
 export interface SearchValue {
   id: number;
@@ -48,6 +49,7 @@ export class Search {
 })
 export class RecordSearchComponent implements OnInit{
 
+  @Input() parentName:string;
   @Output() public onOpenEmergencyCase = new EventEmitter<any>();
 
   searchFieldForm = new FormControl();
@@ -78,6 +80,7 @@ export class RecordSearchComponent implements OnInit{
   constructor(
     public dialog: MatDialog,
     public rescueDialog: MatDialog,
+    public callDialog: MatDialog,
     private formBuilder: FormBuilder,
     private caseService: CaseService) {}
 
@@ -245,9 +248,18 @@ quickUpdate(patientId:number, tagNumber:string){
 
 rescueUpdate(emergencyCaseId:number, callDateTime:Date | string, callOutcome:number){
 
-  this.rescueDialog.open(RescueDetailsComponent, {
+  this.rescueDialog.open(RescueDetailsDialogComponent, {
     width: '500px',
     data: {emergencyCaseId:emergencyCaseId, callDateTime:callDateTime, callOutcome:callOutcome}
+  });
+
+}
+
+callUpdate(patientId:number, tagNumber:string){
+
+  this.callDialog.open(PatientCallDialogComponent, {
+    width: '500px',
+    data: {patientId:patientId, tagNumber:tagNumber}
   });
 
 }
