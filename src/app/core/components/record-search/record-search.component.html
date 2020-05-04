@@ -113,9 +113,9 @@
             (click)="rescueUpdate(result.EmergencyCaseId)">
                 <mat-icon>departure_board</mat-icon>
             </button>
-            <button mat-icon-button color="primary" routerLink="/nav/hospital-manager" style="cursor:pointer;" aria-label="Hospital record"
-            (click)="loadHospitalRecord(result.EmergencyCaseId, result.CallDateTime, result.CallOutcomeId)">
-                <mat-icon>local_hospital</mat-icon>
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Update calls"
+            (click)="callUpdate(result.PatientId, result.TagNumber)">
+                <mat-icon>phone</mat-icon>
             </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">

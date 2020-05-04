@@ -1,0 +1,14 @@
+<h1 mat-dialog-title
+cdkDrag
+cdkDragRootElement=".cdk-overlay-pane"
+cdkDragHandle>Patient call details - {{data.tagNumber}}</h1>
+
+<div mat-dialog-content>
+
+    <patient-call [patientId]="data.patientId" #patientCalls></patient-call>
+
+</div>
+<!-- <div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="patientCalls.savePatientCall()" cdkFocusInitial>Save</button>
+</div> -->

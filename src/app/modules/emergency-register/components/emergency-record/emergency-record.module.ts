@@ -10,6 +10,7 @@ import { CallerDetailsModule } from 'src/app/core/components/caller-details/call
 import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
+import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,9 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
         CallerDetailsModule,
         LocationDetailsModule,
         RescueDetailsModule,
-        EmergencyDetailsModule
+        EmergencyDetailsModule,
+        EmergencyCaseOutcomeModule
+
     ],
     exports: [
         EmergencyRecordComponent

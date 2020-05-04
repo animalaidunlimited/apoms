@@ -16,12 +16,12 @@ for display in the rescue board.
 SELECT 
 JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rescueStatus", AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec.RescueTime, ec.AdmissionTime, ec.CallOutcomeId)),
-			JSON_OBJECT("rescuer1Id", r1.RescuerId),
-			JSON_OBJECT("rescuer1Abbreviation", r1.Abbreviation),
-            JSON_OBJECT("rescuer1Colour", r1.Abbreviation),
-			JSON_OBJECT("rescuer2Id", r2.RescuerId),
-			JSON_OBJECT("rescuer2Abbreviation", r2.Abbreviation),
-            JSON_OBJECT("rescuer2Colour", r1.Abbreviation),
+			JSON_OBJECT("rescuer1Id", r1.UserId),
+			JSON_OBJECT("rescuer1Abbreviation", r1.Initials),
+            JSON_OBJECT("rescuer1Colour", r1.Colour),
+			JSON_OBJECT("rescuer2Id", r2.UserId),
+			JSON_OBJECT("rescuer2Abbreviation", r2.Initials),
+            JSON_OBJECT("rescuer2Colour", r1.Colour),
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
             JSON_OBJECT("emergencyNumber", ec.EmergencyNumber),
             JSON_OBJECT("emergencyCodeId", ec.EmergencyCodeId),
@@ -36,20 +36,13 @@ JSON_MERGE_PRESERVE(
             ) AS `Rescues`
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
-LEFT JOIN AAU.Rescuer r1 ON r1.RescuerId = ec.Rescuer1Id
-LEFT JOIN AAU.Rescuer r2 ON r2.RescuerId = ec.Rescuer2Id
-WHERE ec.EmergencyCaseId = prm_EmergencyCaseId
-AND ec.callOutcomeId IS NULL
-and (
-ec.Rescuer1Id IS NULL
-OR ec.Rescuer2Id IS NULL
-OR (ec.AmbulanceArrivalTime IS NULL
-AND ec.RescueTime IS NULL)
-OR ec.RescueTime IS NULL
-OR ec.AdmissionTime IS NULL
-OR ec.CallOutcomeId IS NULL);
+LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
+LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
+WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
 
 END$$
 DELIMITER ;
 
--- CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(47);
+
+
+-- CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(51);

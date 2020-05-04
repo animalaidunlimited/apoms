@@ -10,10 +10,13 @@ import { searchResponseWrapper } from 'src/app/core/models/responses';
 
 export class TabBarComponent implements OnInit {
 
+  selected = new FormControl(0);
+
   tabs = [{"id":0, "value": "Board", "emergencyCaseId": 0, "icon":""},
           {"id":1, "value": "Search", "emergencyCaseId": 0, "icon":""}];
 
-  selected = new FormControl(0);
+
+
 
   constructor(
     private cdr: ChangeDetectorRef

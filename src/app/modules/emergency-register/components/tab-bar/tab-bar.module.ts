@@ -9,14 +9,13 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
 import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
-
+import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 
 @NgModule({
     declarations: [
         TabBarComponent,
         RescueDetailsDialogComponent,
-        OutstandingCaseBoardComponent,
+        OutstandingCaseBoardComponent
     ],
     imports: [
         CommonModule,
@@ -25,7 +24,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
         RescueDetailsModule,
         EmergencyDetailsModule,
         MaterialModule,
-        FlexLayoutModule 
+        FlexLayoutModule,
+        EmergencyCaseOutcomeModule
     ],
     exports: [
         TabBarComponent

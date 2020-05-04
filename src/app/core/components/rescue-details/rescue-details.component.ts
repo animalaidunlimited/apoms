@@ -6,7 +6,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdatedRescue } from '../../models/outstanding-case';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'rescue-details',
@@ -18,7 +17,7 @@ export class RescueDetailsComponent implements OnInit {
 
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
-  @Output() public onResult = new EventEmitter<UpdatedRescue>();
+  @Output() public result = new EventEmitter<UpdatedRescue>();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -39,7 +38,7 @@ export class RescueDetailsComponent implements OnInit {
 
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
-    private fb: FormBuilder,) {}
+    private fb: FormBuilder) {}
 
   rescuers$;
   rescueDetails$
@@ -154,7 +153,7 @@ updateValidators()
   }
 
   //When we select admission, we need to check that we have rescue details
-  if(this.callOutcome.value == "Admission"){
+  if(this.callOutcome.value?.CallOutcome == "Admission"){
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
@@ -171,7 +170,6 @@ updateValidators()
 }
 
 onChanges(): void {
-
 
     this.recordForm.valueChanges.subscribe(val => {
 
@@ -209,18 +207,22 @@ onChanges(): void {
     this.currentTime = currentTime;
   }
 
-  async onSave(){
+  async save(){
+
+
+    // If we haven't touched the form, don't do anything.
+    if(this.recordForm.pristine){
+      this.result.emit(null);
+      return;
+    }
 
     this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
 
     await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdatedRescue) =>
 
-      this.onResult.emit(data)
+      this.result.emit(data)
 
     );
-
-
-
   }
 
 }

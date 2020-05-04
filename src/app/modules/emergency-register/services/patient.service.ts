@@ -3,7 +3,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCall } from 'src/app/core/models/patients';
+import { Patient, PatientCall, PatientCalls, PatientCallModifyResponse, PatientCallResult } from 'src/app/core/models/patients';
 
 @Injectable({
   providedIn: 'root'
@@ -59,57 +59,61 @@ export class PatientService extends APIService  {
 
   public async updatePatientStatus(patient:any){
 
-          return await this.put(patient).then((data) => {
-            return data;
-          })
-          .catch((error) => {
-            console.log(error);
-          });;
+    return await this.put(patient).then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   }
 
-  public getPatientCallCallsByPatientId(patientId: number):Observable<any>{
+  public getPatientCallsByPatientId(patientId: number):Observable<PatientCalls>{
 
-    let request = "PatientCall?patientId=" + patientId;
+    let request = "/PatientCalls?patientId=" + patientId;
 
    return this.getObservable(request)
    .pipe(
-     map((response:Patient[]) => {
+     map((response:PatientCalls) => {
        return response;
      })
    );
 
   }
 
-  public async savePatientCalls(patientCalls:PatientCall[]){
+  public async savePatientCalls(patientCalls:PatientCalls) : Promise<PatientCallModifyResponse[]>{
 
-    patientCalls.forEach(async (patientCall:PatientCall) => {
+    let response:PatientCallModifyResponse[] = [];
 
-      if(patientCall.updated && patientCall.patientId) {
+    for (let call of patientCalls.calls){
 
-        return await this.put(patientCall).then((data) => {
-          return data;
+      if(call.patientCallId && call.updated){
+
+        call.patientId = patientCalls.patientId;
+
+        await this.put(call).then((data:PatientCallResult) => {
+
+          response.push({ position: call.position, results: data});
         })
         .catch((error) => {
           console.log(error);
         });
-
       }
-      else if(patientCall.updated && !patientCall.patientId){
+      else if (!call.patientCallId && call.updated){
 
-        return await this.post(patientCall).then((data) => {
-          return data;
+        call.patientId = patientCalls.patientId;
+
+        await this.post(call).then((data:PatientCallResult) => {
+
+          response.push({ position: call.position, results: data});
         })
         .catch((error) => {
           console.log(error);
         });
-
       }
+    }
 
-    } )
-
-
-
+    return response;
 }
 
 }

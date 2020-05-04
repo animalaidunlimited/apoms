@@ -10,12 +10,19 @@ cdkDragHandle>Rescue Details - {{data.emergencyNumber}}</h1>
     <rescue-details
       [recordForm]="data.recordForm"
       [emergencyCaseId]="data.emergencyCaseId"
-      (onResult)="resultReceived($event)"
+      (result)="onRescueDetailsResult($event)"
       #rescueDetails>
     </rescue-details>
+
+    <emergency-case-outcome [recordForm]="data.recordForm"
+    #outstanding
+    (result)="onOutcomeResult($event)">
+    </emergency-case-outcome>
+
+
 
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="rescueDetails.onSave()" [disabled]="data.recordForm.invalid" cdkFocusInitial>Save</button>
+  <button mat-raised-button color="primary" (click)="rescueDetails.save(); outstanding.save()" [disabled]="data.recordForm.invalid" cdkFocusInitial>Save</button>
 </div>

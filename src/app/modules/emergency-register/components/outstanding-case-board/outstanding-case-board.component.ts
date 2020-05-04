@@ -8,7 +8,6 @@ import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 
 import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { SearchResponse } from 'src/app/core/models/responses';
 
 export interface Swimlane{
   label:string;
@@ -87,10 +86,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
       this.populate(outstandingCases.outstandingRescues)
     );
 
-    this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) =>
+    this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) => {
 
-      this.updateRescue(updatedRescue)
-      );
+      this.updateRescue(updatedRescue);
+
+
+    });
 
 
     this.searchForm.get("searchTerm").valueChanges
@@ -109,11 +110,10 @@ export class OutstandingCaseBoardComponent implements OnInit {
     // let rescueToMove:OutstandingRescue =
     this.removeRescueById(this.outstandingCases, updatedRescue);
 
-
-    //Update the old rescue with the new details.
-    // rescueToMove.rescuer1Id = updatedRescue.rescuer1Id || null;
-    // rescueToMove.rescuer2Id = updatedRescue.rescuer2Id || null;
-    // rescueToMove.rescueStatus = updatedRescue.rescueStatus;
+    //If the record is no longer outstanding, then remove it from the list
+    if(!updatedRescue.rescueStatus){
+      return;
+    }
 
     //Check to see if the swimlane exists and insert if not
     let laneExists = this.outstandingCases.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
@@ -255,26 +255,13 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-    let recordForm = this.fb.group({
-
-      emergencyDetails: this.fb.group({
-        emergencyCaseId: [outstandingCase.emergencyCaseId],
-        callDateTime: [''],
-        updateTime: ['']
-      }),
-      callOutcome: this.fb.group({
-        callOutcome: ['']
-      })
-    }
-    );
 
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
       width: '500px',
       height: '500px',
       data: {
               emergencyCaseId:outstandingCase.emergencyCaseId,
-              emergencyNumber:outstandingCase.emergencyNumber,
-              recordForm:recordForm
+              emergencyNumber:outstandingCase.emergencyNumber
             }
     });
 

@@ -1,20 +1,17 @@
-<fieldset [formGroup]="patientCallForm" class="form-sub-group">
-
-
-    <legend class="legend">Patient calls</legend>
-
-    <button mat-raised-button (click)="addPatientCall()" color="primary">Add call</button>
+<div [formGroup]="patientCallForm">
 
     <div formArrayName="calls">
-    <mat-expansion-panel *ngFor="let call of patientCallForm.controls.calls.controls; let i = index">
 
+    <mat-expansion-panel
+    *ngFor="let call of calls.controls; let i = index"
+    >
 
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{calls.controls[i].get('callTime').value | date: 'dd/MM/yyyy'}}
+            {{calls.controls[i].get('callDateTime').value | date: 'dd/MM/yyyy'}}
           </mat-panel-title>
           <mat-panel-description>
-            {{calls.controls[i].get('callType').value?.CallType}}   -    {{calls.controls[i].get('assignedTo').value?.FirstName}}
+            {{calls.controls[i].get('assignedTo').value?.FirstName}} : {{calls.controls[i].get('callType').value?.CallType}}
           </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -26,7 +23,7 @@
 
             <mat-form-field >
                 <mat-label>Call type</mat-label>
-                <mat-select  formControlName="callType" [errorStateMatcher]="errorMatcher">
+                <mat-select  formControlName="callType" [compareWith]="compareCallTypes" [errorStateMatcher]="errorMatcher">
                     <mat-option *ngFor="let callType of callTypes$ | async" [value]="callType">
                         {{callType.CallType}}
                     </mat-option>
@@ -35,7 +32,7 @@
 
             <mat-form-field>
                 <mat-label>Call outcome</mat-label>
-                <mat-select formControlName="patientCallOutcome" [errorStateMatcher]="errorMatcher">
+                <mat-select formControlName="PatientCallOutcomeId" [errorStateMatcher]="errorMatcher">
                     <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallOutcomeId">
                         {{outcome.PatientCallOutcome}}
                     </mat-option>
@@ -43,8 +40,8 @@
             </mat-form-field >
 
             <mat-form-field>
-                <input formControlName="callTime" type="datetime-local"
-                (focus)="setInitialTime('callTime', i)"
+                <input formControlName="callDateTime" type="datetime-local"
+                (focus)="setInitialTime('callDateTime', i)"
                 [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
             </mat-form-field>
 
@@ -55,14 +52,14 @@
 
             <mat-form-field>
                 <mat-label>Assigned to</mat-label>
-                <mat-select formControlName="assignedTo" [errorStateMatcher]="errorMatcher">
+                <mat-select formControlName="assignedTo" [compareWith]="compareAssignedTo" [errorStateMatcher]="errorMatcher">
                     <mat-option *ngFor="let asignee of assignedTo$ | async" [value]="asignee">
                         {{asignee.FirstName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <mat-checkbox formControlName="positiveCallOutcome">Positive call outcome</mat-checkbox>
+            <mat-checkbox formControlName="positiveCallOutcome" checked>Positive call outcome</mat-checkbox>
 
             </div>
 
@@ -75,12 +72,18 @@
 
     </div>
 
-
-        <button mat-raised-button (click)="savePatientCall()" color="primary">Save</button>
-
       </mat-expansion-panel>
 
     </div>
 
-</fieldset>
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+        <button mat-raised-button (click)="addPatientCall(true)" color="primary">Add call</button>
+        <button mat-raised-button (click)="savePatientCall()" color="primary">Save</button>
+
+    </div>
+
+
+
+</div>
 

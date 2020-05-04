@@ -10,7 +10,6 @@ export class EmergencyRegisterPageComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log("EmergencyRegisterPageComponent ngOnInit");
   }
 
 }

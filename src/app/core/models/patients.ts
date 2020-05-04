@@ -20,18 +20,33 @@ export interface Patient {
     patients: Patient[];
 }
 
-export interface PatientCall {
-      patientCallId: number;
-      patientId: number;
-      positiveCallOutcome: boolean;
-      callTime: string|Date;
-      assignedTo: number;
-      callType: number;
-      patientCallOutcome: number;
-      createdDate:string|Date;
-      createdBy: number;
-      comments: string;
-      updated: boolean;
+export interface PatientCalls {
+  patientId: number;
+  calls: PatientCall[];
 }
 
+export interface PatientCall {
+  position: number;
+  patientCallId: number;
+  patientId: number;
+  positiveCallOutcome: boolean;
+  callDateTime: string|Date;
+  assignedTo: number;
+  callType: number;
+  patientCallOutcomeId: number;
+  createdDateTime:string|Date;
+  createdBy: number;
+  comments: string;
+  updated: boolean;
+}
+
+export interface PatientCallResult{
+  success: number;
+  patientCallId: number;
+}
+
+export interface PatientCallModifyResponse{
+  position: number;
+  results: PatientCallResult;
+}
 

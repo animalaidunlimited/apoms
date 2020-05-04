@@ -42,3 +42,12 @@ mat-tab-body {
 :host ::ng-deep mat-ink-bar {
   display: none;
 }
+
+:host ::ng-deep .hospital-tab-group .mat-tab-header {
+  display: none;
+}
+
+.toggle{
+  cursor: pointer;
+  color: $primary-font-colour;
+}
