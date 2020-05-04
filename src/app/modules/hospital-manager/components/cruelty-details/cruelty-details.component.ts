@@ -11,7 +11,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 export class CrueltyDetailsComponent implements OnInit {
 
   crueltyForm;
-  crueltyInspectors;
+  crueltyInspectors$;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -19,7 +19,7 @@ export class CrueltyDetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.crueltyInspectors = this.dropdowns.getCrueltyInspectors();
+    this.crueltyInspectors$ = this.dropdowns.getCrueltyInspectors();
 
     this.crueltyForm = this.fb.group({
 

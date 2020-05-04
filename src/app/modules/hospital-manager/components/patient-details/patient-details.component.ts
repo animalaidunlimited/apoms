@@ -47,35 +47,6 @@ export class PatientDetailsComponent implements OnInit {
       this.recordForm.get("patientDetails.animalTypeId").setValue(result.animalTypeId)
     });
 
-    // let emergencyDetails = this.recordForm.get("emergencyDetails") as FormGroup;
-    // emergencyDetails.addControl("emergencyNumber", new FormControl('', Validators.required));
-
-
-    // this.recordForm.addControl(
-    //   "rescueDetails", this.fb.group({
-    //     "admissionTime" : ['', Validators.required]
-    // }));
-
-
-    // this.caseService
-    // .getCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    // .subscribe(result => {
-    //   this.recordForm.patchValue(result);
-    // });
-
-    // this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    // .subscribe((rescueDetails: RescueDetails) => {
-    //   this.recordForm.patchValue(rescueDetails);
-    // });
-
-
-
-
-
-
-
   }
-
-
 
 }

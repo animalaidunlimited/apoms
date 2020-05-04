@@ -22,6 +22,7 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_AdmissionTime DATETIME,
                                     IN prm_UpdateTime DATETIME,
 									OUT prm_EmergencyCaseId INT,
+                                    OUT prm_SocketEndPoint CHAR(3),
 									OUT prm_Success INT)
 BEGIN
 
@@ -39,7 +40,10 @@ SET vOrganisationId = 0;
 
 SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
 
 START TRANSACTION;
 
@@ -85,12 +89,14 @@ VALUES
 );
 
 COMMIT;
-
-	SELECT 1 INTO prm_Success;
-    SELECT LAST_INSERT_ID() INTO prm_EmergencyCaseId;	
+	
+    SELECT LAST_INSERT_ID() INTO prm_EmergencyCaseId;
+    SELECT 1 INTO prm_Success;
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username,prm_CallerId,'EmergencyCase','Insert', NOW());
+	VALUES (vOrganisationId,prm_Username,prm_CallerId,'EmergencyCase','Insert', NOW());
+    
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
 ELSEIF vEmNoExists >= 1 THEN
 

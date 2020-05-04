@@ -9,6 +9,7 @@ const { AUTH_TOKEN } = StorageKey;
 export interface Response{
     success: boolean;
     message: string;
+    socketEndPoint: string;
     token: string;
 }
 
@@ -21,6 +22,7 @@ export class AuthService extends APIService {
     token: string;
     response: Response;
     redirectUrl: string;
+    socketEndPoint: string;
 
     constructor(http: HttpClient,private ngZone: NgZone,private storage: StorageService
         ) {
@@ -33,12 +35,16 @@ export class AuthService extends APIService {
         try {
             this.response = await this.post({ username, password }) as Response;
             this.token = this.response.token || "";
+
             if(!this.response.success){
                 throw new Error(
                     'Wrong Credentials!',
                 );
             }
             this.storage.save(AUTH_TOKEN, this.token);
+
+            this.storage.save("SOCKET_END_POINT", this.response.socketEndPoint)
+
             return this.redirectUrl;
         } catch (error) {
             //console.error('Error during login request', error);
@@ -68,12 +74,16 @@ export class AuthService extends APIService {
     public logout() {
         this.token = '';
         this.storage.remove(AUTH_TOKEN);
-        
+
         this.ngZone.runOutsideAngular(() => BootController.getbootControl().restart());
 
     }
 
     public isLogged(): boolean {
         return this.token.length > 0;
+    }
+
+    public getOrganisationSocketEndPoint(){
+        return this.storage.read("SOCKET_END_POINT");
     }
 }

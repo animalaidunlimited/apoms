@@ -97,9 +97,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [
-              "src/app/core/components/location-details/google-maps-mock.js"
-            ],
+            "scripts": [],
             "assets": [
               "src/favicon.ico",
               "src/assets",

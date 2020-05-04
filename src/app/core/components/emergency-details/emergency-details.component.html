@@ -21,8 +21,8 @@
     <mat-form-field>
         <mat-label>Dispatcher</mat-label>
         <mat-select formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.DispatcherId">
-                {{dispatcher.Dispatcher}}
+            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
+                {{dispatcher.FirstName}}
             </mat-option>
         </mat-select>
     </mat-form-field >

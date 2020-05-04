@@ -1,16 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
-
-import { getCurrentTimeString } from '../../../../core/utils';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CaseService } from '../../services/case.service';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
 import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
+import { Observable } from 'rxjs';
+import { CallOutcomeResponse } from 'src/app/core/models/call-outcome';
+import { UniqueEmergencyNumberValidator } from 'src/app/core/validators/emergency-number.validator';
+import { getCurrentTimeString } from 'src/app/core/utils';
+import { EmergencyCase } from 'src/app/core/models/emergency-record';
+
 
 
 @Component({
@@ -21,7 +23,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 
 export class EmergencyRecordComponent implements OnInit{
 
-  @Input() emergencyCaseId;
+  @Input() emergencyCaseId:number;
   @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
 
   recordForm: FormGroup;
@@ -30,17 +32,24 @@ export class EmergencyRecordComponent implements OnInit{
 
   notificationDurationSeconds:number;
 
+  sameAs:boolean;
+  sameAsId:number;
 
-  callOutcomes$;
+
+  callOutcomes$:Observable<CallOutcomeResponse[]>;
+  callOutcomes;
 
   currentTime:string;
+
+
+  currentOutcomeId:number;
 
   constructor(
     private fb: FormBuilder,
     private dropdowns: DropdownService,
     private userOptions: UserOptionsService,
     private _snackBar: MatSnackBar,
-    private emergencyNumberValidator: UniqueEmergencyNumberValidator,
+    private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private caseService: CaseService) {}
 
 ngOnInit()
@@ -59,52 +68,35 @@ ngOnInit()
     callOutcome: this.fb.group({
       callOutcome: ['']
     })
-  }
-  );
+  });
+
+  let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
+
+  //TODO fix this so that it doesn't break the validity of the form
+  // callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
+
+  callOutcome.addControl("sameAsNumber", new FormControl(null));
 
   if(this.emergencyCaseId){
     this.initialiseForm();
   }
 
+  this.callOutcomes$.subscribe(callOutcome => {
 
+    this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
 
-  this.onChanges();
+  });
 }
 
-updateValidators()
-{
+  outcomeChanged(){
 
-  let callerName = this.recordForm.get('callerDetails.callerName');
-  let callerNumber = this.recordForm.get('callerDetails.callerNumber');
-  let dispatcher = this.recordForm.get("emergencyDetails.dispatcher");
+    this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
 
-  if((callerName.value || callerNumber.value) && !(callerName.value && callerNumber.value))
-  {
-    !!callerName.value == true  ? callerNumber.setValidators([Validators.required])
-                            : callerName.setValidators([Validators.required]);
-  }
+    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.callOutcome').value;
 
-  callerName.updateValueAndValidity({emitEvent: false });
-  callerNumber.updateValueAndValidity({emitEvent: false });
-  dispatcher.updateValueAndValidity({emitEvent: false });
-}
-
-
-onChanges(): void {
-
-    this.recordForm.valueChanges.subscribe(val => {
-
-      //The values won't have bubbled up to the parent yet, so wait for one tick
-      setTimeout(() =>
-        this.updateValidators()
-      )
-
-    });
   }
 
   initialiseForm(){
-
-    // let currentCase = await this.caseService.getCaseById(this.emergencyCaseId);
 
     this.caseService
     .getCaseById(this.emergencyCaseId)

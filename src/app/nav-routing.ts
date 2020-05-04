@@ -28,7 +28,8 @@ export const navRoutes: NavRoute[] = [
 {data: {title: 'Emergency Register'},icon: 'none',group: '',path: 'emergency-register',loadChildren: () =>
                 import('./modules/emergency-register/emergency-register-page.module').then(
                     m => m.EmergencyRegisterPageModule,
-                ),},{data: {title: 'Hospital Manager'},icon: 'none',group: '',path: 'hospital-manager',loadChildren: () =>
+                ),},
+                {data: {title: 'Hospital Manager'},icon: 'none',group: '',path: 'hospital-manager',loadChildren: () =>
                 import('./modules/hospital-manager/hospital-manager-page.module').then(
                     m => m.HospitalManagerPageModule,
                 ),},{data: {title: 'Census'},icon: 'none',group: '',path: 'census',loadChildren: () =>

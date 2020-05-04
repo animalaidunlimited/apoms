@@ -8,16 +8,14 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 export class UniqueEmergencyNumberValidator {
   constructor(private caseService: CaseService) {}
 
-  validate(emergencyCaseId:number): AsyncValidatorFn {
+  validate(emergencyCaseId:number, checkExists:number): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
-
-
 
       return this.caseService.checkEmergencyNumberExists(control.value, emergencyCaseId)
         .pipe(
           map(res => {
             // if username is already taken
-            if (res[0]["@success"] == "1") {
+            if (res[0]["@success"] == checkExists) {
               // return error
               return { 'emergencyNumberTaken': true};
             }

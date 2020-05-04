@@ -18,8 +18,8 @@
     <mat-form-field>
         <mat-label>Cruelty inspector</mat-label>
         <mat-select formControlName="crueltyInspector" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let inspector of crueltyInspectors" [value]="inspector.id">
-                {{inspector.crueltyInspector}}
+            <mat-option *ngFor="let inspector of crueltyInspectors$ | async" [value]="inspector.UserId">
+                {{inspector.FirstName}}
             </mat-option>
         </mat-select>
     </mat-form-field>
