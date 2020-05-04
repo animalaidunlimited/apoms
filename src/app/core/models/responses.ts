@@ -1,3 +1,4 @@
+import { CallOutcome, EmergencyDetails } from './emergency-record';
 
 export interface EmergencyResponse
 {
@@ -42,12 +43,23 @@ export interface Location
     longitude: number;
 }
 
+export interface RescueDetailsParent {
+    callOutcome: CallOutcome;
+    rescueDetails: RescueDetails;
+    emergencyDetails: EmergencyDetails;
+}
+
+
 export interface RescueDetails{
-    rescuer1: number;
-    rescuer2: number;
-    ambulanceArrivalTime: string;
-    admissionTime: string;
-    rescueTime: string;
+    rescueTime: string | Date;
+    rescuer1Id: number;
+    rescuer2Id: number;
+    admissionTime: string | Date;
+    rescuer1Colour: string;
+    rescuer2Colour: string;
+    ambulanceArrivalTime: string | Date;
+    rescuer1Abbreviation: string;
+    rescuer2Abbreviation: string;
 }
 
 export interface Caller
@@ -93,4 +105,12 @@ export interface PatientStatus{
     PatientStatusDate: Date;
 }
 
+export interface CallType{
+    CallTypeId: number;
+    CallType: string;
+}
 
+export interface PatientCallOutcome{
+    PatientCallOutcomeId: number;
+    PatientCallOutcome: string;
+}

@@ -24,12 +24,13 @@ describe('RescueDetailsComponent', () => {
     fixture = TestBed.createComponent(RescueDetailsComponent);
     component = fixture.componentInstance;
 
+    component.emergencyCaseId;
+
     component.recordForm = fb.group({
 
       emergencyDetails: fb.group({
         emergencyCaseId: [1],
-        callDateTime:[''],
-        updateTime: ['']
+        callDateTime: ['']
       }),
       callOutcome: fb.group({
         callOutcome: ['']
@@ -53,7 +54,7 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - worker but no driver', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
     component.updateValidators();
 
     expect(component.recordForm.valid).toEqual(false);
@@ -62,7 +63,7 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - driver but no worker', () => {
 
-    component.recordForm.get("rescueDetails.rescuer2").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(1);
     component.updateValidators();
 
     expect(component.recordForm.valid).toEqual(false);
@@ -70,8 +71,8 @@ describe('RescueDetailsComponent', () => {
   });
   it('Valid form - driver and worker', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
     component.updateValidators();
 
     expect(component.recordForm.valid).toEqual(true);
@@ -88,8 +89,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Ambulance arrival time only - with driver/worker', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let ambulanceArrivalTime = new Date();
     component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
@@ -110,8 +111,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Rescue time only, with driver/worker', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let rescueTime = new Date();
     component.recordForm.get("rescueDetails.rescueTime").setValue(rescueTime);
@@ -143,8 +144,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Rescue and Admission time only', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let currentTime = new Date();
     component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
@@ -170,8 +171,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Ambulance arrival and Rescue time only', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let currentTime = new Date();
     component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
@@ -184,8 +185,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - Ambulance arrival and Admission time only', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let currentTime = new Date();
     component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
@@ -213,8 +214,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Ambulance arrival, Rescue, and Admission time only', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let currentTime = new Date();
 
@@ -232,8 +233,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - Ambulance arrival time after Rescue time', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let ambulanceArrivalTime = new Date();
     component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
@@ -250,8 +251,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - Ambulance arrival time after Admission time', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let ambulanceArrivalTime = new Date();
     component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
@@ -268,8 +269,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Invalid form - Rescue time after Admission time', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let ambulanceArrivalTime = new Date();
     component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
@@ -287,8 +288,8 @@ describe('RescueDetailsComponent', () => {
 
   it('Valid form - Ambulance arrival time before, Rescue time before Admission time', () => {
 
-    component.recordForm.get("rescueDetails.rescuer1").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2").setValue(2);
+    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
+    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
 
     let ambulanceArrivalTime = new Date();
     ambulanceArrivalTime.setHours(ambulanceArrivalTime.getHours() - 4);
@@ -307,9 +308,6 @@ describe('RescueDetailsComponent', () => {
 
 
   });
-
-
-
 
 
 });

@@ -1,0 +1,21 @@
+
+
+<h1 mat-dialog-title
+cdkDrag
+cdkDragRootElement=".cdk-overlay-pane"
+cdkDragHandle>Rescue Details - {{data.emergencyNumber}}</h1>
+
+<div mat-dialog-content>
+
+    <rescue-details
+      [recordForm]="data.recordForm"
+      [emergencyCaseId]="data.emergencyCaseId"
+      (onResult)="resultReceived($event)"
+      #rescueDetails>
+    </rescue-details>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="rescueDetails.onSave()" [disabled]="data.recordForm.invalid" cdkFocusInitial>Save</button>
+</div>

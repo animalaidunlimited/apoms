@@ -25,6 +25,7 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
                                     IN prm_DeletedDate DATETIME,
 									IN prm_UserName VARCHAR(64),
 									OUT prm_OutEmergencyCaseId INT,
+                                    OUT prm_SocketEndPoint CHAR(3),
 									OUT prm_Success VARCHAR(64))
 BEGIN
 
@@ -46,7 +47,10 @@ SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyCaseId <>
 
 SELECT IFNULL(MAX(UpdateTime), '1901-01-01') INTO vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
 
 IF vEmNoExists = 0 AND prm_UpdateTime > vUpdateTime THEN
 
@@ -78,6 +82,8 @@ COMMIT;
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());
+    
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
 ELSEIF vEmNoExists >= 1 THEN
 

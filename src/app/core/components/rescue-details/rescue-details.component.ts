@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { getCurrentTimeString } from '../../utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { CaseService } from '../../../modules/emergency-register/services/case.service';
-import { RescueDetails } from 'src/app/core/models/responses';
+import { RescueDetailsParent } from 'src/app/core/models/responses';
+import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { UpdatedRescue } from '../../models/outstanding-case';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'rescue-details',
@@ -14,7 +16,9 @@ import { RescueDetails } from 'src/app/core/models/responses';
 
 export class RescueDetailsComponent implements OnInit {
 
+  @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
+  @Output() public onResult = new EventEmitter<UpdatedRescue>();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -24,18 +28,18 @@ export class RescueDetailsComponent implements OnInit {
   currentRescueTime;
   currentTime;
 
-  rescuer1;
-  rescuer2;
-  ambulanceArrivalTime;
-  rescueTime;
-  admissionTime;
-  callDateTime;
+  rescuer1Id:AbstractControl;
+  rescuer2Id:AbstractControl;
+  ambulanceArrivalTime:AbstractControl;
+  rescueTime:AbstractControl;
+  admissionTime:AbstractControl;
+  callDateTimeForm:AbstractControl;
+  callOutcome:AbstractControl;
+  callDateTime:AbstractControl;
 
   constructor(private dropdowns: DropdownService,
-    private caseService: CaseService,
-    private fb: FormBuilder) {}
-  // constructor(private errorMatcher: CrossFieldErrorMatcher) {}
-
+    private rescueDetailsService: RescueDetailsService,
+    private fb: FormBuilder,) {}
 
   rescuers$;
   rescueDetails$
@@ -46,27 +50,27 @@ export class RescueDetailsComponent implements OnInit {
 
     this.recordForm.addControl(
       "rescueDetails", this.fb.group({
-        rescuer1: [''],
-        rescuer2: [''],
+        rescuer1Id: [],
+        rescuer2Id: [],
         ambulanceArrivalTime: [''],
         rescueTime: [''],
         admissionTime: ['']
       }));
 
-    this.caseService.getRescueDetailsByEmergencyCaseId(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe((rescueDetails: RescueDetails) => {
+    this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
+    .subscribe((rescueDetails: RescueDetailsParent) => {
 
       this.recordForm.patchValue(rescueDetails);
 
     });
 
-    this.rescuer1             = this.recordForm.get("rescueDetails.rescuer1");
-    this.rescuer2             = this.recordForm.get("rescueDetails.rescuer2");
+    this.rescuer1Id           = this.recordForm.get("rescueDetails.rescuer1Id");
+    this.rescuer2Id           = this.recordForm.get("rescueDetails.rescuer2Id");
     this.ambulanceArrivalTime = this.recordForm.get("rescueDetails.ambulanceArrivalTime");
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-
+    this.callOutcome          = this.recordForm.get("callOutcome.callOutcome");
 
     this.updateTimes();
 
@@ -79,33 +83,33 @@ updateValidators()
  this.ambulanceArrivalTime.clearValidators();
  this.rescueTime.clearValidators();
  this.admissionTime.clearValidators();
- this.rescuer1.clearValidators();
- this.rescuer2.clearValidators();
+ this.rescuer1Id.clearValidators();
+ this.rescuer2Id.clearValidators();
 
  this.ambulanceArrivalTime.updateValueAndValidity({emitEvent: false });
  this.rescueTime.updateValueAndValidity({emitEvent: false });
  this.admissionTime.updateValueAndValidity({emitEvent: false });
 
 
-  //if rescuer1 || rescuer2 then set the other to required
-  if(this.rescuer1.value > 0 || this.rescuer2.value > 0)
+  //if rescuer1Id || rescuer2Id then set the other to required
+  if(this.rescuer1Id.value > 0 || this.rescuer2Id.value > 0)
   {
-    this.rescuer2.setValidators([Validators.required]);
-    this.rescuer1.setValidators([Validators.required]);
+    this.rescuer2Id.setValidators([Validators.required]);
+    this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  //if ambulance arrived then rescuer1, rescuer2, resuce time required
+  //if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required
   if(this.ambulanceArrivalTime.value)
   {
-    this.rescuer2.setValidators([Validators.required]);
-    this.rescuer1.setValidators([Validators.required]);
+    this.rescuer2Id.setValidators([Validators.required]);
+    this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  //if rescue time then rescuer1, rescuer2, ambulance arrived required
+  //if rescue time then rescuer1Id, rescuer2Id, ambulance arrived required
   if(this.rescueTime.value)
   {
-    this.rescuer2.setValidators([Validators.required]);
-    this.rescuer1.setValidators([Validators.required]);
+    this.rescuer2Id.setValidators([Validators.required]);
+    this.rescuer1Id.setValidators([Validators.required]);
   }
 
   if(this.ambulanceArrivalTime.value < this.callDateTime.value && this.ambulanceArrivalTime.value != "")
@@ -128,11 +132,11 @@ updateValidators()
     this.admissionTime.setErrors({ "admissionBeforeCallDatetime" : true});
   }
 
-  //if admission time then rescuer1, rescuer2, ambulance arrived required, rescue time
+  //if admission time then rescuer1Id, rescuer2Id, ambulance arrived required, rescue time
   if(this.admissionTime.value)
   {
-    this.rescuer2.setValidators([Validators.required]);
-    this.rescuer1.setValidators([Validators.required]);
+    this.rescuer2Id.setValidators([Validators.required]);
+    this.rescuer1Id.setValidators([Validators.required]);
 
     if(this.rescueTime.value < this.callDateTime.value){
       this.rescueTime.setErrors({ "rescueBeforeCallDatetime": true});
@@ -150,9 +154,9 @@ updateValidators()
   }
 
   //When we select admission, we need to check that we have rescue details
-  if(this.recordForm.get("callOutcome.callOutcome").value == 1){
-    this.rescuer2.setValidators([Validators.required]);
-    this.rescuer1.setValidators([Validators.required]);
+  if(this.callOutcome.value == "Admission"){
+    this.rescuer2Id.setValidators([Validators.required]);
+    this.rescuer1Id.setValidators([Validators.required]);
 
     this.rescueTime.setValidators([Validators.required]);
     this.rescueTime.updateValueAndValidity({emitEvent: false });
@@ -160,11 +164,14 @@ updateValidators()
     this.admissionTime.updateValueAndValidity({emitEvent: false });
   }
 
-  this.rescuer1.updateValueAndValidity({emitEvent: false });
-  this.rescuer2.updateValueAndValidity({emitEvent: false });
+  this.rescuer1Id.updateValueAndValidity({emitEvent: false });
+  this.rescuer2Id.updateValueAndValidity({emitEvent: false });
+
+
 }
 
 onChanges(): void {
+
 
     this.recordForm.valueChanges.subscribe(val => {
 
@@ -177,7 +184,7 @@ onChanges(): void {
 
   setInitialTime(event)
   {
-    this.currentCallDateTime = this.callDateTime.value;
+    this.currentCallDateTime = this.callDateTime;
 
     let currentTime;
 
@@ -191,7 +198,7 @@ onChanges(): void {
 
   updateTimes()
   {
-    this.currentCallDateTime = this.callDateTime.value;
+    this.currentCallDateTime = this.callDateTime;
 
     let currentTime = getCurrentTimeString();
 
@@ -202,6 +209,18 @@ onChanges(): void {
     this.currentTime = currentTime;
   }
 
+  async onSave(){
 
+    this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
+
+    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdatedRescue) =>
+
+      this.onResult.emit(data)
+
+    );
+
+
+
+  }
 
 }

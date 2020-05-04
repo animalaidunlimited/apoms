@@ -14,7 +14,7 @@ import { LocationDetailsModule } from '../../core/components/location-details/lo
 import { CensusDetailsComponent } from './components/census-details/census-details.component';
 
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
-import { ThankYouComponent } from './components/thank-you/thank-you.component';
+import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
 import { OutcomeComponent } from './components/outcome/outcome.component';
 import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
@@ -35,7 +35,7 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
     PatientDetailsComponent,
     CensusDetailsComponent,
     SurgeryDetailsComponent,
-    ThankYouComponent,
+    PatientCallComponent,
     CrueltyDetailsComponent,
     OutcomeComponent,
     AnimalHeaderComponent,

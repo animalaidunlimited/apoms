@@ -1,8 +1,7 @@
-<form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
-
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="tabChanged($event)">
     <mat-tab label="Home">
 
+        <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
 
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
@@ -27,19 +26,29 @@
 
             <caller-details [recordForm]="recordForm"></caller-details>
             <location-details [recordForm]="recordForm"></location-details>
-            <rescue-details [recordForm]="recordForm" ></rescue-details>
+
+            <fieldset class="form-sub-group" autocomplete=false>
+                <legend class="legend">Rescue details</legend>
+                <rescue-details
+                    [recordForm]="recordForm"
+                    [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId').value">
+                </rescue-details>
+             </fieldset>
+
             <census-details></census-details>
             <surgery-details></surgery-details>
 
             <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                 <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
                 <button mat-raised-button color="primary">Reset</button>
-              </div>
+            </div>
         </div>
     </div>
+</form>
     </mat-tab>
-    <mat-tab label="Thank You">
-        <thank-you-call></thank-you-call>
+
+    <mat-tab label="Patient Calls">
+        <patient-call-call [patientId]="patientCallPatientId"></patient-call-call>
     </mat-tab>
     <mat-tab label="Outcome">
         <outcome></outcome>
@@ -49,4 +58,3 @@
     </mat-tab>
   </mat-tab-group>
 
-</form>

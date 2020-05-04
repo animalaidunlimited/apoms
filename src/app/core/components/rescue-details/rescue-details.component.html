@@ -1,29 +1,25 @@
-<form [formGroup]="recordForm.get('rescueDetails')" class="form-sub-group">
-
-
-
-    <legend class="legend">Rescue Details</legend>
+<form [formGroup]="recordForm.get('rescueDetails')">
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
             <mat-form-field>
                 <mat-label>Driver</mat-label>
-                    <mat-select formControlName="rescuer1" [errorStateMatcher]="errorMatcher">
+                    <mat-select formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
 
                     <!-- <mat-select formControl="rescuer1" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                    <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
-                        {{rescuer.Rescuer}}
+                    <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
+                        {{rescuer.FirstName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field>
                     <mat-label>Worker</mat-label>
-                        <mat-select formControlName="rescuer2" [errorStateMatcher]="errorMatcher">
+                        <mat-select formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
 
                         <!-- <mat-select formControl="rescuer2" [errorStateMatcher]="errorMatcher"></mat-select> -->
-                        <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.RescuerId">
-                            {{rescuer.Rescuer}}
+                        <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
+                            {{rescuer.FirstName}}
                         </mat-option>
                     </mat-select>
             </mat-form-field>
@@ -69,7 +65,7 @@
                 </mat-error>
         </mat-form-field>
 
-            <mat-form-field>
+        <mat-form-field>
                     <input formControlName="rescueTime" type="datetime-local" name="rescueTime"
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
                     (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput>
