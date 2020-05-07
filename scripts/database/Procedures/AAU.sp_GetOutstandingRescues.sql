@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_OrganisationId INT)
+CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
 /*****************************************
@@ -12,6 +12,13 @@ Date: 16/04/2020
 Purpose: To retrieve outstanding rescues
 for display in the rescue board.
 *****************************************/
+
+DECLARE vOrganisationId INT;
+
+SELECT o.OrganisationId INTO vOrganisationId
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
 
 WITH outstandingRescuesCTE AS (
 SELECT 
@@ -44,7 +51,7 @@ FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
-WHERE ec.OrganisationId = prm_OrganisationId
+WHERE ec.OrganisationId = vOrganisationId
 AND ec.callOutcomeId IS NULL
 and (
 ec.Rescuer1Id IS NULL

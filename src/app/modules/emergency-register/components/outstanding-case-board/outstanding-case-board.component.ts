@@ -8,6 +8,7 @@ import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 
 import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { RescueDetailsService } from '../../services/rescue-details.service';
 
 export interface Swimlane{
   label:string;
@@ -49,6 +50,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
+    private rescueService: RescueDetailsService,
     private socketService: BoardSocketService) { }
 
   @Output() public onOpenEmergencyCase = new EventEmitter<any>();
@@ -78,18 +80,16 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   async setupConnection(){
 
-    await this.socketService.setupSocketConnection();
+    await this.socketService.initialiseConnection();
 
-    this.subscription = await this.socketService.getOutstandingRescues()
+    this.subscription = await this.rescueService.getOutstandingRescues()
       .subscribe(outstandingCases =>
 
       this.populate(outstandingCases.outstandingRescues)
     );
 
     this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) => {
-
       this.updateRescue(updatedRescue);
-
 
     });
 
@@ -162,6 +162,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     //Set the rescue to show as moved
     this.setMoved(this.outstandingCases, updatedRescue.emergencyCaseId, true, false);
+
   }
 
   insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){

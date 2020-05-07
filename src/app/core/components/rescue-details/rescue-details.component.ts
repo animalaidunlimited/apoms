@@ -211,7 +211,7 @@ onChanges(): void {
 
 
     // If we haven't touched the form, don't do anything.
-    if(this.recordForm.pristine){
+    if(!this.recordForm.touched){
       this.result.emit(null);
       return;
     }
