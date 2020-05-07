@@ -5,6 +5,7 @@ import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
 import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emergency-number.validator';
 import { CaseService } from '../../services/case.service';
+import { getCurrentTimeString } from 'src/app/core/utils';
 
 @Component({
   selector: 'emergency-case-outcome',
@@ -58,12 +59,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   async save(){
 
     //If we haven't touched the form, don't do anything.
-    if(this.recordForm.pristine){
+    if(this.recordForm.pristine || !this.recordForm.get('callOutcome').value){
       this.result.emit(null);
       return;
     }
 
-    let updateTime = new Date();
+    let updateTime = getCurrentTimeString();
 
     (this.recordForm.get('callOutcome') as FormGroup)
           .addControl("updateTime", new FormControl(updateTime));

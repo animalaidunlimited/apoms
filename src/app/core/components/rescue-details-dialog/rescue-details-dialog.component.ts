@@ -9,6 +9,16 @@ export interface DialogData {
   recordForm: FormGroup;
 }
 
+interface UpdateResult{
+  success: number;
+  socketEndPoint: number;
+}
+
+interface CanExitChange{
+  outcomeUpdateComplete: number;
+  rescueDetailsUpdateComplete: number
+}
+
 @Component({
   selector: 'rescue-details-dialog',
   templateUrl: './rescue-details-dialog.component.html',
@@ -17,6 +27,7 @@ export interface DialogData {
 export class RescueDetailsDialogComponent implements OnInit {
 
   result:UpdatedRescue;
+  canExit:FormGroup;
 
   constructor(
     private fb:FormBuilder,
@@ -36,8 +47,20 @@ export class RescueDetailsDialogComponent implements OnInit {
       callOutcome: this.fb.group({
         callOutcome: ['']
       })
-    }
-    );
+    });
+
+    this.canExit = this.fb.group({
+      outcomeUpdateComplete: [0],
+      rescueDetailsUpdateComplete: [0]
+    });
+
+    this.canExit.valueChanges.subscribe((values:CanExitChange) => {
+
+      //TODO update this to handle any errors and display them to a toast.
+      if(values.outcomeUpdateComplete != 0 && values.rescueDetailsUpdateComplete != 0){
+        this.dialogRef.close(this.result);
+      }
+    });
 
    }
 
@@ -45,13 +68,14 @@ export class RescueDetailsDialogComponent implements OnInit {
     this.dialogRef.close(this.result);
   }
 
-  onRescueDetailsResult($event){
-    console.log($event);
-    // this.dialogRef.close($event);
+  onRescueDetailsResult(result:UpdateResult){
+    this.canExit.get("rescueDetailsUpdateComplete").setValue(result.success);
   }
 
-  onOutcomeResult($event){
-    console.log($event);
+  onOutcomeResult(result:UpdateResult){
+    this.canExit.get("outcomeUpdateComplete").setValue(result.success);
   }
+
+
 
 }

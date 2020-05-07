@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
 
 
 export abstract class APIService<T = any> {
-    abstract endpoint;
+    abstract endpoint:string;
     url = environment.API_URL;
 
     protected constructor(

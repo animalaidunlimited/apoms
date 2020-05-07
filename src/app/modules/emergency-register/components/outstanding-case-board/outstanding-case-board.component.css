@@ -1,6 +1,7 @@
 .drag-drop-container {
   width: 18%;
   max-width: 100%;
+  min-width: 175px;
   margin: 0 25px 25px 0;
   display: inline-block;
   vertical-align: top;
@@ -29,10 +30,10 @@
 .drag-drop-list {
   border: solid 1px #ccc;
   min-height: 48px;
+  min-width: 175px;
   background: white;
   border-radius: 4px;
   overflow: hidden;
-  display: block;
 }
 .drag-drop-box {
   padding: 20px 10px;

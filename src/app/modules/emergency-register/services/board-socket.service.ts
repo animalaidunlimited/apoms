@@ -1,58 +1,57 @@
-import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { OutstandingCaseResponse, OutstandingRescue } from 'src/app/core/models/outstanding-case';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class BoardSocketService {
+export class BoardSocketService{
 
-  socket;
+  endpoint="EventEmitter";
 
-  constructor(private authService: AuthService) { }
+  room:string;
 
-  async setupSocketConnection() {
+  eventSource:EventSource;
 
-    let room = await this.authService.getOrganisationSocketEndPoint();
+  public rescueStreamSubject: Subject<any>;
 
-    this.socket = io(`${environment.SOCKET_ENDPOINT}/${room}`);
+  constructor(private authService: AuthService,
+    private zone:NgZone) {
+    }
+
+  async initialiseConnection() {
+
+    this.room = await this.authService.getOrganisationSocketEndPoint();
+
+    let eventName = `${this.room}_UPDATING_RESCUE`
+
 
   }
 
-  getOutstandingRescues():Observable<OutstandingCaseResponse>
-  {
+  getUpdatedRescues(): Observable<OutstandingRescue> {
+    return Observable.create(observer => {
+      this.eventSource = new EventSource("/EventEmitter/AAU_UPDATING_RESCUE", { withCredentials: true });
 
-    let observable:Observable<OutstandingCaseResponse> = new Observable(observer => {
+      this.eventSource.onmessage = (event) => {
+        this.zone.run(() => {
 
-      this.socket.on('OUTSTANDING_RESCUES', (data: any) => {
+          observer.next(JSON.parse(JSON.parse(event.data)));
+        }
+        );
+      };
 
-        //TODO fix this. For some reason these needs to be parsed instead of being able to
-        //cast directly to the type
-        observer.next(JSON.parse(data));
-      });
-      // return () => {
-      //   this.socket.disconnect();
-      // };
-    })
-    return observable;
-  }
+    this.eventSource.onerror = (error) => {
+      //TODO make this into a toast..
+      console.log('looks like the best thing to do is to do nothing: ' + error);
+    };
+  });
+}
 
-  getUpdatedRescues():Observable<OutstandingRescue>
-  {
-
-    let observable = new Observable<OutstandingRescue>(observer => {
-
-      this.socket.on('UPDATING_RESCUE', (data: any) => {
-        observer.next(JSON.parse(data));
-      });
-      // return () => {
-      //   this.socket.disconnect();
-      // };
-    })
-    return observable;
-  }
 
 }
+
+
+
+
