@@ -9,4 +9,12 @@
 table {
   width: 100%;
 }
+
+.Edit:hover {
+
+  border-color: black;
+  size: 5px;
+
+
+}
 /*# sourceMappingURL=surgery-details.component.css.map */

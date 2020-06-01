@@ -10,6 +10,7 @@ import { ProblemDropdownResponse, PatientStatus, CallType, PatientCallOutcome } 
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
+import { Surgeon, SurgerySite, SurgeryType } from '../../models/Surgery-details';
 
 
 export interface AnimalTypeResponse {
@@ -40,6 +41,9 @@ export class DropdownService extends APIService{
   patientStates$:Observable<PatientStatus[]>;
   callTypes$:Observable<CallType[]>;
   patientCallOutcome$:Observable<PatientCallOutcome[]>;
+  surgeons$: Observable<Surgeon[]>;
+  surgerySites$ : Observable<SurgerySite[]>;
+  surgeryTypes$ : Observable<SurgeryType[]>;
 
 
   constructor(http: HttpClient) {
@@ -232,6 +236,8 @@ export class DropdownService extends APIService{
           return response;
         })
       );
+
+      
     }
 
     return this.dispatchers$;
@@ -322,6 +328,57 @@ export class DropdownService extends APIService{
     }
 
     return this.callTypes$;
+  }
+
+  getSurgeon(): Observable<Surgeon[]> {
+
+    let request = "/Surgeon";
+
+    if (!this.surgeons$)
+    {
+      this.surgeons$ = this.getObservable(request)
+      .pipe(
+        map((response:Surgeon[]) => {
+          return response;
+        })
+      );
+    }
+
+    return this.surgeons$;
+  }
+
+  getSurgerySite(): Observable<SurgerySite[]> {
+
+    let request = "/SurgerySite";
+
+    if (!this.surgerySites$)
+    {
+      this.surgerySites$ = this.getObservable(request)
+      .pipe(
+        map((response:SurgerySite[]) => {
+          return response;
+        })
+      );
+    }
+
+    return this.surgerySites$;
+  }
+
+  getSurgeryType(): Observable<SurgeryType[]> {
+
+    let request = "/SurgeryType";
+
+    if (!this.surgeryTypes$)
+    {
+      this.surgeryTypes$ = this.getObservable(request)
+      .pipe(
+        map((response:SurgeryType[]) => {
+          return response;
+        })
+      );
+    }
+
+    return this.surgeryTypes$;
   }
 
   getPatientCallOutcomes(): Observable<PatientCallOutcome[]> {

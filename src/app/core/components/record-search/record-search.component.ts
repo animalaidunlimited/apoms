@@ -7,6 +7,7 @@ import { SearchResponse } from '../../models/responses';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
+import { AddSurgeryDialogComponent } from 'src/app/modules/hospital-manager/components/add-surgery-dialog/add-surgery-dialog.component';
 
 export interface SearchValue {
   id: number;
@@ -262,6 +263,32 @@ callUpdate(patientId:number, tagNumber:string){
     data: {patientId:patientId, tagNumber:tagNumber}
   });
 
+}
+
+openSurgeryDialog(patientId:number , tagNumber:string , emergencyNumber : number , animalType : string ) {
+  const dialogRef = this.dialog.open(AddSurgeryDialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      width: "90%",
+      height:"70%",
+      data: {patientId:patientId , tagNumber : tagNumber , emergencyNumber : emergencyNumber , animalType : animalType}
+});
+dialogRef.afterClosed().subscribe(result=>{
+  // console.log(result);
+  if(result)
+  {
+    alert("Surgery Stored Successfully!");
+  }
+
+});
+
+}
+
+addSurgery(patientId,tagNumber,emergencyNumber,animalType)
+{
+  console.log(patientId);
+  this.openSurgeryDialog(patientId , tagNumber , emergencyNumber , animalType);
+  
 }
 
 

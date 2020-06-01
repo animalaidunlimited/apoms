@@ -25,6 +25,9 @@ import { PatientDetailsComponent } from './components/patient-details/patient-de
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
+import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
+import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 
 
 
@@ -42,6 +45,8 @@ import { PatientCallDialogComponent } from './components/patient-call-dialog/pat
     OutcomeComponent,
     AnimalHeaderComponent,
     ImageUploadDialog,
+    SurgeryRecordDialogComponent,
+    AddSurgeryDialogComponent,
     ],
   imports: [
     CommonModule,
@@ -53,7 +58,8 @@ import { PatientCallDialogComponent } from './components/patient-call-dialog/pat
     ThumbnailSliderModule,
     PatientStatusModule,
     RescueDetailsModule,
-    EmergencyDetailsModule
+    EmergencyDetailsModule,
+    SurgeryRecordModule
   ],
   exports: [
   ]
