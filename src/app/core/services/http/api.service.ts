@@ -14,6 +14,7 @@ export abstract class APIService<T = any> {
 
     public async get<G>(request: string): Promise<G | null> {
         let response = null;
+        // console.log(`${this.url}/${this.endpoint}`);
         try {
             response = await this.http
                 .get<G>(`${this.url}/${this.endpoint}` + request)
@@ -83,8 +84,10 @@ export abstract class APIService<T = any> {
         return response;
     }
 
-    public async post(body): Promise<any> {
 
+
+    public async post(body): Promise<any> {
+        console.log(`${this.url}/${this.endpoint}`);
         let response = null;
         try {
             response = await this.http

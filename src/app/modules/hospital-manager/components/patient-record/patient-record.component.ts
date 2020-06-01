@@ -15,6 +15,7 @@ export class PatientRecordComponent implements OnInit {
 
   @Input() incomingPatient:SearchRecordTab;
 
+
   patientCallPatientId:number;
 
   patientLoaded:boolean = true;
@@ -40,6 +41,7 @@ export class PatientRecordComponent implements OnInit {
         patientId: [this.incomingPatient.patientId],
         tagNumber: [this.incomingPatient.tagNumber, Validators.required],
         currentLocation: [this.incomingPatient.currentLocation],
+        animalType:[this.incomingPatient.animalType]
 
       }),
       patientStatus: this.fb.group({

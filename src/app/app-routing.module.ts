@@ -18,7 +18,7 @@ const routes: Routes = [{path: 'settings',loadChildren: () =>
                 import('./pages/reporting-page/reporting-page.module').then(
                     m => m.ReportingPageModule,
                 ),},{path: 'surgery-register',loadChildren: () =>
-                import('./pages/surgery-register-page/surgery-register-page.module').then(
+                import('./modules/surgeryregister/surgery-register-page.module').then(
                     m => m.SurgeryRegisterPageModule,
                 ),},{path: 'census',loadChildren: () =>
                 import('./pages/census-page/census-page.module').then(

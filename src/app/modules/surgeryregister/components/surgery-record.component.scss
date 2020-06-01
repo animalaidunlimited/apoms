@@ -1,0 +1,95 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+$colour-border:#a9abad;
+$primary-font-colour: #626262;
+
+
+.form-group
+{
+  display: flex;
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $colour-border;
+  padding-left:15px;
+  width: auto;
+  height: auto;
+  padding: auto;
+  margin-top: 50px;
+  margin-left: 10px;
+  
+}
+
+.form-sub-group
+{
+  flex: 1;
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $colour-border;
+  padding-left:15px;
+  padding-right:15px;
+  width: auto;
+  height: auto;
+  margin:auto;
+  margin-top: 15px;
+  
+}
+
+
+
+.Surgery-form-sub-group
+{
+  flex: 1;
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $colour-border;
+  padding-left:15px;
+  padding-right:15px;
+  width: auto;
+  height: auto;
+  margin:auto;
+  margin-top: 15px;
+  
+}
+
+
+// .example-radio-group {
+//     display: flex;
+//     flex-direction: column;
+//     margin: 15px 0;
+// }
+  
+// .example-radio-button {
+//     margin: 5px;
+// }
+
+.mat-button{
+  background-color: #4CAF50; /* Green */
+  border: none;
+  height: 40px;
+  width: 90px;
+  color: white;
+  padding: auto;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.wrapper{
+  text-align: center;
+}
+
+
+.label{
+  font-size: large;
+  color: $colour-border;
+  font-family: sans-serif;
+}
+
+.legend{
+  font-size:large;
+  color: $colour-border;
+  font-weight:bold;
+  font-family: sans-serif;;
+  text-align: center;
+
+}

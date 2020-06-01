@@ -22,7 +22,7 @@ export class HospitalManagerTabBarComponent implements OnInit {
   addEmptyTab(value:string){
 
     this.tabs.push({"id":0, "value": value, "emergencyCaseId": 0, "emergencyNumber":0, "patientId": 0,
-    "tagNumber": "", "currentLocation": "", "callDateTime":"", "callOutcome": 0, "icon": ""});
+    "tagNumber": "","animalType":"" , "currentLocation": "", "callDateTime":"", "callOutcome": 0, "icon": ""});
 
     this.selected.setValue(this.tabs.length - 1);
   }
@@ -44,10 +44,12 @@ export class HospitalManagerTabBarComponent implements OnInit {
           "emergencyNumber": searchResult.caseSearchResult.EmergencyNumber,
           "patientId": searchResult.caseSearchResult.PatientId,
           "tagNumber": searchResult.caseSearchResult.TagNumber,
+          "animalType": searchResult.caseSearchResult.AnimalType,
           "currentLocation": searchResult.caseSearchResult.CurrentLocation,
           "callDateTime": searchResult.caseSearchResult.CallDateTime,
           "callOutcome": searchResult.caseSearchResult.CallOutcome,
-          "icon": "close"
+          "icon": "close",
+          
     });
       this.selected.setValue(this.tabs.length - 1);
   }

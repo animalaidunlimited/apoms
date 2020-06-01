@@ -35,10 +35,12 @@ export const navRoutes: NavRoute[] = [
                 ),},{data: {title: 'Census'},icon: 'none',group: '',path: 'census',loadChildren: () =>
                 import('./pages/census-page/census-page.module').then(
                     m => m.CensusPageModule,
-                ),},{data: {title: 'Surgery Register'},icon: 'none',group: '',path: 'surgery-register',loadChildren: () =>
-                import('./pages/surgery-register-page/surgery-register-page.module').then(
-                    m => m.SurgeryRegisterPageModule,
-                ),},{data: {title: 'Case List'},icon: '',group: 'Street Treat',path: 'case-list',loadChildren: () =>
+                ),},
+                // {data: {title: 'Surgery Register'},icon: 'none',group: '',path: 'surgery-register',loadChildren: () =>
+                // import('./pages/surgery-register-page/surgery-register-page.module').then(
+                //     m => m.SurgeryRegisterPageModule,
+                // ),},
+                {data: {title: 'Case List'},icon: '',group: 'Street Treat',path: 'case-list',loadChildren: () =>
                 import('./pages/street-treat/pages/case-list-page/case-list-page.module').then(
                     m => m.CaseListPageModule,
                 ),},{data: {title: 'Add Case'},icon: 'none',group: 'Street Treat',path: 'add-case',loadChildren: () =>
@@ -62,6 +64,10 @@ export const navRoutes: NavRoute[] = [
                 ),},{data: {title: 'Organisations'},icon: 'none',group: 'Settings',path: 'organisations',loadChildren: () =>
                 import('./pages/organisations-page/organisations-page.module').then(
                     m => m.OrganisationsPageModule,
+                ),},
+                {data: {title: 'Surgery Register'},icon: 'none',group: '',path: 'surgery-register',loadChildren: () =>
+                import('./modules/surgeryregister/surgery-register-page.module').then(
+                    m => m.SurgeryRegisterPageModule,
                 ),},];
 
 @Injectable({
