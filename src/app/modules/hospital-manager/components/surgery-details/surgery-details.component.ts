@@ -10,7 +10,6 @@ import { CdkTable } from '@angular/cdk/table';
 import { AddSurgeryDialogComponent } from '../add-surgery-dialog/add-surgery-dialog.component';
 import { RepositionScrollStrategy } from '@angular/cdk/overlay';
 
-// import { threadId } from 'worker_threads';
 export interface SurgeryRecord {
   surgeryId : number;
   date: string | Date;
@@ -56,8 +55,6 @@ export class SurgeryDetailsComponent implements OnInit {
     this.surgeryService.getSurgeryByPatientId(this.patientId).then(response=>
     this.surgeryRecords = response);
 
-
-    // console.log(this.surgeryRecords)
   }
 
   displayedColumns: string[] = ["Date","Type","Surgeon","Site","Anesthesia Minutes","Edit Surgery"];
@@ -76,10 +73,7 @@ export class SurgeryDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       let index = this.surgeryRecords.findIndex(x=> x.surgeryId == result.surgeryId);
       this.surgeryRecords.splice(index,1,result);
-
       this.table.renderRows();
-      // this.surgeryRecords = result;
-      // console.log(result.died);
     });
   }
   addSurgeryDialog() {
@@ -91,7 +85,6 @@ export class SurgeryDetailsComponent implements OnInit {
       data:{patientId:this.patientId , emergencyNumber:this.emergencyNumber , tagNumber:this.tagNumber , animalType : this.animalType}
   });
   dialogRef.afterClosed().subscribe(result=>{
-    //TODO USE A IF LOOP FOR MESSAGE//
     console.log(result);
     if(result)
     {
@@ -99,8 +92,6 @@ export class SurgeryDetailsComponent implements OnInit {
     }
     this.table.renderRows();
   });
-
-
 
 }
   
@@ -115,9 +106,6 @@ export class SurgeryDetailsComponent implements OnInit {
     this.updateSurgeryDialog(row);
     
   }
-
-
-
 
 }
 

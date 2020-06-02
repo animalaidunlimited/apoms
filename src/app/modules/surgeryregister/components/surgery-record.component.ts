@@ -10,13 +10,6 @@ import { SurgeryRecord } from '../../hospital-manager/components/surgery-details
 import { filter, map, find } from 'rxjs/operators';
 import { ITS_JUST_ANGULAR } from '@angular/core/src/r3_symbols';
 
-
-
-
-// interface SurgeryById{
-//   surgeryId: number;
-// }
-
 interface Antibiotic{
   id : number;
   Antibiotics: string;
@@ -63,21 +56,17 @@ export class SurgeryRecordComponent implements OnInit {
     DiedComment:[''],
     AntibioticsGiven:[,Validators.required],
     Comment:[''],
-    // SearchSurgeryId:['']
   });
   surgeonList;
   ngOnInit() {
-    // this.dropdown.getSurgeon().subscribe(surgeon=> this.surgeonList = surgeon);
     this.dropdown.getSurgeon().subscribe(surgeon => this.surgeons = surgeon );
     this.dropdown.getSurgerySite().subscribe(site=> this.surgerySites = site);
     this.dropdown.getSurgeryType().subscribe(type => this.surgeryTypes = type);
     this.animalTypes$ = this.dropdown.getAnimalTypes();
-
     this.surgeryService.getSurgeryBySurgeryId(this.surgeryId).then(response =>
     this.SurgeryForm.patchValue(response[0])
     );
-
-    this.SurgeryForm.patchValue({PatientId:this.patientId ,TagNumber:this.tagNumber ,EmergencyNumber:this.emergencyNumber , AnimalTypeId : this.animalType});
+   this.SurgeryForm.patchValue({PatientId:this.patientId ,TagNumber:this.tagNumber ,EmergencyNumber:this.emergencyNumber , AnimalTypeId : this.animalType});
   }
 
   drugs: Antibiotic[] = [
@@ -88,15 +77,8 @@ export class SurgeryRecordComponent implements OnInit {
 // TODO: Abstract this out into the utils class.
   setInitialTime(event:FocusEvent)
   {
-    // console.log(event.target.name);
-    // this.surgeryDateTime = this.callDateTime;
-
     let currentTime;
-    
-
     currentTime = this.SurgeryForm.get((event.target as HTMLInputElement).name).value;
-
-    // console.log(currentTime);
 
     if(!currentTime)
     {
@@ -104,17 +86,6 @@ export class SurgeryRecordComponent implements OnInit {
     }
     
    }
-  // TODO make surgeryform type safe.
-  // async Submit(SurgeryForm:SurgeryFormModel)
-  // {
-  //   this.surgeryService.insertSurgery(this.SurgeryForm.value).then(
-  //     response => console.log('Success!',response)
-  //   );
-
-  //   // this.resetForm()
-
-  // }
-
 
   async saveSurgery()
   {
@@ -123,35 +94,19 @@ export class SurgeryRecordComponent implements OnInit {
       return;
     }
     await this.surgeryService.insertSurgery(this.SurgeryForm.value).then((value:any) =>{
-      // console.log(value);  
       this.result.emit(value);
     });
 
   }
-
-  // Load()
-  // {
-  //   this.surgeryService.getSurgeryBySurgeryId(this.SurgeryForm.get("SearchSurgeryId").value).then(response =>
-  //     this.SurgeryForm.patchValue(response[0])
-  //     // console.log(response)
-  //   );
-  // }
 
  async resetForm()
   {
     this.SurgeryForm.reset();
   }
 
-// myFunction(SurgeryForm:SurgeryFormModel) {
- 
-//     alert("Form submitted successfully!");
-//     this.resetForm();
-// }
 
 async updateSurgery(){
 
-
-  // If we haven't touched the form, don't do anything.
   if(!this.SurgeryForm.touched){
     this.result.emit(null);
     return;
@@ -189,14 +144,7 @@ async updateSurgery(){
       console.log(x);
       this.result.emit(x);
       }
-    
-  
-    
-
   });
 
-  
-
-  
 }
 }

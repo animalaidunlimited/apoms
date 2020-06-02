@@ -135,34 +135,9 @@ export class DropdownService extends APIService{
         })
       );
     }
-
-          // this.animalTypes$ = this.http
-      // .get<AnimalType[]>("/Dropdown/AnimalTypes").pipe(
-      //   map( (res) => {return res})//,
-      //   //shareReplay(1,10000)
-      // )
-
     return this.animalTypes$;
 
   }
-
-  // getAnimalTypes() {
-  //   if (!this.animalTypes$)
-  //   {
-  //     this.animalTypes$ = [{"AnimalTypeId": 1,"AnimalType": "Dog"},	{"AnimalTypeId": 2,"AnimalType": "Puppy"},	{"AnimalTypeId": 3,"AnimalType": "Cow"},	{"AnimalTypeId": 4,"AnimalType": "Bull"},	{"AnimalTypeId": 5,"AnimalType": "Calf"},	{"AnimalTypeId": 6,"AnimalType": "Donkey"},	{"AnimalTypeId": 7,"AnimalType": "Cat"},	{"AnimalTypeId": 8,"AnimalType": "Bird"},	{"AnimalTypeId": 9,"AnimalType": "Goat"},	{"AnimalTypeId": 10,"AnimalType": "Pig"},	{"AnimalTypeId": 11,"AnimalType": "Kitten"},	{"AnimalTypeId": 12,"AnimalType": "Sheep"},	{"AnimalTypeId": 13,"AnimalType": "Buffalo"},	{"AnimalTypeId": 14,"AnimalType": "Parrot"},	{"AnimalTypeId": 15,"AnimalType": "Squirrel"},	{"AnimalTypeId": 16,"AnimalType": "Fox"},	{"AnimalTypeId": 17,"AnimalType": "Camel"},	{"AnimalTypeId": 18,"AnimalType": "Pigeon"},	{"AnimalTypeId": 19,"AnimalType": "Sparrow"},{"AnimalTypeId": 20,"AnimalType": "Horse"},{"AnimalTypeId": 21,"AnimalType": "Tortoise"},{"AnimalTypeId": 22,"AnimalType": "Chicken"}];
-  //  }
-
-  //   return this.animalTypes$;
-  // }
-
-  // getProblems() {
-  //   if (!this.problems$)
-  //   {
-  //     this.problems$ =[{"ProblemId":1, "Problem": "Abnormal Behaviour","ProblemStripped": "AbnormalBehaviour"},{"ProblemId":2, "Problem": "Abnormal Walking", "ProblemStripped": "AbnormalWalking"},{"ProblemId":3, "Problem": "Abnormal Behaviour Biting", "ProblemStripped": "AbnormalBehaviourBiting"},{"ProblemId":4, "Problem": "Anorexia", "ProblemStripped": "Anorexia"},{"ProblemId":5, "Problem": "Blind", "ProblemStripped": "Blind"},{"ProblemId":6, "Problem": "Can't fly", "ProblemStripped": "Cantfly"},{"ProblemId":7, "Problem": "Circling", "ProblemStripped": "Circling"},{"ProblemId":8, "Problem": "Cruelty", "ProblemStripped": "Cruelty"},{"ProblemId":9, "Problem": "Diarrhea", "ProblemStripped": "Diarrhea"},{"ProblemId":10, "Problem": "Dull/Weakness", "ProblemStripped": "DullWeakness"},{"ProblemId":11, "Problem": "Ear problem", "ProblemStripped": "Earproblem"},{"ProblemId":12, "Problem": "Eye problem", "ProblemStripped": "Eyeproblem"},{"ProblemId":13, "Problem": "For ABC", "ProblemStripped": "ForABC"},{"ProblemId":14, "Problem": "Horn/hoof problem", "ProblemStripped": "HornHoofproblem"},{"ProblemId":15, "Problem": "Item Tied/Stuck on Body", "ProblemStripped": "ItemTiedStuckonBody"},{"ProblemId":16, "Problem": "Leg problem", "ProblemStripped": "Legproblem"},{"ProblemId":17, "Problem": "Mouth Open", "ProblemStripped": "MouthOpen"},{"ProblemId":18, "Problem": "Normal behaviour - biting", "ProblemStripped": "NormalBehaviour-Biting"},{"ProblemId":19, "Problem": "Nose Bleeding", "ProblemStripped": "NoseBleeding"},{"ProblemId":20, "Problem": "Orphan", "ProblemStripped": "Orphan"},{"ProblemId":21, "Problem": "Penis coming out", "ProblemStripped": "PenisComingOut"},{"ProblemId":22, "Problem": "Pregnancy problem", "ProblemStripped": "Pregnancyproblem"},{"ProblemId":23, "Problem": "Shifted puppies", "ProblemStripped": "Shiftedpuppies"},{"ProblemId":24, "Problem": "Recumbent", "ProblemStripped": "Recumbent"},{"ProblemId":25, "Problem": "Respiratory", "ProblemStripped": "Respiratory"},{"ProblemId":26, "Problem": "Rectal Prolapse", "ProblemStripped": "RectalProlapse"},{"ProblemId":27, "Problem": "Salivating/Foaming", "ProblemStripped": "SalivatingFoaming"},{"ProblemId":28, "Problem": "Seizure", "ProblemStripped": "Seizure"},{"ProblemId":29, "Problem": "Skin problem", "ProblemStripped": "Skinproblem"},{"ProblemId":30, "Problem": "Stomach problem/Collic", "ProblemStripped": "StomachproblemCollic"},{"ProblemId":31, "Problem": "Stuck/Trapped", "ProblemStripped": "StuckTrapped"},{"ProblemId":32, "Problem": "Swelling other than Leg/Abdominal Swelling", "ProblemStripped": "SwellingotherthanLegAbdominalSwelling"},{"ProblemId":33, "Problem": "Tick/Flea Infestation", "ProblemStripped": "TickFleaInfestation"},{"ProblemId":34, "Problem": "Tumor", "ProblemStripped": "Tumor"},{"ProblemId":35, "Problem": "Twitching", "ProblemStripped": "Twitching"},{"ProblemId":36, "Problem": "Very skinny", "ProblemStripped": "Veryskinny"},{"ProblemId":37, "Problem": "Vaginal/Penis Discharge/Bleeding", "ProblemStripped": "VaginalPenisDischargeBleeding"},{"ProblemId":38, "Problem": "Vomiting", "ProblemStripped": "Vomiting"},{"ProblemId":39, "Problem": "Vaginal Prolapse", "ProblemStripped": "VaginalProlapse"},{"ProblemId":40, "Problem": "Wound", "ProblemStripped": "Wound"},{"ProblemId":41, "Problem": "Shell Problem", "ProblemStripped": "ShellProblem"}];
-  // }
-
-  //   return this.problems$;
-  // }
 
   getProblems(): Observable<ProblemDropdownResponse[]> {
 

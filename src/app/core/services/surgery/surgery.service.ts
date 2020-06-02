@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { APIService } from '../http/api.service';
-// import { promise } from "protractor";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,9 +37,6 @@ export class SurgeryService extends APIService {
   public getSurgeryByPatientId(patientId:number) : Promise<any>
   {
     let request = "?PatientId=" + patientId;
-
-    console.log("hi");
-
     return this.get(request);
   }
 

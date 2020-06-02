@@ -3,10 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SurgeryFormModel } from "src/app/core/models/Surgery-details";
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-// interface SaveResult{
-//   success : number;
-//   socketEndPoint : number;
-// }
 export interface DialogData{
   patientId : number;
   tagNumber : string;

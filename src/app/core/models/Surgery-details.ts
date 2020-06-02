@@ -2,11 +2,7 @@ export interface Surgeon {
     SurgeonId: number;
     SurgeonName: string;
 }
-  
-  // interface surgeryId{
-  //   SurgeryId: BigInteger;
-  // }
-  
+
 export interface SurgeryType {
     SurgeryTypeId : number;
     SurgeryType : string;
@@ -48,6 +44,4 @@ export interface SurgeryFormModel{
   DiedComment:string;
   AntibioticsGiven:number;
   Comment:string;
-  // SearchSurgeryId: number;
-
 }
