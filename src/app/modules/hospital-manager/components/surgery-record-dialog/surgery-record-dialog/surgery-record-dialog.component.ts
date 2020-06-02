@@ -7,12 +7,6 @@ import { UpdatedSurgery } from 'src/app/core/models/Surgery-details';
 export interface DialogData{
   surgeryId : number;
   animalType : string;
-  // date : string | Date;
-  // type : string;
-  // surgeon : string;
-  // site : string;
-  // anesthesiaMinutes : number;
-  // recordForm : FormGroup
 }
 
 interface UpdateResult{
@@ -36,9 +30,6 @@ export class SurgeryRecordDialogComponent implements OnInit {
   result:UpdatedSurgery;
   canExit:FormGroup;
 
-  // this.result = 
-
-  // recordForm;
   constructor( public dialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData , 
     private fb :FormBuilder) { }
@@ -68,11 +59,6 @@ export class SurgeryRecordDialogComponent implements OnInit {
   onCancel(): void {
     this.dialogRef.close(this.result);
   }
-
-  // onSurgeryDetailsResult(result:UpdateResult){
-  //   console.log(result);
-  //   this.canExit.get("surgeryDetailsUpdateComplete").setValue(result.success);
-  // }
 
   onSurgeryDetailsResult(result:UpdatedSurgery){
     console.log(typeof(result));
