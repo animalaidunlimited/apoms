@@ -6,14 +6,8 @@ import { SurgeryRegisterPageRoutingModule } from 'src/app/modules/surgeryregiste
 import { SurgeryRecordComponent } from './surgery-record.component';
 
 @NgModule({
-  declarations: [SurgeryRecordComponent],
-  imports: [
-    CommonModule,
-    SurgeryRegisterPageRoutingModule,
-    MaterialModule
-  ],
-  exports: [
-    SurgeryRecordComponent
-],
+    declarations: [SurgeryRecordComponent],
+    imports: [CommonModule, SurgeryRegisterPageRoutingModule, MaterialModule],
+    exports: [SurgeryRecordComponent],
 })
-export class SurgeryRecordModule { }
+export class SurgeryRecordModule {}

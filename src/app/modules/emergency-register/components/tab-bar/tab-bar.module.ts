@@ -15,7 +15,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
     declarations: [
         TabBarComponent,
         RescueDetailsDialogComponent,
-        OutstandingCaseBoardComponent
+        OutstandingCaseBoardComponent,
     ],
     imports: [
         CommonModule,
@@ -25,10 +25,8 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
         EmergencyDetailsModule,
         MaterialModule,
         FlexLayoutModule,
-        EmergencyCaseOutcomeModule
+        EmergencyCaseOutcomeModule,
     ],
-    exports: [
-        TabBarComponent
-    ],
+    exports: [TabBarComponent],
 })
 export class TabBarModule {}

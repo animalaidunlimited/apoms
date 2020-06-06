@@ -29,39 +29,36 @@ import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog
 import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 
-
-
 @NgModule({
-  declarations: [
-    HospitalManagerPageComponent,
-    HospitalManagerTabBarComponent,
-    PatientRecordComponent,
-    PatientDetailsComponent,
-    CensusDetailsComponent,
-    SurgeryDetailsComponent,
-    PatientCallComponent,
-    PatientCallDialogComponent,
-    CrueltyDetailsComponent,
-    OutcomeComponent,
-    AnimalHeaderComponent,
-    ImageUploadDialog,
-    SurgeryRecordDialogComponent,
-    AddSurgeryDialogComponent,
+    declarations: [
+        HospitalManagerPageComponent,
+        HospitalManagerTabBarComponent,
+        PatientRecordComponent,
+        PatientDetailsComponent,
+        CensusDetailsComponent,
+        SurgeryDetailsComponent,
+        PatientCallComponent,
+        PatientCallDialogComponent,
+        CrueltyDetailsComponent,
+        OutcomeComponent,
+        AnimalHeaderComponent,
+        ImageUploadDialog,
+        SurgeryRecordDialogComponent,
+        AddSurgeryDialogComponent,
     ],
-  imports: [
-    CommonModule,
-    HospitalManagerPageRoutingModule,
-    MaterialModule,
-    RecordSearchModule,
-    LocationDetailsModule,
-    CallerDetailsModule,
-    ThumbnailSliderModule,
-    PatientStatusModule,
-    RescueDetailsModule,
-    EmergencyDetailsModule,
-    SurgeryRecordModule
-  ],
-  exports: [
-  ]
+    imports: [
+        CommonModule,
+        HospitalManagerPageRoutingModule,
+        MaterialModule,
+        RecordSearchModule,
+        LocationDetailsModule,
+        CallerDetailsModule,
+        ThumbnailSliderModule,
+        PatientStatusModule,
+        RescueDetailsModule,
+        EmergencyDetailsModule,
+        SurgeryRecordModule,
+    ],
+    exports: [],
 })
-export class HospitalManagerPageModule { }
+export class HospitalManagerPageModule {}

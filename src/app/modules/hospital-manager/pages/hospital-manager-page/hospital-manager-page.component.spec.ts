@@ -4,23 +4,25 @@ import { HospitalManagerPageComponent } from './hospital-manager-page.component'
 import { HospitalManagerTabBarComponent } from '../../components/hospital-manager-tab-bar/hospital-manager-tab-bar.component';
 
 describe('HospitalManagerPageComponent', () => {
-  let component: HospitalManagerPageComponent;
-  let fixture: ComponentFixture<HospitalManagerPageComponent>;
+    let component: HospitalManagerPageComponent;
+    let fixture: ComponentFixture<HospitalManagerPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HospitalManagerPageComponent, HospitalManagerTabBarComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [
+                HospitalManagerPageComponent,
+                HospitalManagerTabBarComponent,
+            ],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HospitalManagerPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HospitalManagerPageComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

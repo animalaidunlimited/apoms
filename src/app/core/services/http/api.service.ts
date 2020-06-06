@@ -3,14 +3,11 @@ import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
-
 export abstract class APIService<T = any> {
-    abstract endpoint:string;
+    abstract endpoint: string;
     url = environment.API_URL;
 
-    protected constructor(
-        protected http: HttpClient
-        ) {}
+    protected constructor(protected http: HttpClient) {}
 
     public async get<G>(request: string): Promise<G | null> {
         let response = null;
@@ -28,20 +25,17 @@ export abstract class APIService<T = any> {
     }
 
     public getObservable(request: string): Observable<any> {
-
-        return this.http
-        .get(`${this.url}/${this.endpoint}${request}`);
+        return this.http.get(`${this.url}/${this.endpoint}${request}`);
     }
 
     public getByField(subEndpoint: string, request: string): Observable<any> {
-
-        return timer(200)
-        .pipe(
-          switchMap(() => {
-            // Check if username is available
-            return this.http
-        .get(`${this.url}/${this.endpoint}/${subEndpoint}?${request}`);
-          })
+        return timer(200).pipe(
+            switchMap(() => {
+                // Check if username is available
+                return this.http.get(
+                    `${this.url}/${this.endpoint}/${subEndpoint}?${request}`,
+                );
+            }),
         );
     }
 
@@ -50,12 +44,10 @@ export abstract class APIService<T = any> {
     }
 
     public getById(id: number | string): Observable<any | null> {
-
-        return timer(200)
-        .pipe(
-          switchMap(() => {
-            return this.http.get(`${this.url}/${this.endpoint}/?id=${id}`);
-          })
+        return timer(200).pipe(
+            switchMap(() => {
+                return this.http.get(`${this.url}/${this.endpoint}/?id=${id}`);
+            }),
         );
     }
 
@@ -72,7 +64,6 @@ export abstract class APIService<T = any> {
     }
 
     public async put(body): Promise<any> {
-
         let response = null;
         try {
             response = await this.http
@@ -83,8 +74,6 @@ export abstract class APIService<T = any> {
         }
         return response;
     }
-
-
 
     public async post(body): Promise<any> {
         console.log(`${this.url}/${this.endpoint}`);

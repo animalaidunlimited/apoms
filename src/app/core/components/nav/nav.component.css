@@ -1,23 +1,23 @@
 .sidenav-container {
-  height: 100%;
+    height: 100%;
 }
 .sidenav-container mat-sidenav {
-  box-shadow: 0 0 10px -5px #bbb;
-  border: none;
+    box-shadow: 0 0 10px -5px #bbb;
+    border: none;
 }
 .mat-drawer.mat-drawer-side {
-  z-index: 1;
+    z-index: 1;
 }
 * {
-  box-sizing: unset !important;
+    box-sizing: unset !important;
 }
 .sidenav-logo-container {
-  width: 195px;
-  height: 54px;
-  padding: 16px;
-  background: white;
-  margin-bottom: 16px;
+    width: 195px;
+    height: 54px;
+    padding: 16px;
+    background: white;
+    margin-bottom: 16px;
 }
 .mat-sidenav-content {
-  height: 100vh;
+    height: 100vh;
 }

@@ -1,4 +1,9 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    inject,
+} from '@angular/core/testing';
 
 import { OutcomeComponent } from './outcome.component';
 
@@ -10,26 +15,31 @@ import { MatChipsModule } from '@angular/material/chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('OutcomeComponent', () => {
-  let component: OutcomeComponent;
-  let fixture: ComponentFixture<OutcomeComponent>;
+    let component: OutcomeComponent;
+    let fixture: ComponentFixture<OutcomeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, MaterialModule,
-        MatChipsModule,BrowserAnimationsModule],
-      declarations: [ OutcomeComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule,
+                MaterialModule,
+                MatChipsModule,
+                BrowserAnimationsModule,
+            ],
+            declarations: [OutcomeComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(OutcomeComponent);
-    component = fixture.componentInstance;
+    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+        fixture = TestBed.createComponent(OutcomeComponent);
+        component = fixture.componentInstance;
 
-    fixture.detectChanges();
-  }));
+        fixture.detectChanges();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
