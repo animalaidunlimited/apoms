@@ -1,5 +1,11 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { FormBuilder, AbstractControl, FormArray, FormGroup, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    AbstractControl,
+    FormArray,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -7,211 +13,203 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 import { CallType, PatientCallOutcome } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
-import { PatientCalls, PatientCallModifyResponse } from 'src/app/core/models/patients';
+import {
+    PatientCalls,
+    PatientCallModifyResponse,
+} from 'src/app/core/models/patients';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'patient-call',
-  templateUrl: './patient-call.component.html',
-  styleUrls: ['./patient-call.component.scss']
+    selector: 'patient-call',
+    templateUrl: './patient-call.component.html',
+    styleUrls: ['./patient-call.component.scss'],
 })
 export class PatientCallComponent implements OnInit {
+    @Input() patientId: number;
 
-  @Input() patientId:number;
+    patientCallForm: FormGroup;
 
-  patientCallForm:FormGroup;
+    callerHappy: boolean;
+    hasVisited: boolean;
+    maxDate: string | Date;
+    notificationDurationSeconds: number;
+    callTypes$: Observable<CallType[]>;
+    callOutcomes$: Observable<PatientCallOutcome[]>;
 
-  callerHappy:boolean;
-  hasVisited:boolean;
-  maxDate:string|Date;
-  notificationDurationSeconds:number;
-  callTypes$:Observable<CallType[]>;
-  callOutcomes$:Observable<PatientCallOutcome[]>;
+    assignedTo$: Observable<User[]>;
 
-  assignedTo$:Observable<User[]>;
+    currentCallType: CallType;
 
-  currentCallType:CallType;
+    errorMatcher = new CrossFieldErrorMatcher();
 
-  errorMatcher = new CrossFieldErrorMatcher();
+    constructor(
+        private fb: FormBuilder,
+        private userOptions: UserOptionsService,
+        private snackBar: MatSnackBar,
+        private patientService: PatientService,
+        private dropdown: DropdownService,
+    ) {}
 
-  constructor(private fb: FormBuilder,
-              private userOptions: UserOptionsService,
-              private snackBar: MatSnackBar,
-              private patientService: PatientService,
-              private dropdown: DropdownService) {}
+    calls: FormArray;
 
-  calls:FormArray;
+    ngOnInit() {
+        this.assignedTo$ = this.dropdown.getCallStaff();
+        this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
+        this.callTypes$ = this.dropdown.getCallTypes();
 
-  ngOnInit() {
+        this.maxDate = getCurrentTimeString();
+        this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
-    this.assignedTo$ = this.dropdown.getCallStaff();
-    this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
-    this.callTypes$ = this.dropdown.getCallTypes();
+        this.patientCallForm = this.buildPatientForm(this.patientCallForm);
 
-    this.maxDate = getCurrentTimeString();
-    this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
-
-
-    this.patientCallForm = this.buildPatientForm(this.patientCallForm);
-
-    this.calls = this.patientCallForm.get("calls") as FormArray;
-
-}
-
-
-ngOnChanges(changes: SimpleChanges){
-
-
-  //Because we're loading this module late, the first change won't have
-  //the incoming patientId in it.
-  if(changes.patientId.currentValue){
-
-    //ngOnChanges runs before ngOnInit, so we may or may not have already populated
-    //This form.
-    this.patientCallForm = this.buildPatientForm(this.patientCallForm);
-
-    this.patientCallForm.get("patientId").setValue(changes.patientId.currentValue);
-    this.loadPatientCalls();
-  }
-}
-
-buildPatientForm(patientForm:FormGroup){
-
-  if(!patientForm){
-
-    patientForm = this.fb.group({
-      patientId: [],
-      calls: this.fb.array([])
-    });
-
-  }
-
-  return patientForm;
-}
-
-loadPatientCalls(){
-
-  this.patientService.getPatientCallsByPatientId(this.patientId).subscribe((data:PatientCalls) =>
-  this.populatePatientCalls(data));
-}
-
-populatePatientCalls(data:PatientCalls){
-
-  for(let i:number = 0; i < data.calls.length; i++){
-    this.addPatientCall(false);
-  }
-
-  this.patientCallForm.patchValue(data);
-}
-
-getNewCall(position:number, expanded:boolean){
-
-  return this.fb.group({
-      position: [position , Validators.required],
-      patientCallId: [],
-      patientId: [],
-      positiveCallOutcome: [true],
-      callDateTime: [''],
-      callType: [{}],
-      assignedTo: [{}],
-      PatientCallOutcomeId: [],
-      createdDateTime: [''],
-      createdBy: [],
-      comments: [''],
-      updated: [true],
-      expanded: [expanded]
-  });
-}
-
-setInitialTime(element:string, index:number) {
-
-  let currentCall:FormGroup = this.calls.controls[index] as FormGroup;
-
-  let currentElement:AbstractControl = currentCall.get(element);
-
-  let currentTime:string|Date = currentElement.value;
-
-  if(!currentTime)
-  {
-    currentElement.setValue(getCurrentTimeString());
-  }
- }
-
- async savePatientCall(){
-
-
-  //TODO replace this with a filter to return only the touched elements
-   this.calls.controls.forEach(element => {
-
-    if(element.touched){
-      element.get("updated").setValue(true);
+        this.calls = this.patientCallForm.get('calls') as FormArray;
     }
-   });
 
-  await this.patientService.savePatientCalls(this.patientCallForm.value)
-    .then((result:PatientCallModifyResponse[]) => {
+    ngOnChanges(changes: SimpleChanges) {
+        // Because we're loading this module late, the first change won't have
+        // the incoming patientId in it.
+        if (changes.patientId.currentValue) {
+            // ngOnChanges runs before ngOnInit, so we may or may not have already populated
+            // This form.
+            this.patientCallForm = this.buildPatientForm(this.patientCallForm);
 
-      this.toastResultMessage(result);
+            this.patientCallForm
+                .get('patientId')
+                .setValue(changes.patientId.currentValue);
+            this.loadPatientCalls();
+        }
+    }
 
-      result.forEach(callResult => {
+    buildPatientForm(patientForm: FormGroup) {
+        if (!patientForm) {
+            patientForm = this.fb.group({
+                patientId: [],
+                calls: this.fb.array([]),
+            });
+        }
 
-        this.calls.controls.forEach(call => {
+        return patientForm;
+    }
 
-          let currentPatientCallId = call.get("patientCallId") as AbstractControl;
+    loadPatientCalls() {
+        this.patientService
+            .getPatientCallsByPatientId(this.patientId)
+            .subscribe((data: PatientCalls) => this.populatePatientCalls(data));
+    }
 
-          currentPatientCallId
-            .setValue(
-              callResult.position === call.get("position").value ?
-                  callResult.results.patientCallId :
-                  currentPatientCallId.value
-                )
+    populatePatientCalls(data: PatientCalls) {
+        for (let i = 0; i < data.calls.length; i++) {
+            this.addPatientCall(false);
+        }
+
+        this.patientCallForm.patchValue(data);
+    }
+
+    getNewCall(position: number, expanded: boolean) {
+        return this.fb.group({
+            position: [position, Validators.required],
+            patientCallId: [],
+            patientId: [],
+            positiveCallOutcome: [true],
+            callDateTime: [''],
+            callType: [{}],
+            assignedTo: [{}],
+            PatientCallOutcomeId: [],
+            createdDateTime: [''],
+            createdBy: [],
+            comments: [''],
+            updated: [true],
+            expanded: [expanded],
         });
-      });
-    });
- }
+    }
 
- toastResultMessage(bread:PatientCallModifyResponse[]){
+    setInitialTime(element: string, index: number) {
+        const currentCall: FormGroup = this.calls.controls[index] as FormGroup;
 
-  if(bread.length === 0){
-    this.openSnackBar("Failed to save - can't connect to server", "OK");
-    return;
-  }
+        const currentElement: AbstractControl = currentCall.get(element);
 
-  //Count the number of successful messages. If they're all successful, then toast
-  //a success message, otherwise toast a fail message.
+        const currentTime: string | Date = currentElement.value;
 
-  let successCount = bread
-                      .map(message => {return message.results.success})
-                      .reduce((successCount:number, callResult) => successCount += callResult );
+        if (!currentTime) {
+            currentElement.setValue(getCurrentTimeString());
+        }
+    }
 
-    let message = successCount === bread.length ? "Save sucessful" : "Failed to save";
+    async savePatientCall() {
+        // TODO replace this with a filter to return only the touched elements
+        this.calls.controls.forEach(element => {
+            if (element.touched) {
+                element.get('updated').setValue(true);
+            }
+        });
 
-    this.openSnackBar(message, "OK");
- }
+        await this.patientService
+            .savePatientCalls(this.patientCallForm.value)
+            .then((result: PatientCallModifyResponse[]) => {
+                this.toastResultMessage(result);
 
- addPatientCall(expanded:boolean){
+                result.forEach(callResult => {
+                    this.calls.controls.forEach(call => {
+                        const currentPatientCallId = call.get(
+                            'patientCallId',
+                        ) as AbstractControl;
 
-  let length = (this.patientCallForm.get("calls") as FormArray).length;
+                        currentPatientCallId.setValue(
+                            callResult.position === call.get('position').value
+                                ? callResult.results.patientCallId
+                                : currentPatientCallId.value,
+                        );
+                    });
+                });
+            });
+    }
 
-  this.calls.push(this.getNewCall(length + 1, expanded));
+    toastResultMessage(bread: PatientCallModifyResponse[]) {
+        if (bread.length === 0) {
+            this.openSnackBar('Failed to save - can\'t connect to server', 'OK');
+            return;
+        }
 
- }
+        // Count the number of successful messages. If they're all successful, then toast
+        // a success message, otherwise toast a fail message.
 
- compareCallTypes(callType1: CallType, callType2: CallType): boolean {
-  return callType1 && callType2 ? callType1.CallTypeId === callType2.CallTypeId : callType1 === callType2;
-}
+        const successCount = bread
+            .map(message => {
+                return message.results.success;
+            })
+            .reduce(
+                (successCount: number, callResult) =>
+                    (successCount += callResult),
+            );
 
-compareAssignedTo(assinedTo1: User, assignedTo2: User): boolean {
-  return assinedTo1 && assignedTo2 ? assinedTo1.UserId === assignedTo2.UserId : assinedTo1 === assignedTo2;
-}
+        const message =
+            successCount === bread.length ? 'Save sucessful' : 'Failed to save';
 
-openSnackBar(message: string, action: string) {
-  this.snackBar.open(message, action, {
-    duration: this.notificationDurationSeconds * 1000,
-  });
-}
+        this.openSnackBar(message, 'OK');
+    }
 
+    addPatientCall(expanded: boolean) {
+        const length = (this.patientCallForm.get('calls') as FormArray).length;
 
+        this.calls.push(this.getNewCall(length + 1, expanded));
+    }
 
+    compareCallTypes(callType1: CallType, callType2: CallType): boolean {
+        return callType1 && callType2
+            ? callType1.CallTypeId === callType2.CallTypeId
+            : callType1 === callType2;
+    }
+
+    compareAssignedTo(assinedTo1: User, assignedTo2: User): boolean {
+        return assinedTo1 && assignedTo2
+            ? assinedTo1.UserId === assignedTo2.UserId
+            : assinedTo1 === assignedTo2;
+    }
+
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: this.notificationDurationSeconds * 1000,
+        });
+    }
 }

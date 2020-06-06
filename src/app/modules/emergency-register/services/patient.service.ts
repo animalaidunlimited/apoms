@@ -3,117 +3,121 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCall, PatientCalls, PatientCallModifyResponse, PatientCallResult } from 'src/app/core/models/patients';
+import {
+    Patient,
+    PatientCall,
+    PatientCalls,
+    PatientCallModifyResponse,
+    PatientCallResult,
+} from 'src/app/core/models/patients';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
-export class PatientService extends APIService  {
-
-  constructor(http: HttpClient) {
-    super(http)
-   }
-
-   endpoint = 'Patient';
-
-   public checkTagNumberExists(tagNumber:string, emergencyCaseId:number, patientId:number):Observable<any>
-   {
-
-    let tagNumberQuery =  "TagNumber=" + tagNumber +
-                          "&EmergencyCaseId=" + emergencyCaseId +
-                          "&PatientId=" + patientId;
-
-     return this.getByField("CheckTagNumberExists", tagNumberQuery)
-               .pipe(
-                 map(value => {
-                   return value;
-                 })
-               );
-   }
-
-   public getPatientsByEmergencyCaseId(number: number):Observable<any>{
-
-    let request = "?emergencyCaseId=" + number;
-
-   return this.getObservable(request)
-   .pipe(
-     map((response:Patient[]) => {
-       return response;
-     })
-   );
-
-  }
-
-  public getPatientByPatientId(patientId: number):Observable<any>{
-
-    let request = "?patientId=" + patientId;
-
-   return this.getObservable(request)
-   .pipe(
-     map((response:Patient[]) => {
-       return response;
-     })
-   );
-
-  }
-
-  public async updatePatientStatus(patient:any){
-
-    return await this.put(patient).then((data) => {
-      return data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  }
-
-  public getPatientCallsByPatientId(patientId: number):Observable<PatientCalls>{
-
-    let request = "/PatientCalls?patientId=" + patientId;
-
-   return this.getObservable(request)
-   .pipe(
-     map((response:PatientCalls) => {
-       return response;
-     })
-   );
-
-  }
-
-  public async savePatientCalls(patientCalls:PatientCalls) : Promise<PatientCallModifyResponse[]>{
-
-    let response:PatientCallModifyResponse[] = [];
-
-    for (let call of patientCalls.calls){
-
-      if(call.patientCallId && call.updated){
-
-        call.patientId = patientCalls.patientId;
-
-        await this.put(call).then((data:PatientCallResult) => {
-
-          response.push({ position: call.position, results: data});
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
-      else if (!call.patientCallId && call.updated){
-
-        call.patientId = patientCalls.patientId;
-
-        await this.post(call).then((data:PatientCallResult) => {
-
-          response.push({ position: call.position, results: data});
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      }
+export class PatientService extends APIService {
+    constructor(http: HttpClient) {
+        super(http);
     }
 
-    return response;
-}
+    endpoint = 'Patient';
 
+    public checkTagNumberExists(
+        tagNumber: string,
+        emergencyCaseId: number,
+        patientId: number,
+    ): Observable<any> {
+        const tagNumberQuery =
+            'TagNumber=' +
+            tagNumber +
+            '&EmergencyCaseId=' +
+            emergencyCaseId +
+            '&PatientId=' +
+            patientId;
+
+        return this.getByField('CheckTagNumberExists', tagNumberQuery).pipe(
+            map(value => {
+                return value;
+            }),
+        );
+    }
+
+    public getPatientsByEmergencyCaseId(number: number): Observable<any> {
+        const request = '?emergencyCaseId=' + number;
+
+        return this.getObservable(request).pipe(
+            map((response: Patient[]) => {
+                return response;
+            }),
+        );
+    }
+
+    public getPatientByPatientId(patientId: number): Observable<any> {
+        const request = '?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: Patient[]) => {
+                return response;
+            }),
+        );
+    }
+
+    public async updatePatientStatus(patient: any) {
+        return await this.put(patient)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    public getPatientCallsByPatientId(
+        patientId: number,
+    ): Observable<PatientCalls> {
+        const request = '/PatientCalls?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: PatientCalls) => {
+                return response;
+            }),
+        );
+    }
+
+    public async savePatientCalls(
+        patientCalls: PatientCalls,
+    ): Promise<PatientCallModifyResponse[]> {
+        const response: PatientCallModifyResponse[] = [];
+
+        for (const call of patientCalls.calls) {
+            if (call.patientCallId && call.updated) {
+                call.patientId = patientCalls.patientId;
+
+                await this.put(call)
+                    .then((data: PatientCallResult) => {
+                        response.push({
+                            position: call.position,
+                            results: data,
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            } else if (!call.patientCallId && call.updated) {
+                call.patientId = patientCalls.patientId;
+
+                await this.post(call)
+                    .then((data: PatientCallResult) => {
+                        response.push({
+                            position: call.position,
+                            results: data,
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        }
+
+        return response;
+    }
 }

@@ -1,45 +1,36 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class SurgeryService extends APIService {
+    endpoint = 'SurgeryRegister';
 
-  endpoint:string = "SurgeryRegister";
-
-  constructor(public http : HttpClient) { 
-    super(http)
-  }
-
-  public async insertSurgery(surgerydata) : Promise<any>
-  {
-    let request = "surgery";
-    console.log(surgerydata);
-
-    if (surgerydata.SurgeryId){ 
-      return this.put(surgerydata);
+    constructor(public http: HttpClient) {
+        super(http);
     }
-    else{
-      return this.post(surgerydata);
-    
+
+    public async insertSurgery(surgerydata): Promise<any> {
+        const request = 'surgery';
+        console.log(surgerydata);
+
+        if (surgerydata.SurgeryId) {
+            return this.put(surgerydata);
+        } else {
+            return this.post(surgerydata);
+        }
     }
-  }
-  
-  public async getSurgeryBySurgeryId(surgeryId) : Promise<any>
-  {
-    let request = "?SurgeryId=" + surgeryId;
 
-    return this.get(request);
-  }
+    public async getSurgeryBySurgeryId(surgeryId): Promise<any> {
+        const request = '?SurgeryId=' + surgeryId;
 
-  public getSurgeryByPatientId(patientId:number) : Promise<any>
-  {
-    let request = "?PatientId=" + patientId;
-    return this.get(request);
-  }
+        return this.get(request);
+    }
 
-
-  
+    public getSurgeryByPatientId(patientId: number): Promise<any> {
+        const request = '?PatientId=' + patientId;
+        return this.get(request);
+    }
 }

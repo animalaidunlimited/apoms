@@ -1,4 +1,4 @@
-<form [formGroup]="SurgeryForm">
+<form [formGroup]="surgeryForm">
     <fieldset class="form-group">
         <legend class="legend">Surgery Register</legend>
         <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "start end">
@@ -6,10 +6,10 @@
                 <legend class="legend">Animal Details</legend>
                 <div fxLayout="row"  fxLayout.lt-md="column" fxLayoutGap="auto" fxLayoutAlign="start end">
                     <mat-form-field>
-                        <input  type="text" placeholder="Tag Number" formControlName="TagNumber" readonly matInput>                        
+                        <input  type="text" placeholder="Tag Number" formControlName="TagNumber" matInput>                        
                     </mat-form-field>
                     <mat-form-field>
-                    <input matInput disabled type="number" placeholder="EmergencyNumber" formControlName="EmergencyNumber"  >                        
+                    <input matInput  type="number" placeholder="EmergencyNumber" formControlName="EmergencyNumber"  >                        
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Animal Type</mat-label>
@@ -24,21 +24,21 @@
                     <mat-form-field >
                         <mat-label>Surgery Date</mat-label>
                         <input matInput type="datetime-local" formControlName="SurgeryDate" name = "SurgeryDate"  
-                        (focus)="setInitialTime($event)" required>
+                        (focus)="setInitialTime($event)" [errorStateMatcher]="errorMatcher" cdkFocusInitial required>
                     </mat-form-field>
                         
                     <mat-form-field>
                         <mat-label>Surgeon</mat-label>
-                        <mat-select formControlName="SurgeonId" required>
-                                <mat-option *ngFor="let surgeon of surgeons" [value]="surgeon.SurgeonId" >
-                                {{surgeon.SurgeonName}}
+                        <mat-select formControlName="UserId" [errorStateMatcher]="errorMatcher"  required>
+                                <mat-option *ngFor="let surgeon of surgeons" [value]="surgeon.UserId" >
+                                {{surgeon.FirstName}}
                                 </mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <mat-form-field>
                         <mat-label>Surgery Site</mat-label>
-                        <mat-select formControlName="SurgerySiteId" required>
+                        <mat-select formControlName="SurgerySiteId" [errorStateMatcher]="errorMatcher"  required>
                                 <mat-option *ngFor="let surgerySite of surgerySites" [value]="surgerySite.SurgerySiteId" >
                                 {{surgerySite.SurgerySite}}
                                 </mat-option>
@@ -46,7 +46,7 @@
                     </mat-form-field>
 
                     <mat-form-field>
-                        <input  type="number" placeholder="Mins In Anesthesia" formControlName="AnesthesiaMinutes" matInput>
+                        <input  type="number" placeholder="Mins In Anesthesia"  formControlName="AnesthesiaMinutes" [errorStateMatcher]="errorMatcher"  matInput>
                     </mat-form-field>
                 </div>
             </fieldset>
@@ -57,7 +57,7 @@
                 <legend class="legend">Surgery Type</legend>
                 <mat-form-field style="width:100%">
                     <mat-label >Select Surgery Type</mat-label>
-                    <mat-select formControlName="SurgeryTypeId" style="width: 100%;" required>
+                    <mat-select formControlName="SurgeryTypeId" style="width: 100%;" [errorStateMatcher]="errorMatcher"  required>
                             <mat-option *ngFor="let surgeryType of surgeryTypes" [value]="surgeryType.SurgeryTypeId" >
                             {{surgeryType.SurgeryType}}
                             </mat-option>
@@ -70,17 +70,17 @@
                 <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px" fxLayoutAlign="start end">
                     <mat-form-field >
                         <mat-label>Date of Death</mat-label>
-                        <input matInput  type="datetime-local" formControlName="DiedDate" name="DiedDate"  
+                        <input matInput  type="datetime-local"  formControlName="DiedDate" name="DiedDate"  
                         (focus)="setInitialTime($event)">
                     </mat-form-field>
 
                     <mat-form-field>
-                        <input  type="text" placeholder="Died Comment" formControlName="DiedComment" matInput>                        
+                        <input  type="text" placeholder="Died Comment"  formControlName="DiedComment" matInput>                        
                     </mat-form-field>
 
                     <mat-form-field>
                         <mat-label>Antibiotics Given?</mat-label>
-                        <mat-select formControlName="AntibioticsGiven" required>
+                        <mat-select formControlName="AntibioticsGiven">
                                 <mat-option *ngFor="let drug of drugs" [value]="drug.id">
                                 {{drug.Antibiotics}}
                                 </mat-option>
@@ -90,26 +90,13 @@
                     <mat-form-field>
                         <input  type="text" placeholder="comment" formControlName="Comment" matInput>
                     </mat-form-field>
+        
                 </div>
             </fieldset>
         </div>
 
         <br>
         <br>
-
-        <!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center"> 
-            <input type="submit" value="Submit"  [disabled]="!SurgeryForm.valid" class="mat-button">
-                         
-            <input type="reset" (click)="resetForm()" value="Reset" style="margin-left:120px ;" class="mat-button">
-        </div> -->
-
-        <!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" style="margin-top:50px ;"> 
-            <mat-form-field>
-                    <input type="text" placeholder="Surgery Id" formControlName="SearchSurgeryId" matInput>                        
-            </mat-form-field> 
-            
-            <button type = "button" (click) = "Load()" class="mat-button" mat-button>Load</button>
-        </div> -->
 
     </fieldset>
 </form>

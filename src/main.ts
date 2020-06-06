@@ -12,7 +12,7 @@ if (environment.production) {
 
 const init = () => {
     platformBrowserDynamic().bootstrapModule(AppModule)
-    .then(() => (<any>window).appBootstrap && (<any>window).appBootstrap())
+    .then(() => (window as any).appBootstrap && (window as any).appBootstrap())
     .catch(err => console.error('NG Bootstrap Error =>', err));
   }
 

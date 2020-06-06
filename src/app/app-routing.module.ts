@@ -11,26 +11,49 @@ import { AuthGuard } from './auth/auth.guard';
 import { CustomRouteReuseStrategy } from './core/nav-reuse-strategy';
 import { NavGuard } from './core/nav.guard';
 
-const routes: Routes = [{path: 'settings',loadChildren: () =>
-                import('./pages/settings-page/settings-page.module').then(
-                    m => m.SettingsPageModule,
-                ),},{path: 'reporting',loadChildren: () =>
-                import('./pages/reporting-page/reporting-page.module').then(
-                    m => m.ReportingPageModule,
-                ),},{path: 'surgery-register',loadChildren: () =>
-                import('./modules/surgeryregister/surgery-register-page.module').then(
-                    m => m.SurgeryRegisterPageModule,
-                ),},{path: 'census',loadChildren: () =>
-                import('./pages/census-page/census-page.module').then(
-                    m => m.CensusPageModule,
-                ),},{path: 'hospital-manager',loadChildren: () =>
-                import('./modules/hospital-manager/hospital-manager-page.module').then(
-                    m => m.HospitalManagerPageModule,
-                ),},
-                {path: 'emergency-register',loadChildren: () =>
-                import('./modules/emergency-register/emergency-register-page.module').then(
-                    m => m.EmergencyRegisterPageModule,
-                ),},
+const routes: Routes = [
+    {
+        path: 'settings',
+        loadChildren: () =>
+            import('./pages/settings-page/settings-page.module').then(
+                m => m.SettingsPageModule,
+            ),
+    },
+    {
+        path: 'reporting',
+        loadChildren: () =>
+            import('./pages/reporting-page/reporting-page.module').then(
+                m => m.ReportingPageModule,
+            ),
+    },
+    {
+        path: 'surgery-register',
+        loadChildren: () =>
+            import(
+                './modules/surgeryregister/surgery-register-page.module'
+            ).then(m => m.SurgeryRegisterPageModule),
+    },
+    {
+        path: 'census',
+        loadChildren: () =>
+            import('./pages/census-page/census-page.module').then(
+                m => m.CensusPageModule,
+            ),
+    },
+    {
+        path: 'hospital-manager',
+        loadChildren: () =>
+            import(
+                './modules/hospital-manager/hospital-manager-page.module'
+            ).then(m => m.HospitalManagerPageModule),
+    },
+    {
+        path: 'emergency-register',
+        loadChildren: () =>
+            import(
+                './modules/emergency-register/emergency-register-page.module'
+            ).then(m => m.EmergencyRegisterPageModule),
+    },
     {
         path: 'login',
         loadChildren: () =>

@@ -1,5 +1,5 @@
-export interface User{
-UserId: number;
-FirstName: string;
-Initials: string;
+export interface User {
+    UserId: number;
+    FirstName: string;
+    Initials: string;
 }

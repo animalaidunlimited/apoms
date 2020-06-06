@@ -40,7 +40,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <div>
-     <input  type="button" value="Add Surgery" class="mat-raised-button" color="primary" style="margin-left: 30%;" (click)="addSurgery()"/>
+  <div fxLayoutAlign = "center center">
+    <button type="button" mat-raised-button color="primary"  (click)="addSurgery()">Add Surgery</button>
   </div>
 </fieldset>

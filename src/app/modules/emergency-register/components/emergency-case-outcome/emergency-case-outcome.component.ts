@@ -8,73 +8,86 @@ import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/utils';
 
 @Component({
-  selector: 'emergency-case-outcome',
-  templateUrl: './emergency-case-outcome.component.html',
-  styleUrls: ['./emergency-case-outcome.component.scss']
+    selector: 'emergency-case-outcome',
+    templateUrl: './emergency-case-outcome.component.html',
+    styleUrls: ['./emergency-case-outcome.component.scss'],
 })
 export class EmergencyCaseOutcomeComponent implements OnInit {
+    @Input() recordForm: FormGroup;
+    @Output() public result = new EventEmitter<any>();
 
-  @Input() recordForm: FormGroup;
-  @Output() public result = new EventEmitter<any>();
+    callOutcomes$: Observable<CallOutcomeResponse[]>;
+    callOutcomes;
+    currentOutcomeId: number;
 
-  callOutcomes$:Observable<CallOutcomeResponse[]>;
-  callOutcomes;
-  currentOutcomeId:number;
+    sameAs: boolean;
+    sameAsId: number;
 
-  sameAs:boolean;
-  sameAsId:number;
+    constructor(
+        private dropdowns: DropdownService,
+        private caseService: CaseService,
+        private emergencyNumberValidator: UniqueEmergencyNumberValidator,
+    ) {}
 
-  constructor(
-    private dropdowns: DropdownService,
-    private caseService: CaseService,
-    private emergencyNumberValidator:UniqueEmergencyNumberValidator
-  ) { }
+    ngOnInit(): void {
+        this.recordForm.addControl(
+            'callOutcome',
+            new FormGroup({ callOutcome: new FormControl() }),
+        );
 
-  ngOnInit(): void {
+        const callOutcome = this.recordForm.get('callOutcome') as FormGroup;
 
-    this.recordForm.addControl(
-      "callOutcome", new FormGroup( {callOutcome : new FormControl()}));
+        callOutcome.addControl(
+            'sameAsNumber',
+            new FormControl(
+                null,
+                [],
+                [
+                    this.emergencyNumberValidator.validate(
+                        this.recordForm.get('emergencyDetails.emergencyCaseId')
+                            .value,
+                        0,
+                    ),
+                ],
+            ),
+        );
 
-    let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
+        this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
-    callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
-
-    this.callOutcomes$ = this.dropdowns.getCallOutcomes();
-
-    this.callOutcomes$.subscribe(callOutcome => {
-
-      this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
-
-    });
-  }
-
-  outcomeChanged(){
-
-    this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
-
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.callOutcome').value;
-
-  }
-
-  async save(){
-
-    //If we haven't touched the form, don't do anything.
-    if(this.recordForm.pristine || !this.recordForm.get('callOutcome').value){
-      this.result.emit(null);
-      return;
+        this.callOutcomes$.subscribe(callOutcome => {
+            this.sameAsId = callOutcome.find(
+                outcome => outcome.CallOutcome === 'Same as',
+            ).CallOutcomeId;
+        });
     }
 
-    let updateTime = getCurrentTimeString();
+    outcomeChanged() {
+        this.recordForm.get('callOutcome.sameAsNumber').setValue(null);
 
-    (this.recordForm.get('callOutcome') as FormGroup)
-          .addControl("updateTime", new FormControl(updateTime));
+        this.sameAs =
+            this.sameAsId ===
+            this.recordForm.get('callOutcome.callOutcome').value;
+    }
 
-    await this.caseService.updateCaseOutcome(this.recordForm.value).then((data:any) =>
+    async save() {
+        // If we haven't touched the form, don't do anything.
+        if (
+            this.recordForm.pristine ||
+            !this.recordForm.get('callOutcome').value
+        ) {
+            this.result.emit(null);
+            return;
+        }
 
-      this.result.emit(data)
+        const updateTime = getCurrentTimeString();
 
-    );
-  }
+        (this.recordForm.get('callOutcome') as FormGroup).addControl(
+            'updateTime',
+            new FormControl(updateTime),
+        );
 
-
+        await this.caseService
+            .updateCaseOutcome(this.recordForm.value)
+            .then((data: any) => this.result.emit(data));
+    }
 }
