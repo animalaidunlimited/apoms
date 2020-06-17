@@ -1,12 +1,12 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { BoardSocketService } from '../../services/board-socket.service';
+import { MessagingService } from '../../services/board-socket.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { Subscription } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
+import { debounceTime, startWith, mergeMapTo } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RescueDetailsService } from '../../services/rescue-details.service';
 
@@ -51,7 +51,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
     private rescueService: RescueDetailsService,
-    private socketService: BoardSocketService) { }
+    private messagingService: MessagingService
+
+    ) { }
 
   @Output() public onOpenEmergencyCase = new EventEmitter<any>();
 
@@ -68,6 +70,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   searchForm:FormGroup;
 
+
+
   ngOnInit(): void {
 
     this.searchForm = this.fb.group({
@@ -76,20 +80,38 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.setupConnection();
 
+
+
+
   }
+
 
   async setupConnection(){
 
-    await this.socketService.initialiseConnection();
+    // await this.socketService.initialiseConnection();
 
     this.subscription = await this.rescueService.getOutstandingRescues()
-      .subscribe(outstandingCases =>
+      .subscribe(outstandingCases => {
 
       this.populate(outstandingCases.outstandingRescues)
+    }
     );
 
-    this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) => {
-      this.updateRescue(updatedRescue);
+    this.messagingService.getUpdatedRescue().subscribe((updatedRescue) => {
+
+      console.log("1");
+
+      if(updatedRescue?.messageData){
+
+        console.log(JSON.parse(JSON.parse(updatedRescue?.messageData)));
+        console.log("2");
+
+        this.updateRescue(JSON.parse(JSON.parse(updatedRescue?.messageData)));
+      }
+
+      console.log("3");
+
+
 
     });
 
@@ -104,7 +126,10 @@ export class OutstandingCaseBoardComponent implements OnInit {
       })
   }
 
+
+
   updateRescue(updatedRescue:OutstandingRescue){
+
 
     //Find the rescue and remove it from its current location.
     // let rescueToMove:OutstandingRescue =
@@ -189,10 +214,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     outstanding.forEach(status => {
 
+
+
         status.rescuerGroups.forEach((group,index) => {
 
             let removeIndex = group.rescues
                               .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
+
+                              console.log("Here: " + removeIndex)
+                              console.log("Here")
 
             if(removeIndex > -1){
 

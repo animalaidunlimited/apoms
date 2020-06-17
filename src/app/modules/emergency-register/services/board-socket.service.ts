@@ -1,57 +1,64 @@
-import { Injectable, NgZone } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { AngularFireMessaging } from '@angular/fire/messaging';
+import { BehaviorSubject } from 'rxjs'
 import { AuthService } from 'src/app/auth/auth.service';
-import { OutstandingCaseResponse, OutstandingRescue } from 'src/app/core/models/outstanding-case';
-
+import { APIService } from '../../../core/services/http/api.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
-})
-export class BoardSocketService{
+    providedIn: 'root'
+  })
+export class MessagingService extends APIService {
 
-  endpoint="EventEmitter";
 
-  room:string;
+currentMessage = new BehaviorSubject(null);
+endpoint:string = "Messaging";
 
-  eventSource:EventSource;
 
-  public rescueStreamSubject: Subject<any>;
+constructor(private angularFireMessaging: AngularFireMessaging,
+    private authService: AuthService,
+    http: HttpClient) {
+        super(http);
 
-  constructor(private authService: AuthService,
-    private zone:NgZone) {
+        angularFireMessaging.onMessage((payload) => {
+            // console.log(payload);
+            this.currentMessage.next(payload.data);
+          })
     }
 
-  async initialiseConnection() {
 
-    this.room = await this.authService.getOrganisationSocketEndPoint();
+    requestPermission() {
+        this.angularFireMessaging.requestToken.subscribe(
+            (token) => {
+                console.log(token);
 
-    let eventName = `${this.room}_UPDATING_RESCUE`
+                this.subscribeToTopics(token);
 
-
-  }
-
-  getUpdatedRescues(): Observable<OutstandingRescue> {
-    return Observable.create(observer => {
-      this.eventSource = new EventSource("/EventEmitter/AAU_UPDATING_RESCUE", { withCredentials: true });
-
-      this.eventSource.onmessage = (event) => {
-        this.zone.run(() => {
-
-          observer.next(JSON.parse(JSON.parse(event.data)));
-        }
+            },
+            (err) => {
+                console.error('Unable to get permission to notify.', err);
+            }
         );
-      };
+    }
 
-    this.eventSource.onerror = (error) => {
-      //TODO make this into a toast..
-      console.log('looks like the best thing to do is to do nothing: ' + error);
-    };
-  });
+    async subscribeToTopics(token){
+
+        //send the token to the server and subscribe it to the relevant topics
+        let organisation = this.authService.getOrganisationSocketEndPoint();
+
+        let subscriptionBody = {
+            token: token,
+            topic: `${organisation}_UPDATING_RESCUE`
+        }
+
+        let result = await this.post(subscriptionBody)
+
+        console.log(result);
+
+    }
+
+
+    getUpdatedRescue(){
+        return this.currentMessage;
+    }
 }
-
-
-}
-
-
-
-

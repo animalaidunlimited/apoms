@@ -10,7 +10,7 @@ const PROXY_CONFIG = [
             "/Patient",
             "/Login",
             "/Location",
-            "/EventEmitter"
+            "/Messaging"
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",

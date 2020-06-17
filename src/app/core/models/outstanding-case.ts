@@ -49,3 +49,8 @@ export interface UpdatedRescue{
     rescuer2Abbreviation:string;
     rescueStatus:number;
 }
+
+export interface UpdateResponse{
+    success: number;
+    socketEndPoint: string;
+}
