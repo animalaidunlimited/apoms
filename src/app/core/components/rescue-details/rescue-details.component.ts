@@ -5,7 +5,8 @@ import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/fo
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
-import { UpdatedRescue } from '../../models/outstanding-case';
+import { UpdateResponse } from '../../models/outstanding-case';
+
 
 @Component({
   selector: 'rescue-details',
@@ -17,7 +18,7 @@ export class RescueDetailsComponent implements OnInit {
 
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
-  @Output() public result = new EventEmitter<UpdatedRescue>();
+  @Output() public result = new EventEmitter<UpdateResponse>();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -212,15 +213,25 @@ onChanges(): void {
 
     // If we haven't touched the form, don't do anything.
     if(!this.recordForm.touched){
-      this.result.emit(null);
+
+      let emptyResult:UpdateResponse = {
+        success: null,
+        socketEndPoint: null
+      };
+
+      this.result.emit(emptyResult);
       return;
     }
 
     this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
 
-    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdatedRescue) =>
+    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
+{
 
-      this.result.emit(data)
+  this.result.emit(data)
+
+}
+
 
     );
   }

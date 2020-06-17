@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
 
+
+
 @NgModule({
   declarations: [
     EmergencyRegisterPageComponent
@@ -18,6 +20,8 @@ import { TabBarModule } from './components/tab-bar/tab-bar.module';
     TabBarModule,
     MaterialModule,
     FormsModule,
+
+
   ],
   exports: [
   ]

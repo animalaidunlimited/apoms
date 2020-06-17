@@ -6,6 +6,7 @@ import { DropdownService } from '../../../../core/services/dropdown/dropdown.ser
 import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emergency-number.validator';
 import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/utils';
+import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Component({
   selector: 'emergency-case-outcome',
@@ -15,7 +16,7 @@ import { getCurrentTimeString } from 'src/app/core/utils';
 export class EmergencyCaseOutcomeComponent implements OnInit {
 
   @Input() recordForm: FormGroup;
-  @Output() public result = new EventEmitter<any>();
+  @Output() public result = new EventEmitter<UpdateResponse>();
 
   callOutcomes$:Observable<CallOutcomeResponse[]>;
   callOutcomes;
@@ -60,7 +61,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     //If we haven't touched the form, don't do anything.
     if(this.recordForm.pristine || !this.recordForm.get('callOutcome').value){
-      this.result.emit(null);
+
+      let emptyResult:UpdateResponse = {
+        success: null,
+        socketEndPoint: null
+      };
+
+
+
+      this.result.emit(emptyResult);
       return;
     }
 

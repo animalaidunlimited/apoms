@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MessagingService } from './modules/emergency-register/services/board-socket.service';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 
 @Component({
     selector: 'app-root',
@@ -8,4 +10,17 @@ import { Component } from '@angular/core';
 export class AppComponent {
     // test
     title = 'apoms';
+    message;
+
+    constructor(private afMessaging: AngularFireMessaging,
+        private messagingService: MessagingService) {
+
+     }
+
+    ngOnInit() {
+        this.messagingService.requestPermission();
+        this.message = this.messagingService.currentMessage;
+      }
+
+
 }

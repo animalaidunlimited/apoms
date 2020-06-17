@@ -43,7 +43,7 @@ export class DropdownService extends APIService{
 
 
   constructor(http: HttpClient) {
-    super(http)
+    super(http);
    }
 
   getOfficeStaff(): Observable<User[]> {

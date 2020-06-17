@@ -3,9 +3,8 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RescueDetails } from 'src/app/core/models/emergency-record';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
-import { OutstandingCaseResponse } from 'src/app/core/models/outstanding-case';
+import { OutstandingCaseResponse, UpdatedRescue, UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +36,7 @@ export class RescueDetailsService extends APIService {
 
   }
 
-
-
-  //TODO change this to by properly typed
-  public async updateRescueDetails(rescueDetails:any): Promise<any> {
+  public async updateRescueDetails(rescueDetails:UpdateResponse): Promise<UpdateResponse> {
 
     return await this.put(rescueDetails);
 
