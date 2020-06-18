@@ -16,14 +16,14 @@ export class SnackbarService implements OnInit{
   successSnackBar(message: string , action: string){
     
     this.snackBar.open(message , action , {
-      duration: 1000 ,
+      duration: this.notificationDurationSeconds * 1000  ,
       panelClass:'notif-success'
     }) ;
   }
 
   errorSnackBar(message: string , action: string){
     this.snackBar.open(message , action , {
-      duration: 1000 ,
+      duration: this.notificationDurationSeconds * 1000 ,
       panelClass:'notif-error'
     }) ;
   }
