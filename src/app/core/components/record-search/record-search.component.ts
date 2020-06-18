@@ -72,7 +72,7 @@ export class RecordSearchComponent implements OnInit {
     searchForm: FormGroup;
     searchRows: FormArray;
 
-    searchShowing = false;
+    searchShowing:boolean = false;
 
     search = new Search();
 

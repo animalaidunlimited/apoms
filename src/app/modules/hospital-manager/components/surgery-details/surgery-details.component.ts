@@ -4,9 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { SurgeryRecordDialogComponent } from '../../components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
 import { AddSurgeryDialogComponent } from '../add-surgery-dialog/add-surgery-dialog.component';
-// import { MatSnackBar } from '@angular/material/snack-bar';
-// import { UserOptionsService } from "src/app/core/services/user-options.service";
-import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 export interface SurgeryRecord {
     surgeryId: number;
     date: string | Date;
@@ -39,16 +36,10 @@ const ELEMENT_DATA: SurgeryRecord[] = [
     styleUrls: ['./surgery-details.component.scss'],
 })
 export class SurgeryDetailsComponent implements OnInit {
-    notificationDurationSeconds: any;
-    // notificationDurationSeconds: any;
-    // userOptions: any;
 
     constructor(
         private surgeryService: SurgeryService,
         public dialog: MatDialog,
-        private showSnackBar : SnackbarService 
-        // public snackBar : MatSnackBar,
-        // public userOptions:UserOptionsService       
     ) {}
     @Input() patientId: number;
     @Input() tagNumber: string;
@@ -73,7 +64,6 @@ export class SurgeryDetailsComponent implements OnInit {
     surgeryRecords = ELEMENT_DATA;
 
     ngOnInit() {
-        // this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
         this.surgeryService
             .getSurgeryByPatientId(this.patientId)
             .then(response => (this.surgeryRecords = response));
@@ -95,8 +85,6 @@ export class SurgeryDetailsComponent implements OnInit {
                     x => x.surgeryId == result.surgeryId);
                 this.surgeryRecords.splice(index, 1, result);
                 this.surgeryTable.renderRows();
-
-                // this.showSnackBar.openSnackBar("Surgery Updated!" , "Ok");
             }
         });
     }

@@ -47,9 +47,8 @@ export class AddSurgeryDialogComponent implements OnInit {
 
     onSurgerySaveResult(result: SurgeryFormModel) {
         this.result = result;
-        if (result) { 
-            let i = 1; 
-            this.canExit.get('surgeryDetailsSaveComplete').setValue(i);
+        if (result) {  
+            this.canExit.get('surgeryDetailsSaveComplete').setValue(1);
         }    
     }
 
