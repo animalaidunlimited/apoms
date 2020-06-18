@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
 import { map } from 'rxjs/operators';
-import { Dispatcher } from '../../models/dispatcher';
 import { CallOutcomeResponse } from '../../models/call-outcome';
-import { Rescuer } from '../../models/rescuer';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
     ProblemDropdownResponse,

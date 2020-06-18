@@ -28,9 +28,6 @@ export class AddSurgeryDialogComponent implements OnInit {
         private fb: FormBuilder,
     ) {}
 
-
-
-
     ngOnInit() {
         this.canExit = this.fb.group({
             surgeryDetailsSaveComplete: [0],
@@ -39,12 +36,9 @@ export class AddSurgeryDialogComponent implements OnInit {
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
             if (values.surgeryDetailsSaveComplete != 0) {
-                console.log(this.result);
-
                 this.dialogRef.close(this.result);
             }
         });
-
     }
 
     onCancel(): void {
@@ -52,20 +46,14 @@ export class AddSurgeryDialogComponent implements OnInit {
     }
 
     onSurgerySaveResult(result: SurgeryFormModel) {
-        console.log(result);
         this.result = result;
         if (result) { 
             let i = 1; 
             this.canExit.get('surgeryDetailsSaveComplete').setValue(i);
-        }
-        
+        }    
     }
-
 
     onSurgeryInvalid(invalid : boolean){
-
         this.invalidSurgeryForm = invalid;
-
     }
-
 }

@@ -55,10 +55,7 @@ export const navRoutes: NavRoute[] = [
                 m => m.CensusPageModule,
             ),
     },
-    // {data: {title: 'Surgery Register'},icon: 'none',group: '',path: 'surgery-register',loadChildren: () =>
-    // import('./pages/surgery-register-page/surgery-register-page.module').then(
-    //     m => m.SurgeryRegisterPageModule,
-    // ),},
+ 
     {
         data: { title: 'Case List' },
         icon: '',
@@ -139,16 +136,7 @@ export const navRoutes: NavRoute[] = [
                 m => m.OrganisationsPageModule,
             ),
     },
-    {
-        data: { title: 'Surgery Register' },
-        icon: 'none',
-        group: '',
-        path: 'surgery-register',
-        loadChildren: () =>
-            import(
-                './modules/surgeryregister/surgery-register-page.module'
-            ).then(m => m.SurgeryRegisterPageModule),
-    },
+    
 ];
 
 @Injectable({

@@ -11,6 +11,7 @@ import {
 } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 
 @Component({
     selector: 'emergency-record',
@@ -34,6 +35,7 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private snackBar: MatSnackBar,
         private caseService: CaseService,
+        private showSnackBar : SnackbarService
     ) {}
 
     ngOnInit() {
@@ -167,12 +169,12 @@ export class EmergencyRecordComponent implements OnInit {
                         }
 
                         if (messageResult.failure == 0) {
-                            this.openSnackBar(
+                            this.showSnackBar.successSnackBar(
                                 'Case inserted successfully',
                                 'OK',
                             );
                         } else if (messageResult.failure == 1) {
-                            this.openSnackBar('Case saved offline', 'OK');
+                            this.showSnackBar.errorSnackBar('Case saved offline', 'OK');
                         }
                     })
                     .catch(error => {
@@ -192,7 +194,7 @@ export class EmergencyRecordComponent implements OnInit {
                         const messageResult = this.getCaseSaveMessage(resultBody);
 
                         if (messageResult.failure == 0) {
-                            this.openSnackBar(
+                            this.showSnackBar.successSnackBar(
                                 'Case updateted successfully',
                                 'OK',
                             );
@@ -205,11 +207,11 @@ export class EmergencyRecordComponent implements OnInit {
         }
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: this.notificationDurationSeconds * 1000,
-        });
-    }
+    // openSnackBar(message: string, action: string) {
+    //     this.snackBar.open(message, action, {
+    //         duration: this.notificationDurationSeconds * 1000,
+    //     });
+    // }
 
     emergencyNumberUpdated(emergencyNumber: number) {
         this.onLoadEmergencyNumber.emit(emergencyNumber);

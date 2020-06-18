@@ -13,6 +13,7 @@ import { SurgeryRecordModule } from './components/surgery-record.module';
         SurgeryRegisterPageRoutingModule,
         MaterialModule,
         SurgeryRecordModule,
+        
     ],
 })
 export class SurgeryRegisterPageModule {}

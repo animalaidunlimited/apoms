@@ -19,7 +19,7 @@ import {
 } from 'src/app/core/models/patients';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 @Component({
     selector: 'patient-call',
     templateUrl: './patient-call.component.html',
@@ -49,6 +49,7 @@ export class PatientCallComponent implements OnInit {
         private snackBar: MatSnackBar,
         private patientService: PatientService,
         private dropdown: DropdownService,
+        private showSnackBar: SnackbarService
     ) {}
 
     calls: FormArray;
@@ -167,7 +168,7 @@ export class PatientCallComponent implements OnInit {
 
     toastResultMessage(bread: PatientCallModifyResponse[]) {
         if (bread.length === 0) {
-            this.openSnackBar('Failed to save - can\'t connect to server', 'OK');
+            this.showSnackBar.errorSnackBar('Failed to save - can\'t connect to server', 'OK');
             return;
         }
 
@@ -186,7 +187,7 @@ export class PatientCallComponent implements OnInit {
         const message =
             successCount === bread.length ? 'Save sucessful' : 'Failed to save';
 
-        this.openSnackBar(message, 'OK');
+            this.showSnackBar.successSnackBar(message, 'OK');
     }
 
     addPatientCall(expanded: boolean) {
@@ -207,9 +208,9 @@ export class PatientCallComponent implements OnInit {
             : assinedTo1 === assignedTo2;
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: this.notificationDurationSeconds * 1000,
-        });
-    }
+    // openSnackBar(message: string, action: string) {
+    //     this.snackBar.open(message, action, {
+    //         duration: this.notificationDurationSeconds * 1000,
+    //     });
+    // }
 }

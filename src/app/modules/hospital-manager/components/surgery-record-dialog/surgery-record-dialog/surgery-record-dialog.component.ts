@@ -40,8 +40,6 @@ export class SurgeryRecordDialogComponent implements OnInit {
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
             if (values.surgeryDetailsUpdateComplete != 0) {
-                console.log(this.result);
-
                 this.dialogRef.close(this.result);
             }
         });
@@ -52,12 +50,9 @@ export class SurgeryRecordDialogComponent implements OnInit {
     }
 
     onSurgeryDetailsResult(result: UpdatedSurgery) {
-        console.log(typeof result);
         this.result = result;
         if (result) {
-            const i = 1;
-            this.canExit.get('surgeryDetailsUpdateComplete').setValue(i); 
-        }
-        
+            this.canExit.get('surgeryDetailsUpdateComplete').setValue(1); 
+        }  
     }
 }

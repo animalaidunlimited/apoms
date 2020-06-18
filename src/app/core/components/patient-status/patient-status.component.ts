@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../utils';
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 
 @Component({
     selector: 'patient-status',
@@ -26,6 +27,7 @@ export class PatientStatusComponent implements OnInit {
         private userOptions: UserOptionsService,
         private _snackBar: MatSnackBar,
         private fb: FormBuilder,
+        private showSnackBar: SnackbarService
     ) {}
 
     patientStatusForm;
@@ -72,11 +74,11 @@ export class PatientStatusComponent implements OnInit {
                 // Add this to the messaging service
 
                 result.success == 1
-                    ? this.openSnackBar(
+                    ? this.showSnackBar.successSnackBar(
                           'Patient status updated successfully',
                           'OK',
                       )
-                    : this.openSnackBar('Error updating patient status', 'OK');
+                    : this.showSnackBar.errorSnackBar('Error updating patient status', 'OK');
             });
     }
 
@@ -93,9 +95,9 @@ export class PatientStatusComponent implements OnInit {
         this.patientStatusForm.get('patientStatusDate').setValue(date);
     }
 
-    openSnackBar(message: string, action: string) {
-        this._snackBar.open(message, action, {
-            duration: this.notificationDurationSeconds * 1000,
-        });
-    }
+    // openSnackBar(message: string, action: string) {
+    //     this._snackBar.open(message, action, {
+    //         duration: this.notificationDurationSeconds * 1000,
+    //     });
+    // }
 }
