@@ -76,3 +76,15 @@ mat-radio-button{
   font-family: sans-serif;
   text-align: center;
 }
+
+.notif-success {
+  color: #155724 !important; // green
+  background-color: #d4edda !important;
+  border-color: #c3e6cb !important;
+}
+
+.notif-error {
+  color: #DA4D33 !important; // red
+  background-color: #F3C2B8 !important;
+  border-color: #c3e6cb !important;
+}

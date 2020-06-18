@@ -7,12 +7,12 @@ import { EmergencyRegisterPageComponent } from './pages/emergency-register-page/
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
-import { SurgeryRecordDialogComponent } from './surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+
 
 @NgModule({
     declarations: [
         EmergencyRegisterPageComponent,
-        SurgeryRecordDialogComponent,
+        
     ],
     imports: [
         CommonModule,

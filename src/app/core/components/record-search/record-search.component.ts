@@ -380,9 +380,7 @@ export class RecordSearchComponent implements OnInit {
             },
         });
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                alert('Surgery Stored Successfully!');
-            }
+            console.log("Dialog closed!");
         });
     }
 

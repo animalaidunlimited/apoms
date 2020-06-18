@@ -3,97 +3,37 @@
     <legend class="legend">Patient Details</legend>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-
-    <!-- <mat-form-field formGroupName="emergencyDetails">
-            <input  formControlName="emergencyNumber" type="text" placeholder="Emergency number" matInput>
-    </mat-form-field>
-
-    <mat-form-field formGroupName="rescueDetails">
-            <input  formControlName="admissionTime" name="admissionTime" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Admission time" matInput>
-    </mat-form-field> -->
-    <!-- <surgery-details [animalType]="recordForm.get('patientDetails.A').value"></surgery-details> -->
-
-    <mat-form-field formGroupName="patientDetails">
-        <mat-label>Animal type</mat-label>
-        <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
-                {{type.AnimalType}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-
-
-
-</div>
+        <mat-form-field formGroupName="patientDetails">
+            <mat-label>Animal type</mat-label>
+            <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
+                    {{type.AnimalType}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start">
 
         <div fxLayout="row flex" fxLayoutGap="20px" fxLayoutAlign="space-between start">
 
-        <mat-form-field formGroupName="patientDetails" class="wide">
+            <mat-form-field formGroupName="patientDetails" class="wide">
                 <input formControlName="mainProblems" type="text" placeholder="Main Problem(s)" matInput>
-        </mat-form-field>
+            </mat-form-field>
 
+            <ng-container formGroupName="patientDetails">
+                <mat-radio-group  formControlName="sex" aria-labelledby="sex-label">
+                    <mat-radio-button value="0">Female</mat-radio-button>
+                    <mat-radio-button value="1">Male</mat-radio-button>
+                </mat-radio-group>
+            </ng-container>
+        </div>
 
-    <ng-container formGroupName="patientDetails">
-        <mat-radio-group  formControlName="sex" aria-labelledby="sex-label">
-            <mat-radio-button value="0">Female</mat-radio-button>
-            <mat-radio-button value="1">Male</mat-radio-button>
-        </mat-radio-group>
-    </ng-container>
-
-    </div>
-
-    <mat-form-field formGroupName="patientDetails" class="wide">
+        <mat-form-field formGroupName="patientDetails" class="wide">
             <input formControlName="description" type="text" placeholder="Description" matInput>
-    </mat-form-field>
-
+        </mat-form-field>
 
     </div>
     
   </fieldset>
 
-  <!-- <fieldset [formGroup]="recordForm.get('patientStatus')" class="form-sub-group">
-
-    <legend class="legend">Patient Status</legend>
-
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
-
-        <label id="status-label" class="label" >Status</label>
-        <mat-radio-group formControlName="status" (change)="statusChange()" aria-labelledby="status-label">
-
-            <mat-radio-button value="1" checked>Admitted</mat-radio-button>
-            <mat-radio-button value="2">Released</mat-radio-button>
-            <mat-radio-button value="3">Died</mat-radio-button>
-            <mat-radio-button value="4">Escaped</mat-radio-button>
-        </mat-radio-group>
-
-        </div>
-
-        <mat-form-field *ngIf="recordForm.get('patientStatus.status').value == 2">
-            <input formControlName="releaseDate"  name="releaseDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Release Date" matInput>
-        </mat-form-field>
-
-        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
-
-        <mat-form-field *ngIf="recordForm.get('patientStatus.status').value == 3">
-            <input formControlName="diedDate" name="diedDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Died Date" matInput>
-        </mat-form-field>
-
-        <mat-form-field *ngIf="recordForm.get('patientStatus.status').value == 3">
-            <mat-label>P/N</mat-label>
-            <mat-select formControlName="PN" [errorStateMatcher]="errorMatcher">
-                <mat-option value="P">P</mat-option>
-                <mat-option value="N">N</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-checkbox *ngIf="recordForm.get('patientStatus.status').value == 3" name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
-
-        <mat-form-field *ngIf="recordForm.get('patientStatus.status').value == 4">
-            <input formControlName="escapeDate"  name="escapeDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Escape date" matInput>
-        </mat-form-field>
-
-        </div>
-
-</fieldset> -->
+  

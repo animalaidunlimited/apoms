@@ -9,8 +9,8 @@ import { getCurrentTimeString } from 'src/app/core/utils';
 import { SurgeryRecord } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-
-
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 interface Antibiotic {
     id: number;
     Antibiotics: string;
@@ -27,6 +27,8 @@ export class SurgeryRecordComponent implements OnInit {
         private fb: FormBuilder,
         private dropdown: DropdownService,
         private surgeryService: SurgeryService,
+        private showSnackBar : SnackbarService,
+        private snackBar : MatSnackBar
     ) {}
     @Input() surgeryId: number;
     @Input() patientId: number;
@@ -127,12 +129,12 @@ export class SurgeryRecordComponent implements OnInit {
 
                     let surgerySiteForTable;
 
-                    surgeonNameForTable = this.surgeons.find(x =>
-                    x.UserId == this.surgeryForm.get('UserId').value);
-                    surgeryTypeForTable = this.surgeryTypes.find( x =>x.SurgeryTypeId == this.surgeryForm.get('SurgeryTypeId').value);
-                    surgerySiteForTable = this.surgerySites.find(x =>x.SurgerySiteId == this.surgeryForm.get('SurgerySiteId').value);
+                    surgeonNameForTable = this.surgeons.find(user =>
+                    user.UserId == this.surgeryForm.get('UserId').value);
+                    surgeryTypeForTable = this.surgeryTypes.find( surgeryType =>surgeryType.SurgeryTypeId == this.surgeryForm.get('SurgeryTypeId').value);
+                    surgerySiteForTable = this.surgerySites.find(surgerySite =>surgerySite.SurgerySiteId == this.surgeryForm.get('SurgerySiteId').value);
 
-                    const x: SurgeryRecord = {
+                    const surgeryTableData: SurgeryRecord = {
                         surgeryId: this.surgeryForm.get('SurgeryId').value,
                         date: this.surgeryForm.get('SurgeryDate').value,
                         died: this.surgeryForm.get('DiedDate').value,
@@ -143,8 +145,12 @@ export class SurgeryRecordComponent implements OnInit {
                         antibioticsGiven: this.surgeryForm.get('AntibioticsGiven').value,
                         comments: this.surgeryForm.get('Comment').value,
                     };
-                    console.log(x);
-                    this.result.emit(x);
+                    this.showSnackBar.successSnackBar("Surgery Inserted!" , "Ok");
+                    this.result.emit(surgeryTableData);
+                }
+
+                else{
+                    this.showSnackBar.errorSnackBar("Error!" , "Dismiss")
                 }
             });
     }
@@ -168,12 +174,12 @@ export class SurgeryRecordComponent implements OnInit {
 
                     let surgerySiteForTable;
 
-                    surgeonNameForTable = this.surgeons.find(x =>
-                    x.UserId == this.surgeryForm.get('UserId').value);
-                    surgeryTypeForTable = this.surgeryTypes.find( x =>x.SurgeryTypeId == this.surgeryForm.get('SurgeryTypeId').value);
-                    surgerySiteForTable = this.surgerySites.find(x =>x.SurgerySiteId == this.surgeryForm.get('SurgerySiteId').value);
+                    surgeonNameForTable = this.surgeons.find(user =>
+                    user.UserId == this.surgeryForm.get('UserId').value);
+                    surgeryTypeForTable = this.surgeryTypes.find(surgeryType =>surgeryType.SurgeryTypeId == this.surgeryForm.get('SurgeryTypeId').value);
+                    surgerySiteForTable = this.surgerySites.find(surgerySite =>surgerySite.SurgerySiteId == this.surgeryForm.get('SurgerySiteId').value);
 
-                    const x: SurgeryRecord = {
+                    const surgeryTableData: SurgeryRecord = {
                         surgeryId: this.surgeryForm.get('SurgeryId').value,
                         date: this.surgeryForm.get('SurgeryDate').value,
                         died: this.surgeryForm.get('DiedDate').value,
@@ -184,10 +190,14 @@ export class SurgeryRecordComponent implements OnInit {
                         antibioticsGiven: this.surgeryForm.get('AntibioticsGiven').value,
                         comments: this.surgeryForm.get('Comment').value,
                     };
-                    console.log(x);
-                    this.result.emit(x);
+                    this.showSnackBar.successSnackBar("Surgery Updated!" , "Ok")
+                    this.result.emit(surgeryTableData); 
+                }
+                else{
+                    this.showSnackBar.errorSnackBar("Error!" , "Dismiss")
                 }
             });
     }
+   
 
 }
