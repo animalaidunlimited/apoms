@@ -94,10 +94,5 @@ export class PatientStatusComponent implements OnInit {
         const date = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.patientStatusForm.get('patientStatusDate').setValue(date);
     }
-
-    // openSnackBar(message: string, action: string) {
-    //     this._snackBar.open(message, action, {
-    //         duration: this.notificationDurationSeconds * 1000,
-    //     });
-    // }
+    
 }
