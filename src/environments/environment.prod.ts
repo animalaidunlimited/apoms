@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    API_URL: 'https://streettreat.appspot.com'
+    API_URL: 'https://streettreat.appspot.com',
 };

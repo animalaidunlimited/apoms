@@ -12,11 +12,9 @@ import { MaterialModule } from './material-module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-@NgModule({
-    declarations: [
-        AppComponent
 
-    ],
+@NgModule({
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -24,11 +22,11 @@ import { environment } from '../environments/environment';
         NavModule,
         HttpClientModule,
         MaterialModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production,
+        }),
     ],
-    exports: [
-
-    ],
+    exports: [],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,

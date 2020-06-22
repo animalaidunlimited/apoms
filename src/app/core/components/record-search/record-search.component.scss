@@ -1,15 +1,13 @@
 $standard-width: 175px;
 $standard-height: 48px;
 
-.er-case-search-box
-{
+.er-case-search-box {
     max-width: $standard-width * 3 !important;
     width: 97%;
     padding-bottom: 1px;
 }
 
-
-.search-form{
+.search-form {
     width: 97%;
     max-width: $standard-width * 3;
     border: 1px rgba(0, 0, 0, 0.36) solid;
@@ -20,7 +18,7 @@ $standard-height: 48px;
     margin-top: -17px;
 }
 
-.er-search-button{
+.er-search-button {
     position: absolute;
     bottom: 0px;
     right: 0px;
@@ -28,14 +26,12 @@ $standard-height: 48px;
     margin-right: 5px;
 }
 
-.search-row
-{
+.search-row {
     margin: 15px;
     height: 48px;
 }
 
-.add-search-row
-{
+.add-search-row {
     margin-left: 15px;
     margin-right: 15px;
     height: 48px;
@@ -45,126 +41,123 @@ $standard-height: 48px;
     cursor: pointer;
 }
 
-.ngx-flexible-select-option
-{
+.ngx-flexible-select-option {
     font-family: arial !important;
 }
-
 
 .emergency-card {
     max-width: 220px;
     margin: 0px 0px 17px 17px !important;
     border-radius: 8px;
     padding: 0px;
+}
 
-  }
-
-.mat-card-header{
-    background-color:#607d8b;
+.mat-card-header {
+    background-color: #607d8b;
     height: 40px;
     border-radius: 8px 8px 0px 0px;
-    padding-top:10px
+    padding-top: 10px;
 }
 
 .mat-card-title {
-color: white;
-font-weight: bold;
+    color: white;
+    font-weight: bold;
 }
 
-.mat-card-content{
+.mat-card-content {
     margin-bottom: 0px;
 }
 
-.circle-button{
-position: absolute;
-width: 56px;
-height: 56px;
-cursor: pointer;
-top: 22px;
-color:#607d8b;
-font-weight: bold;
-right: 10px;
-border-radius: 50%;
-background: #FFFFFF;
-border: 1px solid #FFFFFF;
-box-sizing: border-box;
-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+.circle-button {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    cursor: pointer;
+    top: 22px;
+    color: #607d8b;
+    font-weight: bold;
+    right: 10px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.location{
-font-style: normal;
-font-weight: bold;
-font-size: 16px;
-line-height: 19px;
-color: #607d8b;
+.location {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    color: #607d8b;
 
-padding: 10px 10px 0px 10px;
+    padding: 10px 10px 0px 10px;
 }
 
-.location-line{
-    stroke:#607d8b;
-    stroke-width:4;
+.location-line {
+    stroke: #607d8b;
+    stroke-width: 4;
 }
 
-.details-container{
+.details-container {
     display: inline-flex;
     align-items: center;
 }
 
-.name{
+.name {
     margin: 10px 0px 0px 10px;
 }
 
-.telephone{
-  float:left;
-  margin: 10px 0px 0px 10px;
+.telephone {
+    float: left;
+    margin: 10px 0px 0px 10px;
 }
 
-.telephone-dash-container{
+.telephone-dash-container {
     height: 100%;
 }
 
-.telephone-dash{
-    stroke:#607d8b;
-    stroke-width:4;
+.telephone-dash {
+    stroke: #607d8b;
+    stroke-width: 4;
 }
 
-.animal{
+.animal {
     margin: 10px 0px 0px 10px;
 }
 
-.animal-location{
+.animal-location {
     margin: 10px 0px 10px 10px;
 }
 
-.elipse{
-position: absolute;
-width: 56px;
-height: 56px;
-border-radius: 50%;
+.elipse {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
 
-background: #FFFFFF;
-border: 1px solid #FFFFFF;
-box-sizing: border-box;
-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  }
-
-.emergency-card-footer{
-background-color: #607d8b;
-text-align: center;
-border-radius: 8px 8px 8px 8px;
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.mat-card-actions{
+.emergency-card-footer {
+    background-color: #607d8b;
+    text-align: center;
+    border-radius: 8px 8px 8px 8px;
+}
+
+.mat-card-actions {
     margin: 0px;
 }
 
-.mat-card-footer{
+.mat-card-footer {
     background-color: #607d8b;
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
     border-radius: 0px 0px 8px 8px;
     margin: 0px;
-    color:white
+    color: white;
 }

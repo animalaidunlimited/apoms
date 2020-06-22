@@ -1,4 +1,9 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    inject,
+} from '@angular/core/testing';
 
 import { RescueDetailsComponent } from './rescue-details.component';
 
@@ -8,306 +13,333 @@ import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RescueDetailsComponent', () => {
-  let component: RescueDetailsComponent;
-  let fixture: ComponentFixture<RescueDetailsComponent>;
+    let component: RescueDetailsComponent;
+    let fixture: ComponentFixture<RescueDetailsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, MaterialModule,
-        BrowserAnimationsModule],
-      declarations: [ RescueDetailsComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule,
+                MaterialModule,
+                BrowserAnimationsModule,
+            ],
+            declarations: [RescueDetailsComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(RescueDetailsComponent);
-    component = fixture.componentInstance;
+    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+        fixture = TestBed.createComponent(RescueDetailsComponent);
+        component = fixture.componentInstance;
 
-    component.emergencyCaseId;
+        component.emergencyCaseId;
 
-    component.recordForm = fb.group({
+        component.recordForm = fb.group({
+            emergencyDetails: fb.group({
+                emergencyCaseId: [1],
+                callDateTime: [''],
+            }),
+            callOutcome: fb.group({
+                callOutcome: [''],
+            }),
+        });
 
-      emergencyDetails: fb.group({
-        emergencyCaseId: [1],
-        callDateTime: ['']
-      }),
-      callOutcome: fb.group({
-        callOutcome: ['']
-      })
+        fixture.detectChanges();
+    }));
+
+    afterEach(function(done) {
+        component.recordForm.reset();
+        component.updateValidators();
+        done();
     });
 
-    fixture.detectChanges();
-  }));
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('Invalid form - worker but no driver', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+
+    it('Invalid form - driver but no worker', () => {
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(1);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+    it('Valid form - driver and worker', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(true);
+    });
+
+    it('Invalid form - Ambulance arrival time only', () => {
+        const ambulanceArrivalTime = new Date();
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+
+    it('Valid form - Ambulance arrival time only - with driver/worker', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
+
+        const ambulanceArrivalTime = new Date();
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(true);
+    });
+
+    it('Invalid form - Rescue time only', () => {
+        const rescueTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(rescueTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+
+    it('Valid form - Rescue time only, with driver/worker', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
+
+        const rescueTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(rescueTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(true);
+    });
+
+    it('Invalid form - Admission time only', () => {
+        const admissionTime = new Date();
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(admissionTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+
+    it('Invalid form - Rescue and Admission time only', () => {
+        const currentTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
+
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(currentTime);
+        component.updateValidators();
+
+        expect(component.recordForm.valid).toEqual(false);
+    });
+
+    it('Valid form - Rescue and Admission time only', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
+
+        const currentTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
 
-  afterEach(function(done) {
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(currentTime);
+        component.updateValidators();
 
-    component.recordForm.reset();
-    component.updateValidators();
-    done();
+        expect(component.recordForm.valid).toEqual(true);
+    });
 
-  });
+    it('Invalid form - Ambulance arrival and Rescue time only', () => {
+        const currentTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
+
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(currentTime);
+        component.updateValidators();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-  it('Invalid form - worker but no driver', () => {
+    it('Valid form - Ambulance arrival and Rescue time only', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.updateValidators();
+        const currentTime = new Date();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
 
-    expect(component.recordForm.valid).toEqual(false);
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(currentTime);
+        component.updateValidators();
 
-  });
+        expect(component.recordForm.valid).toEqual(true);
+    });
 
-  it('Invalid form - driver but no worker', () => {
+    it('Invalid form - Ambulance arrival and Admission time only', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(1);
-    component.updateValidators();
+        const currentTime = new Date();
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(currentTime);
 
-    expect(component.recordForm.valid).toEqual(false);
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(currentTime);
+        component.updateValidators();
 
-  });
-  it('Valid form - driver and worker', () => {
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-    component.updateValidators();
+    it('Invalid form - Ambulance arrival, Rescue, and Admission time only', () => {
+        const currentTime = new Date();
 
-    expect(component.recordForm.valid).toEqual(true);
-  });
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(currentTime);
 
-  it('Invalid form - Ambulance arrival time only', () => {
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
 
-    let ambulanceArrivalTime = new Date();
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-    component.updateValidators();
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(currentTime);
 
-    expect(component.recordForm.valid).toEqual(false);
-  });
+        component.updateValidators();
 
-  it('Valid form - Ambulance arrival time only - with driver/worker', () => {
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
+    it('Valid form - Ambulance arrival, Rescue, and Admission time only', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
+
+        const currentTime = new Date();
+
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(currentTime);
 
-    let ambulanceArrivalTime = new Date();
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-    component.updateValidators();
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(currentTime);
 
-    expect(component.recordForm.valid).toEqual(true);
-  });
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(currentTime);
 
-  it('Invalid form - Rescue time only', () => {
+        component.updateValidators();
 
+        expect(component.recordForm.valid).toEqual(true);
+    });
 
-    let rescueTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(rescueTime);
-    component.updateValidators();
+    it('Invalid form - Ambulance arrival time after Rescue time', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-    expect(component.recordForm.valid).toEqual(false);
-  });
+        const ambulanceArrivalTime = new Date();
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
 
-  it('Valid form - Rescue time only, with driver/worker', () => {
+        const rescueTime = new Date();
+        rescueTime.setHours(rescueTime.getHours() - 4);
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(rescueTime);
 
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
+        component.updateValidators();
 
-    let rescueTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(rescueTime);
-    component.updateValidators();
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-    expect(component.recordForm.valid).toEqual(true);
-  });
+    it('Invalid form - Ambulance arrival time after Admission time', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-  it('Invalid form - Admission time only', () => {
+        const ambulanceArrivalTime = new Date();
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
 
-    let admissionTime = new Date();
-    component.recordForm.get("rescueDetails.admissionTime").setValue(admissionTime);
-    component.updateValidators();
+        const admissionTime = new Date();
+        admissionTime.setHours(admissionTime.getHours() - 4);
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(admissionTime);
 
-    expect(component.recordForm.valid).toEqual(false);
-  });
+        component.updateValidators();
 
-  it('Invalid form - Rescue and Admission time only', () => {
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-    let currentTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
+    it('Invalid form - Rescue time after Admission time', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-    component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
-    component.updateValidators();
+        const ambulanceArrivalTime = new Date();
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
 
-    expect(component.recordForm.valid).toEqual(false);
+        const admissionTime = new Date();
+        admissionTime.setHours(admissionTime.getHours() - 4);
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(admissionTime);
 
-  });
+        component.updateValidators();
 
-  it('Valid form - Rescue and Admission time only', () => {
+        expect(component.recordForm.valid).toEqual(false);
+    });
 
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
+    it('Valid form - Ambulance arrival time before, Rescue time before Admission time', () => {
+        component.recordForm.get('rescueDetails.rescuer1Id').setValue(1);
+        component.recordForm.get('rescueDetails.rescuer2Id').setValue(2);
 
-    let currentTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
+        const ambulanceArrivalTime = new Date();
+        ambulanceArrivalTime.setHours(ambulanceArrivalTime.getHours() - 4);
+        component.recordForm
+            .get('rescueDetails.ambulanceArrivalTime')
+            .setValue(ambulanceArrivalTime);
 
-    component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
-    component.updateValidators();
+        const rescueTime = new Date();
+        rescueTime.setHours(rescueTime.getHours() - 2);
+        component.recordForm
+            .get('rescueDetails.rescueTime')
+            .setValue(rescueTime);
 
-    expect(component.recordForm.valid).toEqual(true);
+        const admissionTime = new Date();
+        component.recordForm
+            .get('rescueDetails.admissionTime')
+            .setValue(admissionTime);
 
-  });
+        component.updateValidators();
 
-  it('Invalid form - Ambulance arrival and Rescue time only', () => {
-
-
-    let currentTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(currentTime);
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-  });
-
-  it('Valid form - Ambulance arrival and Rescue time only', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let currentTime = new Date();
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(currentTime);
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(true);
-  });
-
-  it('Invalid form - Ambulance arrival and Admission time only', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let currentTime = new Date();
-    component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(currentTime);
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-  });
-
-  it('Invalid form - Ambulance arrival, Rescue, and Admission time only', () => {
-
-    let currentTime = new Date();
-
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-  });
-
-  it('Valid form - Ambulance arrival, Rescue, and Admission time only', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let currentTime = new Date();
-
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.rescueTime").setValue(currentTime);
-
-    component.recordForm.get("rescueDetails.admissionTime").setValue(currentTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(true);
-  });
-
-
-  it('Invalid form - Ambulance arrival time after Rescue time', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let ambulanceArrivalTime = new Date();
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-
-    let rescueTime = new Date();
-    rescueTime.setHours(rescueTime.getHours() - 4);
-    component.recordForm.get("rescueDetails.rescueTime").setValue(rescueTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-
-   });
-
-  it('Invalid form - Ambulance arrival time after Admission time', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let ambulanceArrivalTime = new Date();
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-
-    let admissionTime = new Date();
-    admissionTime.setHours(admissionTime.getHours() - 4);
-    component.recordForm.get("rescueDetails.admissionTime").setValue(admissionTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-
-  });
-
-  it('Invalid form - Rescue time after Admission time', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let ambulanceArrivalTime = new Date();
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-
-    let admissionTime = new Date();
-    admissionTime.setHours(admissionTime.getHours() - 4);
-    component.recordForm.get("rescueDetails.admissionTime").setValue(admissionTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(false);
-
-
-  });
-
-  it('Valid form - Ambulance arrival time before, Rescue time before Admission time', () => {
-
-    component.recordForm.get("rescueDetails.rescuer1Id").setValue(1);
-    component.recordForm.get("rescueDetails.rescuer2Id").setValue(2);
-
-    let ambulanceArrivalTime = new Date();
-    ambulanceArrivalTime.setHours(ambulanceArrivalTime.getHours() - 4);
-    component.recordForm.get("rescueDetails.ambulanceArrivalTime").setValue(ambulanceArrivalTime);
-
-    let rescueTime = new Date();
-    rescueTime.setHours(rescueTime.getHours() - 2);
-    component.recordForm.get("rescueDetails.rescueTime").setValue(rescueTime);
-
-    let admissionTime = new Date();
-    component.recordForm.get("rescueDetails.admissionTime").setValue(admissionTime);
-
-    component.updateValidators();
-
-    expect(component.recordForm.valid).toEqual(true);
-
-
-  });
-
-
+        expect(component.recordForm.valid).toEqual(true);
+    });
 });
