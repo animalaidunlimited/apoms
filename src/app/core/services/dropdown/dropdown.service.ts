@@ -27,7 +27,7 @@ export interface AnimalTypeResponse {
     providedIn: 'root',
 })
 export class DropdownService extends APIService {
-    endpoint = 'Dropdown';
+    endpoint: string= 'Dropdown';
 
     rescuers$: Observable<User[]>;
     emergencyCodes$: Observable<EmergencyCode[]>;
