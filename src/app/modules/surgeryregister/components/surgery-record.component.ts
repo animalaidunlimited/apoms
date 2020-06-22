@@ -82,8 +82,6 @@ export class SurgeryRecordComponent implements OnInit {
         if(this.surgeryId){
             this.surgeryService.getSurgeryBySurgeryId(this.surgeryId).then(response =>
                 {
-                    console.log(response);
-                
                     this.surgeryForm.patchValue(response[0]);
                 });
         }

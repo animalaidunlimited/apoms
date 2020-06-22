@@ -22,6 +22,7 @@ export class AddSurgeryDialogComponent implements OnInit {
     result: SurgeryFormModel;
     canExit: FormGroup;
     invalidSurgeryForm: boolean;
+    
     constructor(
         public dialogRef: MatDialogRef<AddSurgeryDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,

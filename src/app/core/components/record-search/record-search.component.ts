@@ -194,8 +194,6 @@ export class RecordSearchComponent implements OnInit {
 
         this.searchShowing = false;
 
-        // this.searchResults$ = [{EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675},
-        // {EmergencyCaseId: 34,EmergencyNumber: 70008,CallDateTime: "2020-02-27T09:33:00.000Z",CallerId: 155654,Name: 'Albert Brianson',Number: '8905797499',AnimalTypeId: 6,AnimalType: 'Donkey',TagNumber: 'B142',CallOutcomeId: 4,Location: 'Neemuch mata',Latitude: 24.6102964,Longitude: 73.6806675}];
     }
 
     createItem(field: any, term: any): FormGroup {
@@ -380,7 +378,7 @@ export class RecordSearchComponent implements OnInit {
             },
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log("Dialog closed!");
+            
         });
     }
 
