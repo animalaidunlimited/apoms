@@ -6,39 +6,32 @@ import { Caller, Callers } from '../../models/responses';
 import { APIService } from '../../services/http/api.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class CallerDetailsService extends APIService {
+    constructor(http: HttpClient) {
+        super(http);
+    }
 
-  constructor(http: HttpClient) {
-    super(http)
-   }
+    endpoint = 'Caller';
 
-   endpoint = 'Caller';
+    public getCallerByNumber(number: string): Observable<any> {
+        const request = '?number=' + number;
 
-   public getCallerByNumber(number: string):Observable<any>{
+        return this.getObservable(request).pipe(
+            map((response: Callers) => {
+                return response;
+            }),
+        );
+    }
 
-     let request = "?number=" + number;
+    public getCallerByEmergencyCaseId(number: string): Observable<any> {
+        const request = '?emergencyCaseId=' + number;
 
-    return this.getObservable(request)
-    .pipe(
-      map((response:Callers) => {
-        return response;
-      })
-    );
-
-   }
-
-   public getCallerByEmergencyCaseId(number: string):Observable<any>{
-
-    let request = "?emergencyCaseId=" + number;
-
-   return this.getObservable(request)
-   .pipe(
-     map((response:Caller) => {
-       return response;
-     })
-   );
-
-  }
+        return this.getObservable(request).pipe(
+            map((response: Caller) => {
+                return response;
+            }),
+        );
+    }
 }

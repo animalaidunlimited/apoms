@@ -17,11 +17,9 @@ export interface OutstandingRescue {
     rescuer1Abbreviation: string;
     rescuer2Abbreviation: string;
 
-    moved?:boolean;
-    searchCandidate?:boolean;
+    moved?: boolean;
+    searchCandidate?: boolean;
 }
-
-
 
 export interface RescuerGroup {
     rescuer1: number;
@@ -40,12 +38,12 @@ export interface OutstandingCaseResponse {
     outstandingRescues: OutstandingCase[];
 }
 
-export interface UpdatedRescue{
-    success:number;
-    emergencyCaseId:number;
-    rescuer1Id:number;
-    rescuer1Abbreviation:string;
-    rescuer2Id:number;
-    rescuer2Abbreviation:string;
-    rescueStatus:number;
+export interface UpdatedRescue {
+    success: number;
+    emergencyCaseId: number;
+    rescuer1Id: number;
+    rescuer1Abbreviation: string;
+    rescuer2Id: number;
+    rescuer2Abbreviation: string;
+    rescueStatus: number;
 }

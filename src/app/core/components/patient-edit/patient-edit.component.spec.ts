@@ -2,7 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PatientEditDialog } from './patient-edit.component';
 
-import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+    MatDialogRef,
+    MatDialog,
+    MatDialogModule,
+    MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { PatientStatusModule } from '../patient-status/patient-status.module';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -10,42 +15,49 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('PatientEditDialog', () => {
-  let component: PatientEditDialog;
-  let fixture: ComponentFixture<PatientEditDialog>;
+    let component: PatientEditDialog;
+    let fixture: ComponentFixture<PatientEditDialog>;
 
-  const mockDialogRef = {
-    open: jasmine.createSpy('open'),
-    close: jasmine.createSpy('close')
-  };
+    const mockDialogRef = {
+        open: jasmine.createSpy('open'),
+        close: jasmine.createSpy('close'),
+    };
 
-  const dialogData = {};
+    const dialogData = {};
 
-  let dialog: MatDialogRef<PatientEditDialog>;
+    let dialog: MatDialogRef<PatientEditDialog>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MatDialogModule, PatientStatusModule, HttpClientTestingModule, BrowserAnimationsModule],
-      providers: [DropdownService,
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: dialogData },
-        {
-        provide: MatDialogRef,
-        useValue: mockDialogRef
-      }],
-      declarations: [ PatientEditDialog ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                MatDialogModule,
+                PatientStatusModule,
+                HttpClientTestingModule,
+                BrowserAnimationsModule,
+            ],
+            providers: [
+                DropdownService,
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: dialogData,
+                },
+                {
+                    provide: MatDialogRef,
+                    useValue: mockDialogRef,
+                },
+            ],
+            declarations: [PatientEditDialog],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PatientEditDialog);
-    component = fixture.componentInstance;
-    dialog = TestBed.get(MatDialog);
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PatientEditDialog);
+        component = fixture.componentInstance;
+        dialog = TestBed.get(MatDialog);
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
