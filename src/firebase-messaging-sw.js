@@ -18,25 +18,39 @@ measurementId: "G-2FQTQ26YCP"
 
   const messaging = firebase.messaging();
 
+
+
   messaging.setBackgroundMessageHandler(function(payload) {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    // Customize notification here
 
-    console.log(payload.data.messageData)
-
-    let data = JSON.parse(payload.data.messageData);
-
-    console.log(data);
+    let data = JSON.parse(JSON.parse(payload.data.messageData));
 
     const notificationTitle = data.emergencyNumber + " updated";
     const notificationOptions = {
-      body: "An update has been made outstanding rescue number: " + data.emergencyNumber,
+      body: "An update has been made to outstanding rescue number: " + data.emergencyNumber,
+      data: payload.data,
       icon: "assets/images/AAU-with-heart-80x80.jpg",
-      images: "assets/images/AAU-with-heart-80x80.jpg"
+      images: "assets/images/AAU-with-heart-80x80.jpg",
+      click_action : "http://localhost:4200/nav/emergency-register"
     };
 
-    return self.registration.showNotification(notificationTitle,
-        notificationOptions);
+    const promiseChain = clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+      })
+      .then((windowClients) => {
+      for (let i = 0; i < windowClients.length; i++) {
+        const windowClient = windowClients[i];
+        windowClient.postMessage(data);
+      }
+      })
+      .then(() => {
+        return self.registration.showNotification(notificationTitle,
+          notificationOptions);
+      });
+      return promiseChain;
+
+
+
   });
 /*
 

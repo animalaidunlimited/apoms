@@ -243,7 +243,7 @@ export class CaseService extends APIService {
 
   }
 
-  public async updateCaseOutcome(outcomeDetails:any): Promise<any> {
+  public async updateCaseOutcome(outcomeDetails:EmergencyCase): Promise<any> {
 
     return await this.put(outcomeDetails);
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -28,6 +28,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   constructor(
     private dropdowns: DropdownService,
     private caseService: CaseService,
+    private fb: FormBuilder,
     private emergencyNumberValidator:UniqueEmergencyNumberValidator
   ) { }
 
@@ -78,7 +79,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     (this.recordForm.get('callOutcome') as FormGroup)
           .addControl("updateTime", new FormControl(updateTime));
 
-    await this.caseService.updateCaseOutcome(this.recordForm.value).then((data:any) =>
+    let updateRecord:FormGroup = this.fb.group({
+      emeregncyForm: [this.recordForm.value]
+    });
+
+    await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) =>
 
       this.result.emit(data)
 
