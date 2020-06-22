@@ -1,14 +1,16 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/board-socket.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { Subscription } from 'rxjs';
-import { debounceTime, startWith, mergeMapTo } from 'rxjs/operators';
+import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RescueDetailsService } from '../../services/rescue-details.service';
+import { ThemePalette } from '@angular/material/core';
+
 
 export interface Swimlane{
   label:string;
@@ -51,7 +53,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
     private rescueService: RescueDetailsService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private changeDetector: ChangeDetectorRef
 
     ) { }
 
@@ -69,6 +72,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
   swimlanes:Swimlane[] = [];
 
   searchForm:FormGroup;
+  refreshForm:FormGroup;
+
+  autoRefresh:boolean = false;
+  notificationPermissionGranted:boolean = false;
+
+  refreshColour: ThemePalette = "primary";
 
 
 
@@ -78,42 +87,61 @@ export class OutstandingCaseBoardComponent implements OnInit {
       searchTerm: ['']
     });
 
+    this.refreshForm = this.fb.group({
+      autoRefreshEnabled: [false, Validators.requiredTrue],
+      updateRequired: [false, Validators.requiredTrue]
+    });
+
     this.setupConnection();
-
-
-
 
   }
 
+  autoRefreshToggled(){
+    this.autoRefresh = !this.autoRefresh;
+  }
 
   async setupConnection(){
 
-    // await this.socketService.initialiseConnection();
+    //Get ths initial list of rescues
+    this.subscription = this.refreshRescueSubscription();
 
-    this.subscription = await this.rescueService.getOutstandingRescues()
-      .subscribe(outstandingCases => {
+    //Find out whether we have permission to receive notifications or not
+    this.messagingService.getPermissionGranted().subscribe((permissionGranted) => {
 
-      this.populate(outstandingCases.outstandingRescues)
-    }
-    );
+      this.notificationPermissionGranted = !!permissionGranted;
+
+      this.autoRefresh = !!permissionGranted;
+      this.changeDetector.detectChanges();
+
+    });
+
 
     this.messagingService.getUpdatedRescue().subscribe((updatedRescue) => {
 
-      console.log("1");
-
-      if(updatedRescue?.messageData){
-
-        console.log(JSON.parse(JSON.parse(updatedRescue?.messageData)));
-        console.log("2");
+      //Here we only do the refresh if the user has the toggle turned on.
+      if(updatedRescue?.messageData && this.autoRefresh){
 
         this.updateRescue(JSON.parse(JSON.parse(updatedRescue?.messageData)));
       }
-
-      console.log("3");
-
-
-
+      else if(updatedRescue?.messageData && !this.autoRefresh){
+        this.refreshColour = "warn";
+        this.changeDetector.detectChanges();
+      }
     });
+
+    //If we receive focus then make sure we tidy up as needed.
+    this.messagingService.haveReceivedFocus.subscribe((focusReceived) => {
+
+      if(focusReceived && !this.autoRefresh){
+        this.refreshColour = "warn";
+        this.changeDetector.detectChanges();
+      }
+      else if (focusReceived && this.autoRefresh){
+        this.refreshRescues();
+      }
+
+    })
+
 
 
     this.searchForm.get("searchTerm").valueChanges
@@ -126,7 +154,20 @@ export class OutstandingCaseBoardComponent implements OnInit {
       })
   }
 
+  refreshRescues(){
+    this.subscription = this.refreshRescueSubscription();
+  }
 
+  refreshRescueSubscription():Subscription{
+
+    return this.rescueService.getOutstandingRescues()
+    .subscribe(outstandingCases => {
+
+    this.populate(outstandingCases.outstandingRescues)
+    }
+    );
+
+  }
 
   updateRescue(updatedRescue:OutstandingRescue){
 
@@ -187,6 +228,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     //Set the rescue to show as moved
     this.setMoved(this.outstandingCases, updatedRescue.emergencyCaseId, true, false);
+    this.changeDetector.detectChanges();
 
   }
 
@@ -221,9 +263,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
             let removeIndex = group.rescues
                               .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
 
-                              console.log("Here: " + removeIndex)
-                              console.log("Here")
-
             if(removeIndex > -1){
 
               returnCase = group.rescues.splice(removeIndex, 1)[0];
@@ -245,6 +284,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCases = outstandingCases;
 
     this.subscription.unsubscribe();
+    this.refreshColour = "primary";
+    this.changeDetector.detectChanges();
   }
 
   drop(event: CdkDragDrop<any>) {
@@ -270,11 +311,16 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
         this.openRescueEdit(event.container.data[event.currentIndex]).subscribe((result:UpdatedRescue) =>
           {
+
             if(result?.success !== 1){
               transferArrayItem(event.container.data,
                 event.previousContainer.data,
                 event.currentIndex,
                 event.previousIndex);
+            }
+            else {
+              this.refreshColour = "warn";
+              this.changeDetector.detectChanges();
             }
           });
       }
@@ -286,7 +332,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
       width: '500px',
       height: '500px',
@@ -296,7 +341,24 @@ export class OutstandingCaseBoardComponent implements OnInit {
             }
     });
 
-    return rescueDialog.afterClosed();
+    //If we successfully updated the rescue and we're currently set to
+    //not receive auto-refresh updates, then we need to set the colour of
+    //the refresh button to show we've made a change.
+    let afterClosed = rescueDialog.afterClosed();
+
+    afterClosed.subscribe(result => {
+
+      if(result?.success === 1 && !this.autoRefresh){
+        this.refreshColour = "warn";
+        this.changeDetector.detectChanges();
+      }
+
+    })
+
+
+    return afterClosed;
+
+
 
   }
 
@@ -319,6 +381,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
               result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
           }
       }
+
+      this.changeDetector.detectChanges();
 
   }
 

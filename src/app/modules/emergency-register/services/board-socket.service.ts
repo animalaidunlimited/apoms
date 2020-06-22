@@ -13,7 +13,9 @@ export class MessagingService extends APIService {
 
 currentMessage = new BehaviorSubject(null);
 endpoint:string = "Messaging";
-
+havePermission = new BehaviorSubject(null);
+haveReceivedFocus = new BehaviorSubject(null);
+token;
 
 constructor(private angularFireMessaging: AngularFireMessaging,
     private authService: AuthService,
@@ -21,24 +23,48 @@ constructor(private angularFireMessaging: AngularFireMessaging,
         super(http);
 
         angularFireMessaging.onMessage((payload) => {
-            // console.log(payload);
             this.currentMessage.next(payload.data);
-          })
+          });
+    }
+    
+    receiveRescueUpdate(message:string){
+
+        this.currentMessage.next(message);
     }
 
+    //The window has received focus, so we may need to refresh
+    receiveFocus(){
 
+        this.haveReceivedFocus.next(true);
+
+    }
+
+    getPermissionGranted(){
+
+        return this.havePermission;
+    }
+
+    //Request permission, if it's granted then subscribe to the required topics.
+    //If not granted then emit to let watchers know
     requestPermission() {
         this.angularFireMessaging.requestToken.subscribe(
             (token) => {
-                console.log(token);
 
+                this.havePermission.next(true);
+                this.token = token;
                 this.subscribeToTopics(token);
 
             },
             (err) => {
-                console.error('Unable to get permission to notify.', err);
+                this.havePermission.next(false);
+
             }
         );
+    }
+
+    alterPermissionState(currentState:string){
+
+        this.havePermission.next(currentState === "granted" ? true : false);
     }
 
     async subscribeToTopics(token){
@@ -51,14 +77,29 @@ constructor(private angularFireMessaging: AngularFireMessaging,
             topic: `${organisation}_UPDATING_RESCUE`
         }
 
-        let result = await this.post(subscriptionBody)
+        let result = await this.post(subscriptionBody);
 
-        console.log(result);
+        return result;
 
     }
 
-
     getUpdatedRescue(){
         return this.currentMessage;
+    }
+
+    async unsubscribe(){
+
+        let organisation = this.authService.getOrganisationSocketEndPoint();
+
+        let unsubscribe = {
+                            unsubscribe: "true",
+                            token:  this.token,
+                            topic: `${organisation}_UPDATING_RESCUE`
+                        };
+
+        let result = await this.post(unsubscribe);
+
+        return result;
+
     }
 }
