@@ -113,15 +113,21 @@
             (click)="rescueUpdate(result.EmergencyCaseId)">
                 <mat-icon>departure_board</mat-icon>
             </button>
+
             <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Update calls"
             (click)="callUpdate(result.PatientId, result.TagNumber)">
                 <mat-icon>phone</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add Surgery" (click)="addSurgery(result.PatientId , result.TagNumber , result.EmergencyNumber  , result.AnimalType)">
+                <mat-icon>local_hospital</mat-icon>
             </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
             {{result.CallDateTime | date: 'dd/MMM/yyyy'}}
         </mat-card-footer>
       </mat-card>
+
+      
 
     </div>
 

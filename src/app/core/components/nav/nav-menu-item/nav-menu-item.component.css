@@ -2,101 +2,105 @@
 /* stylelint-disable material/no-prefixes */
 /* stylelint-enable */
 .sidenav-item {
-  position: relative;
-  border-bottom: 1px solid #dfdfdf;
-  background-color: rgba(96, 125, 139, 0);
-  -webkit-transition: background-color 0.1s linear, color 0.1s linear, font-weight 0.1s linear;
-  transition: background-color 0.1s linear, color 0.1s linear, font-weight 0.1s linear;
-  overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid #dfdfdf;
+    background-color: rgba(96, 125, 139, 0);
+    -webkit-transition: background-color 0.1s linear, color 0.1s linear,
+        font-weight 0.1s linear;
+    transition: background-color 0.1s linear, color 0.1s linear,
+        font-weight 0.1s linear;
+    overflow: hidden;
 }
 
 .sidenav-item:focus {
-  background: inherit;
+    background: inherit;
 }
 
 .sidenav-item:hover {
-  background-color: rgba(96, 125, 139, 0.2);
-  border-color: rgba(96, 125, 139, 0.2);
+    background-color: rgba(96, 125, 139, 0.2);
+    border-color: rgba(96, 125, 139, 0.2);
 }
 
 .sidenav-item:hover .item-selector {
-  -webkit-transform: translateX(-5px);
-          transform: translateX(-5px);
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
 }
 
 .sidenav-item.selected {
-  color: #607d8b;
-  border-color: rgba(96, 125, 139, 0.2);
-  font-weight: 500;
+    color: #607d8b;
+    border-color: rgba(96, 125, 139, 0.2);
+    font-weight: 500;
 }
 
 .sidenav-item.selected .item-selector {
-  -webkit-transform: translateX(-5px);
-          transform: translateX(-5px);
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
 }
 
 .sidenav-item.selected:hover {
-  background-color: inherit;
+    background-color: inherit;
 }
 
 .sidenav-item .item-selector {
-  -webkit-transition: -webkit-transform 0.1s linear;
-  transition: -webkit-transform 0.1s linear;
-  transition: transform 0.1s linear;
-  transition: transform 0.1s linear, -webkit-transform 0.1s linear;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  right: -100%;
-  background-color: #607d8b;
+    -webkit-transition: -webkit-transform 0.1s linear;
+    transition: -webkit-transform 0.1s linear;
+    transition: transform 0.1s linear;
+    transition: transform 0.1s linear, -webkit-transform 0.1s linear;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    right: -100%;
+    background-color: #607d8b;
 }
 
 mat-expansion-panel {
-  border-bottom: 1px solid #dfdfdf;
-  border-radius: 0;
+    border-bottom: 1px solid #dfdfdf;
+    border-radius: 0;
 }
 
 mat-expansion-panel:focus {
-  background: transparent;
+    background: transparent;
 }
 
 mat-expansion-panel mat-expansion-panel-header:hover {
-  background: rgba(96, 125, 139, 0.2) !important;
+    background: rgba(96, 125, 139, 0.2) !important;
 }
 
 mat-expansion-panel.mat-expanded {
-  background-color: rgba(96, 125, 139, 0.05);
-  border-color: rgba(96, 125, 139, 0.2);
+    background-color: rgba(96, 125, 139, 0.05);
+    border-color: rgba(96, 125, 139, 0.2);
 }
 
 mat-expansion-panel.mat-expanded mat-expansion-panel-header:hover {
-  background: rgba(96, 125, 139, 0) !important;
+    background: rgba(96, 125, 139, 0) !important;
 }
 
 mat-expansion-panel.mat-expanded mat-expansion-panel-header:focus {
-  background: rgba(96, 125, 139, 0) !important;
+    background: rgba(96, 125, 139, 0) !important;
 }
 
-mat-expansion-panel.mat-expanded mat-expansion-panel-header .mat-expansion-panel-header-title {
-  color: #607d8b;
-  font-weight: 500;
+mat-expansion-panel.mat-expanded
+    mat-expansion-panel-header
+    .mat-expansion-panel-header-title {
+    color: #607d8b;
+    font-weight: 500;
 }
 
 mat-expansion-panel.mat-expanded .sidenav-item {
-  border-color: transparent;
-  font-size: 15px;
-  height: 45px;
+    border-color: transparent;
+    font-size: 15px;
+    height: 45px;
 }
 
 mat-expansion-panel mat-expansion-panel-header {
-  padding-left: 16px;
+    padding-left: 16px;
 }
 
 mat-expansion-panel mat-expansion-panel-header .group-title {
-  font-size: 16px;
+    font-size: 16px;
 }
 
 mat-expansion-panel mat-expansion-panel-header .mat-expansion-indicator::after {
-  color: inherit;
+    color: inherit;
 }
 /*# sourceMappingURL=nav-menu-item.component.css.map */

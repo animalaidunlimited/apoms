@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
-
         if (this.authService.isLogged()) {
             this.authService.redirectUrl = null;
             return true;

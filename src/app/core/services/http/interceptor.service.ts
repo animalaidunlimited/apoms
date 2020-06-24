@@ -13,8 +13,7 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpConfigInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService,
-        private router: Router) {}
+    constructor(private authService: AuthService, private router: Router) {}
 
     intercept(
         req: HttpRequest<any>,
@@ -32,27 +31,25 @@ export class HttpConfigInterceptor implements HttpInterceptor {
 
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
-              if (error.error instanceof ErrorEvent) {
-                // client-side error or network error
-
-              } else {
-                // TODO: Clean up following by introducing method
-                if (error.status === 498) {
-                  // TODO: Destroy local session; redirect to /login
+                if (error.error instanceof ErrorEvent) {
+                    // client-side error or network error
+                } else {
+                    // TODO: Clean up following by introducing method
+                    if (error.status === 498) {
+                        // TODO: Destroy local session; redirect to /login
+                    }
+                    if (error.status === 401) {
+                        // Permission denied; log out
+                        this.authService.logout();
+                        this.router.navigate(['login'], { replaceUrl: true });
+                    }
+                    if (error.status === 404) {
+                        // TODO: Not found; show toast
+                        console.log(error);
+                    }
                 }
-                if (error.status === 401) {
-                  // Permission denied; log out
-                  this.authService.logout();
-                  this.router.navigate(['login'], { replaceUrl: true });
-
-                }
-                if (error.status === 404) {
-                  // TODO: Not found; show toast
-                  console.log(error);
-                }
-              }
-              return throwError(error);
-            })
-          );
+                return throwError(error);
+            }),
+        );
     }
 }

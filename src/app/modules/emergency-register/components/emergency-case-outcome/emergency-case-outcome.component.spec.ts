@@ -1,25 +1,52 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    inject,
+} from '@angular/core/testing';
+import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/material-module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EmergencyCaseOutcomeComponent } from './emergency-case-outcome.component';
 
 describe('EmergencyCaseOutcomeComponent', () => {
-  let component: EmergencyCaseOutcomeComponent;
-  let fixture: ComponentFixture<EmergencyCaseOutcomeComponent>;
+    let component: EmergencyCaseOutcomeComponent;
+    let fixture: ComponentFixture<EmergencyCaseOutcomeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EmergencyCaseOutcomeComponent ]
-    })
-    .compileComponents();
-  }));
+    const formBuilder: FormBuilder = new FormBuilder();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EmergencyCaseOutcomeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                MaterialModule,
+                FormsModule,
+                ReactiveFormsModule,
+                BrowserAnimationsModule,
+            ],
+            providers: [{ provide: FormBuilder, useValue: formBuilder }],
+            declarations: [EmergencyCaseOutcomeComponent],
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+        fixture = TestBed.createComponent(EmergencyCaseOutcomeComponent);
+        component = fixture.componentInstance;
+
+        component.recordForm = fb.group({
+            emergencyDetails: fb.group({
+                emergencyCaseId: [1],
+            }),
+            callOutcome: fb.group({
+                callOutcome: [''],
+            }),
+        });
+
+        fixture.detectChanges();
+    }));
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
