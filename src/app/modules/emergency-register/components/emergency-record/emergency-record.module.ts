@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 
 import { MaterialModule } from '../../../../material-module';
 
-import { EmergencyRecordComponent } from './emergency-record.component'
+import { EmergencyRecordComponent } from './emergency-record.component';
 import { AnimalSelectionComponent } from '../animal-selection/animal-selection.component';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
@@ -18,9 +18,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
         AnimalSelectionComponent,
         TagNumberDialog,
     ],
-    providers: [
-        DatePipe
-    ],
+    providers: [DatePipe],
     imports: [
         CommonModule,
         MaterialModule,
@@ -28,11 +26,8 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
         LocationDetailsModule,
         RescueDetailsModule,
         EmergencyDetailsModule,
-        EmergencyCaseOutcomeModule
-
+        EmergencyCaseOutcomeModule,
     ],
-    exports: [
-        EmergencyRecordComponent
-    ],
+    exports: [EmergencyRecordComponent],
 })
 export class EmergencyRecordModule {}

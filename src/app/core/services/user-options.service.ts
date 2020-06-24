@@ -1,35 +1,32 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class UserOptionsService {
+    homeCoordinates$;
+    notifactionDuration;
 
-  homeCoordinates$;
-  notifactionDuration;
+    constructor() {}
 
-  constructor() { }
+    getCoordinates() {
+        if (!this.homeCoordinates$) {
+            this.homeCoordinates$ = {
+                latitude: 24.57127,
+                longitude: 73.691544,
+            };
+        }
 
-  getCoordinates() {
-
-    if (!this.homeCoordinates$)
-    {
-      this.homeCoordinates$ = {"latitude": 24.571270, "longitude": 73.691544};
+        return this.homeCoordinates$;
     }
 
-    return this.homeCoordinates$;
-  }
+    getNotifactionDuration() {
+        if (!this.notifactionDuration) {
+            this.notifactionDuration = 5;
+        }
 
-  getNotifactionDuration(){
-
-    if(!this.notifactionDuration)
-    {
-      this.notifactionDuration = 5;
+        return this.notifactionDuration;
     }
 
-    return this.notifactionDuration;
-
-  }
-
-  //TODO implement custom debounce time for autocompletes
+    // TODO implement custom debounce time for autocompletes
 }

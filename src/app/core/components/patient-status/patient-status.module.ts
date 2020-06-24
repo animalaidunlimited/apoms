@@ -4,21 +4,10 @@ import { MaterialModule } from '../../../material-module';
 
 import { PatientStatusComponent } from '../patient-status/patient-status.component';
 
-
 @NgModule({
-    declarations: [
-        PatientStatusComponent
-
-    ],
-    providers: [
-        DatePipe
-    ],
-    imports: [
-        CommonModule,
-        MaterialModule
-    ],
-    exports: [
-        PatientStatusComponent
-    ],
+    declarations: [PatientStatusComponent],
+    providers: [DatePipe],
+    imports: [CommonModule, MaterialModule],
+    exports: [PatientStatusComponent],
 })
 export class PatientStatusModule {}

@@ -5,10 +5,7 @@ import { ReportingPageRoutingModule } from './reporting-page-routing.module';
 import { ReportingPageComponent } from './reporting-page.component';
 
 @NgModule({
-  declarations: [ReportingPageComponent],
-  imports: [
-    CommonModule,
-    ReportingPageRoutingModule
-  ]
+    declarations: [ReportingPageComponent],
+    imports: [CommonModule, ReportingPageRoutingModule],
 })
-export class ReportingPageModule { }
+export class ReportingPageModule {}

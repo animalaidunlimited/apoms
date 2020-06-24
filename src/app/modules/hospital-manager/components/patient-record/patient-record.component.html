@@ -40,7 +40,11 @@
              </fieldset>
 
             <census-details></census-details>
-            <surgery-details></surgery-details>
+            <surgery-details [patientId]="recordForm.get('patientDetails.patientId').value"
+                             [tagNumber]="recordForm.get('patientDetails.tagNumber').value"
+                             [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber').value"
+                             [animalType]="recordForm.get('patientDetails.animalType').value">
+            </surgery-details>
 
             <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                 <button mat-raised-button color="primary" (click)="saveForm()">Save</button>

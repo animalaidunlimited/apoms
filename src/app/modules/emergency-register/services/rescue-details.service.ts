@@ -7,69 +7,64 @@ import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { OutstandingCaseResponse, UpdatedRescue, UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class RescueDetailsService extends APIService {
-
-  constructor(
-    http: HttpClient,
-    ) {
-      super(http);
+    constructor(http: HttpClient) {
+        super(http);
     }
 
     endpoint = 'RescueDetails';
     redirectUrl: string;
 
-    outstandingRescues$:Observable<OutstandingCaseResponse>;
+    outstandingRescues$: Observable<OutstandingCaseResponse>;
 
+    public getRescueDetailsByEmergencyCaseId(
+        emergencyCaseId: number,
+    ): Observable<RescueDetailsParent> {
+        const request = '?emergencyCaseId=' + emergencyCaseId;
 
-  public getRescueDetailsByEmergencyCaseId(emergencyCaseId: number):Observable<RescueDetailsParent>{
-
-    let request = "?emergencyCaseId=" + emergencyCaseId;
-
-    return this.getObservable(request)
-    .pipe(
-      map((response:RescueDetailsParent) => {
-        return response;
-      })
-    );
-
-  }
-
-  public async updateRescueDetails(rescueDetails:UpdateResponse): Promise<UpdateResponse> {
-
-    return await this.put(rescueDetails);
-
-  }
-
-  getOutstandingRescues():Observable<OutstandingCaseResponse>
-  {
-    let request = "/OutstandingRescues";
-
-    if (!this.outstandingRescues$)
-    {
-      this.outstandingRescues$ = this.getObservable(request)
-      .pipe(
-        map((response) => {
-          return response;
-        })
-      );
+        return this.getObservable(request).pipe(
+            map((response: RescueDetailsParent) => {
+                return response;
+            }),
+        );
     }
 
-    return this.outstandingRescues$;
+<<<<<<< HEAD
+  public async updateRescueDetails(rescueDetails:UpdateResponse): Promise<UpdateResponse> {
+=======
+    // TODO change this to by properly typed
+    public async updateRescueDetails(rescueDetails: any): Promise<any> {
+        return await this.put(rescueDetails);
+    }
 
-    // let observable:Observable<OutstandingCaseResponse> = new Observable(observer => {
+    getOutstandingRescues(): Observable<OutstandingCaseResponse> {
+        const request = '/OutstandingRescues';
 
-    //   this.socket.on('OUTSTANDING_RESCUES', (data: any) => {
+        if (!this.outstandingRescues$) {
+            this.outstandingRescues$ = this.getObservable(request).pipe(
+                map(response => {
+                    return response;
+                }),
+            );
+        }
+>>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
 
-    //     //TODO fix this. For some reason these needs to be parsed instead of being able to
-    //     //cast directly to the type
-    //     observer.next(JSON.parse(data));
-    //   });
-    //   // return () => {
-    //   //   this.socket.disconnect();
-    //   // };
-    // })
-    // return observable;
-  }
+        return this.outstandingRescues$;
+
+        // let observable:Observable<OutstandingCaseResponse> = new Observable(observer => {
+
+        //   this.socket.on('OUTSTANDING_RESCUES', (data: any) => {
+
+        //     //TODO fix this. For some reason these needs to be parsed instead of being able to
+        //     //cast directly to the type
+        //     observer.next(JSON.parse(data));
+        //   });
+        //   // return () => {
+        //   //   this.socket.disconnect();
+        //   // };
+        // })
+        // return observable;
+    }
 }
