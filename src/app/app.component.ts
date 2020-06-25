@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent implements OnInit{
     // test
-<<<<<<< HEAD
     title:string = 'apoms';
     message;
 
@@ -59,16 +58,5 @@ export class AppComponent implements OnInit{
             });
             }
 
-
       }
-
-
-=======
-    title = 'apoms';
-
-
-   
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
-
-
 }

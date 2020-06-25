@@ -225,16 +225,12 @@ export class CaseService extends APIService {
     public getReceived(): Observable<any> {
         const request = '/Received';
 
-<<<<<<< HEAD
-  public async updateCaseOutcome(outcomeDetails:EmergencyCase): Promise<any> {
-=======
         return this.getObservable(request).pipe(
             map(response => {
                 return response;
             }),
         );
     }
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
 
     public getAssigned(): Observable<any> {
         const request = '/Assigned';
@@ -246,7 +242,7 @@ export class CaseService extends APIService {
         );
     }
 
-    public async updateCaseOutcome(outcomeDetails: any): Promise<any> {
+    public async updateCaseOutcome(outcomeDetails: EmergencyCase): Promise<EmergencyCase> {
         return await this.put(outcomeDetails);
     }
 }

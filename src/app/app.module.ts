@@ -26,7 +26,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
         NavModule,
         HttpClientModule,
         MaterialModule,
-<<<<<<< HEAD
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
@@ -35,13 +34,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
     ],
     exports: [
 
-=======
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: environment.production,
-        }),
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
     ],
-    exports: [],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,

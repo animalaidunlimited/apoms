@@ -58,6 +58,7 @@ export class LocationDetailsComponent implements OnInit {
 
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
     @ViewChild('addressSearch') addresstext: any;
+    @ViewChild('googlemap') googlemap: any;
 
     ngOnInit() {
         this.recordForm.addControl(
@@ -89,6 +90,9 @@ export class LocationDetailsComponent implements OnInit {
             const coordinates = this.userOptions.getCoordinates() as Location;
             this.initialiseLocation(coordinates);
         }
+
+
+
     }
 
     ngAfterViewInit() {
@@ -113,6 +117,9 @@ export class LocationDetailsComponent implements OnInit {
             const place = autocomplete.getPlace();
             this.invokeEvent(place);
         });
+
+
+
     }
 
     invokeEvent(place: Object) {

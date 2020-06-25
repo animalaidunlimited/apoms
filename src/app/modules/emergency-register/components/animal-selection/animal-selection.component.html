@@ -6,12 +6,13 @@
 
               <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef tabindex="-1">
             </th>
             <td mat-cell *matCellDef="let row">
             <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? toggleRow(row) : null"
                         [checked]="selection.isSelected(row)"
+                        tabindex="-1"
                         [aria-label]="checkboxLabel(row)">
             </mat-checkbox>
             </td>
@@ -30,6 +31,7 @@
             <ng-container matColumnDef="tagNo">
                     <th mat-header-cell *matHeaderCellDef> Tag Number </th>
                     <td mat-cell *matCellDef="let row"
+                    (document:keydown.control.enter)="updateTag(row)"
                     (click)="updateTag(row)"
                     [class.duplicate]="row.get('duplicateTag').value"
                     style="cursor:pointer"> {{row.get("tagNumber").value}} </td>
@@ -59,6 +61,7 @@
 
             <mat-chip-list #animalTypeChips aria-label="Patient animalType\type" selectable>
                 <mat-chip
+                tabindex="7"
                 (click)="animalChipSelected(animalTypeChip)"
                 (keydown)="cycleChips($event, 'animaltype', 'animalType')"
 
@@ -66,21 +69,15 @@
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
         </mat-chip-list>
 
-        <!-- (click)="animalTypeChip.toggleSelected()" -->
-        <!-- (selectionChange)="animalChipSelected(animalTypeChip)" -->
-
-
             <label class="label">Main problem(s)</label>
 
             <mat-chip-list #problemChips fxFlex multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
+                    tabindex="8"
                     (click)="problemChipSelected(problemChip)"
                     (keydown)="focusProblemChip($event, problemChip)"
 
                     #problemChip="matChip"
                     *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>
             </mat-chip-list>
-
-            <!-- (click)="problemChip.toggleSelected();" -->
-            <!-- (selectionChange)="problemChipSelected(problemChip)" -->
       </fieldset>

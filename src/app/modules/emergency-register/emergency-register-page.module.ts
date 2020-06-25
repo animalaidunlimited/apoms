@@ -9,28 +9,9 @@ import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
 
 
-<<<<<<< HEAD
-
-@NgModule({
-  declarations: [
-    EmergencyRegisterPageComponent
-  ],
-  imports: [
-    CommonModule,
-    EmergencyRegisterPageRoutingModule,
-    TabBarModule,
-    MaterialModule,
-    FormsModule,
-
-
-  ],
-  exports: [
-  ]
-=======
 @NgModule({
     declarations: [
         EmergencyRegisterPageComponent,
-        
     ],
     imports: [
         CommonModule,
@@ -40,6 +21,5 @@ import { TabBarModule } from './components/tab-bar/tab-bar.module';
         FormsModule,
     ],
     exports: [],
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
 })
 export class EmergencyRegisterPageModule {}

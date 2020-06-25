@@ -77,7 +77,7 @@ export class SurgeryDetailsComponent implements OnInit {
             width: '90%',
             height: '80%',
             data: { surgeryId: row.surgeryId, animalType: this.animalType },
-        }); 
+        });
 
         dialogRef.afterClosed().subscribe(result => {
             if(result){
@@ -102,7 +102,6 @@ export class SurgeryDetailsComponent implements OnInit {
             },
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log(result);
             if (result) {
                 if(!this.surgeryRecords[0].site==true){
                     this.surgeryRecords.splice(0, 1, result);
@@ -111,7 +110,7 @@ export class SurgeryDetailsComponent implements OnInit {
 
                 else{
                     this.surgeryRecords.push(result);
-                    this.surgeryTable.renderRows();    
+                    this.surgeryTable.renderRows();
                 }
             }
         });

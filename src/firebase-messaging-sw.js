@@ -19,7 +19,8 @@ measurementId: "G-2FQTQ26YCP"
   const messaging = firebase.messaging();
 
 
-
+//Handle messages whilst the app is in the background. We'll show a notification
+//here and also post a message to the angular app so it can be sent to the messaging service.
   messaging.setBackgroundMessageHandler(function(payload) {
 
     let data = JSON.parse(JSON.parse(payload.data.messageData));
@@ -33,6 +34,7 @@ measurementId: "G-2FQTQ26YCP"
       click_action : "http://localhost:4200/nav/emergency-register"
     };
 
+    //Find the correct tab and send a postmessage so it can be sent on to the service.
     const promiseChain = clients.matchAll({
       type: 'window',
       includeUncontrolled: true
@@ -52,57 +54,3 @@ measurementId: "G-2FQTQ26YCP"
 
 
   });
-/*
-
-
-  messaging.usePublicVapidKey("BPAdCGzx7Ch_XAZQFhIRDjm64GpAZRIbcObwGyrKUKLHBeVGelTe4wF0ypY44kYktdwfntqQWK6JTntu52RGODQ");
-
-  console.log("Service worker");
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    });
-  }
-
-
-
-*/
-  // messaging.getToken().then((currentToken) => {
-  //   if (currentToken) {
-  //     sendTokenToServer(currentToken);
-  //     updateUIForPushEnabled(currentToken);
-  //   } else {
-  //     // Show permission request.
-  //     console.log('No Instance ID token available. Request permission to generate one.');
-  //     // Show permission UI.
-  //     updateUIForPushPermissionRequired();
-  //     setTokenSentToServer(false);
-  //   }
-  // }).catch((err) => {
-  //   console.log('An error occurred while retrieving token. ', err);
-  //   showToken('Error retrieving Instance ID token. ', err);
-  //   setTokenSentToServer(false);
-  // });
-
-  // Callback fired if Instance ID token is updated.
-// messaging.onTokenRefresh(() => {
-//   messaging.getToken().then((refreshedToken) => {
-//     console.log('Token refreshed.');
-//     // Indicate that the new Instance ID token has not yet been sent to the
-//     // app server.
-//     setTokenSentToServer(false);
-//     // Send Instance ID token to app server.
-//     sendTokenToServer(refreshedToken);
-//     // ...
-//   }).catch((err) => {
-//     console.log('Unable to retrieve refreshed token ', err);
-//     showToken('Unable to retrieve refreshed token ', err);
-//   });
-// });
-
-// sendTokenToServer(token)
-// {
-//   console.log("Send the token to the server");
-// }
-

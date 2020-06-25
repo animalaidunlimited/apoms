@@ -10,12 +10,8 @@ const PROXY_CONFIG = [
             "/Patient",
             "/Login",
             "/Location",
-<<<<<<< HEAD
-            "/Messaging"
-=======
-            "/EventEmitter",
+            "/Messaging",
             "/SurgeryRegister"
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",

@@ -2,7 +2,7 @@
 <form autocomplete="off" [formGroup]="tagForm">
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput formControlName="tagNumber" name="tag-number" [errorStateMatcher]="errorMatcher" cdkFocusInitial>
+    <input matInput formControlName="tagNumber" name="tag-number" [errorStateMatcher]="errorMatcher">
     <mat-error *ngIf="tagForm.get('tagNumber').hasError('tagNumberTaken')">
       The tag number already exists.
   </mat-error>
