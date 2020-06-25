@@ -6,7 +6,7 @@
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
 
         <mat-form-field style="width: 100%">
-            <input matInput type="text"
+            <input tabindex="6" matInput type="text"
             placeholder="Animal location"
             formControlName="location"
             (keydown.enter)="performSearch()"
@@ -15,12 +15,13 @@
 
           </mat-form-field>
 
-      <div fxFlex>
+      <div fxFlex >
 
         <google-map [zoom]="zoom"
                     [center]="center"
                     height="150px"
-                    width="100%">
+                    width="100%"
+                    id="googlemap">
           <map-marker
               *ngFor="let marker of markers"
               [position]="marker.position"

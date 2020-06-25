@@ -132,7 +132,6 @@
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:focus,
 .mat-expansion-panel-header.mat-expanded:hover,
-<<<<<<< HEAD
 .mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover
 {
   background-color: lightsteelblue !important;
@@ -142,9 +141,3 @@
   padding-right: 40px;
   max-width: 300px;
 }
-=======
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
-    .mat-expansion-panel-header:hover {
-    background-color: lightsteelblue !important;
-}
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b

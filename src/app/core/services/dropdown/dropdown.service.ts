@@ -26,46 +26,6 @@ export interface AnimalTypeResponse {
 @Injectable({
     providedIn: 'root',
 })
-<<<<<<< HEAD
-export class DropdownService extends APIService{
-
-  endpoint:string = "Dropdown";
-
-  rescuers$:Observable<User[]>;
-  emergencyCodes$:Observable<EmergencyCode[]>;
-  areas$:any[];
-  dispatchers$:Observable<User[]>;
-  callOutcomes$:Observable<CallOutcomeResponse[]>;
-  crueltyIspectors$:Observable<User[]>;
-  antibiotics$;
-  isoReasons$;
-  animalTypes$:Observable<AnimalType[]>;
-  problems$:Observable<ProblemDropdownResponse[]>;
-  exclusions$;
-  officeStaff$:Observable<User[]>;
-  callStaff$:Observable<User[]>
-  patientStates$:Observable<PatientStatus[]>;
-  callTypes$:Observable<CallType[]>;
-  patientCallOutcome$:Observable<PatientCallOutcome[]>;
-
-
-  constructor(http: HttpClient) {
-    super(http);
-   }
-
-  getOfficeStaff(): Observable<User[]> {
-
-    let request = "/OfficeStaff";
-
-    if (!this.officeStaff$)
-    {
-      this.officeStaff$ = this.getObservable(request)
-      .pipe(
-        map((response) => {
-          return response;
-        })
-      );
-=======
 export class DropdownService extends APIService {
     endpoint: string= 'Dropdown';
 
@@ -91,7 +51,6 @@ export class DropdownService extends APIService {
 
     constructor(http: HttpClient) {
         super(http);
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
     }
 
     getOfficeStaff(): Observable<User[]> {

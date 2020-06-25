@@ -6,14 +6,14 @@
                 <legend class="legend">Animal Details</legend>
                 <div fxLayout="row"  fxLayout.lt-md="column" fxLayoutGap="auto" fxLayoutAlign="start end">
                     <mat-form-field>
-                        <input  type="text" placeholder="Tag Number" formControlName="TagNumber" matInput>                        
+                        <input  type="text" placeholder="Tag Number" formControlName="TagNumber" matInput>
                     </mat-form-field>
                     <mat-form-field>
-                    <input matInput  type="number" placeholder="EmergencyNumber" formControlName="EmergencyNumber"  >                        
+                    <input matInput  type="number" placeholder="EmergencyNumber" formControlName="EmergencyNumber"  >
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Animal Type</mat-label>
-                        <input type="text" placeholder="Animal Type" formControlName="AnimalTypeId" matInput>                        
+                        <input type="text" placeholder="Animal Type" formControlName="AnimalTypeId" matInput>
                     </mat-form-field>
                 </div>
 
@@ -23,10 +23,10 @@
                 <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px" fxLayoutAlign="start end">
                     <mat-form-field >
                         <mat-label>Surgery Date</mat-label>
-                        <input matInput type="datetime-local" formControlName="SurgeryDate" name = "SurgeryDate"  
-                        (focus)="setInitialTime($event)" [errorStateMatcher]="errorMatcher" cdkFocusInitial required>
+                        <input matInput type="datetime-local" formControlName="SurgeryDate" name = "SurgeryDate"
+                        (focus)="setInitialTime($event)" [errorStateMatcher]="errorMatcher" required>
                     </mat-form-field>
-                        
+
                     <mat-form-field>
                         <mat-label>Surgeon</mat-label>
                         <mat-select formControlName="UserId" [errorStateMatcher]="errorMatcher"  required>
@@ -70,12 +70,12 @@
                 <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px" fxLayoutAlign="start end">
                     <mat-form-field >
                         <mat-label>Date of Death</mat-label>
-                        <input matInput  type="datetime-local"  formControlName="DiedDate" name="DiedDate"  
+                        <input matInput  type="datetime-local"  formControlName="DiedDate" name="DiedDate"
                         (focus)="setInitialTime($event)">
                     </mat-form-field>
 
                     <mat-form-field>
-                        <input  type="text" placeholder="Died Comment"  formControlName="DiedComment" matInput>                        
+                        <input  type="text" placeholder="Died Comment"  formControlName="DiedComment" matInput>
                     </mat-form-field>
 
                     <mat-form-field>
@@ -90,7 +90,7 @@
                     <mat-form-field>
                         <input  type="text" placeholder="comment" formControlName="Comment" matInput>
                     </mat-form-field>
-        
+
                 </div>
             </fieldset>
         </div>

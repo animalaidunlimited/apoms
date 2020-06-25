@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -34,6 +34,12 @@ export class AnimalSelectionComponent implements OnInit {
     animalTypeChips: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
     @Input() recordForm: FormGroup;
+
+    @HostListener('document:keydown.control.t')
+    launchTagNumberDialog(event: KeyboardEvent) {
+
+        console.log("ctrl+t")
+      }
 
     patientArrayDisplayedColumns: string[] = [
         'select',

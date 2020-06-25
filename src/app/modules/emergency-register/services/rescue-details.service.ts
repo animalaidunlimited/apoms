@@ -31,11 +31,8 @@ export class RescueDetailsService extends APIService {
         );
     }
 
-<<<<<<< HEAD
-  public async updateRescueDetails(rescueDetails:UpdateResponse): Promise<UpdateResponse> {
-=======
     // TODO change this to by properly typed
-    public async updateRescueDetails(rescueDetails: any): Promise<any> {
+    public async updateRescueDetails(rescueDetails: UpdateResponse): Promise<UpdateResponse> {
         return await this.put(rescueDetails);
     }
 
@@ -49,7 +46,6 @@ export class RescueDetailsService extends APIService {
                 }),
             );
         }
->>>>>>> 52215419447ebc087dbdfe49fec58856bfa4d47b
 
         return this.outstandingRescues$;
 
