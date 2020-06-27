@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input, HostListener } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -69,6 +69,7 @@ export class AnimalSelectionComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get(
@@ -290,7 +291,6 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     animalChipSelected(animalTypeChip) {
-        animalTypeChip.toggleSelected();
 
         this.currentPatientChip = undefined;
 
@@ -390,6 +390,7 @@ export class AnimalSelectionComponent implements OnInit {
                 foundChip.focus();
             }
         } else if (event.keyCode == 13) {
+            console.log("Here")
             this.problemChipSelected(problemChip);
         }
     }
@@ -451,7 +452,6 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     problemChipSelected(problemChip) {
-        problemChip.toggleSelected();
 
         if (!problemChip.selectable && problemChip.selected) {
             problemChip.selected = false;
@@ -462,6 +462,8 @@ export class AnimalSelectionComponent implements OnInit {
             !this.currentPatientChip &&
             !(this.animalTypeChips.selected instanceof MatChip)
         ) {
+
+            //TODO replace this with a better dialog.
             alert('Please select an animal');
             problemChip.selected = false;
             return;
@@ -606,5 +608,27 @@ export class AnimalSelectionComponent implements OnInit {
         return this.animalTypes$.find(
             animalType => animalType.AnimalType == name,
         );
+    }
+
+    //If you tab into the chip lists, you have to tab through them all to get out.
+    //So the below finds the last element and skips to the next value
+    tabPressed(list:string){
+
+        if(list === "AnimalType"){
+            this.animalTypeChips.chips.last.focus();
+        }
+        else if (list === "ProblemType"){
+            this.problemChips.chips.last.focus();
+        }
+    }
+
+    shiftTabPressed(list:string){
+
+        if(list === "AnimalType"){
+            this.animalTypeChips.chips.first.focus();
+        }
+        else if (list === "ProblemType"){
+            this.problemChips.chips.first.focus();
+        }
     }
 }
