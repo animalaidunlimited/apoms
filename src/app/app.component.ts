@@ -1,7 +1,6 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessagingService } from './modules/emergency-register/services/board-socket.service';
-import { AngularFireMessaging } from '@angular/fire/messaging';
-import { Observable } from 'rxjs';
+
 
 @Component({
     selector: 'app-root',
@@ -17,10 +16,8 @@ export class AppComponent implements OnInit{
         private messagingService: MessagingService) {
 
             window.addEventListener("beforeunload", () => {
-                // event.preventDefault();
-                // event.returnValue = "Are you sure you want to exit?";
+                
                 this.messagingService.unsubscribe();
-                // return event;
              });
 
             window.addEventListener("visibilitychange", (change) => {

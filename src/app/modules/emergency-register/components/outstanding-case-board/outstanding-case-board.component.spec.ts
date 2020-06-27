@@ -13,6 +13,9 @@ import { Component } from '@angular/core';
 import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'rescue-details',
@@ -40,6 +43,8 @@ describe('OutstandingCaseBoardComponent', () => {
                 MaterialModule,
                 MatDialogModule,
                 BrowserAnimationsModule,
+                AngularFireMessagingModule,
+                AngularFireModule.initializeApp(environment.firebase),
             ],
             providers: [
                 MatDialog,
