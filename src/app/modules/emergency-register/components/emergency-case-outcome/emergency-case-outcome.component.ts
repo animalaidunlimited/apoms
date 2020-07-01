@@ -61,7 +61,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   async save(){
 
     //If we haven't touched the form, don't do anything.
-    if(this.recordForm.pristine || !this.recordForm.get('callOutcome').value){
+    if(this.recordForm.get("callOutcome").pristine || !this.recordForm.get('callOutcome').value){
 
       let emptyResult:UpdateResponse = {
         success: null,

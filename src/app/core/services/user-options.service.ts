@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 @Injectable({
     providedIn: 'root',
 })
-export class UserOptionsService {
+export class UserOptionsService{
     homeCoordinates$;
-    notifactionDuration;
+    notifactionDuration:number;
 
     constructor() {}
 

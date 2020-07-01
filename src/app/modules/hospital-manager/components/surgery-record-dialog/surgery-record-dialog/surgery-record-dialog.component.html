@@ -1,10 +1,13 @@
 <div class="container">
-        <h1 mat-dialog-title>Update Surgery Record - {{data.surgeryId}}</h1>
+        <h1 mat-dialog-title>Surgery Record - {{data.surgeryId}}</h1>
 
     <div class="flex" mat-dialog-content>
         <surgery-record
             [surgeryId] = "data.surgeryId"
+            [patientId] = "data.patientId"
             [animalType] = "data.animalType"
+            [emergencyNumber] = "data.emergencyNumber"
+            [tagNumber] = "data.tagNumber"
             (result)="onSurgeryDetailsResult($event)"
             #surgeryDetails>
         </surgery-record>
@@ -14,7 +17,7 @@
 
     <div mat-dialog-actions>
         <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="surgeryDetails.updateSurgery()">Update</button>
+        <button mat-raised-button color="primary" (click)="surgeryDetails.saveSurgery()">Save</button>
 
     </div>
 </div>

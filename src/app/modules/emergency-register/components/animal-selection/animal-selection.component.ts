@@ -35,12 +35,6 @@ export class AnimalSelectionComponent implements OnInit {
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
     @Input() recordForm: FormGroup;
 
-    @HostListener('document:keydown.control.t')
-    launchTagNumberDialog(event: KeyboardEvent) {
-
-        console.log("ctrl+t")
-      }
-
     patientArrayDisplayedColumns: string[] = [
         'select',
         'animalType',
@@ -390,7 +384,6 @@ export class AnimalSelectionComponent implements OnInit {
                 foundChip.focus();
             }
         } else if (event.keyCode == 13) {
-            console.log("Here")
             this.problemChipSelected(problemChip);
         }
     }

@@ -19,7 +19,7 @@ import { SearchResponse } from '../../models/responses';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
-import { AddSurgeryDialogComponent } from 'src/app/modules/hospital-manager/components/add-surgery-dialog/add-surgery-dialog.component';
+import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
 
 export interface SearchValue {
     id: number;
@@ -365,11 +365,9 @@ export class RecordSearchComponent implements OnInit {
         emergencyNumber: number,
         animalType: string,
     ) {
-        const dialogRef = this.dialog.open(AddSurgeryDialogComponent, {
+        const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
             maxWidth: '100vw',
             maxHeight: '100vh',
-            width: '90%',
-            height: '70%',
             data: {
                 patientId,
                 tagNumber,
@@ -378,7 +376,7 @@ export class RecordSearchComponent implements OnInit {
             },
         });
         dialogRef.afterClosed().subscribe(result => {
-            
+
         });
     }
 
