@@ -118,6 +118,9 @@ export class CaseService extends APIService {
 
     public async updateCase(emergencyCase: EmergencyCase): Promise<any> {
         return await this.baseUpdateCase(emergencyCase).catch(async error => {
+
+            console.log(error);
+
             if (error.status == 504 || !this.online) {
                 // The server is offline, so let's save this to the database
                 return await this.saveToLocalDatabase('PUT', emergencyCase);
@@ -243,6 +246,7 @@ export class CaseService extends APIService {
     }
 
     public async updateCaseOutcome(outcomeDetails: EmergencyCase): Promise<EmergencyCase> {
+
         return await this.put(outcomeDetails);
     }
 }

@@ -96,15 +96,19 @@ export class PatientCallComponent implements OnInit {
     loadPatientCalls() {
         this.patientService
             .getPatientCallsByPatientId(this.patientId)
-            .subscribe((data: PatientCalls) => this.populatePatientCalls(data));
+            .subscribe((data: PatientCalls) => {this.populatePatientCalls(data)});
     }
 
     populatePatientCalls(data: PatientCalls) {
-        for (let i = 0; i < data.calls.length; i++) {
-            this.addPatientCall(false);
-        }
 
-        this.patientCallForm.patchValue(data);
+        if(data?.calls.length){
+
+            for (let i = 0; i < length; i++) {
+                this.addPatientCall(false);
+            }
+
+            this.patientCallForm.patchValue(data);
+        }
     }
 
     getNewCall(position: number, expanded: boolean) {
