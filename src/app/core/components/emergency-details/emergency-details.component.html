@@ -13,7 +13,7 @@
         </mat-form-field>
 
     <mat-form-field>
-            <input tabindex="2" formControlName="callDateTime" name="callDateTime" type="datetime-local"
+            <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
             (focus)="setInitialTime()"
             [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
     </mat-form-field>

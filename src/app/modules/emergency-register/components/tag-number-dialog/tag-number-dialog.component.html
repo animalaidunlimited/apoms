@@ -1,4 +1,6 @@
-<h1 mat-dialog-title>Enter tag number</h1>
+<h1 mat-dialog-title cdkDrag
+cdkDragRootElement=".cdk-overlay-pane"
+cdkDragHandle>Enter tag number</h1>
 <form autocomplete="off" [formGroup]="tagForm">
 <div mat-dialog-content>
   <mat-form-field>
@@ -9,7 +11,11 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button [mat-dialog-close]="tagForm.get('tagNumber')" [disabled]="tagForm.invalid">Save</button>
+  <!-- <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button [mat-dialog-close]="tagForm.get('tagNumber')" [disabled]="tagForm.invalid">Save</button> -->
+
+  <button type="button" mat-button (click)="onCancel()">Cancel</button>
+  <button type="submit" mat-button [mat-dialog-close]="tagForm.get('tagNumber')" [disabled]="tagForm.invalid">Save</button>
+
 </div>
 </form>

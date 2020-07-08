@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 export interface DialogData {
@@ -26,7 +26,7 @@ export class TagNumberDialog implements OnInit {
         private uniqueTagNumberValidator: UniqueTagNumberValidator,
     ) {}
 
-    tagForm;
+    tagForm: FormGroup;
 
     ngOnInit() {
         this.tagForm = this.fb.group({
@@ -39,6 +39,12 @@ export class TagNumberDialog implements OnInit {
                 ),
             ],
         });
+
+
+        this.tagForm.valueChanges.subscribe(changes => {
+            this.data.tagNumber = changes.tagNumber;
+        })
+
     }
 
     onCancel(): void {

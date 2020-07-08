@@ -12,7 +12,7 @@
             <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? toggleRow(row) : null"
                         [checked]="selection.isSelected(row)"
-                        tabindex="-1"
+                        tabindex="7"
                         [aria-label]="checkboxLabel(row)">
             </mat-checkbox>
             </td>
@@ -49,8 +49,7 @@
             <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;"
             [class.deleted]="row.get('deleted').value"
-            [class.invalid-row]="row.invalid"
-            (keydown.enter)="updateTag(row)"></tr>
+            [class.invalid-row]="row.invalid"></tr>
 
 
             </table>
@@ -66,7 +65,7 @@
                 (keydown.tab)="tabPressed('AnimalType')"
                 (keydown.shift.tab)="shiftTabPressed('AnimalType')"
                 (keydown)="cycleChips($event, 'animaltype', 'animalType')"
-                (selectionChange)="animalChipSelected(animalTypeChip);"
+                (selectionChange)="animalChipSelected('auto',animalTypeChip);"
                 #animalTypeChip="matChip"
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
         </mat-chip-list>

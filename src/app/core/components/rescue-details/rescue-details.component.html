@@ -68,7 +68,7 @@
         <mat-form-field>
                     <input tabindex="9" formControlName="rescueTime" type="datetime-local" name="rescueTime"
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
-                    (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" matInput>
+                    (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
 
                         <mat-error *ngIf="rescueTime.hasError('rescueBeforeCallDatetime')">
                         Rescue before call!

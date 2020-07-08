@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler, Injectable } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +15,23 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
+
+
+
+@Injectable({
+    providedIn: 'root'
+  })
+
+class UIErrorHandler extends ErrorHandler {
+  constructor() {
+    super();
+  }
+  handleError(error) {
+    super.handleError(error);
+    //TODO Style these errors properly and provide them in a dialog with more info about what to do.
+    alert(`Error occurred:${error.message}`);
+  }
+}
 
 
 @NgModule({
@@ -36,11 +53,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 
     ],
     providers: [
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpConfigInterceptor,
-            multi: true,
-        },
+        {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
+        {provide: ErrorHandler, useClass: UIErrorHandler}
     ],
     bootstrap: [AppComponent],
 })

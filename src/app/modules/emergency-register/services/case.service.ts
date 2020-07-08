@@ -4,7 +4,6 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import {
     EmergencyResponse,
-    RescueDetails,
     SearchResponse,
 } from 'src/app/core/models/responses';
 import { OnlineStatusService } from 'src/app/core/services/online-status.service';
@@ -12,6 +11,7 @@ import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { v4 as uuid } from 'uuid';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +21,7 @@ export class CaseService extends APIService {
         http: HttpClient,
         private readonly onlineStatus: OnlineStatusService,
         protected storage: StorageService,
+        private toaster: SnackbarService
     ) {
         super(http);
         this.online = this.onlineStatus.isOnline;
@@ -37,15 +38,14 @@ export class CaseService extends APIService {
         onlineStatus.connectionChanged.subscribe(async online => {
             if (online) {
                 this.online = true;
-                // TODO push this message to the user in snackbar
-                console.log('We\'re online: online = ' + online);
+
+                this.toaster.successSnackBar("Connection restored", "OK")
 
                 await this.postFromLocalStorage(
                     this.storage.getItemArray('POST'),
                 )
                     .then(result => {
-                        // TODO Push a message to the user
-                        console.log('Synched new cases with server');
+                        this.toaster.successSnackBar("Synced updated cases with server", "OK");
                     })
                     .catch(error => {
                         console.log(error);
@@ -53,16 +53,15 @@ export class CaseService extends APIService {
 
                 await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
                     .then(result => {
-                        // TODO Push a message to the user
-                        console.log('Synched updated cases with server');
+                        this.toaster.successSnackBar("Synced updated cases with server", "OK");
+
                     })
                     .catch(error => {
                         console.log(error);
                     });
             } else {
                 this.online = false;
-                // TODO push this message to the user in snackbar
-                console.log('We\'re offline: online = ' + online);
+                this.toaster.errorSnackBar("Connection lost", "OK");
             }
         });
     }
@@ -70,7 +69,6 @@ export class CaseService extends APIService {
     private async postFromLocalStorage(postsToSync) {
         const promiseArray = postsToSync.map(
             async elem =>
-                // console.log(JSON.stringify(elem))
 
                 await this.baseInsertCase(JSON.parse(elem.value)).then(
                     (result: EmergencyResponse) => {
@@ -119,8 +117,6 @@ export class CaseService extends APIService {
     public async updateCase(emergencyCase: EmergencyCase): Promise<any> {
         return await this.baseUpdateCase(emergencyCase).catch(async error => {
 
-            console.log(error);
-
             if (error.status == 504 || !this.online) {
                 // The server is offline, so let's save this to the database
                 return await this.saveToLocalDatabase('PUT', emergencyCase);
@@ -138,10 +134,9 @@ export class CaseService extends APIService {
                 return result;
             })
             .catch(async error => {
-                console.log('An error occured - error: ' + error.status);
 
                 if (error.status == 504 || !this.online) {
-                    console.log('Saving to local storage');
+                    this.toaster.errorSnackBar("Saving to local storage", "OK");
                     // The server is offline, so let's save this to the database
                     return await this.saveToLocalDatabase(
                         'POST',
@@ -172,7 +167,6 @@ export class CaseService extends APIService {
             }
             return this.response;
         } catch (error) {
-            // console.error('Error during login request', error);
             return Promise.reject(error);
         }
     }

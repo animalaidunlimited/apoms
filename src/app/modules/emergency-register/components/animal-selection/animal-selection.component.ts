@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -59,7 +59,7 @@ export class AnimalSelectionComponent implements OnInit {
         private fb: FormBuilder,
         private patientService: PatientService,
         private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
+        private dropdown: DropdownService
     ) {}
 
     ngOnInit() {
@@ -284,7 +284,7 @@ export class AnimalSelectionComponent implements OnInit {
         });
     }
 
-    animalChipSelected(animalTypeChip) {
+    animalChipSelected(fireType:string, animalTypeChip) {
 
         this.currentPatientChip = undefined;
 
@@ -389,6 +389,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     cycleChips(event, chipGroup: string, property: string) {
+
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const currentPatient =
                 this.getcurrentPatient().get(property).value || '';
@@ -440,11 +441,16 @@ export class AnimalSelectionComponent implements OnInit {
                 );
             });
 
-            this.animalChipSelected(currentKeyChip);
+            currentKeyChip.selected = true;
         }
     }
 
     problemChipSelected(problemChip) {
+
+        if(!problemChip.selected)
+        {
+            return;
+        }
 
         if (!problemChip.selectable && problemChip.selected) {
             problemChip.selected = false;
@@ -460,7 +466,7 @@ export class AnimalSelectionComponent implements OnInit {
             alert('Please select an animal');
             problemChip.selected = false;
             return;
-        } else {
+        }else {
             this.updatePatientProblemArray(problemChip);
         }
     }
@@ -564,11 +570,19 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     updateTag(currentPatient) {
-        this.selection.isSelected(currentPatient)
-            ? null
-            : this.toggleRow(currentPatient);
 
-        this.openDialog(currentPatient.value);
+        if(this.selection.selected.length === 0 && currentPatient.value.position > 1){
+
+            //TODO make this a pretty dialog
+            alert("Please select a patient to update");
+            return;
+        }
+
+        if(this.selection.selected.length !== 0 && this.selection.isSelected(currentPatient)) {
+
+            this.openDialog(currentPatient.value);
+
+        }
     }
 
     openDialog(event): void {
@@ -585,6 +599,7 @@ export class AnimalSelectionComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
+
             if (result) {
                 const currentPatient = this.getcurrentPatient();
                 currentPatient.get('tagNumber').setValue(result.value);
