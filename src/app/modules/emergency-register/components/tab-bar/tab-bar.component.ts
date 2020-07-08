@@ -37,10 +37,10 @@ export class TabBarComponent implements OnInit {
             icon: 'close',
         });
 
-        // setTimeout(() => {
+        setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();
-        // });
+        });
     }
 
     public openCase(result: searchResponseWrapper) {

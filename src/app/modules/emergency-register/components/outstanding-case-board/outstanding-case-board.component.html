@@ -81,7 +81,7 @@
 
 
             <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}}
+              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.patients}})
             </div>
             <!-- </mat-panel-title> -->
             <!-- <mat-panel-description> -->
@@ -110,8 +110,7 @@
                 <div class="telephone">{{outstandingCase.callerNumber}}</div>
             </div>
 
-
-            <div class="CallDateTime">{{outstandingCase.callDateTime}}</div>
+            <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
             <div class="animal-location">{{outstandingCase.location}}</div>
         </div>
 

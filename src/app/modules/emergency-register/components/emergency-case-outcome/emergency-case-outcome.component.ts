@@ -54,7 +54,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
 
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.callOutcome').value;
+    let callOutcome:CallOutcomeResponse = this.recordForm.get('callOutcome.callOutcome').value;
+
+    this.sameAs = this.sameAsId === callOutcome.CallOutcomeId;
 
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { getCurrentTimeString } from '../../utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -19,6 +19,7 @@ export class RescueDetailsComponent implements OnInit {
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
+  @ViewChild("rescueTimeField" ,{ read: ElementRef, static:true }) rescueTimeField: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -43,6 +44,12 @@ export class RescueDetailsComponent implements OnInit {
 
   rescuers$;
   rescueDetails$
+
+    @HostListener('document:keydown.control.shift.q', ['$event'])
+    rescueTimeFocus(event: KeyboardEvent) {
+    event.preventDefault();
+    this.rescueTimeField.nativeElement.focus();
+    };
 
   ngOnInit() {
 

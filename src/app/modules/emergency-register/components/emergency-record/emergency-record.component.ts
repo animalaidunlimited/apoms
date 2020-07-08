@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -21,6 +21,7 @@ import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number;
     @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
+    // @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
 
     recordForm: FormGroup;
 
@@ -30,10 +31,16 @@ export class EmergencyRecordComponent implements OnInit {
 
     notificationDurationSeconds: number;
 
+    @HostListener('document:keydown.control.shift.r', ['$event'])
+    resetForm(event: KeyboardEvent) {
+        event.preventDefault();
+        this.recordForm.reset();
+        // this.emergencyNumberField.nativeElement.focus();
+    };
+
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
-        private snackBar: MatSnackBar,
         private caseService: CaseService,
         private showSnackBar : SnackbarService
     ) {}

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../utils';
@@ -18,6 +18,15 @@ export class EmergencyDetailsComponent implements OnInit {
     errorMatcher = new CrossFieldErrorMatcher();
 
     @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
+    @ViewChild("callDateTimeField",{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
+
+
+
+    @HostListener('document:keydown.control.shift.c', ['$event'])
+    focusCallDateTime(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callDateTimeField.nativeElement.focus();
+    };
 
 
 
@@ -77,6 +86,10 @@ export class EmergencyDetailsComponent implements OnInit {
         this.recordForm
             .get('emergencyDetails.emergencyNumber')
             .valueChanges.subscribe(val => {
+                if(!val){
+                    this.emergencyNumberField.nativeElement.focus();
+                }
+
                 this.updateEmergencyNumber(val);
             });
 
