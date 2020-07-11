@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
@@ -17,6 +17,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   @Input() recordForm: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
+  @ViewChild("sameAsNumberField",{ read: ElementRef, static:false }) sameAsNumberField: ElementRef;
 
   callOutcomes$:Observable<CallOutcomeResponse[]>;
   callOutcomes;
@@ -29,7 +30,8 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     private dropdowns: DropdownService,
     private caseService: CaseService,
     private fb: FormBuilder,
-    private emergencyNumberValidator:UniqueEmergencyNumberValidator
+    private emergencyNumberValidator:UniqueEmergencyNumberValidator,
+    private changeDetector:ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +59,13 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     let callOutcome:CallOutcomeResponse = this.recordForm.get('callOutcome.callOutcome').value;
 
     this.sameAs = this.sameAsId === callOutcome.CallOutcomeId;
+
+    this.changeDetector.detectChanges();
+
+    //Make sure we focus when we're selecting same as
+    if(this.sameAs){
+      setTimeout(() => this.sameAsNumberField.nativeElement.focus(), 0);
+    }
 
   }
 

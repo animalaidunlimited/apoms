@@ -190,16 +190,19 @@ onChanges(): void {
 
   setInitialTime(event)
   {
-    this.currentCallDateTime = this.callDateTime;
+    //TODO put this back in when we go live with the desk doing realtime entries
 
-    let currentTime;
+    // this.currentCallDateTime = this.callDateTime;
 
-    currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
+    // let currentTime;
 
-    if(!currentTime)
-    {
-      this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
-    }
+    // currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
+
+    // if(!currentTime)
+    // {
+    //   this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+    // }
+
    }
 
   updateTimes()

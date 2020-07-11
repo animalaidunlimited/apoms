@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { MessagingService } from './modules/emergency-register/services/board-socket.service';
+import { MAT_DATE_LOCALE} from '@angular/material/core';
 
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    providers: [
+        //TODO alter this to load from the user settings
+        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+      ]
 })
 export class AppComponent implements OnInit{
     // test
@@ -16,7 +21,7 @@ export class AppComponent implements OnInit{
         private messagingService: MessagingService) {
 
             window.addEventListener("beforeunload", () => {
-                
+
                 this.messagingService.unsubscribe();
              });
 
