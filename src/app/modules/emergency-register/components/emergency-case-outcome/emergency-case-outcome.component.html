@@ -14,7 +14,7 @@
 
     <mat-form-field *ngIf="sameAs">
 
-        <input formControlName="sameAsNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
+        <input formControlName="sameAsNumber" #sameAsNumberField type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
         <mat-error *ngIf="recordForm.get('callOutcome.sameAsNumber').errors?.emergencyNumberTaken">
             The emergency number doesn't exist.

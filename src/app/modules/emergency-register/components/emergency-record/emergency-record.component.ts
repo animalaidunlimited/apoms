@@ -21,7 +21,6 @@ import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number;
     @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
-    // @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
 
     recordForm: FormGroup;
 
@@ -35,7 +34,12 @@ export class EmergencyRecordComponent implements OnInit {
     resetForm(event: KeyboardEvent) {
         event.preventDefault();
         this.recordForm.reset();
-        // this.emergencyNumberField.nativeElement.focus();
+    };
+
+    @HostListener('document:keydown.control.s', ['$event'])
+    saveFormShortcut(event: KeyboardEvent) {
+        event.preventDefault();
+        this.saveForm();
     };
 
     constructor(
@@ -143,6 +147,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     async saveForm() {
+
         if (this.recordForm.valid) {
             this.recordForm
                 .get('emergencyDetails.updateTime')
@@ -212,13 +217,9 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
-    }
 
-    // openSnackBar(message: string, action: string) {
-    //     this.snackBar.open(message, action, {
-    //         duration: this.notificationDurationSeconds * 1000,
-    //     });
-    // }
+
+    }
 
     emergencyNumberUpdated(emergencyNumber: number) {
         this.onLoadEmergencyNumber.emit(emergencyNumber);
