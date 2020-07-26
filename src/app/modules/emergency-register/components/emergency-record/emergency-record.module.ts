@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../../../../material-module';
 
@@ -11,14 +11,18 @@ import { LocationDetailsModule } from 'src/app/core/components/location-details/
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
+import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaCardComponent } from 'src/app/core/components/media-card/media-card.component';
 
 @NgModule({
     declarations: [
         EmergencyRecordComponent,
         AnimalSelectionComponent,
         TagNumberDialog,
+        MediaDialog,
+        MediaCardComponent
     ],
-    providers: [DatePipe],
+    providers: [],
     imports: [
         CommonModule,
         MaterialModule,

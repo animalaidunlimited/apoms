@@ -72,10 +72,11 @@
           [ngClass]="{'search-candidate' : outstandingCase.searchCandidate == true}">
 
           <div fxFlex="15">
+
             <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
           </div>
 
-          <div fxFlex="15">
+          <div fxFlex="25">
             <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
@@ -86,6 +87,7 @@
             <!-- </mat-panel-title> -->
             <!-- <mat-panel-description> -->
               <div fxFlex="none"
+
               class ="dot" [ngClass]="{
                 'dot-red' : outstandingCase.emergencyCodeId == 1,
                 'dot-green' : outstandingCase.emergencyCodeId == 2,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { getCurrentTimeString } from '../../../../core/utils';
+import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({

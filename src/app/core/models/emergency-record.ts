@@ -45,3 +45,4 @@ export interface EmergencyForm {
 export interface EmergencyCase {
     emergencyForm: EmergencyForm;
 }
+

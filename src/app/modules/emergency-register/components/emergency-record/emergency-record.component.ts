@@ -9,7 +9,7 @@ import {
     PatientResponse,
     ProblemResponse,
 } from 'src/app/core/models/responses';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 

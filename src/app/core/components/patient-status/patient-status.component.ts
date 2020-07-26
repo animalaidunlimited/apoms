@@ -7,7 +7,7 @@ import { UserOptionsService } from '../../services/user-options.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
-import { getCurrentTimeString } from '../../utils';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 
 @Component({
@@ -94,5 +94,5 @@ export class PatientStatusComponent implements OnInit {
         const date = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.patientStatusForm.get('patientStatusDate').setValue(date);
     }
-    
+
 }
