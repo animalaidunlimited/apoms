@@ -5,7 +5,7 @@ import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
 import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emergency-number.validator';
 import { CaseService } from '../../services/case.service';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Component({
@@ -91,7 +91,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
           .addControl("updateTime", new FormControl(updateTime));
 
     let updateRecord:FormGroup = this.fb.group({
-      emeregncyForm: [this.recordForm.value]
+      emergencyForm: [this.recordForm.value]
     });
 
     await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) =>

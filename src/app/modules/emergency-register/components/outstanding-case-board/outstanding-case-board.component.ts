@@ -140,9 +140,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
         this.refreshRescues();
       }
 
-    })
-
-
+    });
 
     this.searchForm.get("searchTerm").valueChanges
       .pipe(
@@ -170,6 +168,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
   }
 
   updateRescue(updatedRescue:OutstandingRescue){
+
+    console.log(updatedRescue);
 
 
     //Find the rescue and remove it from its current location.

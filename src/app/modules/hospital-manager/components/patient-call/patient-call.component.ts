@@ -6,7 +6,7 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { getCurrentTimeString } from '../../../../core/utils';
+import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';

@@ -17,6 +17,7 @@ import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.val
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
 
 @Component({
     selector: 'animal-selection',
@@ -24,35 +25,36 @@ import { ProblemDropdownResponse } from 'src/app/core/models/responses';
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit {
+
+    @Input() recordForm: FormGroup;
+    @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
+    @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
+    @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
+
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
-    problems$: ProblemDropdownResponse[];
-    exclusions;
 
-    @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
-    @ViewChild('animalTypeChips', { static: true })
-    animalTypeChips: MatChipList;
-    @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
-    @Input() recordForm: FormGroup;
+    currentPatientChip = '';
+    emergencyCaseId: number;
+    exclusions;
 
     patientArrayDisplayedColumns: string[] = [
         'select',
         'animalType',
         'mainProblem',
         'tagNo',
+        'media',
         'delete',
     ];
 
     patientArray: FormArray;
-    currentPatientChip = '';
+    patientDataSource: MatTableDataSource<AbstractControl>;
+
+    problems$: ProblemDropdownResponse[];
 
     selection;
     tagNumber: string;
     validRow: boolean;
-
-    emergencyCaseId: number;
-
-    patientDataSource: MatTableDataSource<AbstractControl>;
 
     constructor(
         public dialog: MatDialog,
@@ -580,13 +582,13 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(this.selection.selected.length !== 0 && this.selection.isSelected(currentPatient)) {
 
-            this.openDialog(currentPatient.value);
+            this.openTagNumberDialog(currentPatient.value);
 
         }
     }
 
-    openDialog(event): void {
-        const currentPatient: Patient = event;
+    openTagNumberDialog(event): void {
+        const currentPatient: Patient = event.value;
 
         const dialogRef = this.dialog.open(TagNumberDialog, {
             width: '250px',
@@ -610,6 +612,23 @@ export class AnimalSelectionComponent implements OnInit {
                 this.patientTable.renderRows();
             }
         });
+    }
+
+    openMediaDialog(event): void{
+
+        const currentPatient: Patient = event.value;
+
+        const dialogRef = this.dialog.open(MediaDialog, {
+            minWidth: '50%',
+            data: {
+                tagNumber: currentPatient.tagNumber,
+                patientId: currentPatient.patientId
+            }
+        });
+
+
+
+
     }
 
     getAnimalFromObservable(name: string) {

@@ -5,7 +5,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { Observable, iif } from 'rxjs';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { SurgeryRecord } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';

@@ -46,6 +46,7 @@
     "core-js": "^2.6.11",
     "firebase": "7.15.1",
     "hammerjs": "^2.0.8",
+    "ngx-image-compress": "^8.0.4",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",
     "uuid": "^3.4.0",
@@ -76,7 +77,12 @@
     "tslint": "~5.11.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "~3.8.3",
-    "webpack-bundle-analyzer": "^3.6.0"
+    "webpack-bundle-analyzer": "^3.6.0",
+    "@angular-devkit/architect": "~0.900",
+    "firebase-tools": "^8.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1"
   },
   "optionalDependencies": {
     "fsevents": "^2.1.2"

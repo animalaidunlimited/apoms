@@ -1,0 +1,36 @@
+
+<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center" style="padding-bottom: 20px;">
+<h1 mat-dialog-title>Media</h1>
+
+<input
+    hidden
+    type="file"
+    #uploader
+    multiple
+    accept="video/*|image/*"
+    (change)="uploadFile($event)"
+/>
+
+<button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
+    <mat-icon>add_a_photo</mat-icon>
+</button>
+
+</div>
+
+<div mat-dialog-content fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start">
+
+    <div *ngFor="let mediaItem of mediaItems">
+
+
+        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem" (itemDeleted)="onMediaItemDeleted(mediaItem)"></media-card>
+
+    </div>
+
+</div>
+
+<div mat-dialog-actions>
+
+  <button type="button" mat-button (click)="onSave()">Save</button>
+
+
+</div>
