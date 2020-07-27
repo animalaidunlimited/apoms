@@ -169,9 +169,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   updateRescue(updatedRescue:OutstandingRescue){
 
-    console.log(updatedRescue);
-
-
     //Find the rescue and remove it from its current location.
     // let rescueToMove:OutstandingRescue =
     this.removeRescueById(this.outstandingCases, updatedRescue);

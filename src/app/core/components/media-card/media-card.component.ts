@@ -35,6 +35,9 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     private patientService: PatientService) { }
 
   ngOnInit(): void {
+    
+    console.log("Id: " + this.mediaItem.mediaItemId);
+    console.log(this.mediaItem);
 
     this.mediaForm = this.fb.group({
       patientMediaItemId: this.mediaItem.mediaItemId,
@@ -75,6 +78,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   ngOnDestroy(){
 
     if(this.mediaForm.touched){
+      console.log(this.mediaForm.value);
       this.patientService.saveMediaItemMetadata(this.mediaForm.value);
     }
 

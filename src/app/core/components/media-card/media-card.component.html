@@ -6,12 +6,12 @@
     </mat-card-header>
 
 
-    <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media" [ngStyle]="{'width.px': mediaItem.widthPX, 'height.px': mediaItem.heightPX}"> -->
-    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media">
+    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
 
 
-    <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer>
+    <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
 
         <source [src]="mediaItem.localURL" type="video/mp4"/>
         Browser not supported

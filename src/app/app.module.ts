@@ -18,7 +18,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireStorageModule } from '@angular/fire/storage'
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
-import { NgxImageCompressService } from 'ngx-image-compress';
 
 
 
@@ -60,7 +59,6 @@ class UIErrorHandler extends ErrorHandler {
     ],
     providers: [
         DatePipe,
-        NgxImageCompressService,
         {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
         {provide: ErrorHandler, useClass: UIErrorHandler}
     ],

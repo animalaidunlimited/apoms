@@ -5,7 +5,6 @@ import { MediaPasteService } from '../../services/media-paste.service';
 import { MediaItem } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'media-dialog',
@@ -19,12 +18,10 @@ import { FormBuilder } from '@angular/forms';
 
 export class MediaDialog implements OnInit {
 
-
   constructor(public dialogRef: MatDialogRef<MediaDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private mediaPaster: MediaPasteService,
     private patientService: PatientService,
-    private fb: FormBuilder,
     public platform: Platform) { }
 
     mediaItems: MediaItem[] = [];
@@ -32,8 +29,6 @@ export class MediaDialog implements OnInit {
   ngOnInit(): void {
 
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
-
-      console.log(mediaItems);
 
       this.mediaItems = mediaItems;
 
@@ -100,6 +95,9 @@ handlePaste(event: ClipboardEvent){
     //Pass the clipboard event down to the service, expect it to return an image URL
     let mediaObject: MediaItem = this.mediaPaster.handlePaste(event, this.data.patientId);
 
+    if(!this.mediaItems){
+      this.mediaItems = [];
+    }
     this.mediaItems.unshift(mediaObject);
 
 }
@@ -108,9 +106,19 @@ uploadFile($event) {
 
   for(let file of $event.target.files)
   {
-    let mediaObject: MediaItem = this.mediaPaster.handleUpload(file, this.data.patientId);
+    this.mediaPaster.handleUpload(file, this.data.patientId).then((mediaItem:MediaItem) =>
+    {
 
-    this.mediaItems.unshift(mediaObject);
+      console.log(mediaItem);
+
+      if(!this.mediaItems){
+        this.mediaItems = [];
+      }
+      this.mediaItems.unshift(mediaItem);
+
+    } );
+
+
   }
 
 }
@@ -125,18 +133,6 @@ onMediaItemDeleted(deletedMediaItem: MediaItem){
 }
 
 onSave(): void {
-
-  //Get all of the images that have changed
-
-
-  //Delete them if required
-
-  //Upload any new images to Firebase
-
-  //Send the filenames to the database
-
-
-
 
     this.dialogRef.close();
 }
