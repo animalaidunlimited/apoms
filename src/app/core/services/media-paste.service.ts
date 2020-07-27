@@ -9,11 +9,27 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import {NgxImageCompressService} from 'ngx-image-compress';
+
+interface IResizeImageOptions {
+  maxSize: number;
+  file: File;
+}
+
+interface ResizedImage{
+  image: Blob;
+  width: number;
+  height: number;
+}
+
+interface UploadPayload{
+  task: AngularFireUploadTask;
+  mediaItem: MediaItem;
+}
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class MediaPasteService {
 
   constructor(private sanitizer: DomSanitizer,
@@ -21,30 +37,60 @@ export class MediaPasteService {
     private authService: AuthService,
     private datepipe: DatePipe,
     private patientService: PatientService,
-    private imageCompress: NgxImageCompressService,
     private fireAuth: AngularFireAuth) { }
 
     user: firebase.auth.UserCredential;
 
 
-  handleUpload(file: File, patientId: number): MediaItem {
-
-    let newMediaItem = this.createMediaItem(file, patientId);
-
-    this.checkAuthenticated().then(() => {
-
-    //upload the file and return its progress for display
-
-      newMediaItem.uploadProgress = this.uploadFile(file, newMediaItem);
-      console.log(newMediaItem.uploadProgress);
-
-    }).catch(error =>
-
-      console.log(error));
+  handleUpload(file: File, patientId: number): Promise<MediaItem> {
 
 
+    return new Promise<MediaItem>(async (resolve, reject) => {
 
-    return newMediaItem;
+      let newMediaItem:MediaItem = this.createMediaItem(file, patientId);
+
+      return this.checkAuthenticated().then(async () => {
+
+      //upload the file and return its progress for display
+
+      let timeString = this.datepipe.transform(newMediaItem.datetime, "yyyyMMdd_hhmmss");
+
+      newMediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString);
+
+              let options: IResizeImageOptions = {
+                maxSize: 5000,
+                file: file
+              }
+
+              return this.resizeImage(options).then(async (resizedImage:ResizedImage) => {
+
+                console.log(resizedImage);
+
+                newMediaItem.widthPX = resizedImage.width;
+                newMediaItem.heightPX = resizedImage.height;
+
+                return await this.uploadFile(newMediaItem, resizedImage.image).then(result => {
+                  newMediaItem.mediaItemId = result.mediaItemId;
+
+                  result.success === 1 ?
+                  resolve(newMediaItem) :
+                  reject();
+                });
+
+                // newMediaItem.uploadProgress = upload.task.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
+                // newMediaItem = upload.mediaItem;
+                // console.log("1");
+                // console.log(upload.mediaItem);
+
+              });
+
+      }).catch(error => console.log(error));
+
+
+    })
+
+
+
 
   }
 
@@ -100,7 +146,6 @@ export class MediaPasteService {
             const loadedImage: any = event.currentTarget;
             image.width = loadedImage.width;
             image.height = loadedImage.height;
-            console.log(image);
             observer.next(image);
             observer.complete();
         }
@@ -142,64 +187,31 @@ isImageFile(file: File): boolean {
     return file.type.search(/^image\//i) === 0;
 }
 
-uploadFile(file: File, mediaItem: MediaItem) : Observable<number>{
 
-  let timeString = this.datepipe.transform(mediaItem.datetime, "yyyyMMdd_hhmmss");
+async uploadFile(mediaItem: MediaItem, file:Blob) : Promise<any>
+{
+  // let uploadTask = this.storage.upload(mediaItem.remoteURL, file);
 
-  mediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString);
+  return this.storage.upload(mediaItem.remoteURL, file).then(async result => {
 
-  console.log(mediaItem.remoteURL);
+    return result.ref.getDownloadURL().then(async url => {
 
-      //Upload to Firebase Cloud Storage
-      var uploadTask: AngularFireUploadTask;
-
-      console.log(file.size);
-
-      //Resize the file if it's over 500kb
-      if(file.size > 500 * 1024){
-
-
-
-          this.imageCompress.compressFile(file, orientation, 50, 50).then(
-            result => {
-
-              uploadTask = this.storage.upload(mediaItem.remoteURL, result)
-
-            }
-          );
-      }
-      else{
-        uploadTask = this.storage.upload(mediaItem.remoteURL, file);
-      }
-
-  // uploadTask = this.storage.upload(mediaItem.remoteURL, file);
-
-  uploadTask.then(result => {
-    result.ref.getDownloadURL().then(url => {
       mediaItem.remoteURL = url;
 
             //Save the new image to the database and update the mediaItemId and its location etc
-    let dbSaveResult = this.patientService.savePatientMedia(mediaItem);
+    // let dbSaveResult =
 
-    dbSaveResult.then(result => {
-      console.log(result);
-      mediaItem.mediaItemId = result.mediaItemId;
+    return await this.patientService.savePatientMedia(mediaItem);
 
-    }).catch(error => console.log(error))
+    // await dbSaveResult.then(result => {
+    //   mediaItem.mediaItemId = result.mediaItemId;
+    //   return mediaItem;
+
+    // }).catch(error => console.log(error))
 
     });
 
-  })
-
-
-
-
-
-
-
-  //Return an observable of the upload progress.
-  return uploadTask.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
-
+  });
 }
 
 async checkAuthenticated(){
@@ -231,7 +243,6 @@ async getRemoteURL(localURL: SafeUrl){
   let localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL)
 
   this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
-    console.log(url);
     remoteURL = url;
   })
 
@@ -241,6 +252,70 @@ return remoteURL;
 
 
 }
+
+
+resizeImage(settings: IResizeImageOptions) {
+  const file = settings.file;
+  const maxSize = settings.maxSize;
+  const reader = new FileReader();
+  const image = new Image();
+  const canvas = document.createElement('canvas');
+
+
+  const dataURItoBlob = (dataURI: string) => {
+    const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
+        atob(dataURI.split(',')[1]) :
+        unescape(dataURI.split(',')[1]);
+    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const max = bytes.length;
+    const ia = new Uint8Array(max);
+    for (var i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+    return new Blob([ia], {type:mime});
+  };
+
+  const resize = () => {
+    let width = image.width;
+    let height = image.height;
+
+    if (width > height) {
+        if (width > maxSize) {
+            height *= maxSize / width;
+            width = maxSize;
+        }
+    } else {
+        if (height > maxSize) {
+            width *= maxSize / height;
+            height = maxSize;
+        }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+    let dataUrl = canvas.toDataURL('image/jpeg');
+
+    let resizedImage:ResizedImage = {
+        image: dataURItoBlob(dataUrl),
+        width: width,
+        height: height
+    }
+
+    return resizedImage;
+  };
+
+  return new Promise((ok, no) => {
+      if (!file.type.match(/image.*/)) {
+        no(new Error("Not an image"));
+        return;
+      }
+
+      reader.onload = (readerEvent: any) => {
+        image.onload = () => ok(resize());
+        image.src = readerEvent.target.result;
+      };
+      reader.readAsDataURL(file);
+  })
+};
 
 
 
