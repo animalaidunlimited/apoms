@@ -2,10 +2,12 @@ import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'media-card',
@@ -17,6 +19,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   @Input() mediaItem: MediaItem;
   @Input() tagNumber: string;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
+
+
 
   @ViewChild('videoPlayer',{ read: ElementRef, static:false }) videoplayer: ElementRef;
 
@@ -31,58 +35,67 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private fb:FormBuilder,
-    private dialog: MatDialog,
-    private patientService: PatientService) { }
+    private patientService: PatientService,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    
-    console.log("Id: " + this.mediaItem.mediaItemId);
-    console.log(this.mediaItem);
 
     this.mediaForm = this.fb.group({
-      patientMediaItemId: this.mediaItem.mediaItemId,
+      patientMediaItemId: null,
       mediaType: this.mediaItem.mediaType,
       localURL: this.mediaItem.localURL,
+      remoteURL: this.mediaItem.remoteURL,
       datetime: this.mediaItem.datetime,
       comment: [this.mediaItem.comment],
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false
-      // updated: [false, Validators.required]
     })
 
     this.tags = this.mediaForm.get("tags") as FormArray;
-
-
 
       this.mediaItem.tags.forEach(tag => {
 
         let newTag = JSON.parse(JSON.stringify(tag));
 
-
         this.tags.push(this.fb.control({
           tag: newTag.tag
         }));
       });
-
-
-    // this.mediaForm.valueChanges.subscribe(() => {
-
-    //   this.mediaForm.get("updated").setValue(true, {emitEvent:false});
-
-    // })
-
   }
 
   ngOnDestroy(){
 
+
+
+    // this.mediaItem.mediaItemId.subscribe(resultObject => {
+
+    //   this.mediaForm.get("patientMediaItemId").setValue(resultObject);
+    // })
+
     if(this.mediaForm.touched){
-      console.log(this.mediaForm.value);
-      this.patientService.saveMediaItemMetadata(this.mediaForm.value);
+
+      console.log(this.mediaItem.mediaItemId);
+
+
+      this.mediaItem.mediaItemId.subscribe((itemId) => {
+
+        console.log(typeof itemId);
+
+
+        this.mediaForm.get("patientMediaItemId").setValue(itemId);
+
+        //TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
+        //We should turn this into an observable.
+        this.mediaForm.get("remoteURL").setValue(this.mediaItem.remoteURL);
+
+        console.log(this.mediaForm.value);
+
+        this.patientService.savePatientMedia(this.mediaForm.value);
+      });
+
     }
-
-
 
   }
 
@@ -93,8 +106,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 add(event: MatChipInputEvent): void {
   const input = event.input;
   const value = event.value;
-
-
 
   this.mediaForm.markAsTouched();
 
@@ -113,7 +124,7 @@ add(event: MatChipInputEvent): void {
 
 }
 
-remove(tag: string, index: number): void {
+remove(index: number): void {
 
   this.mediaForm.markAsTouched();
 

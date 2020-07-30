@@ -1,4 +1,4 @@
-<mat-card class="media-card" [formGroup]="mediaForm">
+<mat-card class="media-card" [formGroup]="mediaForm" autocomplete="off">
     <mat-card-header>
       <div mat-card-avatar class="media-card-header-image"></div>
       <mat-card-title>{{tagNumber}}</mat-card-title>
@@ -19,7 +19,7 @@
     </video>
 
     <mat-card-content>
-      <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId)"  [value]="(mediaItem.uploadProgress | async)"></mat-progress-bar>
+      <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>
       <p>
         <input matInput type="text" formControlName="comment" placeholder="Comment">
       </p>

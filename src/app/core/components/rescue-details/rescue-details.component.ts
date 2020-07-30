@@ -77,7 +77,7 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-    this.callOutcome          = this.recordForm.get("callOutcome.callOutcome");
+    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcomeId");
 
     this.updateTimes();
 

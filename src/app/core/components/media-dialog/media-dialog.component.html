@@ -19,10 +19,11 @@
 
 <div mat-dialog-content fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start">
 
+    <div *ngIf="!mediaItems">No images to display</div>
+
     <div *ngFor="let mediaItem of mediaItems">
 
-
-        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem" (itemDeleted)="onMediaItemDeleted(mediaItem)"></media-card>
+        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"  (itemUploaded)="onMediaItemUploaded(mediaItem)"></media-card>
 
     </div>
 
@@ -30,7 +31,7 @@
 
 <div mat-dialog-actions>
 
-  <button type="button" mat-button (click)="onSave()">Save</button>
+  <button type="button" mat-button [disabled]="uploading > 0" (click)="onSave()">Save</button>
 
 
 </div>

@@ -38,7 +38,7 @@ START TRANSACTION;
 
 	UPDATE AAU.PatientMediaItem
 		SET 
-        DateTime  = prm_DateTime, 
+        DateTime  = STR_TO_DATE(LEFT(prm_DateTime,19), '%Y-%m-%dT%H:%i:%s'), 
         URL       = prm_URL,
         Comment   = prm_Comment,
         HeightPX  = prm_HeightPX,

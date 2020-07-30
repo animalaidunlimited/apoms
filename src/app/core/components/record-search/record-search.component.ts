@@ -340,14 +340,14 @@ export class RecordSearchComponent implements OnInit {
     rescueUpdate(
         emergencyCaseId: number,
         callDateTime: Date | string,
-        callOutcome: number,
+        CallOutcomeId: number,
     ) {
         this.rescueDialog.open(RescueDetailsDialogComponent, {
             width: '500px',
             data: {
                 emergencyCaseId,
                 callDateTime,
-                callOutcome,
+                CallOutcomeId,
             },
         });
     }

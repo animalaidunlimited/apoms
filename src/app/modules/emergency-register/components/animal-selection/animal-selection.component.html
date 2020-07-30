@@ -32,7 +32,7 @@
                     <th mat-header-cell *matHeaderCellDef> Tag Number </th>
                     <td mat-cell *matCellDef="let row"
                     (document:keydown.control.enter)="updateTag(row)"
-                    (click)="toggleRow(row); openTagNumberDialog(row)"
+                    (click)="tagNumberClicked(row); openTagNumberDialog(row)"
                     [class.duplicate]="row.get('duplicateTag').value"
                     style="cursor:pointer"> {{row.get("tagNumber").value}} </td>
             </ng-container>

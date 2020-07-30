@@ -1,9 +1,9 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { MediaItem } from '../models/media';
+import { MediaItem, MediaItemReturnObject } from '../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage'
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, from, BehaviorSubject, of } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -21,16 +21,17 @@ interface ResizedImage{
   height: number;
 }
 
-interface UploadPayload{
-  task: AngularFireUploadTask;
-  mediaItem: MediaItem;
-}
+
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class MediaPasteService {
+
 
   constructor(private sanitizer: DomSanitizer,
     private storage: AngularFireStorage,
@@ -40,16 +41,22 @@ export class MediaPasteService {
     private fireAuth: AngularFireAuth) { }
 
     user: firebase.auth.UserCredential;
+    mediaItemId$: BehaviorSubject<number>;
 
 
-  handleUpload(file: File, patientId: number): Promise<MediaItem> {
+  handleUpload(file: File, patientId: number): MediaItemReturnObject {
 
 
-    return new Promise<MediaItem>(async (resolve, reject) => {
 
       let newMediaItem:MediaItem = this.createMediaItem(file, patientId);
 
-      return this.checkAuthenticated().then(async () => {
+      let returnObject:MediaItemReturnObject = {
+          mediaItem: newMediaItem,
+          mediaItemId: new BehaviorSubject<number>(null)
+      };
+
+
+      this.checkAuthenticated().then(async () => {
 
       //upload the file and return its progress for display
 
@@ -62,33 +69,48 @@ export class MediaPasteService {
                 file: file
               }
 
-              return this.resizeImage(options).then(async (resizedImage:ResizedImage) => {
+                this.resizeImage(options).then(async (resizedImage:ResizedImage) => {
 
-                console.log(resizedImage);
+                  newMediaItem.widthPX = resizedImage.width;
+                  newMediaItem.heightPX = resizedImage.height;
 
-                newMediaItem.widthPX = resizedImage.width;
-                newMediaItem.heightPX = resizedImage.height;
+                  let uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
 
-                return await this.uploadFile(newMediaItem, resizedImage.image).then(result => {
-                  newMediaItem.mediaItemId = result.mediaItemId;
+                  // newMediaItem.mediaItemId = uploadResult.mediaItemId;
 
-                  result.success === 1 ?
-                  resolve(newMediaItem) :
-                  reject();
-                });
+                  newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100))
 
-                // newMediaItem.uploadProgress = upload.task.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
-                // newMediaItem = upload.mediaItem;
-                // console.log("1");
-                // console.log(upload.mediaItem);
+                  uploadResult.then((result) => {
 
-              });
+                    result.ref.getDownloadURL().then(url => {
+
+                      newMediaItem.remoteURL = url;
+
+                      let savetoDB = from(this.patientService.savePatientMedia(newMediaItem));
+
+                      newMediaItem.mediaItemId = savetoDB.pipe(map(result => result.mediaItemId));
+
+                      newMediaItem.mediaItemId.subscribe(id => {
+                        returnObject.mediaItemId.next(id);
+
+                      })
+
+
+
+
+                    })
+
+
+
+
+                  });
+
+                  });
 
       }).catch(error => console.log(error));
 
 
-    })
-
+return returnObject;
 
 
 
@@ -102,8 +124,9 @@ export class MediaPasteService {
 
     let isImage = this.isImageFile(file);
 
+
     let newMediaItem:MediaItem = {
-      mediaItemId: null,
+      mediaItemId: new Observable<number>(),
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
       remoteURL: null,
@@ -113,7 +136,7 @@ export class MediaPasteService {
       heightPX: 0,
       widthPX: 0,
       tags: [],
-      uploadProgress: null,
+      uploadProgress$: null,
       updated: false
     }
 
@@ -188,30 +211,11 @@ isImageFile(file: File): boolean {
 }
 
 
-async uploadFile(mediaItem: MediaItem, file:Blob) : Promise<any>
+uploadFile(mediaItem: MediaItem, file:Blob) : AngularFireUploadTask
 {
-  // let uploadTask = this.storage.upload(mediaItem.remoteURL, file);
 
-  return this.storage.upload(mediaItem.remoteURL, file).then(async result => {
+  return this.storage.upload(mediaItem.remoteURL, file);
 
-    return result.ref.getDownloadURL().then(async url => {
-
-      mediaItem.remoteURL = url;
-
-            //Save the new image to the database and update the mediaItemId and its location etc
-    // let dbSaveResult =
-
-    return await this.patientService.savePatientMedia(mediaItem);
-
-    // await dbSaveResult.then(result => {
-    //   mediaItem.mediaItemId = result.mediaItemId;
-    //   return mediaItem;
-
-    // }).catch(error => console.log(error))
-
-    });
-
-  });
 }
 
 async checkAuthenticated(){

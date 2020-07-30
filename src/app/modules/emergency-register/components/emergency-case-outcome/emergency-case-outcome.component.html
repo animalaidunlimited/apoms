@@ -5,8 +5,8 @@
 
     <mat-form-field class="extra-wide">
         <mat-label>Call Outcome</mat-label>
-        <mat-select tabindex="13" formControlName="callOutcome" (selectionChange)="outcomeChanged()">
-            <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome">
+        <mat-select tabindex="13" formControlName="CallOutcomeId" (selectionChange)="outcomeChanged()">
+            <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.CallOutcomeId">
                 {{outcome.CallOutcome}}
             </mat-option>
         </mat-select>
