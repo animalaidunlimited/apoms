@@ -140,11 +140,11 @@ export class PatientService extends APIService {
 
     public getPatientMediaItemsByPatientId(
         patientId: number,
-    ): Observable<MediaItem[]> {
+    ): Observable<any> {
         const request = '/PatientMediaItems?patientId=' + patientId;
 
         return this.getObservable(request).pipe(
-            map((response: MediaItem[]) => {
+            map((response: any) => {
 
                 return response
             }),
