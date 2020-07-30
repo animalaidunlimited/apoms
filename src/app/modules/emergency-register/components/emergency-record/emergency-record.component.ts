@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 import {
     EmergencyResponse,
     PatientResponse,
@@ -58,17 +58,18 @@ export class EmergencyRecordComponent implements OnInit {
                 updateTime: [''],
             }),
             callOutcome: this.fb.group({
-                callOutcome: [''],
+                CallOutcomeId: [''],
             }),
         });
 
         if (this.emergencyCaseId) {
             this.initialiseForm();
         }
+
     }
 
     initialiseForm() {
-        this.caseService.getCaseById(this.emergencyCaseId).subscribe(result => {
+       this.caseService.getCaseById(this.emergencyCaseId).subscribe(result => {
             this.recordForm.patchValue(result);
         });
     }
@@ -217,7 +218,6 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
-
 
     }
 

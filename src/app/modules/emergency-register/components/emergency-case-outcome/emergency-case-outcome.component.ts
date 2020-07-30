@@ -36,9 +36,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.recordForm.addControl(
-      "callOutcome", new FormGroup( {callOutcome : new FormControl()}));
-
     let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
     callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
@@ -50,6 +47,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
 
     });
+
+
+    this.changeDetector.detectChanges();
   }
 
   outcomeChanged(){

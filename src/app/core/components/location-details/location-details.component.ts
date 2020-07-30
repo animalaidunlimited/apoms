@@ -79,30 +79,39 @@ export class LocationDetailsComponent implements OnInit {
             .subscribe((location: LocationResponse) => {
                 this.recordForm.patchValue(location);
 
-                if (location.locationDetails) {
+
+                //If we have the lat and long then update the location
+                if (location.locationDetails?.latitude && location.locationDetails?.longitude)
+                {
+
                     this.initialiseLocation(location.locationDetails);
                     this.updateLocation(
                         location.locationDetails.latitude,
                         location.locationDetails.longitude,
                     );
                 }
+
+                //Sometimes for older records we might have the address, but no lat long. In this case, search for the location
+                //If no results are found then set the location to be the center of user's lat/long.
+                if((!location.locationDetails?.latitude || !location.locationDetails?.longitude) && location.locationDetails?.location){
+
+                    this.performSearch();
+                }
+
             });
 
-        if (this.recordForm.get('locationDetails.latitude').value == '') {
-            const coordinates = this.userOptions.getCoordinates() as Location;
-            this.initialiseLocation(coordinates);
-        }
+            //If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
+            if (!this.latitude || !this.longitude ){
 
+                const coordinates = this.userOptions.getCoordinates() as Location;
 
+                this.initialiseLocation(coordinates);
 
+            }
     }
 
     ngAfterViewInit() {
         this.getPlaceAutocomplete();
-
-        // TODO review this after the below issue is closed:
-        // https://github.com/angular/components/pull/18967
-        // this.mapTypeId = google.maps.MapTypeId.ROADMAP;
     }
 
     getPlaceAutocomplete() {
@@ -121,8 +130,6 @@ export class LocationDetailsComponent implements OnInit {
             if(place?.formatted_address){
                 this.invokeEvent(place);
             }
-
-
         });
 
     }
@@ -158,6 +165,7 @@ export class LocationDetailsComponent implements OnInit {
     }
 
     updateLocation(latitude: number, longitude: number) {
+
         this.recordForm.get('locationDetails.latitude').setValue(latitude);
         this.recordForm.get('locationDetails.longitude').setValue(longitude);
 
@@ -177,6 +185,7 @@ export class LocationDetailsComponent implements OnInit {
     }
 
     performSearch() {
+
         const addressSearcher = new google.maps.places.PlacesService(
             this.addresstext.nativeElement,
         );
@@ -189,7 +198,7 @@ export class LocationDetailsComponent implements OnInit {
         addressSearcher.findPlaceFromQuery(searchRequest, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 for (let i = 0; i < results.length; i++) {
-                    // this.recordForm.get("locationDetails.location").setValue(results[0].formatted_address);
+
                     this.updateLocation(
                         results[0].geometry.location.lat(),
                         results[0].geometry.location.lng(),

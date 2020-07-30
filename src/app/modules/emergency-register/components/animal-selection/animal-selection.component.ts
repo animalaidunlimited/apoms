@@ -222,6 +222,14 @@ export class AnimalSelectionComponent implements OnInit {
         this.reloadChips();
     }
 
+    tagNumberClicked(row){
+
+        if (!this.selection.isSelected(row)){
+            this.toggleRow(row)
+        }
+
+    }
+
     /** Selects all rows if they are not all selected; otherwise clear selection. */
     masterToggle() {
         this.isAllSelected()
@@ -602,8 +610,11 @@ export class AnimalSelectionComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
 
+
+
             if (result) {
                 const currentPatient = this.getcurrentPatient();
+
                 currentPatient.get('tagNumber').setValue(result.value);
                 currentPatient
                     .get('duplicateTag')

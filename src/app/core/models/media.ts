@@ -1,8 +1,8 @@
 import { SafeUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface MediaItem{
-    mediaItemId: number;
+    mediaItemId: Observable<number>,
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
@@ -12,7 +12,11 @@ export interface MediaItem{
     heightPX: number;
     widthPX: number;
     tags: string[],
-    uploadProgress: Observable<number>,
+    uploadProgress$: Observable<number>,
     updated: boolean
   }
-
+  
+  export interface MediaItemReturnObject{
+    mediaItem: MediaItem;
+    mediaItemId: BehaviorSubject<number>;
+  }

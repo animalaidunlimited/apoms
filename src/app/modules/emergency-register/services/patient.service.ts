@@ -126,6 +126,8 @@ export class PatientService extends APIService {
 
     public async savePatientMedia(mediaItem: MediaItem){
 
+        // mediaItem.mediaItemId.subscribe( val => console.log(val));
+
         return await this.put(mediaItem)
             .then(data => {
                 return data;
@@ -149,15 +151,4 @@ export class PatientService extends APIService {
         );
     }
 
-    public async saveMediaItemMetadata(mediaItem:MediaItem){
-
-        return await this.put(mediaItem)
-        .then(data => {
-            return data;
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-    }
 }
