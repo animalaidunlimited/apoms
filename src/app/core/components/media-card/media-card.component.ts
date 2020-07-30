@@ -76,12 +76,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
     if(this.mediaForm.touched){
 
-      console.log(this.mediaItem.mediaItemId);
-
 
       this.mediaItem.mediaItemId.subscribe((itemId) => {
-
-        console.log(typeof itemId);
 
 
         this.mediaForm.get("patientMediaItemId").setValue(itemId);
@@ -89,8 +85,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         //TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
         //We should turn this into an observable.
         this.mediaForm.get("remoteURL").setValue(this.mediaItem.remoteURL);
-
-        console.log(this.mediaForm.value);
 
         this.patientService.savePatientMedia(this.mediaForm.value);
       });

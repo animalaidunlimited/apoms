@@ -19,7 +19,7 @@
 
 <div mat-dialog-content fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start">
 
-    <div *ngIf="!mediaItems">No images to display</div>
+    <div *ngIf="mediaItems.length === 0">No images to display</div>
 
     <div *ngFor="let mediaItem of mediaItems">
 

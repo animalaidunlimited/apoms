@@ -40,18 +40,28 @@ export class MediaDialog implements OnInit {
 
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
 
+      if(!mediaItems){
+        return;
+      }
+
       this.mediaItems = mediaItems.map(mediaItem => {
 
-        console.log(mediaItem.mediaItemId);
-
-        //Create an observable from our mediaItemId
-        mediaItem.mediaItemId = Observable.create(observer => {
-          observer.next(mediaItem.mediaItemId)
-        })
-
-        mediaItem.mediaItemId.subscribe(val => console.log(val))
-
-        return mediaItem;
+        let newItem:MediaItem = {
+          mediaItemId: of(mediaItem.mediaItemId),
+          mediaType: mediaItem.mediaType,
+          localURL: mediaItem.localURL,
+          remoteURL: mediaItem.remoteURL,
+          datetime: mediaItem.datetime,
+          comment: mediaItem.comment,
+          patientId: mediaItem.patientId,
+          heightPX: mediaItem.heightPX,
+          widthPX: mediaItem.widthPX,
+          tags: mediaItem.tags,
+          uploadProgress$: of(100),
+          updated: false
+        }
+        
+        return newItem;
 
       });
 
