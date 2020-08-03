@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { isImageFile } from '../helpers/utils';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -20,10 +21,6 @@ interface ResizedImage{
   width: number;
   height: number;
 }
-
-
-
-
 
 
 @Injectable({
@@ -122,7 +119,7 @@ return returnObject;
 
     let now = new Date();
 
-    let isImage = this.isImageFile(file);
+    let isImage = isImageFile(file);
 
 
     let newMediaItem:MediaItem = {
@@ -193,11 +190,12 @@ return returnObject;
 }
 
 getPastedImage(event: ClipboardEvent): File | null {
+
     if (
         event.clipboardData &&
         event.clipboardData.files &&
         event.clipboardData.files.length &&
-        this.isImageFile(event.clipboardData.files[0])
+        isImageFile(event.clipboardData.files[0])
     ) {
         return event.clipboardData.files[0];
     }
@@ -205,10 +203,7 @@ getPastedImage(event: ClipboardEvent): File | null {
     return null;
 }
 
-// Determine if the given File is an Image (according do its Mime-Type).
-isImageFile(file: File): boolean {
-    return file.type.search(/^image\//i) === 0;
-}
+
 
 
 uploadFile(mediaItem: MediaItem, file:Blob) : AngularFireUploadTask

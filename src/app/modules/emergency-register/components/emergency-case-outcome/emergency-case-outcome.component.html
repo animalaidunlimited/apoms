@@ -3,7 +3,7 @@
 
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
-    <mat-form-field class="extra-wide">
+    <mat-form-field class="full-width">
         <mat-label>Call Outcome</mat-label>
         <mat-select tabindex="13" formControlName="CallOutcomeId" (selectionChange)="outcomeChanged()">
             <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.CallOutcomeId">

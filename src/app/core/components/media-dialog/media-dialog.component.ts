@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogData } from 'src/app/modules/emergency-register/components/tag-number-dialog/tag-number-dialog.component';
 import { MediaPasteService } from '../../services/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { BehaviorSubject, from, of, Observable } from 'rxjs';
+import { of } from 'rxjs';
 
-interface MediaItemCombined {
-  mediaItems: MediaItem[],
-  mediaItemId: BehaviorSubject<number>[]
+interface IncomingData {
+  tagNumber: string;
+  patientId: number;
+  pastedImage: File;
 }
 
 @Component({
@@ -21,13 +21,10 @@ interface MediaItemCombined {
 },
 })
 
-
-
-
 export class MediaDialog implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<MediaDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private mediaPaster: MediaPasteService,
     private patientService: PatientService,
     public platform: Platform) { }
@@ -38,13 +35,13 @@ export class MediaDialog implements OnInit {
 
   ngOnInit(): void {
 
+
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
 
-      if(!mediaItems){
-        return;
-      }
 
-      this.mediaItems = mediaItems.map(mediaItem => {
+        if(mediaItems){
+
+        this.mediaItems = mediaItems.map(mediaItem => {
 
         let newItem:MediaItem = {
           mediaItemId: of(mediaItem.mediaItemId),
@@ -60,21 +57,43 @@ export class MediaDialog implements OnInit {
           uploadProgress$: of(100),
           updated: false
         }
-        
+
         return newItem;
 
-      });
+        });
+
+      };
+
+      if(this.data.pastedImage){
+        this.uploadFile(this.data.pastedImage);
+      }
 
     });
 
   }
 
-handlePaste(event: ClipboardEvent){
+public handlePaste(event: ClipboardEvent){
 
-    //Pass the clipboard event down to the service, expect it to return a new media item
-    let mediaObject: MediaItem = this.mediaPaster.handlePaste(event, this.data.patientId);
+    //Pass the clipboard event down to the service, expect it to return an image file
+    let mediaFile: File = this.mediaPaster.getPastedImage(event);
 
-    this.addToMediaItems(mediaObject);
+      let mediaItem = this.upload(mediaFile, this.data.patientId)
+
+      this.addToMediaItems(mediaItem.mediaItem);
+
+}
+
+upload(file: File, patientId: number) : MediaItemReturnObject{
+
+  let mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
+
+    mediaItem.mediaItemId.subscribe(result => {
+      if(result){
+        this.uploading--;
+      }
+    });
+
+    return mediaItem;
 
 }
 
@@ -85,16 +104,9 @@ uploadFile($event) {
 
   for(let file of $event.target.files)
   {
-    let mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
-
-    mediaItem.mediaItemId.subscribe(result => {
-      if(result){
-        this.uploading--;
-      }
-    })
+    let mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId)
 
     this.addToMediaItems(mediaItem.mediaItem);
-
 
   }
 

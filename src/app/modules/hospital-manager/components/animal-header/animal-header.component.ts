@@ -47,6 +47,8 @@ export class AnimalHeaderComponent implements OnInit {
 
     public handlePaste(event: ClipboardEvent){
 
+        console.log(event.clipboardData.files[0]);
+
         let patientId = this.recordForm.get('patientDetails.patientId').value;
 
         //Pass the clipboard event down to the service, expect it to return an image URL
@@ -55,41 +57,4 @@ export class AnimalHeaderComponent implements OnInit {
         this.imageUrls[0] = newItem.localURL;
 
     }
-
-
-    /*
-    public handlePaste(event: ClipboardEvent): void {
-        const pastedImage = this.getPastedImage(event);
-
-        if (!pastedImage) {
-            return;
-        }
-        if (this.lastObjectUrl) {
-            URL.revokeObjectURL(this.lastObjectUrl);
-        }
-
-        this.lastObjectUrl = URL.createObjectURL(pastedImage);
-
-        this.imageUrls[0] = this.sanitizer.bypassSecurityTrustUrl(this.lastObjectUrl);
-    }
-
-    private getPastedImage(event: ClipboardEvent): File | null {
-        if (
-            event.clipboardData &&
-            event.clipboardData.files &&
-            event.clipboardData.files.length &&
-            this.isImageFile(event.clipboardData.files[0])
-        ) {
-            return event.clipboardData.files[0];
-        }
-
-        return null;
-    }
-
-    // Determine if the given File is an Image (according do its Mime-Type).
-    private isImageFile(file: File): boolean {
-        return file.type.search(/^image\//i) === 0;
-    }
-
-    */
 }

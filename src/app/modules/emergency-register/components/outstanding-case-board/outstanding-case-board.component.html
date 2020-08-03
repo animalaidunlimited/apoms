@@ -21,7 +21,11 @@
 
 <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
 
-  <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()">
+  <button mat-mini-fab [color]="refreshColour" aria-label="Map" (click)="openMap()">
+    <mat-icon>map</mat-icon>
+  </button>
+
+  <button *ngIf="!autoRefresh" mat-mini-fab [color]="primary" aria-label="Manual refresh" (click)="refreshRescues()">
     <mat-icon>refresh</mat-icon>
   </button>
 

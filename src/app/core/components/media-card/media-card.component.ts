@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
@@ -122,9 +122,8 @@ remove(index: number): void {
 
   this.mediaForm.markAsTouched();
 
-  if (index >= 0) {
-    this.tags.removeAt(index);
-  }
+  this.tags.removeAt(index);
+
 }
 
 deleteMediaItem(){

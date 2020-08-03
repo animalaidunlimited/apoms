@@ -15,9 +15,10 @@
     <mat-form-field>
             <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
             (focus)="setInitialTime()"
+            [min]="minimumDate"
             [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
     </mat-form-field>
-
+    
     <mat-form-field>
         <mat-label>Dispatcher</mat-label>
         <mat-select tabindex="10" formControlName="dispatcher" [errorStateMatcher]="errorMatcher">

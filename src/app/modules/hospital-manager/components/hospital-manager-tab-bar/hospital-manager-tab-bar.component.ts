@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-    SearchResponse,
-    searchResponseWrapper,
-} from 'src/app/core/models/responses';
+import { searchResponseWrapper } from 'src/app/core/models/responses';
 
 @Component({
     selector: 'hospital-manager-tab-bar',
