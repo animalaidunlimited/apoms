@@ -5,6 +5,8 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
+import { UserOptionsService } from '../../services/user-options.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'emergency-details',
@@ -33,16 +35,21 @@ export class EmergencyDetailsComponent implements OnInit {
     dispatchers$;
     emergencyCodes$;
     callDateTime: string | Date = getCurrentTimeString();
+    minimumDate: string;
 
     constructor(
         private dropdowns: DropdownService,
         private caseService: CaseService,
+        private datePipe: DatePipe,
+        private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
     ) {}
 
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+
+        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), "yyyy-MM-ddThh:mm:ss.ms");
 
         const emergencyDetails = this.recordForm.get(
             'emergencyDetails',

@@ -1,4 +1,4 @@
-<mat-card class="media-card" [formGroup]="mediaForm" autocomplete="off">
+<mat-card class="media-card" [formGroup]="mediaForm">
     <mat-card-header>
       <div mat-card-avatar class="media-card-header-image"></div>
       <mat-card-title>{{tagNumber}}</mat-card-title>
@@ -21,7 +21,7 @@
     <mat-card-content>
       <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>
       <p>
-        <input matInput type="text" formControlName="comment" placeholder="Comment">
+        <input matInput type="text" formControlName="comment" placeholder="Comment" autocomplete="off">
       </p>
 
     <mat-form-field class="example-chip-list" style="width:100%">
@@ -30,7 +30,7 @@
                 [selectable]="selectable"
                 [formGroupName]="i"
                 [removable]="removable"
-                (removed)="remove(tag, i)">
+                (removed)="remove(i)">
                 {{tag.value.tag}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
@@ -38,7 +38,8 @@
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
-                 (matChipInputTokenEnd)="add($event)">
+                 (matChipInputTokenEnd)="add($event)"
+                 autocomplete="off">
         </mat-chip-list>
       </mat-form-field>
 

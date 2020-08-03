@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class UserOptionsService{
     homeCoordinates$;
     notifactionDuration:number;
+    minimumDate:Date;
 
     constructor() {}
 
@@ -26,6 +27,16 @@ export class UserOptionsService{
         }
 
         return this.notifactionDuration;
+    }
+
+    getMinimumDate(){
+
+        if(!this.minimumDate){
+
+            this.minimumDate = new Date("2010-01-01");
+        }
+
+        return this.minimumDate;
     }
 
     // TODO implement custom debounce time for autocompletes

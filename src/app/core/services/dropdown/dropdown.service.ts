@@ -95,11 +95,11 @@ export class DropdownService extends APIService {
                     ],
                 },
                 {
-                    animalType: 'Water Buffalo',
+                    animalType: 'Buffalo',
                     exclusionList: ['Can\'t fly', 'Shifted puppies'],
                 },
                 {
-                    animalType: 'Water Buffalo Calf',
+                    animalType: 'Buffalo Calf',
                     exclusionList: ['Can\'t fly', 'Shifted puppies'],
                 },
                 {
@@ -269,7 +269,7 @@ export class DropdownService extends APIService {
 
         return this.problems$;
     }
-    
+
     getIsoReasons() {
         if (!this.isoReasons$) {
             this.isoReasons$ = [

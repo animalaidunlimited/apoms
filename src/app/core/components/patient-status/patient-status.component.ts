@@ -4,7 +4,6 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { UserOptionsService } from '../../services/user-options.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
@@ -25,7 +24,6 @@ export class PatientStatusComponent implements OnInit {
         private datepipe: DatePipe,
         private patientService: PatientService,
         private userOptions: UserOptionsService,
-        private _snackBar: MatSnackBar,
         private fb: FormBuilder,
         private showSnackBar: SnackbarService
     ) {}
@@ -62,7 +60,10 @@ export class PatientStatusComponent implements OnInit {
                 this.createdDate = this.patientStatusForm.get(
                     'createdDate',
                 ).value;
+                console.log(this.createdDate);
             });
+
+
 
         this.currentTime = getCurrentTimeString();
     }
