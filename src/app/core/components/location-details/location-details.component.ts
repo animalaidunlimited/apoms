@@ -39,8 +39,6 @@ export class LocationDetailsComponent implements OnInit {
     @Input() recordForm: FormGroup;
 
     errorMatcher = new CrossFieldErrorMatcher();
-
-    // mapTypeId: google.maps.MapTypeId;
     center: google.maps.LatLngLiteral;
 
     constructor(
@@ -103,7 +101,13 @@ export class LocationDetailsComponent implements OnInit {
             //If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
             if (!this.latitude || !this.longitude ){
 
-                const coordinates = this.userOptions.getCoordinates() as Location;
+                const coords = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
+
+                let coordinates:Location = {
+                    latitude: coords.lat,
+                    longitude: coords.lng,
+                    location: null
+                }
 
                 this.initialiseLocation(coordinates);
 

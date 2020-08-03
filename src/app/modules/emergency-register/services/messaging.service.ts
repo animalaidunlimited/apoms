@@ -36,7 +36,6 @@ constructor(private angularFireMessaging: AngularFireMessaging,
     receiveFocus(){
 
         this.haveReceivedFocus.next(true);
-
     }
 
     getPermissionGranted(){

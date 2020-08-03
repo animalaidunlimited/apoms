@@ -10,18 +10,18 @@ export class UserOptionsService{
 
     constructor() {}
 
-    getCoordinates() {
+    getCoordinates() : google.maps.LatLngLiteral{
         if (!this.homeCoordinates$) {
             this.homeCoordinates$ = {
-                latitude: 24.57127,
-                longitude: 73.691544,
+                lat: 24.57127,
+                lng: 73.691544,
             };
         }
 
         return this.homeCoordinates$;
     }
 
-    getNotifactionDuration() {
+    getNotifactionDuration() : number {
         if (!this.notifactionDuration) {
             this.notifactionDuration = 5;
         }
@@ -29,7 +29,7 @@ export class UserOptionsService{
         return this.notifactionDuration;
     }
 
-    getMinimumDate(){
+    getMinimumDate() : Date{
 
         if(!this.minimumDate){
 
