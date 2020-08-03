@@ -1,0 +1,29 @@
+<google-map height="75vh"
+            width="100%"
+            [options]="options"
+            [center]="center"
+            [zoom]="zoom">
+
+            <div *ngFor="let outstandingRescues of (rescues | async)?.outstandingRescues;">
+
+
+                <div *ngFor="let rescuerGroups of outstandingRescues.rescuerGroups;">
+
+
+                    <div *ngFor="let rescue of rescuerGroups.rescues;">
+
+                        <map-marker
+                        [position]="rescue.latLngLiteral">
+                     </map-marker>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </google-map>
+
+
+
+

@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { MessagingService } from '../../services/board-socket.service';
+import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,7 +10,6 @@ import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RescueDetailsService } from '../../services/rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-
 
 export interface Swimlane{
   label:string;
@@ -78,6 +77,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
   notificationPermissionGranted:boolean = false;
 
   refreshColour: ThemePalette = "primary";
+
+  mapShowing: boolean = false;
 
 
 
@@ -151,7 +152,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
           this.onSearchChange(this.outstandingCases, value);
       })
   }
-
+  
   refreshRescues(){
     this.subscription = this.refreshRescueSubscription();
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagingService } from './modules/emergency-register/services/board-socket.service';
+import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 
 

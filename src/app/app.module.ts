@@ -52,7 +52,6 @@ class UIErrorHandler extends ErrorHandler {
         AngularFireMessagingModule,
         AngularFireStorageModule,
         AngularFireModule.initializeApp(environment.firebase),
-
     ],
     exports: [
 
