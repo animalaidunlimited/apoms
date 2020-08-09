@@ -41,7 +41,6 @@ export class RescueDetailsService extends APIService {
         if (!this.outstandingRescues$) {
             this.outstandingRescues$ = this.getObservable(request).pipe(
                 map(response => {
-                    console.log(response);
                     return response;
                 }),
             );

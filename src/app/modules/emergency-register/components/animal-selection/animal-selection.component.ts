@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -32,6 +32,21 @@ export class AnimalSelectionComponent implements OnInit {
     @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
+
+    @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
+
+
+    @HostListener('document:keydown.control.enter', ['$event'])
+    catchControlEnter(event: KeyboardEvent) {
+        event.preventDefault();
+
+        //Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
+        //So unless we check to see which version of this component is visible, we won't know which tab to update.
+        if(this.animalTypeChipsElement.nativeElement.offsetParent){
+
+            this.updateTag(this.getcurrentPatient());
+        }
+    };
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
@@ -614,8 +629,6 @@ export class AnimalSelectionComponent implements OnInit {
 
                 currentPatient.get('updated').setValue(true);
                 this.patientTable.renderRows();
-
-                console.log(result.status);
             }
         });
     }

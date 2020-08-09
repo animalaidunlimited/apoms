@@ -27,6 +27,7 @@ export interface SearchValue {
     searchValue: string;
     databaseField: string;
     name: string;
+    inNotIn: boolean;
 }
 
 export class Search {
@@ -83,13 +84,15 @@ export class RecordSearchComponent implements OnInit {
             searchValue: null,
             databaseField: null,
             name: null,
+            inNotIn: false
         },
         {
             id: 1,
             inputType: 'text',
             searchValue: 'emno',
             databaseField: 'ec.EmergencyNumber',
-            name: 'Em. No.',
+            name: 'Em. no.',
+            inNotIn: false
         },
         {
             id: 2,
@@ -97,27 +100,31 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'date',
             databaseField: 'CAST(ec.CallDateTime AS DATE)',
             name: 'Date',
+            inNotIn: false
         },
         {
             id: 3,
             inputType: 'text',
             searchValue: 'tagno',
             databaseField: 'p.TagNumber',
-            name: 'Tag No.',
+            name: 'Tag no.',
+            inNotIn: false
         },
         {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
             databaseField: 'c.Name',
-            name: 'Caller Name',
+            name: 'Caller name',
+            inNotIn: false
         },
         {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
             databaseField: 'c.Number',
-            name: 'Caller No.',
+            name: 'Caller no.',
+            inNotIn: false
         },
         {
             id: 6,
@@ -125,6 +132,7 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'location',
             databaseField: 'ec.Location',
             name: 'Location',
+            inNotIn: false
         },
         {
             id: 7,
@@ -132,13 +140,15 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'area',
             databaseField: '',
             name: 'Area',
+            inNotIn: false
         },
         {
             id: 8,
             inputType: 'text',
             searchValue: 'species',
             databaseField: 'at.AnimalType',
-            name: 'Animal Type',
+            name: 'Animal type',
+            inNotIn: false
         },
         {
             id: 9,
@@ -146,6 +156,7 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'problem',
             databaseField: 'pp.Problem',
             name: 'Problem',
+            inNotIn: false
         },
         {
             id: 10,
@@ -153,27 +164,39 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'outcome',
             databaseField: 'o.Outcome',
             name: 'Result',
+            inNotIn: false
         },
         {
             id: 11,
             inputType: 'text',
             searchValue: 'cloc',
             databaseField: '',
-            name: 'Current Location',
+            name: 'Current location',
+            inNotIn: false
         },
         {
             id: 12,
             inputType: 'date',
             searchValue: 'releasedate',
             databaseField: 'CAST(p.ReleaseDate AS DATE)',
-            name: 'Release Date',
+            name: 'Release date',
+            inNotIn: false
         },
         {
             id: 13,
             inputType: 'date',
             searchValue: 'dieddate',
             databaseField: 'CAST(p.DiedDate AS DATE)',
-            name: 'Died Date',
+            name: 'Died date',
+            inNotIn: false
+        },
+        {
+            id: 14,
+            inputType: 'boolean',
+            searchValue: 'tycall',
+            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            name: 'Thanked',
+            inNotIn: true
         },
     ];
 
@@ -193,6 +216,8 @@ export class RecordSearchComponent implements OnInit {
         });
 
         this.searchShowing = false;
+
+        this.searchRows = this.searchForm.get('searchRows') as FormArray;
 
     }
 
@@ -225,11 +250,25 @@ export class RecordSearchComponent implements OnInit {
                     option => option.searchValue == splitItem[0].toLowerCase(),
                 );
 
-                return (
-                    option.databaseField +
-                    '=' +
-                    encodeURIComponent(splitItem[1].trim())
-                );
+                //If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
+                //what the user has entered into the Search Term field
+                if(option.inNotIn){
+
+
+                    option.databaseField = option.databaseField.replace(' NOT IN (', ' IN (')
+
+                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === "no"){
+
+                        option.databaseField = option.databaseField.replace(' IN (', ' NOT IN (')
+                    }
+
+                    return option.databaseField;
+
+                }
+                else{
+
+                    return option.databaseField + "=" + encodeURIComponent(splitItem[1].trim());
+                }
             })
             .join('&');
 
@@ -237,12 +276,14 @@ export class RecordSearchComponent implements OnInit {
     }
 
     toggleSearchBox() {
+
         if (this.searchShowing) {
             this.search.searchString = this.getSearchString();
         } else {
             this.updateSearchArray();
-        }
+            this.searchRows.length === 0 ? this.addRow() : null;
 
+        }
         this.searchShowing = !this.searchShowing;
     }
 
@@ -271,9 +312,12 @@ export class RecordSearchComponent implements OnInit {
                 this.createItem(option.id, splitItem[1].trim()),
             );
         });
+
+
     }
 
     getSearchArray() {
+
         // Filter out any empty values and then create a regex string which uses
         // the searchValue from the options array as a delimiter. This way we get a nice list
         // of all the search fields
@@ -283,6 +327,7 @@ export class RecordSearchComponent implements OnInit {
                 return '(?=' + item.searchValue + ')';
             })
             .join('|');
+
 
         const delimiter = new RegExp(regex);
 
@@ -314,7 +359,7 @@ export class RecordSearchComponent implements OnInit {
     }
 
     addRow() {
-        this.searchRows = this.searchForm.get('searchRows') as FormArray;
+
         this.searchRows.push(this.createItem('', ''));
     }
 

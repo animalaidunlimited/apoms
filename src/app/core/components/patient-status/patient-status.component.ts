@@ -60,7 +60,6 @@ export class PatientStatusComponent implements OnInit {
                 this.createdDate = this.patientStatusForm.get(
                     'createdDate',
                 ).value;
-                console.log(this.createdDate);
             });
 
 
