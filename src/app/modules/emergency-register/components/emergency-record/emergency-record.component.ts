@@ -200,6 +200,8 @@ export class EmergencyRecordComponent implements OnInit {
                     .then(data => {
                         const resultBody = data as EmergencyResponse;
 
+                        console.log(data);
+
                         this.recordForm
                             .get('callerDetails.callerId')
                             .setValue(resultBody.callerId);

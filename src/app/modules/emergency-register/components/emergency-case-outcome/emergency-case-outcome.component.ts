@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -46,6 +46,10 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
 
+      if(this.sameAsId){
+        this.sameAs = true;
+      }
+
     });
 
 
@@ -54,9 +58,10 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   outcomeChanged(){
 
-    this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
+    let sameAsNumber:AbstractControl = this.recordForm.get("callOutcome.sameAsNumber") as AbstractControl;
 
-    console.log(this.recordForm);
+    sameAsNumber.setValue(null);
+    sameAsNumber.setErrors(null);
 
     let callOutcome:CallOutcomeResponse = this.recordForm.get('callOutcome').value;
 

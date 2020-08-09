@@ -38,7 +38,7 @@
                         </div>
                         <div fxFlex>
                             <mat-form-field>
-                                <input formControlName="searchTerm" matInput>
+                                <input formControlName="searchTerm" autocomplete="off" matInput>
                             </mat-form-field>
                         </div>
                     </div>
@@ -58,6 +58,9 @@
 <div>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+
+        <div *ngIf="(searchResults$ | async)?.length === 0 ;">No results</div>
+
 
     <mat-card *ngFor="let result of searchResults$ | async" class="emergency-card">
     <!-- <mat-card *ngFor="let result of searchResults$" class="emergency-card"> -->
@@ -127,7 +130,7 @@
         </mat-card-footer>
       </mat-card>
 
-      
+
 
     </div>
 

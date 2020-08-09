@@ -47,8 +47,6 @@ export class AnimalHeaderComponent implements OnInit {
 
     public handlePaste(event: ClipboardEvent){
 
-        console.log(event.clipboardData.files[0]);
-
         let patientId = this.recordForm.get('patientDetails.patientId').value;
 
         //Pass the clipboard event down to the service, expect it to return an image URL

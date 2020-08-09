@@ -2,8 +2,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues!!
 
-CALL AAU.sp_GetOutstandingRescues('Jim')
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN

@@ -126,8 +126,6 @@ export class PatientService extends APIService {
 
     public async savePatientMedia(mediaItem: MediaItem){
 
-        // mediaItem.mediaItemId.subscribe( val => console.log(val));
-
         return await this.put(mediaItem)
             .then(data => {
                 return data;
