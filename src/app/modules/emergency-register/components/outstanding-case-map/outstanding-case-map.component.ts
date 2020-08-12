@@ -1,10 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-import { MessagingService } from '../../services/messaging.service';
-import { RescueDetailsService } from '../../services/rescue-details.service';
+import { OutstandingCaseResponse, OutstandingCase, } from 'src/app/core/models/outstanding-case';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { map } from 'rxjs/operators';
-import { OutstandingCase, OutstandingCaseResponse, RescuerGroup } from 'src/app/core/models/outstanding-case';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'outstanding-case-map',
@@ -19,11 +18,11 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   options : google.maps.MapOptions;
 
-  rescues: Observable<OutstandingCaseResponse>;
+  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
-  constructor(private userOptions: UserOptionsService,
-    private outstandingCases: MessagingService,
-    private rescueService: RescueDetailsService) {
+  constructor(
+    private userOptions: UserOptionsService,
+    private outstandingCases: OutstandingCaseService) {
    }
 
   ngOnInit(): void {
@@ -42,7 +41,7 @@ export class OutstandingCaseMapComponent implements OnInit {
       }
     ]};
 
-    this.rescues = this.rescueService.getOutstandingRescues();
+    this.outstandingCases$ = this.outstandingCases.outstandingCases$;
 
   }
 

@@ -15,7 +15,11 @@ export class UniqueTagNumberValidator {
 
             if(!control.value){
 
-                return new Observable<null>();
+                return new Observable((observer) => {
+
+                    observer.next(null);
+
+                })
 
             }
             else

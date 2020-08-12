@@ -50,6 +50,11 @@ AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec
             JSON_OBJECT("location", ec.Location),
             JSON_OBJECT("latitude", ec.Latitude),
             JSON_OBJECT("longitude", ec.Longitude),
+            JSON_OBJECT("latLngLiteral",
+            JSON_MERGE_PRESERVE(
+            JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+            JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
+            )),
             JSON_OBJECT("callerName", c.Name),
             JSON_OBJECT("callerNumber", c.Number),
             JSON_OBJECT("patients", p.Patients),

@@ -162,7 +162,6 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-
                         let messageResult = {
                             failure: 0,
                         };
@@ -199,8 +198,6 @@ export class EmergencyRecordComponent implements OnInit {
                     .updateCase(emergencyForm)
                     .then(data => {
                         const resultBody = data as EmergencyResponse;
-
-                        console.log(data);
 
                         this.recordForm
                             .get('callerDetails.callerId')
