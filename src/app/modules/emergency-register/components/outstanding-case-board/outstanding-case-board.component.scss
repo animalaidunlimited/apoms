@@ -33,13 +33,15 @@
 }
 
 .drag-drop-list {
-    border: solid 1px #ccc;
+    // border: solid 1px #ccc;
     min-height: 48px;
     min-width: 175px;
     background: white;
     border-radius: 4px;
     overflow: hidden;
 }
+
+
 
 .drag-drop-box {
     padding: 20px 10px;
@@ -128,10 +130,17 @@
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:focus,
 .mat-expansion-panel-header.mat-expanded:hover,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
 {
   background-color: lightsteelblue !important;
 }
+
+.mat-expansion-panel{
+    margin-bottom: 8px;
+    border: solid .1px lightgray;
+}
+
 
 .refresh-box{
   padding-right: 40px;

@@ -46,10 +46,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
 
-      if(this.sameAsId){
-        this.sameAs = true;
-      }
-
     });
 
 
@@ -72,6 +68,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     //Make sure we focus when we're selecting same as
     if(this.sameAs){
       setTimeout(() => this.sameAsNumberField.nativeElement.focus(), 0);
+      this.changeDetector.detectChanges();
     }
 
   }

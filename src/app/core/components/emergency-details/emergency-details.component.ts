@@ -22,8 +22,6 @@ export class EmergencyDetailsComponent implements OnInit {
     @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
     @ViewChild("callDateTimeField",{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
 
-
-
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
         event.preventDefault();
@@ -87,6 +85,7 @@ export class EmergencyDetailsComponent implements OnInit {
                 this.recordForm.get('emergencyDetails.emergencyCaseId').value,
             )
             .subscribe(result => {
+                console.log(result);
                 this.recordForm.patchValue(result);
             });
 

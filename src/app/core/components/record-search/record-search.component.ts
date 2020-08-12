@@ -162,7 +162,7 @@ export class RecordSearchComponent implements OnInit {
             id: 10,
             inputType: 'text',
             searchValue: 'outcome',
-            databaseField: 'o.Outcome',
+            databaseField: 'o.CallOutcome',
             name: 'Result',
             inNotIn: false
         },

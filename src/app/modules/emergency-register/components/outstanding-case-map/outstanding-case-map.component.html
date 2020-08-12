@@ -4,7 +4,7 @@
             [center]="center"
             [zoom]="zoom">
 
-            <div *ngFor="let outstandingRescues of (rescues | async)?.outstandingRescues;">
+            <div *ngFor="let outstandingRescues of (outstandingCases$ | async);">
 
 
                 <div *ngFor="let rescuerGroups of outstandingRescues.rescuerGroups;">
@@ -12,9 +12,28 @@
 
                     <div *ngFor="let rescue of rescuerGroups.rescues;">
 
+                        <!-- TODO alter the emergencyCodeId so that it works for all organisations -->
+
                         <map-marker
-                        [position]="rescue.latLngLiteral">
-                     </map-marker>
+                        [position]="rescue.latLngLiteral"
+                        [options]="{icon: ( rescue.isLargeAnimal == 1 ?
+                            (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                            :
+                            rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                            :
+                            rescue.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                            :
+                            'assets/icons/large_animal_grey.png')
+                            :
+                            (rescue.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                            :
+                            rescue.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                            :
+                            rescue.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                            :
+                            'assets/icons/small_animal_grey.png')
+                        )}">
+                        </map-marker>
 
                     </div>
 
@@ -25,5 +44,23 @@
         </google-map>
 
 
-
+        <!-- <map-marker
+        [position]="rescue.latLngLiteral"
+        [options]="{icon: ( rescue.isLargeAnimal == 1 ?
+            (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+            :
+            rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+            :
+            rescue.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+            :
+            'assets/icons/large_animal_grey.png')
+            :
+            (rescue.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+            :
+            rescue.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+            :
+            rescue.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+            :
+            'assets/icons/small_animal_grey.png')
+        )}"> -->
 

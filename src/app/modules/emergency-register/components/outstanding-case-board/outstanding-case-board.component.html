@@ -4,7 +4,6 @@
 
   <mat-form-field class="search-box" >
 
-
     <span matPrefix>
         <mat-icon matSuffix style="cursor: pointer;">search</mat-icon>
     </span>
@@ -21,7 +20,7 @@
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
 
-    <button mat-mini-fab [color]="refreshColour" aria-label="Map" (click)="mapShowing = !mapShowing">
+    <button mat-mini-fab [color]="refreshColour" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 
@@ -33,16 +32,14 @@
     matTooltip="To enable auto refresh, please enable notifications in your browser."
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
-
-
   </div>
 
 </div>
 
-<outstanding-case-map *ngIf="mapShowing"></outstanding-case-map>
+<outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
 
-<div cdkDropListGroup *ngIf="!mapShowing">
-    <div class="drag-drop-container" *ngFor="let lane of outstandingCases">
+<div cdkDropListGroup [hidden]="!hideMap">
+    <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
 
 
       <h2>{{lane.rescueStatusName}}</h2>
@@ -66,10 +63,9 @@
         cdkDropList
         [cdkDropListData]="rescuerGroup.rescues"
         class="drag-drop-list"
+        style="background-color: transparent;"
         (cdkDropListDropped)="drop($event)">
-        <div
-
-        *ngFor="let outstandingCase of rescuerGroup.rescues" cdkDrag>
+        <div *ngFor="let outstandingCase of rescuerGroup.rescues;" cdkDrag>
 
         <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
           <mat-expansion-panel-header
@@ -86,12 +82,9 @@
             <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
-
             <div fxFlex style="text-align: center;">
               {{outstandingCase.emergencyNumber}} - ({{outstandingCase.patients}})
             </div>
-            <!-- </mat-panel-title> -->
-            <!-- <mat-panel-description> -->
               <div fxFlex="none"
 
               class ="dot" [ngClass]="{
@@ -100,9 +93,7 @@
                 'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
               </div>
 
-            <!-- </mat-panel-description> -->
-
-          </mat-expansion-panel-header>
+            </mat-expansion-panel-header>
 
           <div fxLayout="column" fxLayoutAlign="space-around start" >
             <div class="name">{{outstandingCase.callerName}}</div>
@@ -122,22 +113,13 @@
             <div class="animal-location">{{outstandingCase.location}}</div>
         </div>
 
-
         </mat-expansion-panel>
 
         </div>
-
-
-
         </div>
-
       </div>
-
-
       </div>
-
     </div>
-
   </div>
 
 

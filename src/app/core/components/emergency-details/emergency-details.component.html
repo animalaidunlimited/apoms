@@ -18,7 +18,7 @@
             [min]="minimumDate"
             [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
     </mat-form-field>
-    
+
     <mat-form-field>
         <mat-label>Dispatcher</mat-label>
         <mat-select tabindex="10" formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
@@ -30,9 +30,24 @@
 
         <mat-form-field>
             <mat-label>Code</mat-label>
-            <mat-select tabindex="9" formControlName="code" [errorStateMatcher]="errorMatcher">
+            <mat-select tabindex="9" formControlName="code" [errorStateMatcher]="errorMatcher" >
+
+                <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code').value">
+                    <mat-icon [ngClass]="{
+                        'dot-grey' : recordForm.get('emergencyDetails.code').value == -1,
+                        'dot-red' : recordForm.get('emergencyDetails.code').value == 1,
+                        'dot-green' : recordForm.get('emergencyDetails.code').value == 2,
+                        'dot-yellow' : recordForm.get('emergencyDetails.code').value == 3}" matSuffix>fiber_manual_record</mat-icon>{{recordForm.get('emergencyDetails.code').value}}</mat-select-trigger>
+
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code.EmergencyCodeId">
-                    {{code.EmergencyCode}}
+
+                        <mat-icon [ngClass]="{
+                            'dot-grey' : code.EmergencyCodeId == -1,
+                            'dot-red' : code.EmergencyCodeId == 1,
+                            'dot-green' : code.EmergencyCodeId == 2,
+                            'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{code.EmergencyCode}}
+
+
                 </mat-option>
             </mat-select>
             </mat-form-field>
