@@ -18,6 +18,7 @@ import {
     SurgerySite,
     SurgeryType,
 } from '../../models/Surgery-details';
+import { CensusAreaName } from '../../models/census-details';
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -31,7 +32,7 @@ export class DropdownService extends APIService {
 
     rescuers$: Observable<User[]>;
     emergencyCodes$: Observable<EmergencyCode[]>;
-    areas$: any[];
+    areas$ : any[];
     dispatchers$: Observable<User[]>;
     callOutcomes$: Observable<CallOutcomeResponse[]>;
     crueltyIspectors$: Observable<User[]>;
@@ -48,6 +49,7 @@ export class DropdownService extends APIService {
     surgeons$: Observable<User[]>;
     surgerySites$: Observable<SurgerySite[]>;
     surgeryTypes$: Observable<SurgeryType[]>;
+    censusAreaNames$: Observable<CensusAreaName[]>;
 
     constructor(http: HttpClient) {
         super(http);
@@ -647,5 +649,20 @@ export class DropdownService extends APIService {
         }
 
         return this.patientCallOutcome$;
+    }
+
+
+    getCensusAreaNames(): Observable<CensusAreaName[]> {
+        const request : string ='/CensusArea';
+
+        if (!this.censusAreaNames$) {
+            this.censusAreaNames$ = this.getObservable(request).pipe(
+                map((response: CensusAreaName[]) => {
+                    return response;
+                }),
+            );
+        }
+        console.log('hi')
+        return this.censusAreaNames$;
     }
 }
