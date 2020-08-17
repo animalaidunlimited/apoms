@@ -37,6 +37,9 @@ export interface marker {
 })
 export class LocationDetailsComponent implements OnInit {
     @Input() recordForm: FormGroup;
+    @Output() setAddress: EventEmitter<any> = new EventEmitter();
+    @ViewChild('addressSearch') addresstext: any;
+    @ViewChild('googlemap') googlemap: any;
 
     errorMatcher = new CrossFieldErrorMatcher();
     center: google.maps.LatLngLiteral;
@@ -55,10 +58,6 @@ export class LocationDetailsComponent implements OnInit {
     location$: Location;
 
     markers: marker[] = [];
-
-    @Output() setAddress: EventEmitter<any> = new EventEmitter();
-    @ViewChild('addressSearch') addresstext: any;
-    @ViewChild('googlemap') googlemap: any;
 
     ngOnInit() {
         this.recordForm.addControl(

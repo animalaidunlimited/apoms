@@ -20,11 +20,11 @@
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
 
-    <button mat-mini-fab [color]="refreshColour" aria-label="Map" (click)="hideMap = !hideMap">
+    <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 
-    <button *ngIf="!autoRefresh" mat-mini-fab [color]="primary" aria-label="Manual refresh" (click)="refreshRescues()">
+    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()">
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -36,7 +36,7 @@
 
 </div>
 
-<outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
+<outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
 <div cdkDropListGroup [hidden]="!hideMap">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">

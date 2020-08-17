@@ -5,7 +5,12 @@ export interface EmergencyDetails {
     emergencyNumber: string;
     callDateTime: string | Date;
     dispatcher: number;
-    code: number;
+    code: EmergencyCode;
+}
+
+export interface EmergencyCode {
+    EmergencyCodeId: number;
+    EmergencyCode: string;
 }
 
 export interface CallerDetails {
@@ -44,5 +49,10 @@ export interface EmergencyForm {
 
 export interface EmergencyCase {
     emergencyForm: EmergencyForm;
+}
+
+export interface EmergencyTab {
+    EmergencyCaseId: number;
+    EmergencyNumber: number;
 }
 
