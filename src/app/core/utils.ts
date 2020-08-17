@@ -13,4 +13,3 @@ export function getCurrentTimeString() {
 
     return formatDate(currentTime, 'yyyy-MM-ddTHH:mm:ss', locale);
 }
-
