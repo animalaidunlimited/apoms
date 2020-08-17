@@ -146,7 +146,7 @@ export class CaseService extends APIService {
             });
     }
 
-    public getCaseById(emergencyCaseId: number) {
+    public getEmergencyCaseById(emergencyCaseId: number) {
         return this.getById(emergencyCaseId).pipe(
             map(value => {
                 return value;
@@ -191,11 +191,11 @@ export class CaseService extends APIService {
         );
     }
 
-    public searchCases(searchString: string): Observable<any> {
+    public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
         return this.getObservable(request).pipe(
-            map((response: SearchResponse) => {
+            map((response: SearchResponse[]) => {
                 return response;
             }),
         );

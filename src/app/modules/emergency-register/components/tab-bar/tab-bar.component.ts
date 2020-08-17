@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { searchResponseWrapper } from 'src/app/core/models/responses';
+import { SearchResponse } from 'src/app/core/models/responses';
+import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 @Component({
     selector: 'tab-bar',
@@ -43,21 +44,22 @@ export class TabBarComponent implements OnInit {
         });
     }
 
-    public openCase(result: searchResponseWrapper) {
+    openCase(result: EmergencyTab) {
+
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId == result.caseSearchResult.EmergencyCaseId,
+                card.emergencyCaseId === result.EmergencyCaseId
         );
 
         tabExists
             ? (this.selected.setValue(tabExists.id), this.cdr.detectChanges())
             : this.addTab(
-                  result.caseSearchResult.EmergencyCaseId,
-                  result.caseSearchResult.EmergencyNumber.toString(),
+                  result.EmergencyCaseId,
+                  result.EmergencyNumber.toString(),
               );
     }
 
-    public updateEmergencyNumber(emergencyNumber: number) {
+    updateEmergencyNumber(emergencyNumber: number) {
         this.tabs[this.selected.value].value = (
             emergencyNumber || 'New Case*'
         ).toString();

@@ -16,10 +16,12 @@ import {
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
-import { PatientEditDialog } from '../patient-edit/patient-edit.component';
-import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
-import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
-import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+// import { PatientEditDialog } from '../patient-edit/patient-edit.component';
+// import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
+// import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
+// import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { Observable } from 'rxjs';
+import { EmergencyTab } from '../../models/emergency-record';
 
 export interface SearchValue {
     id: number;
@@ -27,6 +29,7 @@ export interface SearchValue {
     searchValue: string;
     databaseField: string;
     name: string;
+    inNotIn: boolean;
 }
 
 export class Search {
@@ -65,7 +68,7 @@ export class Search {
 })
 export class RecordSearchComponent implements OnInit {
     @Input() parentName: string;
-    @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+    @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
 
     searchFieldForm = new FormControl();
 
@@ -83,13 +86,15 @@ export class RecordSearchComponent implements OnInit {
             searchValue: null,
             databaseField: null,
             name: null,
+            inNotIn: false
         },
         {
             id: 1,
             inputType: 'text',
             searchValue: 'emno',
             databaseField: 'ec.EmergencyNumber',
-            name: 'Em. No.',
+            name: 'Em. no.',
+            inNotIn: false
         },
         {
             id: 2,
@@ -97,27 +102,31 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'date',
             databaseField: 'CAST(ec.CallDateTime AS DATE)',
             name: 'Date',
+            inNotIn: false
         },
         {
             id: 3,
             inputType: 'text',
             searchValue: 'tagno',
             databaseField: 'p.TagNumber',
-            name: 'Tag No.',
+            name: 'Tag no.',
+            inNotIn: false
         },
         {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
             databaseField: 'c.Name',
-            name: 'Caller Name',
+            name: 'Caller name',
+            inNotIn: false
         },
         {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
             databaseField: 'c.Number',
-            name: 'Caller No.',
+            name: 'Caller no.',
+            inNotIn: false
         },
         {
             id: 6,
@@ -125,6 +134,7 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'location',
             databaseField: 'ec.Location',
             name: 'Location',
+            inNotIn: false
         },
         {
             id: 7,
@@ -132,13 +142,15 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'area',
             databaseField: '',
             name: 'Area',
+            inNotIn: false
         },
         {
             id: 8,
             inputType: 'text',
             searchValue: 'species',
             databaseField: 'at.AnimalType',
-            name: 'Animal Type',
+            name: 'Animal type',
+            inNotIn: false
         },
         {
             id: 9,
@@ -146,34 +158,47 @@ export class RecordSearchComponent implements OnInit {
             searchValue: 'problem',
             databaseField: 'pp.Problem',
             name: 'Problem',
+            inNotIn: false
         },
         {
             id: 10,
             inputType: 'text',
             searchValue: 'outcome',
-            databaseField: 'o.Outcome',
+            databaseField: 'o.CallOutcome',
             name: 'Result',
+            inNotIn: false
         },
         {
             id: 11,
             inputType: 'text',
             searchValue: 'cloc',
             databaseField: '',
-            name: 'Current Location',
+            name: 'Current location',
+            inNotIn: false
         },
         {
             id: 12,
             inputType: 'date',
             searchValue: 'releasedate',
             databaseField: 'CAST(p.ReleaseDate AS DATE)',
-            name: 'Release Date',
+            name: 'Release date',
+            inNotIn: false
         },
         {
             id: 13,
             inputType: 'date',
             searchValue: 'dieddate',
             databaseField: 'CAST(p.DiedDate AS DATE)',
-            name: 'Died Date',
+            name: 'Died date',
+            inNotIn: false
+        },
+        {
+            id: 14,
+            inputType: 'boolean',
+            searchValue: 'tycall',
+            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            name: 'Thanked',
+            inNotIn: true
         },
     ];
 
@@ -185,7 +210,7 @@ export class RecordSearchComponent implements OnInit {
         private caseService: CaseService,
     ) {}
 
-    searchResults$;
+    searchResults$:Observable<SearchResponse[]>;
 
     ngOnInit() {
         this.searchForm = this.formBuilder.group({
@@ -193,6 +218,9 @@ export class RecordSearchComponent implements OnInit {
         });
 
         this.searchShowing = false;
+
+        this.searchRows = this.searchForm.get('searchRows') as FormArray;
+
     }
 
     createItem(field: any, term: any): FormGroup {
@@ -224,11 +252,25 @@ export class RecordSearchComponent implements OnInit {
                     option => option.searchValue == splitItem[0].toLowerCase(),
                 );
 
-                return (
-                    option.databaseField +
-                    '=' +
-                    encodeURIComponent(splitItem[1].trim())
-                );
+                //If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
+                //what the user has entered into the Search Term field
+                if(option.inNotIn){
+
+
+                    option.databaseField = option.databaseField.replace(' NOT IN (', ' IN (')
+
+                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === "no"){
+
+                        option.databaseField = option.databaseField.replace(' IN (', ' NOT IN (')
+                    }
+
+                    return option.databaseField;
+
+                }
+                else{
+
+                    return option.databaseField + "=" + encodeURIComponent(splitItem[1].trim());
+                }
             })
             .join('&');
 
@@ -236,12 +278,14 @@ export class RecordSearchComponent implements OnInit {
     }
 
     toggleSearchBox() {
+
         if (this.searchShowing) {
             this.search.searchString = this.getSearchString();
         } else {
             this.updateSearchArray();
-        }
+            this.searchRows.length === 0 ? this.addRow() : null;
 
+        }
         this.searchShowing = !this.searchShowing;
     }
 
@@ -270,9 +314,12 @@ export class RecordSearchComponent implements OnInit {
                 this.createItem(option.id, splitItem[1].trim()),
             );
         });
+
+
     }
 
     getSearchArray() {
+
         // Filter out any empty values and then create a regex string which uses
         // the searchValue from the options array as a delimiter. This way we get a nice list
         // of all the search fields
@@ -282,6 +329,7 @@ export class RecordSearchComponent implements OnInit {
                 return '(?=' + item.searchValue + ')';
             })
             .join('|');
+
 
         const delimiter = new RegExp(regex);
 
@@ -313,7 +361,7 @@ export class RecordSearchComponent implements OnInit {
     }
 
     addRow() {
-        this.searchRows = this.searchForm.get('searchRows') as FormArray;
+
         this.searchRows.push(this.createItem('', ''));
     }
 
@@ -321,70 +369,81 @@ export class RecordSearchComponent implements OnInit {
         this.searchRows.removeAt(i);
     }
 
-    openCase(caseSearchResult: SearchResponse) {
-        this.onOpenEmergencyCase.emit({ caseSearchResult });
-    }
+    openCase(searchResult: SearchResponse) {
 
-    loadHospitalRecord(emergencyCaseId, emergencyNumber) {
-        alert('Open the hospital manager record');
-    }
+        let result:EmergencyTab = {
+            EmergencyCaseId: searchResult.EmergencyCaseId,
+            EmergencyNumber: searchResult.EmergencyNumber
+          };
 
-    quickUpdate(patientId: number, tagNumber: string) {
-        this.dialog.open(PatientEditDialog, {
-            width: '500px',
-            data: { patientId, tagNumber },
-        });
-    }
+        this.onOpenEmergencyCase.emit(result);
+      
+     }
 
-    rescueUpdate(
-        emergencyCaseId: number,
-        callDateTime: Date | string,
-        callOutcome: number,
-    ) {
-        this.rescueDialog.open(RescueDetailsDialogComponent, {
-            width: '500px',
-            data: {
-                emergencyCaseId,
-                callDateTime,
-                callOutcome,
-            },
-        });
-    }
 
-    callUpdate(patientId: number, tagNumber: string) {
-        this.callDialog.open(PatientCallDialogComponent, {
-            width: '500px',
-            data: { patientId, tagNumber },
-        });
-    }
 
-    openSurgeryDialog(
-        patientId: number,
-        tagNumber: string,
-        emergencyNumber: number,
-        animalType: string,
-    ) {
-        const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            data: {
-                patientId,
-                tagNumber,
-                emergencyNumber,
-                animalType,
-            },
-        });
+    //The below is all now in the search-result-card
 
-        dialogRef.afterClosed().subscribe(result => {});
+    // loadHospitalRecord(emergencyCaseId, emergencyNumber) {
+    //     alert('Open the hospital manager record');
+    // }
 
-    }
+    // quickUpdate(patientId: number, tagNumber: string) {
+    //     this.dialog.open(PatientEditDialog, {
+    //         width: '500px',
+    //         data: { patientId, tagNumber },
+    //     });
+    // }
 
-    addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
-        this.openSurgeryDialog(
-            patientId,
-            tagNumber,
-            emergencyNumber,
-            animalType,
-        );
-    }
+    // rescueUpdate(
+    //     emergencyCaseId: number,
+    //     callDateTime: Date | string,
+    //     CallOutcomeId: number,
+    // ) {
+    //     this.rescueDialog.open(RescueDetailsDialogComponent, {
+    //         width: '500px',
+    //         data: {
+    //             emergencyCaseId,
+    //             callDateTime,
+    //             CallOutcomeId,
+    //         },
+    //     });
+    // }
+
+    // callUpdate(patientId: number, tagNumber: string) {
+    //     this.callDialog.open(PatientCallDialogComponent, {
+    //         width: '500px',
+    //         data: { patientId, tagNumber },
+    //     });
+    // }
+
+    // openSurgeryDialog(
+    //     patientId: number,
+    //     tagNumber: string,
+    //     emergencyNumber: number,
+    //     animalType: string,
+    // ) {
+    //     const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
+    //         maxWidth: '100vw',
+    //         maxHeight: '100vh',
+    //         data: {
+    //             patientId,
+    //             tagNumber,
+    //             emergencyNumber,
+    //             animalType,
+    //         },
+    //     });
+    //     dialogRef.afterClosed().subscribe(result => {
+
+    //     });
+    // }
+
+    // addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
+    //     this.openSurgeryDialog(
+    //         patientId,
+    //         tagNumber,
+    //         emergencyNumber,
+    //         animalType,
+    //     );
+    // }
 }
