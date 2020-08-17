@@ -102,7 +102,6 @@ export class SurgeryDetailsComponent implements OnInit {
             },
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log(result);
             if (result) {
                 if(!this.surgeryRecords[0].site==true){
                     this.surgeryRecords.splice(0, 1, result);

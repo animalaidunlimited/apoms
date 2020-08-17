@@ -22,6 +22,7 @@ export class CensusService extends APIService {
 
   public async insertCensusData(areaId , actionId , tagNumber , date) : Promise<any>{
     const request = 'censusData';
+
     let data : CensusTable =
       {
         areaId : areaId,
@@ -30,7 +31,6 @@ export class CensusService extends APIService {
         date : date
       };
 
-      console.log(data)
         return await this.post(data).then(data => {
           return data;
           })
@@ -40,7 +40,6 @@ export class CensusService extends APIService {
   }
 
   public async getCensusData(dateObject : Date) : Promise<any>{
-    console.log(dateObject)
     const request = '?CensusDate=' + dateObject;
     return this.get(request);
   }

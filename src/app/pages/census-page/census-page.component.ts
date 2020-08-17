@@ -1,11 +1,12 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { Component, OnInit, ViewChild, ɵConsole, ChangeDetectorRef } from '@angular/core';
-import { Area , Action , CensusPatient , CensusAreaName } from 'src/app/core/models/census-details';
-import { MatChipInputEvent, MatChip } from '@angular/material/chips';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { Area, CensusAreaName } from 'src/app/core/models/census-details';
+import { MatChipInputEvent} from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { CensusService } from "src/app/core/services/census/census.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { formatDate } from '@angular/common';
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 
 
 @Component({
@@ -14,24 +15,32 @@ import { formatDate } from '@angular/common';
     styleUrls: ['./census-page.component.scss'],
 })
 export class CensusPageComponent implements OnInit {
-    visible = true;
-    selectable = true;
-    removable = true;
-    addOnBlur = true;
+
+  @ViewChild('chipList') chipList;
+
+    addOnBlur:boolean = true;
 
     censusAreaNames$ : Observable<CensusAreaName[]>;
 
+    censusDate : FormGroup;
+
+    censusArea : Area[];
+
+    date : Date;
+
+    removable:boolean = true;
+
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-    @ViewChild('chipList') chipList;
+    selectable:boolean = true;
+
+    visible:boolean = true;
+
     constructor(
       private fb : FormBuilder,
-      private census : CensusService) {}
+      private census : CensusService,
+      private snackBar : SnackbarService) {}
 
-
-      censusDate : FormGroup;
-      censusArea : Area[];
-      date : Date;
     ngOnInit(){
 
     this.censusDate = this.fb.group({ 
@@ -39,8 +48,6 @@ export class CensusPageComponent implements OnInit {
     });
 
     this.loadCensusData(this.censusDate.get('CensusDate').value);
-
-
 
     this.censusArea  = [{
       areaId:null,
@@ -52,6 +59,7 @@ export class CensusPageComponent implements OnInit {
         sortAction : null,
         patients:[
           {
+
             patientId:null,
             tagNumber:'',
             errorCode : null
@@ -64,17 +72,11 @@ export class CensusPageComponent implements OnInit {
     
 
     /* Detects the change in date and vrings back the censusdata on that perticular date*/
-
    this.censusDate.valueChanges.subscribe(changes=>
       {
-        console.log(changes);
-        this.date = (changes.CensusDate).toString()
-        console.log(this.date)
+        this.date = (changes.CensusDate).toString();
         this.loadCensusData(this.date);
-        //  this.census.getCensusData(this.date).then(censusData => {
-        //   this.censusArea = this.getSortedResponse(censusData);
-        // }) 
-      })
+      });
     }
 
     loadCensusData(censusDate : Date){
@@ -82,10 +84,8 @@ export class CensusPageComponent implements OnInit {
         this.censusArea = this.getSortedResponse(censusData);
     })
   }
-
    
     /* Sorts the arrays from censusdata object. */
-
     getSortedResponse(censusData){
       let sortedAreaResponse = censusData.sort((a,b)=>{return a.sortArea - b.sortArea});
       return this.getSortedAction(sortedAreaResponse)
@@ -103,50 +103,48 @@ export class CensusPageComponent implements OnInit {
 
     /* Add the patients tagNumber to the chips input field*/
     addPatients(AreaId ,ActionId ,event: MatChipInputEvent): void {
-        const input = event.input;
-        const tag = event.value;
-        if ((tag || '').trim()) {
-          this.censusArea.forEach(area => {
-            if(area.areaId === AreaId){
-              area.actions.forEach(action=>
-                {
-                  if(action.actionId === ActionId)
-                  {
-                    console.log(area.areaId,action.actionId,tag.trim())
-                     this.census.insertCensusData(area.areaId,action.actionId,tag.trim(),this.date).then(response =>
-                      {
-                        if(action.patients){
-                        
-                        action.patients.push(
-                          {
-                            patientId :response[0].VPatientId,
-                            tagNumber : tag.trim(),
-                            errorCode : response[0].VErrorCode 
-                        })
-                      }
-                      else{
-                        action.patients = [{
-                          patientId :response[0].VPatientId,
-                          tagNumber : tag.trim(),
-                          errorCode : response[0].VErrorCode 
-                      }];
+      const input = event.input;
+      const tag = event.value.trim();
+      if ((tag || '')) {
 
-                      }
+        this.censusArea.forEach(area => {
 
+          if(area.areaId === AreaId){
+
+            area.actions.forEach(action =>
+              {
+                    if(action.actionId === ActionId){
+
+                      let exists = action.patients.some(patient => {
+                        return patient.tagNumber.toLowerCase() === tag.toLowerCase()
                       })
-                        
-                  }
-                  
-                });
-              }
-            });
-          
-          }
+
+                      exists ? 
+                      this.snackBar.errorSnackBar("Duplicate Error!" , "OK")
+                      :
+                      this.census.insertCensusData(area.areaId,action.actionId,tag,this.censusDate.get('CensusDate').value).then(response =>
+                        {
+                          action.patients.push(
+                            {
+                              patientId :response[0].vPatientId,
+                              tagNumber : tag,
+                              errorCode : response[0].vErrorCode 
+                          });
+                        });
+    
+                      }
+
+              });
+            
+            }
+          });
         
-        if (input) {
-          input.value = '';
-        }
       }
+      
+      if (input) {
+        input.value = '';
+      }
+    }
 
       /* Returns the Current Date*/
       getCurrentDate() {
@@ -157,7 +155,6 @@ export class CensusPageComponent implements OnInit {
       }
 
       setInitialTime(event: FocusEvent) {
-        console.log(event)
         let currentTime;
         currentTime = this.censusDate.get(
             (event.target as HTMLInputElement).name,
@@ -189,5 +186,5 @@ export class CensusPageComponent implements OnInit {
         })
      
       
-    }   
+    }  
 }
