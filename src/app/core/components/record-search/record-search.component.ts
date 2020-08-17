@@ -72,7 +72,7 @@ export class RecordSearchComponent implements OnInit {
     searchForm: FormGroup;
     searchRows: FormArray;
 
-    searchShowing:boolean = false;
+    searchShowing = false;
 
     search = new Search();
 
@@ -193,7 +193,6 @@ export class RecordSearchComponent implements OnInit {
         });
 
         this.searchShowing = false;
-
     }
 
     createItem(field: any, term: any): FormGroup {
@@ -377,9 +376,7 @@ export class RecordSearchComponent implements OnInit {
                 animalType,
             },
         });
-        dialogRef.afterClosed().subscribe(result => {
-            
-        });
+        dialogRef.afterClosed().subscribe(result => {});
     }
 
     addSurgery(patientId, tagNumber, emergencyNumber, animalType) {

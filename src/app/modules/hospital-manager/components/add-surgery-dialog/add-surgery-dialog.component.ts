@@ -22,7 +22,7 @@ export class AddSurgeryDialogComponent implements OnInit {
     result: SurgeryFormModel;
     canExit: FormGroup;
     invalidSurgeryForm: boolean;
-    
+
     constructor(
         public dialogRef: MatDialogRef<AddSurgeryDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -48,12 +48,12 @@ export class AddSurgeryDialogComponent implements OnInit {
 
     onSurgerySaveResult(result: SurgeryFormModel) {
         this.result = result;
-        if (result) {  
+        if (result) {
             this.canExit.get('surgeryDetailsSaveComplete').setValue(1);
-        }    
+        }
     }
 
-    onSurgeryInvalid(invalid : boolean){
+    onSurgeryInvalid(invalid: boolean) {
         this.invalidSurgeryForm = invalid;
     }
 }

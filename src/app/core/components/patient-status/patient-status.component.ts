@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../utils';
-import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'patient-status',
@@ -27,7 +27,7 @@ export class PatientStatusComponent implements OnInit {
         private userOptions: UserOptionsService,
         private _snackBar: MatSnackBar,
         private fb: FormBuilder,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
     ) {}
 
     patientStatusForm;
@@ -78,7 +78,10 @@ export class PatientStatusComponent implements OnInit {
                           'Patient status updated successfully',
                           'OK',
                       )
-                    : this.showSnackBar.errorSnackBar('Error updating patient status', 'OK');
+                    : this.showSnackBar.errorSnackBar(
+                          'Error updating patient status',
+                          'OK',
+                      );
             });
     }
 
@@ -94,5 +97,4 @@ export class PatientStatusComponent implements OnInit {
         const date = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.patientStatusForm.get('patientStatusDate').setValue(date);
     }
-    
 }

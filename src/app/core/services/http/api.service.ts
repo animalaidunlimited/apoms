@@ -67,7 +67,7 @@ export abstract class APIService<T = any> {
 
         try {
             response = await this.http
-                .put(`${this.url}/${this.endpoint}`,body)
+                .put(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('DELETE', error);

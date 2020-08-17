@@ -22,7 +22,7 @@ export class PatientRecordComponent implements OnInit {
 
     patientCallPatientId: number;
 
-    patientLoaded: boolean = true;
+    patientLoaded = true;
 
     hideMenu: boolean;
 

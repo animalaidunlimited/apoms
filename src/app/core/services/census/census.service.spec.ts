@@ -2,24 +2,24 @@ import { TestBed } from '@angular/core/testing';
 
 import { CensusService } from './census.service';
 import {
-  HttpTestingController,
-  HttpClientTestingModule,
+    HttpTestingController,
+    HttpClientTestingModule,
 } from '@angular/common/http/testing';
 
 describe('CensusService', () => {
-  let injector: TestBed;
-  let service: CensusService;
-  let httpMock: HttpTestingController;
+    let injector: TestBed;
+    let service: CensusService;
+    let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CensusService],
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [CensusService],
+        });
+        service = TestBed.inject(CensusService);
     });
-    service = TestBed.inject(CensusService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

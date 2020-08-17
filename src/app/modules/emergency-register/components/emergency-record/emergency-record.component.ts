@@ -11,7 +11,7 @@ import {
 } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'emergency-record',
@@ -35,7 +35,7 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private snackBar: MatSnackBar,
         private caseService: CaseService,
-        private showSnackBar : SnackbarService
+        private showSnackBar: SnackbarService,
     ) {}
 
     ngOnInit() {
@@ -174,7 +174,10 @@ export class EmergencyRecordComponent implements OnInit {
                                 'OK',
                             );
                         } else if (messageResult.failure == 1) {
-                            this.showSnackBar.errorSnackBar('Case saved offline', 'OK');
+                            this.showSnackBar.errorSnackBar(
+                                'Case saved offline',
+                                'OK',
+                            );
                         }
                     })
                     .catch(error => {
@@ -191,7 +194,9 @@ export class EmergencyRecordComponent implements OnInit {
                             .get('callerDetails.callerId')
                             .setValue(resultBody.callerId);
 
-                        const messageResult = this.getCaseSaveMessage(resultBody);
+                        const messageResult = this.getCaseSaveMessage(
+                            resultBody,
+                        );
 
                         if (messageResult.failure == 0) {
                             this.showSnackBar.successSnackBar(

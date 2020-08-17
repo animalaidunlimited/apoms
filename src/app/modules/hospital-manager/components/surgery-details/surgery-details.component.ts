@@ -36,7 +36,6 @@ const ELEMENT_DATA: SurgeryRecord[] = [
     styleUrls: ['./surgery-details.component.scss'],
 })
 export class SurgeryDetailsComponent implements OnInit {
-
     constructor(
         private surgeryService: SurgeryService,
         public dialog: MatDialog,
@@ -69,7 +68,6 @@ export class SurgeryDetailsComponent implements OnInit {
             .then(response => (this.surgeryRecords = response));
     }
 
-
     updateSurgeryDialog(row: SurgeryRecord): void {
         const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
             maxWidth: '100vw',
@@ -77,12 +75,13 @@ export class SurgeryDetailsComponent implements OnInit {
             width: '90%',
             height: '80%',
             data: { surgeryId: row.surgeryId, animalType: this.animalType },
-        }); 
+        });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if (result) {
                 const index = this.surgeryRecords.findIndex(
-                    x => x.surgeryId == result.surgeryId);
+                    x => x.surgeryId == result.surgeryId,
+                );
                 this.surgeryRecords.splice(index, 1, result);
                 this.surgeryTable.renderRows();
             }
@@ -103,14 +102,12 @@ export class SurgeryDetailsComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                if(!this.surgeryRecords[0].site==true){
+                if (!this.surgeryRecords[0].site == true) {
                     this.surgeryRecords.splice(0, 1, result);
                     this.surgeryTable.renderRows();
-                }
-
-                else{
+                } else {
                     this.surgeryRecords.push(result);
-                    this.surgeryTable.renderRows();    
+                    this.surgeryTable.renderRows();
                 }
             }
         });
@@ -123,5 +120,4 @@ export class SurgeryDetailsComponent implements OnInit {
     updateSurgery(row) {
         this.updateSurgeryDialog(row);
     }
-
 }

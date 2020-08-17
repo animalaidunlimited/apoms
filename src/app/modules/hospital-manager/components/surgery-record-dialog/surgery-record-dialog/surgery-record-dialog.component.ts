@@ -52,7 +52,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
     onSurgeryDetailsResult(result: UpdatedSurgery) {
         this.result = result;
         if (result) {
-            this.canExit.get('surgeryDetailsUpdateComplete').setValue(1); 
-        }  
+            this.canExit.get('surgeryDetailsUpdateComplete').setValue(1);
+        }
     }
 }
