@@ -14,6 +14,7 @@ import { MAT_DATE_LOCALE} from '@angular/material/core';
 })
 export class AppComponent implements OnInit{
     // test
+
     title:string = 'apoms';
     message;
 
@@ -61,4 +62,5 @@ export class AppComponent implements OnInit{
             }
 
       }
+
 }

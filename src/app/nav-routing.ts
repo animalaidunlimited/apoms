@@ -55,7 +55,7 @@ export const navRoutes: NavRoute[] = [
                 m => m.CensusPageModule,
             ),
     },
- 
+
     {
         data: { title: 'Case List' },
         icon: '',
@@ -136,7 +136,6 @@ export const navRoutes: NavRoute[] = [
                 m => m.OrganisationsPageModule,
             ),
     },
-    
 ];
 
 @Injectable({
