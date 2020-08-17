@@ -16,10 +16,12 @@ export interface OutstandingRescue {
     emergencyNumber: number;
     rescuer1Abbreviation: string;
     rescuer2Abbreviation: string;
-
+    patients: string[];
     moved?: boolean;
     searchCandidate?: boolean;
 }
+
+
 
 export interface RescuerGroup {
     rescuer1: number;
@@ -46,4 +48,9 @@ export interface UpdatedRescue {
     rescuer2Id: number;
     rescuer2Abbreviation: string;
     rescueStatus: number;
+}
+
+export interface UpdateResponse{
+    success: number;
+    socketEndPoint: string;
 }

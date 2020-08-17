@@ -87,7 +87,7 @@ export class DropdownService extends APIService {
         if (!this.exclusions$) {
             this.exclusions$ = [
                 {
-                    animalType: 'Bird',
+                    animalType: 'Bird (other)',
                     exclusionList: [
                         'Horn/hoof problem',
                         'Normal behaviour - biting',
@@ -97,11 +97,11 @@ export class DropdownService extends APIService {
                     ],
                 },
                 {
-                    animalType: 'Buffalo',
+                    animalType: 'Water Buffalo',
                     exclusionList: ['Can\'t fly', 'Shifted puppies'],
                 },
                 {
-                    animalType: 'Buffalo Calf',
+                    animalType: 'Water Buffalo Calf',
                     exclusionList: ['Can\'t fly', 'Shifted puppies'],
                 },
                 {
