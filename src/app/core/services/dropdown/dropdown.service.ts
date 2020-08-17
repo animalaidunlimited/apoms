@@ -662,7 +662,6 @@ export class DropdownService extends APIService {
                 }),
             );
         }
-        console.log('hi')
         return this.censusAreaNames$;
     }
 }

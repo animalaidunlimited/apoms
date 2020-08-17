@@ -4,9 +4,6 @@ body {
     margin: 0 !important;
 }
 
-// mat-form-field {
-//   max-width: 100%;
-// }
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
@@ -16,7 +13,6 @@ $standard-width: 175px;
 {
   background-color:white ;
   border: 2px solid;
-//   margin:auto;
   border-radius: 5px;
   margin: 30px;
   border-color: $colour-border;
@@ -38,23 +34,9 @@ $standard-width: 175px;
   padding-right:15px;
 }
 
-.chips-color{
-  background-color: black;
-}
-
 .chips-red{
   background-color: red;
 }
-
-
-
-
-
-
-
-
-
-
 
 .example-chip-list {
     width: 100%;
