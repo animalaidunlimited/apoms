@@ -36,7 +36,6 @@ const ELEMENT_DATA: SurgeryRecord[] = [
     styleUrls: ['./surgery-details.component.scss'],
 })
 export class SurgeryDetailsComponent implements OnInit {
-
     constructor(
         private surgeryService: SurgeryService,
         public dialog: MatDialog,
@@ -75,10 +74,10 @@ export class SurgeryDetailsComponent implements OnInit {
             } );
     }
 
-
     launchSurgeryDialog(row: SurgeryRecord): void {
 
         const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
+
             maxWidth: '100vw',
             maxHeight: '100vh',
             data: {
@@ -91,6 +90,7 @@ export class SurgeryDetailsComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
+
             if(result){
 
                 const index = this.surgeryRecords.findIndex(
@@ -101,54 +101,16 @@ export class SurgeryDetailsComponent implements OnInit {
                 if(index > -1){
                     this.surgeryRecords.splice(index, 1, result);
                     this.surgeryTable.renderRows();
-                }
-
-                else{
+                } else {
                     this.surgeryRecords.push(result);
                     this.surgeryTable.renderRows();
                 }
             }
         });
     }
-    // addSurgeryDialog() {
-    //     const dialogRef = this.dialog.open(AddSurgeryDialogComponent, {
-    //         maxWidth: '100vw',
-    //         maxHeight: '100vh',
-    //         data: {
-    //             patientId: this.patientId,
-    //             emergencyNumber: this.emergencyNumber,
-    //             tagNumber: this.tagNumber,
-    //             animalType: this.animalType,
-    //         },
-    //     });
-    //     dialogRef.afterClosed().subscribe(result => {
-    //         if (result) {
-    //             if(!this.surgeryRecords[0].site){
-    //                 this.surgeryRecords.splice(0, 1, result);
-    //                 this.surgeryTable.renderRows();
-    //             }
 
-    //             else{
-    //                 this.surgeryRecords.push(result);
-    //                 this.surgeryTable.renderRows();
-    //             }
-    //         }
-    //     });
-    // }
-
-    // addSurgery() {
-    //     this.addSurgeryDialog();
-    // }
-
-    // updateSurgery(row) {
-    //     if(!this.surgeryRecords[0].site){
-
-    //     }
-    //     else
-    //     {
-    //         this.updateSurgeryDialog(row);
-    //     }
-
-    // }
+    updateSurgery(row) {
+        this.updateSurgeryDialog(row);
+    }
 
 }

@@ -36,7 +36,6 @@ class UIErrorHandler extends ErrorHandler {
   }
 }
 
-
 @NgModule({
     declarations: [AppComponent,  ConfirmationDialog],
     imports: [
