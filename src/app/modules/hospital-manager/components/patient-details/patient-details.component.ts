@@ -37,7 +37,9 @@ export class PatientDetailsComponent implements OnInit {
             .getAnimalTypes()
             .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
 
-        const patientDetails = this.recordForm.get('patientDetails') as FormGroup;
+        const patientDetails = this.recordForm.get(
+            'patientDetails',
+        ) as FormGroup;
 
         patientDetails.addControl(
             'animalTypeId',

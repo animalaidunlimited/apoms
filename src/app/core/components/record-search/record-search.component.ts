@@ -377,7 +377,10 @@ export class RecordSearchComponent implements OnInit {
           };
 
         this.onOpenEmergencyCase.emit(result);
-    }
+      
+     }
+
+
 
     //The below is all now in the search-result-card
 

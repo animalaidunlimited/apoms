@@ -9,6 +9,7 @@ import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
 
+
 @Component({
     selector: 'patient-status',
     templateUrl: './patient-status.component.html',
@@ -25,7 +26,7 @@ export class PatientStatusComponent implements OnInit {
         private patientService: PatientService,
         private userOptions: UserOptionsService,
         private fb: FormBuilder,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
     ) {}
 
     patientStatusForm;
@@ -78,7 +79,10 @@ export class PatientStatusComponent implements OnInit {
                           'Patient status updated successfully',
                           'OK',
                       )
-                    : this.showSnackBar.errorSnackBar('Error updating patient status', 'OK');
+                    : this.showSnackBar.errorSnackBar(
+                          'Error updating patient status',
+                          'OK',
+                      );
             });
     }
 
@@ -94,5 +98,4 @@ export class PatientStatusComponent implements OnInit {
         const date = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.patientStatusForm.get('patientStatusDate').setValue(date);
     }
-
 }

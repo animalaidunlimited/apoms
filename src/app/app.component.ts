@@ -15,6 +15,7 @@ import { OutstandingCaseService } from './modules/emergency-register/services/ou
 })
 export class AppComponent implements OnInit{
     // test
+
     title:string = 'apoms';
     message;
 
@@ -64,4 +65,5 @@ export class AppComponent implements OnInit{
             }
 
       }
+
 }
