@@ -15,6 +15,9 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireStorageModule } from '@angular/fire/storage'
+import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -29,12 +32,12 @@ class UIErrorHandler extends ErrorHandler {
   handleError(error) {
     super.handleError(error);
     //TODO Style these errors properly and provide them in a dialog with more info about what to do.
-    alert(`Error occurred:${error.message}`);
+    console.log(`Error occurred:${error.message}`);
   }
 }
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent,  ConfirmationDialog],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -46,12 +49,14 @@ class UIErrorHandler extends ErrorHandler {
         AngularFireDatabaseModule,
         AngularFireAuthModule,
         AngularFireMessagingModule,
+        AngularFireStorageModule,
         AngularFireModule.initializeApp(environment.firebase),
     ],
     exports: [
 
     ],
     providers: [
+        DatePipe,
         {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
         {provide: ErrorHandler, useClass: UIErrorHandler}
     ],

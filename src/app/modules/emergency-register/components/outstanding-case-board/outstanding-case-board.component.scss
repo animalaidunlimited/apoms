@@ -1,8 +1,8 @@
 .drag-drop-container {
-  text-align: center;
+    text-align: center;
     width: 18%;
     max-width: 100%;
-    min-width: 175px;
+    min-width: 200px;
     margin: 0 25px 25px 0;
     display: inline-block;
     vertical-align: top;
@@ -33,13 +33,15 @@
 }
 
 .drag-drop-list {
-    border: solid 1px #ccc;
+    // border: solid 1px #ccc;
     min-height: 48px;
     min-width: 175px;
     background: white;
     border-radius: 4px;
     overflow: hidden;
 }
+
+
 
 .drag-drop-box {
     padding: 20px 10px;
@@ -82,10 +84,6 @@
 .moved {
     background-color: lightsteelblue !important;
 }
-
-// .search-candidate{
-//   background-color: lightsteelblue !important;
-// }
 
 .dot {
     height: 20px;
@@ -132,10 +130,17 @@
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:focus,
 .mat-expansion-panel-header.mat-expanded:hover,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
 {
   background-color: lightsteelblue !important;
 }
+
+.mat-expansion-panel{
+    margin-bottom: 8px;
+    border: solid .1px lightgray;
+}
+
 
 .refresh-box{
   padding-right: 40px;

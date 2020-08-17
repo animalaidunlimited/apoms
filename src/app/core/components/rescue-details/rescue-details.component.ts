@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { getCurrentTimeString } from '../../utils';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class RescueDetailsComponent implements OnInit {
 
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
+    private datePipe: DatePipe,
     private fb: FormBuilder) {}
 
   rescuers$;
@@ -77,7 +79,7 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-    this.callOutcome          = this.recordForm.get("callOutcome.callOutcome");
+    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcomeId");
 
     this.updateTimes();
 
@@ -192,16 +194,19 @@ onChanges(): void {
   {
     //TODO put this back in when we go live with the desk doing realtime entries
 
-    // this.currentCallDateTime = this.callDateTime;
+    this.currentCallDateTime = this.callDateTime;
 
-    // let currentTime;
+    let currentTime;
 
-    // currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
+    currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
 
-    // if(!currentTime)
-    // {
-    //   this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
-    // }
+
+    if(!currentTime)
+    {
+      //TODO put this back in when we go live with the desk doing realtime entries
+      // this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+      this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
+    }
 
    }
 

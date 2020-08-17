@@ -1,10 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { getCurrentTimeString } from '../../utils';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
+import { UserOptionsService } from '../../services/user-options.service';
+import { DatePipe } from '@angular/common';
+import { EmergencyCode } from '../../models/emergency-record';
 
 @Component({
     selector: 'emergency-details',
@@ -20,8 +23,6 @@ export class EmergencyDetailsComponent implements OnInit {
     @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
     @ViewChild("callDateTimeField",{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
 
-
-
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
         event.preventDefault();
@@ -33,16 +34,23 @@ export class EmergencyDetailsComponent implements OnInit {
     dispatchers$;
     emergencyCodes$;
     callDateTime: string | Date = getCurrentTimeString();
+    minimumDate: string;
+
+    selected;
 
     constructor(
         private dropdowns: DropdownService,
         private caseService: CaseService,
+        private datePipe: DatePipe,
+        private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
     ) {}
 
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+
+        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), "yyyy-MM-ddThh:mm:ss.ms");
 
         const emergencyDetails = this.recordForm.get(
             'emergencyDetails',
@@ -76,7 +84,7 @@ export class EmergencyDetailsComponent implements OnInit {
         );
 
         this.caseService
-            .getCaseById(
+            .getEmergencyCaseById(
                 this.recordForm.get('emergencyDetails.emergencyCaseId').value,
             )
             .subscribe(result => {
@@ -92,7 +100,6 @@ export class EmergencyDetailsComponent implements OnInit {
 
                 this.updateEmergencyNumber(val);
             });
-
 
     }
 
@@ -113,6 +120,12 @@ export class EmergencyDetailsComponent implements OnInit {
         if (!currentTime.value) {
             currentTime.setValue(getCurrentTimeString());
         }
+    }
+
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
+
+        return o1.EmergencyCodeId === o2.EmergencyCodeId;
+
     }
 
 

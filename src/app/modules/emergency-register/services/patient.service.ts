@@ -10,11 +10,14 @@ import {
     PatientCallModifyResponse,
     PatientCallResult,
 } from 'src/app/core/models/patients';
+import { MediaItem } from 'src/app/core/models/media';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PatientService extends APIService {
+
+
     constructor(http: HttpClient) {
         super(http);
     }
@@ -120,4 +123,30 @@ export class PatientService extends APIService {
 
         return response;
     }
+
+    public async savePatientMedia(mediaItem: MediaItem){
+
+        return await this.put(mediaItem)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+    }
+
+    public getPatientMediaItemsByPatientId(
+        patientId: number,
+    ): Observable<any> {
+        const request = '/PatientMediaItems?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: any) => {
+
+                return response
+            }),
+        );
+    }
+
 }

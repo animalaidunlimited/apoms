@@ -2,7 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { MediaPasteService } from 'src/app/core/services/media-paste.service';
+import { SafeUrl } from '@angular/platform-browser';
+import { MediaItem } from 'src/app/core/models/media';
+
+
 
 @Component({
     selector: 'animal-header',
@@ -21,7 +25,7 @@ export class AnimalHeaderComponent implements OnInit {
 
     lastObjectUrl: string;
 
-    constructor(public dialog: MatDialog, private sanitizer: DomSanitizer) {}
+    constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status').value;
@@ -38,40 +42,17 @@ export class AnimalHeaderComponent implements OnInit {
             if (result != null) {
             }
         });
+
     }
 
-    public handlePaste(event: ClipboardEvent): void {
-        const pastedImage = this.getPastedImage(event);
+    public handlePaste(event: ClipboardEvent){
 
-        if (!pastedImage) {
-            return;
-        }
-        if (this.lastObjectUrl) {
-            URL.revokeObjectURL(this.lastObjectUrl);
-        }
+        let patientId = this.recordForm.get('patientDetails.patientId').value;
 
-        this.lastObjectUrl = URL.createObjectURL(pastedImage);
+        //Pass the clipboard event down to the service, expect it to return an image URL
+        let newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId)
 
-        this.imageUrls[0] = this.sanitizer.bypassSecurityTrustUrl(
-            this.lastObjectUrl,
-        );
-    }
+        this.imageUrls[0] = newItem.localURL;
 
-    private getPastedImage(event: ClipboardEvent): File | null {
-        if (
-            event.clipboardData &&
-            event.clipboardData.files &&
-            event.clipboardData.files.length &&
-            this.isImageFile(event.clipboardData.files[0])
-        ) {
-            return event.clipboardData.files[0];
-        }
-
-        return null;
-    }
-
-    // Determine if the given File is an Image (according do its Mime-Type).
-    private isImageFile(file: File): boolean {
-        return file.type.search(/^image\//i) === 0;
     }
 }

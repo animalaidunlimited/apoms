@@ -7,7 +7,7 @@ import {
     FormControl,
 } from '@angular/forms';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
-import { getCurrentTimeString } from '../../../../core/utils';
+import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';

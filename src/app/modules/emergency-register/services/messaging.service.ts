@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs'
 import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
+import { OutstandingCaseService } from './outstanding-case.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,26 +18,42 @@ havePermission = new BehaviorSubject(null);
 haveReceivedFocus = new BehaviorSubject(null);
 token;
 
-constructor(private angularFireMessaging: AngularFireMessaging,
+constructor(
+    private angularFireMessaging: AngularFireMessaging,
     private authService: AuthService,
+    private outstandingCase: OutstandingCaseService,
     http: HttpClient) {
         super(http);
 
         angularFireMessaging.onMessage((payload) => {
-            this.currentMessage.next(payload.data);
+
+            this.distributeMessage(payload);
+
           });
     }
 
-    receiveRescueUpdate(message:string){
+    receiveBackgroundMessage(message){
 
-        this.currentMessage.next(message);
+        this.distributeMessage(message);
+
+    }
+
+    distributeMessage(payload){
+
+        let message = JSON.parse(JSON.parse(payload.data?.messageData));
+
+        //This is a rescue message, so pass this on to the outstanding-case service
+        if(message.hasOwnProperty("rescueStatus")){
+            this.outstandingCase.receiveUpdatedRescueMessage(message)
+            this.currentMessage.next(payload.data);
+        }
+
     }
 
     //The window has received focus, so we may need to refresh
     receiveFocus(){
 
         this.haveReceivedFocus.next(true);
-
     }
 
     getPermissionGranted(){

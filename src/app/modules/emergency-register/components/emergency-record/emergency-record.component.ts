@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 import {
     EmergencyResponse,
     PatientResponse,
     ProblemResponse,
 } from 'src/app/core/models/responses';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
@@ -58,17 +58,18 @@ export class EmergencyRecordComponent implements OnInit {
                 updateTime: [''],
             }),
             callOutcome: this.fb.group({
-                callOutcome: [''],
+                CallOutcomeId: [''],
             }),
         });
 
         if (this.emergencyCaseId) {
             this.initialiseForm();
         }
+
     }
 
     initialiseForm() {
-        this.caseService.getCaseById(this.emergencyCaseId).subscribe(result => {
+       this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
             this.recordForm.patchValue(result);
         });
     }
@@ -161,7 +162,6 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-
                         let messageResult = {
                             failure: 0,
                         };
@@ -222,7 +222,6 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
-
 
     }
 

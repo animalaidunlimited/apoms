@@ -31,7 +31,6 @@ export class RescueDetailsService extends APIService {
         );
     }
 
-    // TODO change this to by properly typed
     public async updateRescueDetails(rescueDetails: UpdateResponse): Promise<UpdateResponse> {
         return await this.put(rescueDetails);
     }
