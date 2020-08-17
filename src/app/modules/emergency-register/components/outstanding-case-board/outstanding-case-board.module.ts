@@ -5,6 +5,7 @@ import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstan
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 
 @NgModule({
     declarations: [
@@ -15,7 +16,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
         CommonModule,
         MaterialModule,
         FlexLayoutModule,
-        GoogleMapsModule
+        GoogleMapsModule,
+        SearchResultCardModule
     ],
     exports: [OutstandingCaseBoardComponent],
 })

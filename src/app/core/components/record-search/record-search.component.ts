@@ -16,10 +16,12 @@ import {
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
-import { PatientEditDialog } from '../patient-edit/patient-edit.component';
-import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
-import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
-import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+// import { PatientEditDialog } from '../patient-edit/patient-edit.component';
+// import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
+// import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
+// import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { Observable } from 'rxjs';
+import { EmergencyTab } from '../../models/emergency-record';
 
 export interface SearchValue {
     id: number;
@@ -66,7 +68,7 @@ export class Search {
 })
 export class RecordSearchComponent implements OnInit {
     @Input() parentName: string;
-    @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+    @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
 
     searchFieldForm = new FormControl();
 
@@ -208,7 +210,7 @@ export class RecordSearchComponent implements OnInit {
         private caseService: CaseService,
     ) {}
 
-    searchResults$;
+    searchResults$:Observable<SearchResponse[]>;
 
     ngOnInit() {
         this.searchForm = this.formBuilder.group({
@@ -367,70 +369,78 @@ export class RecordSearchComponent implements OnInit {
         this.searchRows.removeAt(i);
     }
 
-    openCase(caseSearchResult: SearchResponse) {
-        this.onOpenEmergencyCase.emit({ caseSearchResult });
+    openCase(searchResult: SearchResponse) {
+
+        let result:EmergencyTab = {
+            EmergencyCaseId: searchResult.EmergencyCaseId,
+            EmergencyNumber: searchResult.EmergencyNumber
+          };
+
+        this.onOpenEmergencyCase.emit(result);
     }
 
-    loadHospitalRecord(emergencyCaseId, emergencyNumber) {
-        alert('Open the hospital manager record');
-    }
+    //The below is all now in the search-result-card
 
-    quickUpdate(patientId: number, tagNumber: string) {
-        this.dialog.open(PatientEditDialog, {
-            width: '500px',
-            data: { patientId, tagNumber },
-        });
-    }
+    // loadHospitalRecord(emergencyCaseId, emergencyNumber) {
+    //     alert('Open the hospital manager record');
+    // }
 
-    rescueUpdate(
-        emergencyCaseId: number,
-        callDateTime: Date | string,
-        CallOutcomeId: number,
-    ) {
-        this.rescueDialog.open(RescueDetailsDialogComponent, {
-            width: '500px',
-            data: {
-                emergencyCaseId,
-                callDateTime,
-                CallOutcomeId,
-            },
-        });
-    }
+    // quickUpdate(patientId: number, tagNumber: string) {
+    //     this.dialog.open(PatientEditDialog, {
+    //         width: '500px',
+    //         data: { patientId, tagNumber },
+    //     });
+    // }
 
-    callUpdate(patientId: number, tagNumber: string) {
-        this.callDialog.open(PatientCallDialogComponent, {
-            width: '500px',
-            data: { patientId, tagNumber },
-        });
-    }
+    // rescueUpdate(
+    //     emergencyCaseId: number,
+    //     callDateTime: Date | string,
+    //     CallOutcomeId: number,
+    // ) {
+    //     this.rescueDialog.open(RescueDetailsDialogComponent, {
+    //         width: '500px',
+    //         data: {
+    //             emergencyCaseId,
+    //             callDateTime,
+    //             CallOutcomeId,
+    //         },
+    //     });
+    // }
 
-    openSurgeryDialog(
-        patientId: number,
-        tagNumber: string,
-        emergencyNumber: number,
-        animalType: string,
-    ) {
-        const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            data: {
-                patientId,
-                tagNumber,
-                emergencyNumber,
-                animalType,
-            },
-        });
-        dialogRef.afterClosed().subscribe(result => {
+    // callUpdate(patientId: number, tagNumber: string) {
+    //     this.callDialog.open(PatientCallDialogComponent, {
+    //         width: '500px',
+    //         data: { patientId, tagNumber },
+    //     });
+    // }
 
-        });
-    }
+    // openSurgeryDialog(
+    //     patientId: number,
+    //     tagNumber: string,
+    //     emergencyNumber: number,
+    //     animalType: string,
+    // ) {
+    //     const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
+    //         maxWidth: '100vw',
+    //         maxHeight: '100vh',
+    //         data: {
+    //             patientId,
+    //             tagNumber,
+    //             emergencyNumber,
+    //             animalType,
+    //         },
+    //     });
+    //     dialogRef.afterClosed().subscribe(result => {
 
-    addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
-        this.openSurgeryDialog(
-            patientId,
-            tagNumber,
-            emergencyNumber,
-            animalType,
-        );
-    }
+    //     });
+    // }
+
+    // addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
+    //     this.openSurgeryDialog(
+    //         patientId,
+    //         tagNumber,
+    //         emergencyNumber,
+    //         animalType,
+    //     );
+    // }
 }

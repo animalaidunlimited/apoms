@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { searchResponseWrapper } from 'src/app/core/models/responses';
+import { SearchResponse } from 'src/app/core/models/responses';
 
 @Component({
     selector: 'hospital-manager-tab-bar',
@@ -40,27 +40,27 @@ export class HospitalManagerTabBarComponent implements OnInit {
         }
     }
 
-    addTab(searchResult: searchResponseWrapper) {
+    addTab(searchResult: SearchResponse) {
         this.tabs.splice(this.tabs.length, 0, {
             id: this.tabs.length,
-            value: searchResult.caseSearchResult.TagNumber,
-            emergencyCaseId: searchResult.caseSearchResult.EmergencyCaseId,
-            emergencyNumber: searchResult.caseSearchResult.EmergencyNumber,
-            patientId: searchResult.caseSearchResult.PatientId,
-            tagNumber: searchResult.caseSearchResult.TagNumber,
-            animalType: searchResult.caseSearchResult.AnimalType,
-            currentLocation: searchResult.caseSearchResult.CurrentLocation,
-            callDateTime: searchResult.caseSearchResult.CallDateTime,
-            callOutcome: searchResult.caseSearchResult.CallOutcome,
+            value: searchResult.TagNumber,
+            emergencyCaseId: searchResult.EmergencyCaseId,
+            emergencyNumber: searchResult.EmergencyNumber,
+            patientId: searchResult.PatientId,
+            tagNumber: searchResult.TagNumber,
+            animalType: searchResult.AnimalType,
+            currentLocation: searchResult.CurrentLocation,
+            callDateTime: searchResult.CallDateTime,
+            callOutcome: searchResult.CallOutcomeId,
             icon: 'close',
         });
         this.selected.setValue(this.tabs.length - 1);
     }
-
-    public openCase(result: searchResponseWrapper) {
+    
+    public openCase(result: SearchResponse) {
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId == result.caseSearchResult.EmergencyCaseId,
+                card.emergencyCaseId == result.EmergencyCaseId,
         );
 
         tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result);

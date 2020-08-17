@@ -69,7 +69,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     initialiseForm() {
-       this.caseService.getCaseById(this.emergencyCaseId).subscribe(result => {
+       this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
             this.recordForm.patchValue(result);
         });
     }

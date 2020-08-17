@@ -12,6 +12,7 @@ export class OutstandingCaseService {
   constructor(private rescueService: RescueDetailsService) { }
 
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(false);
+  autoRefreshState:boolean;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject(null);
 
@@ -36,12 +37,27 @@ export class OutstandingCaseService {
       this.populateOutstandingCases(outstandingCases.outstandingRescues);
       });
 
+      this.autoRefresh.subscribe(state => {
+        this.autoRefreshState = state;
+      })
+
     }
+
+
+  }
+
+  refreshRescues(){
+
+    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe(outstandingCases => {
+      this.populateOutstandingCases(outstandingCases.outstandingRescues);
+      });
+
   }
 
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
 
     this.outstandingCases$.next(outstandingCases);
+    this.refreshColour.next("primary");
 
     //Make sure we close the subscription as we only need to get this once when we initialise
     this.initialRescueListSubscription.unsubscribe();
@@ -59,7 +75,7 @@ export class OutstandingCaseService {
     })
 
     //Here we only do the refresh if the user has the toggle turned on.
-    if(!this.autoRefresh){
+    if(!this.autoRefreshState){
       this.refreshColour.next("warn");
       return;
     }
@@ -120,7 +136,10 @@ export class OutstandingCaseService {
     //Set the rescue to show as moved
     currentOutstanding = this.setMoved(currentOutstanding, updatedRescue.emergencyCaseId, true, false);
 
+    this.refreshColour.next("primary");
     this.outstandingCases$.next(currentOutstanding);
+
+
 
   }
 

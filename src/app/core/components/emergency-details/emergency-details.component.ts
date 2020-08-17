@@ -7,6 +7,7 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
 import { UserOptionsService } from '../../services/user-options.service';
 import { DatePipe } from '@angular/common';
+import { EmergencyCode } from '../../models/emergency-record';
 
 @Component({
     selector: 'emergency-details',
@@ -34,6 +35,8 @@ export class EmergencyDetailsComponent implements OnInit {
     emergencyCodes$;
     callDateTime: string | Date = getCurrentTimeString();
     minimumDate: string;
+
+    selected;
 
     constructor(
         private dropdowns: DropdownService,
@@ -81,11 +84,10 @@ export class EmergencyDetailsComponent implements OnInit {
         );
 
         this.caseService
-            .getCaseById(
+            .getEmergencyCaseById(
                 this.recordForm.get('emergencyDetails.emergencyCaseId').value,
             )
             .subscribe(result => {
-                console.log(result);
                 this.recordForm.patchValue(result);
             });
 
@@ -98,7 +100,6 @@ export class EmergencyDetailsComponent implements OnInit {
 
                 this.updateEmergencyNumber(val);
             });
-
 
     }
 
@@ -117,6 +118,12 @@ export class EmergencyDetailsComponent implements OnInit {
         if (!currentTime.value) {
             currentTime.setValue(getCurrentTimeString());
         }
+    }
+
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
+
+        return o1.EmergencyCodeId === o2.EmergencyCodeId;
+
     }
 
 

@@ -11,6 +11,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { RescueDetailsService } from '../../services/rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
+import { SearchResponse } from 'src/app/core/models/responses';
+import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 export interface Swimlane{
   label:string;
@@ -58,7 +60,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     ) { }
 
-  @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+  @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
 
   autoRefresh:boolean;
 
@@ -69,7 +71,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
   outstandingCases:OutstandingCase[];
   outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
-  refreshColour: ThemePalette = "primary";
+  refreshColour$:BehaviorSubject<ThemePalette>;
+  refreshColour:ThemePalette = "primary";
 
   refreshForm:FormGroup;
   searchForm:FormGroup;
@@ -126,13 +129,11 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     });
 
-
-
     //If we receive focus then make sure we tidy up as needed.
     this.outstandingCaseService.haveReceivedFocus.subscribe((focusReceived) => {
 
       if(focusReceived && !this.autoRefresh){
-        this.refreshColour = "warn";
+        this.refreshColour$.next("warn");
         this.changeDetector.detectChanges();
       }
       else if (focusReceived && this.autoRefresh){
@@ -185,7 +186,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
                 event.previousIndex);
             }
             else {
-              this.refreshColour = "warn";
+              this.refreshColour$.next("warn");
               this.changeDetector.detectChanges();
             }
           });
@@ -215,7 +216,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     afterClosed.subscribe(result => {
 
       if(result?.success === 1 && !this.autoRefresh){
-        this.refreshColour = "warn";
+        this.refreshColour$.next("warn");
         this.changeDetector.detectChanges();
       }
 
@@ -225,10 +226,24 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
+openCaseFromMap(emergencyCase:EmergencyTab){
+
+  this.onOpenEmergencyCase.emit(emergencyCase);
+
+}
+
 openCase(caseSearchResult:OutstandingRescue)
 {
-  this.onOpenEmergencyCase.emit(
-    { "caseSearchResult" : {"EmergencyCaseId" : caseSearchResult.emergencyCaseId,
-  "EmergencyNumber" : caseSearchResult.emergencyNumber}});
+  let result:EmergencyTab = {
+    EmergencyCaseId: caseSearchResult.emergencyCaseId,
+    EmergencyNumber: caseSearchResult.emergencyNumber
+  };
+
+  this.onOpenEmergencyCase.emit(result);
+}
+
+refreshRescues(){
+
+ this.outstandingCaseService.refreshRescues();
 }
 }
