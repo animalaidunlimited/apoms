@@ -13,8 +13,7 @@ export class SurgeryService extends APIService {
     }
 
     public async insertSurgery(surgeryData): Promise<any> {
-        const request = 'surgery';
-
+        const request:string = 'surgery';
         if (surgeryData.SurgeryId) {
             return this.put(surgeryData);
         } else {
@@ -23,13 +22,13 @@ export class SurgeryService extends APIService {
     }
 
     public async getSurgeryBySurgeryId(surgeryId): Promise<any> {
-        const request = '?SurgeryId=' + surgeryId;
+        const request:string = '?SurgeryId=' + surgeryId;
 
         return this.get(request);
     }
 
     public getSurgeryByPatientId(patientId: number): Promise<any> {
-        const request = '?PatientId=' + patientId;
+        const request:string = '?PatientId=' + patientId;
         return this.get(request);
     }
 }
