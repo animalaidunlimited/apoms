@@ -198,7 +198,8 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     resetTableDataSource() {
-        const patients = (this.recordForm.get('patients') as FormArray).controls;
+        const patients = (this.recordForm.get('patients') as FormArray)
+            .controls;
 
         this.patientDataSource = new MatTableDataSource(patients);
 

@@ -33,7 +33,6 @@ class UIErrorHandler extends ErrorHandler {
   }
 }
 
-
 @NgModule({
     declarations: [AppComponent],
     imports: [

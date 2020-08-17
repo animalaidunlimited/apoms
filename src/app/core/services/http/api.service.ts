@@ -62,6 +62,19 @@ export abstract class APIService<T = any> {
         return response;
     }
 
+    public async delete(body: any): Promise<any> {
+        let response = null;
+
+        try {
+            response = await this.http
+                .put(`${this.url}/${this.endpoint}`, body)
+                .toPromise();
+        } catch (error) {
+            response = this.errorHandler('DELETE', error);
+        }
+        return response;
+    }
+
     public async put(body): Promise<any> {
         let response = null;
         try {
