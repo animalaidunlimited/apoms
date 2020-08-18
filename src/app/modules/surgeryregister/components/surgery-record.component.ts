@@ -134,7 +134,6 @@ export class SurgeryRecordComponent implements OnInit {
         await this.surgeryService
               .saveSurgery(this.surgeryForm.value).then((value: any) => {
 
-
                 if (value) {
                     let surgeonNameForTable;
 
@@ -144,17 +143,15 @@ export class SurgeryRecordComponent implements OnInit {
 
                     surgeonNameForTable = this.surgeons.find(
                         user =>
-                            user.UserId == this.surgeryForm.get('UserId').value,
+                            user.UserId === this.surgeryForm.get('SurgeonId').value,
                     );
                     surgeryTypeForTable = this.surgeryTypes.find(
                         surgeryType =>
-                            surgeryType.SurgeryTypeId ==
-                            this.surgeryForm.get('SurgeryTypeId').value,
+                            surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value,
                     );
                     surgerySiteForTable = this.surgerySites.find(
                         surgerySite =>
-                            surgerySite.SurgerySiteId ==
-                            this.surgeryForm.get('SurgerySiteId').value,
+                            surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value,
                     );
 
 
@@ -185,6 +182,6 @@ export class SurgeryRecordComponent implements OnInit {
 
     async resetForm() {
         this.surgeryForm.reset();
-    }  
+    }
 
 }

@@ -27,7 +27,8 @@ export class HospitalManagerTabBarComponent implements OnInit {
             animalType: '',
             currentLocation: '',
             callDateTime: '',
-            callOutcome: 0,
+            callOutcomeId: 0,
+            callOutcome: '',
             icon: '',
         });
 
@@ -51,12 +52,13 @@ export class HospitalManagerTabBarComponent implements OnInit {
             animalType: searchResult.AnimalType,
             currentLocation: searchResult.CurrentLocation,
             callDateTime: searchResult.CallDateTime,
-            callOutcome: searchResult.CallOutcomeId,
+            callOutcomeId: searchResult.CallOutcomeId,
+            callOutcome: searchResult.CallOutcome,
             icon: 'close',
         });
         this.selected.setValue(this.tabs.length - 1);
     }
-    
+
     public openCase(result: SearchResponse) {
         const tabExists = this.tabs.find(
             card =>

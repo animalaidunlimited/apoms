@@ -18,7 +18,6 @@ import {
     PatientCallModifyResponse,
 } from 'src/app/core/models/patients';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 @Component({
     selector: 'patient-call',
@@ -46,7 +45,6 @@ export class PatientCallComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
-        private snackBar: MatSnackBar,
         private patientService: PatientService,
         private dropdown: DropdownService,
         private showSnackBar: SnackbarService,
@@ -101,7 +99,9 @@ export class PatientCallComponent implements OnInit {
 
     populatePatientCalls(data: PatientCalls) {
 
-        if(data?.calls.length){
+        let length:number = data?.calls.length
+
+        if(length){
 
             for (let i = 0; i < length; i++) {
                 this.addPatientCall(false);

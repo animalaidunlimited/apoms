@@ -79,11 +79,23 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcomeId");
+    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcome");
 
     this.updateTimes();
 
     this.onChanges();
+
+  }
+
+  onChanges(): void {
+
+    this.recordForm.valueChanges.subscribe(val => {
+
+      //The values won't have bubbled up to the parent yet, so wait for one tick
+      setTimeout(() =>
+        this.updateValidators()
+      )
+    });
   }
 
 updateValidators()
@@ -162,8 +174,9 @@ updateValidators()
     this.admissionTime.setErrors({ "rescueAfterAdmission" : true});
   }
 
+
   //When we select admission, we need to check that we have rescue details
-  if(this.callOutcome.value?.CallOutcome == "Admission"){
+  if(this.callOutcome.value === "Admission"){
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
@@ -179,16 +192,7 @@ updateValidators()
 
 }
 
-onChanges(): void {
 
-    this.recordForm.valueChanges.subscribe(val => {
-
-      //The values won't have bubbled up to the parent yet, so wait for one tick
-      setTimeout(() =>
-        this.updateValidators()
-      )
-    });
-  }
 
   setInitialTime(event)
   {

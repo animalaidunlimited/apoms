@@ -86,6 +86,7 @@ export interface SearchResponse {
     PatientId: number;
     TagNumber: string;
     CallOutcomeId: number;
+    CallOutcome: string;
     Location: string;
     Latitude: number;
     Longitude: number;

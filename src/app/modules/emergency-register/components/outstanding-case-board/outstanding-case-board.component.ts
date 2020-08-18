@@ -97,7 +97,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.outstandingCaseService.initialise();
 
-    this.outstandingCaseService.refreshColour.subscribe(colour => {
+    this.refreshColour$ = this.outstandingCaseService.refreshColour;
+
+    this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
     });
 
@@ -234,10 +236,26 @@ openCaseFromMap(emergencyCase:EmergencyTab){
 
 openCase(caseSearchResult:OutstandingRescue)
 {
-  let result:EmergencyTab = {
+  let result:SearchResponse = {
+
     EmergencyCaseId: caseSearchResult.emergencyCaseId,
-    EmergencyNumber: caseSearchResult.emergencyNumber
-  };
+    EmergencyNumber: caseSearchResult.emergencyNumber,
+    CallDateTime: caseSearchResult.callDateTime.toString(),
+    CallerId: null,
+    Name: caseSearchResult.callerName,
+    Number: caseSearchResult.callerNumber,
+    AnimalTypeId: null,
+    AnimalType: null,
+    PatientId: null,
+    TagNumber: null,
+    CallOutcomeId: caseSearchResult.callOutcomeId,
+    CallOutcome: null,
+    Location: caseSearchResult.location,
+    Latitude: caseSearchResult.latitude,
+    Longitude: caseSearchResult.longitude,
+    CurrentLocation: null,
+
+  }
 
   this.onOpenEmergencyCase.emit(result);
 }

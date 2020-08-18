@@ -23,4 +23,15 @@ export class OnlineStatusService {
     private updateOnlineStatus() {
         this.internalConnectionChanged.next(window.navigator.onLine);
     }
+
+    public updateOnlineStatusAfterUnsuccessfulHTTPRequest(){
+
+        this.internalConnectionChanged.next(false);
+    }
+
+
+    public updateOnlineStatusAfterSuccessfulHTTPRequest(){
+
+        this.internalConnectionChanged.next(true);
+    }
 }

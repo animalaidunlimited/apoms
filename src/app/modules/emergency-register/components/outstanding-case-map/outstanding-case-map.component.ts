@@ -80,7 +80,7 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   }
 
-  openCase(caseSearchResult:EmergencyTab)
+  openCase(caseSearchResult:SearchResponse)
   {
     this.onOpenEmergencyCase.emit(caseSearchResult);
   }

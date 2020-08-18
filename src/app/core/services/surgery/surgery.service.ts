@@ -12,21 +12,20 @@ export class SurgeryService extends APIService {
         super(http);
     }
 
-
-    public async insertSurgery(surgeryData): Promise<any> {
+    public async saveSurgery(surgeryData): Promise<any> {
         const request:string = 'surgery';
 
         if (surgeryData.SurgeryId) {
-            return this.put(surgeryData);
+            return await this.put(surgeryData);
         } else {
-            return this.post(surgeryData);
+            return await this.post(surgeryData);
         }
     }
 
-    public async getSurgeryBySurgeryId(surgeryId): Promise<any> {
+    public async getSurgeryBySurgeryId(surgeryId: number): Promise<any> {
         const request:string = '?SurgeryId=' + surgeryId;
 
-        return this.get(request);
+        return await this.get(request);
     }
 
     public getSurgeryByPatientId(patientId: number): Promise<any> {
