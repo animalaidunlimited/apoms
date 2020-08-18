@@ -3,7 +3,6 @@ import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { EMPTY } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UniqueEmergencyNumberValidator {

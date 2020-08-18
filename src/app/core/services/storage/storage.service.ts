@@ -30,7 +30,7 @@ export class StorageService {
         for (let i = 0; i < this.storage.length; i++) {
             const item = this.storage.key(i);
 
-            if (item.substr(0, type.length) == type) {
+            if (item.substr(0, type.length) === type) {
                 result.push({ key: item, value: this.storage.getItem(item) });
             }
         }

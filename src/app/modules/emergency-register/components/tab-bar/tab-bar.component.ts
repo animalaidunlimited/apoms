@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SearchResponse } from 'src/app/core/models/responses';
 import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 @Component({
@@ -19,8 +18,6 @@ export class TabBarComponent implements OnInit {
     constructor(private cdr: ChangeDetectorRef) {}
 
     ngOnInit() {
-        // this.tabs.push({"id":0, "value": "Search", "emergencyCaseId": 0, "icon":""});
-        // this.tabs.push({"id":1, "value": "70008", "emergencyCaseId": 51, "icon":""});
     }
 
     removeTab(index: number) {

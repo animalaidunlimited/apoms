@@ -8,7 +8,8 @@ export interface SearchRecordTab {
     animalType: string;
     currentLocation: string;
     callDateTime: string;
-    callOutcome: number;
+    callOutcomeId: number;
+    callOutcome: string;
     icon: string;
 }
 

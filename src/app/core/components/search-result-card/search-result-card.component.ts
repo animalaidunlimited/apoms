@@ -24,15 +24,10 @@ export class SearchResultCardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {}
-  
+
   openCase(caseSearchResult: SearchResponse) {
 
-    let result:EmergencyTab = {
-      EmergencyCaseId: caseSearchResult.EmergencyCaseId,
-      EmergencyNumber: caseSearchResult.EmergencyNumber
-    };
-
-  this.onOpenEmergencyCase.emit(result);
+    this.onOpenEmergencyCase.emit(caseSearchResult);
 }
 
 quickUpdate(patientId: number, tagNumber: string) {

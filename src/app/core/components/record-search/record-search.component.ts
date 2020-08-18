@@ -371,13 +371,8 @@ export class RecordSearchComponent implements OnInit {
 
     openCase(searchResult: SearchResponse) {
 
-        let result:EmergencyTab = {
-            EmergencyCaseId: searchResult.EmergencyCaseId,
-            EmergencyNumber: searchResult.EmergencyNumber
-          };
+        this.onOpenEmergencyCase.emit(searchResult);
 
-        this.onOpenEmergencyCase.emit(result);
-      
      }
 
 
