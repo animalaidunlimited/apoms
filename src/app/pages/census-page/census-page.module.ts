@@ -6,6 +6,14 @@ import { CensusPageComponent } from './census-page.component';
 
 @NgModule({
     declarations: [CensusPageComponent],
-    imports: [CommonModule, CensusPageRoutingModule, MaterialModule],
+    imports: [
+        CommonModule,
+        CensusPageRoutingModule,
+        MaterialModule
+    ],
+    exports: [
+        CensusPageComponent
+    ]
+
 })
 export class CensusPageModule {}

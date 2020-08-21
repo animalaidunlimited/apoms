@@ -60,6 +60,7 @@ export class EmergencyRecordComponent implements OnInit {
             callOutcome: this.fb.group({
                 CallOutcomeId: [],
                 CallOutcome: [''],
+                sameAsNumber: []
             }),
         });
 
@@ -155,9 +156,10 @@ export class EmergencyRecordComponent implements OnInit {
             //The Emergency Number check might have gotten stuck due to the connection to the DB going down. So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
-            if(this.recordForm.pending && this.recordForm.get('emergencyNumber').pending){
+            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber').pending){
 
-                this.recordForm.get('emergencyNumber').setErrors({ "stuckInPending": true});
+                this.recordForm.get('emergencyDetails.emergencyNumber').setErrors({ "stuckInPending": true});
+                return;
             }
         }
 

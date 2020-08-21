@@ -61,8 +61,6 @@
 
         <div *ngIf="(searchResults$ | async)?.length === 0 ;">No results</div>
 
-        <!-- <search-result-card (onOpenEmergencyCase)="openCase($event)"></search-result-card> -->
-
         <div *ngFor="let record of searchResults$ | async">
 
             <search-result-card class="emergency-card" (onOpenEmergencyCase)="openCase($event)" [record]="record"></search-result-card>

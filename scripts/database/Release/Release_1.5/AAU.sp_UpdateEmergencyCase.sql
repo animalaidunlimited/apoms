@@ -85,9 +85,8 @@ COMMIT;
     SELECT 1 INTO prm_Success;
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());
-    
-	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());  
+	
 
 ELSEIF vEmNoExists >= 1 THEN
 
@@ -103,6 +102,8 @@ ELSEIF prm_UpdateTime > vUpdateTime THEN
 ELSE
 	SELECT 5 INTO prm_Success; -- Other error   
 END IF;
+
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
 END$$
 DELIMITER ;

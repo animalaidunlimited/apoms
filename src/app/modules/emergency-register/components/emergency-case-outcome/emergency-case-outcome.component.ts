@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, AbstractControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -38,8 +38,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
-    callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
-
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
     this.callOutcomes$.subscribe(callOutcome => {
@@ -49,20 +47,35 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     });
 
 
+    this.recordForm.get("callOutcome.CallOutcomeId").valueChanges.subscribe(() => {
+
+      this.outcomeChanged()
+
+    })
+
     this.changeDetector.detectChanges();
   }
 
   outcomeChanged(){
 
-    let sameAsNumber:AbstractControl = this.recordForm.get("callOutcome.sameAsNumber") as AbstractControl;
+    let sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
 
-    sameAsNumber.setValue(null);
-    sameAsNumber.setErrors(null);
+    //Check if we need to show the same as field.
+    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcomeId').value;
 
-    let callOutcome:CallOutcomeResponse = this.recordForm.get('callOutcome').value;
+    if(!sameAsNumber.value && this.sameAs){
+      sameAsNumber.setValidators(Validators.required);
+      sameAsNumber.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]);
+    }
 
-    this.sameAs = this.sameAsId === callOutcome.CallOutcomeId;
+    //We might have selected something other than Same As, so hide the field.
+    if(!this.sameAs){
+      sameAsNumber.setValue(null);
+      sameAsNumber.clearValidators()
+      sameAsNumber.clearAsyncValidators();
+    }
 
+    sameAsNumber.updateValueAndValidity();
     this.changeDetector.detectChanges();
 
     //Make sure we focus when we're selecting same as

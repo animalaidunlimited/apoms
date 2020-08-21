@@ -6,9 +6,11 @@ import { UpdateResponse } from '../../models/outstanding-case';
 export interface DialogData {
     emergencyCaseId: number;
     emergencyNumber: number;
+    CallOutcomeId: number;
+    CallOutcome: string;
+    sameAsNumber: number;
     recordForm: FormGroup;
 }
-
 
 interface CanExitChange {
     outcomeUpdateComplete: number;
@@ -45,7 +47,9 @@ export class RescueDetailsDialogComponent implements OnInit {
         updateTime: ['']
       }),
       callOutcome: this.fb.group({
-        CallOutcomeId: []
+        CallOutcomeId: [this.data.CallOutcomeId],
+        CallOutcome: [this.data.CallOutcome],
+        sameAsNumber: [this.data.sameAsNumber]
       })
     });
 
