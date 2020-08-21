@@ -14,7 +14,7 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_CallOutcomeId INT,
                                     IN prm_SameAsNumber INT,
 									IN prm_Location VARCHAR(512),
-									IN prm_Latitude DOUBLE(11,8),
+									IN prm_Latitude DECIMAL(11,8),
 									IN prm_Longitude DECIMAL(11,8),
 									IN prm_Rescuer1Id INT,
 									IN prm_Rescuer2Id INT,
@@ -102,8 +102,6 @@ COMMIT;
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId,prm_Username,prm_CallerId,'EmergencyCase','Insert', NOW());
     
-	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
-
 ELSEIF vEmNoExists >= 1 THEN
 
 	SELECT 2 INTO prm_Success; -- Duplicate

@@ -87,6 +87,7 @@ export interface SearchResponse {
     TagNumber: string;
     CallOutcomeId: number;
     CallOutcome: string;
+    sameAsNumber: number;
     Location: string;
     Latitude: number;
     Longitude: number;

@@ -493,28 +493,40 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     hideIrrelevantChips(animalTypeChip) {
+
         const currentExclusions = this.exclusions.filter(
             animalType => animalType.animalType == animalTypeChip.value,
         );
+
+        //Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
+        //followed by an unset for the old patient type
+        let currentPatient = this.getcurrentPatient();
+
+        if(!(currentPatient.get("animalType")?.value === animalTypeChip.value) && !animalTypeChip.selected){
+            return;
+        }
 
         this.problemChips.chips.forEach(chip => {
             chip.disabled = false;
             chip.selectable = true;
         });
 
+
         if (!animalTypeChip.selected) {
             return;
         }
 
-        currentExclusions[0].exclusionList.forEach(exclusion =>
+        currentExclusions[0].exclusionList.forEach(exclusion => {
+
             this.problemChips.chips.forEach(chip => {
+
                 if (chip.value === exclusion) {
                     chip.disabled = true;
                     chip.selectable = false;
                     chip.selected = false;
                 }
-            }),
-        );
+            })
+        });
     }
 
     getcurrentPatient() {

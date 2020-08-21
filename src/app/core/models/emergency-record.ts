@@ -22,6 +22,7 @@ export interface CallerDetails {
 
 export interface CallOutcome {
     callOutcome: number;
+    sameAsNumber: number;
 }
 
 export interface LocationDetails {

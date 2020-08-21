@@ -37,18 +37,17 @@ quickUpdate(patientId: number, tagNumber: string) {
   });
 }
 
-rescueUpdate(
-  emergencyCaseId: number,
-  callDateTime: Date | string,
-  CallOutcomeId: number,
-) {
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number, CallOutcome: string,  sameAsNumber: number) {
+
   this.rescueDialog.open(RescueDetailsDialogComponent, {
       width: '500px',
       data: {
           emergencyCaseId,
           callDateTime,
           CallOutcomeId,
-      },
+          CallOutcome,
+          sameAsNumber
+      }
   });
 }
 

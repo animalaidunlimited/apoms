@@ -16,10 +16,6 @@ import {
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
-// import { PatientEditDialog } from '../patient-edit/patient-edit.component';
-// import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
-// import { PatientCallDialogComponent } from '../../../modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
-// import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
 import { Observable } from 'rxjs';
 import { EmergencyTab } from '../../models/emergency-record';
 
@@ -374,71 +370,4 @@ export class RecordSearchComponent implements OnInit {
         this.onOpenEmergencyCase.emit(searchResult);
 
      }
-
-
-
-    //The below is all now in the search-result-card
-
-    // loadHospitalRecord(emergencyCaseId, emergencyNumber) {
-    //     alert('Open the hospital manager record');
-    // }
-
-    // quickUpdate(patientId: number, tagNumber: string) {
-    //     this.dialog.open(PatientEditDialog, {
-    //         width: '500px',
-    //         data: { patientId, tagNumber },
-    //     });
-    // }
-
-    // rescueUpdate(
-    //     emergencyCaseId: number,
-    //     callDateTime: Date | string,
-    //     CallOutcomeId: number,
-    // ) {
-    //     this.rescueDialog.open(RescueDetailsDialogComponent, {
-    //         width: '500px',
-    //         data: {
-    //             emergencyCaseId,
-    //             callDateTime,
-    //             CallOutcomeId,
-    //         },
-    //     });
-    // }
-
-    // callUpdate(patientId: number, tagNumber: string) {
-    //     this.callDialog.open(PatientCallDialogComponent, {
-    //         width: '500px',
-    //         data: { patientId, tagNumber },
-    //     });
-    // }
-
-    // openSurgeryDialog(
-    //     patientId: number,
-    //     tagNumber: string,
-    //     emergencyNumber: number,
-    //     animalType: string,
-    // ) {
-    //     const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
-    //         maxWidth: '100vw',
-    //         maxHeight: '100vh',
-    //         data: {
-    //             patientId,
-    //             tagNumber,
-    //             emergencyNumber,
-    //             animalType,
-    //         },
-    //     });
-    //     dialogRef.afterClosed().subscribe(result => {
-
-    //     });
-    // }
-
-    // addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
-    //     this.openSurgeryDialog(
-    //         patientId,
-    //         tagNumber,
-    //         emergencyNumber,
-    //         animalType,
-    //     );
-    // }
 }

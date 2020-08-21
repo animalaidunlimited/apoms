@@ -20,20 +20,28 @@ JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
 JSON_OBJECT("emergencyNumber", ec.EmergencyNumber),
 JSON_OBJECT("callDateTime", DATE_FORMAT(ec.CallDateTime, "%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("dispatcher", ec.DispatcherId),
-JSON_OBJECT("code", ec.EmergencyCodeId),
+JSON_OBJECT("code",
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("EmergencyCodeId", ec.EmergencyCodeId),
+JSON_OBJECT("EmergencyCode", c.EmergencyCode)
+)),
 JSON_OBJECT("updateTime", DATE_FORMAT(ec.UpdateTime, "%Y-%m-%dT%H:%i:%s"))
 )),
 JSON_OBJECT("callOutcome",
-JSON_OBJECT("callOutcome", ec.CallOutcomeId))
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("CallOutcomeId", ec.CallOutcomeId),
+JSON_OBJECT("sameAsNumber", sa.EmergencyNumber)
+)
+)
 
 ) AS Result
 			
 FROM AAU.EmergencyCase ec
+LEFT JOIN AAU.EmergencyCase sa ON sa.EmergencyCaseId = ec.SameAsEmergencyCaseId
+LEFT JOIN AAU.CallOutcome c ON c.EmergencyCodeId = ec.EmergencyCodeId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
 
 
 END$$
 DELIMITER ;
-
--- CALL AAU.sp_GetEmergencyCaseById(34);

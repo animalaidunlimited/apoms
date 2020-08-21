@@ -250,6 +250,7 @@ openCase(caseSearchResult:OutstandingRescue)
     TagNumber: null,
     CallOutcomeId: caseSearchResult.callOutcomeId,
     CallOutcome: null,
+    sameAsNumber: null,
     Location: caseSearchResult.location,
     Latitude: caseSearchResult.latitude,
     Longitude: caseSearchResult.longitude,
