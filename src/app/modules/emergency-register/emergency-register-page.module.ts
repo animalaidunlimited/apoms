@@ -10,6 +10,7 @@ import { TabBarModule } from './components/tab-bar/tab-bar.module';
 
 @NgModule({
     declarations: [EmergencyRegisterPageComponent],
+
     imports: [
         CommonModule,
         EmergencyRegisterPageRoutingModule,

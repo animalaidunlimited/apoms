@@ -91,9 +91,7 @@ export class CallerDetailsComponent implements OnInit {
     lookup(value): Observable<Callers> {
         return this.callerService.getCallerByNumber(value).pipe(
             map(
-                results =>
-                    // console.log(results)
-                    results,
+                results => results,
             ),
             catchError(_ => {
                 return of(null);

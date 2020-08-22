@@ -1,4 +1,5 @@
 .drag-drop-container {
+  text-align: center;
     width: 18%;
     max-width: 100%;
     min-width: 175px;
@@ -131,7 +132,12 @@
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:focus,
 .mat-expansion-panel-header.mat-expanded:hover,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
-    .mat-expansion-panel-header:hover {
-    background-color: lightsteelblue !important;
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) .mat-expansion-panel-header:hover
+{
+  background-color: lightsteelblue !important;
+}
+
+.refresh-box{
+  padding-right: 40px;
+  max-width: 300px;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../utils';
@@ -12,9 +12,23 @@ import { UniqueEmergencyNumberValidator } from '../../validators/emergency-numbe
     styleUrls: ['./emergency-details.component.scss'],
 })
 export class EmergencyDetailsComponent implements OnInit {
+
     @Input() recordForm: FormGroup;
     @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
+
+    @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
+    @ViewChild("callDateTimeField",{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
+
+
+
+    @HostListener('document:keydown.control.shift.c', ['$event'])
+    focusCallDateTime(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callDateTimeField.nativeElement.focus();
+    };
+
+
 
     dispatchers$;
     emergencyCodes$;
@@ -72,8 +86,19 @@ export class EmergencyDetailsComponent implements OnInit {
         this.recordForm
             .get('emergencyDetails.emergencyNumber')
             .valueChanges.subscribe(val => {
+                if(!val){
+                    this.emergencyNumberField.nativeElement.focus();
+                }
+
                 this.updateEmergencyNumber(val);
             });
+
+
+    }
+
+    ngAfterViewInit(){
+
+        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
@@ -89,4 +114,6 @@ export class EmergencyDetailsComponent implements OnInit {
             currentTime.setValue(getCurrentTimeString());
         }
     }
+
+
 }

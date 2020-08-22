@@ -5,6 +5,7 @@ import {
     ViewChild,
     Output,
     EventEmitter,
+    ChangeDetectorRef,
 } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import {
@@ -46,6 +47,7 @@ export class LocationDetailsComponent implements OnInit {
         private locationService: LocationDetailsService,
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
+        private changeDetector: ChangeDetectorRef
     ) {}
 
     zoom: number;
@@ -58,6 +60,7 @@ export class LocationDetailsComponent implements OnInit {
 
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
     @ViewChild('addressSearch') addresstext: any;
+    @ViewChild('googlemap') googlemap: any;
 
     ngOnInit() {
         this.recordForm.addControl(
@@ -89,6 +92,9 @@ export class LocationDetailsComponent implements OnInit {
             const coordinates = this.userOptions.getCoordinates() as Location;
             this.initialiseLocation(coordinates);
         }
+
+
+
     }
 
     ngAfterViewInit() {
@@ -111,8 +117,14 @@ export class LocationDetailsComponent implements OnInit {
 
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
-            this.invokeEvent(place);
+
+            if(place?.formatted_address){
+                this.invokeEvent(place);
+            }
+
+
         });
+
     }
 
     invokeEvent(place: Object) {
@@ -152,6 +164,8 @@ export class LocationDetailsComponent implements OnInit {
         this.markers[0].position = { lat: latitude, lng: longitude };
 
         this.center = { lat: latitude, lng: longitude };
+
+        this.changeDetector.detectChanges();
     }
 
     markerDragEnd(event: google.maps.MouseEvent) {

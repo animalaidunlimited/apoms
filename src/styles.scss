@@ -4,13 +4,18 @@ body {
     margin: 0 !important;
 }
 
-// mat-form-field {
-//   max-width: 100%;
-// }
-
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
 $standard-width: 175px;
+
+.mat-focused {
+  border:1.5px dashed #607d8b99;
+  border-radius: 4px;
+}
+
+.mat-form-field{
+  padding: 3px;
+}
 
 .form-sub-group
 {
@@ -88,3 +93,4 @@ mat-radio-button{
   background-color: #F3C2B8 !important;
   border-color: #c3e6cb !important;
 }
+
