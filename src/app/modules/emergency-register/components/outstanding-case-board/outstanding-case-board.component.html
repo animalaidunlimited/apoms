@@ -1,3 +1,5 @@
+
+<div fxLayout="row wrap" fxLayoutAlign="space-between center">
 <form [formGroup]="searchForm">
 
 <mat-form-field class="search-box" >
@@ -16,6 +18,22 @@
  </mat-form-field>
 
 </form>
+
+<div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
+
+  <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+
+  <mat-slide-toggle [disabled]="!notificationPermissionGranted"
+  matTooltip="To enable auto refresh, please enable notifications in your browser."
+  (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
+
+
+
+</div>
+
+</div>
 
 <div cdkDropListGroup>
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases">
@@ -63,7 +81,7 @@
 
 
             <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}}
+              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.patients}})
             </div>
             <!-- </mat-panel-title> -->
             <!-- <mat-panel-description> -->
@@ -92,8 +110,7 @@
                 <div class="telephone">{{outstandingCase.callerNumber}}</div>
             </div>
 
-
-            <div class="CallDateTime">{{outstandingCase.callDateTime}}</div>
+            <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
             <div class="animal-location">{{outstandingCase.location}}</div>
         </div>
 

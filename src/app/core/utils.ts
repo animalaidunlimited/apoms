@@ -11,5 +11,5 @@ export function getCurrentTimeString() {
         currentTime.getTime() + currentTime.getTimezoneOffset(),
     );
 
-    return formatDate(currentTime, 'yyyy-MM-ddTHH:mm:ss', locale);
+    return formatDate(currentTime, 'yyyy-MM-ddTHH:mm', locale);
 }

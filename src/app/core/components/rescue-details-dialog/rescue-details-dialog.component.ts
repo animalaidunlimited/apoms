@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { UpdatedRescue } from '../../models/outstanding-case';
+import { UpdatedRescue, UpdateResponse } from '../../models/outstanding-case';
 
 export interface DialogData {
     emergencyCaseId: number;
@@ -9,10 +9,6 @@ export interface DialogData {
     recordForm: FormGroup;
 }
 
-interface UpdateResult {
-    success: number;
-    socketEndPoint: number;
-}
 
 interface CanExitChange {
     outcomeUpdateComplete: number;
@@ -25,54 +21,61 @@ interface CanExitChange {
     styleUrls: ['./rescue-details-dialog.component.scss'],
 })
 export class RescueDetailsDialogComponent implements OnInit {
-    result: UpdatedRescue;
+    result: UpdateResponse;
     canExit: FormGroup;
 
-    constructor(
-        private fb: FormBuilder,
-        public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  constructor(
+    private fb:FormBuilder,
+    public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) {}
 
-    ngOnInit() {
-        this.data.recordForm = this.fb.group({
-            emergencyDetails: this.fb.group({
-                emergencyCaseId: [this.data.emergencyCaseId],
-                callDateTime: [''],
-                updateTime: [''],
-            }),
-            callOutcome: this.fb.group({
-                callOutcome: [''],
-            }),
-        });
+  ngOnInit() {
 
-        this.canExit = this.fb.group({
-            outcomeUpdateComplete: [0],
-            rescueDetailsUpdateComplete: [0],
-        });
-
-        this.canExit.valueChanges.subscribe((values: CanExitChange) => {
-            // TODO update this to handle any errors and display them to a toast.
-            if (
-                values.outcomeUpdateComplete != 0 &&
-                values.rescueDetailsUpdateComplete != 0
-            ) {
-                this.dialogRef.close(this.result);
-            }
-        });
+    this.result = {
+      success: 0,
+      socketEndPoint: null
     }
 
-    onCancel(): void {
+    this.data.recordForm = this.fb.group({
+
+      emergencyDetails: this.fb.group({
+        emergencyCaseId: [this.data.emergencyCaseId],
+        callDateTime: [''],
+        updateTime: ['']
+      }),
+      callOutcome: this.fb.group({
+        callOutcome: ['']
+      })
+    });
+
+    this.canExit = this.fb.group({
+      outcomeUpdateComplete: [0],
+      rescueDetailsUpdateComplete: [0]
+    });
+
+    this.canExit.valueChanges.subscribe((values:CanExitChange) => {
+
+      //TODO update this to handle any errors and display them to a toast.
+      if(values.outcomeUpdateComplete != 0 && values.rescueDetailsUpdateComplete != 0){
+
+        this.result.success = 1;
+
         this.dialogRef.close(this.result);
-    }
+      }
+    });
 
-    onRescueDetailsResult(result: UpdateResult) {
-        this.canExit
-            .get('rescueDetailsUpdateComplete')
-            .setValue(result.success);
-    }
+   }
 
-    onOutcomeResult(result: UpdateResult) {
-        this.canExit.get('outcomeUpdateComplete').setValue(result.success);
-    }
+  onCancel(): void {
+    this.dialogRef.close(this.result);
+  }
+
+  onRescueDetailsResult(result:UpdateResponse){
+    this.canExit.get("rescueDetailsUpdateComplete").setValue(result.success);
+  }
+
+  onOutcomeResult(result:UpdateResponse){
+    this.canExit.get("outcomeUpdateComplete").setValue(result.success);
+  }
 }
