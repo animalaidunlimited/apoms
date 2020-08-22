@@ -12,7 +12,7 @@ import { CallerDetailsModule } from '../../core/components/caller-details/caller
 import { LocationDetailsModule } from '../../core/components/location-details/location-details.module';
 
 import { CensusDetailsComponent } from './components/census-details/census-details.component';
-
+import { CensusRecordModule } from "src/app/modules/Census/components/census-record/census-record.module";
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
@@ -28,6 +28,7 @@ import { PatientCallDialogComponent } from './components/patient-call-dialog/pat
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
 import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
+import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog/update-census-dialog.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
         ImageUploadDialog,
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
+        UpdateCensusDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -58,6 +60,7 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
         RescueDetailsModule,
         EmergencyDetailsModule,
         SurgeryRecordModule,
+        CensusRecordModule
     ],
     exports: [],
 })
