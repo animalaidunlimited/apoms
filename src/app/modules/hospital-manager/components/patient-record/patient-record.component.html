@@ -39,7 +39,10 @@
                 </rescue-details>
              </fieldset>
 
-            <census-details></census-details>
+            <census-details 
+                [tagNumber] = "recordForm.get('patientDetails.tagNumber').value">
+            </census-details>
+
             <surgery-details [patientId]="recordForm.get('patientDetails.patientId').value"
                              [tagNumber]="recordForm.get('patientDetails.tagNumber').value"
                              [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber').value"

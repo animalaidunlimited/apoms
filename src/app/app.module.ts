@@ -11,6 +11,7 @@ import { HttpConfigInterceptor } from './core/services/http/interceptor.service'
 import { MaterialModule } from './material-module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { MatDialogModule } from '@angular/material/dialog';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -39,6 +40,7 @@ class UIErrorHandler extends ErrorHandler {
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
+        MatDialogModule,
         NavModule,
         HttpClientModule,
         MaterialModule,

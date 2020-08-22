@@ -1,0 +1,57 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+body {
+    margin: 0 !important;
+}
+
+$colour-border: #a9abad;
+$primary-font-colour: #626262;
+$standard-width: 175px;
+
+.form1-group {
+    background-color: white;
+    border: 2px solid;
+    border-radius: 5px;
+    margin: 30px;
+    border-color: $colour-border;
+    padding-bottom: 30px;
+}
+
+.form-sub-group {
+    background-color: white;
+    align-items: center;
+    width: 80%;
+    border: 2px solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    border-color: $colour-border;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.chip-color {
+    background-color:grey;
+}
+
+.chip-red {
+    background-color: red;
+}
+
+.chip-yellow {
+    background-color: yellow;
+}
+
+.chip-green {
+    background-color: green;
+}
+
+.chip-orange {
+    background-color: orange;
+}
+
+
+
+.example-chip-list {
+    width: 100%;
+    padding-top: 10px;
+}
