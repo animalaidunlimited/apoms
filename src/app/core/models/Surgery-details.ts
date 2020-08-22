@@ -1,6 +1,6 @@
 export interface Surgeon {
     SurgeonId: number;
-    SurgeonName: string;
+    FirstName: string;
 }
 
 export interface SurgeryType {

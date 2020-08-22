@@ -11,6 +11,7 @@ import { HttpConfigInterceptor } from './core/services/http/interceptor.service'
 import { MaterialModule } from './material-module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     declarations: [AppComponent],
@@ -18,6 +19,7 @@ import { environment } from '../environments/environment';
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
+        MatDialogModule,
         NavModule,
         HttpClientModule,
         MaterialModule,
