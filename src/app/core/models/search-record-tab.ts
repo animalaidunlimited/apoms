@@ -5,9 +5,11 @@ export interface SearchRecordTab {
     emergencyNumber: number;
     patientId: number;
     tagNumber: string;
+    animalType: string;
     currentLocation: string;
     callDateTime: string;
-    callOutcome: number;
+    callOutcomeId: number;
+    callOutcome: string;
     icon: string;
 }
 

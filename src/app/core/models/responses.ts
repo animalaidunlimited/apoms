@@ -1,7 +1,6 @@
 import { CallOutcome, EmergencyDetails } from './emergency-record';
 
-export interface EmergencyResponse
-{
+export interface EmergencyResponse {
     callerId: number;
     callerSuccess: number;
     emergencyCaseId: number;
@@ -17,7 +16,7 @@ export interface ProblemResponse {
 export interface ProblemDropdownResponse {
     ProblemId: number;
     Problem: string;
-    }
+}
 
 export interface PatientResponse {
     patientId: number;
@@ -26,18 +25,15 @@ export interface PatientResponse {
     problems: ProblemResponse[];
 }
 
-export interface SearchFieldResponse
-{
+export interface SearchFieldResponse {
     sucess: string;
 }
 
-export interface LocationResponse
-{
+export interface LocationResponse {
     locationDetails: Location;
 }
 
-export interface Location
-{
+export interface Location {
     location: string;
     latitude: number;
     longitude: number;
@@ -49,8 +45,7 @@ export interface RescueDetailsParent {
     emergencyDetails: EmergencyDetails;
 }
 
-
-export interface RescueDetails{
+export interface RescueDetails {
     rescueTime: string | Date;
     rescuer1Id: number;
     rescuer2Id: number;
@@ -62,8 +57,7 @@ export interface RescueDetails{
     rescuer2Abbreviation: string;
 }
 
-export interface Caller
-{
+export interface Caller {
     CallerId: string;
     Name: string;
     Number: string;
@@ -72,16 +66,15 @@ export interface Caller
 
 export declare type Callers = Caller[];
 
-export interface CallerNumberResponse
-{
+export interface CallerNumberResponse {
     callers: Callers;
 }
 
-export interface searchResponseWrapper{
-    caseSearchResult: SearchResponse;
+export interface SearchResponseWrapper {
+    caseSearchResult: SearchResponse[];
 }
 
-export interface SearchResponse{
+export interface SearchResponse {
     EmergencyCaseId: number;
     EmergencyNumber: number;
     CallDateTime: string;
@@ -92,25 +85,27 @@ export interface SearchResponse{
     AnimalType: string;
     PatientId: number;
     TagNumber: string;
-    CallOutcome: number;
+    CallOutcomeId: number;
+    CallOutcome: string;
+    sameAsNumber: number;
     Location: string;
     Latitude: number;
     Longitude: number;
     CurrentLocation: string;
 }
 
-export interface PatientStatus{
+export interface PatientStatus {
     PatientId: number;
     PatientStatusId: number;
     PatientStatusDate: Date;
 }
 
-export interface CallType{
+export interface CallType {
     CallTypeId: number;
     CallType: string;
 }
 
-export interface PatientCallOutcome{
+export interface PatientCallOutcome {
     PatientCallOutcomeId: number;
     PatientCallOutcome: string;
 }

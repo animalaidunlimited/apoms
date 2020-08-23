@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-    isOpen:boolean;
+    isOpen: boolean;
     screenWidth: number;
 
     constructor(
@@ -23,9 +23,7 @@ export class NavComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-
         this.isOpen = window.innerWidth < 840 ? false : true;
-
     }
 
     public toggleSideNav() {

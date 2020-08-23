@@ -1,4 +1,9 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import {
+    async,
+    ComponentFixture,
+    TestBed,
+    inject,
+} from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -10,78 +15,89 @@ import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('EmergencyDetailsComponent', () => {
-  let component: EmergencyDetailsComponent;
-  let fixture: ComponentFixture<EmergencyDetailsComponent>;
+    let component: EmergencyDetailsComponent;
+    let fixture: ComponentFixture<EmergencyDetailsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule,
-        MaterialModule, BrowserAnimationsModule],
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule,
+                MaterialModule,
+                BrowserAnimationsModule,
+            ],
 
-      declarations: [ EmergencyDetailsComponent ]
-    })
-    .compileComponents();
-  }));
+            declarations: [EmergencyDetailsComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(EmergencyDetailsComponent);
-    component = fixture.componentInstance;
+    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+        fixture = TestBed.createComponent(EmergencyDetailsComponent);
+        component = fixture.componentInstance;
 
-    component.recordForm = fb.group({
+        component.recordForm = fb.group({
+            emergencyDetails: fb.group({
+                emergencyCaseId: [1],
+            }),
+            callOutcome: fb.group({
+                callOutcome: [''],
+            }),
+        });
 
-      emergencyDetails: fb.group({
-        emergencyCaseId: [1]
-      }),
-      callOutcome: fb.group({
-        callOutcome: ['']
-      })
-    }
-    );
+        fixture.detectChanges();
+    }));
 
-    fixture.detectChanges();
-  }));
+    afterEach(function(done) {
+        component.recordForm.reset();
+        done();
+    });
 
-  afterEach(function(done) {
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-    component.recordForm.reset();
-    done();
+    it('Valid form - all records', () => {
+        component.recordForm
+            .get('emergencyDetails.emergencyNumber')
+            .setValue('70022');
+        component.recordForm.get('emergencyDetails.dispatcher').setValue('1');
+        component.recordForm.get('emergencyDetails.code').setValue('1');
 
-  });
+        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+            true,
+        );
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('Invalid form - no records', () => {
+        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+            false,
+        );
+    });
 
-  it('Valid form - all records', () => {
-    component.recordForm.get('emergencyDetails.emergencyNumber').setValue('70022');
-    component.recordForm.get('emergencyDetails.dispatcher').setValue("1");
-    component.recordForm.get('emergencyDetails.code').setValue("1");
+    it('Invalid form - Missing code', () => {
+        component.recordForm
+            .get('emergencyDetails.emergencyNumber')
+            .setValue(70022);
 
-    expect(component.recordForm.get("emergencyDetails").valid).toEqual(true);
-  });
+        component.recordForm.get('emergencyDetails.dispatcher').setValue(1);
 
-  it('Invalid form - no records', () => {
+        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+            false,
+        );
+    });
 
-    expect(component.recordForm.get("emergencyDetails").valid).toEqual(false);
-  });
+    it('Set Initial Time Works', () => {
+        component.setInitialTime();
 
-  it('Invalid form - Missing code', () => {
-    component.recordForm.get('emergencyDetails.emergencyNumber').setValue(70022);
+        const testTime = new Date();
 
-    component.recordForm.get('emergencyDetails.dispatcher').setValue(1);
+        component.recordForm
+            .get('emergencyDetails.callDateTime')
+            .setValue(testTime);
 
-    expect(component.recordForm.get("emergencyDetails").valid).toEqual(false);
-  });
-
-  it('Set Initial Time Works', () => {
-
-    component.setInitialTime();
-
-    let testTime = new Date();
-
-    component.recordForm.get("emergencyDetails.callDateTime").setValue(testTime)
-
-    expect(component.recordForm.get("emergencyDetails.callDateTime").value).toEqual(testTime)
-  });
-
+        expect(
+            component.recordForm.get('emergencyDetails.callDateTime').value,
+        ).toEqual(testTime);
+    });
 });

@@ -24,17 +24,14 @@ export class StorageService {
         return this.storage.removeItem(key);
     }
 
-    public getItemArray(type:string)
-    {
-        let result = [];
+    public getItemArray(type: string) {
+        const result = [];
 
-        for(let i = 0; i < this.storage.length; i++)
-        {
-            let item = this.storage.key(i);
+        for (let i = 0; i < this.storage.length; i++) {
+            const item = this.storage.key(i);
 
-            if(item.substr(0, type.length) == type)
-            {
-                result.push({"key": item, "value": this.storage.getItem(item)});
+            if (item.substr(0, type.length) === type) {
+                result.push({ key: item, value: this.storage.getItem(item) });
             }
         }
 

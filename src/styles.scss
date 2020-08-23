@@ -2,20 +2,28 @@
 
 body {
     margin: 0 !important;
+    font-family: Roboto, Arial, sans-serif;
 }
-
-// mat-form-field {
-//   max-width: 100%;
-// }
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
 $standard-width: 175px;
 
+.mat-focused {
+  border:1.5px dashed #607d8b99;
+  border-radius: 4px;
+}
+
+.mat-form-field{
+  padding: 3px;
+}
+
 .form-sub-group
 {
+  background-color:white ;
   border: 2px solid;
   border-radius: 5px;
+  margin-top: 10px;
   border-color: $colour-border;
   padding-left:15px;
   padding-right:15px;
@@ -46,6 +54,10 @@ mat-radio-button{
   margin-bottom: 20px !important;
 }
 
+.full-width{
+  width: 100%;
+}
+
 .extra-wide{
   width: $standard-width * 3;
 }
@@ -65,3 +77,25 @@ mat-radio-button{
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important;
 }
+
+
+.legend {
+  font-size: large;
+  color: $colour-border;
+  font-weight: bold;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.notif-success {
+  color: #155724 !important; // green
+  background-color: #d4edda !important;
+  border-color: #c3e6cb !important;
+}
+
+.notif-error {
+  color: #DA4D33 !important; // red
+  background-color: #F3C2B8 !important;
+  border-color: #c3e6cb !important;
+}
+

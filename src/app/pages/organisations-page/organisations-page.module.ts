@@ -5,10 +5,7 @@ import { OrganisationsPageRoutingModule } from './organisations-page-routing.mod
 import { OrganisationsPageComponent } from './organisations-page.component';
 
 @NgModule({
-  declarations: [OrganisationsPageComponent],
-  imports: [
-    CommonModule,
-    OrganisationsPageRoutingModule
-  ]
+    declarations: [OrganisationsPageComponent],
+    imports: [CommonModule, OrganisationsPageRoutingModule],
 })
-export class OrganisationsPageModule { }
+export class OrganisationsPageModule {}

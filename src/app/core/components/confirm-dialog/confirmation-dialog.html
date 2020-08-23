@@ -1,0 +1,7 @@
+<div mat-dialog-content>
+		{{message}}
+</div>
+<div mat-dialog-actions fxLayoutAlign="center">
+	<button mat-button (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+	<button mat-button mat-dialog-close (click)="onCancel()" tabindex="-1">{{cancelButtonText}}</button>
+</div>

@@ -1,5 +1,9 @@
-<mat-tab-group (selectedTabChange)="tabChanged($event)">
+
+<mat-tab-group (selectedTabChange)="tabChanged($event)" [class.hospital-tab-group]="hideMenu">
+
     <mat-tab label="Home">
+        <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
 
         <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
 
@@ -36,7 +40,11 @@
              </fieldset>
 
             <census-details></census-details>
-            <surgery-details></surgery-details>
+            <surgery-details [patientId]="recordForm.get('patientDetails.patientId').value"
+                             [tagNumber]="recordForm.get('patientDetails.tagNumber').value"
+                             [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber').value"
+                             [animalType]="recordForm.get('patientDetails.animalType').value">
+            </surgery-details>
 
             <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                 <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
@@ -47,13 +55,29 @@
 </form>
     </mat-tab>
 
-    <mat-tab label="Patient Calls">
-        <patient-call-call [patientId]="patientCallPatientId"></patient-call-call>
+    <mat-tab label="Patient Calls" [disabled]="patientLoaded">
+        <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
+        <fieldset class="form-sub-group">
+
+
+            <legend class="legend">Patient calls</legend>
+
+            <patient-call [patientId]="patientCallPatientId"></patient-call>
+        </fieldset>
     </mat-tab>
-    <mat-tab label="Outcome">
+    <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
+    <mat-tab label="Outcome" [disabled]="patientLoaded">
+        <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
         <outcome></outcome>
     </mat-tab>
-    <mat-tab label="Cruelty">
+    <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
+    <mat-tab label="Cruelty" [disabled]="patientLoaded">
+    <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
+
         <cruelty-details></cruelty-details>
     </mat-tab>
   </mat-tab-group>

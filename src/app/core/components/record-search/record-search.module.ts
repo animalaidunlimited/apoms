@@ -3,24 +3,18 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../../../material-module';
 
-import { RecordSearchComponent } from '../record-search/record-search.component'
-import { PatientEditDialog } from '../patient-edit/patient-edit.component';
-import { PatientStatusModule } from '../patient-status/patient-status.module';
-
+import { RecordSearchComponent } from '../record-search/record-search.component';
+import { SearchResultCardModule } from '../search-result-card/search-result-card.module';
 
 @NgModule({
     declarations: [
-        RecordSearchComponent,
-        PatientEditDialog
-
-    ],
+        RecordSearchComponent
+        ],
     imports: [
         CommonModule,
         MaterialModule,
-        PatientStatusModule
-    ],
-    exports: [
-        RecordSearchComponent
-    ],
+
+        SearchResultCardModule],
+    exports: [RecordSearchComponent],
 })
 export class RecordSearchModule {}

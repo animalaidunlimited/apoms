@@ -1,47 +1,59 @@
 import { Patient } from './patients';
 
-    export interface EmergencyDetails {
-        emergencyCaseId: number;
-        emergencyNumber: string;
-        callDateTime: string | Date;
-        dispatcher: number;
-        code: number;
-    }
+export interface EmergencyDetails {
+    emergencyCaseId: number;
+    emergencyNumber: string;
+    callDateTime: string | Date;
+    dispatcher: number;
+    code: EmergencyCode;
+}
 
-    export interface CallerDetails {
-        callerId: number;
-        callerName: string;
-        callerNumber: string;
-        callerAlternativeNumber: string;
-    }
+export interface EmergencyCode {
+    EmergencyCodeId: number;
+    EmergencyCode: string;
+}
 
-    export interface CallOutcome {
-        callOutcome: number;
-    }
+export interface CallerDetails {
+    callerId: number;
+    callerName: string;
+    callerNumber: string;
+    callerAlternativeNumber: string;
+}
 
-    export interface LocationDetails {
-        animalLocation: string;
-        latitude: number;
-        longitude: number;
-    }
+export interface CallOutcome {
+    callOutcome: number;
+    sameAsNumber: number;
+}
 
-    export interface RescueDetails {
-        rescuer1: number;
-        rescuer2: number;
-        ambulanceArrivalTime: string | Date;
-        rescueTime: string | Date;
-        admissionTime: string | Date;
-    }
+export interface LocationDetails {
+    animalLocation: string;
+    latitude: number;
+    longitude: number;
+}
 
-    export interface EmergencyForm {
-        emergencyDetails: EmergencyDetails;
-        patients: Patient[];
-        callerDetails: CallerDetails;
-        callOutcome: CallOutcome;
-        locationDetails: LocationDetails;
-        rescueDetails: RescueDetails;
-    }
+export interface RescueDetails {
+    rescuer1: number;
+    rescuer2: number;
+    ambulanceArrivalTime: string | Date;
+    rescueTime: string | Date;
+    admissionTime: string | Date;
+}
 
-    export interface EmergencyCase {
-        emergencyForm: EmergencyForm;
-    }
+export interface EmergencyForm {
+    emergencyDetails: EmergencyDetails;
+    patients: Patient[];
+    callerDetails: CallerDetails;
+    callOutcome: CallOutcome;
+    locationDetails: LocationDetails;
+    rescueDetails: RescueDetails;
+}
+
+export interface EmergencyCase {
+    emergencyForm: EmergencyForm;
+}
+
+export interface EmergencyTab {
+    EmergencyCaseId: number;
+    EmergencyNumber: number;
+}
+

@@ -1,14 +1,18 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { BoardSocketService } from '../../services/board-socket.service';
+import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
-import { Subscription } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, startWith, map } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { RescueDetailsService } from '../../services/rescue-details.service';
+import { ThemePalette } from '@angular/material/core';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
+import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 export interface Swimlane{
   label:string;
@@ -50,21 +54,27 @@ export class OutstandingCaseBoardComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
-    private socketService: BoardSocketService) { }
+    private messagingService: MessagingService,
+    private outstandingCaseService: OutstandingCaseService,
+    private changeDetector: ChangeDetectorRef
 
-  @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+    ) { }
+
+  @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
+
+  autoRefresh:boolean;
+
+  hideMap: boolean = true;
+
+  notificationPermissionGranted:boolean = false;
 
   outstandingCases:OutstandingCase[];
-  received:OutstandingCase[];
-  assigned:OutstandingCase[];
-  arrived:OutstandingCase[];
-  rescued:OutstandingCase[];
-  admitted:OutstandingCase[];
+  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
-  subscription:Subscription;
+  refreshColour$:BehaviorSubject<ThemePalette>;
+  refreshColour:ThemePalette = "primary";
 
-  swimlanes:Swimlane[] = [];
-
+  refreshForm:FormGroup;
   searchForm:FormGroup;
 
   ngOnInit(): void {
@@ -73,25 +83,69 @@ export class OutstandingCaseBoardComponent implements OnInit {
       searchTerm: ['']
     });
 
-    this.setupConnection();
+    this.refreshForm = this.fb.group({
+      autoRefreshEnabled: [false, Validators.requiredTrue],
+      updateRequired: [false, Validators.requiredTrue]
+    });
+
+    this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
+
+    this.outstandingCaseService.outstandingCases$.subscribe(change => {
+
+      this.changeDetector.detectChanges();
+    })
+
+    this.outstandingCaseService.initialise();
+
+    this.refreshColour$ = this.outstandingCaseService.refreshColour;
+
+    this.refreshColour$.subscribe(colour => {
+      this.refreshColour = colour;
+    });
+
+    this.setup();
 
   }
 
-  async setupConnection(){
+  autoRefreshToggled(){
+    this.outstandingCaseService.toggleAutoRefresh();
+  }
 
-    await this.socketService.setupSocketConnection();
 
-    this.subscription = await this.socketService.getOutstandingRescues()
-      .subscribe(outstandingCases =>
+  setup(){
 
-      this.populate(outstandingCases.outstandingRescues)
-    );
+    //Find out whether we have permission to receive notifications or not
+    this.messagingService.getPermissionGranted().subscribe((permissionGranted) => {
 
-    this.socketService.getUpdatedRescues().subscribe((updatedRescue:OutstandingRescue) =>
+      this.notificationPermissionGranted = !!permissionGranted;
 
-      this.updateRescue(updatedRescue)
-      );
+      this.outstandingCaseService.getAutoRefresh().subscribe(value => {
 
+        this.autoRefresh = value;
+
+      });
+
+      this.outstandingCaseService.setAutoRefresh(!!permissionGranted)
+
+      this.changeDetector.detectChanges();
+
+    });
+
+    //If we receive focus then make sure we tidy up as needed.
+    this.outstandingCaseService.haveReceivedFocus.subscribe((focusReceived) => {
+
+      if(focusReceived && !this.autoRefresh){
+        this.refreshColour$.next("warn");
+        this.changeDetector.detectChanges();
+      }
+      else if (focusReceived && this.autoRefresh){
+        // this.refreshRescues();
+
+        this.outstandingCases$ =  this.outstandingCaseService.outstandingCases$;
+
+      }
+
+    });
 
     this.searchForm.get("searchTerm").valueChanges
       .pipe(
@@ -99,121 +153,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
         startWith('')
       )
       .subscribe(value => {
-          this.onSearchChange(this.outstandingCases, value);
+          this.outstandingCaseService.onSearchChange(value);
       })
-  }
-
-  updateRescue(updatedRescue:OutstandingRescue){
-
-    //Find the rescue and remove it from its current location.
-    // let rescueToMove:OutstandingRescue =
-    this.removeRescueById(this.outstandingCases, updatedRescue);
-
-
-    //Update the old rescue with the new details.
-    // rescueToMove.rescuer1Id = updatedRescue.rescuer1Id || null;
-    // rescueToMove.rescuer2Id = updatedRescue.rescuer2Id || null;
-    // rescueToMove.rescueStatus = updatedRescue.rescueStatus;
-
-    //Check to see if the swimlane exists and insert if not
-    let laneExists = this.outstandingCases.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
-
-    let newRescueGroup:RescuerGroup = {
-      rescuer1: updatedRescue.rescuer1Id,
-      rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
-      rescuer2: updatedRescue.rescuer2Id,
-      rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
-      rescues: [updatedRescue],
-    };
-
-    if(!laneExists){
-
-      this.outstandingCases.push({
-        rescueStatus: updatedRescue.rescueStatus,
-        rescuerGroups: [newRescueGroup]
-      })
-    }
-
-    //Check to see if the rescuers exist and insert if not
-    let rescuersExist = this.outstandingCases.find(rescueState => {
-
-      if(rescueState.rescueStatus === updatedRescue.rescueStatus)
-      {
-       return rescueState.rescuerGroups
-      .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
-                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id)
-      }
-    });
-
-    if(!rescuersExist){
-
-      this.outstandingCases.forEach(rescueState => {
-
-        if(rescueState.rescueStatus == updatedRescue.rescueStatus){
-          rescueState.rescuerGroups.push(newRescueGroup);
-        }
-      });
-    }
-
-    //Insert the rescue into its new home
-    if(rescuersExist && laneExists){
-      this.insertRescue(this.outstandingCases, updatedRescue);
-    }
-
-    //Set the rescue to show as moved
-    this.setMoved(this.outstandingCases, updatedRescue.emergencyCaseId, true, false);
-  }
-
-  insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
-
-    outstanding.forEach(status => {
-
-      if(status.rescueStatus === rescue.rescueStatus){
-
-        status.rescuerGroups.forEach(group => {
-
-          if(group.rescuer1 === rescue.rescuer1Id && group.rescuer2 === rescue.rescuer2Id){
-
-            group.rescues.push(rescue);
-          }
-        });
-      }
-    });
-  }
-
-  removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingRescue):OutstandingRescue {
-
-    //Search through the outstanding cases and remove the old case
-    let returnCase:OutstandingRescue;
-
-    outstanding.forEach(status => {
-
-        status.rescuerGroups.forEach((group,index) => {
-
-            let removeIndex = group.rescues
-                              .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
-
-            if(removeIndex > -1){
-
-              returnCase = group.rescues.splice(removeIndex, 1)[0];
-
-              //If the group is now empty, remove it.
-              if(group.rescues.length === 0){
-                status.rescuerGroups.splice(index,1);
-              }
-              return;
-            }
-          })
-    });
-
-    return returnCase;
-  }
-
-  populate(outstandingCases:OutstandingCase[]){
-
-    this.outstandingCases = outstandingCases;
-
-    this.subscription.unsubscribe();
   }
 
   drop(event: CdkDragDrop<any>) {
@@ -239,11 +180,16 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
         this.openRescueEdit(event.container.data[event.currentIndex]).subscribe((result:UpdatedRescue) =>
           {
+
             if(result?.success !== 1){
               transferArrayItem(event.container.data,
                 event.previousContainer.data,
                 event.currentIndex,
                 event.previousIndex);
+            }
+            else {
+              this.refreshColour$.next("warn");
+              this.changeDetector.detectChanges();
             }
           });
       }
@@ -255,89 +201,68 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-    let recordForm = this.fb.group({
-
-      emergencyDetails: this.fb.group({
-        emergencyCaseId: [outstandingCase.emergencyCaseId],
-        callDateTime: [''],
-        updateTime: ['']
-      }),
-      callOutcome: this.fb.group({
-        callOutcome: ['']
-      })
-    }
-    );
-
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
       width: '500px',
       height: '500px',
       data: {
               emergencyCaseId:outstandingCase.emergencyCaseId,
-              emergencyNumber:outstandingCase.emergencyNumber,
-              recordForm:recordForm
+              emergencyNumber:outstandingCase.emergencyNumber
             }
     });
 
-    return rescueDialog.afterClosed();
+    //If we successfully updated the rescue and we're currently set to
+    //not receive auto-refresh updates, then we need to set the colour of
+    //the refresh button to show we've made a change.
+    let afterClosed = rescueDialog.afterClosed();
 
-  }
+    afterClosed.subscribe(result => {
 
-  setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
-
-    //Search for the rescue and update its moved flag depending on whether this function
-    //is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId ){
-
-        o.moved = moved;
-
-        if(!timeout){
-          setTimeout(() => this.setMoved(this.outstandingCases, emergencyCaseId, false, true), 3500)
-        }
-
-      }
-      var result, p;
-      for (p in o) {
-          if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
-          }
+      if(result?.success === 1 && !this.autoRefresh){
+        this.refreshColour$.next("warn");
+        this.changeDetector.detectChanges();
       }
 
+    });
+
+    return afterClosed;
+
   }
 
-  onSearchChange(o:OutstandingCase[], searchValue: string): void {
+openCaseFromMap(emergencyCase:EmergencyTab){
 
-    if(!o){
-      return;
-    }
+  this.onOpenEmergencyCase.emit(emergencyCase);
 
-    o.forEach(status =>
-      {
-        status.rescuerGroups.forEach(group => {
-
-            group.rescues.forEach(rescue => {
-
-              rescue.searchCandidate = false;
-
-              //Because we can't use an observable as the source for the board, we need to add a
-              //flag to the records that match our search.
-              if(
-                Object.keys(rescue)
-                .reduce((currentTerm: string, key: string) => {
-                  return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
-                }, '').toLowerCase().indexOf(searchValue) > -1
-                && searchValue !== ""
-              ){
-                rescue.searchCandidate = true;
-              }
-            });
-          });
-      });
-  }
+}
 
 openCase(caseSearchResult:OutstandingRescue)
 {
-  this.onOpenEmergencyCase.emit(
-    { "caseSearchResult" : {"EmergencyCaseId" : caseSearchResult.emergencyCaseId,
-  "EmergencyNumber" : caseSearchResult.emergencyNumber}});
+  let result:SearchResponse = {
+
+    EmergencyCaseId: caseSearchResult.emergencyCaseId,
+    EmergencyNumber: caseSearchResult.emergencyNumber,
+    CallDateTime: caseSearchResult.callDateTime.toString(),
+    CallerId: null,
+    Name: caseSearchResult.callerName,
+    Number: caseSearchResult.callerNumber,
+    AnimalTypeId: null,
+    AnimalType: null,
+    PatientId: null,
+    TagNumber: null,
+    CallOutcomeId: caseSearchResult.callOutcomeId,
+    CallOutcome: null,
+    sameAsNumber: null,
+    Location: caseSearchResult.location,
+    Latitude: caseSearchResult.latitude,
+    Longitude: caseSearchResult.longitude,
+    CurrentLocation: null,
+
+  }
+
+  this.onOpenEmergencyCase.emit(result);
+}
+
+refreshRescues(){
+
+ this.outstandingCaseService.refreshRescues();
 }
 }

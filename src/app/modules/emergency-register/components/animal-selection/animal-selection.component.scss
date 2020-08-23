@@ -1,42 +1,46 @@
-$colour-border:#a9abad;
+$colour-border: #a9abad;
 $primary-font-colour: #626262;
 $standard-width: 175px;
 
-.form-sub-group
-{
-  border: 2px solid;
-  border-radius: 5px;
-  border-color: $colour-border;
-  padding-left:5px;
-  padding-right:5px;
+.form-sub-group {
+    border: 2px solid;
+    border-radius: 5px;
+    border-color: $colour-border;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 table {
     width: 100%;
-  }
-
-.mat-table
-{
-  margin-bottom: 20px;
 }
 
-.label
-{
-  color: currentColor;
-  align-self: center;
-  margin-top: 20px !important;
-  margin-bottom: 20px !important;
+.mat-table {
+    margin-bottom: 20px;
 }
 
-.deleted{
-  background-color: gray
+.label {
+    color: currentColor;
+    align-self: center;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
 }
 
-.duplicate{
-  color: red
+.deleted {
+    background-color: gray;
 }
 
-.mat-chip
-{
-font-weight: unset !important;
+.invalid-row {
+    background-color: #fadce0;
+}
+
+.duplicate {
+    color: red;
+}
+
+.pending {
+    color: orange;
+}
+
+.mat-chip {
+    font-weight: unset !important;
 }

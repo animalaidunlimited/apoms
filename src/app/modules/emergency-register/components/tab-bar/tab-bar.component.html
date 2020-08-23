@@ -1,4 +1,3 @@
-
 <mat-tab-group [selectedIndex]="selected.value"
         (selectedIndexChange)="selected.setValue($event)">
 
@@ -10,7 +9,7 @@
                 <mat-icon *ngIf="index > 1" (click)="removeTab(index)">{{tab.icon}}</mat-icon>
                 </ng-template>
                 <outstanding-case-board *ngIf="index == 0" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
-                <record-search *ngIf="index == 1" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
+                <record-search [parentName]="EmergencyRegister" *ngIf="index == 1" (onOpenEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
                 <emergency-record *ngIf="index > 1" [emergencyCaseId]="tab.emergencyCaseId" (onLoadEmergencyNumber)="updateEmergencyNumber($event)" class="tab-icon"></emergency-record>
 
         </mat-tab>
