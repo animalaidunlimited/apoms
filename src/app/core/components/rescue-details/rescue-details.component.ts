@@ -1,12 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { getCurrentTimeString } from '../../utils';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
-import { UpdatedRescue } from '../../models/outstanding-case';
-import { map } from 'rxjs/operators';
+import { UpdateResponse } from '../../models/outstanding-case';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'rescue-details',
@@ -18,7 +19,8 @@ export class RescueDetailsComponent implements OnInit {
 
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
-  @Output() public onResult = new EventEmitter<UpdatedRescue>();
+  @Output() public result = new EventEmitter<UpdateResponse>();
+  @ViewChild("rescueTimeField" ,{ read: ElementRef, static:true }) rescueTimeField: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -39,10 +41,17 @@ export class RescueDetailsComponent implements OnInit {
 
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
-    private fb: FormBuilder,) {}
+    private datePipe: DatePipe,
+    private fb: FormBuilder) {}
 
   rescuers$;
   rescueDetails$
+
+    @HostListener('document:keydown.control.shift.q', ['$event'])
+    rescueTimeFocus(event: KeyboardEvent) {
+    event.preventDefault();
+    this.rescueTimeField.nativeElement.focus();
+    };
 
   ngOnInit() {
 
@@ -70,11 +79,23 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
     this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
     this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-    this.callOutcome          = this.recordForm.get("callOutcome.callOutcome");
+    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcome");
 
     this.updateTimes();
 
     this.onChanges();
+
+  }
+
+  onChanges(): void {
+
+    this.recordForm.valueChanges.subscribe(val => {
+
+      //The values won't have bubbled up to the parent yet, so wait for one tick
+      setTimeout(() =>
+        this.updateValidators()
+      )
+    });
   }
 
 updateValidators()
@@ -153,8 +174,9 @@ updateValidators()
     this.admissionTime.setErrors({ "rescueAfterAdmission" : true});
   }
 
+
   //When we select admission, we need to check that we have rescue details
-  if(this.callOutcome.value == "Admission"){
+  if(this.callOutcome.value === "Admission"){
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
@@ -170,30 +192,26 @@ updateValidators()
 
 }
 
-onChanges(): void {
 
-
-    this.recordForm.valueChanges.subscribe(val => {
-
-      //The values won't have bubbled up to the parent yet, so wait for one tick
-      setTimeout(() =>
-        this.updateValidators()
-      )
-    });
-  }
 
   setInitialTime(event)
   {
+    //TODO put this back in when we go live with the desk doing realtime entries
+
     this.currentCallDateTime = this.callDateTime;
 
     let currentTime;
 
     currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
 
+
     if(!currentTime)
     {
-      this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+      //TODO put this back in when we go live with the desk doing realtime entries
+      // this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+      this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
     }
+
    }
 
   updateTimes()
@@ -209,18 +227,32 @@ onChanges(): void {
     this.currentTime = currentTime;
   }
 
-  async onSave(){
+  async save(){
+
+
+    // If we haven't touched the form, don't do anything.
+    if(!this.recordForm.touched){
+
+      let emptyResult:UpdateResponse = {
+        success: null,
+        socketEndPoint: null
+      };
+
+      this.result.emit(emptyResult);
+      return;
+    }
 
     this.recordForm.get('emergencyDetails.updateTime').setValue(getCurrentTimeString());
 
-    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdatedRescue) =>
+    await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
+{
 
-      this.onResult.emit(data)
+  this.result.emit(data)
+
+}
+
 
     );
-
-
-
   }
 
 }

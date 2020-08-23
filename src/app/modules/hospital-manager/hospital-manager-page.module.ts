@@ -24,36 +24,41 @@ import { PatientStatusModule } from 'src/app/core/components/patient-status/pati
 import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
-
-
+import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
+import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
+import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 
 @NgModule({
-  declarations: [
-    HospitalManagerPageComponent,
-    HospitalManagerTabBarComponent,
-    PatientRecordComponent,
-    PatientDetailsComponent,
-    CensusDetailsComponent,
-    SurgeryDetailsComponent,
-    PatientCallComponent,
-    CrueltyDetailsComponent,
-    OutcomeComponent,
-    AnimalHeaderComponent,
-    ImageUploadDialog,
+    declarations: [
+        HospitalManagerPageComponent,
+        HospitalManagerTabBarComponent,
+        PatientRecordComponent,
+        PatientDetailsComponent,
+        CensusDetailsComponent,
+        SurgeryDetailsComponent,
+        PatientCallComponent,
+        PatientCallDialogComponent,
+        CrueltyDetailsComponent,
+        OutcomeComponent,
+        AnimalHeaderComponent,
+        ImageUploadDialog,
+        SurgeryRecordDialogComponent,
+        AddSurgeryDialogComponent,
     ],
-  imports: [
-    CommonModule,
-    HospitalManagerPageRoutingModule,
-    MaterialModule,
-    RecordSearchModule,
-    LocationDetailsModule,
-    CallerDetailsModule,
-    ThumbnailSliderModule,
-    PatientStatusModule,
-    RescueDetailsModule,
-    EmergencyDetailsModule
-  ],
-  exports: [
-  ]
+    imports: [
+        CommonModule,
+        HospitalManagerPageRoutingModule,
+        MaterialModule,
+        RecordSearchModule,
+        LocationDetailsModule,
+        CallerDetailsModule,
+        ThumbnailSliderModule,
+        PatientStatusModule,
+        RescueDetailsModule,
+        EmergencyDetailsModule,
+        SurgeryRecordModule,
+    ],
+    exports: [],
 })
-export class HospitalManagerPageModule { }
+export class HospitalManagerPageModule {}

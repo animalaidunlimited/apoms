@@ -5,26 +5,22 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class LocationDetailsService extends APIService {
+    constructor(http: HttpClient) {
+        super(http);
+    }
 
-  constructor(http: HttpClient) {
-    super(http)
-   }
+    endpoint = 'Location';
 
-   endpoint = 'Location';
+    public getLocationByEmergencyCaseId(number: string): Observable<any> {
+        const request = '?emergencyCaseId=' + number;
 
-  public getLocationByEmergencyCaseId(number: string):Observable<any>{
-
-    let request = "?emergencyCaseId=" + number;
-
-   return this.getObservable(request)
-   .pipe(
-     map((response:Location) => {
-       return response;
-     })
-   );
-
-  }
+        return this.getObservable(request).pipe(
+            map((response: Location) => {
+                return response;
+            }),
+        );
+    }
 }

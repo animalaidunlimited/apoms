@@ -1,64 +1,149 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { getCurrentTimeString } from '../../utils';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
+import { UserOptionsService } from '../../services/user-options.service';
+import { DatePipe } from '@angular/common';
+import { EmergencyCode } from '../../models/emergency-record';
 
 @Component({
-  selector: 'emergency-details',
-  templateUrl: './emergency-details.component.html',
-  styleUrls: ['./emergency-details.component.scss']
+    selector: 'emergency-details',
+    templateUrl: './emergency-details.component.html',
+    styleUrls: ['./emergency-details.component.scss'],
 })
 export class EmergencyDetailsComponent implements OnInit {
 
-  @Input() recordForm:FormGroup;
-  @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
-  errorMatcher = new CrossFieldErrorMatcher();
+    @Input() recordForm: FormGroup;
+    @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
+    errorMatcher = new CrossFieldErrorMatcher();
 
-  dispatchers$;
-  emergencyCodes$
-  callDateTime:string|Date = getCurrentTimeString();
+    @ViewChild("emergencyNumber",{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
+    @ViewChild("callDateTimeField",{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
 
-  constructor(private dropdowns:DropdownService,
-    private caseService:CaseService,
-    private emergencyNumberValidator:UniqueEmergencyNumberValidator) { }
+    @HostListener('document:keydown.control.shift.c', ['$event'])
+    focusCallDateTime(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callDateTimeField.nativeElement.focus();
+    };
 
-  ngOnInit(): void {
+    dispatchers$;
+    emergencyCodes$;
+    callDateTime: string | Date = getCurrentTimeString();
+    minimumDate: string;
 
-    this.dispatchers$ = this.dropdowns.getDispatchers();
-    this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+    selected;
 
-    let emergencyDetails = this.recordForm.get("emergencyDetails") as FormGroup;
+    constructor(
+        private dropdowns: DropdownService,
+        private caseService: CaseService,
+        private datePipe: DatePipe,
+        private userOptions: UserOptionsService,
+        private emergencyNumberValidator: UniqueEmergencyNumberValidator,
+    ) {}
 
-    emergencyDetails.addControl("emergencyNumber", new FormControl('', [Validators.required], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 1)]));
-    emergencyDetails.addControl("callDateTime", new FormControl(getCurrentTimeString(), Validators.required));
-    emergencyDetails.addControl("dispatcher", new FormControl('', Validators.required));
-    emergencyDetails.addControl("code", new FormControl('', Validators.required));
+    ngOnInit(): void {
+        this.dispatchers$ = this.dropdowns.getDispatchers();
+        this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
-    this.caseService
-    .getCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value)
-    .subscribe(result => {
-      this.recordForm.patchValue(result);
-    });
+        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), "yyyy-MM-ddThh:mm:ss.ms");
 
-    this.recordForm.get("emergencyDetails.emergencyNumber").valueChanges.subscribe(val => {
-      this.updateEmergencyNumber(val);
-    });
-  }
+        const emergencyDetails = this.recordForm.get(
+            'emergencyDetails',
+        ) as FormGroup;
 
-  updateEmergencyNumber(emergencyNumber:number){
-    this.onLoadEmergencyNumber.emit(emergencyNumber);
-  }
+        emergencyDetails.addControl(
+            'emergencyNumber',
+            new FormControl(
+                '',
+                [Validators.required],
+                [
+                    this.emergencyNumberValidator.validate(
+                        this.recordForm.get('emergencyDetails.emergencyCaseId')
+                            .value,
+                        1,
+                    ),
+                ],
+            ),
+        );
+        emergencyDetails.addControl(
+            'callDateTime',
+            new FormControl(getCurrentTimeString(), Validators.required),
+        );
+        emergencyDetails.addControl(
+            'dispatcher',
+            new FormControl('', Validators.required),
+        );
+        emergencyDetails.addControl(
+            'code',
+            new FormControl('', Validators.required),
+        );
 
-  setInitialTime(){
-    let currentTime = this.recordForm.get("emergencyDetails.callDateTime");
+        this.caseService
+            .getEmergencyCaseById(
+                this.recordForm.get('emergencyDetails.emergencyCaseId').value,
+            )
+            .subscribe(result => {
 
-    if(!currentTime.value){
-      currentTime.setValue(getCurrentTimeString());
+                this.recordForm.patchValue(result);
+
+            });
+
+        this.recordForm
+            .get('emergencyDetails.emergencyNumber')
+            .valueChanges.subscribe(val => {
+                if(!val){
+                    this.emergencyNumberField.nativeElement.focus();
+                }
+
+                this.updateEmergencyNumber(val);
+            });
     }
 
-  }
+    ngAfterViewInit(){
+
+        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
+    }
+
+    updateEmergencyNumber(emergencyNumber: number) {
+        this.onLoadEmergencyNumber.emit(emergencyNumber);
+    }
+
+    setInitialTime() {
+        const currentTime = this.recordForm.get(
+            'emergencyDetails.callDateTime',
+        );
+
+        if (!currentTime.value) {
+            currentTime.setValue(getCurrentTimeString());
+        }
+    }
+
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
+
+        return o1.EmergencyCodeId == o2.EmergencyCodeId;
+
+    }
+
+    selectEmergencyCode($event){
+
+        //Now we're using a selection trigger the keystroke no longer works, so we need to check for it
+        this.emergencyCodes$.subscribe((codes:EmergencyCode[]) => {
+
+            let selectedCode = codes.find((code:EmergencyCode) => {
+
+                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
+
+            });
+
+            if(selectedCode){
+                this.recordForm.get("emergencyDetails.code").setValue(selectedCode);
+            }
+        })
+
+    }
+
 
 }

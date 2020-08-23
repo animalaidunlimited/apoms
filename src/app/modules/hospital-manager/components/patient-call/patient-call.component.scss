@@ -1,9 +1,17 @@
-.form-sub-group
-{
+.form-sub-group {
     width: fit-content;
 }
 
-.comments{
+.comments {
     height: 100%;
     box-sizing: border-box;
-  }
+}
+
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
+    .mat-expansion-panel-header:hover {
+    flex-basis: 0;
+    background-color: lightsteelblue;
+}

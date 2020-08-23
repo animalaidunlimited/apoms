@@ -1,35 +1,43 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
-export class UserOptionsService {
+export class UserOptionsService{
+    homeCoordinates$;
+    notifactionDuration:number;
+    minimumDate:Date;
 
-  homeCoordinates$;
-  notifactionDuration;
+    constructor() {}
 
-  constructor() { }
+    getCoordinates() : google.maps.LatLngLiteral{
+        if (!this.homeCoordinates$) {
+            this.homeCoordinates$ = {
+                lat: 24.57127,
+                lng: 73.691544,
+            };
+        }
 
-  getCoordinates() {
-
-    if (!this.homeCoordinates$)
-    {
-      this.homeCoordinates$ = {"latitude": 24.571270, "longitude": 73.691544};
+        return this.homeCoordinates$;
     }
 
-    return this.homeCoordinates$;
-  }
+    getNotifactionDuration() : number {
+        if (!this.notifactionDuration) {
+            this.notifactionDuration = 5;
+        }
 
-  getNotifactionDuration(){
-
-    if(!this.notifactionDuration)
-    {
-      this.notifactionDuration = 5;
+        return this.notifactionDuration;
     }
 
-    return this.notifactionDuration;
+    getMinimumDate() : Date{
 
-  }
+        if(!this.minimumDate){
 
-  //TODO implement custom debounce time for autocompletes
+            this.minimumDate = new Date("2010-01-01");
+        }
+
+        return this.minimumDate;
+    }
+
+    // TODO implement custom debounce time for autocompletes
 }

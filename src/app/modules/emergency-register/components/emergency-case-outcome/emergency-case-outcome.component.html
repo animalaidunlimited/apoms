@@ -1,0 +1,25 @@
+
+<div [formGroup]="recordForm.get('callOutcome')">
+
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+    <mat-form-field class="full-width">
+        <mat-label>Call Outcome</mat-label>
+        <mat-select tabindex="13" formControlName="CallOutcomeId">
+            <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.CallOutcomeId">
+                {{outcome.CallOutcome}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="sameAs">
+
+        <input formControlName="sameAsNumber" tabindex="14" #sameAsNumberField type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
+
+        <mat-error *ngIf="recordForm.get('callOutcome.sameAsNumber').errors?.emergencyNumberTaken">
+            The emergency number doesn't exist.
+        </mat-error>
+    </mat-form-field>
+
+    </div>
+</div>

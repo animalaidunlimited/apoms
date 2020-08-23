@@ -5,10 +5,7 @@ import { TeamsPageRoutingModule } from './teams-page-routing.module';
 import { TeamsPageComponent } from './teams-page.component';
 
 @NgModule({
-  declarations: [TeamsPageComponent],
-  imports: [
-    CommonModule,
-    TeamsPageRoutingModule
-  ]
+    declarations: [TeamsPageComponent],
+    imports: [CommonModule, TeamsPageRoutingModule],
 })
-export class TeamsPageModule { }
+export class TeamsPageModule {}

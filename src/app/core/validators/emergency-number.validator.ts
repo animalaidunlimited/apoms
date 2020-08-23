@@ -1,29 +1,32 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 
 @Injectable({ providedIn: 'root' })
 export class UniqueEmergencyNumberValidator {
-  constructor(private caseService: CaseService) {}
+    constructor(private caseService: CaseService) {}
 
-  validate(emergencyCaseId:number, checkExists:number): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
-
-      return this.caseService.checkEmergencyNumberExists(control.value, emergencyCaseId)
-        .pipe(
-          map(res => {
-            // if username is already taken
-            if (res[0]["@success"] == checkExists) {
-              // return error
-              return { 'emergencyNumberTaken': true};
+    validate(emergencyNumber: number, checkExists: number): AsyncValidatorFn {
+        return (
+            control: AbstractControl,
+        ): Observable<{ [key: string]: any } | null> => {
+            // If the form hasn't been touched then don't validate
+            if (control.pristine) {
+                return of(null);
             }
-          })
-        );
-    };
 
-  }
-
+            return this.caseService
+                .checkEmergencyNumberExists(control.value, emergencyNumber)
+                .pipe(
+                    map(res => {
+                        // if emergency number is already taken
+                        if (res[0]['@success'] == checkExists) {
+                            return { emergencyNumberTaken: true };
+                        }
+                    }),
+                );
+        };
+    }
 }
-

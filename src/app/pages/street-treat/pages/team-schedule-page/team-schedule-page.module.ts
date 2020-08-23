@@ -5,10 +5,7 @@ import { TeamSchedulePageRoutingModule } from './team-schedule-page-routing.modu
 import { TeamSchedulePageComponent } from './team-schedule-page.component';
 
 @NgModule({
-  declarations: [TeamSchedulePageComponent],
-  imports: [
-    CommonModule,
-    TeamSchedulePageRoutingModule
-  ]
+    declarations: [TeamSchedulePageComponent],
+    imports: [CommonModule, TeamSchedulePageRoutingModule],
 })
-export class TeamSchedulePageModule { }
+export class TeamSchedulePageModule {}

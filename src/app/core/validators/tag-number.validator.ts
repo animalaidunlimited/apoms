@@ -6,29 +6,43 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 
 @Injectable({ providedIn: 'root' })
 export class UniqueTagNumberValidator {
-  constructor(private patientService: PatientService) {}
+    constructor(private patientService: PatientService) {}
 
-  validate(emergencyCaseId:number, patientId:number): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
+    validate(emergencyCaseId: number, patientId: number): AsyncValidatorFn {
+        return (
+            control: AbstractControl,
+        ): Observable<{ [key: string]: any } | null> => {
 
-        return this.patientService.checkTagNumberExists(control.value, emergencyCaseId, patientId)
-        .pipe(
-          map(res => {
+            if(!control.value){
 
-            if(res){
-              // if tag number is already taken
-              if (res[0]["@success"] == "1") {
-                // return error
-                return { 'tagNumberTaken': true};
-              }
+                return new Observable((observer) => {
+
+                    observer.next(null);
+
+                })
+
             }
-          })
-        );
+            else
+            {
+                return this.patientService
+                .checkTagNumberExists(control.value, emergencyCaseId, patientId)
+                .pipe(
+                    map(res => {
+                        if (res) {
+                            // if tag number is already taken
+                            if (res[0]['@success'] == '1') {
+                                // return error
+                                return { tagNumberTaken: true };
+                            }
+                        }
+                    }),
+                );
+
+            }
 
 
-    };
-  }
+
+
+        };
+    }
 }
-
-
-
