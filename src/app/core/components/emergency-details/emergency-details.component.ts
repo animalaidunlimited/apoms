@@ -100,7 +100,6 @@ export class EmergencyDetailsComponent implements OnInit {
 
                 this.updateEmergencyNumber(val);
             });
-
     }
 
     ngAfterViewInit(){
@@ -125,6 +124,24 @@ export class EmergencyDetailsComponent implements OnInit {
     compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
 
         return o1.EmergencyCodeId == o2.EmergencyCodeId;
+
+    }
+
+    selectEmergencyCode($event){
+
+        //Now we're using a selection trigger the keystroke no longer works, so we need to check for it
+        this.emergencyCodes$.subscribe((codes:EmergencyCode[]) => {
+
+            let selectedCode = codes.find((code:EmergencyCode) => {
+
+                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
+
+            });
+
+            if(selectedCode){
+                this.recordForm.get("emergencyDetails.code").setValue(selectedCode);
+            }
+        })
 
     }
 

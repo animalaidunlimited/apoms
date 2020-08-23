@@ -21,7 +21,7 @@ export class SearchResultCardComponent implements OnInit {
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
-  ) { }
+  ) {}
 
   ngOnInit(): void {}
 

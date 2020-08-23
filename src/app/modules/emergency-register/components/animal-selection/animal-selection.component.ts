@@ -350,6 +350,8 @@ export class AnimalSelectionComponent implements OnInit {
                         : null,
                 );
 
+            currentPatient.get('updated').setValue(true);
+
             this.hideIrrelevantChips(animalTypeChip);
         }
 
@@ -470,7 +472,9 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(!problemChip.selected)
         {
+            this.updatePatientProblemArray(problemChip);
             return;
+
         }
 
         if (!problemChip.selectable && problemChip.selected) {
@@ -563,6 +567,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     updatePatientProblemArray(problemChip) {
+
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
         // Get the current list of problems and replace the existing problem array
