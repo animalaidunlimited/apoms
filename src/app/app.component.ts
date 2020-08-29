@@ -31,7 +31,7 @@ export class AppComponent implements OnInit{
 
              //If we've just received focus then we may need to refresh the outstanding case board because
              //changes might have happened while we were away
-            window.addEventListener("visibilitychange", (change) => {
+            window.addEventListener("visibilitychange", () => {
                 if(!document.hidden){
                     this.outstandingCaseService.receiveFocus();
                 }

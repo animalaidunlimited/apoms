@@ -214,10 +214,4 @@ export class PatientCallComponent implements OnInit {
             ? assinedTo1.UserId === assignedTo2.UserId
             : assinedTo1 === assignedTo2;
     }
-
-    // openSnackBar(message: string, action: string) {
-    //     this.snackBar.open(message, action, {
-    //         duration: this.notificationDurationSeconds * 1000,
-    //     });
-    // }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, AbstractControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -36,7 +36,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
+    // let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
@@ -46,8 +46,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     });
 
-
-    this.recordForm.get("callOutcome.CallOutcomeId").valueChanges.subscribe(() => {
+    this.recordForm.get("callOutcome.CallOutcome").valueChanges.subscribe(() => {
 
       this.outcomeChanged()
 
@@ -61,7 +60,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     let sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
 
     //Check if we need to show the same as field.
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcomeId').value;
+    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcome').value?.CallOutcomeId;
 
     if(!sameAsNumber.value && this.sameAs){
       sameAsNumber.setValidators(Validators.required);
@@ -116,6 +115,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       this.result.emit(data)
 
     );
+  }
+
+  compareCallOutcome(outcome1: CallOutcomeResponse, outcome2: CallOutcomeResponse){
+
+    return outcome1?.CallOutcomeId === outcome2?.CallOutcomeId;
+
   }
 
 
