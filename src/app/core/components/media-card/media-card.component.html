@@ -1,0 +1,54 @@
+<mat-card class="media-card" [formGroup]="mediaForm">
+    <mat-card-header>
+      <div mat-card-avatar class="media-card-header-image"></div>
+      <mat-card-title>{{tagNumber}}</mat-card-title>
+      <mat-card-subtitle>{{mediaItem.datetime | date:'d MMM y - hh:mm:ss'}}</mat-card-subtitle>
+    </mat-card-header>
+
+
+    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
+
+
+
+    <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+
+        <source [src]="mediaItem.localURL" type="video/mp4"/>
+        Browser not supported
+
+    </video>
+
+    <mat-card-content>
+      <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>
+      <p>
+        <input matInput type="text" formControlName="comment" placeholder="Comment" autocomplete="off">
+      </p>
+
+    <mat-form-field class="example-chip-list" style="width:100%">
+        <mat-chip-list #chipList formArrayName="tags" aria-label="Media tags">
+          <mat-chip *ngFor="let tag of tags.controls; let i = index;"
+                [selectable]="selectable"
+                [formGroupName]="i"
+                [removable]="removable"
+                (removed)="remove(i)">
+                {{tag.value.tag}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Tags"
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 (matChipInputTokenEnd)="add($event)"
+                 autocomplete="off">
+        </mat-chip-list>
+      </mat-form-field>
+
+
+    </mat-card-content>
+
+
+
+    <mat-card-actions>
+      <button mat-button (click)="deleteMediaItem()">DELETE</button>
+    </mat-card-actions>
+  </mat-card>

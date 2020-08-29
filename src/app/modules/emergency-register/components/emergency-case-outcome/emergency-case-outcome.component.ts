@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, AbstractControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
 import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emergency-number.validator';
 import { CaseService } from '../../services/case.service';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Component({
@@ -36,12 +36,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.recordForm.addControl(
-      "callOutcome", new FormGroup( {callOutcome : new FormControl()}));
-
     let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
-
-    callOutcome.addControl("sameAsNumber", new FormControl(null, [], [this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]));
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
@@ -50,21 +45,43 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
 
     });
+
+
+    this.recordForm.get("callOutcome.CallOutcomeId").valueChanges.subscribe(() => {
+
+      this.outcomeChanged()
+
+    })
+
+    this.changeDetector.detectChanges();
   }
 
   outcomeChanged(){
 
-    this.recordForm.get("callOutcome.sameAsNumber").setValue(null);
+    let sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
 
-    let callOutcome:CallOutcomeResponse = this.recordForm.get('callOutcome.callOutcome').value;
+    //Check if we need to show the same as field.
+    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcomeId').value;
 
-    this.sameAs = this.sameAsId === callOutcome.CallOutcomeId;
+    if(!sameAsNumber.value && this.sameAs){
+      sameAsNumber.setValidators(Validators.required);
+      sameAsNumber.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]);
+    }
 
+    //We might have selected something other than Same As, so hide the field.
+    if(!this.sameAs){
+      sameAsNumber.setValue(null);
+      sameAsNumber.clearValidators()
+      sameAsNumber.clearAsyncValidators();
+    }
+
+    sameAsNumber.updateValueAndValidity();
     this.changeDetector.detectChanges();
 
     //Make sure we focus when we're selecting same as
     if(this.sameAs){
       setTimeout(() => this.sameAsNumberField.nativeElement.focus(), 0);
+      this.changeDetector.detectChanges();
     }
 
   }
@@ -91,7 +108,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
           .addControl("updateTime", new FormControl(updateTime));
 
     let updateRecord:FormGroup = this.fb.group({
-      emeregncyForm: [this.recordForm.value]
+      emergencyForm: [this.recordForm.value]
     });
 
     await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) =>

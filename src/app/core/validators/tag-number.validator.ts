@@ -12,7 +12,19 @@ export class UniqueTagNumberValidator {
         return (
             control: AbstractControl,
         ): Observable<{ [key: string]: any } | null> => {
-            return this.patientService
+
+            if(!control.value){
+
+                return new Observable((observer) => {
+
+                    observer.next(null);
+
+                })
+
+            }
+            else
+            {
+                return this.patientService
                 .checkTagNumberExists(control.value, emergencyCaseId, patientId)
                 .pipe(
                     map(res => {
@@ -25,6 +37,12 @@ export class UniqueTagNumberValidator {
                         }
                     }),
                 );
+
+            }
+
+
+
+
         };
     }
 }

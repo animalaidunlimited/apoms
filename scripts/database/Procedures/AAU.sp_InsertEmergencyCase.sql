@@ -12,8 +12,9 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_EmergencyCodeId INT,
 									IN prm_CallerId INT,
 									IN prm_CallOutcomeId INT,
+                                    IN prm_SameAsNumber INT,
 									IN prm_Location VARCHAR(512),
-									IN prm_Latitude DOUBLE(11,8),
+									IN prm_Latitude DECIMAL(11,8),
 									IN prm_Longitude DECIMAL(11,8),
 									IN prm_Rescuer1Id INT,
 									IN prm_Rescuer2Id INT,
@@ -33,12 +34,15 @@ Purpose: Used to insert a new emergency case.
 */
 DECLARE vOrganisationId INT;
 DECLARE vUpdateTime DATETIME;
+DECLARE vSameAsEmergencyCaseId INT;
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
 SET vOrganisationId = 0;
 
 SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
+
+SELECT MAX(EmergencyCaseId) INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsNumber;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
 FROM AAU.User u 
@@ -58,6 +62,7 @@ INSERT INTO AAU.EmergencyCase
 	EmergencyCodeId,
 	CallerId,
 	CallOutcomeId,
+    SameAsEmergencyCaseId,
 	Location,
 	Latitude,
 	Longitude,
@@ -77,6 +82,7 @@ VALUES
 	prm_EmergencyCodeId,
 	prm_CallerId,
 	prm_CallOutcomeId,
+    vSameAsEmergencyCaseId,
 	prm_Location,
 	prm_Latitude,
 	prm_Longitude,
