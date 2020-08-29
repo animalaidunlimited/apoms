@@ -3,6 +3,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { OutstandingRescue, OutstandingCase, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class OutstandingCaseService {
   autoRefreshState:boolean;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject(null);
+  ambulanceLocations$:BehaviorSubject<RescuerGroup[]> = new BehaviorSubject(null);
 
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(null);
 
@@ -28,7 +30,9 @@ export class OutstandingCaseService {
 
   initialise(){
 
-    if(!this.initialised){
+    if(this.initialised){
+      return;
+    }
 
       this.initialised = true;
 
@@ -39,10 +43,9 @@ export class OutstandingCaseService {
 
       this.autoRefresh.subscribe(state => {
         this.autoRefreshState = state;
-      })
+      });
 
-    }
-
+      // this.ambulanceLocations$.subscribe(vals => {console.log(vals)})
 
   }
 
@@ -57,12 +60,14 @@ export class OutstandingCaseService {
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
 
     this.outstandingCases$.next(outstandingCases);
+
     this.refreshColour.next("primary");
 
     //Make sure we close the subscription as we only need to get this once when we initialise
     this.initialRescueListSubscription.unsubscribe();
 
   }
+
 
   receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue){
 
@@ -96,6 +101,7 @@ export class OutstandingCaseService {
       rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
       rescuer2: updatedRescue.rescuer2Id,
       rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
+      latestLocation: null,
       rescues: [updatedRescue],
     };
 
@@ -172,6 +178,8 @@ export class OutstandingCaseService {
   }
 
   insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
+
+    console.log("Inserting rescue");
 
     outstanding.forEach(status => {
 

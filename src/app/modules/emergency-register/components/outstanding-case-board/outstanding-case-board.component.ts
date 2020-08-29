@@ -4,11 +4,10 @@ import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, UpdatedRescue, OutstandingRescue } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, startWith, map } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { RescueDetailsService } from '../../services/rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
@@ -90,7 +89,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
-    this.outstandingCaseService.outstandingCases$.subscribe(change => {
+    this.outstandingCases$.subscribe(() => {
 
       this.changeDetector.detectChanges();
     })
@@ -263,6 +262,7 @@ openCase(caseSearchResult:OutstandingRescue)
 
 refreshRescues(){
 
+  // this.outstandingCases$.subscribe(vals => console.log(vals));
  this.outstandingCaseService.refreshRescues();
 }
 }

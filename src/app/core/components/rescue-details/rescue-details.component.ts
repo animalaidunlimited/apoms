@@ -174,9 +174,8 @@ updateValidators()
     this.admissionTime.setErrors({ "rescueAfterAdmission" : true});
   }
 
-
   //When we select admission, we need to check that we have rescue details
-  if(this.callOutcome.value === "Admission"){
+  if(this.callOutcome.value?.CallOutcome === "Admission"){
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
@@ -192,8 +191,6 @@ updateValidators()
 
 }
 
-
-
   setInitialTime(event)
   {
     //TODO put this back in when we go live with the desk doing realtime entries
@@ -208,8 +205,8 @@ updateValidators()
     if(!currentTime)
     {
       //TODO put this back in when we go live with the desk doing realtime entries
-      // this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
-      this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
+      this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+      // this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
     }
 
    }

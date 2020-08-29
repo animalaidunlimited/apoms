@@ -58,8 +58,7 @@ export class EmergencyRecordComponent implements OnInit {
                 updateTime: [''],
             }),
             callOutcome: this.fb.group({
-                CallOutcomeId: [],
-                CallOutcome: [''],
+                CallOutcome: [],
                 sameAsNumber: []
             }),
         });
