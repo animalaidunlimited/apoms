@@ -1,4 +1,4 @@
-<h1 mat-dialog-title  
+<h1 mat-dialog-title
 cdkDrag
 cdkDragRootElement=".cdk-overlay-pane">
 Add Surgery Record {{data.tagNumber}}
@@ -10,16 +10,16 @@ Add Surgery Record {{data.tagNumber}}
     [tagNumber]="data.tagNumber"
     [emergencyNumber]="data.emergencyNumber"
     [animalType]="data.animalType"
-    (result)="onSurgerySaveResult($event)" 
+    (result)="onSurgerySaveResult($event)"
     (surgeryFormInvalid)="onSurgeryInvalid($event)"
-    #surgeryDetails> 
+    #surgeryDetails>
     </surgery-record>
-    
+
 </div>
-   
+
 
 <div mat-dialog-actions>
     <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="surgeryDetails.saveSurgery()" [disabled]="invalidSurgeryForm" cdkFocusInitial>Save</button>   
-    <button mat-raised-button color="primary" (click)="surgeryDetails.resetForm()" cdkFocusInitial>Reset</button>
+    <button mat-raised-button color="primary" (click)="surgeryDetails.saveSurgery()" [disabled]="invalidSurgeryForm">Save</button>
+    <button mat-raised-button color="primary" (click)="surgeryDetails.resetForm()">Reset</button>
 </div>

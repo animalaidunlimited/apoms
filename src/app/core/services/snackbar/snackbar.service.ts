@@ -1,32 +1,43 @@
-import { Injectable, OnInit } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+
+import { Injectable, NgZone } from '@angular/core';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { UserOptionsService } from "src/app/core/services/user-options.service";
+
 @Injectable({
     providedIn: 'root',
 })
-export class SnackbarService implements OnInit {
-    notificationDurationSeconds: number;
 
-    constructor(
-        public snackBar: MatSnackBar,
-        public userOptions: UserOptionsService,
-    ) {}
+export class SnackbarService{
+  notificationDurationSeconds: number;
 
-    ngOnInit() {
-        this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
-    }
+  constructor(public snackBar: MatSnackBar , public userOptions:UserOptionsService, private zone: NgZone) { this.init()}
 
-    successSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: this.notificationDurationSeconds * 1000,
-            panelClass: 'notif-success',
-        });
-    }
+  init(){
+    this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
+  }
 
-    errorSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: this.notificationDurationSeconds * 1000,
-            panelClass: 'notif-error',
-        });
-    }
+  successSnackBar(message: string , action: string){
+    this.zone.run(() => {
+
+      this.snackBar.open(message , action , {
+        duration: this.notificationDurationSeconds * 1000,
+        panelClass:'notif-success'
+      }) ;
+
+    });
+
+  }
+
+  errorSnackBar(message: string , action: string){
+
+    this.zone.run(() => {
+
+      this.snackBar.open(message , action , {
+        duration: this.notificationDurationSeconds * 1000,
+        panelClass:'notif-error'
+      }) ;
+    });
+
+  }
+
 }

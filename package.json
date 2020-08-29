@@ -30,6 +30,7 @@
     "@angular/common": "^9.1.0",
     "@angular/compiler": "^9.1.0",
     "@angular/core": "^9.1.0",
+    "@angular/fire": "^6",
     "@angular/flex-layout": "^9.0.0-beta.29",
     "@angular/forms": "^9.1.0",
     "@angular/google-maps": "9.1.3",
@@ -43,6 +44,7 @@
     "ally.js": "^1.4.1",
     "axobject-query": "^2.1.2",
     "core-js": "^2.6.11",
+    "firebase": "7.15.1",
     "hammerjs": "^2.0.8",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",
@@ -50,7 +52,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.901.0",
+    "@angular-devkit/build-angular": "^0.901.8",
     "@angular/cli": "^9.1.0",
     "@angular/compiler-cli": "^9.1.0",
     "@angular/language-service": "^9.1.0",

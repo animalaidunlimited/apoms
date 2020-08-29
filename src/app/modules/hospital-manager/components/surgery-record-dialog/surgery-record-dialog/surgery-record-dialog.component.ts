@@ -4,8 +4,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UpdatedSurgery } from 'src/app/core/models/Surgery-details';
 
 export interface DialogData {
+    patientId: number;
     surgeryId: number;
     animalType: string;
+    tagNumber:string;
+    emergencyNumber:number
 }
 
 interface UpdateResult {
@@ -50,6 +53,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
     }
 
     onSurgeryDetailsResult(result: UpdatedSurgery) {
+
         this.result = result;
         if (result) {
             this.canExit.get('surgeryDetailsUpdateComplete').setValue(1);

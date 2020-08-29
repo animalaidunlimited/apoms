@@ -12,7 +12,9 @@ const PROXY_CONFIG = [
             "/Location",
             "/EventEmitter",
             "/SurgeryRegister",
+            "/Messaging",
             "/CensusData"
+
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",

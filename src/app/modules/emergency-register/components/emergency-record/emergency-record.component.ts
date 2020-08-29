@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -30,10 +30,21 @@ export class EmergencyRecordComponent implements OnInit {
 
     notificationDurationSeconds: number;
 
+    @HostListener('document:keydown.control.shift.r', ['$event'])
+    resetForm(event: KeyboardEvent) {
+        event.preventDefault();
+        this.recordForm.reset();
+    };
+
+    @HostListener('document:keydown.control.s', ['$event'])
+    saveFormShortcut(event: KeyboardEvent) {
+        event.preventDefault();
+        this.saveForm();
+    };
+
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
-        private snackBar: MatSnackBar,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
     ) {}
@@ -136,6 +147,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     async saveForm() {
+
         if (this.recordForm.valid) {
             this.recordForm
                 .get('emergencyDetails.updateTime')
@@ -149,6 +161,7 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
+
                         let messageResult = {
                             failure: 0,
                         };
@@ -187,7 +200,6 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .updateCase(emergencyForm)
                     .then(data => {
-                        console.log(data);
                         const resultBody = data as EmergencyResponse;
 
                         this.recordForm
@@ -210,13 +222,9 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
-    }
 
-    // openSnackBar(message: string, action: string) {
-    //     this.snackBar.open(message, action, {
-    //         duration: this.notificationDurationSeconds * 1000,
-    //     });
-    // }
+
+    }
 
     emergencyNumberUpdated(emergencyNumber: number) {
         this.onLoadEmergencyNumber.emit(emergencyNumber);
