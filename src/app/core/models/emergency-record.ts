@@ -1,4 +1,5 @@
 import { Patient } from './patients';
+import { CallOutcomeResponse } from './call-outcome';
 
 export interface EmergencyDetails {
     emergencyCaseId: number;
@@ -21,7 +22,7 @@ export interface CallerDetails {
 }
 
 export interface CallOutcome {
-    callOutcome: number;
+    callOutcome: CallOutcomeResponse;
     sameAsNumber: number;
 }
 
