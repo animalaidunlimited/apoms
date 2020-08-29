@@ -3,7 +3,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { OutstandingRescue, OutstandingCase, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

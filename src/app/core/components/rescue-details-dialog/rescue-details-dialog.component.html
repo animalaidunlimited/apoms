@@ -24,5 +24,5 @@ cdkDragHandle>Rescue Details - {{data.emergencyNumber}}</h1>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="rescueDetails.save(); outstanding.save()" [disabled]="data.recordForm.invalid">Save</button>
+  <button mat-raised-button color="primary" (click)="rescueDetails.save(); outstanding.save();" [disabled]="data.recordForm.invalid">Save</button>
 </div>
