@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -53,6 +53,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
+    private zone: NgZone,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef
@@ -100,6 +101,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
+      this.changeDetector.detectChanges();
     });
 
     this.setup();
@@ -200,14 +202,16 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-    const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-      width: '500px',
-      height: '500px',
-      data: {
-              emergencyCaseId:outstandingCase.emergencyCaseId,
-              emergencyNumber:outstandingCase.emergencyNumber
-            }
-    });
+    this.zone.run(() => {
+
+      const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
+        width: '500px',
+        height: '500px',
+        data: {
+                emergencyCaseId:outstandingCase.emergencyCaseId,
+                emergencyNumber:outstandingCase.emergencyNumber
+              }
+      });
 
     //If we successfully updated the rescue and we're currently set to
     //not receive auto-refresh updates, then we need to set the colour of
@@ -224,6 +228,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
     return afterClosed;
+    })
 
   }
 
