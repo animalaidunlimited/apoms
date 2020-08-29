@@ -1,5 +1,6 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+
 body {
     margin: 0 !important;
 }
@@ -29,29 +30,18 @@ $standard-width: 175px;
     padding-right: 15px;
 }
 
-.chip-color {
-    background-color:grey;
+.mat-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    margin-left: 50%;
+    z-index: 5000;
+    margin: auto;
 }
-
-.chip-red {
-    background-color: red;
-}
-
-.chip-yellow {
-    background-color: yellow;
-}
-
-.chip-green {
-    background-color: green;
-}
-
-.chip-orange {
-    background-color: orange;
-}
-
-
 
 .example-chip-list {
     width: 100%;
     padding-top: 10px;
 }
+
