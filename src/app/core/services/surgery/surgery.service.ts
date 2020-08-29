@@ -24,7 +24,6 @@ export class SurgeryService extends APIService {
 
     public async getSurgeryBySurgeryId(surgeryId): Promise<any> {
         const request:string = '?SurgeryId=' + surgeryId;
-
         return this.get(request);
     }
 
