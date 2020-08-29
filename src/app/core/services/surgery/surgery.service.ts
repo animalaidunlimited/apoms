@@ -12,6 +12,7 @@ export class SurgeryService extends APIService {
         super(http);
     }
 
+
     public async insertSurgery(surgeryData): Promise<any> {
         const request:string = 'surgery';
         if (surgeryData.SurgeryId) {
