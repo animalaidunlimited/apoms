@@ -1,35 +1,3 @@
-<fieldset class="form1-group">
-        <legend class="legend">Census Details</legend>
-        <form [formGroup] = "censusDate"> 
-                <mat-form-field >
-                    <mat-label>Census Date</mat-label>
-                    <input matInput type="date" formControlName="CensusDate" name = "CensusDate"  
-                    (focus)="setInitialTime($event)" cdkFocusInitial >
-                </mat-form-field>
-        </form>
-        <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center">
-            <fieldset class="form-sub-group" *ngFor= "let area of censusArea">
-                <legend class="legend">{{area.areaName}}</legend>
-                <div *ngFor = 'let action of area.actions'>
-                    <mat-form-field class="example-chip-list">
-                            <mat-chip-list #movedInOut aria-label="Moved-In ChipList">
-                                <mat-chip  *ngFor="let tag of action.patients" [selectable]="selectable" 
-                                color = "warn" [selected] = "tag.errorCode > 1"
-                                [removable]="removable" 
-                                (removed)="removePatients(area.areaId, action.actionId , tag)">
-                                <mat-icon matchipSelect *ngIf="!tag.patientId">warning</mat-icon>
-                                    {{tag.tagNumber}}
-                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                                </mat-chip>
-                                <input [placeholder] = "action.actionName"
-                                [matChipInputFor]="movedInOut"
-                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                [matChipInputAddOnBlur]="addOnBlur"
-                                (matChipInputTokenEnd)="addPatients(area.areaId ,action.actionId,$event,censusDate)">
-                            </mat-chip-list>
-                    </mat-form-field>
-                </div>              
-            </fieldset>
-        </div> 
-</fieldset>
-
+<census-record>
+    
+</census-record>
