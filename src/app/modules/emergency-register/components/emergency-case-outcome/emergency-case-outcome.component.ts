@@ -48,7 +48,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.recordForm.get("callOutcome.CallOutcome").valueChanges.subscribe(() => {
 
-      this.outcomeChanged()
+      this.outcomeChanged();
 
     })
 
@@ -94,8 +94,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
         success: null,
         socketEndPoint: null
       };
-
-
 
       this.result.emit(emptyResult);
       return;
