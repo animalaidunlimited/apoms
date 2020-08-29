@@ -11,6 +11,7 @@ export class LoginPageComponent implements OnInit {
     username: string;
     password: string;
     errorMessage: string;
+    hide: boolean = true;
 
     constructor(private authService: AuthService, private router: Router) {}
 
