@@ -69,7 +69,13 @@ export class CensusService extends APIService {
             tagNumber,
             date,
         };
-        return this.delete(data);
+        return await this.delete(data).then(data=>
+            {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     public async getCensusByTag(tagNumber : string): Promise<any>{
