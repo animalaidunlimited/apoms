@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CensusRecord } from '../../census-details/census-details.component';
 
 
 export interface DialogData {
@@ -13,17 +14,31 @@ export interface DialogData {
 })
 export class UpdateCensusDialogComponent implements OnInit {
 
+  result : CensusRecord
+  @Output() public onAdd = new EventEmitter<any>();
+  @Output() public onRemove = new EventEmitter<any>();
+
   constructor(
     public dialogRef: MatDialogRef<UpdateCensusDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
   ngOnInit(): void {
+
+
   }
 
   onCancel(): void {
-    let value = 1;
-    this.dialogRef.close(value);
-}
+    this.dialogRef.close();
+  }
+
+  onCensusSaveResult(result : CensusRecord){
+    let value : any = result;
+    this.onAdd.emit(value);
+  }
+  onCensusRemoveResult(remove : CensusRecord){
+    let value : any = remove;
+    this.onRemove.emit(value);
+  }
 
 }

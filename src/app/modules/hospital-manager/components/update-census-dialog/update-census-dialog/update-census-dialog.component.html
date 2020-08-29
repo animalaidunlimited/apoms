@@ -6,10 +6,14 @@ Update Census {{data.censusUpdateDate}}
 
 <div mat-dialog-content>
     <census-record
-    [censusUpdateDate] = "data.censusUpdateDate">
+    [censusUpdateDate] = "data.censusUpdateDate"
+    (result)="onCensusSaveResult($event)"
+    (remove)="onCensusRemoveResult($event)"
+    #censusDetails>
     </census-record>
 
 </div>
-<button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
-<button mat-raised-button color="primary" (click)="onCancel()" cdkFocusInitial>OK</button>
+<button type="button" mat-raised-button color="primary" (click)="onCancel()">Ok</button>
+<button type="button" mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
+
 
