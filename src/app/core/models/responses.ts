@@ -70,8 +70,8 @@ export interface CallerNumberResponse {
     callers: Callers;
 }
 
-export interface searchResponseWrapper {
-    caseSearchResult: SearchResponse;
+export interface SearchResponseWrapper {
+    caseSearchResult: SearchResponse[];
 }
 
 export interface SearchResponse {
@@ -85,7 +85,9 @@ export interface SearchResponse {
     AnimalType: string;
     PatientId: number;
     TagNumber: string;
-    CallOutcome: number;
+    CallOutcomeId: number;
+    CallOutcome: string;
+    sameAsNumber: number;
     Location: string;
     Latitude: number;
     Longitude: number;

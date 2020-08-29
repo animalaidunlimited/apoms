@@ -13,3 +13,11 @@ export function getCurrentTimeString() {
 
     return formatDate(currentTime, 'yyyy-MM-ddTHH:mm', locale);
 }
+
+// Determine if the given File is an Image (according do its Mime-Type).
+export function isImageFile(file: File): boolean {
+
+    return file.type.search(/^image\//i) === 0;
+}
+
+

@@ -1,14 +1,16 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { UpdatedRescue, UpdateResponse } from '../../models/outstanding-case';
+import { UpdateResponse } from '../../models/outstanding-case';
 
 export interface DialogData {
     emergencyCaseId: number;
     emergencyNumber: number;
+    CallOutcomeId: number;
+    CallOutcome: string;
+    sameAsNumber: number;
     recordForm: FormGroup;
 }
-
 
 interface CanExitChange {
     outcomeUpdateComplete: number;
@@ -45,7 +47,9 @@ export class RescueDetailsDialogComponent implements OnInit {
         updateTime: ['']
       }),
       callOutcome: this.fb.group({
-        callOutcome: ['']
+        CallOutcomeId: [this.data.CallOutcomeId],
+        CallOutcome: [this.data.CallOutcome],
+        sameAsNumber: [this.data.sameAsNumber]
       })
     });
 

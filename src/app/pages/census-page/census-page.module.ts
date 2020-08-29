@@ -7,6 +7,14 @@ import { CensusRecordModule } from "src/app/modules/Census/components/census-rec
 
 @NgModule({
     declarations: [CensusPageComponent],
-    imports: [CommonModule, CensusPageRoutingModule, MaterialModule,CensusRecordModule],
+
+    imports: [
+        CommonModule,
+        CensusPageRoutingModule,
+        MaterialModule
+    ],
+    exports: [
+        CensusPageComponent
+    ]
 })
 export class CensusPageModule {}

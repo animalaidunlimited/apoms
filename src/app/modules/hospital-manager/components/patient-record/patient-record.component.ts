@@ -1,14 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import {
-    trigger,
-    state,
-    style,
-    transition,
-    animate,
-} from '@angular/animations';
+import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 
 @Component({
     selector: 'patient-record',
@@ -62,6 +55,7 @@ export class PatientRecordComponent implements OnInit {
                 callerAlternativeNumber: [''],
             }),
             callOutcome: this.fb.group({
+                callOutcomeId: [this.incomingPatient.callOutcomeId],
                 callOutcome: [this.incomingPatient.callOutcome],
             }),
         });

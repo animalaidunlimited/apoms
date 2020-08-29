@@ -1,6 +1,7 @@
 export interface OutstandingRescue {
     latitude: number;
     location: string;
+    latLngLiteral: google.maps.LatLngLiteral,
     longitude: number;
     callerName: string;
     rescuer1Id: number;
@@ -17,6 +18,7 @@ export interface OutstandingRescue {
     rescuer1Abbreviation: string;
     rescuer2Abbreviation: string;
     patients: string[];
+    isLargeAnimal: boolean;
     moved?: boolean;
     searchCandidate?: boolean;
 }
