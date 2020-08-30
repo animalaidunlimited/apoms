@@ -32,8 +32,8 @@ export const navRoutes: NavRoute[] = [
         path: 'emergency-register',
         loadChildren: () =>
             import(
-                './modules/emergency-register/emergency-register-page.module'
-            ).then(m => m.EmergencyRegisterPageModule),
+                './modules/emergency-register/emergency-register-page.module')
+                .then(m => m.EmergencyRegisterPageModule),
     },
     {
         data: { title: 'Hospital Manager' },
@@ -42,8 +42,8 @@ export const navRoutes: NavRoute[] = [
         path: 'hospital-manager',
         loadChildren: () =>
             import(
-                './modules/hospital-manager/hospital-manager-page.module'
-            ).then(m => m.HospitalManagerPageModule),
+                './modules/hospital-manager/hospital-manager-page.module')
+                .then(m => m.HospitalManagerPageModule),
     },
     {
         data: { title: 'Census' },
@@ -51,9 +51,8 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'census',
         loadChildren: () =>
-            import('./pages/census-page/census-page.module').then(
-                m => m.CensusPageModule,
-            ),
+            import('./modules/census/census-page.module')
+            .then(m => m.CensusPageModule),
     },
 
     {
@@ -63,8 +62,8 @@ export const navRoutes: NavRoute[] = [
         path: 'case-list',
         loadChildren: () =>
             import(
-                './pages/street-treat/pages/case-list-page/case-list-page.module'
-            ).then(m => m.CaseListPageModule),
+                './pages/street-treat/pages/case-list-page/case-list-page.module')
+                .then(m => m.CaseListPageModule),
     },
     {
         data: { title: 'Add Case' },
@@ -73,8 +72,8 @@ export const navRoutes: NavRoute[] = [
         path: 'add-case',
         loadChildren: () =>
             import(
-                './pages/street-treat/pages/add-case-page/add-case-page.module'
-            ).then(m => m.AddCasePageModule),
+                './pages/street-treat/pages/add-case-page/add-case-page.module')
+                .then(m => m.AddCasePageModule),
     },
     {
         data: { title: 'Team Schedule' },
@@ -83,8 +82,8 @@ export const navRoutes: NavRoute[] = [
         path: 'team-schedule',
         loadChildren: () =>
             import(
-                './pages/street-treat/pages/team-schedule-page/team-schedule-page.module'
-            ).then(m => m.TeamSchedulePageModule),
+                './pages/street-treat/pages/team-schedule-page/team-schedule-page.module')
+                .then(m => m.TeamSchedulePageModule),
     },
     {
         data: { title: 'Teams' },
@@ -92,9 +91,8 @@ export const navRoutes: NavRoute[] = [
         group: 'Street Treat',
         path: 'teams',
         loadChildren: () =>
-            import(
-                './pages/street-treat/pages/teams-page/teams-page.module'
-            ).then(m => m.TeamsPageModule),
+            import('./pages/street-treat/pages/teams-page/teams-page.module')
+            .then(m => m.TeamsPageModule),
     },
     {
         data: { title: 'Reporting' },
@@ -102,9 +100,8 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'reporting',
         loadChildren: () =>
-            import('./pages/reporting-page/reporting-page.module').then(
-                m => m.ReportingPageModule,
-            ),
+            import('./pages/reporting-page/reporting-page.module')
+            .then(m => m.ReportingPageModule),
     },
     {
         data: { title: 'Settings' },
@@ -112,9 +109,8 @@ export const navRoutes: NavRoute[] = [
         group: 'Settings',
         path: 'settings',
         loadChildren: () =>
-            import('./pages/settings-page/settings-page.module').then(
-                m => m.SettingsPageModule,
-            ),
+            import('./pages/settings-page/settings-page.module')
+            .then(m => m.SettingsPageModule),
     },
     {
         data: { title: 'Users' },
@@ -122,9 +118,8 @@ export const navRoutes: NavRoute[] = [
         group: 'Settings',
         path: 'users',
         loadChildren: () =>
-            import('./pages/users-page/users-page.module').then(
-                m => m.UsersPageModule,
-            ),
+            import('./pages/users-page/users-page.module')
+            .then(m => m.UsersPageModule),
     },
     {
         data: { title: 'Organisations' },
@@ -132,9 +127,8 @@ export const navRoutes: NavRoute[] = [
         group: 'Settings',
         path: 'organisations',
         loadChildren: () =>
-            import('./pages/organisations-page/organisations-page.module').then(
-                m => m.OrganisationsPageModule,
-            ),
+            import('./pages/organisations-page/organisations-page.module')
+            .then(m => m.OrganisationsPageModule),
     },
 ];
 
