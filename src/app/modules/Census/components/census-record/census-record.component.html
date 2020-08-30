@@ -1,9 +1,9 @@
-<fieldset class="form1-group">
+<fieldset class="form-group">
     <legend class="legend">Census Details</legend>
-    <form [formGroup] = "censusDate"> 
+    <form [formGroup] = "censusDate">
             <mat-form-field >
                 <mat-label>Census Date</mat-label>
-                <input matInput type="date" formControlName="CensusDate" name = "CensusDate"  
+                <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
     </form>
@@ -18,13 +18,13 @@
 
             <div *ngFor = 'let action of area.actions'>
 
-                <mat-form-field class="example-chip-list">
+                <mat-form-field class="census-chip-list">
 
                         <mat-chip-list #movedInOut aria-label="Moved-In ChipList">
 
-                            <mat-chip #ref *ngFor="let tag of action.patients" 
+                            <mat-chip #ref *ngFor="let tag of action.patients"
                             [style.background] = "tag.errorCode == 0 ? tag.color : '#cc3300'"
-                            [removable]="removable" 
+                            [removable]="removable"
                             (removed)="removePatients(area.areaId, action.actionId , tag)">
 
                             <mat-icon matchipSelect *ngIf="!tag.patientId">warning</mat-icon>
@@ -42,10 +42,10 @@
                         </mat-chip-list>
 
                 </mat-form-field>
-                
+
             </div>
 
         </fieldset>
-        
-    </div> 
+
+    </div>
 </fieldset>

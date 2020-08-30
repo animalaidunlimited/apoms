@@ -202,8 +202,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-    this.zone.run(() => {
-
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         width: '500px',
         height: '500px',
@@ -228,7 +226,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
     return afterClosed;
-    })
 
   }
 

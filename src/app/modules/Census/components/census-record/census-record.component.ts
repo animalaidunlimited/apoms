@@ -64,7 +64,7 @@ export class CensusRecordComponent implements OnInit {
     this.loadCensusData(this.censusDate.get('CensusDate').value);
   }
 
-      
+
 
       this.censusArea = [
           {
@@ -123,7 +123,7 @@ export class CensusRecordComponent implements OnInit {
   }
 
   /* Add the patients tagNumber to the chips input field*/
-  
+
   addPatients(incomingAreaId:number, incomingActionId:number, event: MatChipInputEvent): void {
       const input = event.input;
       const tag = event.value.trim();
@@ -154,7 +154,7 @@ export class CensusRecordComponent implements OnInit {
                                             .value,
                                     )
                                     .then(response => {
-                        
+
                                         if(response){
                                             this.loading = false;
                                             action.patients.push({
@@ -164,22 +164,22 @@ export class CensusRecordComponent implements OnInit {
                                             });
                                             this.cdref.detectChanges();
                                         }
-                                        
+
                                          this.censusArea.forEach(area=>
                                             {
-                                                
+
                                                 area.actions.forEach(action=>{
                                                     action.patients.forEach(patient=>{
-                                                    
-                                                        if(patient.patientId === response[0].vPatientId){
-                                                        patient.errorCode = response[0].vErrorCode;
-                                                           this.cdref.detectChanges();
+
+                                                        if(patient.tagNumber === tag.toUpperCase() || patient.patientId === response[0].vPatientId){
+                                                            patient.errorCode = response[0].vErrorCode;
+                                                            this.cdref.detectChanges();
                                                         }
                                                     })
-                                                 
-                                                 
+
+
                                                 })
-                                            })    
+                                            })
                                     });
 
                                     let CensusTableData : CensusRecord = {
@@ -243,23 +243,23 @@ export class CensusRecordComponent implements OnInit {
                           if(response){
                               this.loading = false;
                               this.snackBar.successSnackBar("Record Deleted Successfully!" , "Ok");
-                              
+
                               this.censusArea.forEach(area=>
                                 {
-                                    
+
                                     area.actions.forEach(action=>{
                                         action.patients.forEach(patient=>{
-                                        
+
                                             if(patient.tagNumber === response.prm_TagNumber){
                                                 patient.errorCode = response.vErrorCode;
                                                this.cdref.detectChanges();
                                             }
                                         })
-                                     
+
                                     })
                                 })
 
-                           
+
                             }
                       });
                       const index = action.patients.indexOf(patient);

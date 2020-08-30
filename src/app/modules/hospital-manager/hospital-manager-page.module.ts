@@ -12,7 +12,7 @@ import { CallerDetailsModule } from '../../core/components/caller-details/caller
 import { LocationDetailsModule } from '../../core/components/location-details/location-details.module';
 
 import { CensusDetailsComponent } from './components/census-details/census-details.component';
-import { CensusRecordModule } from "src/app/modules/Census/components/census-record/census-record.module";
+import { CensusRecordModule } from "src/app/modules/census/components/census-record/census-record.module";
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';

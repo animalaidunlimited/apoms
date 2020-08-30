@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
+import { NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavModule } from './core/components/nav/nav.module';
@@ -18,8 +17,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireStorageModule } from '@angular/fire/storage'
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
-
-
 
 @Injectable({
     providedIn: 'root'
