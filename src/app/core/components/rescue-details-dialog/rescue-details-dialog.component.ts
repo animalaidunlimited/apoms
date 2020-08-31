@@ -48,8 +48,7 @@ export class RescueDetailsDialogComponent implements OnInit {
         updateTime: ['']
       }),
       callOutcome: this.fb.group({
-        CallOutcomeId: [this.data.CallOutcomeId],
-        CallOutcome: [this.data.CallOutcome],
+        CallOutcome: [ {CallOutcomeId: this.data.CallOutcomeId, CallOutcome: this.data.CallOutcome}],
         sameAsNumber: [this.data.sameAsNumber]
       })
     });
