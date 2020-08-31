@@ -6,6 +6,7 @@ import { APIService } from '../http/api.service';
     providedIn: 'root',
 })
 export class SurgeryService extends APIService {
+    [x: string]: any;
     endpoint = 'SurgeryRegister';
 
     constructor(public http: HttpClient) {
