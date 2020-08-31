@@ -178,8 +178,6 @@ export class OutstandingCaseService {
 
   insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
 
-    console.log("Inserting rescue");
-
     outstanding.forEach(status => {
 
       if(status.rescueStatus === rescue.rescueStatus){
