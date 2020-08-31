@@ -33,7 +33,7 @@ export class UserOptionsService{
 
         if(!this.minimumDate){
 
-            this.minimumDate = new Date("2010-01-01");
+            this.minimumDate = new Date('2010-01-01');
         }
 
         return this.minimumDate;
