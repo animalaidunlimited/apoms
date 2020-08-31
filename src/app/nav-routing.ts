@@ -130,6 +130,15 @@ export const navRoutes: NavRoute[] = [
             import('./pages/organisations-page/organisations-page.module')
             .then(m => m.OrganisationsPageModule),
     },
+    {
+        data: { title: 'Print templates' },
+        icon: 'none',
+        group: 'Settings',
+        path: 'print-templates',
+        loadChildren: () =>
+            import('./pages/print-templates-page/print-templates-page.module')
+            .then(m => m.PrintTemplatesPageModule),
+    },
 ];
 
 @Injectable({

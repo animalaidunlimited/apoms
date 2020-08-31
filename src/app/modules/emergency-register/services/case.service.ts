@@ -45,21 +45,21 @@ export class CaseService extends APIService {
             if (online) {
                 this.online = true;
 
-                this.toaster.successSnackBar("Connection restored", "OK")
+                this.toaster.successSnackBar('Connection restored', 'OK')
 
                 await this.postFromLocalStorage(
                     this.storage.getItemArray('POST'),
                 )
                     .then(result => {
 
-                        //Only alert if we've inserted new cases.
+                        // Only alert if we've inserted new cases.
 
                         if(result.length > 0){
 
-                            let insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+                            const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
                             setTimeout(() => {
-                                this.toaster.successSnackBar("Synced updated cases with server", "OK")
+                                this.toaster.successSnackBar('Synced updated cases with server', 'OK')
                             }, insertWaitToShowMessage)
 
                         }
@@ -75,11 +75,11 @@ export class CaseService extends APIService {
 
                         if(result.length > 0){
 
-                            let insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
+                            const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
 
 
                         setTimeout(() => {
-                            this.toaster.successSnackBar("Synced updated cases with server", "OK")
+                            this.toaster.successSnackBar('Synced updated cases with server', 'OK')
                         }, insertWaitToShowMessage);
 
                         }
@@ -92,12 +92,12 @@ export class CaseService extends APIService {
             } else {
                 this.online = false;
 
-                //If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
-                //save failed
+                // If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
+                // save failed
                 this.saveCaseFail ?
                     this.saveCaseFail = !this.saveCaseFail
                 :
-                    this.toaster.errorSnackBar("Connection lost", "OK");
+                    this.toaster.errorSnackBar('Connection lost', 'OK');
 
 
             }
@@ -168,7 +168,7 @@ export class CaseService extends APIService {
         }).catch(async error => {
 
             if (error.status == 504 || !this.online) {
-                this.toaster.errorSnackBar("Case saved to local storage", "OK");
+                this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                 this.saveCaseFail = true;
 
@@ -196,7 +196,7 @@ export class CaseService extends APIService {
             .catch(async error => {
 
                 if (error.status == 504 || !this.online) {
-                    this.toaster.errorSnackBar("Case saved to local storage", "OK");
+                    this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                     this.saveCaseFail = true;
 
