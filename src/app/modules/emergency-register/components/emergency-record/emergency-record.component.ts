@@ -3,12 +3,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-
-import {
-    EmergencyResponse,
-    PatientResponse,
-    ProblemResponse,
-} from 'src/app/core/models/responses';
+import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -119,6 +114,11 @@ export class EmergencyRecordComponent implements OnInit {
                         currentPatient
                             .get('patientId')
                             .setValue(patient.patientId);
+
+                            currentPatient
+                            .get('tagNumber')
+                            .setValue(patient.tagNumber, {emitEvent: false});
+
                     }
                 });
             } else {
@@ -176,10 +176,10 @@ export class EmergencyRecordComponent implements OnInit {
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-
 
                         if (data.status == 'saved') {
                             messageResult.failure = 1;
@@ -228,7 +228,6 @@ export class EmergencyRecordComponent implements OnInit {
                             .setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
-
                         }
 
                         if (messageResult.failure == 0) {
@@ -243,6 +242,8 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
+
+        console.log(this.recordForm);
 
     }
 

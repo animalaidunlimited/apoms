@@ -10,6 +10,7 @@ import {
     Validators,
     FormArray,
     AbstractControl,
+    FormControl,
 } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -223,7 +224,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         this.patientDataSource = new MatTableDataSource(patients);
 
-        this.selection = new SelectionModel<Patient>(false, []);
+        this.selection = new SelectionModel<Patient>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
@@ -234,11 +235,23 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     toggleRow(row) {
-        this.selection.toggle(row);
 
-        this.clearChips();
+        if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
-        this.reloadChips();
+            //We only ever want to have one item selected at once, but WE want to control when the change happens and how.
+            this.selection.toggle(this.selection.selected[0]);
+            this.clearChips();
+            this.selection.toggle(row);
+            this.reloadChips();
+        }
+        else if (this.selection.selected.length !== 0 && this.selection.selected[0] === row){
+            this.selection.toggle(this.selection.selected[0]);
+            this.clearChips();
+        }
+        else {
+            this.selection.toggle(row);
+            this.reloadChips();
+        }
     }
 
     selectIfNotSelected(row){
@@ -289,7 +302,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.animalTypeChips.chips.forEach(chip => {
             currentAnimal == chip.value
                 ? (chip.toggleSelected(),
-                  this.hideIrrelevantChips(chip),
+                //   this.hideIrrelevantChips("292", chip),
                   (this.currentPatientChip = chip.value))
                 : chip.deselect;
         });
@@ -351,8 +364,6 @@ export class AnimalSelectionComponent implements OnInit {
                 );
 
             currentPatient.get('updated').setValue(true);
-
-            this.hideIrrelevantChips(animalTypeChip);
         }
 
         // if there are no rows, then we need to add a new one
@@ -366,16 +377,15 @@ export class AnimalSelectionComponent implements OnInit {
             const newPatient = this.getEmptyPatient();
 
             newPatient.get('position').setValue(position);
-            newPatient
-                .get('animalTypeId')
-                .setValue(currentPatient.AnimalTypeId);
+            newPatient.get('animalTypeId').setValue(currentPatient.AnimalTypeId);
             newPatient.get('animalType').setValue(currentPatient.AnimalType);
 
             this.patientArray.push(newPatient);
 
             this.setSelected(position);
         }
-        this.hideIrrelevantChips(animalTypeChip);
+
+        this.hideIrrelevantChips("378", animalTypeChip);
         this.patientTable.renderRows();
     }
 
@@ -472,9 +482,8 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(!problemChip.selected)
         {
-            this.updatePatientProblemArray(problemChip);
+            this.updatePatientProblemArray("477",problemChip);
             return;
-
         }
 
         if (!problemChip.selectable && problemChip.selected) {
@@ -491,12 +500,13 @@ export class AnimalSelectionComponent implements OnInit {
             alert('Please select an animal');
             problemChip.selected = false;
             return;
-        }else {
-            this.updatePatientProblemArray(problemChip);
+        }
+        else {
+            this.updatePatientProblemArray("496",problemChip);
         }
     }
 
-    hideIrrelevantChips(animalTypeChip) {
+    hideIrrelevantChips(source, animalTypeChip) {
 
         const currentExclusions = this.exclusions.filter(
             animalType => animalType.animalType == animalTypeChip.value,
@@ -505,6 +515,10 @@ export class AnimalSelectionComponent implements OnInit {
         //Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
         //followed by an unset for the old patient type
         let currentPatient = this.getcurrentPatient();
+
+        if(!currentPatient){
+            return;
+        }
 
         if(!(currentPatient.get("animalType")?.value === animalTypeChip.value) && !animalTypeChip.selected){
             return;
@@ -566,9 +580,13 @@ export class AnimalSelectionComponent implements OnInit {
         this.selection.clear();
     }
 
-    updatePatientProblemArray(problemChip) {
+    updatePatientProblemArray(source, problemChip) {
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
+
+        if(!currentPatient){
+            return;
+        }
 
         // Get the current list of problems and replace the existing problem array
         const problemsObject: ProblemDropdownResponse = this.problems$.find(
@@ -642,8 +660,8 @@ export class AnimalSelectionComponent implements OnInit {
                 const currentPatient = this.getcurrentPatient();
 
                 currentPatient.get('tagNumber').setValue(result.value);
-                currentPatient.get('duplicateTag')
-                              .setValue(result.status);
+
+                currentPatient.get('duplicateTag').setValue(result.status);
 
                 currentPatient.get('updated').setValue(true);
                 this.patientTable.renderRows();

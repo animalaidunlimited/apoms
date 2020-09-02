@@ -44,8 +44,6 @@ export class OutstandingCaseService {
         this.autoRefreshState = state;
       });
 
-      // this.ambulanceLocations$.subscribe(vals => {console.log(vals)})
-
   }
 
   refreshRescues(){

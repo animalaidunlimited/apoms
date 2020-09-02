@@ -49,7 +49,6 @@ export class AuthService extends APIService {
 
             return this.redirectUrl;
         } catch (error) {
-            // console.error('Error during login request', error);
             return Promise.reject(error);
         }
     }
