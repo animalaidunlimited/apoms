@@ -15,6 +15,7 @@ export class OutstandingCaseService {
   autoRefreshState:boolean;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject(null);
+  ambulanceLocations$:BehaviorSubject<RescuerGroup[]> = new BehaviorSubject(null);
 
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(null);
 
@@ -28,7 +29,9 @@ export class OutstandingCaseService {
 
   initialise(){
 
-    if(!this.initialised){
+    if(this.initialised){
+      return;
+    }
 
       this.initialised = true;
 
@@ -39,10 +42,7 @@ export class OutstandingCaseService {
 
       this.autoRefresh.subscribe(state => {
         this.autoRefreshState = state;
-      })
-
-    }
-
+      });
 
   }
 
@@ -57,12 +57,14 @@ export class OutstandingCaseService {
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
 
     this.outstandingCases$.next(outstandingCases);
+
     this.refreshColour.next("primary");
 
     //Make sure we close the subscription as we only need to get this once when we initialise
     this.initialRescueListSubscription.unsubscribe();
 
   }
+
 
   receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue){
 
@@ -96,6 +98,7 @@ export class OutstandingCaseService {
       rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
       rescuer2: updatedRescue.rescuer2Id,
       rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
+      latestLocation: null,
       rescues: [updatedRescue],
     };
 

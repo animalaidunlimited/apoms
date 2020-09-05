@@ -6,6 +6,8 @@ export interface OutstandingRescue {
     callerName: string;
     rescuer1Id: number;
     rescuer2Id: number;
+    ambulanceArrivalTime: string | Date;
+    rescueTime: string | Date;
     callDateTime: string | Date;
     callerNumber: string;
     rescueStatus: number;
@@ -23,13 +25,12 @@ export interface OutstandingRescue {
     searchCandidate?: boolean;
 }
 
-
-
 export interface RescuerGroup {
     rescuer1: number;
     rescuer1Abbreviation: string;
     rescuer2: number;
     rescuer2Abbreviation: string;
+    latestLocation: google.maps.LatLngLiteral;
     rescues: OutstandingRescue[];
 }
 

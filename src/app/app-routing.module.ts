@@ -36,7 +36,7 @@ const routes: Routes = [
     {
         path: 'census',
         loadChildren: () =>
-            import('./pages/census-page/census-page.module').then(
+            import('./modules/census/census-page.module').then(
                 m => m.CensusPageModule,
             ),
     },

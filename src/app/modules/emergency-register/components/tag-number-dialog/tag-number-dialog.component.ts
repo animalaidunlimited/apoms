@@ -29,13 +29,17 @@ export class TagNumberDialog implements OnInit {
     tagForm: FormGroup;
 
     ngOnInit() {
+
+        let patientIdControl = this.fb.control({value: this.data.patientId});
+
+
         this.tagForm = this.fb.group({
             tagNumber: [
                 this.data.tagNumber,
                 ,
                 this.uniqueTagNumberValidator.validate(
                     this.data.emergencyCaseId,
-                    this.data.patientId,
+                    patientIdControl.value,
                 ),
             ],
         });

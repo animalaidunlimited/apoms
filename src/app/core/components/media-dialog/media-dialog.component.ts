@@ -31,7 +31,7 @@ export class MediaDialog implements OnInit {
 
     mediaItems: MediaItem [] = [];
 
-    uploading: number = 0;
+    uploading = 0;
 
   ngOnInit(): void {
 
@@ -43,7 +43,7 @@ export class MediaDialog implements OnInit {
 
         this.mediaItems = mediaItems.map(mediaItem => {
 
-        let newItem:MediaItem = {
+        const newItem:MediaItem = {
           mediaItemId: of(mediaItem.mediaItemId),
           mediaType: mediaItem.mediaType,
           localURL: mediaItem.localURL,
@@ -74,10 +74,10 @@ export class MediaDialog implements OnInit {
 
 public handlePaste(event: ClipboardEvent){
 
-    //Pass the clipboard event down to the service, expect it to return an image file
-    let mediaFile: File = this.mediaPaster.getPastedImage(event);
+    // Pass the clipboard event down to the service, expect it to return an image file
+    const mediaFile: File = this.mediaPaster.getPastedImage(event);
 
-      let mediaItem = this.upload(mediaFile, this.data.patientId)
+      const mediaItem = this.upload(mediaFile, this.data.patientId)
 
       this.addToMediaItems(mediaItem.mediaItem);
 
@@ -85,7 +85,7 @@ public handlePaste(event: ClipboardEvent){
 
 upload(file: File, patientId: number) : MediaItemReturnObject{
 
-  let mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
+  const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
 
     mediaItem.mediaItemId.subscribe(result => {
       if(result){
@@ -99,12 +99,12 @@ upload(file: File, patientId: number) : MediaItemReturnObject{
 
 uploadFile($event) {
 
-  //We're uploading a file
+  // We're uploading a file
   this.uploading++;
 
-  for(let file of $event.target.files)
+  for(const file of $event.target.files)
   {
-    let mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId)
+    const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId)
 
     this.addToMediaItems(mediaItem.mediaItem);
 

@@ -190,7 +190,6 @@ describe('DropdownService', () => {
         const animalTypes = [{ AnimalTypeId: 1, AnimalType: 'Cat' }];
 
         service.getAnimalTypes().subscribe(res => {
-            console.info(res);
             expect(res).toEqual(animalTypes);
         });
     });

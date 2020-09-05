@@ -4,7 +4,9 @@ import { APIService } from '../http/api.service';
 
 interface CensusTable {
     areaId: number;
+    sortArea : number;
     actionId: number;
+    sortAction : number;
     tagNumber: number;
     date: Date;
 }
@@ -20,7 +22,9 @@ export class CensusService extends APIService {
 
     public async insertCensusData(
         areaId,
+        sortArea,
         actionId,
+        sortAction,
         tagNumber,
         date,
     ): Promise<any> {
@@ -28,7 +32,9 @@ export class CensusService extends APIService {
 
         const data: CensusTable = {
             areaId,
+            sortArea,
             actionId,
+            sortAction,
             tagNumber,
             date,
         };
@@ -49,16 +55,32 @@ export class CensusService extends APIService {
 
     public async deleteCensusData(
         areaId,
+        sortArea,
         actionId,
+        sortAction,
         tagNumber,
         date,
-    ): Promise<any> {
+        ): Promise<any> {
         const data: CensusTable = {
             areaId,
+            sortArea,
             actionId,
+            sortAction,
             tagNumber,
             date,
         };
-        return this.delete(data);
+        return await this.delete(data).then(data=>
+            {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
+
+    public async getCensusByTag(tagNumber : string): Promise<any>{
+        const request = '?TagNumber=' + tagNumber;
+        return this.get(request);
+    }
+
 }

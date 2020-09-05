@@ -1,5 +1,6 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+
 body {
     margin: 0 !important;
 }
@@ -8,7 +9,7 @@ $colour-border: #a9abad;
 $primary-font-colour: #626262;
 $standard-width: 175px;
 
-.form1-group {
+.form-group {
     background-color: white;
     border: 2px solid;
     border-radius: 5px;
@@ -29,11 +30,18 @@ $standard-width: 175px;
     padding-right: 15px;
 }
 
-.chips-red {
-    background-color: red;
+.mat-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    margin-left: 50%;
+    z-index: 5000;
+    margin: auto;
 }
 
-.example-chip-list {
+.census-chip-list {
     width: 100%;
     padding-top: 10px;
 }
+
