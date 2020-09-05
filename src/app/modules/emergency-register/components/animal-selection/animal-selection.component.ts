@@ -148,31 +148,27 @@ export class AnimalSelectionComponent implements OnInit {
         );
     }
 
-    getPatient(
-        problems: FormArray,
-        position: number,
-        isUpdate: boolean,
-        patientId,
-    ) {
+    getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
+
         const newPatient = this.fb.group({
-            patientId: [null],
+            patientId: [],
             position: [position],
             animalTypeId: [''],
             animalType: [''],
             problems,
             problemsString: ['', Validators.required],
-            tagNumber: [
-                '',
-                ,
-                this.tagNumberValidator.validate(
-                    this.emergencyCaseId,
-                    patientId,
-                ),
-            ],
+            tagNumber: [''],
             duplicateTag: [false, Validators.required],
             updated: [isUpdate, Validators.required],
             deleted: [false, Validators.required],
         });
+
+        let patientIdControl = newPatient.get("patientId");
+
+        newPatient.get("tagNumber").setAsyncValidators(this.tagNumberValidator.validate(
+            this.emergencyCaseId,
+            patientIdControl,
+        ))
 
         return newPatient;
     }
@@ -219,8 +215,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     resetTableDataSource() {
-        const patients = (this.recordForm.get('patients') as FormArray)
-            .controls;
+        const patients = (this.recordForm.get('patients') as FormArray).controls;
 
         this.patientDataSource = new MatTableDataSource(patients);
 
