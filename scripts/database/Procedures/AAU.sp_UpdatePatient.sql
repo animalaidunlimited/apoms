@@ -103,6 +103,7 @@ START TRANSACTION;
     
 			INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 			VALUES (vOrganisationId, prm_Username, vCaseId,'Case','Insert - Via ER', NOW());
+
             
             UPDATE AAU.Patient SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
             

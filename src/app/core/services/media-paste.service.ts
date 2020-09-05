@@ -45,9 +45,9 @@ export class MediaPasteService {
 
 
 
-      let newMediaItem:MediaItem = this.createMediaItem(file, patientId);
+      const newMediaItem:MediaItem = this.createMediaItem(file, patientId);
 
-      let returnObject:MediaItemReturnObject = {
+      const returnObject:MediaItemReturnObject = {
           mediaItem: newMediaItem,
           mediaItemId: new BehaviorSubject<number>(null)
       };
@@ -55,15 +55,15 @@ export class MediaPasteService {
 
       this.checkAuthenticated().then(async () => {
 
-      //upload the file and return its progress for display
+      // upload the file and return its progress for display
 
-      let timeString = this.datepipe.transform(newMediaItem.datetime, "yyyyMMdd_hhmmss");
+      const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
 
       newMediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString);
 
-              let options: IResizeImageOptions = {
+              const options: IResizeImageOptions = {
                 maxSize: 5000,
-                file: file
+                file
               }
 
                 this.resizeImage(options).then(async (resizedImage:ResizedImage) => {
@@ -71,7 +71,7 @@ export class MediaPasteService {
                   newMediaItem.widthPX = resizedImage.width;
                   newMediaItem.heightPX = resizedImage.height;
 
-                  let uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
+                  const uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
 
                   // newMediaItem.mediaItemId = uploadResult.mediaItemId;
 
@@ -83,7 +83,7 @@ export class MediaPasteService {
 
                       newMediaItem.remoteURL = url;
 
-                      let savetoDB = from(this.patientService.savePatientMedia(newMediaItem));
+                      const savetoDB = from(this.patientService.savePatientMedia(newMediaItem));
 
                       newMediaItem.mediaItemId = savetoDB.pipe(map(result => result.mediaItemId));
 
@@ -115,21 +115,21 @@ return returnObject;
 
   createMediaItem(file: File, patientId: number){
 
-    let lastObjectUrl = URL.createObjectURL(file);
+    const lastObjectUrl = URL.createObjectURL(file);
 
-    let now = new Date();
+    const now = new Date();
 
-    let isImage = isImageFile(file);
+    const isImage = isImageFile(file);
 
 
-    let newMediaItem:MediaItem = {
+    const newMediaItem:MediaItem = {
       mediaItemId: new Observable<number>(),
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
       remoteURL: null,
       datetime: now,
       comment: '',
-      patientId: patientId,
+      patientId,
       heightPX: 0,
       widthPX: 0,
       tags: [],
@@ -144,7 +144,7 @@ return returnObject;
         context: ''
       }
 
-      //Get the dimensions of the image
+      // Get the dimensions of the image
       this.getImageDimension(uploadImage).subscribe((image) => {
 
         newMediaItem.widthPX = image.width;
@@ -182,8 +182,8 @@ return returnObject;
         return;
     }
 
-    //Send the currentSize as the next mediaImageId so that it has its own ID.
-    let newMediaItem:MediaItem = this.createMediaItem(pastedImage, patientId);
+    // Send the currentSize as the next mediaImageId so that it has its own ID.
+    const newMediaItem:MediaItem = this.createMediaItem(pastedImage, patientId);
 
     return newMediaItem;
 
@@ -225,8 +225,8 @@ async checkAuthenticated(){
 
 getFileUploadLocation(filename: string, timestamp: string) : string{
 
-  //Make sure we only save files in the folder for the organisation.
-  let organisationFolder = this.authService.getOrganisationSocketEndPoint();
+  // Make sure we only save files in the folder for the organisation.
+  const organisationFolder = this.authService.getOrganisationSocketEndPoint();
 
   return `${organisationFolder}/patient-media/${timestamp}_${filename}`;
 
@@ -239,7 +239,7 @@ async getRemoteURL(localURL: SafeUrl){
   await this.checkAuthenticated();
 
 
-  let localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL)
+  const localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL)
 
   this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
     remoteURL = url;
@@ -268,7 +268,7 @@ resizeImage(settings: IResizeImageOptions) {
     const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
     const max = bytes.length;
     const ia = new Uint8Array(max);
-    for (var i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+    for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
     return new Blob([ia], {type:mime});
   };
 
@@ -291,12 +291,12 @@ resizeImage(settings: IResizeImageOptions) {
     canvas.width = width;
     canvas.height = height;
     canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-    let dataUrl = canvas.toDataURL('image/jpeg');
+    const dataUrl = canvas.toDataURL('image/jpeg');
 
-    let resizedImage:ResizedImage = {
+    const resizedImage:ResizedImage = {
         image: dataURItoBlob(dataUrl),
-        width: width,
-        height: height
+        width,
+        height
     }
 
     return resizedImage;
@@ -304,7 +304,7 @@ resizeImage(settings: IResizeImageOptions) {
 
   return new Promise((ok, no) => {
       if (!file.type.match(/image.*/)) {
-        no(new Error("Not an image"));
+        no(new Error('Not an image'));
         return;
       }
 

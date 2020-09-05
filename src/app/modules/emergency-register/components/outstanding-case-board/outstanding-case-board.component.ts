@@ -263,8 +263,6 @@ openCase(caseSearchResult:OutstandingRescue)
 }
 
 refreshRescues(){
-
-  // this.outstandingCases$.subscribe(vals => console.log(vals));
  this.outstandingCaseService.refreshRescues();
 }
 }

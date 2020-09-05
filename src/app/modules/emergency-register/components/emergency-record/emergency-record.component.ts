@@ -3,12 +3,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
-
-import {
-    EmergencyResponse,
-    PatientResponse,
-    ProblemResponse,
-} from 'src/app/core/models/responses';
+import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -116,6 +111,7 @@ export class EmergencyRecordComponent implements OnInit {
                     if (
                         currentPatient.get('position').value == patient.position
                     ) {
+
                         currentPatient
                             .get('patientId')
                             .setValue(patient.patientId);
@@ -156,12 +152,12 @@ export class EmergencyRecordComponent implements OnInit {
     async saveForm() {
 
         if(this.recordForm.pending){
-            //The Emergency Number check might have gotten stuck due to the connection to the DB going down. So mark it as error so the user knows to recheck it
+            // The Emergency Number check might have gotten stuck due to the connection to the DB going down. So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber').pending){
 
-                this.recordForm.get('emergencyDetails.emergencyNumber').setErrors({ "stuckInPending": true});
+                this.recordForm.get('emergencyDetails.emergencyNumber').setErrors({ stuckInPending: true});
                 return;
             }
         }
@@ -180,10 +176,10 @@ export class EmergencyRecordComponent implements OnInit {
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-
 
                         if (data.status == 'saved') {
                             messageResult.failure = 1;
@@ -232,7 +228,6 @@ export class EmergencyRecordComponent implements OnInit {
                             .setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
-
                         }
 
                         if (messageResult.failure == 0) {
