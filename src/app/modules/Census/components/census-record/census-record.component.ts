@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CensusAreaName, Area } from 'src/app/core/models/census-details';
+import { Area } from 'src/app/core/models/census-details';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
 import { CensusService } from 'src/app/core/services/census/census.service';
@@ -26,8 +26,6 @@ export class CensusRecordComponent implements OnInit {
   loading:boolean = false;
 
   addOnBlur:boolean = true;
-
-  censusAreaNames$: Observable<CensusAreaName[]>;
 
   censusDate: FormGroup;
 

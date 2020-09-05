@@ -83,4 +83,10 @@ export class CensusService extends APIService {
         return this.get(request);
     }
 
+    public async getCensusPatientCount(): Promise<any>{
+        const request = '?CountPatient';
+        return this.get(request);
+    }
+
+
 }
