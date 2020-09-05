@@ -6,16 +6,15 @@ import { RecordSearchModule } from 'src/app/core/components/record-search/record
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { MaterialModule } from 'src/app/material-module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
-import { OutstandingCaseBoardComponent } from '../outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
+import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
 
 @NgModule({
     declarations: [
         TabBarComponent,
         RescueDetailsDialogComponent,
-        OutstandingCaseBoardComponent,
     ],
     imports: [
         CommonModule,
@@ -26,6 +25,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
         MaterialModule,
         FlexLayoutModule,
         EmergencyCaseOutcomeModule,
+        OutstandingCaseBoardModule
     ],
     exports: [TabBarComponent],
 })

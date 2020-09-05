@@ -38,7 +38,7 @@
                         </div>
                         <div fxFlex>
                             <mat-form-field>
-                                <input formControlName="searchTerm" matInput>
+                                <input formControlName="searchTerm" autocomplete="off" matInput>
                             </mat-form-field>
                         </div>
                     </div>
@@ -59,75 +59,19 @@
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-    <mat-card *ngFor="let result of searchResults$ | async" class="emergency-card">
-    <!-- <mat-card *ngFor="let result of searchResults$" class="emergency-card"> -->
+        <div *ngIf="(searchResults$ | async)?.length === 0 ;">No results</div>
 
-        <!-- TODO This card definitely needs to be turned into a component -->
-        <mat-card-header class="emergency-card-header">
-          <!-- <div mat-card-avatar class="example-header-image"></div> -->
-          <mat-card-title>{{result.EmergencyNumber}} - {{result.TagNumber}}</mat-card-title>
-          <mat-card-subtitle></mat-card-subtitle>
-        </mat-card-header>
-        <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
-        <mat-card-content>
+        <div *ngFor="let record of searchResults$ | async">
 
-        <button mat-icon-button color="primary"
-        class="circle-button"
-        aria-label="Edit record"
-        (click)="openCase(result)">
-        <mat-icon>create</mat-icon>
-        </button>
+            <search-result-card class="emergency-card" (onOpenEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
 
-        <div class="location">{{result.CurrentLocation}}
-            <svg height="3" width="95%">
-            <line x1="0" y1="0" x2="95%" y2="0" class="location-line" />
-            Sorry, your browser does not support inline SVG.
-            </svg>
         </div>
 
-        <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <div class="name">{{result.Name}}</div>
-
-            <div fxLayout="row" fxLayoutAlign="start center" >
-                <div class="telephone-dash-container">
-                    <svg height="11" width="25">
-                    <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                    Sorry, your browser does not support inline SVG.
-                    </svg>
-                </div>
-
-                <div class="telephone">{{result.Number}}</div>
-            </div>
 
 
-            <div class="animal">{{result.AnimalType}}</div>
-            <div class="animal-location">{{result.Location}}</div>
-        </div>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
-            (click)="quickUpdate(result.PatientId, result.TagNumber)">
-                <mat-icon>event</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update rescue details"
-            (click)="rescueUpdate(result.EmergencyCaseId)">
-                <mat-icon>departure_board</mat-icon>
-            </button>
 
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Update calls"
-            (click)="callUpdate(result.PatientId, result.TagNumber)">
-                <mat-icon>phone</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add Surgery" (click)="addSurgery(result.PatientId , result.TagNumber , result.EmergencyNumber  , result.AnimalType)">
-                <mat-icon>local_hospital</mat-icon>
-            </button>
-        </mat-card-actions>
-        <mat-card-footer class="emergency-card-footer">
-            {{result.CallDateTime | date: 'dd/MMM/yyyy'}}
-        </mat-card-footer>
-      </mat-card>
 
-      
+
 
     </div>
 

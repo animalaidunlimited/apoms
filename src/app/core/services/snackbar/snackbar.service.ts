@@ -1,4 +1,3 @@
-
 import { Injectable, NgZone } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { UserOptionsService } from "src/app/core/services/user-options.service";

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -17,6 +17,9 @@ import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.val
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaPasteService } from 'src/app/core/services/media-paste.service';
+import { MediaItem } from 'src/app/core/models/media';
 
 @Component({
     selector: 'animal-selection',
@@ -24,42 +27,59 @@ import { ProblemDropdownResponse } from 'src/app/core/models/responses';
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit {
+
+    @Input() recordForm: FormGroup;
+    @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
+    @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
+    @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
+
+    @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
+
+
+    @HostListener('document:keydown.control.enter', ['$event'])
+    catchControlEnter(event: KeyboardEvent) {
+        event.preventDefault();
+
+        //Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
+        //So unless we check to see which version of this component is visible, we won't know which tab to update.
+        if(this.animalTypeChipsElement.nativeElement.offsetParent){
+
+            this.updateTag(this.getcurrentPatient());
+        }
+    };
+
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
-    problems$: ProblemDropdownResponse[];
-    exclusions;
 
-    @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
-    @ViewChild('animalTypeChips', { static: true })
-    animalTypeChips: MatChipList;
-    @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
-    @Input() recordForm: FormGroup;
+    currentPatientChip = '';
+    emergencyCaseId: number;
+    exclusions;
 
     patientArrayDisplayedColumns: string[] = [
         'select',
         'animalType',
         'mainProblem',
         'tagNo',
+        'media',
         'delete',
     ];
 
     patientArray: FormArray;
-    currentPatientChip = '';
+    patientDataSource: MatTableDataSource<AbstractControl>;
+
+    problems$: ProblemDropdownResponse[];
 
     selection;
     tagNumber: string;
     validRow: boolean;
-
-    emergencyCaseId: number;
-
-    patientDataSource: MatTableDataSource<AbstractControl>;
 
     constructor(
         public dialog: MatDialog,
         private fb: FormBuilder,
         private patientService: PatientService,
         private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService
+        private dropdown: DropdownService,
+        private mediaPaster: MediaPasteService
     ) {}
 
     ngOnInit() {
@@ -221,14 +241,14 @@ export class AnimalSelectionComponent implements OnInit {
         this.reloadChips();
     }
 
-    /** Selects all rows if they are not all selected; otherwise clear selection. */
-    masterToggle() {
-        this.isAllSelected()
-            ? this.selection.clear()
-            : this.patientDataSource.data.forEach(row =>
-                  this.selection.select(row),
-              );
+    selectIfNotSelected(row){
+
+        if (!this.selection.isSelected(row)){
+            this.toggleRow(row)
+        }
+
     }
+
 
     /** The label for the checkbox on the passed row */
     checkboxLabel(row?: Patient): string {
@@ -285,7 +305,7 @@ export class AnimalSelectionComponent implements OnInit {
         });
     }
 
-    animalChipSelected(fireType:string, animalTypeChip) {
+    animalChipSelected(animalTypeChip) {
 
         this.currentPatientChip = undefined;
 
@@ -329,6 +349,8 @@ export class AnimalSelectionComponent implements OnInit {
                         ? animalTypeObject.AnimalTypeId
                         : null,
                 );
+
+            currentPatient.get('updated').setValue(true);
 
             this.hideIrrelevantChips(animalTypeChip);
         }
@@ -450,7 +472,9 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(!problemChip.selected)
         {
+            this.updatePatientProblemArray(problemChip);
             return;
+
         }
 
         if (!problemChip.selectable && problemChip.selected) {
@@ -473,28 +497,40 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     hideIrrelevantChips(animalTypeChip) {
+
         const currentExclusions = this.exclusions.filter(
             animalType => animalType.animalType == animalTypeChip.value,
         );
+
+        //Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
+        //followed by an unset for the old patient type
+        let currentPatient = this.getcurrentPatient();
+
+        if(!(currentPatient.get("animalType")?.value === animalTypeChip.value) && !animalTypeChip.selected){
+            return;
+        }
 
         this.problemChips.chips.forEach(chip => {
             chip.disabled = false;
             chip.selectable = true;
         });
 
+
         if (!animalTypeChip.selected) {
             return;
         }
 
-        currentExclusions[0].exclusionList.forEach(exclusion =>
+        currentExclusions[0].exclusionList.forEach(exclusion => {
+
             this.problemChips.chips.forEach(chip => {
+
                 if (chip.value === exclusion) {
                     chip.disabled = true;
                     chip.selectable = false;
                     chip.selected = false;
                 }
-            }),
-        );
+            })
+        });
     }
 
     getcurrentPatient() {
@@ -531,6 +567,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     updatePatientProblemArray(problemChip) {
+
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
         // Get the current list of problems and replace the existing problem array
@@ -572,7 +609,7 @@ export class AnimalSelectionComponent implements OnInit {
 
     updateTag(currentPatient) {
 
-        if(this.selection.selected.length === 0 && currentPatient.value.position > 1){
+        if(this.selection.selected.length === 0){
 
             //TODO make this a pretty dialog
             alert("Please select a patient to update");
@@ -581,12 +618,12 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(this.selection.selected.length !== 0 && this.selection.isSelected(currentPatient)) {
 
-            this.openDialog(currentPatient.value);
-
+            this.openTagNumberDialog(currentPatient.value);
         }
     }
 
-    openDialog(event): void {
+    openTagNumberDialog(event): void {
+
         const currentPatient: Patient = event;
 
         const dialogRef = this.dialog.open(TagNumberDialog, {
@@ -595,7 +632,7 @@ export class AnimalSelectionComponent implements OnInit {
                 tagNumber: currentPatient.tagNumber,
                 emergencyCaseId: this.emergencyCaseId,
                 patientId: currentPatient.patientId,
-                duplicateTag: currentPatient.duplicateTag,
+                duplicateTag: currentPatient.duplicateTag
             },
         });
 
@@ -603,14 +640,31 @@ export class AnimalSelectionComponent implements OnInit {
 
             if (result) {
                 const currentPatient = this.getcurrentPatient();
+
                 currentPatient.get('tagNumber').setValue(result.value);
-                currentPatient
-                    .get('duplicateTag')
-                    .setValue(!(result.status == 'VALID'));
+                currentPatient.get('duplicateTag')
+                              .setValue(result.status);
+
                 currentPatient.get('updated').setValue(true);
                 this.patientTable.renderRows();
             }
         });
+    }
+
+    openMediaDialog(event, mediaObject:MediaItem): void{
+
+
+        const currentPatient: Patient = event.value;
+
+        const dialogRef = this.dialog.open(MediaDialog, {
+            minWidth: '50%',
+            data: {
+                tagNumber: currentPatient.tagNumber,
+                patientId: currentPatient.patientId,
+                mediaItem: mediaObject
+            }
+        });
+
     }
 
     getAnimalFromObservable(name: string) {
@@ -640,4 +694,5 @@ export class AnimalSelectionComponent implements OnInit {
             this.problemChips.chips.first.focus();
         }
     }
+
 }

@@ -4,7 +4,7 @@ import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.val
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
-export interface DialogData {
+interface DialogData {
     tagNumber: string;
     emergencyCaseId: number;
     patientId: number;

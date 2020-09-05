@@ -1,0 +1,82 @@
+
+<!-- <search-result-card *ngIf="infoContent"></search-result-card> -->
+
+<google-map height="75vh"
+            width="100%"
+            [options]="options"
+            [center]="center"
+            [zoom]="zoom">
+
+            <div *ngFor="let outstandingRescues of (outstandingCases$ | async);">
+
+
+                <div *ngFor="let rescuerGroups of outstandingRescues.rescuerGroups;">
+
+
+                        <!-- TODO alter the emergencyCodeId so that it works for all organisations -->
+                        <!-- #marker="mapMarker" -->
+
+                        <map-marker
+                        *ngFor="let rescue of rescuerGroups.rescues;"
+                        #marker
+                        [position]="rescue.latLngLiteral"
+                        (mapClick)="openInfoWindow(marker, rescue)"
+                        [options]="{icon: ( rescue.isLargeAnimal == 1 ?
+                            (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                            :
+                            rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                            :
+                            rescue.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                            :
+                            'assets/icons/large_animal_grey.png')
+                            :
+                            (rescue.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                            :
+                            rescue.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                            :
+                            rescue.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                            :
+                            'assets/icons/small_animal_grey.png')
+                        )}">
+
+                        </map-marker>
+                        <map-info-window>
+                            <!-- <div>{{infoContent?.EmergencyNumber}}</div> -->
+
+                            <div *ngFor="let patient of infoContent">
+
+                            <search-result-card class="emergency-card" (onOpenEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
+
+                            </div>
+
+                        </map-info-window>
+
+
+
+                </div>
+
+            </div>
+
+        </google-map>
+
+
+        <!-- <map-marker
+        [position]="rescue.latLngLiteral"
+        [options]="{icon: ( rescue.isLargeAnimal == 1 ?
+            (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+            :
+            rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+            :
+            rescue.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+            :
+            'assets/icons/large_animal_grey.png')
+            :
+            (rescue.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+            :
+            rescue.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+            :
+            rescue.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+            :
+            'assets/icons/small_animal_grey.png')
+        )}"> -->
+

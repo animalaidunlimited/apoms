@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "streettreat": {
+      "hosting": {
+        "apoms": [
+          "streettreat"
+        ]
+      }
+    }
+  }
+}
