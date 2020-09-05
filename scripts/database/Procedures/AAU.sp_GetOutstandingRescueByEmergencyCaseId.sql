@@ -24,6 +24,8 @@ JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rescuer2Id", r2.UserId),
 			JSON_OBJECT("rescuer2Abbreviation", r2.Initials),
             JSON_OBJECT("rescuer2Colour", r1.Colour),
+            JSON_OBJECT("ambulanceArrivalTime", ec.AmbulanceArrivalTime),
+            JSON_OBJECT("rescueTime", ec.RescueTime),
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
             JSON_OBJECT("emergencyNumber", ec.EmergencyNumber),
             JSON_OBJECT("emergencyCodeId", ec.EmergencyCodeId),

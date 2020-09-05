@@ -14,7 +14,6 @@ export class SurgeryService extends APIService {
 
     public async saveSurgery(surgeryData): Promise<any> {
         const request:string = 'surgery';
-
         if (surgeryData.SurgeryId) {
             return await this.put(surgeryData);
         } else {
@@ -24,7 +23,6 @@ export class SurgeryService extends APIService {
 
     public async getSurgeryBySurgeryId(surgeryId: number): Promise<any> {
         const request:string = '?SurgeryId=' + surgeryId;
-
         return await this.get(request);
     }
 

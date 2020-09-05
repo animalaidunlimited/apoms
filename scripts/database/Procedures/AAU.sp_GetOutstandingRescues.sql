@@ -42,6 +42,8 @@ AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec
 			JSON_OBJECT("RescueStatus", AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec.RescueTime, ec.AdmissionTime, ec.CallOutcomeId)),
 			JSON_OBJECT("rescuer1", r1.UserId),
 			JSON_OBJECT("rescuer2", r2.UserId),
+            JSON_OBJECT("ambulanceArrivalTime", ec.AmbulanceArrivalTime),
+            JSON_OBJECT("rescueTime", ec.RescueTime),            
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
             JSON_OBJECT("emergencyNumber", ec.EmergencyNumber),
             JSON_OBJECT("emergencyCodeId", ec.EmergencyCodeId),

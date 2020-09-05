@@ -25,14 +25,14 @@ measurementId: "G-2FQTQ26YCP"
 
     let data = JSON.parse(JSON.parse(payload.data.messageData));
 
-    const notificationTitle = data.emergencyNumber + " updated";
-    const notificationOptions = {
-      body: "An update has been made to outstanding rescue number: " + data.emergencyNumber,
-      data: payload.data,
-      icon: "assets/images/AAU-with-heart-80x80.jpg",
-      images: "assets/images/AAU-with-heart-80x80.jpg",
-      click_action : "http://localhost:4200/nav/emergency-register"
-    };
+    // const notificationTitle = data.emergencyNumber + " updated";
+    // const notificationOptions = {
+    //   body: "An update has been made to outstanding rescue number: " + data.emergencyNumber,
+    //   data: payload.data,
+    //   icon: "assets/images/AAU-with-heart-80x80.jpg",
+    //   images: "assets/images/AAU-with-heart-80x80.jpg",
+    //   click_action : "http://localhost:4200/nav/emergency-register"
+    // };
 
     //Find the correct tab and send a postmessage so it can be sent on to the service.
     const promiseChain = clients.matchAll({
@@ -44,11 +44,10 @@ measurementId: "G-2FQTQ26YCP"
         const windowClient = windowClients[i];
         windowClient.postMessage(data);
       }
-      })
-      .then(() => {
-        return self.registration.showNotification(notificationTitle,
-          notificationOptions);
       });
+      // .then(() => {
+      //   return self.registration.showNotification(notificationTitle,notificationOptions);
+      // });
       return promiseChain;
 
 

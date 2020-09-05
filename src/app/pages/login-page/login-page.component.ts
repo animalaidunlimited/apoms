@@ -11,6 +11,7 @@ export class LoginPageComponent implements OnInit {
     username: string;
     password: string;
     errorMessage: string;
+    hide: boolean = true;
 
     constructor(private authService: AuthService, private router: Router) {}
 
@@ -33,7 +34,6 @@ export class LoginPageComponent implements OnInit {
                 e.status == 504
                     ? 'Cannot connect to server'
                     : 'Wrong Credentials!';
-            // console.error('Unable to Login!\n', e);
         }
     }
 

@@ -28,7 +28,7 @@ export interface AnimalTypeResponse {
     providedIn: 'root',
 })
 export class DropdownService extends APIService {
-    endpoint:string = 'Dropdown';
+    endpoint = 'Dropdown';
 
     rescuers$: Observable<User[]>;
     emergencyCodes$: Observable<EmergencyCode[]>;
@@ -56,7 +56,7 @@ export class DropdownService extends APIService {
     }
 
     getOfficeStaff(): Observable<User[]> {
-        const request:string = '/OfficeStaff';
+        const request = '/OfficeStaff';
 
         if (!this.officeStaff$) {
             this.officeStaff$ = this.getObservable(request).pipe(
@@ -70,7 +70,7 @@ export class DropdownService extends APIService {
     }
 
     getCallStaff(): Observable<User[]> {
-        const request:string = '/CallStaff';
+        const request = '/CallStaff';
 
         if (!this.callStaff$) {
             this.callStaff$ = this.getObservable(request).pipe(
@@ -280,7 +280,7 @@ export class DropdownService extends APIService {
     // share replay for caching to avoid hitting the API every time we want to add
     // a new case
     getAnimalTypes(): Observable<AnimalType[]> {
-        const request:string = '/AnimalTypes';
+        const request = '/AnimalTypes';
 
         if (!this.animalTypes$) {
             this.animalTypes$ = this.getObservable(request).pipe(
@@ -293,7 +293,7 @@ export class DropdownService extends APIService {
     }
 
     getProblems(): Observable<ProblemDropdownResponse[]> {
-        const request:string = '/Problems';
+        const request = '/Problems';
 
         if (!this.problems$) {
             this.problems$ = this.getObservable(request).pipe(
@@ -352,7 +352,7 @@ export class DropdownService extends APIService {
     }
 
     getCrueltyInspectors(): Observable<User[]> {
-        const request:string = '/CrueltyStaff';
+        const request = '/CrueltyStaff';
 
         if (!this.crueltyIspectors$) {
             this.crueltyIspectors$ = this.getObservable(request).pipe(
@@ -366,7 +366,7 @@ export class DropdownService extends APIService {
     }
 
     getDispatchers(): Observable<User[]> {
-        const request:string = '/Dispatchers';
+        const request = '/Dispatchers';
 
         if (!this.dispatchers$) {
             this.dispatchers$ = this.getObservable(request).pipe(
@@ -380,7 +380,7 @@ export class DropdownService extends APIService {
     }
 
     getCallOutcomes(): Observable<CallOutcomeResponse[]> {
-        const request:string = '/CallOutcomes';
+        const request = '/CallOutcomes';
 
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
@@ -393,7 +393,7 @@ export class DropdownService extends APIService {
     }
 
     getRescuers(): Observable<User[]> {
-        const request:string = '/Rescuers';
+        const request = '/Rescuers';
 
         if (!this.rescuers$) {
             this.rescuers$ = this.getObservable(request).pipe(
@@ -407,7 +407,7 @@ export class DropdownService extends APIService {
     }
 
     getEmergencyCodes(): Observable<EmergencyCode[]> {
-        const request:string = '/EmergencyCodes';
+        const request = '/EmergencyCodes';
 
         if (!this.emergencyCodes$) {
             this.emergencyCodes$ = this.getObservable(request).pipe(
@@ -421,7 +421,7 @@ export class DropdownService extends APIService {
     }
 
     getPatientStates(): Observable<PatientStatus[]> {
-        const request:string = '/PatientStates';
+        const request = '/PatientStates';
 
         if (!this.patientStates$) {
             this.patientStates$ = this.getObservable(request).pipe(
@@ -435,7 +435,7 @@ export class DropdownService extends APIService {
     }
 
     getCallTypes(): Observable<CallType[]> {
-        const request:string = '/CallTypes';
+        const request = '/CallTypes';
 
         if (!this.callTypes$) {
             this.callTypes$ = this.getObservable(request).pipe(
@@ -449,7 +449,7 @@ export class DropdownService extends APIService {
     }
 
     getSurgeon(): Observable<User[]> {
-        const request:string = '/Surgeon';
+        const request = '/Surgeon';
 
         if (!this.surgeons$) {
             this.surgeons$ = this.getObservable(request).pipe(
@@ -463,7 +463,7 @@ export class DropdownService extends APIService {
     }
 
     getSurgerySite(): Observable<SurgerySite[]> {
-        const request:string = '/SurgerySite';
+        const request = '/SurgerySite';
 
         if (!this.surgerySites$) {
             this.surgerySites$ = this.getObservable(request).pipe(
@@ -477,7 +477,7 @@ export class DropdownService extends APIService {
     }
 
     getSurgeryType(): Observable<SurgeryType[]> {
-        const request:string = '/SurgeryType';
+        const request = '/SurgeryType';
 
         if (!this.surgeryTypes$) {
             this.surgeryTypes$ = this.getObservable(request).pipe(
@@ -491,7 +491,7 @@ export class DropdownService extends APIService {
     }
 
     getPatientCallOutcomes(): Observable<PatientCallOutcome[]> {
-        const request:string = '/PatientCallOutcomes';
+        const request = '/PatientCallOutcomes';
 
         if (!this.patientCallOutcome$) {
             this.patientCallOutcome$ = this.getObservable(request).pipe(
@@ -505,7 +505,7 @@ export class DropdownService extends APIService {
     }
 
     getCensusAreaNames(): Observable<CensusAreaName[]> {
-        const request:string = '/CensusArea';
+        const request = '/CensusArea';
 
         if (!this.censusAreaNames$) {
             this.censusAreaNames$ = this.getObservable(request).pipe(

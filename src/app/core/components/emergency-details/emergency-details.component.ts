@@ -123,7 +123,7 @@ export class EmergencyDetailsComponent implements OnInit {
 
     compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
 
-        return o1.EmergencyCodeId == o2.EmergencyCodeId;
+        return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
 
     }
 

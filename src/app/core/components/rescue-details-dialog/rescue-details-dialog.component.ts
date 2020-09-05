@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
@@ -28,6 +28,7 @@ export class RescueDetailsDialogComponent implements OnInit {
 
   constructor(
     private fb:FormBuilder,
+    private detector: ChangeDetectorRef,
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) {}
@@ -47,8 +48,7 @@ export class RescueDetailsDialogComponent implements OnInit {
         updateTime: ['']
       }),
       callOutcome: this.fb.group({
-        CallOutcomeId: [this.data.CallOutcomeId],
-        CallOutcome: [this.data.CallOutcome],
+        CallOutcome: [ {CallOutcomeId: this.data.CallOutcomeId, CallOutcome: this.data.CallOutcome}],
         sameAsNumber: [this.data.sameAsNumber]
       })
     });
@@ -68,6 +68,8 @@ export class RescueDetailsDialogComponent implements OnInit {
         this.dialogRef.close(this.result);
       }
     });
+
+    this.detector.detectChanges();
 
    }
 

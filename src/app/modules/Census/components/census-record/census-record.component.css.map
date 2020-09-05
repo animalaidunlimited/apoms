@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "",
     "sources": [
-        "census-page.component.scss"
+        "census-record.component.scss"
     ],
     "names": [],
-    "file": "census-page.component.css"
+    "file": "census-record.component.css"
 }

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title  
+cdkDrag
+cdkDragRootElement=".cdk-overlay-pane">
+Update Census {{data.censusUpdateDate}}
+</h1>
+
+<div mat-dialog-content>
+    <census-record
+    [censusUpdateDate] = "data.censusUpdateDate"
+    (result)="onCensusSaveResult($event)"
+    (remove)="onCensusRemoveResult($event)"
+    #censusDetails>
+    </census-record>
+
+</div>
+<button type="button" mat-raised-button color="primary" (click)="onCancel()">Ok</button>
+<button type="button" mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
+
+

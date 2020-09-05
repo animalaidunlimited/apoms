@@ -1,14 +1,13 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingRescue, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, UpdatedRescue, OutstandingRescue } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, startWith, map } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { RescueDetailsService } from '../../services/rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
@@ -54,6 +53,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
+    private zone: NgZone,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef
@@ -90,7 +90,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
-    this.outstandingCaseService.outstandingCases$.subscribe(change => {
+    this.outstandingCases$.subscribe(() => {
 
       this.changeDetector.detectChanges();
     })
@@ -101,6 +101,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
+      this.changeDetector.detectChanges();
     });
 
     this.setup();
@@ -201,14 +202,14 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   openRescueEdit(outstandingCase:OutstandingRescue){
 
-    const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-      width: '500px',
-      height: '500px',
-      data: {
-              emergencyCaseId:outstandingCase.emergencyCaseId,
-              emergencyNumber:outstandingCase.emergencyNumber
-            }
-    });
+      const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
+        width: '500px',
+        height: '500px',
+        data: {
+                emergencyCaseId:outstandingCase.emergencyCaseId,
+                emergencyNumber:outstandingCase.emergencyNumber
+              }
+      });
 
     //If we successfully updated the rescue and we're currently set to
     //not receive auto-refresh updates, then we need to set the colour of
@@ -262,7 +263,6 @@ openCase(caseSearchResult:OutstandingRescue)
 }
 
 refreshRescues(){
-
  this.outstandingCaseService.refreshRescues();
 }
 }
