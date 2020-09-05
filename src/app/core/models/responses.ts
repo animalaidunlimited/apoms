@@ -20,6 +20,7 @@ export interface ProblemDropdownResponse {
 
 export interface PatientResponse {
     patientId: number;
+    tagNumber: string;
     position: number;
     success: number;
     problems: ProblemResponse[];

@@ -119,6 +119,10 @@ export class EmergencyRecordComponent implements OnInit {
                         currentPatient
                             .get('patientId')
                             .setValue(patient.patientId);
+
+                        currentPatient
+                            .get('tagNumber')
+                            .setValue(patient.tagNumber);
                     }
                 });
             } else {

@@ -109,7 +109,6 @@ export class CensusRecordComponent implements OnInit {
   }
 
   /*Sorts the area.actions arrays from the censusdata Object and return it back tio the getSortedResponce function*/
-
   getSortedAction(areas) {
       areas.forEach(area => {
           area.actions.sort((a, b) => {
@@ -238,7 +237,6 @@ export class CensusRecordComponent implements OnInit {
                       ).then(response=>{
                           if(response){
                               this.loading = false;
-                              this.snackBar.successSnackBar("Record Deleted Successfully!" , "Ok");
 
                               this.censusArea.forEach(area=>
                                 {
