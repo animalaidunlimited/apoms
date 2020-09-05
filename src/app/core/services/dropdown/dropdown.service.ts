@@ -18,7 +18,8 @@ import {
     SurgerySite,
     SurgeryType,
 } from '../../models/Surgery-details';
-import { CensusAreaName } from '../../models/census-details';
+import { CensusArea } from '../../models/census-details';
+import { ConditionalExpr } from '@angular/compiler';
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -49,7 +50,7 @@ export class DropdownService extends APIService {
     surgeons$: Observable<User[]>;
     surgerySites$: Observable<SurgerySite[]>;
     surgeryTypes$: Observable<SurgeryType[]>;
-    censusAreaNames$: Observable<CensusAreaName[]>;
+    censusAreas$ : Observable<CensusArea[]>;
 
     constructor(http: HttpClient) {
         super(http);
@@ -369,6 +370,7 @@ export class DropdownService extends APIService {
         const request:string = '/Dispatchers';
 
         if (!this.dispatchers$) {
+            console.log('hi')
             this.dispatchers$ = this.getObservable(request).pipe(
                 map((response: User[]) => {
                     return response;
@@ -504,16 +506,5 @@ export class DropdownService extends APIService {
         return this.patientCallOutcome$;
     }
 
-    getCensusAreaNames(): Observable<CensusAreaName[]> {
-        const request:string = '/CensusArea';
 
-        if (!this.censusAreaNames$) {
-            this.censusAreaNames$ = this.getObservable(request).pipe(
-                map((response: CensusAreaName[]) => {
-                    return response;
-                }),
-            );
-        }
-        return this.censusAreaNames$;
-    }
 }
