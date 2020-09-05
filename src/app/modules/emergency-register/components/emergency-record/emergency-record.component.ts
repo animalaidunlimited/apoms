@@ -111,14 +111,14 @@ export class EmergencyRecordComponent implements OnInit {
                     if (
                         currentPatient.get('position').value == patient.position
                     ) {
+
                         currentPatient
                             .get('patientId')
                             .setValue(patient.patientId);
 
-                            currentPatient
+                        currentPatient
                             .get('tagNumber')
-                            .setValue(patient.tagNumber, {emitEvent: false});
-
+                            .setValue(patient.tagNumber);
                     }
                 });
             } else {
@@ -145,6 +145,8 @@ export class EmergencyRecordComponent implements OnInit {
                 }
             });
         });
+
+        console.log(this.recordForm);
 
         return result;
     }
@@ -242,8 +244,6 @@ export class EmergencyRecordComponent implements OnInit {
                     });
             }
         }
-
-        console.log(this.recordForm);
 
     }
 

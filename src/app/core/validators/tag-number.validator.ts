@@ -8,7 +8,7 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 export class UniqueTagNumberValidator {
     constructor(private patientService: PatientService) {}
 
-    validate(emergencyCaseId: number, patientId: number): AsyncValidatorFn {
+    validate(emergencyCaseId: number, patientId: AbstractControl): AsyncValidatorFn {
         return (
             control: AbstractControl,
         ): Observable<{ [key: string]: any } | null> => {
@@ -25,7 +25,7 @@ export class UniqueTagNumberValidator {
             else
             {
                 return this.patientService
-                .checkTagNumberExists(control.value, emergencyCaseId, patientId)
+                .checkTagNumberExists(control.value, emergencyCaseId, patientId.value)
                 .pipe(
                     map(res => {
                         if (res) {
