@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CensusAreaName, Area } from 'src/app/core/models/census-details';
+import { Area } from 'src/app/core/models/census-details';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
 import { CensusService } from 'src/app/core/services/census/census.service';
@@ -26,8 +26,6 @@ export class CensusRecordComponent implements OnInit {
   loading:boolean = false;
 
   addOnBlur:boolean = true;
-
-  censusAreaNames$: Observable<CensusAreaName[]>;
 
   censusDate: FormGroup;
 
@@ -111,7 +109,6 @@ export class CensusRecordComponent implements OnInit {
   }
 
   /*Sorts the area.actions arrays from the censusdata Object and return it back tio the getSortedResponce function*/
-
   getSortedAction(areas) {
       areas.forEach(area => {
           area.actions.sort((a, b) => {
@@ -240,7 +237,6 @@ export class CensusRecordComponent implements OnInit {
                       ).then(response=>{
                           if(response){
                               this.loading = false;
-                              this.snackBar.successSnackBar("Record Deleted Successfully!" , "Ok");
 
                               this.censusArea.forEach(area=>
                                 {
