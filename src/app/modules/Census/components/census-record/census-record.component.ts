@@ -138,11 +138,9 @@ export class CensusRecordComponent implements OnInit {
                               );
                           });
                           this.loading = true;
+
                           exists
-                              ? this.snackBar.errorSnackBar(
-                                    'Duplicate Error!',
-                                    'OK',
-                                )
+                              ? (this.snackBar.errorSnackBar('Duplicate Error!','OK',), this.loading = false)
                               : this.census
                                     .insertCensusData(
                                         area.areaId,
