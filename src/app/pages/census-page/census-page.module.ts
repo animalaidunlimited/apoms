@@ -11,6 +11,7 @@ import { CensusRecordModule } from "src/app/modules/Census/components/census-rec
     imports: [
         CommonModule,
         CensusPageRoutingModule,
+        CensusRecordModule,
         MaterialModule
     ],
     exports: [
