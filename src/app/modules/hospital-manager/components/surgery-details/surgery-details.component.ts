@@ -64,6 +64,7 @@ export class SurgeryDetailsComponent implements OnInit {
     surgeryRecords = ELEMENT_DATA;
 
     ngOnInit() {
+
         this.surgeryService
             .getSurgeryByPatientId(this.patientId)
             .then(response => {
@@ -108,10 +109,6 @@ export class SurgeryDetailsComponent implements OnInit {
                 }
             }
         });
-    }
-
-    updateSurgery(row) {
-        this.updateSurgeryDialog(row);
     }
 
 }

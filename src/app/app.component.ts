@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagingService } from './modules/emergency-register/services/board-socket.service';
+import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
+import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
 
 
 @Component({
@@ -19,16 +20,20 @@ export class AppComponent implements OnInit{
     message;
 
     constructor(
-        private messagingService: MessagingService) {
+        private messagingService: MessagingService,
+        private outstandingCaseService: OutstandingCaseService
+        ) {
 
             window.addEventListener("beforeunload", () => {
 
                 this.messagingService.unsubscribe();
              });
 
+             //If we've just received focus then we may need to refresh the outstanding case board because
+             //changes might have happened while we were away
             window.addEventListener("visibilitychange", (change) => {
                 if(!document.hidden){
-                    this.messagingService.receiveFocus();
+                    this.outstandingCaseService.receiveFocus();
                 }
             });
      }
@@ -38,13 +43,11 @@ export class AppComponent implements OnInit{
         this.message = this.messagingService.currentMessage;
 
         //Set up to receive messages from the service worker when the app is in the background.
-        navigator.serviceWorker.addEventListener('message', (event) => {
+        navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
             if(event.data){
 
-                let updatedRescue = {messageData: event.data};
-
-                this.messagingService.receiveRescueUpdate(JSON.stringify(updatedRescue));
+                // this.messagingService.receiveBackgroundMessage(event.data.firebaseMessaging.payload);
 
             }
 

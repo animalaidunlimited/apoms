@@ -2,9 +2,7 @@
 
     <div formArrayName="calls">
 
-    <mat-expansion-panel
-    *ngFor="let call of calls.controls; let i = index"
-    >
+    <mat-expansion-panel *ngFor="let call of calls.controls; let i = index" [expanded]="call.get('expanded').value">
 
         <mat-expansion-panel-header>
           <mat-panel-title>

@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { UserOptionsService } from 'src/app/core/services/user-options.service';
 
 @Injectable({
     providedIn: 'root',
@@ -19,8 +20,9 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 export class CaseService extends APIService {
     constructor(
         http: HttpClient,
-        private readonly onlineStatus: OnlineStatusService,
+        private onlineStatus: OnlineStatusService,
         protected storage: StorageService,
+        private userOptions: UserOptionsService,
         private toaster: SnackbarService
     ) {
         super(http);
@@ -34,8 +36,12 @@ export class CaseService extends APIService {
 
     online: boolean;
 
+    saveCaseFail:boolean;
+
     private async checkStatus(onlineStatus: OnlineStatusService) {
+
         onlineStatus.connectionChanged.subscribe(async online => {
+
             if (online) {
                 this.online = true;
 
@@ -45,7 +51,19 @@ export class CaseService extends APIService {
                     this.storage.getItemArray('POST'),
                 )
                     .then(result => {
-                        this.toaster.successSnackBar("Synced updated cases with server", "OK");
+
+                        //Only alert if we've inserted new cases.
+
+                        if(result.length > 0){
+
+                            let insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+
+                            setTimeout(() => {
+                                this.toaster.successSnackBar("Synced updated cases with server", "OK")
+                            }, insertWaitToShowMessage)
+
+                        }
+
                     })
                     .catch(error => {
                         console.log(error);
@@ -53,7 +71,19 @@ export class CaseService extends APIService {
 
                 await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
                     .then(result => {
-                        this.toaster.successSnackBar("Synced updated cases with server", "OK");
+
+
+                        if(result.length > 0){
+
+                            let insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
+
+
+                        setTimeout(() => {
+                            this.toaster.successSnackBar("Synced updated cases with server", "OK")
+                        }, insertWaitToShowMessage);
+
+                        }
+
 
                     })
                     .catch(error => {
@@ -61,7 +91,15 @@ export class CaseService extends APIService {
                     });
             } else {
                 this.online = false;
-                this.toaster.errorSnackBar("Connection lost", "OK");
+
+                //If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
+                //save failed
+                this.saveCaseFail ?
+                    this.saveCaseFail = !this.saveCaseFail
+                :
+                    this.toaster.errorSnackBar("Connection lost", "OK");
+
+
             }
         });
     }
@@ -72,6 +110,7 @@ export class CaseService extends APIService {
 
                 await this.baseInsertCase(JSON.parse(elem.value)).then(
                     (result: EmergencyResponse) => {
+
                         if (
                             result.emergencyCaseSuccess == 1 ||
                             result.emergencyCaseSuccess == 3 ||
@@ -79,8 +118,8 @@ export class CaseService extends APIService {
                         ) {
                             this.storage.remove(elem.key);
                         }
-                    },
-                ),
+                    }
+                )
         );
 
         return await Promise.all(promiseArray).then(result => {
@@ -89,19 +128,23 @@ export class CaseService extends APIService {
     }
 
     private async putFromLocalStorage(putsToSync) {
+
         const promiseArray = putsToSync.map(
             async elem =>
-                await this.baseUpdateCase(elem.value).then(
-                    (result: EmergencyResponse) => {
-                        if (
-                            result.emergencyCaseSuccess == 1 ||
-                            result.emergencyCaseSuccess == 3 ||
-                            result.emergencyCaseSuccess == 2
-                        ) {
-                            this.storage.remove(elem.key);
-                        }
-                    },
-                ),
+
+                await this.baseUpdateCase(JSON.parse(elem.value)).then(
+                                (result: EmergencyResponse) => {
+                                    
+                                    if (
+                                        result.emergencyCaseSuccess == 1 ||
+                                        result.emergencyCaseSuccess == 3 ||
+                                        result.emergencyCaseSuccess == 2
+                                    ) {
+                                        this.storage.remove(elem.key);
+                                    }
+                                })
+
+
         );
 
         return await Promise.all(promiseArray).then(result => {
@@ -115,9 +158,22 @@ export class CaseService extends APIService {
     }
 
     public async updateCase(emergencyCase: EmergencyCase): Promise<any> {
-        return await this.baseUpdateCase(emergencyCase).catch(async error => {
+
+        return await this.baseUpdateCase(emergencyCase)
+        .then(result => {
+
+            this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+
+            return result;
+        }).catch(async error => {
 
             if (error.status == 504 || !this.online) {
+                this.toaster.errorSnackBar("Case saved to local storage", "OK");
+
+                this.saveCaseFail = true;
+
+                this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+
                 // The server is offline, so let's save this to the database
                 return await this.saveToLocalDatabase('PUT', emergencyCase);
             }
@@ -125,18 +181,26 @@ export class CaseService extends APIService {
     }
 
     public async baseUpdateCase(emergencyCase: EmergencyCase): Promise<any> {
+
         return await this.put(emergencyCase);
     }
 
     public async insertCase(emergencyCase: EmergencyCase): Promise<any> {
         return await this.baseInsertCase(emergencyCase)
             .then(result => {
+
+                    this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+
                 return result;
             })
             .catch(async error => {
 
                 if (error.status == 504 || !this.online) {
-                    this.toaster.errorSnackBar("Saving to local storage", "OK");
+                    this.toaster.errorSnackBar("Case saved to local storage", "OK");
+
+                    this.saveCaseFail = true;
+
+                    this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
                     // The server is offline, so let's save this to the database
                     return await this.saveToLocalDatabase(
                         'POST',
@@ -146,7 +210,7 @@ export class CaseService extends APIService {
             });
     }
 
-    public getCaseById(emergencyCaseId: number) {
+    public getEmergencyCaseById(emergencyCaseId: number) {
         return this.getById(emergencyCaseId).pipe(
             map(value => {
                 return value;
@@ -191,11 +255,11 @@ export class CaseService extends APIService {
         );
     }
 
-    public searchCases(searchString: string): Observable<any> {
+    public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
         return this.getObservable(request).pipe(
-            map((response: SearchResponse) => {
+            map((response: SearchResponse[]) => {
                 return response;
             }),
         );

@@ -1,0 +1,33 @@
+.dot-red {
+    color: red;
+    font-size: 17px !important;
+    height: 17px !important;
+    width: 17px !important;
+}
+.dot-green {
+    color: green;
+    font-size: 17px !important;
+    height: 17px !important;
+    width: 17px !important;
+}
+.dot-yellow {
+    color: gold;
+    font-size: 17px !important;
+    height: 17px !important;
+    width: 17px !important;
+}
+.dot-grey {
+    color: grey;
+    font-size: 17px !important;
+    height: 17px !important;
+    width: 17px !important;
+}
+
+.mat-icon{
+    vertical-align: text-bottom !important;
+}
+
+// TODO FIX THIS SO IT'S THE SAME HEIGHT AS EVERYTHING ELSE
+.mat-select-trigger{
+    display: inherit !important;
+}

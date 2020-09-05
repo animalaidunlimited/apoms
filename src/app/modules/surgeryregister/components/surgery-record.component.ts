@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
+
 import {
     Surgeon,
     SurgerySite,
@@ -9,15 +10,15 @@ import {
     SurgeryFormModel,
 } from 'src/app/core/models/Surgery-details';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { Observable, iif } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { getCurrentTimeString } from 'src/app/core/utils';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { SurgeryRecord } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
+
 interface Antibiotic {
     id: number;
     Antibiotics: string;
@@ -124,34 +125,14 @@ export class SurgeryRecordComponent implements OnInit {
         }
     }
 
-    // async save(){
-
-    //     if (!this.surgeryForm.touched) {
-    //         this.result.emit(null);
-    //         return;
-    //     }
-
-    //     if (!this.surgeryForm.get("surgeryId").value) {
-    //         this.saveSurgery()
-
-    //     }
-    //     else{
-    //         this.updateSurgery()
-    //     }
-
-    // }
-
     async saveSurgery() {
         if (!this.surgeryForm.touched) {
             this.result.emit(null);
             return;
         }
 
-
-
         await this.surgeryService
               .saveSurgery(this.surgeryForm.value).then((value: any) => {
-
 
                 if (value) {
                     let surgeonNameForTable;
@@ -162,17 +143,15 @@ export class SurgeryRecordComponent implements OnInit {
 
                     surgeonNameForTable = this.surgeons.find(
                         user =>
-                            user.UserId == this.surgeryForm.get('UserId').value,
+                            user.UserId === this.surgeryForm.get('SurgeonId').value,
                     );
                     surgeryTypeForTable = this.surgeryTypes.find(
                         surgeryType =>
-                            surgeryType.SurgeryTypeId ==
-                            this.surgeryForm.get('SurgeryTypeId').value,
+                            surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value,
                     );
                     surgerySiteForTable = this.surgerySites.find(
                         surgerySite =>
-                            surgerySite.SurgerySiteId ==
-                            this.surgeryForm.get('SurgerySiteId').value,
+                            surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value,
                     );
 
 
@@ -203,60 +182,6 @@ export class SurgeryRecordComponent implements OnInit {
 
     async resetForm() {
         this.surgeryForm.reset();
-    }
-
-
-    async updateSurgery() {
-        if (!this.surgeryForm.touched) {
-            this.result.emit(null);
-            return;
-        }
-        await this.surgeryService
-            .insertSurgery(this.surgeryForm.value)
-            .then((data: any) => {
-                if (data.success == 1) {
-                    let surgeonNameForTable;
-
-                    let surgeryTypeForTable;
-
-                    let surgerySiteForTable;
-
-                    surgeonNameForTable = this.surgeons.find(
-                        user =>
-                            user.UserId == this.surgeryForm.get('UserId').value,
-                    );
-                    surgeryTypeForTable = this.surgeryTypes.find(
-                        surgeryType =>
-                            surgeryType.SurgeryTypeId ==
-                            this.surgeryForm.get('SurgeryTypeId').value,
-                    );
-                    surgerySiteForTable = this.surgerySites.find(
-                        surgerySite =>
-                            surgerySite.SurgerySiteId ==
-                            this.surgeryForm.get('SurgerySiteId').value,
-                    );
-
-                    const surgeryTableData: SurgeryRecord = {
-                        surgeryId: this.surgeryForm.get('SurgeryId').value,
-                        date: this.surgeryForm.get('SurgeryDate').value,
-                        died: this.surgeryForm.get('DiedDate').value,
-                        site: surgerySiteForTable.SurgerySite,
-                        surgeon: surgeonNameForTable.FirstName,
-                        type: surgeryTypeForTable.SurgeryType,
-                        anesthesiaMinutes: this.surgeryForm.get(
-                            'AnesthesiaMinutes',
-                        ).value,
-                        antibioticsGiven: this.surgeryForm.get(
-                            'AntibioticsGiven',
-                        ).value,
-                        comments: this.surgeryForm.get('Comment').value,
-                    };
-                    this.showSnackBar.successSnackBar('Surgery Updated!', 'Ok');
-                    this.result.emit(surgeryTableData);
-                } else {
-                    this.showSnackBar.errorSnackBar('Error!', 'Dismiss');
-                }
-            });
     }
 
 }
