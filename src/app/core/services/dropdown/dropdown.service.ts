@@ -370,7 +370,6 @@ export class DropdownService extends APIService {
         const request:string = '/Dispatchers';
 
         if (!this.dispatchers$) {
-            console.log('hi')
             this.dispatchers$ = this.getObservable(request).pipe(
                 map((response: User[]) => {
                     return response;
