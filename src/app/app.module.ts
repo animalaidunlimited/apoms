@@ -21,7 +21,7 @@ import { DatePipe } from '@angular/common';
 @Injectable({
     providedIn: 'root'
   })
-
+  
 class UIErrorHandler extends ErrorHandler {
   constructor() {
     super();
