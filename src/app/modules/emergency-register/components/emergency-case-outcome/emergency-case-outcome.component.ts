@@ -38,6 +38,16 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     // let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
+    if(this.recordForm.get("emergencyDetails.emergencyCaseId").value){
+
+      this.caseService.getEmergencyCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value).subscribe(result =>
+
+        this.recordForm.patchValue(result)
+
+        )
+
+    }
+
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
     this.callOutcomes$.subscribe(callOutcome => {

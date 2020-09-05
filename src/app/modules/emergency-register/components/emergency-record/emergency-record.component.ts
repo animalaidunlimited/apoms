@@ -146,8 +146,6 @@ export class EmergencyRecordComponent implements OnInit {
             });
         });
 
-        console.log(this.recordForm);
-
         return result;
     }
 
