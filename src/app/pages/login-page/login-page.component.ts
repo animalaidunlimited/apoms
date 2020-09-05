@@ -34,7 +34,6 @@ export class LoginPageComponent implements OnInit {
                 e.status == 504
                     ? 'Cannot connect to server'
                     : 'Wrong Credentials!';
-            // console.error('Unable to Login!\n', e);
         }
     }
 
