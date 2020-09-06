@@ -61,11 +61,6 @@ export class OutstandingCaseMapComponent implements OnInit {
 
     let outstanding;
 
-
-
-
-
-
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
         if(cases){
 
@@ -147,7 +142,7 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingRescue[]){
 
-    let searchQuery = 'ec.EmergencyCaseId IN ('
+    let searchQuery = ' ec.EmergencyCaseId IN ('
 
     let emergencyNumbers = rescues.map(rescue => {
 

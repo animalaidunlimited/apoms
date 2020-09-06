@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -41,7 +41,7 @@ export class RescueDetailsComponent implements OnInit {
 
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
-    private datePipe: DatePipe,
+    private zone: NgZone,
     private fb: FormBuilder) {}
 
   rescuers$;
@@ -69,7 +69,13 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
     .subscribe((rescueDetails: RescueDetailsParent) => {
 
-      this.recordForm.patchValue(rescueDetails);
+      this.zone.run(() => {
+
+        this.recordForm.patchValue(rescueDetails);
+
+      })
+
+
 
     });
 
@@ -93,6 +99,7 @@ export class RescueDetailsComponent implements OnInit {
 
       //The values won't have bubbled up to the parent yet, so wait for one tick
       setTimeout(() =>
+
         this.updateValidators()
       )
     });
@@ -187,7 +194,6 @@ updateValidators()
 
   this.rescuer1Id.updateValueAndValidity({emitEvent: false });
   this.rescuer2Id.updateValueAndValidity({emitEvent: false });
-
 
 }
 

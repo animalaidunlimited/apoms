@@ -505,7 +505,4 @@ export class DropdownService extends APIService {
         return this.patientCallOutcome$;
     }
 
-    getCensusAreaNames(): Observable<CensusAreaName[]> {
-        const request = '/CensusArea';
-
 }
