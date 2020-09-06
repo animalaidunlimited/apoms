@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -46,7 +46,8 @@ export interface Swimlane{
     ])
 
   ])
-]
+],
+changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutstandingCaseBoardComponent implements OnInit {
 
@@ -88,12 +89,13 @@ export class OutstandingCaseBoardComponent implements OnInit {
       updateRequired: [false, Validators.requiredTrue]
     });
 
+
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
+    //Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe(() => {
-
-      this.changeDetector.detectChanges();
-    })
+        this.changeDetector.detectChanges();
+    });
 
     this.outstandingCaseService.initialise();
 
@@ -126,8 +128,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       });
 
-      this.outstandingCaseService.setAutoRefresh(!!permissionGranted)
-
+      this.outstandingCaseService.setAutoRefresh(!!permissionGranted);
       this.changeDetector.detectChanges();
 
     });
@@ -143,6 +144,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
         // this.refreshRescues();
 
         this.outstandingCases$ =  this.outstandingCaseService.outstandingCases$;
+        this.changeDetector.detectChanges();
 
       }
 
@@ -164,6 +166,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       try{
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        this.changeDetector.detectChanges();
       }
       catch(e){
         console.log(e)
@@ -187,6 +190,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
                 event.previousContainer.data,
                 event.currentIndex,
                 event.previousIndex);
+                this.changeDetector.detectChanges();
             }
             else {
               this.refreshColour$.next("warn");
@@ -220,8 +224,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       if(result?.success === 1 && !this.autoRefresh){
         this.refreshColour$.next("warn");
-        this.changeDetector.detectChanges();
       }
+      this.changeDetector.detectChanges();
 
     });
 

@@ -69,8 +69,9 @@ START TRANSACTION;
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username,prm_OutPatientId,'Patient','Insert', NOW());
     
-    IF prm_AddToStreetTreat = 1 THEN    
-  
+    IF prm_AddToStreetTreat = 1 THEN
+    
+    
 		SELECT TeamId INTO vTeamId FROM AAU.Team WHERE TeamName = 'Team Vinod';
 		
 		-- If we already have a tag number, then assume we should be using that, otherwise generate the next biggest tag number
@@ -91,16 +92,16 @@ START TRANSACTION;
 			SELECT ec.EmergencyNumber, prm_AnimalTypeId, 4, 1, vTeamId, 6, '', c.Name, c.Number, LEFT(ec.Location, 128), ec.Latitude, ec.Longitude, '', '', CURDATE(), 0, prm_TagNumber
 			FROM AAU.EmergencyCase ec
 			INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
-      WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
+            WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
             
 			SELECT LAST_INSERT_ID() INTO vCaseId;
             
 			INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 			VALUES (vOrganisationId, prm_Username, vCaseId,'Case','Insert - Via ER', NOW());
             
-      SELECT prm_TagNumber INTO prm_OutTagNumber;
+            SELECT prm_TagNumber INTO prm_OutTagNumber;
             
-      UPDATE AAU.Patient SET TagNumber = prm_TagNumber WHERE PatientId = prm_OutPatientId;
+            UPDATE AAU.Patient SET TagNumber = prm_TagNumber WHERE PatientId = prm_OutPatientId;
 			
 		END IF;
         

@@ -1,33 +1,16 @@
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-
 
 body {
     margin: 0 !important;
 }
 
-$colour-border: #a9abad;
-$primary-font-colour: #626262;
-$standard-width: 175px;
 
 .form-group {
-    background-color: white;
-    border: 2px solid;
-    border-radius: 5px;
     margin: 30px;
-    border-color: $colour-border;
     padding-bottom: 30px;
 }
 
 .form-sub-group {
-    background-color: white;
-    align-items: center;
     width: 80%;
-    border: 2px solid;
-    border-radius: 5px;
-    margin-top: 10px;
-    border-color: $colour-border;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .mat-spinner {

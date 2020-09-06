@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
 import { BehaviorSubject } from 'rxjs'
 import { AuthService } from 'src/app/auth/auth.service';
@@ -21,15 +21,13 @@ token;
 constructor(
     private angularFireMessaging: AngularFireMessaging,
     private authService: AuthService,
+    private zone: NgZone,
     private outstandingCase: OutstandingCaseService,
     http: HttpClient) {
         super(http);
 
-        angularFireMessaging.onMessage((payload) => {
+    angularFireMessaging.onMessage((payload) => this.distributeMessage(payload));
 
-            this.distributeMessage(payload);
-
-          });
     }
 
     receiveBackgroundMessage(message){
@@ -44,8 +42,9 @@ constructor(
 
         //This is a rescue message, so pass this on to the outstanding-case service
         if(message.hasOwnProperty("rescueStatus")){
-            this.outstandingCase.receiveUpdatedRescueMessage(message)
-            this.currentMessage.next(payload.data);
+            this.outstandingCase.receiveUpdatedRescueMessage(message);
+            this.zone.run(() => this.currentMessage.next(payload.data));
+
         }
 
     }
@@ -53,7 +52,8 @@ constructor(
     //The window has received focus, so we may need to refresh
     receiveFocus(){
 
-        this.haveReceivedFocus.next(true);
+        this.zone.run(() => this.haveReceivedFocus.next(true));
+
     }
 
     getPermissionGranted(){
@@ -66,14 +66,14 @@ constructor(
     requestPermission() {
         this.angularFireMessaging.requestToken.subscribe(
             (token) => {
+                this.zone.run(() => this.havePermission.next(true));
 
-                this.havePermission.next(true);
                 this.token = token;
                 this.subscribeToTopics(token);
 
             },
             (err) => {
-                this.havePermission.next(false);
+                this.zone.run(() => this.havePermission.next(false));
 
             }
         );
@@ -81,7 +81,7 @@ constructor(
 
     alterPermissionState(currentState:string){
 
-        this.havePermission.next(currentState === "granted" ? true : false);
+        this.zone.run(() => this.havePermission.next(currentState === "granted" ? true : false));
     }
 
     async subscribeToTopics(token){

@@ -57,7 +57,7 @@
                         #ambulanceMarker
                         (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.rescues)"
                         [position]="ambulance.latestLocation"
-                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: {x: 0, y: 55} }, zIndex: 100}">
+                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: {x: 0, y: 55}, labelOrigin: {x: 37, y: -5} }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">
 
                         </map-marker>
 
