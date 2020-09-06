@@ -40,6 +40,7 @@ export class RescueDetailsDialogComponent implements OnInit {
       socketEndPoint: null
     }
 
+
     this.data.recordForm = this.fb.group({
 
       emergencyDetails: this.fb.group({
@@ -66,6 +67,7 @@ export class RescueDetailsDialogComponent implements OnInit {
         this.result.success = 1;
 
         this.dialogRef.close(this.result);
+        this.detector.detectChanges();
       }
     });
 
