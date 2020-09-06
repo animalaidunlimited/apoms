@@ -36,6 +36,7 @@ const ELEMENT_DATA: SurgeryRecord[] = [
     styleUrls: ['./surgery-details.component.scss'],
 })
 export class SurgeryDetailsComponent implements OnInit {
+    [x: string]: any;
     constructor(
         private surgeryService: SurgeryService,
         public dialog: MatDialog,

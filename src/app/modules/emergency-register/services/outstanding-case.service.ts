@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { OutstandingRescue, OutstandingCase, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
@@ -9,8 +9,7 @@ import { ThemePalette } from '@angular/material/core';
 })
 export class OutstandingCaseService {
 
-  constructor(private rescueService: RescueDetailsService) { }
-
+  constructor(private rescueService: RescueDetailsService, private zone:NgZone) { }
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(false);
   autoRefreshState:boolean;
 
@@ -56,9 +55,10 @@ export class OutstandingCaseService {
 
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
 
-    this.outstandingCases$.next(outstandingCases);
+    this.zone.run(() => this.outstandingCases$.next(outstandingCases));
 
-    this.refreshColour.next("primary");
+    this.zone.run(() => this.refreshColour.next("primary"));
+
 
     //Make sure we close the subscription as we only need to get this once when we initialise
     this.initialRescueListSubscription.unsubscribe();
@@ -78,7 +78,7 @@ export class OutstandingCaseService {
 
     //Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
-      this.refreshColour.next("warn");
+      this.zone.run(() => this.refreshColour.next("warn"));
       return;
     }
 
@@ -86,7 +86,8 @@ export class OutstandingCaseService {
 
     //If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
     if(!updatedRescue.rescueStatus){
-      this.outstandingCases$.next(currentOutstanding);
+      this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
+
       return;
     }
 
@@ -139,9 +140,8 @@ export class OutstandingCaseService {
     //Set the rescue to show as moved
     currentOutstanding = this.setMoved(currentOutstanding, updatedRescue.emergencyCaseId, true, false);
 
-    this.refreshColour.next("primary");
-    this.outstandingCases$.next(currentOutstanding);
-
+    this.zone.run(() => this.refreshColour.next("primary"));
+    this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
 
 
   }
@@ -254,7 +254,8 @@ export class OutstandingCaseService {
           });
       });
 
-      this.outstandingCases$.next(outstanding);
+      this.zone.run(() => this.outstandingCases$.next(outstanding));
+
 
   }
 
@@ -265,7 +266,8 @@ export class OutstandingCaseService {
   }
 
   setAutoRefresh(value){
-    this.autoRefresh.next(value);
+    this.zone.run(() => this.autoRefresh.next(value));
+
   }
 
   toggleAutoRefresh(){
@@ -276,13 +278,15 @@ export class OutstandingCaseService {
       currentValue = value;
     });
 
-    this.autoRefresh.next(!currentValue);
+    this.zone.run(() => this.autoRefresh.next(!currentValue));
+
 
   }
 
   //The window has received focus, so we may need to refresh
   receiveFocus(){
-    this.haveReceivedFocus.next(true);
+    this.zone.run(() => this.haveReceivedFocus.next(true));
+
   }
 
 

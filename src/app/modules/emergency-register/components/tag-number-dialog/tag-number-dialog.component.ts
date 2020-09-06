@@ -30,8 +30,8 @@ export class TagNumberDialog implements OnInit {
 
     ngOnInit() {
 
+        //Use an AbstractControl here because the async validator relies on having one.
         let patientIdControl = this.fb.control({value: this.data.patientId});
-
 
         this.tagForm = this.fb.group({
             tagNumber: [
@@ -43,7 +43,6 @@ export class TagNumberDialog implements OnInit {
                 ),
             ],
         });
-
 
         this.tagForm.valueChanges.subscribe(changes => {
             this.data.tagNumber = changes.tagNumber;

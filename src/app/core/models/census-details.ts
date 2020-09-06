@@ -18,7 +18,7 @@ export interface CensusPatient {
     errorCode: number;
 }
 
-export interface CensusAreaName {
-    AreaId: number;
-    Area: string;
+export interface CensusArea {
+    areaId:number;
+    areaName : string;
 }
