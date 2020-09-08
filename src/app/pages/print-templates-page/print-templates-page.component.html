@@ -1,15 +1,113 @@
-<div class="prinat-area-boundary">
-    <div class="print-element" cdkDragBoundary=".prinat-area-boundary" cdkDrag>
-      I'm a print element
 
-      <div class="drag-handle" cdkDragHandle>
-        <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-          <path d="M0 0h24v24H0z" fill="none"></path>
-        </svg>
-      </div>
-    </div>
 
+
+<div cdkDropListGroup style="padding-left: 10px;">
+
+
+<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px" >
+
+  <div fxFlex="none"
+  class="print-area-boundary"
+  [style.height]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height"
+  [style.width]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width"
+  cdkDropList
+  #printElementList="cdkDropList"
+  [cdkDropListData]="printElements"
+  [cdkDropListConnectedTo]="[printableElementList]"
+  (cdkDropListDropped)="drop($event)"
+  [hidden]="!dragging">
+
+  <div style="padding-top: 30px;">Drop print element here</div>
 
   </div>
 
+
+
+
+  <div class="print-area-boundary" [hidden]="dragging"
+  style="background-image: url('assets/images/Scan_20200908.png'); background-repeat: no-repeat; background-size: 210mm 297mm;"
+  [style.height]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height"
+  [style.width]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width"
+  >
+
+      <div *ngFor="let element of printElements" class="print-element" cdkDragBoundary=".print-area-boundary" cdkDrag>
+        {{element}}
+        <div class="icon-wrap">
+          <mat-icon class="resize-circle" (click)="removeElement(element);">highlight_off</mat-icon>
+        </div>
+      </div>
+
+  </div>
+
+
+
+  <div>
+
+
+
+
+<div class="contents-column"></div>
+
+  <form [formGroup]="printPage">
+
+    <mat-form-field>
+      <mat-label>Form name</mat-label>
+      <mat-select formControlName="formName">
+          <mat-option *ngFor="let form of formList" [value]="form">{{form}}</mat-option>
+      </mat-select>
+  </mat-form-field >
+
+    <div class="label">Template image</div>
+
+    <input type="file"
+    accept="image/*"
+    (change)="changeTemplateImage($event)">
+
+    <mat-slide-toggle style="padding-top: 10px;" formControlName="showTemplateImage">Show template image</mat-slide-toggle>
+
+    <div class="label">Form</div>
+
+
+
+    <div class="label">Page dimensions</div>
+
+    <mat-form-field>
+        <mat-label>Page size</mat-label>
+        <mat-select formControlName="pageDimensions">
+            <mat-option *ngFor="let page of pageSizes" [value]="page">{{page.name}}</mat-option>
+        </mat-select>
+    </mat-form-field >
+
+    <mat-form-field>
+      <mat-label>Orientation</mat-label>
+      <mat-select formControlName="orientation">
+          <mat-option *ngFor="let orientation of orientations" [value]="orientation">{{orientation}}</mat-option>
+      </mat-select>
+  </mat-form-field >
+
+  </form>
+
+  <div class="label" style="padding-bottom: 10px;">Print fields</div>
+
+  <div
+  cdkDropList
+  #printableElementList="cdkDropList"
+  [cdkDropListData]="printableElements"
+  [cdkDropListConnectedTo]="[printElementList]"
+  style="text-align: center;"
+  fxLayout="column"
+  (cdkDropListDropped)="drop($event)">
+
+    <div *ngFor="let element of printableElements" class="print-element"
+    (cdkDragStarted)="toggleDrag()"
+    cdkDrag>
+      {{element}}
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+</div>
