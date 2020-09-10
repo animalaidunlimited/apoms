@@ -1,50 +1,61 @@
 
-
-
 <div cdkDropListGroup style="padding-left: 10px;">
 
 
 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px" >
 
+
+
   <div fxFlex="none"
+  [hidden]="!dragging"
   class="print-area-boundary"
-  [style.height]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height"
-  [style.width]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width"
+  [style.height]="currentHeight"
+  [style.width]="currentWidth"
+  [style.min-height]="currentHeight"
+  [style.min-width]="currentWidth"
   cdkDropList
   #printElementList="cdkDropList"
   [cdkDropListData]="printElements"
   [cdkDropListConnectedTo]="[printableElementList]"
   (cdkDropListDropped)="drop($event)"
-  [hidden]="!dragging">
+
+  >
 
   <div style="padding-top: 30px;">Drop print element here</div>
 
   </div>
 
 
-
-
   <div class="print-area-boundary" [hidden]="dragging"
-  style="background-image: url('assets/images/Scan_20200908.png'); background-repeat: no-repeat; background-size: 210mm 297mm;"
-  [style.height]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height"
-  [style.width]="printPage.get('orientation').value == 'Landscape' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width"
-  >
+  [ngClass]="{'print-template-image' : printPage.get('showTemplateImage').value}"
+  [ngStyle]="{'background-image': 'url(' + backgroundImage + ')'}"
+  #printableElementArea
+  [style.height]="currentHeight"
+  [style.width]="currentWidth"
+  [style.min-height]="currentHeight"
+  [style.min-width]="currentWidth">
 
-      <div *ngFor="let element of printElements" class="print-element" cdkDragBoundary=".print-area-boundary" cdkDrag>
-        {{element}}
+      <div *ngFor="let element of printElements;" class="print-element"
+      cdkDragBoundary=".print-area-boundary"
+      cdkDrag
+      (cdkDragEnded)="dragRelease($event)"
+      [cdkDragFreeDragPosition]="element.position"
+      style="position: absolute;"
+      [style.height.px]="element.height"
+      [style.width.px]="element.width"
+      >
+        {{element.position.x}}
         <div class="icon-wrap">
-          <mat-icon class="resize-circle" (click)="removeElement(element);">highlight_off</mat-icon>
+          <mat-icon class="close-circle" (click)="removeElement(element);">highlight_off</mat-icon>
         </div>
+        <div class="resize-both" (mousedown)="$event.stopPropagation(); bothResizeStart(element, $event)"></div>
+        <div class="resize-horizontal" (mousedown)="$event.stopPropagation(); horizontalResizeStart(element, $event)"></div>
+        <div class="resize-vertical" (mousedown)="$event.stopPropagation(); verticalResizeStart(element, $event)"></div>
       </div>
 
   </div>
 
-
-
   <div>
-
-
-
 
 <div class="contents-column"></div>
 
@@ -52,22 +63,30 @@
 
     <mat-form-field>
       <mat-label>Form name</mat-label>
-      <mat-select formControlName="formName">
+      <mat-select formControlName="templateName">
           <mat-option *ngFor="let form of formList" [value]="form">{{form}}</mat-option>
       </mat-select>
   </mat-form-field >
 
+  <mat-form-field *ngIf="printPage.get('templateName').value.indexOf(' Add new ') > -1">
+  <input matInput type="text" formControlName="templateName">
+  </mat-form-field>
+
     <div class="label">Template image</div>
 
-    <input type="file"
+    <input
+    hidden
+    type="file"
+    #uploader
+    multiple
     accept="image/*"
-    (change)="changeTemplateImage($event)">
+    (change)="changeTemplateImage($event)"/>
 
-    <mat-slide-toggle style="padding-top: 10px;" formControlName="showTemplateImage">Show template image</mat-slide-toggle>
+    <button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
+        <mat-icon>add_a_photo</mat-icon>
+    </button>
 
-    <div class="label">Form</div>
-
-
+    <mat-slide-toggle style="padding: 10px;" formControlName="showTemplateImage" (change)="toggleImageUrl()">Show template image</mat-slide-toggle>
 
     <div class="label">Page dimensions</div>
 
@@ -89,19 +108,24 @@
 
   <div class="label" style="padding-bottom: 10px;">Print fields</div>
 
+  <!-- (cdkDropListDropped)="drop($event)" -->
+
   <div
   cdkDropList
   #printableElementList="cdkDropList"
   [cdkDropListData]="printableElements"
   [cdkDropListConnectedTo]="[printElementList]"
-  style="text-align: center;"
-  fxLayout="column"
-  (cdkDropListDropped)="drop($event)">
 
-    <div *ngFor="let element of printableElements" class="print-element"
+  style="text-align: center;"
+  fxLayout="column"  >
+
+    <div *ngFor="let element of printableElements"
+    class="print-element"
+    style="position: relative;"
     (cdkDragStarted)="toggleDrag()"
+    (cdkDragReleased)="dragRelease($event)"
     cdkDrag>
-      {{element}}
+      {{element.name}}
     </div>
 
   </div>
