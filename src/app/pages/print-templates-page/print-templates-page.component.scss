@@ -11,7 +11,11 @@
     border-radius: 4px;
     margin-right: 25px 25px 15px 0px;
     cursor: move;
-    position: relative;
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
     z-index: 1;
     box-sizing: border-box;
     padding: 10px 50px 10px 10px;
@@ -27,6 +31,23 @@
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }
 
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  .cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .drag-drop-box:last-child {
+      border: none;
+  }
+
+  .drag-drop-list.cdk-drop-list-dragging
+      .drag-drop-box:not(.cdk-drag-placeholder) {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
   .print-area-boundary {
     width: 400px;
     height: 400px;
@@ -37,13 +58,40 @@
     border: dotted #ccc 2px;
   }
 
-  .resize-circle{
+  .close-circle{
     position: absolute;
     top: -2px;
     left: -2px;
     border-radius: 50%;
     color: #aaa;
     cursor: pointer;
+  }
+
+  .resize-both{
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    height: 20px;
+    width: 20px;
+    cursor: nwse-resize;
+  }
+
+  .resize-horizontal{
+    position: absolute;
+    top: 5px;
+    right: -10px;
+    height: 70%;
+    width: 20px;
+    cursor: ew-resize;
+  }
+
+  .resize-vertical{
+    position: absolute;
+    bottom: -10px;
+    left: 10px;
+    height: 20px;
+    width: 90%;
+    cursor: ns-resize;
   }
 
   .icon-wrap{
@@ -58,4 +106,10 @@
 
   .contents-column{
     width: 400px;
+  }
+
+  .print-template-image{
+    // background-image: url('~src/assets/images/Scan_20200908.png');
+    background-repeat: no-repeat;
+    background-size: 210mm 297mm;
   }
