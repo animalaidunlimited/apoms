@@ -9,8 +9,7 @@ import {
     FormGroup,
     Validators,
     FormArray,
-    AbstractControl,
-    FormControl,
+    AbstractControl
 } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
