@@ -6,7 +6,10 @@ import { CensusRecordComponent } from './census-record.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
     declarations: [CensusRecordComponent],
-    imports: [CommonModule, CensusPageRoutingModule, MaterialModule,MatProgressSpinnerModule],
+    imports: [CommonModule, 
+        CensusPageRoutingModule, 
+        MaterialModule,
+        MatProgressSpinnerModule],
     exports:[CensusRecordComponent]
 })
 export class CensusRecordModule {}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 
 @Component({
     selector: 'census-page',
@@ -8,5 +8,8 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 export class CensusPageComponent implements OnInit {
     constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+
+
+  }
 }

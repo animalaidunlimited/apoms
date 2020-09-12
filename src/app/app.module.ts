@@ -19,8 +19,6 @@ import { AngularFireStorageModule } from '@angular/fire/storage'
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
 
-
-
 @Injectable({
     providedIn: 'root'
   })
@@ -51,7 +49,7 @@ class UIErrorHandler extends ErrorHandler {
         AngularFireAuthModule,
         AngularFireMessagingModule,
         AngularFireStorageModule,
-        AngularFireModule.initializeApp(environment.firebase),
+        AngularFireModule.initializeApp(environment.firebase)
     ],
     exports: [],
     providers: [
