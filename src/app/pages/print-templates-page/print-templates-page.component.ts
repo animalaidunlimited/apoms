@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { CdkDragDrop, CdkDragRelease, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragRelease, CdkDragEnd, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscribable, Subscription, BehaviorSubject } from 'rxjs';
 import { Point } from '@angular/cdk/drag-drop/drag-ref';
+import { MatSelectChange } from '@angular/material/select';
 
 interface PaperDimensions {
   name: string;
@@ -14,9 +15,16 @@ interface PaperDimensions {
 interface PrintElement {
   printElementId: number;
   name: String;
+  example: String;
   height: number;
   width: number;
-  position: Point;
+  top: number;
+  left: number;
+  showStyleBar: boolean;
+  bold: boolean;
+  italics: boolean;
+  underlined: boolean;
+  fontSize: number;
 }
 
 @Component({
@@ -40,35 +48,63 @@ export class PrintTemplatesPageComponent implements OnInit {
   printableElements:PrintElement[] = [{
     printElementId: 1,
     name: "Admission date",
+    example: "25/07/2020",
     width: 175,
     height: 45,
-    position: {x: 0, y: 0}
+    top: 0,
+    left: 0,
+    showStyleBar: false,
+    bold: false,
+    italics: false,
+    underlined: false,
+    fontSize: 14
   },
   {
     printElementId: 2,
     name: "Animal type",
+    example: "Buffalo",
     width: 175,
     height: 45,
-    position: {x: 0, y: 0}
+    top: 0,
+    left: 0,
+    showStyleBar: false,
+    bold: false,
+    italics: false,
+    underlined: false,
+    fontSize: 14
   },
   {
     printElementId: 3,
     name: "Emergency number",
+    example: "314159",
     width: 175,
     height: 45,
-    position: {x: 0, y: 0}
+    top: 0,
+    left: 0,
+    showStyleBar: false,
+    bold: false,
+    italics: false,
+    underlined: false,
+    fontSize: 14
   },
   {
     printElementId: 4,
     name: "Tag number",
+    example: "A374",
     width: 175,
     height: 45,
-    position: {x: 0, y: 0}
+    top: 0,
+    left: 0,
+    showStyleBar: false,
+    bold: false,
+    italics: false,
+    underlined: false,
+    fontSize: 14
   }];
 
-  dragging:boolean = false;
-
   printPage:FormGroup;
+
+  showExampleText:boolean = false;
 
   currentHeight:number = 297;
   currentWidth:number = 210;
@@ -111,13 +147,10 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   }
 
-  toggleDrag(){
-    this.dragging = !this.dragging;
-    this.changeDetector.detectChanges();
-  }
+  dragRelease($event: CdkDragEnd<PrintElement[]>, val: number){
 
-  dragRelease($event: CdkDragEnd<PrintElement[]>){
-    console.log($event.source);
+    $event.source.element.nativeElement.hidden = true;
+
   }
 
   drop(event: CdkDragDrop<PrintElement[]>) {
@@ -125,24 +158,49 @@ export class PrintTemplatesPageComponent implements OnInit {
     const printNativeElement = event.item.element.nativeElement.getBoundingClientRect();
     const dropContainer = event.container.element.nativeElement.getBoundingClientRect();
 
-    let printElement:PrintElement = event.previousContainer.data[event.previousIndex];
+    const top = Math.max(
+      0,
+      printNativeElement.top +
+        event.distance.y -
+        dropContainer.top
+    );
+    const left = Math.max(
+      0,
+      printNativeElement.left +
+        event.distance.x -
+        dropContainer.left
+    );
 
-    console.log("printNativeElement.x: " + printNativeElement.x + " event.distance.x" + event.distance.x + " dropContainer.x: " + dropContainer.x)
+    const isWithinSameContainer = event.previousContainer === event.container;
 
-    let position:Point = {x: -dropContainer.x + (printNativeElement.x + event.distance.x - dropContainer.x) - 145, y: printNativeElement.y + event.distance.y - dropContainer.y}
-    // let position:Point = {x: 0, y: printNativeElement.y + event.distance.y - dropContainer.y}
+    let toIndex = event.currentIndex;
+    if (event.container.sortingDisabled) {
+      const arr = event.container.data.sort((a, b) => a.top - b.top);
+      const targetIndex = arr.findIndex(item => item.top > top);
 
-
-    console.log(position);
-
-    printElement.position = position;
-
-
-    if (event.previousContainer !== event.container) {
-      this.printElements.push(event.previousContainer.data[event.previousIndex])
+      toIndex =
+        targetIndex === -1
+          ? isWithinSameContainer
+            ? arr.length - 1
+            : arr.length
+          : targetIndex;
     }
 
-    this.toggleDrag();
+    const item = event.previousContainer.data[event.previousIndex];
+    item.top = top;
+    item.left = left;
+
+    if (isWithinSameContainer) {
+
+      moveItemInArray(event.container.data, event.previousIndex, toIndex);
+    } else {
+
+      const clone = Object.assign({}, event.previousContainer.data[event.previousIndex]);
+
+      clone.printElementId = this.printElements.length + 1;
+
+      this.printElements.push(clone)
+    }
 
   }
 
@@ -164,21 +222,19 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   bothResizeStart(printElement: PrintElement, $existingEvent:MouseEvent){
 
+    this.moveUnsubscribe();
+
     //get the start location
     let startX = $existingEvent.x;
     let startY = $existingEvent.y;
 
     //Now get the mouse current location
-    this.mousemove.subscribe(($moveEvent:MouseEvent) => {
+    this.currentSubscription =  this.mousemove.subscribe(($moveEvent:MouseEvent) => {
 
       printElement.height += $moveEvent.movementY;
       printElement.width += $moveEvent.movementX;
 
     })
-
-    console.log("Start: bothResizeStart - " + $existingEvent.x + " - " + $existingEvent.y);
-
-
 
   }
 
@@ -224,5 +280,37 @@ export class PrintTemplatesPageComponent implements OnInit {
     }
 
   }
+
+  toggleShowExampleText(){
+    this.showExampleText = !this.showExampleText;
+  }
+
+  toggleStyleBar(element: PrintElement){
+    element.showStyleBar = !element.showStyleBar;
+  }
+
+  setBold(element: PrintElement){
+
+    element.bold = !element.bold;
+
+  }
+  setItalics(element: PrintElement){
+
+    element.italics = !element.italics;
+
+  }
+  setUderlined(element: PrintElement){
+
+    element.underlined = !element.underlined;
+
+  }
+
+  setSize(change: MatSelectChange, element: PrintElement){
+
+    console.log(change);
+
+    element.fontSize = change.source.value;
+  }
+
 
 }
