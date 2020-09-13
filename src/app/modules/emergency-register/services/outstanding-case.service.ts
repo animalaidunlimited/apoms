@@ -105,8 +105,15 @@ export class OutstandingCaseService {
 
     if(!laneExists){
 
+      let rescueStatusName = ["Received",
+      "Assigned",
+      "Arrived",
+      "Rescued",
+      "Admitted"];
+
       currentOutstanding.push({
         rescueStatus: updatedRescue.rescueStatus,
+        rescueStatusName: rescueStatusName[updatedRescue.rescueStatus],
         rescuerGroups: [newRescueGroup]
       })
     }

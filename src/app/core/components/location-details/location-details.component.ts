@@ -55,6 +55,8 @@ export class LocationDetailsComponent implements OnInit {
     latitude: AbstractControl;
     longitude: AbstractControl;
 
+    locationDetails: FormGroup;
+
     location$: Location;
 
     markers: marker[] = [];
@@ -68,6 +70,8 @@ export class LocationDetailsComponent implements OnInit {
                 longitude: ['', Validators.required],
             }),
         );
+
+        this.locationDetails = this.recordForm.get('locationDetails') as FormGroup;
 
         this.locationService
             .getLocationByEmergencyCaseId(

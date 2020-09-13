@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SearchResponse } from 'src/app/core/models/responses';
+import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 @Component({
     selector: 'hospital-manager-tab-bar',

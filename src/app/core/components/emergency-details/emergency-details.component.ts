@@ -34,6 +34,8 @@ export class EmergencyDetailsComponent implements OnInit {
     callDateTime: string | Date = getCurrentTimeString();
     minimumDate: string;
 
+    emergencyDetails: FormGroup;
+
     selected;
 
     constructor(
@@ -50,11 +52,13 @@ export class EmergencyDetailsComponent implements OnInit {
 
         this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), "yyyy-MM-ddThh:mm:ss.ms");
 
-        const emergencyDetails = this.recordForm.get(
+        this.emergencyDetails = this.recordForm.get(
             'emergencyDetails',
         ) as FormGroup;
 
-        emergencyDetails.addControl(
+
+
+        this.emergencyDetails.addControl(
             'emergencyNumber',
             new FormControl(
                 '',
@@ -68,15 +72,15 @@ export class EmergencyDetailsComponent implements OnInit {
                 ],
             ),
         );
-        emergencyDetails.addControl(
+        this.emergencyDetails.addControl(
             'callDateTime',
             new FormControl(getCurrentTimeString(), Validators.required),
         );
-        emergencyDetails.addControl(
+        this.emergencyDetails.addControl(
             'dispatcher',
             new FormControl('', Validators.required),
         );
-        emergencyDetails.addControl(
+        this.emergencyDetails.addControl(
             'code',
             new FormControl('', Validators.required),
         );

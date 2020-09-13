@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Area } from 'src/app/core/models/census-details';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
@@ -62,8 +61,6 @@ export class CensusRecordComponent implements OnInit {
     this.loadCensusData(this.censusDate.get('CensusDate').value);
   }
 
-
-
       this.censusArea = [
           {
               areaId: null,
@@ -78,6 +75,7 @@ export class CensusRecordComponent implements OnInit {
                           {
                               patientId: null,
                               tagNumber: '',
+                              colour: '',
                               errorCode: null,
                           },
                       ],
@@ -155,6 +153,7 @@ export class CensusRecordComponent implements OnInit {
                                             action.patients.push({
                                                 patientId: response[0].vPatientId,
                                                 tagNumber: tag.toUpperCase(),
+                                                colour: "",
                                                 errorCode: response[0].vErrorCode,
                                             });
                                             this.cdref.detectChanges();

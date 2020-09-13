@@ -8,7 +8,7 @@
             </mat-form-field>
     </form>
 
-    <mat-spinner class="mat-spinner" *ngIf = "loading"></mat-spinner>
+    <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
     <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center">
 
@@ -23,7 +23,7 @@
                         <mat-chip-list #movedInOut aria-label="Moved-In ChipList">
 
                             <mat-chip #ref *ngFor="let tag of action.patients"
-                            [style.background] = "tag.errorCode == 0 ? tag.color : '#cc3300'"
+                            [style.background] = "tag.errorCode == 0 ? tag.colour : '#cc3300'"
                             [removable]="removable"
                             (removed)="removePatients(area.areaId, action.actionId , tag)">
 
@@ -37,7 +37,7 @@
                             [matChipInputFor]="movedInOut"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="addOnBlur"
-                            (matChipInputTokenEnd)="addPatients(area.areaId,action.actionId,$event,censusDate)">
+                            (matChipInputTokenEnd)="addPatients(area.areaId,action.actionId,$event)">
 
                         </mat-chip-list>
 

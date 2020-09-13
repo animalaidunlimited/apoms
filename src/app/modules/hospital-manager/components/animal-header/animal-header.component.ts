@@ -25,12 +25,17 @@ export class AnimalHeaderComponent implements OnInit {
 
     lastObjectUrl: string;
 
+    //Only doing this so the checker doesn't complain.
+    patientDetailsFormGroup:FormGroup;
+
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status').value;
         this.imageUrls = ['../../../../../assets/images/image_placeholder.png'];
         this.lastObjectUrl = '';
+
+        this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
     }
 
     launchImageModal(): void {

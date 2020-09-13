@@ -36,6 +36,7 @@ export interface RescuerGroup {
 
 export interface OutstandingCase {
     rescueStatus: number;
+    rescueStatusName: string;
     rescuerGroups: RescuerGroup[];
 }
 
