@@ -15,6 +15,7 @@ export interface Action {
 export interface CensusPatient {
     patientId: number;
     tagNumber: string;
+    colour: string;
     errorCode: number;
 }
 

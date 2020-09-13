@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -6,7 +6,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -24,11 +23,12 @@ export class RescueDetailsComponent implements OnInit {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  currentCallDateTime;
-  currentAdmissionTime;
-  currentAmbulanceArrivalTime;
-  currentRescueTime;
-  currentTime;
+
+  currentCallDateTime: AbstractControl;
+  currentAdmissionTime: AbstractControl;
+  currentAmbulanceArrivalTime: AbstractControl;
+  currentRescueTime: AbstractControl;
+  currentTime: string;
 
   rescuer1Id:AbstractControl;
   rescuer2Id:AbstractControl;
@@ -39,10 +39,7 @@ export class RescueDetailsComponent implements OnInit {
   callOutcome:AbstractControl;
   callDateTime:AbstractControl;
 
-  constructor(private dropdowns: DropdownService,
-    private rescueDetailsService: RescueDetailsService,
-    private zone: NgZone,
-    private fb: FormBuilder) {}
+  rescueDetails:FormGroup;
 
   rescuers$;
   rescueDetails$
@@ -52,6 +49,13 @@ export class RescueDetailsComponent implements OnInit {
     event.preventDefault();
     this.rescueTimeField.nativeElement.focus();
     };
+
+  constructor(private dropdowns: DropdownService,
+    private rescueDetailsService: RescueDetailsService,
+    private zone: NgZone,
+    private fb: FormBuilder) {}
+
+
 
   ngOnInit() {
 
@@ -66,6 +70,8 @@ export class RescueDetailsComponent implements OnInit {
         admissionTime: ['']
       }));
 
+    this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
+
     this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
     .subscribe((rescueDetails: RescueDetailsParent) => {
 
@@ -74,9 +80,6 @@ export class RescueDetailsComponent implements OnInit {
         this.recordForm.patchValue(rescueDetails);
 
       })
-
-
-
     });
 
     this.rescuer1Id           = this.recordForm.get("rescueDetails.rescuer1Id");

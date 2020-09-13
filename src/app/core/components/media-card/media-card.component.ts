@@ -93,7 +93,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
   }
 
-  toggleVideo(event: any) {
+toggleVideo() {
     this.videoplayer.nativeElement.play();
 }
 

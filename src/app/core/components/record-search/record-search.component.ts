@@ -1,23 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    FormArray,
-    Validators,
-} from '@angular/forms';
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition,
-} from '@angular/animations';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { trigger, state, style, animate, transition, } from '@angular/animations';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable } from 'rxjs';
-import { EmergencyTab } from '../../models/emergency-record';
 
 export interface SearchValue {
     id: number;
@@ -63,8 +50,7 @@ export class Search {
     ],
 })
 export class RecordSearchComponent implements OnInit {
-    @Input() parentName: string;
-    @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
+    @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
 
     searchFieldForm = new FormControl();
 

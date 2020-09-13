@@ -1,8 +1,6 @@
 
 <!-- <search-result-card *ngIf="infoContent"></search-result-card> -->
 
-
-
 <google-map height="75vh"
             width="100%"
             [options]="options"
@@ -25,7 +23,7 @@
                         [options]="{icon:
 
                             (
-                                rescue.isLargeAnimal == 1 ?
+                                rescue.isLargeAnimal ?
                                     (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                                     :
                                     rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
@@ -44,11 +42,6 @@
                         )}">
 
                         </map-marker>
-
-
-
-
-
                 </div>
 
             </div>
@@ -57,7 +50,7 @@
                         #ambulanceMarker
                         (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.rescues)"
                         [position]="ambulance.latestLocation"
-                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: {x: 0, y: 55}, labelOrigin: {x: 37, y: -5} }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">
+                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">
 
                         </map-marker>
 

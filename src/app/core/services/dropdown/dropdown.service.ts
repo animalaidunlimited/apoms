@@ -17,7 +17,7 @@ import {
     Surgeon,
     SurgerySite,
     SurgeryType,
-} from '../../models/Surgery-details';
+} from '../../models/surgery-details';
 import { CensusArea } from '../../models/census-details';
 import { ConditionalExpr } from '@angular/compiler';
 

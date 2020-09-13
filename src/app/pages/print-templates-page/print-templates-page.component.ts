@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscribable, Subscription, BehaviorSubject } from 'rxjs';
 import { Point } from '@angular/cdk/drag-drop/drag-ref';
 import { MatSelectChange } from '@angular/material/select';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 interface PaperDimensions {
   name: string;
@@ -305,7 +306,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   }
 
-  setSize(change: MatSelectChange, element: PrintElement){
+  setSize(change: MatOptionSelectionChange, element: PrintElement){
 
     console.log(change);
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { OutstandingCase, OutstandingRescue, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -6,8 +6,7 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
-import { map, tap } from 'rxjs/operators';
-import { validateBasis } from '@angular/flex-layout';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'outstanding-case-map',
@@ -17,7 +16,7 @@ import { validateBasis } from '@angular/flex-layout';
 export class OutstandingCaseMapComponent implements OnInit {
 
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-  @Output() public onOpenEmergencyCase = new EventEmitter<any>();
+  @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
 
   caseSubscription: Subscription;
 
@@ -32,6 +31,9 @@ export class OutstandingCaseMapComponent implements OnInit {
   outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
   ambulanceLocations$;
+
+  iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
+  iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
 
 
   constructor(
@@ -177,7 +179,15 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   openCase(caseSearchResult:SearchResponse)
   {
+
+    // let searchResult: EmergencyTab = {
+    //   EmergencyCaseId: caseSearchResult.EmergencyCaseId,
+    //   EmergencyNumber: caseSearchResult.EmergencyNumber
+    // }
+
+    // this.onOpenEmergencyCase.emit(searchResult);
     this.onOpenEmergencyCase.emit(caseSearchResult);
+
   }
 
 

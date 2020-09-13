@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SurgeryFormModel } from 'src/app/core/models/Surgery-details';
+import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { SurgeryRecord } from '../surgery-details/surgery-details.component';
 
 export interface DialogData {
     patientId: number;
     tagNumber: string;
     emergencyNumber: number;
-    animalType: number;
+    animalType: string;
 }
 
 interface CanExitChange {
@@ -19,7 +20,8 @@ interface CanExitChange {
     styleUrls: ['./add-surgery-dialog.component.scss'],
 })
 export class AddSurgeryDialogComponent implements OnInit {
-    result: SurgeryFormModel;
+
+    result: UpdatedSurgery;
     canExit: FormGroup;
     invalidSurgeryForm: boolean;
 
@@ -30,6 +32,7 @@ export class AddSurgeryDialogComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        
         this.canExit = this.fb.group({
             surgeryDetailsSaveComplete: [0],
         });
@@ -46,9 +49,11 @@ export class AddSurgeryDialogComponent implements OnInit {
         this.dialogRef.close(this.result);
     }
 
-    onSurgerySaveResult(result: SurgeryFormModel) {
+    onSurgerySaveResult(result: SurgeryRecord) {
+
         this.result = result;
-        if (result) {
+
+        if (this.result) {
             this.canExit.get('surgeryDetailsSaveComplete').setValue(1);
         }
     }

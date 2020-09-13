@@ -4,13 +4,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import {
-    FormBuilder,
-    FormGroup,
-    Validators,
-    FormArray,
-    AbstractControl
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
@@ -296,7 +290,6 @@ export class AnimalSelectionComponent implements OnInit {
         this.animalTypeChips.chips.forEach(chip => {
             currentAnimal == chip.value
                 ? (chip.toggleSelected(),
-                //   this.hideIrrelevantChips("292", chip),
                   (this.currentPatientChip = chip.value))
                 : chip.deselect;
         });
@@ -379,7 +372,7 @@ export class AnimalSelectionComponent implements OnInit {
             this.setSelected(position);
         }
 
-        this.hideIrrelevantChips("378", animalTypeChip);
+        this.hideIrrelevantChips(animalTypeChip);
         this.patientTable.renderRows();
     }
 
@@ -476,7 +469,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(!problemChip.selected)
         {
-            this.updatePatientProblemArray("477",problemChip);
+            this.updatePatientProblemArray(problemChip);
             return;
         }
 
@@ -496,11 +489,11 @@ export class AnimalSelectionComponent implements OnInit {
             return;
         }
         else {
-            this.updatePatientProblemArray("496",problemChip);
+            this.updatePatientProblemArray(problemChip);
         }
     }
 
-    hideIrrelevantChips(source, animalTypeChip) {
+    hideIrrelevantChips(animalTypeChip) {
 
         const currentExclusions = this.exclusions.filter(
             animalType => animalType.animalType == animalTypeChip.value,
@@ -574,7 +567,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.selection.clear();
     }
 
-    updatePatientProblemArray(source, problemChip) {
+    updatePatientProblemArray(problemChip) {
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
@@ -663,10 +656,9 @@ export class AnimalSelectionComponent implements OnInit {
         });
     }
 
-    openMediaDialog(event, mediaObject:MediaItem): void{
+    openMediaDialog(mediaObject:MediaItem): void{
 
-
-        const currentPatient: Patient = event.value;
+        const currentPatient: Patient = this.getcurrentPatient();
 
         const dialogRef = this.dialog.open(MediaDialog, {
             minWidth: '50%',

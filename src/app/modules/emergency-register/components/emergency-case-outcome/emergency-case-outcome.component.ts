@@ -7,6 +7,7 @@ import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emer
 import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({
   selector: 'emergency-case-outcome',
@@ -19,12 +20,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild("sameAsNumberField",{ read: ElementRef, static:false }) sameAsNumberField: ElementRef;
 
+  errorMatcher = new CrossFieldErrorMatcher();
+
   callOutcomes$:Observable<CallOutcomeResponse[]>;
-  callOutcomes;
   currentOutcomeId:number;
 
   sameAs:boolean;
   sameAsId:number;
+
+  callOutcome:FormGroup;
 
   constructor(
     private dropdowns: DropdownService,
@@ -36,7 +40,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // let callOutcome = this.recordForm.get("callOutcome") as FormGroup;
+    this.callOutcome = this.recordForm.get("callOutcome") as FormGroup;
 
     if(this.recordForm.get("emergencyDetails.emergencyCaseId").value){
 

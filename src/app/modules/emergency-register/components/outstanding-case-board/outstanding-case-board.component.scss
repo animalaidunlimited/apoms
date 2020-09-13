@@ -146,3 +146,11 @@
   padding-right: 40px;
   max-width: 300px;
 }
+
+.mat-spinner {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    z-index: 5000;
+    margin: auto;
+  }

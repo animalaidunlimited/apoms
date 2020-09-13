@@ -6,12 +6,11 @@ import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-det
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingRescue } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime, startWith, map } from 'rxjs/operators';
+import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
-import { EmergencyTab } from 'src/app/core/models/emergency-record';
 
 export interface Swimlane{
   label:string;
@@ -61,11 +60,13 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     ) { }
 
-  @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
+  @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
 
   autoRefresh:boolean;
 
   hideMap: boolean = true;
+
+  loading:boolean = true;
 
   notificationPermissionGranted:boolean = false;
 
@@ -79,6 +80,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
   searchForm:FormGroup;
 
   ngOnInit(): void {
+
+    this.loading = true;
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -94,6 +97,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     //Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe(() => {
+        this.loading = false;
         this.changeDetector.detectChanges();
     });
 
@@ -233,7 +237,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
-openCaseFromMap(emergencyCase:EmergencyTab){
+openCaseFromMap(emergencyCase:SearchResponse){
 
   this.onOpenEmergencyCase.emit(emergencyCase);
 

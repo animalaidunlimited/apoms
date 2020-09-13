@@ -36,10 +36,19 @@
 
 </div>
 
+<!-- <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner> -->
+<div [hidden]="!loading" style="height: 500px">
+  <mat-spinner class="mat-spinner"></mat-spinner>
+</div>
+
+
+
 <outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
 <div cdkDropListGroup [hidden]="!hideMap">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
+
+
 
 
       <h2>{{lane.rescueStatusName}}</h2>
