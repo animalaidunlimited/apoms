@@ -30,7 +30,8 @@ interface ResizedImage{
 export class MediaPasteService {
 
 
-  constructor(private sanitizer: DomSanitizer,
+  constructor(
+    private sanitizer: DomSanitizer,
     private storage: AngularFireStorage,
     private authService: AuthService,
     private datepipe: DatePipe,
@@ -90,15 +91,9 @@ export class MediaPasteService {
                       newMediaItem.mediaItemId.subscribe(id => {
                         returnObject.mediaItemId.next(id);
 
-                      })
+                      });
 
-
-
-
-                    })
-
-
-
+                    });
 
                   });
 
@@ -106,10 +101,7 @@ export class MediaPasteService {
 
       }).catch(error => console.log(error));
 
-
 return returnObject;
-
-
 
   }
 

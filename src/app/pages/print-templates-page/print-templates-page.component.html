@@ -3,6 +3,8 @@
 
   <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px" >
 
+    <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
+
       <div
         cdkDropList
         #printableElementArea
@@ -21,7 +23,7 @@
         *ngFor="let element of printElements"
         cdkDragBoundary=".top-list"
         cdkDrag
-
+        [ngStyle]="{ 'opacity' : showExampleText ? 0.85 : 1 }"
         [style.height.px]="element.height"
         [style.width.px]="element.width"
         [style.top.px]="element.top"
@@ -52,9 +54,9 @@
 
 
       <div class="style-bar" *ngIf="element.showStyleBar" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-evenly center">
-        <mat-icon class="edit-icon" (click)="setBold(element);">format_bold</mat-icon>
-        <mat-icon class="edit-icon" (click)="setItalics(element);">format_italics</mat-icon>
-        <mat-icon class="edit-icon" (click)="setUderlined(element);">format_underlined</mat-icon>
+        <mat-icon class="edit-icon" [ngStyle]="{ 'color': element.bold ? 'gray' : 'darkgray' }" (click)="setBold(element);">format_bold</mat-icon>
+        <mat-icon class="edit-icon" [ngStyle]="{ 'color': element.italics ? 'gray' : 'darkgray' }" (click)="setItalics(element);">format_italics</mat-icon>
+        <mat-icon class="edit-icon" [ngStyle]="{ 'color': element.underlined ? 'gray' : 'darkgray' }" (click)="setUderlined(element);">format_underlined</mat-icon>
 
         <mat-icon class="edit-icon">format_size</mat-icon>
         <mat-select class="edit-icon">
@@ -103,7 +105,6 @@
       hidden
       type="file"
       #uploader
-      multiple
       accept="image/*"
       (change)="changeTemplateImage($event)"/>
 

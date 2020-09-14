@@ -1,10 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef, EventEmitter, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CdkDragDrop, CdkDragRelease, CdkDragEnd, moveItemInArray, copyArrayItem } from '@angular/cdk/drag-drop';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { Subscribable, Subscription, BehaviorSubject } from 'rxjs';
 import { Point } from '@angular/cdk/drag-drop/drag-ref';
 import { MatSelectChange } from '@angular/material/select';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface PaperDimensions {
   name: string;
@@ -39,12 +40,13 @@ export class PrintTemplatesPageComponent implements OnInit {
   @ViewChild("printableElementArea", {static: true}) printableElementArea: ElementRef;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
     private fb: FormBuilder) { }
 
   currentSubscription:Subscription;
 
-  printElements:PrintElement[] = [];
+  loading:boolean = false;
+
+  printElements:FormArray;
 
   printableElements:PrintElement[] = [{
     printElementId: 1,
@@ -114,7 +116,7 @@ export class PrintTemplatesPageComponent implements OnInit {
   orientations:String[] = ["Portrait", "Landscape"];
   formList:String[] = ["Emergency card", "* Add new *"];
 
-  backgroundImage:String;
+  backgroundImage:SafeUrl;
 
   mousemove = new BehaviorSubject<MouseEvent>({} as MouseEvent);
   mouseup = new BehaviorSubject<MouseEvent>({} as MouseEvent);
@@ -129,7 +131,8 @@ export class PrintTemplatesPageComponent implements OnInit {
       showTemplateImage: [true],
       backgroundImageUrl: ["assets/images/Scan_20200908.png"],
       pageDimensions: [{name:"A4", height: "297mm", width:"210mm"}],
-      orientation: ["Portrait"]
+      orientation: ["Portrait"],
+      printElements: this.fb.array([])
     });
 
     this.currentHeight = this.printPage.get("orientation").value === "Portrait" ? this.printPage.get("pageDimensions").value.height : this.printPage.get("pageDimensions").value.width;
@@ -200,18 +203,52 @@ export class PrintTemplatesPageComponent implements OnInit {
 
       clone.printElementId = this.printElements.length + 1;
 
-      this.printElements.push(clone)
+      let newElement = this.fb.group({
+        printElementId: clone.name,
+        name: clone.name,
+        example: clone.example,
+        width: clone.width,
+        height: clone.height,
+        top: clone.top,
+        left: clone.left,
+        showStyleBar: clone.showStyleBar,
+        bold: clone.bold,
+        italics: clone.italics,
+        underlined: clone.underlined,
+        fontSize: clone.fontSize
+      })
+
+      this.printElements.push(newElement);
     }
 
   }
 
   changeTemplateImage($event: Event){
-    console.log($event.target)
+
+    if(!$event){
+      return;
+    }
+
+    this.loading = true;
+
+    const target = $event.target as HTMLInputElement;
+
+    const lastObjectUrl = URL.createObjectURL(target.files[0]);
+
+    // let localURL = this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl);
+
+    this.printPage.get('backgroundImageUrl').setValue(lastObjectUrl);
+    this.backgroundImage = lastObjectUrl;
+    this.loading = false;
+
+
+
   }
 
   removeElement(element:PrintElement){
 
-    this.printElements = this.printElements.filter(elem => elem.printElementId !== element.printElementId);
+    this.printElements.removeAt(element.printElementId);
+
   }
 
   toggleImageUrl(){
