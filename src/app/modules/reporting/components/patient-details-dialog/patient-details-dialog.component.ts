@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { threadId } from 'worker_threads';
 
 interface ReportPatientRecord {
   emergencynumber: number;
@@ -12,9 +11,6 @@ interface ReportPatientRecord {
   number : number;
   calldate : string;
 }
-
-const ELEMENT_DATA: ReportPatientRecord[] = [{ emergencynumber: null, tagnumber: '', species: '', 
-                                          callername: '',number: null, calldate:''}];
 
 interface DialogData{
 areaName : string
@@ -42,7 +38,7 @@ export class PatientDetailsDialogComponent implements OnInit {
   patientRecords = new MatTableDataSource<ReportPatientRecord>();
 
 
-  ngOnInit() {   
+  ngOnInit() {
     this.census.getPatientDetialsByArea(this.data.areaName).then((response: ReportPatientRecord[])=>{
       this.patientRecords = new MatTableDataSource(response)
     });

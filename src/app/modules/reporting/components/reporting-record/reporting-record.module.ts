@@ -6,9 +6,12 @@ import { ReportingRecordComponent } from './reporting-record.component';
 import { PatientDetailsDialogComponent } from '../patient-details-dialog/patient-details-dialog.component';
 
 @NgModule({
-    declarations: [ReportingRecordComponent,
-    PatientDetailsDialogComponent],
-    imports: [CommonModule, 
+    declarations: [
+        ReportingRecordComponent,
+        PatientDetailsDialogComponent
+    ],
+    imports: [
+        CommonModule,
         ReportingPageRoutingModule,
         MaterialModule
     ],

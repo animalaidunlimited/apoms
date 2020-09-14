@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Area } from 'src/app/core/models/census-details';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
@@ -181,7 +180,8 @@ export class CensusRecordComponent implements OnInit {
                                         date : this.censusDate.get('CensusDate').value,
                                         area : area.areaName,
                                         action : action.actionName,
-                                        days : 0
+                                        days : 0,
+                                        order: 0
                                     }
                                     this.result.emit(CensusTableData);
                         }
@@ -262,7 +262,8 @@ export class CensusRecordComponent implements OnInit {
                             date : this.censusDate.get('CensusDate').value,
                             area : area.areaName,
                             action : action.actionName,
-                            days : 0
+                            days : 0,
+                            order: 0
                         }
                     this.remove.emit(CensusTableData);
                   }

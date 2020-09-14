@@ -22,7 +22,7 @@ const routes: Routes = [
     {
         path: 'reporting',
         loadChildren: () =>
-            import('./pages/reporting-page/reporting-page.module').then(
+            import('./modules/reporting/reporting-page.module').then(
                 m => m.ReportingPageModule,
             ),
     },

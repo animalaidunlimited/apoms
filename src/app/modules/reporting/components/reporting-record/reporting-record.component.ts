@@ -22,48 +22,47 @@ interface PatientCountInArea{
 })
 export class ReportingRecordComponent implements OnInit {
 
-  constructor(private drpdwn : DropdownService,
+  constructor(
         private census : CensusService,
-        private fb : FormBuilder,
         private dialog : MatDialog) {}
-    
+
         areaId: number;
         censusAreas$ : Observable<CensusArea[]>;
-    
+
         censusArea : FormGroup;
-    
+
         displayString : string;
-    
+
         totalPatientCount : number;
-    
+
         patientCountInArea: PatientCountInArea[];
-    
+
         areaNamelabel : Array<string> = [];
-    
+
         dataValue : Array<number> = [];
-    
+
         @ViewChild(MatTable) patientDetailsTable : MatTable<any> ;
-    
-       
-    
-    
+
+
+
+
         ngOnInit() {
-    
+
               this.patientCountInArea = [{
                   area : '',
                   count : null
               }]
-  
+
           this.census.getCensusPatientCount().then(response =>{
               this.patientCountInArea = response;
           })
-      
+
       }
 
       getPatientDetailsByArea(areaName:string){
         const dialogRef = this.dialog.open(PatientDetailsDialogComponent, {
 
-          width: '30%',
+          width: '90%',
           maxHeight: '100vh',
           data: {
             areaName : areaName
@@ -72,7 +71,7 @@ export class ReportingRecordComponent implements OnInit {
 
       dialogRef.afterClosed()
 
-         
+
       }
 
 }
