@@ -100,7 +100,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'reporting',
         loadChildren: () =>
-            import('./pages/reporting-page/reporting-page.module')
+            import('./modules/reporting/reporting-page.module')
             .then(m => m.ReportingPageModule),
     },
     {
