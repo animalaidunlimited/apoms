@@ -28,7 +28,9 @@
   justify-content: center;
 }
 
-
+.contents-column{
+  width: 400px;
+}
 
 .print-element {
   width: 175px;
@@ -56,7 +58,7 @@
 }
 
 .cdk-drag-placeholder {
-  opacity: 0;
+  opacity: 0 !important;
 }
 
 .cdk-drag-preview {
@@ -126,7 +128,6 @@
 }
 
 .style-bar{
-  width:90%;
   height:30px;
   position:absolute;
   bottom:-33px;
@@ -139,6 +140,7 @@
 .edit-icon{
   cursor: pointer;
   color: darkgray;
+  margin: 0 !important;
 }
 
 .element-content{
@@ -154,4 +156,8 @@
   margin-left: 50%;
   z-index: 5000;
   margin: auto;
+}
+
+.font-size-selector .mat-form-field-underline{
+  display: none !important;
 }
