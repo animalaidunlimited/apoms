@@ -1,7 +1,6 @@
-import { SurgeryRegisterPageComponent } from './pages/surgery-register-page/surgery-register-page.component';
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { SurgeryRegisterPageComponent } from './pages/surgery-register-page.component';
 
 const routes: Routes = [
     {
