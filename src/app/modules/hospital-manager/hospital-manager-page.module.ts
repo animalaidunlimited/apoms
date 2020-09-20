@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HospitalManagerPageComponent } from './pages/hospital-manager-page/hospital-manager-page.component';
+import { HospitalManagerPageComponent } from './pages/hospital-manager-page.component';
 import { HospitalManagerPageRoutingModule } from './hospital-manager-page-routing.module';
 
 import { MaterialModule } from '../../material-module';
