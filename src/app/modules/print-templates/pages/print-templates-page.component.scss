@@ -1,21 +1,13 @@
-.example-container {
-  width: 400px;
-  max-width: 100%;
-  margin: 0 25px 25px 0;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.top-list {
+.print-elements {
   border: dotted #ccc 2px;
-  width: 400px;
-  height: 400px;
+  // width: 400px;
+  // height: 400px;
   max-width: 100%;
   overflow: hidden;
   position: relative;
 }
 
-.top-list .print-element {
+.print-elements .print-element {
   position:absolute;
 }
 
@@ -124,7 +116,7 @@
 
 .print-template-image{
   background-repeat: no-repeat;
-  background-size: 210mm 297mm;
+  /*background-size: 210mm 297mm;*/
 }
 
 .style-bar{

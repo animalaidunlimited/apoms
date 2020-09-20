@@ -2,8 +2,6 @@
 
 	<div cdkDropListGroup style="padding-left: 10px;">
 
-
-
 		<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px">
 
 			<mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
@@ -12,25 +10,26 @@
       #printableElementArea
       [cdkDropListData]="printElements"
       cdkDropListSortingDisabled="true"
-      class="top-list"
-      [ngClass]="{'print-template-image' : printPage.get('showTemplateImage').value}"
-      [ngStyle]="{'background-image': 'url(' + backgroundImage + ')'}"
+      class="print-elements"
+	  [ngClass]="{'print-template-image' : printPage.get('showTemplateImage').value}"
       [ngStyle]="{
-        'height' : printPage.get('orientation').value === 'Portrait' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width,
-        'min-height' : printPage.get('orientation').value === 'Portrait' ? printPage.get('pageDimensions').value.height : printPage.get('pageDimensions').value.width,
-        'width' : printPage.get('orientation').value === 'Portrait' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height,
-        'min-width' : printPage.get('orientation').value === 'Portrait' ? printPage.get('pageDimensions').value.width : printPage.get('pageDimensions').value.height
+		'background-image': 'url(' + backgroundImage + ')',
+		'background-size' : 'cover',
+        'height' : currentHeight,
+        'min-height' : currentHeight,
+        'width' : currentWidth,
+        'min-width' : currentWidth
         }"
 
-			(cdkDropListDropped)="drop($event)">
+	  (cdkDropListDropped)="drop($event)">
 
         <div
         class="print-element"
         formArrayName="printElements"
         *ngFor="let element of printElements.controls; let i = index;"
-        cdkDragBoundary=".top-list"
+        cdkDragBoundary=".print-elements"
         cdkDrag
-				[ngStyle]="{ 'opacity' : showExampleText ? 0.85 : 1 }"
+		[ngStyle]="{ 'opacity' : showExampleText ? 0.85 : 1 }"
         [style.height.px]="element.get('height').value"
         [style.width.px]="element.get('width').value"
         [style.top.px]="element.get('top').value"
@@ -88,12 +87,14 @@
 
 			<div>
 
+			<!-- Contents column -->
+
 				<div class="contents-column"></div>
 
 				<mat-form-field *ngIf="!newForm">
 					<mat-label>Form name</mat-label>
-					<mat-select *ngIf="!newForm">
-						<mat-option *ngFor="let form of formList" [value]="form" >{{form}}</mat-option>
+					<mat-select *ngIf="!newForm" (selectionChange)="loadform($event)">
+						<mat-option *ngFor="let template of templates | async" [value]="template" >{{template.templateName}}</mat-option>
 					</mat-select>
 				</mat-form-field>
 
@@ -116,14 +117,14 @@
 
 				<mat-form-field>
 					<mat-label>Page size</mat-label>
-					<mat-select formControlName="pageDimensions" [compareWith]="comparePageSizes">
-						<mat-option *ngFor="let page of pageSizes" [value]="page">{{page.name}}</mat-option>
+					<mat-select formControlName="paperDimensions" [compareWith]="comparePageSizes">
+						<mat-option *ngFor="let page of paperDimensions | async" [value]="page">{{page.name}}</mat-option>
 					</mat-select>
 				</mat-form-field>
 
 				<mat-form-field>
 					<mat-label>Orientation</mat-label>
-					<mat-select formControlName="orientation">
+					<mat-select formControlName="orientation" (selectionChange)="changeOrientation($event)">
 						<mat-option *ngFor="let orientation of orientations" [value]="orientation">{{orientation}}
 						</mat-option>
 					</mat-select>
@@ -139,7 +140,7 @@
 
 				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list" fxLayout="column">
 
-					<div class="print-element" style="position: relative;" *ngFor="let element of printableElements"
+					<div class="print-element" style="position: relative;" *ngFor="let element of printableElements | async"
 						cdkDrag>{{element.name}}</div>
         </div>
 
