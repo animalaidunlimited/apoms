@@ -15,6 +15,7 @@ export interface PrintElement {
   }
 
   export interface PaperDimensions {
+    paperDimensionsId: number;
     name: string;
     width: string;
     height: string;
@@ -30,4 +31,9 @@ export interface PrintElement {
     printElements: PrintElement[];
     updated: Boolean;
     updateDateTime: string | Date;
+  }
+
+  export interface SavePrintTemplateResponse {
+    success: number;
+    printTemplateId: number;
   }

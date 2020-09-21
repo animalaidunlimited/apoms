@@ -14,12 +14,11 @@ import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
 import {
-    Surgeon,
     SurgerySite,
     SurgeryType,
 } from '../../models/surgery-details';
 import { CensusArea } from '../../models/census-details';
-import { ConditionalExpr } from '@angular/compiler';
+import { PaperDimensions, PrintElement } from '../../models/print-templates';
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -51,6 +50,8 @@ export class DropdownService extends APIService {
     surgerySites$: Observable<SurgerySite[]>;
     surgeryTypes$: Observable<SurgeryType[]>;
     censusAreas$ : Observable<CensusArea[]>;
+    printableElements$: Observable<PrintElement[]>
+    paperDimensions$: Observable<PaperDimensions[]>;
 
     constructor(http: HttpClient) {
         super(http);
@@ -503,6 +504,34 @@ export class DropdownService extends APIService {
         }
 
         return this.patientCallOutcome$;
+    }
+
+    getPrintableElements(): Observable<PrintElement[]> {
+        const request = '/PrintableElements';
+
+        if (!this.printableElements$) {
+            this.printableElements$ = this.getObservable(request).pipe(
+                map((response: PrintElement[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.printableElements$;
+    }
+
+    getPaperDimensions(): Observable<PaperDimensions[]> {
+        const request = '/PaperDimensions';
+
+        if (!this.paperDimensions$) {
+            this.paperDimensions$ = this.getObservable(request).pipe(
+                map((response: PaperDimensions[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.paperDimensions$;
     }
 
 }

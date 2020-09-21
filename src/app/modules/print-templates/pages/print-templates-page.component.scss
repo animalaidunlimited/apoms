@@ -1,10 +1,9 @@
 .print-elements {
   border: dotted #ccc 2px;
-  // width: 400px;
-  // height: 400px;
   max-width: 100%;
   overflow: hidden;
   position: relative;
+  margin-bottom: 20px;
 }
 
 .print-elements .print-element {
@@ -116,7 +115,6 @@
 
 .print-template-image{
   background-repeat: no-repeat;
-  /*background-size: 210mm 297mm;*/
 }
 
 .style-bar{
@@ -136,8 +134,7 @@
 }
 
 .element-content{
-  width:100%;
-  height:100%
+  width:100% !important;
 }
 
 .mat-spinner {
