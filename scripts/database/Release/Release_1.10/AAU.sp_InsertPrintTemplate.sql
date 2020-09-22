@@ -12,6 +12,12 @@ CREATE PROCEDURE AAU.sp_InsertPrintTemplate(IN prm_Username VARCHAR(128),
 
 BEGIN
 
+/*
+Created By: Jim Mackenzie
+Created On: 22/09/20202
+Purpose: Used to insert print templates
+*/
+
 DECLARE vOrganisationId INT;
 DECLARE vTemplateExists INT;
 DECLARE vPrintTemplateId INT;
@@ -35,7 +41,7 @@ INSERT INTO AAU.PrintTemplate
 	)
 VALUES
 	(
-		prm_OrganisationId,
+		vOrganisationId,
         prm_TemplateName,
         prm_ShowTemplateImage,
         prm_PaperDimensionsId,
@@ -50,7 +56,7 @@ SELECT 2 INTO vSuccess;
 
 END IF;
 
-SELECT vPrintTemplateId, vSuccess;
+SELECT vPrintTemplateId as printTemplateId, vSuccess as success;
 
 
 END $$

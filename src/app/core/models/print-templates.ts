@@ -1,5 +1,6 @@
 export interface PrintElement {
-    printElementId: number;
+    printTemplateElementId: number;
+    printableElementId: number;
     name: String;
     example: String;
     width: number;
@@ -12,6 +13,9 @@ export interface PrintElement {
     underlined: boolean;
     fontSize: number;
     alignment: string;
+    newElement: boolean;
+    updated: boolean;
+    deleted: boolean;
   }
 
   export interface PaperDimensions {
@@ -34,6 +38,17 @@ export interface PrintElement {
   }
 
   export interface SavePrintTemplateResponse {
-    success: number;
     printTemplateId: number;
+    success: number;
+    printTemplateElementResponse: PrintTemplateElementResponse[]
+  }
+
+  export interface PrintTemplateResponse{
+    printTemplateId: number;
+    success: number;
+  }
+
+  export interface PrintTemplateElementResponse{
+    printTemplateElementId: number;
+    success: number;
   }

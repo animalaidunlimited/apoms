@@ -1,12 +1,12 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { CdkDragDrop, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnd, moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { PaperDimensions, PrintElement, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { PrintTemplateService } from '../services/print-template.service';
-import { MatSelectChange } from '@angular/material/select';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 
 @Component({
@@ -19,6 +19,8 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   @ViewChild("printableElementArea", {static: true}) printableElementArea: ElementRef;
 
+  errorMatcher = new CrossFieldErrorMatcher();
+
   constructor(
     private templateService: PrintTemplateService,
     private dropdown: DropdownService,
@@ -26,6 +28,7 @@ export class PrintTemplatesPageComponent implements OnInit {
     private fb: FormBuilder) { }
 
   currentSubscription:Subscription;
+
 
   loading:boolean = false;
 
@@ -69,22 +72,22 @@ export class PrintTemplatesPageComponent implements OnInit {
       templateName: ["", Validators.required],
       showTemplateImage: [true],
       backgroundImageUrl: [""],
-      paperDimensions: [{paperDimensionId: 1, name:"A4", height: "297mm", width:"210mm"}, Validators.required],
+      paperDimensions: [{paperDimensionsId: 1, name:"A4", height: "297mm", width:"210mm"}, Validators.required],
       orientation: ["Portrait", Validators.required],
       printElements: this.fb.array([])
     });
 
-    this.printElements = this.printPage.get("printElements") as FormArray;
-
-    this.watchPrintPageChanges();
-
-    this.backgroundImage = this.printPage.get("backgroundImageUrl").value;
+    this.setupFormWatchers();
 
     //Unsubscribe from watching resizing the print elements.
     this.mouseup.subscribe(() => { this.moveUnsubscribe();});
   }
 
-  watchPrintPageChanges(){
+  setupFormWatchers(){
+
+    this.printElements = this.printPage.get("printElements") as FormArray;
+    this.backgroundImage = this.printPage.get("backgroundImageUrl").value;
+    this.changeOrientation(this.printPage.get("orientation").value);
 
     this.printPage.valueChanges.subscribe(() => {
       this.changeOrientation(this.printPage.get("orientation").value);
@@ -121,10 +124,10 @@ export class PrintTemplatesPageComponent implements OnInit {
     if (isWithinSameContainer) {
 
       let toIndex = event.currentIndex;
-      if (event.container.sortingDisabled) {
+      // if (event.container.sortingDisabled) {
 
-        const arr = event.container.data.controls.sort((a, b) => a.get('top').value - b.get('top').value);
-        const targetIndex = arr.findIndex(item => item.get('top').value > top);
+      const arr = event.container.data.controls.sort((a, b) => a.get('top').value - b.get('top').value);
+      const targetIndex = arr.findIndex(item => item.get('top').value > top);
 
         toIndex =
           targetIndex === -1
@@ -132,12 +135,14 @@ export class PrintTemplatesPageComponent implements OnInit {
               ? arr.length - 1
               : arr.length
             : targetIndex;
-      }
 
-      let element = event.previousContainer.data.controls[event.previousIndex] as FormControl;
+      let previousElement = event.previousContainer.data.controls[event.previousIndex] as FormControl;
 
-      element.get('top').setValue(top);
-      element.get('left').setValue(left);
+      previousElement.get('top').setValue(top);
+      previousElement.get('left').setValue(left);
+      previousElement.get('updated').setValue(true);
+
+      moveItemInArray(event.container.data.controls, event.previousIndex, toIndex);
 
     } else {
 
@@ -147,10 +152,9 @@ export class PrintTemplatesPageComponent implements OnInit {
 
         let clone:PrintElement = elementArray[event.previousIndex] as PrintElement;
 
-        clone.printElementId = this.printElements.length + 1;
-
         let newElement = this.fb.group({
-          printElementId: clone.printElementId,
+          printTemplateElementId: null,
+          printableElementId: clone.printableElementId,
           name: clone.name,
           example: clone.example,
           width: 175,
@@ -162,7 +166,10 @@ export class PrintTemplatesPageComponent implements OnInit {
           italics: false,
           underlined: false,
           fontSize: 12,
-          alignment: "left"
+          alignment: "left",
+          newElement: true,
+          updated: true,
+          deleted: false
         });
 
         this.printElements.push(newElement);
@@ -193,16 +200,13 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   removeElement(printElement:AbstractControl){
 
-    let index = this.printElements.controls.findIndex(element => {return element.get("printElementId").value === printElement.get("printElementId").value});
-
-    this.printElements.removeAt(index);
-
+    printElement.get('deleted').setValue(true);
+    printElement.get('updated').setValue(true);
   }
 
   toggleImageUrl(){
 
     this.backgroundImage = this.printPage.get("showTemplateImage").value ? this.printPage.get("backgroundImageUrl").value : "";
-
   }
 
 
@@ -309,46 +313,15 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   }
 
-  processResult(result:SavePrintTemplateResponse){
+reset(){
 
-    result.success === 1 ?
-    this.snackbar.successSnackBar("Print template updated", "OK") :
-    this.snackbar.errorSnackBar("An error occured", "OK");
+  this.printPage = this.createNewForm();
 
-  }
+  this.setupFormWatchers();
 
-  saveForm(){
+}
 
-    console.log(this.printPage.value);
-
-    if(this.printPage.valid){
-
-      this.printPage.get("printTemplateId").value ?
-      this.templateService.updateTemplate(this.printPage.value).then(result => {
-
-        this.processResult(result);
-
-      }).catch(error => {
-
-        this.snackbar.errorSnackBar(error, "OK");
-
-      }) :
-      this.templateService.saveTemplate(this.printPage.value).then(result => {
-
-        this.processResult(result);
-
-      }).catch(error => {
-
-        this.snackbar.errorSnackBar(error, "OK");
-
-      });
-
-    }
-
-    //TODO refresh the form dropdown to add the new form or update the existing ones
-  }
-
-  createNewForm(){
+createNewForm(){
 
     let newPage = this.fb.group({
       printTemplateId: [],
@@ -364,7 +337,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   }
 
-  comparePageSizes(o1: PaperDimensions, o2: PaperDimensions): boolean{
+comparePageSizes(o1: PaperDimensions, o2: PaperDimensions): boolean{
 
     return o1?.name === o2?.name;
 }
@@ -381,7 +354,8 @@ loadform(printTemplate:PrintTemplate){
     printTemplate.printElements.forEach(() => {
 
       let newElement = this.fb.group({
-        printElementId: null,
+        printTemplateElementId: null,
+        printableElementId: null,
         name: null,
         example: null,
         width: null,
@@ -394,6 +368,9 @@ loadform(printTemplate:PrintTemplate){
         underlined: null,
         fontSize: null,
         alignment: null,
+        newElement: false,
+        updated: false,
+        deleted: false
       });
 
       printElements.push(newElement);
@@ -403,17 +380,12 @@ loadform(printTemplate:PrintTemplate){
   reloadingForm.patchValue(printTemplate);
 
   this.printPage = reloadingForm;
-  this.watchPrintPageChanges();
 
-  this.printElements = this.printPage.get("printElements") as FormArray;
-  this.backgroundImage = this.printPage.get("backgroundImageUrl").value;
-  this.changeOrientation(this.printPage.get("orientation").value);
+  this.setupFormWatchers();
 
   }
 
 }
-
-
 
 changeOrientation(orientation:string){
 
@@ -427,9 +399,65 @@ changeOrientation(orientation:string){
     this.currentWidth = this.printPage.get("paperDimensions").value.height
   );
 
-
-
 }
 
+saveForm(){
+
+  if(this.printPage.valid){
+
+    if(!this.printPage.get("printTemplateId").value) {
+
+      this.templateService.insertTemplate(this.printPage.value).then(result => {
+
+        let printTemplateId = this.processResult(result);
+        this.printPage.get("printTemplateId").setValue(printTemplateId);
+        this.templateService.insertIntoPrintTemplateList(this.printPage.value);
+
+      }).catch(error => {
+
+        this.snackbar.errorSnackBar(error, "OK");
+
+      })
+    }
+    else
+    {
+      this.templateService.updateTemplate(this.printPage.value).then(result => {
+
+        this.processResult(result);
+        this.templateService.updatePrintTemplateList(this.printPage.value);
+
+
+      }).catch(error => {
+
+        this.snackbar.errorSnackBar(error, "OK");
+
+      });
+    }
+
+  }
+}
+
+processResult(result:SavePrintTemplateResponse){
+
+  let success: boolean = true;
+
+  if(result[0].success !== 1) {
+    success = false
+  };
+
+  result[1].forEach(result => {
+
+      if(result.success !== 1){
+        success = false;
+      }
+  })
+
+  success ?
+  this.snackbar.successSnackBar("Print template updated", "OK") :
+  this.snackbar.errorSnackBar("An error occured", "OK");
+
+  return result[0].printTemplateId;
+
+}
 
 }
