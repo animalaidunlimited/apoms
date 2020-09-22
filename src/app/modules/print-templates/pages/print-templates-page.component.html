@@ -1,4 +1,4 @@
-<form [formGroup]="printPage">
+<form [formGroup]="printPage" autocomplete="off">
 
 	<div cdkDropListGroup style="padding-left: 10px;">
 
@@ -26,21 +26,20 @@
         <div
         class="print-element"
         formArrayName="printElements"
-        *ngFor="let element of printElements.controls; let i = index;"
+		*ngFor="let element of printElements.controls | printTemplateFilter:printElements.controls; let i = index;"
         cdkDragBoundary=".print-elements"
         cdkDrag
-		[ngStyle]="{ 'opacity' : showExampleText ? 0.85 : 1 }"
+		[ngStyle]="{'opacity' : showExampleText ? 0.85 : 1}"
         [style.height.px]="element.get('height').value"
         [style.width.px]="element.get('width').value"
         [style.top.px]="element.get('top').value"
         [style.left.px]="element.get('left').value">
 
-					<div formGroupName="{{i}}" class="element-content">
-
+		<div formGroupName="{{i}}" class="element-content">
 
             <div
             class="element-content"
-            (click)="toggleStyleBar(element)"
+			(click)="toggleStyleBar(element)"
             [ngStyle]="{
 					  'font-weight': element.get('bold').value ? 'bold' : 'normal',
                       'font-style': element.get('italics').value ? 'italic' : 'normal',
@@ -99,7 +98,8 @@
 				</mat-form-field>
 
 				<mat-form-field>
-					<input matInput type="text" formControlName="templateName" placeholder="Edit template name">
+					<mat-label>Template name</mat-label>
+					<input matInput type="text" formControlName="templateName" [errorStateMatcher]="errorMatcher">
 				</mat-form-field>
 
 				<div class="label">Template image</div>
@@ -144,9 +144,9 @@
 						cdkDrag>{{element.name}}</div>
         </div>
 
-        <button mat-raised-button color="primary" (click)="createNewForm()">Add new</button>
-        <button mat-raised-button color="primary" [disabled]="printPage.invalid" (click)="saveForm()">Save</button>
-        <button mat-raised-button color="primary">Cancel</button>
+		<button mat-raised-button color="primary" [disabled]="printPage.invalid" (click)="saveForm()">Save</button>
+        <button mat-raised-button color="primary" (click)="reset()">New</button>
+        <!-- <button mat-raised-button color="primary">Cancel</button> -->
 
 			</div>
 

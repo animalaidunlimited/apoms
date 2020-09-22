@@ -49,7 +49,9 @@ SELECT pte.PrintTemplateId,
 				JSON_OBJECT("italics", pte.Italics),
 				JSON_OBJECT("underlined", pte.Underlined),
 				JSON_OBJECT("fontSize", pte.FontSize),
-				JSON_OBJECT("alignment", pte.Alignment)
+				JSON_OBJECT("alignment", pte.Alignment),
+                JSON_OBJECT("updated", false),
+                JSON_OBJECT("deleted", false)
 			)
 		) as PrintElements	
 FROM AAU.PrintTemplateElement pte
@@ -60,9 +62,3 @@ WHERE pt.OrganisationId = vOrganisationId;
 
 END$$
 DELIMITER ;
-
--- CALL AAU.sp_GetPrintTemplates('Jim')
-
-SELECT *
-FROM AAU.PrintTemplate pt
-INNER JOIN AAU.PaperDimensions pd ON pd.PaperDimensionsId = pt.PaperDimensionsId

@@ -13,6 +13,12 @@ CREATE PROCEDURE AAU.sp_UpdatePrintTemplate(IN prm_Username VARCHAR(128),
 
 BEGIN
 
+/*
+Created By: Jim Mackenzie
+Created On: 22/09/20202
+Purpose: Used to update a print elements.
+*/
+
 DECLARE vOrganisationId INT;
 DECLARE vTemplateExists INT;
 DECLARE vSuccess INT;
@@ -26,7 +32,7 @@ SELECT COUNT(1) INTO vTemplateExists FROM AAU.PrintTemplate WHERE TemplateName =
 IF vTemplateExists = 1 THEN
 
 UPDATE AAU.PrintTemplate SET	
-			OrganisationId		= prm_OrganisationId,
+			OrganisationId		= vOrganisationId,
 			TemplateName		= prm_TemplateName,
 			ShowTemplateImage	= prm_ShowTemplateImage,
 			PaperDimensionsId	= prm_PaperDimensionsId,
@@ -49,7 +55,7 @@ SELECT 4 INTO vSuccess;
 
 END IF;
 
-SELECT vSuccess;
+SELECT prm_PrintTemplateId as printTemplateId, vSuccess as success;
 
 
 END $$

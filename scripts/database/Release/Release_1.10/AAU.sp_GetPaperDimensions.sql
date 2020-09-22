@@ -7,6 +7,12 @@ CREATE PROCEDURE AAU.sp_GetPaperDimensions(IN prm_Username VARCHAR(128))
 
 BEGIN
 
+/*
+Created By: Jim Mackenzie
+Created On: 22/09/20202
+Purpose: Used to return the paper dimensions
+*/
+
 DECLARE vOrganisationId INT;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;

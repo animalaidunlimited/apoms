@@ -7,6 +7,12 @@ CREATE PROCEDURE AAU.sp_GetPrintableElements(IN prm_Username VARCHAR(128))
 
 BEGIN
 
+/*
+Created By: Jim Mackenzie
+Created On: 22/09/20202
+Purpose: Used to return a list of the printable elements
+*/
+
 DECLARE vOrganisationId INT;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
