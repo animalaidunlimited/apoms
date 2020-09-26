@@ -14,6 +14,8 @@ import { ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaPasteService } from 'src/app/core/services/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { UserOptionsService } from 'src/app/core/services/user-options.service';
 
 @Component({
     selector: 'animal-selection',
@@ -55,6 +57,7 @@ export class AnimalSelectionComponent implements OnInit {
         'mainProblem',
         'tagNo',
         'media',
+        'print',
         'delete',
     ];
 
@@ -67,12 +70,18 @@ export class AnimalSelectionComponent implements OnInit {
     tagNumber: string;
     validRow: boolean;
 
+    emergencyCardHTML:string = '';
+
+
+
     constructor(
-        public dialog: MatDialog,
+        private dialog: MatDialog,
         private fb: FormBuilder,
         private patientService: PatientService,
         private tagNumberValidator: UniqueTagNumberValidator,
         private dropdown: DropdownService,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
         private mediaPaster: MediaPasteService
     ) {}
 
@@ -222,7 +231,7 @@ export class AnimalSelectionComponent implements OnInit {
         return numSelected === numRows;
     }
 
-    toggleRow(row) {
+    toggleRow(row:FormGroup) {
 
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
@@ -242,7 +251,7 @@ export class AnimalSelectionComponent implements OnInit {
         }
     }
 
-    selectIfNotSelected(row){
+    selectIfNotSelected(row:FormGroup){
 
         if (!this.selection.isSelected(row)){
             this.toggleRow(row)
@@ -538,7 +547,7 @@ export class AnimalSelectionComponent implements OnInit {
         return this.selection.selected[0];
     }
 
-    deletePatientRow(row) {
+    deletePatientRow(row:FormGroup) {
         const position = row.get('position').value;
 
         const deleted = row.get('deleted').value;
@@ -668,6 +677,14 @@ export class AnimalSelectionComponent implements OnInit {
                 mediaItem: mediaObject
             }
         });
+
+    }
+
+    printEmergencyCard(row:FormGroup){
+
+        let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+        this.printService.printDocument(printTemplateId, row.get("patientId").value);
 
     }
 

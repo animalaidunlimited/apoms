@@ -3,7 +3,10 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_DeletePrintTemplateElement!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_DeletePrintTemplateElement(IN prm_PrintTemplateElementId INT)
+CREATE PROCEDURE AAU.sp_DeletePrintTemplateElement(
+													IN prm_PrintTemplateId INT,
+													IN prm_PrintTemplateElementId INT
+                                                    )
 
 BEGIN
 
@@ -18,15 +21,15 @@ DECLARE vSuccess INT;
 
 SET vSuccess = 0;
 
-SELECT COUNT(1) INTO vTemplateElementExists FROM AAU.PrintTemplateElement WHERE PrintTemplateElementId = prm_PrintTemplateElementId;
+SELECT COUNT(1) INTO vTemplateElementExists FROM AAU.PrintTemplateElement WHERE PrintTemplateId = prm_PrintTemplateId AND PrintTemplateElementId = prm_PrintTemplateElementId;
 
-IF vTemplateExists = 1 THEN
+IF vTemplateElementExists = 1 THEN
 
 DELETE FROM AAU.PrintTemplateElement WHERE PrintTemplateElementId =  prm_PrintTemplateElementId;
 
 SELECT 1 INTO vSuccess;
 
-ELSEIF vTemplateExists > 0 THEN
+ELSEIF vTemplateElementExists > 0 THEN
 
 SELECT 2 INTO vSuccess;
 

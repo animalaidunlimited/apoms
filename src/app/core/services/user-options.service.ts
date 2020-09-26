@@ -39,5 +39,12 @@ export class UserOptionsService{
         return this.minimumDate;
     }
 
+    //In the future we should allow users to set their own default print template for the emergency card
+    getEmergencyCardTemplateId(): number{
+
+        return 7;
+
+    }
+
     // TODO implement custom debounce time for autocompletes
 }
