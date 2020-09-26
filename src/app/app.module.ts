@@ -17,7 +17,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireStorageModule } from '@angular/fire/storage'
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { DatePipe } from '@angular/common';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Injectable({
     providedIn: 'root'

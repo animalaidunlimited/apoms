@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,23 @@ import { APIService } from 'src/app/core/services/http/api.service';
 export class PrintTemplateService extends APIService {
 
   endpoint = 'PrintTemplate';
+  isPrinting:boolean=false;
 
   public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>(null);;
 
-  constructor(http: HttpClient) {
+  constructor(
+    http: HttpClient,
+    private router: Router) {
     super(http);
   }
 
   private initialisePrintTemplates(){
 
+    console.log("Initialising");
+
     this.getObservable("").subscribe(templates => {
+
+      console.log("templates");
       this.printTemplates.next(templates);
     });
   }
@@ -36,6 +44,8 @@ export class PrintTemplateService extends APIService {
     });
 
     return this.printTemplates;
+
+
 
 }
 
@@ -86,4 +96,61 @@ export class PrintTemplateService extends APIService {
 
     return await this.put(template);
   }
+
+  public printDocument(printTemplateId: number, patientId: number) {
+
+    let printTemplate:PrintTemplate;
+
+    let templates = this.getPrintTemplates();
+
+    console.log("1");
+
+    templates.subscribe(templates => {
+
+      if(!templates) return;
+
+      printTemplate = templates.find(template => template.printTemplateId === printTemplateId);
+
+      console.log(printTemplate);
+
+      this.isPrinting = true;
+
+      let innerHTML=`<div style='height: ${printTemplate.paperDimensions.height}; width: ${printTemplate.paperDimensions.width}'>`;
+
+      printTemplate.printElements.forEach(printElement => {
+
+      innerHTML += `<div style='position: absolute;
+      top: ${printElement.top}px;
+      left: ${printElement.left}px;
+      height: ${printElement.height}px;
+      width: ${printElement.width}px;
+      font-size: ${printElement.fontSize}px;
+      '>${printElement.example}</div>`;
+
+      });
+
+      innerHTML += "</div>";
+
+      console.log(innerHTML);
+
+
+      this.router.navigate(['/',
+      { outlets: {
+        'print': ['print', 'print-content', innerHTML]
+      }}]);
+
+    });
+
+
+
+  }
+
+  onDataReady() {
+    setTimeout(() => {
+      window.print();
+      this.isPrinting = false;
+      this.router.navigate([{ outlets: { print: null }}]);
+    });
+  }
+
 }

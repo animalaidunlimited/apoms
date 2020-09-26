@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
+import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit{
 
     constructor(
         private messagingService: MessagingService,
+        private printService: PrintTemplateService,
         private outstandingCaseService: OutstandingCaseService
         ) {
 
