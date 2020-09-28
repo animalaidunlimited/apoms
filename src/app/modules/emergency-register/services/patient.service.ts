@@ -3,14 +3,9 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import {
-    Patient,
-    PatientCall,
-    PatientCalls,
-    PatientCallModifyResponse,
-    PatientCallResult,
-} from 'src/app/core/models/patients';
+import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
+import { PrintPatient } from 'src/app/core/models/print-templates';
 
 @Injectable({
     providedIn: 'root',
@@ -44,21 +39,41 @@ export class PatientService extends APIService {
         );
     }
 
-    public getPatientsByEmergencyCaseId(number: number): Observable<any> {
+    public getPatientsByEmergencyCaseId(number: number): Observable<Patients> {
         const request = '?emergencyCaseId=' + number;
 
         return this.getObservable(request).pipe(
-            map((response: Patient[]) => {
+            map((response: Patients) => {
+                return response;
+            })
+        );
+    }
+
+    public getPatientByPatientId(patientId: number): Observable<Patient> {
+        const request = '?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: Patient) => {
                 return response;
             }),
         );
     }
 
-    public getPatientByPatientId(patientId: number): Observable<any> {
-        const request = '?patientId=' + patientId;
+    public getPrintPatientByPatientId(patientId: number): Observable<PrintPatient> {
+        const request = '?printPatientId=' + patientId;
 
         return this.getObservable(request).pipe(
-            map((response: Patient[]) => {
+            map((response: PrintPatient) => {
+                return response;
+            }),
+        );
+    }
+
+    public getPrintPatientsByEmergencyCaseId(emergencyCaseId: number): Observable<PrintPatient[]> {
+        const request = '?printEmergencyCaseId=' + emergencyCaseId;
+
+        return this.getObservable(request).pipe(
+            map((response: PrintPatient[]) => {
                 return response;
             }),
         );

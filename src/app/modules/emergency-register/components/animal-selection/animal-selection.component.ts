@@ -31,7 +31,6 @@ export class AnimalSelectionComponent implements OnInit {
 
     @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
 
-
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
@@ -153,7 +152,7 @@ export class AnimalSelectionComponent implements OnInit {
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
 
         const newPatient = this.fb.group({
-            patientId: [],
+            patientId: [patientId],
             position: [position],
             animalTypeId: [''],
             animalType: [''],
@@ -176,13 +175,10 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     loadPatientArray(emergencyCaseId: number) {
-        this.patientService
-            .getPatientsByEmergencyCaseId(emergencyCaseId)
-            .subscribe(
-                (patients: Patients) => {
-                    this.patientArray = this.recordForm.get(
-                        'patients',
-                    ) as FormArray;
+
+        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+
+                    this.patientArray = this.recordForm.get('patients',) as FormArray;
 
                     patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
@@ -684,7 +680,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
-        this.printService.printDocument(printTemplateId, row.get("patientId").value);
+        this.printService.printPatientDocument(printTemplateId, row.get("patientId").value);
 
     }
 

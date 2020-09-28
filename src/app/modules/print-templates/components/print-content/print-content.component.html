@@ -1,1 +1,24 @@
-<div [innerHTML]="content"></div>
+<div    *ngFor="let printTemplate of printTemplates"
+        class="print-content"
+        [ngStyle]="{'height': printTemplate.paperDimensions.height, 'width': printTemplate.paperDimensions.width, 'padding': '10px', 'position': 'relative'}">
+    <div    *ngFor="let printElement of printTemplate.printElements"
+            [ngStyle]="{'position': 'absolute',
+            'top': printElement.top + 'px',
+            'left': printElement.left + 'px',
+            'align-items': 'center',
+            'height': printElement.height + 'px',
+            'width': printElement.width + 'px',
+            'display': 'flex'}">
+
+        <div [ngStyle]="{
+            'width': '100%',
+            'font-weight': printElement.bold ? 'bold' : 'normal',
+            'font-style': printElement.italics ? 'italic' : 'normal',
+            'text-decoration': printElement.underlined ? 'underline' : 'none',
+            'font-size': printElement.fontSize ? printElement.fontSize + 'pt' : '8pt',
+            'text-align': printElement.alignment}">
+            {{printElement.value}}
+        </div>
+
+    </div>
+</div>

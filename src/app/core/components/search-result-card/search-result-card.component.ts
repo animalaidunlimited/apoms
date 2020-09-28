@@ -5,6 +5,8 @@ import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { UserOptionsService } from '../../services/user-options.service';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 @Component({
   selector: 'search-result-card',
@@ -20,6 +22,8 @@ export class SearchResultCardComponent implements OnInit {
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
+        private userOptions: UserOptionsService,
+        private printService: PrintTemplateService
   ) {}
 
 
@@ -85,6 +89,14 @@ addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalTyp
       emergencyNumber,
       animalType,
   );
+}
+
+printEmergencyCard(patientId: number){
+
+  let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+  this.printService.printPatientDocument(printTemplateId, patientId);
+
 }
 
 

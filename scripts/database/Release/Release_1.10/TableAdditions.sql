@@ -4,6 +4,7 @@ PrintableElementId INTEGER NOT NULL AUTO_INCREMENT,
 OrganisationId INTEGER,
 Name NVARCHAR(256),
 Example NVARCHAR(256),
+DatabaseFieldName NVARCHAR(256),
 CreatedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 IsDeleted TINYINT DEFAULT 0,
 DeletedDate DATETIME,
@@ -79,7 +80,7 @@ DROP TABLE AAU.PrintTemplate;
 DROP TABLE AAU.PaperDimensions;
 DROP TABLE AAU.PrintableElement;
 
-INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Admission Date', '25/07/2020', '0');
+INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Admission date', '25/07/2020', '0');
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Animal type', 'Dog', '0');
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Caller name', 'Kiran', '0');
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Caller number', '8526748758', '0');
@@ -87,6 +88,7 @@ INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDe
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Emergency number', '787589', '0');
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Rescuer', 'Manpreet', '0');
 INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Tag number', 'A378', '0');
+INSERT INTO `AAU`.`PrintableElement` (`OrganisationId`, `Name`, `Example`, `IsDeleted`) VALUES ('1', 'Location', 'Animal Aid Unlimited, Near TB Hospital, Badi Village, Udaipur', '0');
 
 INSERT INTO `AAU`.`PaperDimensions` (`OrganisationId`, `Name`, `Height`, `Width`) VALUES ('1', 'A4', '297mm', '210mm');
 INSERT INTO `AAU`.`PaperDimensions` (`OrganisationId`, `Name`, `Height`, `Width`) VALUES ('1', 'A3', '420mm', '297mm');

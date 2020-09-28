@@ -3,6 +3,7 @@ export interface PrintElement {
     printableElementId: number;
     name: String;
     example: String;
+    value: string;
     width: number;
     height: number;
     top: number;
@@ -51,4 +52,16 @@ export interface PrintElement {
   export interface PrintTemplateElementResponse{
     printTemplateElementId: number;
     success: number;
+  }
+
+  export interface PrintPatient{
+    admissionDate: string;
+    animalType: string;
+    callerName: string;
+    callerNumber: string;
+    callerAlternativeNumber: string;
+    emergencyNumber: number;
+    location: string;
+    rescuer: string;
+    tagNumber: string;
   }

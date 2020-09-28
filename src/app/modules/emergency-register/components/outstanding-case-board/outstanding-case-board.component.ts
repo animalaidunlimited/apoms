@@ -11,6 +11,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
+import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 export interface Swimlane{
   label:string;
@@ -56,7 +58,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private zone: NgZone,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private userOptions: UserOptionsService,
+    private printService: PrintTemplateService
 
     ) { }
 
@@ -273,4 +277,13 @@ openCase(caseSearchResult:OutstandingRescue)
 refreshRescues(){
  this.outstandingCaseService.refreshRescues();
 }
+
+printEmergencyCard(emergencyCaseId: number){
+
+  let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+  this.printService.printEmergencyCaseDocument(printTemplateId, emergencyCaseId);
+
+}
+
 }
