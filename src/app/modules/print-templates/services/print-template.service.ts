@@ -158,11 +158,9 @@ export class PrintTemplateService extends APIService {
 
         });
 
-        console.log(templates);
         this.sendContentToPrinter(JSON.stringify(templates));
 
       });
-
 }
 
 private toCamelCase(str) {

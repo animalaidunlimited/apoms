@@ -55,7 +55,15 @@ export class NavGuard implements CanActivateChild {
                 childRoute.url.map(url => url.path),
                 childRoute.data.isChild,
             );
+
+
         }
+
+        //If we're on mobile close the sidenav after navigation
+        if(window.innerWidth < 840){
+            this.navigationService.closeIsOpen();
+        }
+
         return true;
     }
 }

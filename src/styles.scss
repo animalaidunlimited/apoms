@@ -99,6 +99,13 @@ mat-radio-button{
   border-color: #c3e6cb !important;
 }
 
+@media screen {
+  body > * {
+    display: block;
+  }
+
+}
+
 @media print {
   .isPrinting > * { display: none; }
   .isPrinting print-wrapper { display: block; }

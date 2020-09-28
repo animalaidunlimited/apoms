@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { NavRoute, NavRouteService } from '../../../nav-routing';
 
 export class Page {
@@ -18,6 +19,8 @@ export class NavigationService {
     private selectedNavigationItem: NavRoute = {} as NavRoute;
     private activePage: Page;
     private navigationStack: Array<Array<string>> = [];
+
+    public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
 
     constructor(private navRouteService: NavRouteService) {
         this.navigationItems = navRouteService.getNavRoutes();
@@ -73,6 +76,27 @@ export class NavigationService {
             (flatUrl, urlSegment) => [...flatUrl, ...urlSegment],
             [],
         );
+    }
+
+    public getIsOpen() : BehaviorSubject<boolean> {
+
+        return this.isOpen;
+    }
+
+    public toggleIsOpen() {
+
+        let currentIsOpen:boolean;
+
+        this.isOpen.subscribe(currentValue => currentIsOpen = currentValue);
+
+        this.isOpen.next(!currentIsOpen);
+
+    }
+
+    public closeIsOpen(){
+
+        this.isOpen.next(false);
+
     }
 
     public setActivePage(
