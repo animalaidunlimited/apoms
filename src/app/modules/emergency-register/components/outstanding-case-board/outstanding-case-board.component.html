@@ -43,7 +43,7 @@
 
 
 
-<outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
+<!-- <outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map> -->
 
 <div cdkDropListGroup [hidden]="!hideMap">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
@@ -82,15 +82,15 @@
 
           <div fxFlex="15">
 
-            <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon>
           </div>
-
+          
           <div fxFlex="25">
-            <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+            <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
           </div>
 
             <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.patients}})
+              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.animalTypes}})
             </div>
               <div fxFlex="none"
 
@@ -98,6 +98,10 @@
                 'dot-red' : outstandingCase.emergencyCodeId == 1,
                 'dot-green' : outstandingCase.emergencyCodeId == 2,
                 'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
+              </div>
+
+              <div fxFlex="25">
+                <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
               </div>
 
             </mat-expansion-panel-header>

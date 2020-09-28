@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PrintTemplate } from 'src/app/core/models/print-templates';
 import { PrintTemplateService } from '../../services/print-template.service';
 
 @Component({
@@ -9,19 +10,20 @@ import { PrintTemplateService } from '../../services/print-template.service';
 })
 export class PrintContentComponent implements OnInit {
 
-  content:string;
+  printTemplates:PrintTemplate[];
 
   constructor(
     route: ActivatedRoute,
     private printService: PrintTemplateService
   ) {
-    this.content = route.snapshot.params['content']
+    this.printTemplates = JSON.parse(route.snapshot.params['printTemplate']);
   }
 
   ngOnInit(): void {
 
+    
 
-    this.printService.onDataReady()
+    this.printService.onDataReady();
 
   }
 

@@ -99,29 +99,6 @@ mat-radio-button{
   border-color: #c3e6cb !important;
 }
 
-
-//The below sets up printing for the application, anything with the printable class applied will be printed when window.print is called.
-// @media print {
-
-//   body * {
-//     visibility: hidden !important;
-//   }
-
-//   .printable, .printable * {
-//     visibility: visible !important;
-//   }
-
-//   .printable {
-//     position: absolute !important;
-//     width: 100vw !important;
-//     height: 100% !important;
-//     min-height: 100vh !important;
-//     padding: 0 !important;
-//     margin: 0 !important;
-//   }
-
-//   }
-
 @media print {
   .isPrinting > * { display: none; }
   .isPrinting print-wrapper { display: block; }

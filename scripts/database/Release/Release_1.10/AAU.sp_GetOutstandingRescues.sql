@@ -59,7 +59,6 @@ AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec
             )),            
             JSON_OBJECT("callerName", c.Name),
             JSON_OBJECT("callerNumber", c.Number),
-            JSON_OBJECT("animalTypes", p.AnimalTypes),
             JSON_OBJECT("patients", p.Patients),
             JSON_OBJECT("isLargeAnimal", p.IsLargeAnimal)
             )
@@ -69,8 +68,12 @@ FROM AAU.EmergencyCase ec
 INNER JOIN
 (
 	SELECT p.EmergencyCaseId,
-	JSON_ARRAYAGG(JSON_OBJECT("animalType", ant.AnimalType)) AS AnimalTypes,
-    JSON_ARRAYAGG(JSON_OBJECT("patientId", p.PatientId)) AS Patients,
+	JSON_ARRAYAGG(
+		JSON_MERGE_PRESERVE(
+			JSON_OBJECT("patientId", p.PatientId),
+			JSON_OBJECT("animalType", ant.AnimalType)
+		)
+    ) AS Patients,
     MAX(LargeAnimal) as IsLargeAnimal
 	FROM AAU.Patient p
 	INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId

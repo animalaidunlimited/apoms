@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { PrintPatient, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
 import {Router} from '@angular/router';
+import { PatientService } from '../../emergency-register/services/patient.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,43 +13,51 @@ import {Router} from '@angular/router';
 export class PrintTemplateService extends APIService {
 
   endpoint = 'PrintTemplate';
-  isPrinting:boolean=false;
+  public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>(null);;
 
   constructor(
     http: HttpClient,
+    private patientService: PatientService,
     private router: Router) {
     super(http);
+    this.initialisePrintTemplates();
+  }
+
+  public getIsPrinting(){
+    return this.isPrinting;
   }
 
   private initialisePrintTemplates(){
 
-    console.log("Initialising");
+    this.getObservable("").subscribe((templates:any[]) => {
 
-    this.getObservable("").subscribe(templates => {
+      templates.forEach(template => {
 
-      console.log("templates");
-      this.printTemplates.next(templates);
+        //The database returns 0 instead of false, so we need to change to booleans.
+        template.printElements.forEach(element => {
+
+          element.bold = element.bold === 0 ? false : true;
+          element.italics = element.italics === 0 ? false : true;
+          element.underlined = element.underlined === 0 ? false : true;
+          element.showStyleBar = element.showStyleBar === 0 ? false : true;
+
+        });
+
+      });
+
+      this.printTemplates.next(templates as PrintTemplate[]);
+
     });
   }
 
 
   public getPrintTemplates() : BehaviorSubject<PrintTemplate[]> {
 
-    this.printTemplates.subscribe(val => {
-
-      if(!val){
-        this.initialisePrintTemplates();
-      }
-
-    });
-
     return this.printTemplates;
 
-
-
-}
+  }
 
   public insertIntoPrintTemplateList(template:PrintTemplate) : void {
 
@@ -97,58 +107,98 @@ export class PrintTemplateService extends APIService {
     return await this.put(template);
   }
 
-  public printDocument(printTemplateId: number, patientId: number) {
+  public printPatientDocument(printTemplateId: number, patientId: number) {
 
-    let printTemplate:PrintTemplate;
+    this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
 
-    let templates = this.getPrintTemplates();
+      //Get all of the patient details
+      this.patientService.getPrintPatientByPatientId(patientId).subscribe((printPatient:PrintPatient) => {
 
-    console.log("1");
+        let newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
-    templates.subscribe(templates => {
-
-      if(!templates) return;
-
-      printTemplate = templates.find(template => template.printTemplateId === printTemplateId);
-
-      console.log(printTemplate);
-
-      this.isPrinting = true;
-
-      let innerHTML=`<div style='height: ${printTemplate.paperDimensions.height}; width: ${printTemplate.paperDimensions.width}'>`;
-
-      printTemplate.printElements.forEach(printElement => {
-
-      innerHTML += `<div style='position: absolute;
-      top: ${printElement.top}px;
-      left: ${printElement.left}px;
-      height: ${printElement.height}px;
-      width: ${printElement.width}px;
-      font-size: ${printElement.fontSize}px;
-      '>${printElement.example}</div>`;
+        //The print content component takes an array of print templates.
+        this.sendContentToPrinter(JSON.stringify([newTemplate]));
 
       });
 
-      innerHTML += "</div>";
-
-      console.log(innerHTML);
-
-
-      this.router.navigate(['/',
-      { outlets: {
-        'print': ['print', 'print-content', innerHTML]
-      }}]);
-
     });
-
-
 
   }
 
-  onDataReady() {
+  private populatePrintTemplateWithPatientData(printTemplate:PrintTemplate, printPatient:PrintPatient){
+
+    let newTemplate:PrintTemplate = JSON.parse(JSON.stringify(printTemplate));
+
+    newTemplate.printElements.forEach(element => {
+
+      element.value = printPatient[this.toCamelCase(element.name)];
+
+    });
+
+    return newTemplate;
+
+  }
+
+  public printEmergencyCaseDocument(printTemplateId: number, emergencyCaseId: number){
+
+    //Get all of the patient details by Emergency Case Id
+      this.patientService.getPrintPatientsByEmergencyCaseId(emergencyCaseId).subscribe((resultPatient:PrintPatient[]) => {
+
+        let templates:PrintTemplate[] = [];
+
+        resultPatient.forEach(printPatient => {
+
+          this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
+
+            let newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
+
+            templates.push(newTemplate);
+
+          });
+
+        });
+
+        console.log(templates);
+        this.sendContentToPrinter(JSON.stringify(templates));
+
+      });
+
+}
+
+private toCamelCase(str) {
+  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
+    if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+    return index === 0 ? match.toLowerCase() : match.toUpperCase();
+  });
+}
+
+  private getPrintTemplate(printTemplateId: number) : Observable<PrintTemplate>{
+
+    return this.getPrintTemplates().pipe(map((templates:PrintTemplate[]) =>
+
+      templates.find(template => template.printTemplateId === printTemplateId)
+
+    ));
+
+  }
+
+  private sendContentToPrinter(contentToPrint: string){
+
+    this.isPrinting.next(true);
+
+    this.router.navigate(['/',
+    { outlets: {
+      'print': ['print', 'print-content', contentToPrint]
+    }}]);
+
+  }
+
+
+
+  public onDataReady() {
     setTimeout(() => {
       window.print();
-      this.isPrinting = false;
+      this.isPrinting.next(false);
       this.router.navigate([{ outlets: { print: null }}]);
     });
   }

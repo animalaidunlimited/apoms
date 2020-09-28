@@ -1,4 +1,4 @@
-<div class="app-view non-printable" [class.isPrinting]="printService.isPrinting">
+<div class="app-view non-printable" [class.isPrinting]="isPrinting | async">
     <router-outlet></router-outlet>
     <router-outlet name="print"></router-outlet>
 </div>

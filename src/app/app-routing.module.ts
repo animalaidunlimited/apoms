@@ -68,7 +68,7 @@ const routes: Routes = [
         outlet: 'print',
         component: PrintWrapperComponent,
         children: [
-        { path: 'print-content/:content', component: PrintContentComponent }
+        { path: 'print-content/:printTemplate', component: PrintContentComponent }
         ]
     },
     {

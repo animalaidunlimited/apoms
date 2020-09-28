@@ -3,6 +3,7 @@ import { MessagingService } from './modules/emergency-register/services/messagin
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -15,10 +16,13 @@ import { PrintTemplateService } from './modules/print-templates/services/print-t
       ]
 })
 export class AppComponent implements OnInit{
-    // test
 
+    isPrinting:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    message:BehaviorSubject<any>;
     title:string = 'apoms';
-    message;
+
+
+
 
     constructor(
         private messagingService: MessagingService,
@@ -43,6 +47,9 @@ export class AppComponent implements OnInit{
     ngOnInit() {
         this.messagingService.requestPermission();
         this.message = this.messagingService.currentMessage;
+        this.isPrinting = this.printService.getIsPrinting()
+
+
 
         //Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {

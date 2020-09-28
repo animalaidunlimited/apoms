@@ -53,8 +53,11 @@
             (click)="callUpdate(record.PatientId, record.TagNumber)">
                 <mat-icon>phone</mat-icon>
             </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add Surgery" (click)="addSurgery(record.PatientId, record.TagNumber, record.EmergencyNumber, record.AnimalType)">
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add surgery" (click)="addSurgery(record.PatientId, record.TagNumber, record.EmergencyNumber, record.AnimalType)">
                 <mat-icon>local_hospital</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Print card" (click)="printEmergencyCard(record.PatientId)">
+                <mat-icon>print</mat-icon>
             </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
