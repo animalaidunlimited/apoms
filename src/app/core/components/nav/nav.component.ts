@@ -6,6 +6,7 @@ import {
 import { NavRoute } from '../../../nav-routing';
 import { AuthService } from '../../../auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-nav',
@@ -13,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-    isOpen: boolean;
+    isOpen: BehaviorSubject<boolean>;
     screenWidth: number;
 
     constructor(
@@ -23,11 +24,11 @@ export class NavComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.isOpen = window.innerWidth < 840 ? false : true;
+        this.isOpen = this.navigationService.getIsOpen();
     }
 
     public toggleSideNav() {
-        this.isOpen = !this.isOpen;
+        this.navigationService.toggleIsOpen();
     }
 
     public getNavigationItems(): NavRoute[] {
