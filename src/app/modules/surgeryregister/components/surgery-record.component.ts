@@ -8,7 +8,7 @@ import { AnimalType } from 'src/app/core/models/animal-type';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { SnackbarService } from "src/app/core/services/snackbar/snackbar.service";
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SurgeryRecord } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 
 interface Antibiotic {
@@ -127,9 +127,9 @@ export class SurgeryRecordComponent implements OnInit {
 
                 if (value) {
 
-                    let surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId').value );
-                    let surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value );
-                    let surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value );
+                    const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId').value );
+                    const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value );
+                    const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value );
 
                     const surgeryTableData: SurgeryRecord = {
                         surgeryId: value.surgeryId,
@@ -147,7 +147,7 @@ export class SurgeryRecordComponent implements OnInit {
                         comments: this.surgeryForm.get('Comment').value,
                     };
 
-                    this.showSnackBar.successSnackBar("Surgery saved!" , "Ok");
+                    this.showSnackBar.successSnackBar('Surgery saved!' , 'Ok');
 
                     this.result.emit(surgeryTableData);
                 } else {

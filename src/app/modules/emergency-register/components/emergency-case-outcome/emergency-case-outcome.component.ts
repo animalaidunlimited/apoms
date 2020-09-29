@@ -18,7 +18,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   @Input() recordForm: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
-  @ViewChild("sameAsNumberField",{ read: ElementRef, static:false }) sameAsNumberField: ElementRef;
+  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -40,11 +40,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.callOutcome = this.recordForm.get("callOutcome") as FormGroup;
+    this.callOutcome = this.recordForm.get('callOutcome') as FormGroup;
 
-    if(this.recordForm.get("emergencyDetails.emergencyCaseId").value){
+    if(this.recordForm.get('emergencyDetails.emergencyCaseId').value){
 
-      this.caseService.getEmergencyCaseById(this.recordForm.get("emergencyDetails.emergencyCaseId").value).subscribe(result =>
+      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId').value).subscribe(result =>
 
         this.recordForm.patchValue(result)
 
@@ -56,11 +56,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.callOutcomes$.subscribe(callOutcome => {
 
-      this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === "Same as").CallOutcomeId;
+      this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as').CallOutcomeId;
 
     });
 
-    this.recordForm.get("callOutcome.CallOutcome").valueChanges.subscribe(() => {
+    this.recordForm.get('callOutcome.CallOutcome').valueChanges.subscribe(() => {
 
       this.outcomeChanged();
 
@@ -71,17 +71,17 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   outcomeChanged(){
 
-    let sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
+    const sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
 
-    //Check if we need to show the same as field.
+    // Check if we need to show the same as field.
     this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcome').value?.CallOutcomeId;
 
     if(!sameAsNumber.value && this.sameAs){
       sameAsNumber.setValidators(Validators.required);
-      sameAsNumber.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get("emergencyDetails.emergencyCaseId").value, 0)]);
+      sameAsNumber.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId').value, 0)]);
     }
 
-    //We might have selected something other than Same As, so hide the field.
+    // We might have selected something other than Same As, so hide the field.
     if(!this.sameAs){
       sameAsNumber.setValue(null);
       sameAsNumber.clearValidators()
@@ -91,7 +91,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     sameAsNumber.updateValueAndValidity();
     this.changeDetector.detectChanges();
 
-    //Make sure we focus when we're selecting same as
+    // Make sure we focus when we're selecting same as
     if(this.sameAs){
       setTimeout(() => this.sameAsNumberField.nativeElement.focus(), 0);
       this.changeDetector.detectChanges();
@@ -101,10 +101,10 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   async save(){
 
-    //If we haven't touched the form, don't do anything.
-    if(this.recordForm.get("callOutcome").pristine || !this.recordForm.get('callOutcome').value){
+    // If we haven't touched the form, don't do anything.
+    if(this.recordForm.get('callOutcome').pristine || !this.recordForm.get('callOutcome').value){
 
-      let emptyResult:UpdateResponse = {
+      const emptyResult:UpdateResponse = {
         success: null,
         socketEndPoint: null
       };
@@ -113,12 +113,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       return;
     }
 
-    let updateTime = getCurrentTimeString();
+    const updateTime = getCurrentTimeString();
 
     (this.recordForm.get('callOutcome') as FormGroup)
-          .addControl("updateTime", new FormControl(updateTime));
+          .addControl('updateTime', new FormControl(updateTime));
 
-    let updateRecord:FormGroup = this.fb.group({
+    const updateRecord:FormGroup = this.fb.group({
       emergencyForm: [this.recordForm.value]
     });
 

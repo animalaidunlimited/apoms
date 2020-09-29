@@ -36,7 +36,6 @@
 
 </div>
 
-<!-- <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner> -->
 <div [hidden]="!loading" style="height: 500px">
   <mat-spinner class="mat-spinner"></mat-spinner>
 </div>
@@ -45,7 +44,7 @@
 
 <!-- <outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map> -->
 
-<div cdkDropListGroup [hidden]="!hideMap">
+<div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
 
 
@@ -84,7 +83,7 @@
 
             <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon>
           </div>
-          
+
           <div fxFlex="25">
             <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
           </div>

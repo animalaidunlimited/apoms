@@ -93,7 +93,7 @@ addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalTyp
 
 printEmergencyCard(patientId: number){
 
-  let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+  const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
   this.printService.printPatientDocument(printTemplateId, patientId);
 

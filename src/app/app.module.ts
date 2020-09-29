@@ -28,7 +28,7 @@ class UIErrorHandler extends ErrorHandler {
   }
   handleError(error) {
     super.handleError(error);
-    //TODO Style these errors properly and provide them in a dialog with more info about what to do.
+    // TODO Style these errors properly and provide them in a dialog with more info about what to do.
     console.log(`Error occurred:${error.message}`);
   }
 }

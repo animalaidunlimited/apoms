@@ -12,6 +12,6 @@ export class PrintElementFilter implements PipeTransform {
         }
         // filter items array, items which match and return true will be
         // kept, false will be filtered out
-        return items.filter(item => !item.get("deleted").value);
+        return items.filter(item => !item.get('deleted').value);
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DropdownService } from "src/app/core/services/dropdown/dropdown.service";
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CensusArea } from 'src/app/core/models/census-details';
 import { Observable } from 'rxjs';
 import { FormGroup , FormBuilder } from '@angular/forms';
@@ -47,9 +47,9 @@ export class ReportingPageComponent implements OnInit {
         this.census.getCensusPatientCount().then(response =>{
             this.patientCountData = response;
         })
-       
+
     }
 
-    
+
 
 }

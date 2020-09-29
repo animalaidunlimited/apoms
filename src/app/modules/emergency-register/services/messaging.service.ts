@@ -13,7 +13,7 @@ export class MessagingService extends APIService {
 
 
 currentMessage = new BehaviorSubject(null);
-endpoint:string = "Messaging";
+endpoint = 'Messaging';
 havePermission = new BehaviorSubject(null);
 haveReceivedFocus = new BehaviorSubject(null);
 token;
@@ -38,10 +38,10 @@ constructor(
 
     distributeMessage(payload){
 
-        let message = JSON.parse(JSON.parse(payload.data?.messageData));
+        const message = JSON.parse(JSON.parse(payload.data?.messageData));
 
-        //This is a rescue message, so pass this on to the outstanding-case service
-        if(message.hasOwnProperty("rescueStatus")){
+        // This is a rescue message, so pass this on to the outstanding-case service
+        if(message.hasOwnProperty('rescueStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
 
@@ -49,7 +49,7 @@ constructor(
 
     }
 
-    //The window has received focus, so we may need to refresh
+    // The window has received focus, so we may need to refresh
     receiveFocus(){
 
         this.zone.run(() => this.haveReceivedFocus.next(true));
@@ -61,8 +61,8 @@ constructor(
         return this.havePermission;
     }
 
-    //Request permission, if it's granted then subscribe to the required topics.
-    //If not granted then emit to let watchers know
+    // Request permission, if it's granted then subscribe to the required topics.
+    // If not granted then emit to let watchers know
     requestPermission() {
         this.angularFireMessaging.requestToken.subscribe(
             (token) => {
@@ -81,20 +81,20 @@ constructor(
 
     alterPermissionState(currentState:string){
 
-        this.zone.run(() => this.havePermission.next(currentState === "granted" ? true : false));
+        this.zone.run(() => this.havePermission.next(currentState === 'granted' ? true : false));
     }
 
     async subscribeToTopics(token){
 
-        //send the token to the server and subscribe it to the relevant topics
-        let organisation = this.authService.getOrganisationSocketEndPoint();
+        // send the token to the server and subscribe it to the relevant topics
+        const organisation = this.authService.getOrganisationSocketEndPoint();
 
-        let subscriptionBody = {
-            token: token,
+        const subscriptionBody = {
+            token,
             topic: `${organisation}_UPDATING_RESCUE`
         }
 
-        let result = await this.post(subscriptionBody);
+        const result = await this.post(subscriptionBody);
 
         return result;
 
@@ -106,15 +106,15 @@ constructor(
 
     async unsubscribe(){
 
-        let organisation = this.authService.getOrganisationSocketEndPoint();
+        const organisation = this.authService.getOrganisationSocketEndPoint();
 
-        let unsubscribe = {
-                            unsubscribe: "true",
+        const unsubscribe = {
+                            unsubscribe: 'true',
                             token:  this.token,
                             topic: `${organisation}_UPDATING_RESCUE`
                         };
 
-        let result = await this.post(unsubscribe);
+        const result = await this.post(unsubscribe);
 
         return result;
 

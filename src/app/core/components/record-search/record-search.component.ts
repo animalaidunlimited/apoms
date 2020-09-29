@@ -57,7 +57,7 @@ export class RecordSearchComponent implements OnInit {
     searchForm: FormGroup;
     searchRows: FormArray;
 
-    searchShowing:boolean = false;
+    searchShowing = false;
 
     search = new Search();
 
@@ -234,14 +234,14 @@ export class RecordSearchComponent implements OnInit {
                     option => option.searchValue == splitItem[0].toLowerCase(),
                 );
 
-                //If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
-                //what the user has entered into the Search Term field
+                // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
+                // what the user has entered into the Search Term field
                 if(option.inNotIn){
 
 
                     option.databaseField = option.databaseField.replace(' NOT IN (', ' IN (')
 
-                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === "no"){
+                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === 'no'){
 
                         option.databaseField = option.databaseField.replace(' IN (', ' NOT IN (')
                     }
@@ -251,7 +251,7 @@ export class RecordSearchComponent implements OnInit {
                 }
                 else{
 
-                    return option.databaseField + "=" + encodeURIComponent(splitItem[1].trim());
+                    return option.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
                 }
             })
             .join('&');

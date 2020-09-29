@@ -15,9 +15,11 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 })
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number;
-    @Output() public onLoadEmergencyNumber = new EventEmitter<any>();
+    @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
     recordForm: FormGroup;
+
+    windowWidth = window.innerWidth;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -45,6 +47,9 @@ export class EmergencyRecordComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+
+        console.log('Here');
+
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.recordForm = this.fb.group({
@@ -71,24 +76,31 @@ export class EmergencyRecordComponent implements OnInit {
         });
     }
 
+    print() {
+
+        window.print();
+
+    }
+
+
     getCaseSaveMessage(resultBody: EmergencyResponse) {
         const result = {
             message: 'Other error - See admin\n',
-            failure: 0,
+            failure: 0
         };
 
         // Check the record succeeded
-        if (resultBody.emergencyCaseSuccess == 1) {
+        if (resultBody.emergencyCaseSuccess === 1) {
             result.message = 'Success';
-        } else if (resultBody.emergencyCaseSuccess == 2) {
+        } else if (resultBody.emergencyCaseSuccess === 2) {
             result.message = 'Error adding the record: Duplicate record\n';
             result.failure++;
         }
 
         // Check the caller succeeded
-        if (resultBody.callerSuccess == 1) {
+        if (resultBody.callerSuccess === 1) {
             result.message += '';
-        } else if (resultBody.callerSuccess == 2) {
+        } else if (resultBody.callerSuccess === 2) {
             result.message += 'Error adding the caller: Duplicate record \n';
             result.failure++;
         } else {
@@ -100,7 +112,7 @@ export class EmergencyRecordComponent implements OnInit {
 
         // If then don't succeed, build and show an error message
         resultBody.patients.forEach((patient: PatientResponse) => {
-            if (patient.success == 1) {
+            if (patient.success === 1) {
                 result.message += '';
 
                 const patientFormArray = this.recordForm.get(
@@ -109,7 +121,7 @@ export class EmergencyRecordComponent implements OnInit {
 
                 patientFormArray.controls.forEach(currentPatient => {
                     if (
-                        currentPatient.get('position').value == patient.position
+                        currentPatient.get('position').value === patient.position
                     ) {
 
                         currentPatient
@@ -124,7 +136,7 @@ export class EmergencyRecordComponent implements OnInit {
             } else {
                 result.message +=
                     'Error adding the patient: ' +
-                    (patient.success == 2
+                    (patient.success === 2
                         ? 'Duplicate record \n'
                         : 'Other error - See admin\n');
 
@@ -132,9 +144,9 @@ export class EmergencyRecordComponent implements OnInit {
             }
 
             patient.problems.forEach((problem: ProblemResponse) => {
-                if (problem.success == 1) {
+                if (problem.success === 1) {
                     result.message += '';
-                } else if (problem.success == 2) {
+                } else if (problem.success === 2) {
                     result.message +=
                         'Error adding the patient: Duplicate record \n';
                     result.failure++;
@@ -152,7 +164,8 @@ export class EmergencyRecordComponent implements OnInit {
     async saveForm() {
 
         if(this.recordForm.pending){
-            // The Emergency Number check might have gotten stuck due to the connection to the DB going down. So mark it as error so the user knows to recheck it
+            // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+            // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber').pending){
@@ -181,7 +194,7 @@ export class EmergencyRecordComponent implements OnInit {
                     .insertCase(emergencyForm)
                     .then(data => {
 
-                        if (data.status == 'saved') {
+                        if (data.status === 'saved') {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
@@ -196,13 +209,13 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
 
-                        if (messageResult.failure == 0) {
+                        if (messageResult.failure === 0) {
 
                             this.showSnackBar.successSnackBar(
                                 'Case inserted successfully',
                                 'OK',
                             );
-                        } else if (messageResult.failure == 1) {
+                        } else if (messageResult.failure === 1) {
                             this.showSnackBar.errorSnackBar(
                                 'Case saved offline',
                                 'OK',
@@ -217,7 +230,7 @@ export class EmergencyRecordComponent implements OnInit {
                     .updateCase(emergencyForm)
                     .then(data => {
 
-                        if (data.status == 'saved') {
+                        if (data.status === 'saved') {
                             messageResult.failure = 1;
                         } else {
 
@@ -230,7 +243,7 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
 
-                        if (messageResult.failure == 0) {
+                        if (messageResult.failure === 0) {
                             this.showSnackBar.successSnackBar(
                                 'Case updateted successfully',
                                 'OK',
@@ -246,6 +259,6 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     emergencyNumberUpdated(emergencyNumber: number) {
-        this.onLoadEmergencyNumber.emit(emergencyNumber);
+        this.loadEmergencyNumber.emit(emergencyNumber);
     }
 }

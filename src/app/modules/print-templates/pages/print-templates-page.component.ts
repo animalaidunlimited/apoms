@@ -17,7 +17,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 
 export class PrintTemplatesPageComponent implements OnInit {
 
-  @ViewChild("printableElementArea", {static: true}) printableElementArea: ElementRef;
+  @ViewChild('printableElementArea', {static: true}) printableElementArea: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -30,26 +30,26 @@ export class PrintTemplatesPageComponent implements OnInit {
   currentSubscription:Subscription;
 
 
-  loading:boolean = false;
+  loading = false;
 
   printElements:FormArray;
 
   templates:Observable<PrintTemplate[]>;
 
   printableElements:Observable<PrintElement[]>;
-  orientations:String[] = ["Portrait", "Landscape"];
+  orientations:String[] = ['Portrait', 'Landscape'];
 
   printPage:FormGroup;
 
-  minWidth:number = 25;
-  minHeight:number = 25;
+  minWidth = 25;
+  minHeight = 25;
 
   fontSizes:number[] = [8,10,12,14,16,18,22,26,32,38];
 
-  showExampleText:boolean = false;
+  showExampleText = false;
 
-  currentHeight:string = "297mm";
-  currentWidth:string = "210mm";
+  currentHeight = '297mm';
+  currentWidth = '210mm';
 
   paperDimensions:Observable<PaperDimensions[]>;
 
@@ -69,28 +69,28 @@ export class PrintTemplatesPageComponent implements OnInit {
 
     this.printPage = this.fb.group({
       printTemplateId: [],
-      templateName: ["", Validators.required],
+      templateName: ['', Validators.required],
       showTemplateImage: [true],
-      backgroundImageUrl: [""],
-      paperDimensions: [{paperDimensionsId: 1, name:"A4", height: "297mm", width:"210mm"}, Validators.required],
-      orientation: ["Portrait", Validators.required],
+      backgroundImageUrl: [''],
+      paperDimensions: [{paperDimensionsId: 1, name:'A4', height: '297mm', width:'210mm'}, Validators.required],
+      orientation: ['Portrait', Validators.required],
       printElements: this.fb.array([])
     });
 
     this.setupFormWatchers();
 
-    //Unsubscribe from watching resizing the print elements.
+    // Unsubscribe from watching resizing the print elements.
     this.mouseup.subscribe(() => { this.moveUnsubscribe();});
   }
 
   setupFormWatchers(){
 
-    this.printElements = this.printPage.get("printElements") as FormArray;
-    this.backgroundImage = this.printPage.get("backgroundImageUrl").value;
-    this.changeOrientation(this.printPage.get("orientation").value);
+    this.printElements = this.printPage.get('printElements') as FormArray;
+    this.backgroundImage = this.printPage.get('backgroundImageUrl').value;
+    this.changeOrientation(this.printPage.get('orientation').value);
 
     this.printPage.valueChanges.subscribe(() => {
-      this.changeOrientation(this.printPage.get("orientation").value);
+      this.changeOrientation(this.printPage.get('orientation').value);
     });
 
   }
@@ -136,7 +136,7 @@ export class PrintTemplatesPageComponent implements OnInit {
               : arr.length
             : targetIndex;
 
-      let previousElement = event.previousContainer.data.controls[event.previousIndex] as FormControl;
+      const previousElement = event.previousContainer.data.controls[event.previousIndex] as FormControl;
 
       previousElement.get('top').setValue(top);
       previousElement.get('left').setValue(left);
@@ -146,27 +146,27 @@ export class PrintTemplatesPageComponent implements OnInit {
 
     } else {
 
-      let data = event.previousContainer.data as unknown as Observable<PrintElement[]>;
+      const data = event.previousContainer.data as unknown as Observable<PrintElement[]>;
 
       data.subscribe(elementArray => {
 
-        let clone:PrintElement = elementArray[event.previousIndex] as PrintElement;
+        const clone:PrintElement = elementArray[event.previousIndex] as PrintElement;
 
-        let newElement = this.fb.group({
+        const newElement = this.fb.group({
           printTemplateElementId: null,
           printableElementId: clone.printableElementId,
           name: clone.name,
           example: clone.example,
           width: 175,
           height: 45,
-          top: top,
-          left: left,
+          top,
+          left,
           showStyleBar: false,
           bold: false,
           italics: false,
           underlined: false,
           fontSize: 12,
-          alignment: "left",
+          alignment: 'left',
           newElement: true,
           updated: true,
           deleted: false
@@ -206,18 +206,18 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   toggleImageUrl(){
 
-    this.backgroundImage = this.printPage.get("showTemplateImage").value ? this.printPage.get("backgroundImageUrl").value : "";
+    this.backgroundImage = this.printPage.get('showTemplateImage').value ? this.printPage.get('backgroundImageUrl').value : '';
   }
 
 
   bothResizeStart(printElement: AbstractControl, $existingEvent:MouseEvent){
 
-    let width = printElement.get("width");
-    let height = printElement.get("height");
+    const width = printElement.get('width');
+    const height = printElement.get('height');
 
 
     this.moveUnsubscribe();
-    //Now get the mouse current location
+    // Now get the mouse current location
     this.currentSubscription =  this.mousemove.subscribe(($moveEvent:MouseEvent) => {
 
       if(width.value + $moveEvent.movementX >= this.minWidth && !($moveEvent.x < $existingEvent.x && width.value === this.minWidth)) {
@@ -238,7 +238,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   horizontalResizeStart(printElement: AbstractControl, $existingEvent:MouseEvent){
 
-    let width = printElement.get("width");
+    const width = printElement.get('width');
 
     this.moveUnsubscribe();
 
@@ -256,7 +256,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   verticalResizeStart(printElement: AbstractControl, $existingEvent:MouseEvent){
 
-    let height = printElement.get("height");
+    const height = printElement.get('height');
 
     this.moveUnsubscribe();
 
@@ -286,28 +286,28 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   toggleStyleBar(printElement: AbstractControl){
 
-    let showStyleBar = printElement.get("showStyleBar");
+    const showStyleBar = printElement.get('showStyleBar');
 
     showStyleBar.setValue(!showStyleBar.value);
   }
 
   setBold(printElement: AbstractControl){
 
-    let bold = printElement.get("bold");
+    const bold = printElement.get('bold');
 
     bold.setValue(!bold.value);
 
   }
   setItalics(printElement: AbstractControl){
 
-    let italics = printElement.get("italics");
+    const italics = printElement.get('italics');
 
     italics.setValue(!italics.value);
 
   }
   setUderlined(printElement: AbstractControl){
 
-    let underlined = printElement.get("underlined");
+    const underlined = printElement.get('underlined');
 
     underlined.setValue(!underlined.value);
 
@@ -323,13 +323,13 @@ reset(){
 
 createNewForm(){
 
-    let newPage = this.fb.group({
+    const newPage = this.fb.group({
       printTemplateId: [],
-      templateName: ["", Validators.required],
+      templateName: ['', Validators.required],
       showTemplateImage: [true],
-      backgroundImageUrl: [""],
-      paperDimensions: [{paperDimensionsId: 1, name:"A4", height: "297mm", width:"210mm"}, Validators.required],
-      orientation: ["Portrait", Validators.required],
+      backgroundImageUrl: [''],
+      paperDimensions: [{paperDimensionsId: 1, name:'A4', height: '297mm', width:'210mm'}, Validators.required],
+      orientation: ['Portrait', Validators.required],
       printElements: this.fb.array([])
     });
 
@@ -346,14 +346,14 @@ loadform(printTemplate:PrintTemplate){
 
   if(printTemplate){
 
-    let reloadingForm = this.createNewForm() as FormGroup;
+    const reloadingForm = this.createNewForm() as FormGroup;
 
-    let printElements = reloadingForm.get("printElements") as FormArray;
+    const printElements = reloadingForm.get('printElements') as FormArray;
 
-    //Add enough FormArray elements to handle all the incoming elements
+    // Add enough FormArray elements to handle all the incoming elements
     printTemplate.printElements.forEach(() => {
 
-      let newElement = this.fb.group({
+      const newElement = this.fb.group({
         printTemplateElementId: null,
         printableElementId: null,
         name: null,
@@ -389,14 +389,14 @@ loadform(printTemplate:PrintTemplate){
 
 changeOrientation(orientation:string){
 
-  orientation === "Portrait" ?
+  orientation === 'Portrait' ?
   (
-    this.currentHeight = this.printPage.get("paperDimensions").value.height,
-    this.currentWidth = this.printPage.get("paperDimensions").value.width
+    this.currentHeight = this.printPage.get('paperDimensions').value.height,
+    this.currentWidth = this.printPage.get('paperDimensions').value.width
   ) :
   (
-    this.currentHeight = this.printPage.get("paperDimensions").value.width,
-    this.currentWidth = this.printPage.get("paperDimensions").value.height
+    this.currentHeight = this.printPage.get('paperDimensions').value.width,
+    this.currentWidth = this.printPage.get('paperDimensions').value.height
   );
 
 }
@@ -405,17 +405,17 @@ saveForm(){
 
   if(this.printPage.valid){
 
-    if(!this.printPage.get("printTemplateId").value) {
+    if(!this.printPage.get('printTemplateId').value) {
 
       this.templateService.insertTemplate(this.printPage.value).then(result => {
 
-        let printTemplateId = this.processResult(result);
-        this.printPage.get("printTemplateId").setValue(printTemplateId);
+        const printTemplateId = this.processResult(result);
+        this.printPage.get('printTemplateId').setValue(printTemplateId);
         this.templateService.insertIntoPrintTemplateList(this.printPage.value);
 
       }).catch(error => {
 
-        this.snackbar.errorSnackBar(error, "OK");
+        this.snackbar.errorSnackBar(error, 'OK');
 
       })
     }
@@ -429,7 +429,7 @@ saveForm(){
 
       }).catch(error => {
 
-        this.snackbar.errorSnackBar(error, "OK");
+        this.snackbar.errorSnackBar(error, 'OK');
 
       });
     }
@@ -439,7 +439,7 @@ saveForm(){
 
 processResult(result:SavePrintTemplateResponse){
 
-  let success: boolean = true;
+  let success = true;
 
   if(result[0].success !== 1) {
     success = false
@@ -453,8 +453,8 @@ processResult(result:SavePrintTemplateResponse){
   })
 
   success ?
-  this.snackbar.successSnackBar("Print template updated", "OK") :
-  this.snackbar.errorSnackBar("An error occured", "OK");
+  this.snackbar.successSnackBar('Print template updated', 'OK') :
+  this.snackbar.errorSnackBar('An error occured', 'OK');
 
   return result[0].printTemplateId;
 

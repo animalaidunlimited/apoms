@@ -7,7 +7,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
-import { ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'census-record',
@@ -22,9 +22,9 @@ export class CensusRecordComponent implements OnInit {
 
   @ViewChild('chipList') chipList : MatChipList;
 
-  loading:boolean = false;
+  loading = false;
 
-  addOnBlur:boolean = true;
+  addOnBlur = true;
 
   censusDate: FormGroup;
 
@@ -32,13 +32,13 @@ export class CensusRecordComponent implements OnInit {
 
   date: Date;
 
-  removable:boolean = true;
+  removable = true;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA , SPACE];
 
-  selectable:boolean = true;
+  selectable = true;
 
-  visible:boolean = true;
+  visible = true;
 
   constructor(
       private fb: FormBuilder,
@@ -153,7 +153,7 @@ export class CensusRecordComponent implements OnInit {
                                             action.patients.push({
                                                 patientId: response[0].vPatientId,
                                                 tagNumber: tag.toUpperCase(),
-                                                colour: "",
+                                                colour: '',
                                                 errorCode: response[0].vErrorCode,
                                             });
                                             this.cdref.detectChanges();
@@ -176,7 +176,7 @@ export class CensusRecordComponent implements OnInit {
                                             })
                                     });
 
-                                    let CensusTableData : CensusRecord = {
+                                    const CensusTableData : CensusRecord = {
                                         date : this.censusDate.get('CensusDate').value,
                                         area : area.areaName,
                                         action : action.actionName,
@@ -257,7 +257,7 @@ export class CensusRecordComponent implements OnInit {
                       });
                       const index = action.patients.indexOf(patient);
                       action.patients.splice(index, 1);
-                      let CensusTableData : CensusRecord = {
+                      const CensusTableData : CensusRecord = {
                             date : this.censusDate.get('CensusDate').value,
                             area : area.areaName,
                             action : action.actionName,

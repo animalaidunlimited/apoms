@@ -53,11 +53,11 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       deleted: false
     })
 
-    this.tags = this.mediaForm.get("tags") as FormArray;
+    this.tags = this.mediaForm.get('tags') as FormArray;
 
       this.mediaItem.tags.forEach(tag => {
 
-        let newTag = JSON.parse(JSON.stringify(tag));
+        const newTag = JSON.parse(JSON.stringify(tag));
 
         this.tags.push(this.fb.control({
           tag: newTag.tag
@@ -80,11 +80,11 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
 
-        this.mediaForm.get("patientMediaItemId").setValue(itemId);
+        this.mediaForm.get('patientMediaItemId').setValue(itemId);
 
-        //TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
-        //We should turn this into an observable.
-        this.mediaForm.get("remoteURL").setValue(this.mediaItem.remoteURL);
+        // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
+        // We should turn this into an observable.
+        this.mediaForm.get('remoteURL').setValue(this.mediaItem.remoteURL);
 
         this.patientService.savePatientMedia(this.mediaForm.value);
       });

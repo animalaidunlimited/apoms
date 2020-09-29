@@ -30,11 +30,11 @@ export class UpdateCensusDialogComponent implements OnInit {
   }
 
   onCensusSaveResult(result : CensusRecord){
-    let value : any = result;
+    const value : any = result;
     this.onAdd.emit(value);
   }
   onCensusRemoveResult(remove : CensusRecord){
-    let value : any = remove;
+    const value : any = remove;
     this.onRemove.emit(value);
   }
 
