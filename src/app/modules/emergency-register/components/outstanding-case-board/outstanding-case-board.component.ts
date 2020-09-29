@@ -27,23 +27,23 @@ export interface Swimlane{
   styleUrls: ['./outstanding-case-board.component.scss'],
   animations:
   [
-    trigger("rescueMoved",
+    trigger('rescueMoved',
     [
-      state("void", style({
-        background: "transparent"
+      state('void', style({
+        background: 'transparent'
       })),
-      state("moved",style({
-        background: "lightsteelblue"
+      state('moved',style({
+        background: 'lightsteelblue'
 
     })),
-    state("still", style({
-      background: "transparent"
+    state('still', style({
+      background: 'transparent'
     })),
-    transition("moved => still", [
-      animate("5s")
+    transition('moved => still', [
+      animate('5s')
     ]),
-    transition("still => moved", [
-      animate("0s")
+    transition('still => moved', [
+      animate('0s')
     ])
 
   ])
@@ -68,17 +68,17 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   autoRefresh:boolean;
 
-  hideMap: boolean = true;
+  hideMap = true;
 
-  loading:boolean = true;
+  loading = true;
 
-  notificationPermissionGranted:boolean = false;
+  notificationPermissionGranted = false;
 
   outstandingCases:OutstandingCase[];
   outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
   refreshColour$:BehaviorSubject<ThemePalette>;
-  refreshColour:ThemePalette = "primary";
+  refreshColour:ThemePalette = 'primary';
 
   refreshForm:FormGroup;
   searchForm:FormGroup;
@@ -99,7 +99,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
-    //Attempting to force change detection here causes the whole thing to hang.
+    // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe(() => {
         this.loading = false;
         this.changeDetector.detectChanges();
@@ -125,7 +125,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   setup(){
 
-    //Find out whether we have permission to receive notifications or not
+    // Find out whether we have permission to receive notifications or not
     this.messagingService.getPermissionGranted().subscribe((permissionGranted) => {
 
       this.notificationPermissionGranted = !!permissionGranted;
@@ -141,11 +141,11 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     });
 
-    //If we receive focus then make sure we tidy up as needed.
+    // If we receive focus then make sure we tidy up as needed.
     this.outstandingCaseService.haveReceivedFocus.subscribe((focusReceived) => {
 
       if(focusReceived && !this.autoRefresh){
-        this.refreshColour$.next("warn");
+        this.refreshColour$.next('warn');
         this.changeDetector.detectChanges();
       }
       else if (focusReceived && this.autoRefresh){
@@ -158,7 +158,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     });
 
-    this.searchForm.get("searchTerm").valueChanges
+    this.searchForm.get('searchTerm').valueChanges
       .pipe(
         debounceTime(250),
         startWith('')
@@ -183,8 +183,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       try{
 
-        //We need to move the item first when moving by drag so that the rescue
-        //waits in its new swimlane until it either succeeds or fails and is moved back
+        // We need to move the item first when moving by drag so that the rescue
+        // waits in its new swimlane until it either succeeds or fails and is moved back
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
@@ -201,7 +201,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
                 this.changeDetector.detectChanges();
             }
             else {
-              this.refreshColour$.next("warn");
+              this.refreshColour$.next('warn');
               this.changeDetector.detectChanges();
             }
           });
@@ -223,15 +223,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
               }
       });
 
-    //If we successfully updated the rescue and we're currently set to
-    //not receive auto-refresh updates, then we need to set the colour of
-    //the refresh button to show we've made a change.
-    let afterClosed = rescueDialog.afterClosed();
+    // If we successfully updated the rescue and we're currently set to
+    // not receive auto-refresh updates, then we need to set the colour of
+    // the refresh button to show we've made a change.
+    const afterClosed = rescueDialog.afterClosed();
 
     afterClosed.subscribe(result => {
 
       if(result?.success === 1 && !this.autoRefresh){
-        this.refreshColour$.next("warn");
+        this.refreshColour$.next('warn');
       }
       this.changeDetector.detectChanges();
 
@@ -249,7 +249,7 @@ openCaseFromMap(emergencyCase:SearchResponse){
 
 openCase(caseSearchResult:OutstandingRescue)
 {
-  let result:SearchResponse = {
+  const result:SearchResponse = {
 
     EmergencyCaseId: caseSearchResult.emergencyCaseId,
     EmergencyNumber: caseSearchResult.emergencyNumber,
@@ -280,7 +280,7 @@ refreshRescues(){
 
 printEmergencyCard(emergencyCaseId: number){
 
-  let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+  const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
   this.printService.printEmergencyCaseDocument(printTemplateId, emergencyCaseId);
 

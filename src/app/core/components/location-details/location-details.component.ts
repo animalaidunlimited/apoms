@@ -81,7 +81,7 @@ export class LocationDetailsComponent implements OnInit {
                 this.recordForm.patchValue(location);
 
 
-                //If we have the lat and long then update the location
+                // If we have the lat and long then update the location
                 if (location.locationDetails?.latitude && location.locationDetails?.longitude)
                 {
 
@@ -92,8 +92,8 @@ export class LocationDetailsComponent implements OnInit {
                     );
                 }
 
-                //Sometimes for older records we might have the address, but no lat long. In this case, search for the location
-                //If no results are found then set the location to be the center of user's lat/long.
+                // Sometimes for older records we might have the address, but no lat long. In this case, search for the location
+                // If no results are found then set the location to be the center of user's lat/long.
                 if((!location.locationDetails?.latitude || !location.locationDetails?.longitude) && location.locationDetails?.location){
 
                     this.performSearch();
@@ -101,12 +101,12 @@ export class LocationDetailsComponent implements OnInit {
 
             });
 
-            //If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
+            // If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
             if (!this.latitude || !this.longitude ){
 
                 const coords = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
 
-                let coordinates:Location = {
+                const coordinates:Location = {
                     latitude: coords.lat,
                     longitude: coords.lng,
                     location: null

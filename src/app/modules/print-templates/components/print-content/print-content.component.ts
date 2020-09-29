@@ -16,7 +16,7 @@ export class PrintContentComponent implements OnInit {
     route: ActivatedRoute,
     private printService: PrintTemplateService
   ) {
-    this.printTemplates = JSON.parse(route.snapshot.params['printTemplate']);
+    this.printTemplates = JSON.parse(route.snapshot.params.printTemplate);
   }
 
   ngOnInit(): void {

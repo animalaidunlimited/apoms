@@ -25,7 +25,7 @@ export class AnimalHeaderComponent implements OnInit {
 
     lastObjectUrl: string;
 
-    //Only doing this so the checker doesn't complain.
+    // Only doing this so the checker doesn't complain.
     patientDetailsFormGroup:FormGroup;
 
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
@@ -52,10 +52,10 @@ export class AnimalHeaderComponent implements OnInit {
 
     public handlePaste(event: ClipboardEvent){
 
-        let patientId = this.recordForm.get('patientDetails.patientId').value;
+        const patientId = this.recordForm.get('patientDetails.patientId').value;
 
-        //Pass the clipboard event down to the service, expect it to return an image URL
-        let newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId)
+        // Pass the clipboard event down to the service, expect it to return an image URL
+        const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId)
 
         this.imageUrls[0] = newItem.localURL;
 

@@ -23,6 +23,20 @@ import { UserOptionsService } from 'src/app/core/services/user-options.service';
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit {
+;
+
+
+
+    constructor(
+        private dialog: MatDialog,
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private dropdown: DropdownService,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private mediaPaster: MediaPasteService
+    ) {}
 
     @Input() recordForm: FormGroup;
     @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
@@ -30,18 +44,6 @@ export class AnimalSelectionComponent implements OnInit {
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
 
     @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
-
-    @HostListener('document:keydown.control.enter', ['$event'])
-    catchControlEnter(event: KeyboardEvent) {
-        event.preventDefault();
-
-        //Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
-        //So unless we check to see which version of this component is visible, we won't know which tab to update.
-        if(this.animalTypeChipsElement.nativeElement.offsetParent){
-
-            this.updateTag(this.getcurrentPatient());
-        }
-    };
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
@@ -69,21 +71,19 @@ export class AnimalSelectionComponent implements OnInit {
     tagNumber: string;
     validRow: boolean;
 
-    emergencyCardHTML:string = '';
+    emergencyCardHTML = '';
 
+    @HostListener('document:keydown.control.enter', ['$event'])
+    catchControlEnter(event: KeyboardEvent) {
+        event.preventDefault();
 
+        // Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
+        // So unless we check to see which version of this component is visible, we won't know which tab to update.
+        if(this.animalTypeChipsElement.nativeElement.offsetParent){
 
-    constructor(
-        private dialog: MatDialog,
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
-        private printService: PrintTemplateService,
-        private userOptions: UserOptionsService,
-        private mediaPaster: MediaPasteService
-    ) {}
-
+            this.updateTag(this.getcurrentPatient());
+        }
+    }
     ngOnInit() {
 
         this.recordForm.addControl('patients', this.fb.array([]));
@@ -164,9 +164,9 @@ export class AnimalSelectionComponent implements OnInit {
             deleted: [false, Validators.required],
         });
 
-        let patientIdControl = newPatient.get("patientId");
+        const patientIdControl = newPatient.get('patientId');
 
-        newPatient.get("tagNumber").setAsyncValidators(this.tagNumberValidator.validate(
+        newPatient.get('tagNumber').setAsyncValidators(this.tagNumberValidator.validate(
             this.emergencyCaseId,
             patientIdControl,
         ))
@@ -231,7 +231,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
-            //We only ever want to have one item selected at once, but WE want to control when the change happens and how.
+            // We only ever want to have one item selected at once, but WE want to control when the change happens and how.
             this.selection.toggle(this.selection.selected[0]);
             this.clearChips();
             this.selection.toggle(row);
@@ -488,7 +488,7 @@ export class AnimalSelectionComponent implements OnInit {
             !(this.animalTypeChips.selected instanceof MatChip)
         ) {
 
-            //TODO replace this with a better dialog.
+            // TODO replace this with a better dialog.
             alert('Please select an animal');
             problemChip.selected = false;
             return;
@@ -504,15 +504,15 @@ export class AnimalSelectionComponent implements OnInit {
             animalType => animalType.animalType == animalTypeChip.value,
         );
 
-        //Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
-        //followed by an unset for the old patient type
-        let currentPatient = this.getcurrentPatient();
+        // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
+        // followed by an unset for the old patient type
+        const currentPatient = this.getcurrentPatient();
 
         if(!currentPatient){
             return;
         }
 
-        if(!(currentPatient.get("animalType")?.value === animalTypeChip.value) && !animalTypeChip.selected){
+        if(!(currentPatient.get('animalType')?.value === animalTypeChip.value) && !animalTypeChip.selected){
             return;
         }
 
@@ -621,8 +621,8 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(this.selection.selected.length === 0){
 
-            //TODO make this a pretty dialog
-            alert("Please select a patient to update");
+            // TODO make this a pretty dialog
+            alert('Please select a patient to update');
             return;
         }
 
@@ -678,9 +678,9 @@ export class AnimalSelectionComponent implements OnInit {
 
     printEmergencyCard(row:FormGroup){
 
-        let printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+        const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
-        this.printService.printPatientDocument(printTemplateId, row.get("patientId").value);
+        this.printService.printPatientDocument(printTemplateId, row.get('patientId').value);
 
     }
 
@@ -690,24 +690,24 @@ export class AnimalSelectionComponent implements OnInit {
         );
     }
 
-    //If you tab into the chip lists, you have to tab through them all to get out.
-    //So the below finds the last element and skips to the next value
+    // If you tab into the chip lists, you have to tab through them all to get out.
+    // So the below finds the last element and skips to the next value
     tabPressed(list:string){
 
-        if(list === "AnimalType"){
+        if(list === 'AnimalType'){
             this.animalTypeChips.chips.last.focus();
         }
-        else if (list === "ProblemType"){
+        else if (list === 'ProblemType'){
             this.problemChips.chips.last.focus();
         }
     }
 
     shiftTabPressed(list:string){
 
-        if(list === "AnimalType"){
+        if(list === 'AnimalType'){
             this.animalTypeChips.chips.first.focus();
         }
-        else if (list === "ProblemType"){
+        else if (list === 'ProblemType'){
             this.problemChips.chips.first.focus();
         }
     }

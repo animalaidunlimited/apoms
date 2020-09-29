@@ -59,7 +59,7 @@ export class NavGuard implements CanActivateChild {
 
         }
 
-        //If we're on mobile close the sidenav after navigation
+        // If we're on mobile close the sidenav after navigation
         if(window.innerWidth < 840){
             this.navigationService.closeIsOpen();
         }

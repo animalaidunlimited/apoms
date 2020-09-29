@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PrintPatient, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { PatientService } from '../../emergency-register/services/patient.service';
 import { map } from 'rxjs/operators';
 
@@ -31,11 +31,11 @@ export class PrintTemplateService extends APIService {
 
   private initialisePrintTemplates(){
 
-    this.getObservable("").subscribe((templates:any[]) => {
+    this.getObservable('').subscribe((templates:any[]) => {
 
       templates.forEach(template => {
 
-        //The database returns 0 instead of false, so we need to change to booleans.
+        // The database returns 0 instead of false, so we need to change to booleans.
         template.printElements.forEach(element => {
 
           element.bold = element.bold === 0 ? false : true;
@@ -63,7 +63,7 @@ export class PrintTemplateService extends APIService {
 
     let templateList: PrintTemplate[];
 
-    let printTemplateSubscription = this.printTemplates.subscribe(templates => {
+    const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
       templateList = templates
     });
@@ -82,12 +82,12 @@ export class PrintTemplateService extends APIService {
 
     let templateList: PrintTemplate[];
 
-    let printTemplateSubscription = this.printTemplates.subscribe(templates => {
+    const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
       templateList = templates
     });
 
-    let index = templateList.findIndex(existingElement => existingElement.printTemplateId === template.printTemplateId);
+    const index = templateList.findIndex(existingElement => existingElement.printTemplateId === template.printTemplateId);
 
     templateList.splice(index, 1, template)
 
@@ -111,12 +111,12 @@ export class PrintTemplateService extends APIService {
 
     this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
 
-      //Get all of the patient details
+      // Get all of the patient details
       this.patientService.getPrintPatientByPatientId(patientId).subscribe((printPatient:PrintPatient) => {
 
-        let newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
+        const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
-        //The print content component takes an array of print templates.
+        // The print content component takes an array of print templates.
         this.sendContentToPrinter(JSON.stringify([newTemplate]));
 
       });
@@ -127,7 +127,7 @@ export class PrintTemplateService extends APIService {
 
   private populatePrintTemplateWithPatientData(printTemplate:PrintTemplate, printPatient:PrintPatient){
 
-    let newTemplate:PrintTemplate = JSON.parse(JSON.stringify(printTemplate));
+    const newTemplate:PrintTemplate = JSON.parse(JSON.stringify(printTemplate));
 
     newTemplate.printElements.forEach(element => {
 
@@ -141,16 +141,16 @@ export class PrintTemplateService extends APIService {
 
   public printEmergencyCaseDocument(printTemplateId: number, emergencyCaseId: number){
 
-    //Get all of the patient details by Emergency Case Id
+    // Get all of the patient details by Emergency Case Id
       this.patientService.getPrintPatientsByEmergencyCaseId(emergencyCaseId).subscribe((resultPatient:PrintPatient[]) => {
 
-        let templates:PrintTemplate[] = [];
+        const templates:PrintTemplate[] = [];
 
         resultPatient.forEach(printPatient => {
 
           this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
 
-            let newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
+            const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
             templates.push(newTemplate);
 
@@ -164,8 +164,8 @@ export class PrintTemplateService extends APIService {
 }
 
 private toCamelCase(str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-    if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
+    if (+match === 0) {return ''}; // or if (/\s+/.test(match)) for white spaces
     return index === 0 ? match.toLowerCase() : match.toUpperCase();
   });
 }
@@ -186,7 +186,7 @@ private toCamelCase(str) {
 
     this.router.navigate(['/',
     { outlets: {
-      'print': ['print', 'print-content', contentToPrint]
+      print: ['print', 'print-content', contentToPrint]
     }}]);
 
   }
@@ -194,6 +194,7 @@ private toCamelCase(str) {
 
 
   public onDataReady() {
+
     setTimeout(() => {
       window.print();
       this.isPrinting.next(false);

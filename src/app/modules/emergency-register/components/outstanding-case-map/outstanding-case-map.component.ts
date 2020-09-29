@@ -21,7 +21,7 @@ export class OutstandingCaseMapComponent implements OnInit {
   caseSubscription: Subscription;
 
   center: google.maps.LatLngLiteral;
-  zoom: number = 13;
+  zoom = 13;
 
   infoContent:SearchResponse[];
 
@@ -46,7 +46,7 @@ export class OutstandingCaseMapComponent implements OnInit {
 
     this.center = this.userOptions.getCoordinates();
 
-    //Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
+    // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
     this.options = {
       streetViewControl: false,
       center: this.center,
@@ -69,10 +69,10 @@ export class OutstandingCaseMapComponent implements OnInit {
           return cases.filter(swimlane => swimlane.rescueStatus >= 3)
                       .map(groups => groups.rescuerGroups)
 
-                        //In the below we need to aggregate the rescues into their own ambulance groups so that we can then find the last one based upon time.
-                        //However if we make the changes directly to the result object of the reduce, it changes the underlying object, moving the rescues around to the
-                        //wrong ambulance groups. So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
-                        //to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
+                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find the last one based upon time.
+                        // However if we make the changes directly to the result object of the reduce, it changes the underlying object, moving the rescues around to the
+                        // wrong ambulance groups. So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
+                        // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
                       .map(rescuerGroups => JSON.parse(JSON.stringify(rescuerGroups)))
                       .reduce((aggregatedLocations, current) => {
 
@@ -84,7 +84,7 @@ export class OutstandingCaseMapComponent implements OnInit {
 
                   current.forEach(currentRescueGroup => {
 
-                    let index = aggregatedLocations.findIndex(parentRescueGroup => {
+                    const index = aggregatedLocations.findIndex(parentRescueGroup => {
 
                       return parentRescueGroup.rescuer1 === currentRescueGroup.rescuer1 &&
                           parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2
@@ -104,10 +104,10 @@ export class OutstandingCaseMapComponent implements OnInit {
                 }}, [])
               .map(rescueGroup => {
 
-                let maxRescue = rescueGroup.rescues.reduce((current, previous) => {
+                const maxRescue = rescueGroup.rescues.reduce((current, previous) => {
 
-                let currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1)) ? current.ambulanceArrivalTime : current.rescueTime;
-                let previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1)) ? previous.ambulanceArrivalTime : previous.rescueTime;
+                const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1)) ? current.ambulanceArrivalTime : current.rescueTime;
+                const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1)) ? previous.ambulanceArrivalTime : previous.rescueTime;
 
                 return previousTime > currentTime ? previous : current;
 
@@ -146,13 +146,13 @@ export class OutstandingCaseMapComponent implements OnInit {
 
     let searchQuery = ' ec.EmergencyCaseId IN ('
 
-    let emergencyNumbers = rescues.map(rescue => {
+    const emergencyNumbers = rescues.map(rescue => {
 
       return rescue.emergencyCaseId
 
     }).join(',');
 
-    searchQuery += emergencyNumbers + ") ";
+    searchQuery += emergencyNumbers + ') ';
 
     this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
 
@@ -165,8 +165,8 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   openInfoWindow(marker: MapMarker, rescue: OutstandingRescue) {
 
-    //Go off and get all the details for the current rescue so we can display all the animals for a rescue
-    let searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
+    // Go off and get all the details for the current rescue so we can display all the animals for a rescue
+    const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
 
     this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
 
