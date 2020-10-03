@@ -6,19 +6,7 @@ import { SurgeryRecordDialogComponent } from '../../components/surgery-record-di
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 
 
-const ELEMENT_DATA: SurgeryRecord[] = [
-    {
-        surgeryId: null,
-        date: '',
-        type: '',
-        surgeon: '',
-        site: '',
-        anesthesiaMinutes: 0,
-        died: '',
-        comments: '',
-        antibioticsGiven: '',
-    },
-];
+const ELEMENT_DATA: SurgeryRecord[] = [];
 
 @Component({
     selector: 'surgery-details',
@@ -63,6 +51,7 @@ export class SurgeryDetailsComponent implements OnInit {
 
                 if(response){
                     this.surgeryRecords = response;
+                    this.surgeryRecords.sort((s1, s2) => {return <any>new Date(s2.date) - <any>new Date(s1.date)})
                 }
 
             } );

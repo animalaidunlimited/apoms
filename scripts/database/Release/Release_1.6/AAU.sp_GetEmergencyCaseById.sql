@@ -29,7 +29,11 @@ JSON_OBJECT("updateTime", DATE_FORMAT(ec.UpdateTime, "%Y-%m-%dT%H:%i:%s"))
 )),
 JSON_OBJECT("callOutcome",
 JSON_MERGE_PRESERVE(
+JSON_OBJECT("CallOutcome",
+JSON_MERGE_PRESERVE(
 JSON_OBJECT("CallOutcomeId", ec.CallOutcomeId),
+JSON_OBJECT("CallOutcome", o.CallOutcome)
+)),
 JSON_OBJECT("sameAsNumber", sa.EmergencyNumber)
 )
 )
@@ -37,6 +41,8 @@ JSON_OBJECT("sameAsNumber", sa.EmergencyNumber)
 ) AS Result
 			
 FROM AAU.EmergencyCase ec
+LEFT JOIN AAU.EmergencyCode c ON c.EmergencyCodeId = ec.EmergencyCodeId
+LEFT JOIN AAU.CallOutcome o ON o.CallOutcomeId = ec.CallOutcomeId
 LEFT JOIN AAU.EmergencyCase sa ON sa.EmergencyCaseId = ec.SameAsEmergencyCaseId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
