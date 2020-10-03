@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 interface ReportPatientRecord {
   emergencynumber: number;
@@ -13,7 +14,7 @@ interface ReportPatientRecord {
 }
 
 interface DialogData{
-areaName : string
+areaName : string;
 }
 
 @Component({
@@ -25,24 +26,33 @@ areaName : string
 
 export class PatientDetailsDialogComponent implements OnInit {
 
-  @ViewChild(MatTable) table: MatTable<any>;
+  displayedColumns: string[] = ['emergencynumber', 'tagnumber', 'species','callername', 'number', 'calldate'];
 
-  displayedColumns: string[] = ['emergencynumber', 'tagnumber', 'species','callername',
-  'number', 'calldate'];
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private census : CensusService ) { }
+    private census: CensusService ) { }
 
-  patientRecords = new MatTableDataSource<ReportPatientRecord>();
+  patientRecords: MatTableDataSource<ReportPatientRecord>;
 
 
   ngOnInit() {
-    this.census.getPatientDetialsByArea(this.data.areaName).then((response: ReportPatientRecord[])=>{
-      this.patientRecords = new MatTableDataSource(response)
+
+    console.log(this.data.areaName)
+
+
+    this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
+
+      console.log(response);
+
+      this.patientRecords = new MatTableDataSource(response);
+      this.patientRecords.sort = this.sort;
+
     });
   }
+
 
   onCancel(){
     this.dialogRef.close();

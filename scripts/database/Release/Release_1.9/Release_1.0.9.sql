@@ -82,6 +82,13 @@ Created On: 11/09/20
 Purpose: Get the detais of each animal in an area.
 */
 
+DECLARE vOrganisationId INT;
+
+SELECT o.OrganisationId INTO vOrganisationId
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
 SELECT 
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
@@ -105,7 +112,8 @@ INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     AND p.PatientStatusId = 1
 INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
 INNER JOIN AAU.Caller clr ON clr.CallerId = ec.CallerId
-WHERE PatientId IN
+WHERE p.OrganisationId = vOrganisationId
+AND p.PatientId IN
 (
 SELECT c.PatientId  
 	FROM AAU.Census c
