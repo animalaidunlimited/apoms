@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SurgerySite, SurgeryType, SurgeryById, UpdatedSurgery } from 'src/app/core/models/surgery-details';
+import { SurgerySite, SurgeryType, SurgeryById, SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Observable } from 'rxjs';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
@@ -9,7 +9,6 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { SurgeryRecord } from '../../hospital-manager/components/surgery-details/surgery-details.component';
 
 interface Antibiotic {
     id: number;
@@ -75,9 +74,9 @@ export class SurgeryRecordComponent implements OnInit {
 
     ngOnInit() {
 
-        this.dropdown.getSurgeon().subscribe(surgeon => { this.surgeons = surgeon});
-        this.dropdown.getSurgerySite().subscribe(site => {this.surgerySites = site});
-        this.dropdown.getSurgeryType().subscribe(type => {this.surgeryTypes = type});
+        this.dropdown.getSurgeon().subscribe(surgeon => { this.surgeons = surgeon;});
+        this.dropdown.getSurgerySite().subscribe(site => {this.surgerySites = site;});
+        this.dropdown.getSurgeryType().subscribe(type => {this.surgeryTypes = type;});
 
         this.animalTypes$ = this.dropdown.getAnimalTypes();
 

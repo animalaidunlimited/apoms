@@ -23,9 +23,6 @@ import { UserOptionsService } from 'src/app/core/services/user-options.service';
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit {
-;
-
-
 
     constructor(
         private dialog: MatDialog,
@@ -169,7 +166,7 @@ export class AnimalSelectionComponent implements OnInit {
         newPatient.get('tagNumber').setAsyncValidators(this.tagNumberValidator.validate(
             this.emergencyCaseId,
             patientIdControl,
-        ))
+        ));
 
         return newPatient;
     }
@@ -250,7 +247,7 @@ export class AnimalSelectionComponent implements OnInit {
     selectIfNotSelected(row:FormGroup){
 
         if (!this.selection.isSelected(row)){
-            this.toggleRow(row)
+            this.toggleRow(row);
         }
 
     }
@@ -293,9 +290,10 @@ export class AnimalSelectionComponent implements OnInit {
         const currentAnimal = currentPatient.get('animalType').value;
 
         this.animalTypeChips.chips.forEach(chip => {
-            currentAnimal == chip.value
+            currentAnimal === chip.value
                 ? (chip.toggleSelected(),
                   (this.currentPatientChip = chip.value))
+                // tslint:disable-next-line: no-unused-expression
                 : chip.deselect;
         });
 
@@ -303,8 +301,9 @@ export class AnimalSelectionComponent implements OnInit {
 
         problems.controls.forEach(problem => {
             this.problemChips.chips.forEach(chip => {
-                problem.get('problem').value == chip.value
+                problem.get('problem').value === chip.value
                     ? chip.toggleSelected()
+                    // tslint:disable-next-line: no-unused-expression
                     : chip.deselect;
             });
         });
@@ -326,7 +325,7 @@ export class AnimalSelectionComponent implements OnInit {
             : undefined;
 
         if (
-            selectedCount == 1 &&
+            selectedCount === 1 &&
             (animalTypeChip.selected ||
                 !(this.animalTypeChips.selected instanceof MatChip))
         ) {
@@ -359,7 +358,7 @@ export class AnimalSelectionComponent implements OnInit {
         }
 
         // if there are no rows, then we need to add a new one
-        if (selectedCount == 0 && animalTypeChip.selected) {
+        if (selectedCount === 0 && animalTypeChip.selected) {
             const currentPatient = this.getAnimalFromObservable(
                 animalTypeChip.value,
             );
@@ -385,7 +384,7 @@ export class AnimalSelectionComponent implements OnInit {
         // Set the new row to be selected
         this.selection.select(
             this.patientDataSource.data.find(
-                row => row.get('position').value == position,
+                row => row.get('position').value === position,
             ),
         );
     }
@@ -395,12 +394,12 @@ export class AnimalSelectionComponent implements OnInit {
             const chips = this.problemChips.chips;
 
             const foundChip = chips
-                .filter(chips => {
-                    return chips.disabled == false;
+                .filter(allChips => {
+                    return allChips.disabled === false;
                 })
                 .find(chip => {
                     return (
-                        chip.value.substr(0, 1).toLowerCase() ==
+                        chip.value.substr(0, 1).toLowerCase() ===
                         event.key.toLowerCase()
                     );
                 });
@@ -408,7 +407,7 @@ export class AnimalSelectionComponent implements OnInit {
             if (foundChip) {
                 foundChip.focus();
             }
-        } else if (event.keyCode == 13) {
+        } else if (event.keyCode === 13) {
             this.problemChipSelected(problemChip);
         }
     }
@@ -421,9 +420,9 @@ export class AnimalSelectionComponent implements OnInit {
 
             let chips;
 
-            if (chipGroup == 'animaltype') {
+            if (chipGroup === 'animaltype') {
                 chips = this.animalTypeChips.chips;
-            } else if (chipGroup == 'problem') {
+            } else if (chipGroup === 'problem') {
                 chips = this.problemChips.chips;
             }
 
@@ -434,13 +433,13 @@ export class AnimalSelectionComponent implements OnInit {
             // Also get the index of the current item
             chips.forEach((item, index) => {
                 if (
-                    item.value.substr(0, 1).toLowerCase() ==
+                    item.value.substr(0, 1).toLowerCase() ===
                     currentPatient.substr(0, 1).toLowerCase()
                 ) {
                     lastInstance = item.value;
                 }
 
-                if (item.value == currentPatient) {
+                if (item.value === currentPatient) {
                     currentIndex = index;
                 }
             });
@@ -449,19 +448,19 @@ export class AnimalSelectionComponent implements OnInit {
             const currentArray = chips.filter((chip, index) => {
                 return (
                     !(
-                        chip.value.substr(0, 1).toLowerCase() ==
+                        chip.value.substr(0, 1).toLowerCase() ===
                             currentPatient.substr(0, 1).toLowerCase() &&
                         index <= currentIndex
                     ) ||
-                    currentPatient == '' ||
-                    lastInstance == currentPatient
+                    currentPatient === '' ||
+                    lastInstance === currentPatient
                 );
             });
 
             // Get the chip we need
             const currentKeyChip = currentArray.find(chip => {
                 return (
-                    chip.value.substr(0, 1).toLowerCase() ==
+                    chip.value.substr(0, 1).toLowerCase() ===
                     event.key.toLowerCase()
                 );
             });
@@ -501,11 +500,11 @@ export class AnimalSelectionComponent implements OnInit {
     hideIrrelevantChips(animalTypeChip) {
 
         const currentExclusions = this.exclusions.filter(
-            animalType => animalType.animalType == animalTypeChip.value,
+            animalType => animalType.animalType === animalTypeChip.value,
         );
 
-        // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
-        // followed by an unset for the old patient type
+        // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
+        // two for the new patient type, followed by an unset for the old patient type
         const currentPatient = this.getcurrentPatient();
 
         if(!currentPatient){
@@ -535,7 +534,7 @@ export class AnimalSelectionComponent implements OnInit {
                     chip.selectable = false;
                     chip.selected = false;
                 }
-            })
+            });
         });
     }
 
@@ -559,7 +558,7 @@ export class AnimalSelectionComponent implements OnInit {
             patients.removeAt(removeIndex);
         } else {
             const currentPatient = patients.controls.find(
-                patient => patient.get('position').value == position,
+                patient => patient.get('position').value === position,
             );
 
             currentPatient.get('deleted').setValue(!deleted);
@@ -582,7 +581,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         // Get the current list of problems and replace the existing problem array
         const problemsObject: ProblemDropdownResponse = this.problems$.find(
-            item => item.Problem == problemChip.value,
+            item => item.Problem === problemChip.value,
         );
 
         const problemsGroup = this.fb.group({
@@ -596,10 +595,10 @@ export class AnimalSelectionComponent implements OnInit {
 
         const problemIndex = problems.controls.findIndex(
             problem =>
-                problem.get('problemId').value == problemsObject.ProblemId,
+                problem.get('problemId').value === problemsObject.ProblemId,
         );
 
-        if (problemChip.selected && problemIndex == -1) {
+        if (problemChip.selected && problemIndex === -1) {
             problems.push(problemsGroup);
             currentPatient.get('updated').setValue(true);
         }
@@ -649,13 +648,13 @@ export class AnimalSelectionComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
 
             if (result) {
-                const currentPatient = this.getcurrentPatient();
+                const resultCurrentPatient = this.getcurrentPatient();
 
-                currentPatient.get('tagNumber').setValue(result.value);
+                resultCurrentPatient.get('tagNumber').setValue(result.value);
 
-                currentPatient.get('duplicateTag').setValue(result.status);
+                resultCurrentPatient.get('duplicateTag').setValue(result.status);
 
-                currentPatient.get('updated').setValue(true);
+                resultCurrentPatient.get('updated').setValue(true);
                 this.patientTable.renderRows();
             }
         });
@@ -686,7 +685,7 @@ export class AnimalSelectionComponent implements OnInit {
 
     getAnimalFromObservable(name: string) {
         return this.animalTypes$.find(
-            animalType => animalType.AnimalType == name,
+            animalType => animalType.AnimalType === name,
         );
     }
 

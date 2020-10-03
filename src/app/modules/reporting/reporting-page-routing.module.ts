@@ -1,4 +1,4 @@
-import { ReportingPageComponent } from './reporting-page.component';
+import { ReportingPageComponent } from './components/reporting-page.component';
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';

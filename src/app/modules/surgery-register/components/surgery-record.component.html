@@ -4,7 +4,7 @@
 <div fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
         <fieldset class="form-sub-group">
-            <legend class="legend">Animal Details</legend>
+            <legend class="legend">Animal details</legend>
             <div fxLayout="row wrap" fxLayoutGap="auto" fxLayoutAlign="start end">
                 <mat-form-field>
                     <input  type="text" placeholder="Tag Number" formControlName="TagNumber" matInput>
@@ -13,7 +13,7 @@
                 <input matInput  type="number" placeholder="EmergencyNumber" formControlName="EmergencyNumber"  >
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label>Animal Type</mat-label>
+                    <mat-label>Animal type</mat-label>
                     <input type="text" placeholder="Animal Type" formControlName="AnimalTypeId" matInput>
                 </mat-form-field>
             </div>
@@ -21,9 +21,9 @@
         </fieldset>
 
         <fieldset class="form-sub-group">
-            <legend class="legend">Surgery Type</legend>
+            <legend class="legend">Surgery type</legend>
             <mat-form-field style="width:100%">
-                <mat-label >Select Surgery Type</mat-label>
+                <mat-label >Select surgery type</mat-label>
                 <mat-select formControlName="SurgeryTypeId" style="width: 100%;" [errorStateMatcher]="errorMatcher"  required>
                         <mat-option *ngFor="let surgeryType of surgeryTypes" [value]="surgeryType.SurgeryTypeId" >
                         {{surgeryType.SurgeryType}}
@@ -33,10 +33,10 @@
         </fieldset>
 
         <fieldset class="form-sub-group">
-            <legend class = "legend">Surgery Details</legend>
+            <legend class = "legend">Surgery details</legend>
             <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
                 <mat-form-field >
-                    <mat-label>Surgery Date</mat-label>
+                    <mat-label>Surgery date</mat-label>
                     <input matInput type="datetime-local" formControlName="SurgeryDate" name = "SurgeryDate"
                     (focus)="setInitialTime($event)" [errorStateMatcher]="errorMatcher" required>
                 </mat-form-field>
@@ -51,7 +51,7 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-label>Surgery Site</mat-label>
+                    <mat-label>Surgery site</mat-label>
                     <mat-select formControlName="SurgerySiteId" [errorStateMatcher]="errorMatcher"  required>
                             <mat-option *ngFor="let surgerySite of surgerySites" [value]="surgerySite.SurgerySiteId" >
                             {{surgerySite.SurgerySite}}
@@ -60,16 +60,16 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                    <input  type="number" placeholder="Mins In Anesthesia"  formControlName="AnesthesiaMinutes" [errorStateMatcher]="errorMatcher"  matInput>
+                    <input  type="number" placeholder="Mins under anesthesia"  formControlName="AnesthesiaMinutes" [errorStateMatcher]="errorMatcher"  matInput>
                 </mat-form-field>
             </div>
         </fieldset>
 
         <fieldset class="form-sub-group">
-            <legend class="legend">Other Details</legend>
+            <legend class="legend">Other details</legend>
             <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
                 <mat-form-field >
-                    <mat-label>Date of Death</mat-label>
+                    <mat-label>Date of death</mat-label>
                     <input matInput  type="datetime-local"  formControlName="DiedDate" name="DiedDate"
                     (focus)="setInitialTime($event)">
                 </mat-form-field>
@@ -79,7 +79,7 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-label>Antibiotics Given?</mat-label>
+                    <mat-label>Antibiotics given?</mat-label>
                     <mat-select formControlName="AntibioticsGiven">
                             <mat-option *ngFor="let drug of drugs" [value]="drug.id">
                             {{drug.Antibiotics}}

@@ -1,8 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
+import { SurgeryRecord, UpdatedSurgery } from 'src/app/core/models/surgery-details';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SurgeryRecord } from '../surgery-details/surgery-details.component';
 
 export interface DialogData {
     patientId: number;
@@ -32,7 +31,7 @@ export class AddSurgeryDialogComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        
+
         this.canExit = this.fb.group({
             surgeryDetailsSaveComplete: [0],
         });
