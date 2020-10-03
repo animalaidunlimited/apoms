@@ -26,32 +26,21 @@ export class ReportingRecordComponent implements OnInit {
         private census : CensusService,
         private dialog : MatDialog) {}
 
-        areaId: number;
-        censusAreas$ : Observable<CensusArea[]>;
-
-        censusArea : FormGroup;
 
         displayString : string;
-
         totalPatientCount : number;
-
         patientCountInArea: PatientCountInArea[];
+        areaNamelabel : string[] = [];
+        dataValue : number[] = [];
 
-        areaNamelabel : Array<string> = [];
-
-        dataValue : Array<number> = [];
-
-        @ViewChild(MatTable) patientDetailsTable : MatTable<any> ;
-
-
-
+        @ViewChild(MatTable) patientDetailsTable : MatTable<any>;
 
         ngOnInit() {
 
               this.patientCountInArea = [{
                   area : '',
                   count : null
-              }]
+              }];
 
           this.census.getCensusPatientCount().then(response =>{
               this.patientCountInArea = response;
@@ -69,7 +58,7 @@ export class ReportingRecordComponent implements OnInit {
           },
       });
 
-      dialogRef.afterClosed()
+      dialogRef.afterClosed();
 
 
       }
