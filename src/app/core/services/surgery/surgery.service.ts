@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { SurgeryRecord } from '../../models/surgery-details';
 
 @Injectable({
     providedIn: 'root',
@@ -31,4 +34,16 @@ export class SurgeryService extends APIService {
         const request:string = '?PatientId=' + patientId;
         return this.get(request);
     }
+
+    public getSurgeryBySurgeryDate(surgeryDate: string | Date): Observable<SurgeryRecord[]> {
+        const request:string = '?SurgeryDate=' + surgeryDate;
+
+        return this.getObservable(request).pipe(
+            map((response:SurgeryRecord[]) => {
+                return response;
+            }),
+        );
+
+    }
+
 }

@@ -26,9 +26,9 @@ import { RescueDetailsModule } from 'src/app/core/components/rescue-details/resc
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
-import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog/update-census-dialog.component';
+import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 
 @NgModule({
     declarations: [

@@ -24,7 +24,7 @@ const routes: Routes = [
     {
         path: 'reporting',
         loadChildren: () =>
-            import('./pages/reporting-page/reporting-page.module').then(
+            import('./modules/reporting/reporting-page.module').then(
                 m => m.ReportingPageModule,
             ),
     },
@@ -32,7 +32,7 @@ const routes: Routes = [
         path: 'surgery-register',
         loadChildren: () =>
             import(
-                './modules/surgeryregister/surgery-register-page.module'
+                './modules/surgery-register/surgery-register-page.module'
             ).then(m => m.SurgeryRegisterPageModule),
     },
     {

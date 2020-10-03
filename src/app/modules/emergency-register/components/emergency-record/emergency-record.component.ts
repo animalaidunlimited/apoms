@@ -31,13 +31,13 @@ export class EmergencyRecordComponent implements OnInit {
     resetForm(event: KeyboardEvent) {
         event.preventDefault();
         this.recordForm.reset();
-    };
+    }
 
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
         this.saveForm();
-    };
+    }
 
     constructor(
         private fb: FormBuilder,
@@ -47,8 +47,6 @@ export class EmergencyRecordComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-
-        console.log('Here');
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -245,7 +243,7 @@ export class EmergencyRecordComponent implements OnInit {
 
                         if (messageResult.failure === 0) {
                             this.showSnackBar.successSnackBar(
-                                'Case updateted successfully',
+                                'Case updated successfully',
                                 'OK',
                             );
                         }
