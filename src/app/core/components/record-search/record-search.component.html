@@ -63,7 +63,7 @@
 
         <div *ngFor="let record of searchResults$ | async">
 
-            <search-result-card class="emergency-card" (onOpenEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
+            <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
 
         </div>
 

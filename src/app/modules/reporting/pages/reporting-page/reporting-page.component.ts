@@ -50,9 +50,7 @@ export class ReportingPageComponent implements OnInit {
         }];
 
         this.census.getCensusPatientCount().then(response => {
-
             this.patientCountData = response;
-            console.log(response);
         });
 
         this.surgeryDetails = this.fb.group({
@@ -63,7 +61,6 @@ export class ReportingPageComponent implements OnInit {
 
             this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.surgeryDetails.get('surgeryDate').value);
             this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
-
         });
 
         this.surgeryDetails.get('surgeryDate').setValue(getCurrentDateString());
@@ -71,11 +68,11 @@ export class ReportingPageComponent implements OnInit {
     }
 
     getPatientDetailsByArea(area:string){
-        
+
         this.dialog.open(PatientDetailsDialogComponent, {
 
           width: '90%',
-          maxHeight: '100vh',
+          maxHeight: 'auto',
           data: {
             areaName : area
           },

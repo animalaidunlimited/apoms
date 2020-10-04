@@ -15,7 +15,7 @@ export class PrintTemplateService extends APIService {
   endpoint = 'PrintTemplate';
   public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>(null);;
+  public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>(null);
 
   constructor(
     http: HttpClient,
@@ -23,6 +23,10 @@ export class PrintTemplateService extends APIService {
     private router: Router) {
     super(http);
     this.initialisePrintTemplates();
+  }
+
+  public setIsPrinting(isPrinting:boolean){
+    this.isPrinting.next(isPrinting);
   }
 
   public getIsPrinting(){
@@ -65,7 +69,7 @@ export class PrintTemplateService extends APIService {
 
     const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
-      templateList = templates
+      templateList = templates;
     });
 
       if(templateList){
@@ -84,12 +88,12 @@ export class PrintTemplateService extends APIService {
 
     const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
-      templateList = templates
+      templateList = templates;
     });
 
     const index = templateList.findIndex(existingElement => existingElement.printTemplateId === template.printTemplateId);
 
-    templateList.splice(index, 1, template)
+    templateList.splice(index, 1, template);
 
     this.printTemplates.next(templateList);
 
@@ -165,7 +169,7 @@ export class PrintTemplateService extends APIService {
 
 private toCamelCase(str) {
   return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
-    if (+match === 0) {return ''}; // or if (/\s+/.test(match)) for white spaces
+    if (+match === 0) {return '';} // or if (/\s+/.test(match)) for white spaces
     return index === 0 ? match.toLowerCase() : match.toUpperCase();
   });
 }
@@ -190,8 +194,6 @@ private toCamelCase(str) {
     }}]);
 
   }
-
-
 
   public onDataReady() {
 

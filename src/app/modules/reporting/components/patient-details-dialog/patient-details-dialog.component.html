@@ -1,11 +1,14 @@
+
+
 <h1 mat-dialog-title
+class="non-printable"
 cdkDragRootElement=".cdk-overlay-pane">
 </h1>
 
 <div mat-dialog-content>
     <fieldset class="form-sub-group">
 
-        <legend class="legend">{{data.areaName}}</legend>
+        <legend class="legend ">{{data.areaName}} - ({{patientRecords?.data.length}})</legend>
 
         <table mat-table [dataSource]="patientRecords" matSort class="mat-elevation-z8 table">
 
@@ -43,9 +46,11 @@ cdkDragRootElement=".cdk-overlay-pane">
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
     </fieldset>
 </div>
 
-<div mat-dialog-action>
+<div mat-dialog-action class="non-printable">
   <button type="button" mat-raised-button color="primary" (click)="onCancel()">Close</button>
+  <button type="button" mat-raised-button color="primary" (click)="print()">Print</button>
 </div>

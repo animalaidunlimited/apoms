@@ -49,8 +49,9 @@ export class Search {
         ]),
     ],
 })
+
 export class RecordSearchComponent implements OnInit {
-    @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
+    @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
     searchFieldForm = new FormControl();
 
@@ -330,9 +331,7 @@ export class RecordSearchComponent implements OnInit {
         // Create a nice string of all of the values for the user to look at
         const searchText = searchArray.controls
             .map(item => {
-                const option = this.options.find(
-                    option => option.id == item.value.searchField,
-                );
+                const option = this.options.find(currentOption => currentOption.id === item.value.searchField);
 
                 return option.searchValue + ':' + item.value.searchTerm;
             })
@@ -353,7 +352,7 @@ export class RecordSearchComponent implements OnInit {
 
     openCase(searchResult: SearchResponse) {
 
-        this.onOpenEmergencyCase.emit(searchResult);
+        this.openEmergencyCase.emit(searchResult);
 
      }
 }

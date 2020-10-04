@@ -12,8 +12,8 @@ Created On: 29/03/2020
 Purpose: Used to return a Patient by ID.
 */
 
-SELECT	    
-
+SELECT
+JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 	JSON_OBJECT("patientId", p.PatientId),
     JSON_OBJECT("admissionDate", DATE_FORMAT(ec.AdmissionTime, "%d/%M/%Y")),
@@ -26,7 +26,7 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("rescuer", u.FirstName),
 	JSON_OBJECT("tagNumber", p.TagNumber)
     
-) AS Result   
+)) AS Result   
     
 FROM AAU.Patient p
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
