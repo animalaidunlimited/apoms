@@ -64,7 +64,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     ) { }
 
-  @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   autoRefresh:boolean;
 
@@ -243,7 +243,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
 openCaseFromMap(emergencyCase:SearchResponse){
 
-  this.onOpenEmergencyCase.emit(emergencyCase);
+  this.openEmergencyCase.emit(emergencyCase);
 
 }
 
@@ -271,7 +271,7 @@ openCase(caseSearchResult:OutstandingRescue)
 
   }
 
-  this.onOpenEmergencyCase.emit(result);
+  this.openEmergencyCase.emit(result);
 }
 
 refreshRescues(){

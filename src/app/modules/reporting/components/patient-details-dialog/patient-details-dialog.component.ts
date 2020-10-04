@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { BehaviorSubject } from 'rxjs';
 
 interface ReportPatientRecord {
   emergencynumber: number;
@@ -33,24 +35,32 @@ export class PatientDetailsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private printService: PrintTemplateService,
     private census: CensusService ) { }
 
   patientRecords: MatTableDataSource<ReportPatientRecord>;
+  isPrinting: BehaviorSubject<boolean>;
 
 
   ngOnInit() {
 
-    console.log(this.data.areaName)
-
+    this.isPrinting = this.printService.getIsPrinting();
 
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
-
-      console.log(response);
 
       this.patientRecords = new MatTableDataSource(response);
       this.patientRecords.sort = this.sort;
 
     });
+  }
+
+  print(){
+
+    this.printService.setIsPrinting(true);
+
+    window.print();
+
+    this.printService.setIsPrinting(false);
   }
 
 

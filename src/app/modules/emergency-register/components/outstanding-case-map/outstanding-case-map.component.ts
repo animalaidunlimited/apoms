@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 import { OutstandingCase, OutstandingRescue, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -13,17 +13,17 @@ import { map } from 'rxjs/operators';
   templateUrl: './outstanding-case-map.component.html',
   styleUrls: ['./outstanding-case-map.component.scss']
 })
-export class OutstandingCaseMapComponent implements OnInit {
+export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-  @Output() public onOpenEmergencyCase = new EventEmitter<SearchResponse>();
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   caseSubscription: Subscription;
 
   center: google.maps.LatLngLiteral;
   zoom = 13;
 
-  infoContent:SearchResponse[];
+  infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>(null);
 
   rescues:any = [];
 
@@ -61,17 +61,16 @@ export class OutstandingCaseMapComponent implements OnInit {
     this.outstandingCases$ = this.outstandingCases.outstandingCases$;
     // this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
 
-    let outstanding;
-
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
         if(cases){
 
           return cases.filter(swimlane => swimlane.rescueStatus >= 3)
                       .map(groups => groups.rescuerGroups)
 
-                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find the last one based upon time.
-                        // However if we make the changes directly to the result object of the reduce, it changes the underlying object, moving the rescues around to the
-                        // wrong ambulance groups. So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
+                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
+                        // the last one based upon time. However if we make the changes directly to the result object of the
+                        // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
+                        // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
                         // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
                       .map(rescuerGroups => JSON.parse(JSON.stringify(rescuerGroups)))
                       .reduce((aggregatedLocations, current) => {
@@ -87,16 +86,16 @@ export class OutstandingCaseMapComponent implements OnInit {
                     const index = aggregatedLocations.findIndex(parentRescueGroup => {
 
                       return parentRescueGroup.rescuer1 === currentRescueGroup.rescuer1 &&
-                          parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2
+                          parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2;
 
-                    })
+                    });
 
                     index > -1 ?
                     aggregatedLocations[index].rescues = aggregatedLocations[index].rescues.concat(currentRescueGroup.rescues)
                       :
                       aggregatedLocations.push(currentRescueGroup);
 
-                  })
+                  });
 
                   return aggregatedLocations;
 
@@ -106,12 +105,15 @@ export class OutstandingCaseMapComponent implements OnInit {
 
                 const maxRescue = rescueGroup.rescues.reduce((current, previous) => {
 
-                const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1)) ? current.ambulanceArrivalTime : current.rescueTime;
-                const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1)) ? previous.ambulanceArrivalTime : previous.rescueTime;
+                const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
+                  ? current.ambulanceArrivalTime : current.rescueTime;
+
+                const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1))
+                  ? previous.ambulanceArrivalTime : previous.rescueTime;
 
                 return previousTime > currentTime ? previous : current;
 
-              })
+              });
 
                return {
                 rescuer1: rescueGroup.rescuer1,
@@ -120,21 +122,15 @@ export class OutstandingCaseMapComponent implements OnInit {
                 rescuer2Abbreviation: rescueGroup.rescuer2Abbreviation,
                 latestLocation: maxRescue.latLngLiteral,
                 rescues: rescueGroup.rescues
-                }
-             })
+                };
+
+             });
 
             }
-
-
-
         }
     ));
 
-
-
   }
-
-
 
   ngOnDestroy(){
 
@@ -144,11 +140,11 @@ export class OutstandingCaseMapComponent implements OnInit {
 
   openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingRescue[]){
 
-    let searchQuery = ' ec.EmergencyCaseId IN ('
+    let searchQuery = ' ec.EmergencyCaseId IN (';
 
     const emergencyNumbers = rescues.map(rescue => {
 
-      return rescue.emergencyCaseId
+      return rescue.emergencyCaseId;
 
     }).join(',');
 
@@ -156,10 +152,10 @@ export class OutstandingCaseMapComponent implements OnInit {
 
     this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
 
-      this.infoContent = result;
+      this.infoContent.next(result);
 
       this.infoWindow.open(marker);
-    })
+    });
 
   }
 
@@ -170,24 +166,16 @@ export class OutstandingCaseMapComponent implements OnInit {
 
     this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
 
-      this.infoContent = result;
-
+      this.infoContent.next(result);
       this.infoWindow.open(marker);
-    })
+
+    });
 
   }
 
   openCase(caseSearchResult:SearchResponse)
   {
-
-    // let searchResult: EmergencyTab = {
-    //   EmergencyCaseId: caseSearchResult.EmergencyCaseId,
-    //   EmergencyNumber: caseSearchResult.EmergencyNumber
-    // }
-
-    // this.onOpenEmergencyCase.emit(searchResult);
-    this.onOpenEmergencyCase.emit(caseSearchResult);
-
+    this.openEmergencyCase.emit(caseSearchResult);
   }
 
 

@@ -69,8 +69,8 @@ FROM AAU.EmergencyCase ec
 INNER JOIN
 (
 	SELECT p.EmergencyCaseId,
-	JSON_ARRAYAGG(JSON_OBJECT("animalType", ant.AnimalType)) AS AnimalTypes,
-    JSON_ARRAYAGG(JSON_OBJECT("patientId", p.PatientId)) AS Patients,
+	JSON_ARRAYAGG(ant.AnimalType) AS AnimalTypes,
+    JSON_ARRAYAGG(p.PatientId) AS Patients,
     MAX(LargeAnimal) as IsLargeAnimal
 	FROM AAU.Patient p
 	INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
@@ -123,4 +123,4 @@ FROM outstandingRescues raw
 END$$
 DELIMITER ;
 
--- CALL AAU.sp_GetOutstandingRescues(1);
+-- CALL AAU.sp_GetOutstandingRescues('Jim');

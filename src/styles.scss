@@ -106,4 +106,5 @@ mat-radio-button{
 @media print {
   .isPrinting > * { display: none; }
   .isPrinting print-wrapper { display: block; }
+  .isPrinting .printable { display: block; }
 }
