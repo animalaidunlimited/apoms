@@ -4,14 +4,14 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaPasteService } from 'src/app/core/services/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
@@ -40,7 +40,7 @@ export class AnimalSelectionComponent implements OnInit {
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
 
-    @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
+    @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
@@ -60,11 +60,11 @@ export class AnimalSelectionComponent implements OnInit {
     ];
 
     patientArray: FormArray;
-    patientDataSource: MatTableDataSource<AbstractControl>;
+    patientDataSource: MatTableDataSource<FormGroup>;
 
     problems$: ProblemDropdownResponse[];
 
-    selection;
+    selection: SelectionModel<FormGroup>;
     tagNumber: string;
     validRow: boolean;
 
@@ -175,7 +175,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
 
-                    this.patientArray = this.recordForm.get('patients',) as FormArray;
+                    this.patientArray = this.recordForm.get('patients') as FormArray;
 
                     patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
@@ -210,11 +210,11 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     resetTableDataSource() {
-        const patients = (this.recordForm.get('patients') as FormArray).controls;
+        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
         this.patientDataSource = new MatTableDataSource(patients);
 
-        this.selection = new SelectionModel<Patient>(true, []);
+        this.selection = new SelectionModel<FormGroup>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
@@ -254,13 +254,13 @@ export class AnimalSelectionComponent implements OnInit {
 
 
     /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: Patient): string {
+    checkboxLabel(row?: FormGroup): string {
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${
             this.selection.isSelected(row) ? 'deselect' : 'select'
-        } row ${row.position + 1}`;
+        } row ${row.get('position').value + 1}`;
     }
 
     clearChips() {
@@ -359,17 +359,15 @@ export class AnimalSelectionComponent implements OnInit {
 
         // if there are no rows, then we need to add a new one
         if (selectedCount === 0 && animalTypeChip.selected) {
-            const currentPatient = this.getAnimalFromObservable(
-                animalTypeChip.value,
-            );
+            const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
             const position: number = this.patientDataSource.data.length + 1;
 
             const newPatient = this.getEmptyPatient();
 
             newPatient.get('position').setValue(position);
-            newPatient.get('animalTypeId').setValue(currentPatient.AnimalTypeId);
-            newPatient.get('animalType').setValue(currentPatient.AnimalType);
+            newPatient.get('animalTypeId').setValue(currentAnimalType.AnimalTypeId);
+            newPatient.get('animalType').setValue(currentAnimalType.AnimalType);
 
             this.patientArray.push(newPatient);
 
@@ -662,13 +660,13 @@ export class AnimalSelectionComponent implements OnInit {
 
     openMediaDialog(mediaObject:MediaItem): void{
 
-        const currentPatient: Patient = this.getcurrentPatient();
+        const currentPatient: FormGroup = this.getcurrentPatient();
 
-        const dialogRef = this.dialog.open(MediaDialog, {
+        const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
-                tagNumber: currentPatient.tagNumber,
-                patientId: currentPatient.patientId,
+                tagNumber: currentPatient.get('tagNumber').value,
+                patientId: currentPatient.get('patientId').value,
                 mediaItem: mediaObject
             }
         });

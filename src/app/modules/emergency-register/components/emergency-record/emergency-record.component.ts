@@ -74,13 +74,6 @@ export class EmergencyRecordComponent implements OnInit {
         });
     }
 
-    print() {
-
-        window.print();
-
-    }
-
-
     getCaseSaveMessage(resultBody: EmergencyResponse) {
         const result = {
             message: 'Other error - See admin\n',

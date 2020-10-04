@@ -42,13 +42,13 @@ export class RescueDetailsComponent implements OnInit {
   rescueDetails:FormGroup;
 
   rescuers$;
-  rescueDetails$
+  rescueDetails$;
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
     event.preventDefault();
     this.rescueTimeField.nativeElement.focus();
-    };
+    }
 
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
@@ -79,7 +79,7 @@ export class RescueDetailsComponent implements OnInit {
 
         this.recordForm.patchValue(rescueDetails);
 
-      })
+      });
     });
 
     this.rescuer1Id           = this.recordForm.get('rescueDetails.rescuer1Id');
@@ -104,7 +104,7 @@ export class RescueDetailsComponent implements OnInit {
       setTimeout(() =>
 
         this.updateValidators()
-      )
+      );
     });
   }
 
@@ -143,22 +143,22 @@ updateValidators()
     this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  if(this.ambulanceArrivalTime.value < this.callDateTime.value && this.ambulanceArrivalTime.value != '')
+  if(this.ambulanceArrivalTime.value < this.callDateTime.value && this.ambulanceArrivalTime.value !== '')
   {
     this.ambulanceArrivalTime.setErrors({ ambulanceArrivalBeforeCallDatetime : true});
   }
 
-  if(this.ambulanceArrivalTime.value > this.rescueTime.value && this.rescueTime.value != '' && this.ambulanceArrivalTime.value != '')
+  if(this.ambulanceArrivalTime.value > this.rescueTime.value && this.rescueTime.value !== '' && this.ambulanceArrivalTime.value !== '')
   {
     this.ambulanceArrivalTime.setErrors({ ambulanceArrivalAfterRescue : true});
   }
 
-  if(this.rescueTime.value < this.callDateTime.value && this.rescueTime.value != '')
+  if(this.rescueTime.value < this.callDateTime.value && this.rescueTime.value !== '')
   {
     this.rescueTime.setErrors({ rescueBeforeCallDatetime : true});
   }
 
-  if(this.admissionTime.value < this.callDateTime.value && this.admissionTime.value != '')
+  if(this.admissionTime.value < this.callDateTime.value && this.admissionTime.value !== '')
   {
     this.admissionTime.setErrors({ admissionBeforeCallDatetime : true});
   }
@@ -178,7 +178,7 @@ updateValidators()
     }
   }
 
-  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value != '')
+  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value !== '')
   {
     this.rescueTime.setErrors({ rescueAfterAdmission: true});
     this.admissionTime.setErrors({ rescueAfterAdmission : true});
@@ -253,7 +253,7 @@ updateValidators()
     await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
 {
 
-  this.result.emit(data)
+  this.result.emit(data);
 
 }
 

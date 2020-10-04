@@ -2,7 +2,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface MediaItem{
-    mediaItemId: Observable<number>,
+    mediaItemId: Observable<number>;
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
@@ -11,12 +11,13 @@ export interface MediaItem{
     patientId: number;
     heightPX: number;
     widthPX: number;
-    tags: string[],
-    uploadProgress$: Observable<number>,
-    updated: boolean
+    tags: string[];
+    uploadProgress$: Observable<number>;
+    updated: boolean;
   }
-  
+
   export interface MediaItemReturnObject{
     mediaItem: MediaItem;
     mediaItemId: BehaviorSubject<number>;
+    result: string;
   }
