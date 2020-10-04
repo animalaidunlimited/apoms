@@ -35,3 +35,8 @@ export function isImageFile(file: File): boolean {
 }
 
 
+// Determine if the given File is an Video (according do its Mime-Type).
+export function isVideoFile(file: File): boolean {
+
+    return file.type.search(/^video\//i) === 0;
+}

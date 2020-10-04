@@ -2,11 +2,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { Observable } from 'rxjs';
 
 
 @Component({
@@ -20,9 +19,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   @Input() tagNumber: string;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
 
-
-
-  @ViewChild('videoPlayer',{ read: ElementRef, static:false }) videoplayer: ElementRef;
+  @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer: ElementRef;
 
   addOnBlur = true;
   removable = true;
@@ -51,7 +48,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false
-    })
+    });
 
     this.tags = this.mediaForm.get('tags') as FormArray;
 

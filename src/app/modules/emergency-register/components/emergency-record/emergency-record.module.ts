@@ -11,7 +11,7 @@ import { LocationDetailsModule } from 'src/app/core/components/location-details/
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
-import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaCardComponent } from 'src/app/core/components/media-card/media-card.component';
 
 @NgModule({
@@ -19,7 +19,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         EmergencyRecordComponent,
         AnimalSelectionComponent,
         TagNumberDialog,
-        MediaDialog,
+        MediaDialogComponent,
         MediaCardComponent
     ],
     providers: [],

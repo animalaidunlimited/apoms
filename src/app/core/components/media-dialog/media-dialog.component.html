@@ -24,7 +24,7 @@
     <div *ngFor="let mediaItem of mediaItems">
 
         <!-- <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"  (itemUploaded)="onMediaItemUploaded(mediaItem)"></media-card> -->
-        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"></media-card>
+        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem" (itemDeleted)=onMediaItemDeleted(mediaItem)></media-card>
 
 
     </div>
