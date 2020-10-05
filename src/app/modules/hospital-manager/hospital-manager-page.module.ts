@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HospitalManagerPageComponent } from './pages/hospital-manager-page/hospital-manager-page.component';
+import { HospitalManagerPageComponent } from './pages/hospital-manager-page.component';
 import { HospitalManagerPageRoutingModule } from './hospital-manager-page-routing.module';
 
 import { MaterialModule } from '../../material-module';
@@ -12,7 +12,7 @@ import { CallerDetailsModule } from '../../core/components/caller-details/caller
 import { LocationDetailsModule } from '../../core/components/location-details/location-details.module';
 
 import { CensusDetailsComponent } from './components/census-details/census-details.component';
-import { CensusRecordModule } from "src/app/modules/census/components/census-record/census-record.module";
+import { CensusRecordModule } from 'src/app/modules/census/components/census-record/census-record.module';
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
@@ -26,9 +26,9 @@ import { RescueDetailsModule } from 'src/app/core/components/rescue-details/resc
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
-import { SurgeryRecordModule } from '../surgeryregister/components/surgery-record.module';
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog/update-census-dialog.component';
+import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 
 @NgModule({
     declarations: [

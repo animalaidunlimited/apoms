@@ -58,7 +58,7 @@ export class TabBarComponent implements OnInit {
 
     updateEmergencyNumber(emergencyNumber: number) {
 
-        if(this.tabs[this.selected.value].value !== "Board" && this.tabs[this.selected.value].value !== "Search"){
+        if(this.tabs[this.selected.value].value !== 'Board' && this.tabs[this.selected.value].value !== 'Search'){
             
             this.tabs[this.selected.value].value = (
                 emergencyNumber || 'New Case*'

@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav mode="side" [opened]="isOpen">
+    <mat-sidenav mode="side" [opened]="isOpen | async">
         <div class="sidenav-logo-container">
             <app-logo></app-logo>
         </div>

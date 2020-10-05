@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
+import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -9,29 +11,30 @@ import { OutstandingCaseService } from './modules/emergency-register/services/ou
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     providers: [
-        //TODO alter this to load from the user settings
+        // TODO alter this to load from the user settings
         {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
       ]
 })
 export class AppComponent implements OnInit{
-    // test
 
-    title:string = 'apoms';
-    message;
-
+    isPrinting:BehaviorSubject<boolean>;
+    message:BehaviorSubject<any>;
+    title = 'apoms';
+    
     constructor(
         private messagingService: MessagingService,
+        private printService: PrintTemplateService,
         private outstandingCaseService: OutstandingCaseService
         ) {
 
-            window.addEventListener("beforeunload", () => {
+            window.addEventListener('beforeunload', () => {
 
                 this.messagingService.unsubscribe();
              });
 
-             //If we've just received focus then we may need to refresh the outstanding case board because
-             //changes might have happened while we were away
-            window.addEventListener("visibilitychange", () => {
+             // If we've just received focus then we may need to refresh the outstanding case board because
+             // changes might have happened while we were away
+            window.addEventListener('visibilitychange', () => {
                 if(!document.hidden){
                     this.outstandingCaseService.receiveFocus();
                 }
@@ -41,8 +44,11 @@ export class AppComponent implements OnInit{
     ngOnInit() {
         this.messagingService.requestPermission();
         this.message = this.messagingService.currentMessage;
+        this.isPrinting = this.printService.getIsPrinting();
 
-        //Set up to receive messages from the service worker when the app is in the background.
+
+
+        // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
             if(event.data){
@@ -53,8 +59,8 @@ export class AppComponent implements OnInit{
 
             });
 
-        //Watch the status of permissions to watch for them being revoked. Because we'll need to
-        //tell the user to refresh.
+        // Watch the status of permissions to watch for them being revoked. Because we'll need to
+        // tell the user to refresh.
         if ('permissions' in navigator) {
             navigator.permissions.query({ name: 'notifications' }).then( (notificationPerm) => {
                 notificationPerm.onchange = () => {

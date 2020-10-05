@@ -8,6 +8,7 @@ import { SearchResponse } from 'src/app/core/models/responses';
     styleUrls: ['./hospital-manager-tab-bar.component.scss'],
 })
 export class HospitalManagerTabBarComponent implements OnInit {
+
     tabs = [];
 
     selected = new FormControl(0);
@@ -60,9 +61,10 @@ export class HospitalManagerTabBarComponent implements OnInit {
     }
 
     public openCase(result: SearchResponse) {
+
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId == result.EmergencyCaseId,
+                card.emergencyCaseId === result.EmergencyCaseId,
         );
 
         tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result);

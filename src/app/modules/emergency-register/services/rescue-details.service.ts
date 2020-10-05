@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
-import { OutstandingCaseResponse, UpdatedRescue, UpdateResponse } from 'src/app/core/models/outstanding-case';
+import { OutstandingCaseResponse, UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Injectable({
     providedIn: 'root',

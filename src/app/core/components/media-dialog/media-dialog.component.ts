@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MediaPasteService } from '../../services/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { of } from 'rxjs';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 interface IncomingData {
   tagNumber: string;
@@ -15,29 +16,31 @@ interface IncomingData {
 @Component({
   selector: 'media-dialog',
   templateUrl: './media-dialog.component.html',
-  styleUrls: ['./media-dialog.component.scss'],
-  host: {
-    '(window:paste)': 'handlePaste( $event )',
-},
+  styleUrls: ['./media-dialog.component.scss']
 })
 
-export class MediaDialog implements OnInit {
+export class MediaDialogComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<MediaDialog>,
+  mediaItems: MediaItem [] = [];
+
+  uploading = 0;
+
+
+  @HostListener('window:paste', ['$event']) handleWindowPaste( $event ){
+    this.handlePaste( $event);
+  }
+
+  constructor(public dialogRef: MatDialogRef<MediaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private mediaPaster: MediaPasteService,
     private patientService: PatientService,
+    private snackbar: SnackbarService,
     public platform: Platform) { }
-
-    mediaItems: MediaItem [] = [];
-
-    uploading = 0;
 
   ngOnInit(): void {
 
 
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
-
 
         if(mediaItems){
 
@@ -56,13 +59,13 @@ export class MediaDialog implements OnInit {
           tags: mediaItem.tags,
           uploadProgress$: of(100),
           updated: false
-        }
+        };
 
         return newItem;
 
         });
 
-      };
+      }
 
       if(this.data.pastedImage){
         this.uploadFile(this.data.pastedImage);
@@ -77,7 +80,7 @@ public handlePaste(event: ClipboardEvent){
     // Pass the clipboard event down to the service, expect it to return an image file
     const mediaFile: File = this.mediaPaster.getPastedImage(event);
 
-      const mediaItem = this.upload(mediaFile, this.data.patientId)
+      const mediaItem = this.upload(mediaFile, this.data.patientId);
 
       this.addToMediaItems(mediaItem.mediaItem);
 
@@ -104,9 +107,12 @@ uploadFile($event) {
 
   for(const file of $event.target.files)
   {
-    const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId)
+    const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
 
-    this.addToMediaItems(mediaItem.mediaItem);
+    mediaItem.result === 'nomedia' ?
+      this.snackbar.errorSnackBar('Upload images or video only','OK')
+      :
+      this.addToMediaItems(mediaItem.mediaItem);
 
   }
 

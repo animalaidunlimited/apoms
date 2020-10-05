@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { EmergencyRegisterPageRoutingModule } from './emergency-register-page-routing.module';
-import { EmergencyRegisterPageComponent } from './pages/emergency-register-page/emergency-register-page.component';
+import { EmergencyRegisterPageComponent } from './pages/emergency-register-page.component';
 
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material-module';

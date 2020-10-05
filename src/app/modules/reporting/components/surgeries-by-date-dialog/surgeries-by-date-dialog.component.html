@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>Surgeries - {{surgeryDate | date: 'dd/MMM/yyyy'}}</h1>
+
+<div mat-dialog-content>
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+        <ng-container matColumnDef="tagNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tag number </th>
+          <td mat-cell *matCellDef="let element"> {{element.tagNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="animalType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Animal type </th>
+          <td mat-cell *matCellDef="let element"> {{element.animalType}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Surgery type </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="surgeon">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Surgeon </th>
+          <td mat-cell *matCellDef="let element"> {{element.surgeon}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="site">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Site </th>
+            <td mat-cell *matCellDef="let element"> {{element.site}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="anesthesiaMinutes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Minutes under anesthesia </th>
+            <td mat-cell *matCellDef="let element"> {{element.anesthesiaMinutes}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onCancel()">close</button>
+</div>
+
+

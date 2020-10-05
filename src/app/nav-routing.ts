@@ -100,7 +100,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'reporting',
         loadChildren: () =>
-            import('./pages/reporting-page/reporting-page.module')
+            import('./modules/reporting/reporting-page.module')
             .then(m => m.ReportingPageModule),
     },
     {
@@ -136,7 +136,7 @@ export const navRoutes: NavRoute[] = [
         group: 'Settings',
         path: 'print-templates',
         loadChildren: () =>
-            import('./pages/print-templates-page/print-templates-page.module')
+            import('./modules/print-templates/print-templates-page.module')
             .then(m => m.PrintTemplatesPageModule),
     },
 ];

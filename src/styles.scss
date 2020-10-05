@@ -18,6 +18,10 @@ $standard-width: 175px;
   padding: 3px;
 }
 
+.mat-form-field-infix{
+  width: 183px;
+}
+
 .form-sub-group
 {
   background-color:white ;
@@ -99,3 +103,8 @@ mat-radio-button{
   border-color: #c3e6cb !important;
 }
 
+@media print {
+  .isPrinting > * { display: none; }
+  .isPrinting print-wrapper { display: block; }
+  .isPrinting .printable { display: block; }
+}
