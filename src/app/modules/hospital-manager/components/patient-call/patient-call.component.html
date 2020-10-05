@@ -40,7 +40,7 @@
             <mat-form-field>
                 <input formControlName="callDateTime" type="datetime-local"
                 (focus)="setInitialTime('callDateTime', i)"
-                [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+                [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
             </mat-form-field>
 
             </div>
@@ -57,7 +57,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-checkbox formControlName="positiveCallOutcome" checked>Positive call outcome</mat-checkbox>
+            <mat-checkbox formControlName="positiveCallOutcome">Positive call outcome</mat-checkbox>
 
             </div>
 

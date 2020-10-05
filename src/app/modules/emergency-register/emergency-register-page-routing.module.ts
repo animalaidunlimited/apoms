@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { EmergencyRegisterPageComponent } from './pages/emergency-register-page/emergency-register-page.component';
+import { EmergencyRegisterPageComponent } from './pages/emergency-register-page.component';
 
 const routes: Routes = [
     {

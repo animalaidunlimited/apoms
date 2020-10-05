@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -16,6 +16,10 @@ export class OutcomeComponent implements OnInit {
     maxDate;
 
     errorMatcher = new CrossFieldErrorMatcher();
+    vaccinationDetails: FormGroup;
+    antibioticDetails: FormGroup;
+    isoReason: FormGroup;
+
 
     constructor(private fb: FormBuilder, private dropdown: DropdownService) {}
 
@@ -39,5 +43,19 @@ export class OutcomeComponent implements OnInit {
                 isoReason: [''],
             }),
         });
+
+        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
+        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
+        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
+    }
+
+
+
+    cycleChips($event){
+
+    }
+
+    toggleAntibioticChip(antibiotic){
+
     }
 }

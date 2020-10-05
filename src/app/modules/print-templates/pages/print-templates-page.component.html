@@ -1,0 +1,157 @@
+<form [formGroup]="printPage" autocomplete="off">
+
+	<div cdkDropListGroup style="padding-left: 10px;">
+
+		<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px">
+
+			<mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
+
+      <div cdkDropList
+      #printableElementArea
+      [cdkDropListData]="printElements"
+      cdkDropListSortingDisabled="true"
+      class="print-elements"
+	  [ngClass]="{'print-template-image' : printPage.get('showTemplateImage').value}"
+      [ngStyle]="{
+		'background-image': 'url(' + backgroundImage + ')',
+		'background-size' : 'cover',
+        'height' : currentHeight,
+        'min-height' : currentHeight,
+        'width' : currentWidth,
+        'min-width' : currentWidth
+        }"
+
+	  (cdkDropListDropped)="drop($event)">
+
+        <div
+        class="print-element"
+        formArrayName="printElements"
+		*ngFor="let element of printElements.controls | printTemplateFilter:printElements.controls; let i = index;"
+        cdkDragBoundary=".print-elements"
+        cdkDrag
+		[ngStyle]="{'opacity' : showExampleText ? 0.85 : 1}"
+        [style.height.px]="element.get('height').value"
+        [style.width.px]="element.get('width').value"
+        [style.top.px]="element.get('top').value"
+        [style.left.px]="element.get('left').value">
+
+		<div formGroupName="{{i}}" class="element-content">
+
+            <div
+            class="element-content"
+			(click)="toggleStyleBar(element)"
+            [ngStyle]="{
+					  'font-weight': element.get('bold').value ? 'bold' : 'normal',
+                      'font-style': element.get('italics').value ? 'italic' : 'normal',
+                      'text-decoration': element.get('underlined').value ? 'underline' : 'none',
+                      'font-size': element.get('fontSize').value ? element.get('fontSize').value + 'pt' : '8pt',
+                      'text-align': element.get('alignment').value ? element.get('alignment').value : 'left'}">
+
+			<div *ngIf="!showExampleText">{{element.get('name').value}}</div>
+			<div *ngIf="showExampleText">{{element.get('example').value}}</div>
+
+			</div>
+
+			<div class="icon-wrap">
+				<mat-icon class="close-circle" (click)="removeElement(element);">highlight_off</mat-icon>
+			</div>
+
+			<div class="resize-both" (mousedown)="$event.stopPropagation(); bothResizeStart(element, $event)"></div>
+			<div class="resize-horizontal" (mousedown)="$event.stopPropagation(); horizontalResizeStart(element, $event)"></div>
+			<div class="resize-vertical" (mousedown)="$event.stopPropagation(); verticalResizeStart(element, $event)"></div>
+
+			<div class="style-bar" *ngIf="element.get('showStyleBar').value" fxLayout="row"
+				fxLayoutGap="5px" fxLayoutAlign="space-evenly center">
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('bold').value ? 'gray' : 'darkgray' }" (click)="setBold(element);">format_bold</mat-icon>
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('italics').value ? 'gray' : 'darkgray' }" (click)="setItalics(element);">format_italics</mat-icon>
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('underlined').value ? 'gray' : 'darkgray' }" (click)="setUderlined(element);">format_underlined</mat-icon>
+
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('alignment').value === 'left' ? 'gray' : 'darkgray' }" (click)="element.get('alignment').setValue('left');">format_align_left</mat-icon>
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('alignment').value === 'center' ? 'gray' : 'darkgray' }" (click)="element.get('alignment').setValue('center');">format_align_center</mat-icon>
+				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('alignment').value === 'right' ? 'gray' : 'darkgray' }" (click)="element.get('alignment').setValue('right');">format_align_right</mat-icon>
+
+				<mat-icon class="edit-icon" (click)="fontSizeSelect.toggle()">format_size</mat-icon>
+				<mat-select #fontSizeSelect formControlName="fontSize">
+					<mat-option *ngFor="let fontSize of fontSizes"
+						[ngStyle]="{'font-size': fontSize + 'pt'}" [value]="fontSize">{{fontSize}}
+					</mat-option>
+				</mat-select>
+
+			</div>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div>
+
+			<!-- Contents column -->
+
+				<div class="contents-column"></div>
+
+				<mat-form-field>
+					<mat-label>Select template</mat-label>
+					<mat-select (selectionChange)="loadform($event.value)">
+						<mat-option *ngFor="let template of templates | async" [value]="template" >{{template.templateName}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<mat-form-field>
+					<mat-label>Template name</mat-label>
+					<input matInput type="text" formControlName="templateName" [errorStateMatcher]="errorMatcher">
+				</mat-form-field>
+
+				<div class="label">Template image</div>
+
+				<input hidden type="file" #uploader accept="image/*" (change)="changeTemplateImage($event)" />
+
+				<button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
+					<mat-icon>add_a_photo</mat-icon>
+				</button>
+
+				<mat-slide-toggle style="padding: 10px;" formControlName="showTemplateImage"
+					(change)="toggleImageUrl()">Show template image</mat-slide-toggle>
+
+				<div class="label">Page dimensions</div>
+
+				<mat-form-field>
+					<mat-label>Page size</mat-label>
+					<mat-select formControlName="paperDimensions" [compareWith]="comparePageSizes">
+						<mat-option *ngFor="let page of paperDimensions | async" [value]="page">{{page.name}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<mat-form-field>
+					<mat-label>Orientation</mat-label>
+					<mat-select formControlName="orientation" (selectionChange)="changeOrientation($event.value)">
+						<mat-option *ngFor="let orientation of orientations" [value]="orientation">{{orientation}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+
+				<div class="label" style="padding-bottom: 10px;">Print fields</div>
+
+				<mat-slide-toggle style="padding: 10px;" (change)="toggleShowExampleText()">Show sample text
+				</mat-slide-toggle>
+
+
+
+				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list" fxLayout="column">
+
+					<div class="print-element" style="position: relative;" *ngFor="let element of printableElements | async"
+						cdkDrag>{{element.name}}</div>
+        </div>
+
+		<button mat-raised-button color="primary" [disabled]="printPage.invalid" (click)="saveForm()">Save</button>
+        <button mat-raised-button color="primary" (click)="reset()">New</button>
+        <!-- <button mat-raised-button color="primary">Cancel</button> -->
+
+			</div>
+
+
+		</div>
+
+	</div>
+</form>

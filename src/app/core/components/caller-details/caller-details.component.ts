@@ -30,6 +30,8 @@ export class CallerDetailsComponent implements OnInit {
 
     public callerAutoComplete$; // TODO: type this Observable<Callers>;
 
+    callerDetails:FormGroup;
+
     callerNumber;
     caller$: Caller;
 
@@ -59,6 +61,8 @@ export class CallerDetailsComponent implements OnInit {
                 ],
             }),
         );
+
+        this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
 
         this.callerService
             .getCallerByEmergencyCaseId(

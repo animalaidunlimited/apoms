@@ -4,8 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
+import { UserOptionsService } from '../../services/user-options.service';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
-import { EmergencyTab } from '../../models/emergency-record';
 
 @Component({
   selector: 'search-result-card',
@@ -15,19 +16,21 @@ import { EmergencyTab } from '../../models/emergency-record';
 export class SearchResultCardComponent implements OnInit {
 
   @Input() record:SearchResponse;
-  @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
+        private userOptions: UserOptionsService,
+        private printService: PrintTemplateService
   ) {}
 
   ngOnInit(): void {}
 
   openCase(caseSearchResult: SearchResponse) {
 
-    this.onOpenEmergencyCase.emit(caseSearchResult);
+    this.openEmergencyCase.emit(caseSearchResult);
 }
 
 quickUpdate(patientId: number, tagNumber: string) {
@@ -74,18 +77,24 @@ openSurgeryDialog(
           animalType,
       },
   });
-  dialogRef.afterClosed().subscribe(result => {
-
-  });
+  dialogRef.afterClosed().subscribe(() => {});
 }
 
-addSurgery(patientId, tagNumber, emergencyNumber, animalType) {
+addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalType:string) {
   this.openSurgeryDialog(
       patientId,
       tagNumber,
       emergencyNumber,
       animalType,
   );
+}
+
+printEmergencyCard(patientId: number){
+
+  const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+  this.printService.printPatientDocument(printTemplateId, patientId);
+
 }
 
 

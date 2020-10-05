@@ -99,7 +99,7 @@ export class PatientCallComponent implements OnInit {
 
     populatePatientCalls(data: PatientCalls) {
 
-        let length:number = data?.calls.length
+        const length:number = data?.calls.length
 
         if(length){
 

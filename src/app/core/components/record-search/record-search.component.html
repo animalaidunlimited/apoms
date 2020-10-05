@@ -12,7 +12,7 @@
     <div [@expandSearchForm]="searchShowing ? 'open' : 'closed'"
     class="search-form" [formGroup]="searchForm">
 
-        <div formArrayName="searchRows" *ngFor="let item of searchForm.get('searchRows')?.controls; let i = index;">
+        <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index;">
             <div [formGroupName]="i">
 
                 <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
@@ -57,13 +57,13 @@
 
 <div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" class="search-results">
 
         <div *ngIf="(searchResults$ | async)?.length === 0 ;">No results</div>
 
         <div *ngFor="let record of searchResults$ | async">
 
-            <search-result-card class="emergency-card" (onOpenEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
+            <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
 
         </div>
 

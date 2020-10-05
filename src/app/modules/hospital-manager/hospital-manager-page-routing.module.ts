@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { HospitalManagerPageComponent } from './pages/hospital-manager-page/hospital-manager-page.component';
+import { HospitalManagerPageComponent } from './pages/hospital-manager-page.component';
 
 const routes: Routes = [
     {

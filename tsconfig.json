@@ -1,4 +1,8 @@
 {
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictTemplates": true
+  },
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -18,5 +22,10 @@
       "es2018",
       "dom"
     ]
-  }
+  },
+  "noImplicitAny": true,
+  "noImplicitReturns": true,
+  "noImplicitThis": true,
+  "noFallthroughCasesInSwitch": true,
+  "strictNullChecks": true,
 }

@@ -21,14 +21,14 @@ import { DatePipe } from '@angular/common';
 @Injectable({
     providedIn: 'root'
   })
-  
+
 class UIErrorHandler extends ErrorHandler {
   constructor() {
     super();
   }
   handleError(error) {
     super.handleError(error);
-    //TODO Style these errors properly and provide them in a dialog with more info about what to do.
+    // TODO Style these errors properly and provide them in a dialog with more info about what to do.
     console.log(`Error occurred:${error.message}`);
   }
 }
@@ -48,7 +48,7 @@ class UIErrorHandler extends ErrorHandler {
         AngularFireAuthModule,
         AngularFireMessagingModule,
         AngularFireStorageModule,
-        AngularFireModule.initializeApp(environment.firebase),
+        AngularFireModule.initializeApp(environment.firebase)
     ],
     exports: [],
     providers: [
