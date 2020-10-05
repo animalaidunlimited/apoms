@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { UpdatedSurgery } from 'src/app/core/models/Surgery-details';
+import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
 
 export interface DialogData {
     patientId: number;
@@ -9,11 +9,6 @@ export interface DialogData {
     animalType: string;
     tagNumber:string;
     emergencyNumber:number
-}
-
-interface UpdateResult {
-    success: number;
-    socketEndPoint: number;
 }
 
 interface CanExitChange {
@@ -26,6 +21,7 @@ interface CanExitChange {
     styleUrls: ['./surgery-record-dialog.component.scss'],
 })
 export class SurgeryRecordDialogComponent implements OnInit {
+
     result: UpdatedSurgery;
     canExit: FormGroup;
 

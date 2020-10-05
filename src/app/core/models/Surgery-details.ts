@@ -42,3 +42,15 @@ export interface SurgeryFormModel {
     AntibioticsGiven: number;
     Comment: string;
 }
+
+export interface SurgeryRecord {
+    surgeryId: number;
+    date: string | Date;
+    type: string;
+    surgeon: string;
+    site: string;
+    anesthesiaMinutes: number;
+    died: string;
+    comments: string;
+    antibioticsGiven: string;
+}

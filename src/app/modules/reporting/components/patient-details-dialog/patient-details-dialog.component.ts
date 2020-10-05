@@ -1,7 +1,10 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { BehaviorSubject } from 'rxjs';
 
 interface ReportPatientRecord {
   emergencynumber: number;
@@ -13,7 +16,7 @@ interface ReportPatientRecord {
 }
 
 interface DialogData{
-areaName : string
+areaName : string;
 }
 
 @Component({
@@ -25,24 +28,41 @@ areaName : string
 
 export class PatientDetailsDialogComponent implements OnInit {
 
-  @ViewChild(MatTable) table: MatTable<any>;
+  displayedColumns: string[] = ['emergencynumber', 'tagnumber', 'species','callername', 'number', 'calldate'];
 
-  displayedColumns: string[] = ['emergencynumber', 'tagnumber', 'species','callername',
-  'number', 'calldate'];
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private census : CensusService ) { }
+    private printService: PrintTemplateService,
+    private census: CensusService ) { }
 
-  patientRecords = new MatTableDataSource<ReportPatientRecord>();
+  patientRecords: MatTableDataSource<ReportPatientRecord>;
+  isPrinting: BehaviorSubject<boolean>;
 
 
   ngOnInit() {
-    this.census.getPatientDetialsByArea(this.data.areaName).then((response: ReportPatientRecord[])=>{
-      this.patientRecords = new MatTableDataSource(response)
+
+    this.isPrinting = this.printService.getIsPrinting();
+
+    this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
+
+      this.patientRecords = new MatTableDataSource(response);
+      this.patientRecords.sort = this.sort;
+
     });
   }
+
+  print(){
+
+    this.printService.setIsPrinting(true);
+
+    window.print();
+
+    this.printService.setIsPrinting(false);
+  }
+
 
   onCancel(){
     this.dialogRef.close();

@@ -1,23 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    FormArray,
-    Validators,
-} from '@angular/forms';
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition,
-} from '@angular/animations';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { trigger, state, style, animate, transition, } from '@angular/animations';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable } from 'rxjs';
-import { EmergencyTab } from '../../models/emergency-record';
 
 export interface SearchValue {
     id: number;
@@ -62,16 +49,16 @@ export class Search {
         ]),
     ],
 })
+
 export class RecordSearchComponent implements OnInit {
-    @Input() parentName: string;
-    @Output() public onOpenEmergencyCase = new EventEmitter<EmergencyTab>();
+    @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
     searchFieldForm = new FormControl();
 
     searchForm: FormGroup;
     searchRows: FormArray;
 
-    searchShowing:boolean = false;
+    searchShowing = false;
 
     search = new Search();
 
@@ -248,14 +235,14 @@ export class RecordSearchComponent implements OnInit {
                     option => option.searchValue == splitItem[0].toLowerCase(),
                 );
 
-                //If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
-                //what the user has entered into the Search Term field
+                // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
+                // what the user has entered into the Search Term field
                 if(option.inNotIn){
 
 
                     option.databaseField = option.databaseField.replace(' NOT IN (', ' IN (')
 
-                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === "no"){
+                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === 'no'){
 
                         option.databaseField = option.databaseField.replace(' IN (', ' NOT IN (')
                     }
@@ -265,7 +252,7 @@ export class RecordSearchComponent implements OnInit {
                 }
                 else{
 
-                    return option.databaseField + "=" + encodeURIComponent(splitItem[1].trim());
+                    return option.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
                 }
             })
             .join('&');
@@ -344,9 +331,7 @@ export class RecordSearchComponent implements OnInit {
         // Create a nice string of all of the values for the user to look at
         const searchText = searchArray.controls
             .map(item => {
-                const option = this.options.find(
-                    option => option.id == item.value.searchField,
-                );
+                const option = this.options.find(currentOption => currentOption.id === item.value.searchField);
 
                 return option.searchValue + ':' + item.value.searchTerm;
             })
@@ -367,7 +352,7 @@ export class RecordSearchComponent implements OnInit {
 
     openCase(searchResult: SearchResponse) {
 
-        this.onOpenEmergencyCase.emit(searchResult);
+        this.openEmergencyCase.emit(searchResult);
 
      }
 }

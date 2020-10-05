@@ -65,10 +65,10 @@ export class CensusDetailsComponent implements OnInit {
 
         dialogRef.componentInstance.onAdd.subscribe(value=>{
            if(value.action === 'Moved Out'){
-               let lastDate : any = this.censusRecords[this.censusRecords.length-1].date;
-               let date1:any = new Date(lastDate);
-                let date2:any = new Date(value.date);
-                let diffDays:any = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
+               const lastDate : any = this.censusRecords[this.censusRecords.length-1].date;
+               const date1:any = new Date(lastDate);
+                const date2:any = new Date(value.date);
+                const diffDays:any = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
                 value.days = diffDays;
 
                 this.censusRecords.push(value);
@@ -85,7 +85,7 @@ export class CensusDetailsComponent implements OnInit {
             this.censusRecords.forEach(record=>{
                 if(record.area === value.area && record.action === value.action
                     && record.date === value.date){
-                        let index = this.censusRecords.indexOf(record)
+                        const index = this.censusRecords.indexOf(record)
                         this.censusRecords.splice(index,1);
                         this.censusTable.renderRows();
                     }

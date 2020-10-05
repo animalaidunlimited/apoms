@@ -4,23 +4,18 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import {
-    FormBuilder,
-    FormGroup,
-    Validators,
-    FormArray,
-    AbstractControl,
-    FormControl,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { MediaDialog } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaPasteService } from 'src/app/core/services/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { UserOptionsService } from 'src/app/core/services/user-options.service';
 
 @Component({
     selector: 'animal-selection',
@@ -29,25 +24,23 @@ import { MediaItem } from 'src/app/core/models/media';
 })
 export class AnimalSelectionComponent implements OnInit {
 
+    constructor(
+        private dialog: MatDialog,
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private dropdown: DropdownService,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private mediaPaster: MediaPasteService
+    ) {}
+
     @Input() recordForm: FormGroup;
     @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
 
-    @ViewChild('animalTypeChips',{ read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
-
-
-    @HostListener('document:keydown.control.enter', ['$event'])
-    catchControlEnter(event: KeyboardEvent) {
-        event.preventDefault();
-
-        //Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
-        //So unless we check to see which version of this component is visible, we won't know which tab to update.
-        if(this.animalTypeChipsElement.nativeElement.offsetParent){
-
-            this.updateTag(this.getcurrentPatient());
-        }
-    };
+    @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[];
@@ -62,27 +55,32 @@ export class AnimalSelectionComponent implements OnInit {
         'mainProblem',
         'tagNo',
         'media',
+        'print',
         'delete',
     ];
 
     patientArray: FormArray;
-    patientDataSource: MatTableDataSource<AbstractControl>;
+    patientDataSource: MatTableDataSource<FormGroup>;
 
     problems$: ProblemDropdownResponse[];
 
-    selection;
+    selection: SelectionModel<FormGroup>;
     tagNumber: string;
     validRow: boolean;
 
-    constructor(
-        public dialog: MatDialog,
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
-        private mediaPaster: MediaPasteService
-    ) {}
+    emergencyCardHTML = '';
 
+    @HostListener('document:keydown.control.enter', ['$event'])
+    catchControlEnter(event: KeyboardEvent) {
+        event.preventDefault();
+
+        // Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
+        // So unless we check to see which version of this component is visible, we won't know which tab to update.
+        if(this.animalTypeChipsElement.nativeElement.offsetParent){
+
+            this.updateTag(this.getcurrentPatient());
+        }
+    }
     ngOnInit() {
 
         this.recordForm.addControl('patients', this.fb.array([]));
@@ -151,7 +149,7 @@ export class AnimalSelectionComponent implements OnInit {
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
 
         const newPatient = this.fb.group({
-            patientId: [],
+            patientId: [patientId],
             position: [position],
             animalTypeId: [''],
             animalType: [''],
@@ -163,24 +161,21 @@ export class AnimalSelectionComponent implements OnInit {
             deleted: [false, Validators.required],
         });
 
-        let patientIdControl = newPatient.get("patientId");
+        const patientIdControl = newPatient.get('patientId');
 
-        newPatient.get("tagNumber").setAsyncValidators(this.tagNumberValidator.validate(
+        newPatient.get('tagNumber').setAsyncValidators(this.tagNumberValidator.validate(
             this.emergencyCaseId,
             patientIdControl,
-        ))
+        ));
 
         return newPatient;
     }
 
     loadPatientArray(emergencyCaseId: number) {
-        this.patientService
-            .getPatientsByEmergencyCaseId(emergencyCaseId)
-            .subscribe(
-                (patients: Patients) => {
-                    this.patientArray = this.recordForm.get(
-                        'patients',
-                    ) as FormArray;
+
+        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+
+                    this.patientArray = this.recordForm.get('patients') as FormArray;
 
                     patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
@@ -215,11 +210,11 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     resetTableDataSource() {
-        const patients = (this.recordForm.get('patients') as FormArray).controls;
+        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
         this.patientDataSource = new MatTableDataSource(patients);
 
-        this.selection = new SelectionModel<Patient>(true, []);
+        this.selection = new SelectionModel<FormGroup>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
@@ -229,11 +224,11 @@ export class AnimalSelectionComponent implements OnInit {
         return numSelected === numRows;
     }
 
-    toggleRow(row) {
+    toggleRow(row:FormGroup) {
 
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
-            //We only ever want to have one item selected at once, but WE want to control when the change happens and how.
+            // We only ever want to have one item selected at once, but WE want to control when the change happens and how.
             this.selection.toggle(this.selection.selected[0]);
             this.clearChips();
             this.selection.toggle(row);
@@ -249,23 +244,23 @@ export class AnimalSelectionComponent implements OnInit {
         }
     }
 
-    selectIfNotSelected(row){
+    selectIfNotSelected(row:FormGroup){
 
         if (!this.selection.isSelected(row)){
-            this.toggleRow(row)
+            this.toggleRow(row);
         }
 
     }
 
 
     /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: Patient): string {
+    checkboxLabel(row?: FormGroup): string {
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${
             this.selection.isSelected(row) ? 'deselect' : 'select'
-        } row ${row.position + 1}`;
+        } row ${row.get('position').value + 1}`;
     }
 
     clearChips() {
@@ -295,10 +290,10 @@ export class AnimalSelectionComponent implements OnInit {
         const currentAnimal = currentPatient.get('animalType').value;
 
         this.animalTypeChips.chips.forEach(chip => {
-            currentAnimal == chip.value
+            currentAnimal === chip.value
                 ? (chip.toggleSelected(),
-                //   this.hideIrrelevantChips("292", chip),
                   (this.currentPatientChip = chip.value))
+                // tslint:disable-next-line: no-unused-expression
                 : chip.deselect;
         });
 
@@ -306,8 +301,9 @@ export class AnimalSelectionComponent implements OnInit {
 
         problems.controls.forEach(problem => {
             this.problemChips.chips.forEach(chip => {
-                problem.get('problem').value == chip.value
+                problem.get('problem').value === chip.value
                     ? chip.toggleSelected()
+                    // tslint:disable-next-line: no-unused-expression
                     : chip.deselect;
             });
         });
@@ -329,7 +325,7 @@ export class AnimalSelectionComponent implements OnInit {
             : undefined;
 
         if (
-            selectedCount == 1 &&
+            selectedCount === 1 &&
             (animalTypeChip.selected ||
                 !(this.animalTypeChips.selected instanceof MatChip))
         ) {
@@ -362,25 +358,23 @@ export class AnimalSelectionComponent implements OnInit {
         }
 
         // if there are no rows, then we need to add a new one
-        if (selectedCount == 0 && animalTypeChip.selected) {
-            const currentPatient = this.getAnimalFromObservable(
-                animalTypeChip.value,
-            );
+        if (selectedCount === 0 && animalTypeChip.selected) {
+            const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
             const position: number = this.patientDataSource.data.length + 1;
 
             const newPatient = this.getEmptyPatient();
 
             newPatient.get('position').setValue(position);
-            newPatient.get('animalTypeId').setValue(currentPatient.AnimalTypeId);
-            newPatient.get('animalType').setValue(currentPatient.AnimalType);
+            newPatient.get('animalTypeId').setValue(currentAnimalType.AnimalTypeId);
+            newPatient.get('animalType').setValue(currentAnimalType.AnimalType);
 
             this.patientArray.push(newPatient);
 
             this.setSelected(position);
         }
 
-        this.hideIrrelevantChips("378", animalTypeChip);
+        this.hideIrrelevantChips(animalTypeChip);
         this.patientTable.renderRows();
     }
 
@@ -388,7 +382,7 @@ export class AnimalSelectionComponent implements OnInit {
         // Set the new row to be selected
         this.selection.select(
             this.patientDataSource.data.find(
-                row => row.get('position').value == position,
+                row => row.get('position').value === position,
             ),
         );
     }
@@ -398,12 +392,12 @@ export class AnimalSelectionComponent implements OnInit {
             const chips = this.problemChips.chips;
 
             const foundChip = chips
-                .filter(chips => {
-                    return chips.disabled == false;
+                .filter(allChips => {
+                    return allChips.disabled === false;
                 })
                 .find(chip => {
                     return (
-                        chip.value.substr(0, 1).toLowerCase() ==
+                        chip.value.substr(0, 1).toLowerCase() ===
                         event.key.toLowerCase()
                     );
                 });
@@ -411,7 +405,7 @@ export class AnimalSelectionComponent implements OnInit {
             if (foundChip) {
                 foundChip.focus();
             }
-        } else if (event.keyCode == 13) {
+        } else if (event.keyCode === 13) {
             this.problemChipSelected(problemChip);
         }
     }
@@ -424,9 +418,9 @@ export class AnimalSelectionComponent implements OnInit {
 
             let chips;
 
-            if (chipGroup == 'animaltype') {
+            if (chipGroup === 'animaltype') {
                 chips = this.animalTypeChips.chips;
-            } else if (chipGroup == 'problem') {
+            } else if (chipGroup === 'problem') {
                 chips = this.problemChips.chips;
             }
 
@@ -437,13 +431,13 @@ export class AnimalSelectionComponent implements OnInit {
             // Also get the index of the current item
             chips.forEach((item, index) => {
                 if (
-                    item.value.substr(0, 1).toLowerCase() ==
+                    item.value.substr(0, 1).toLowerCase() ===
                     currentPatient.substr(0, 1).toLowerCase()
                 ) {
                     lastInstance = item.value;
                 }
 
-                if (item.value == currentPatient) {
+                if (item.value === currentPatient) {
                     currentIndex = index;
                 }
             });
@@ -452,19 +446,19 @@ export class AnimalSelectionComponent implements OnInit {
             const currentArray = chips.filter((chip, index) => {
                 return (
                     !(
-                        chip.value.substr(0, 1).toLowerCase() ==
+                        chip.value.substr(0, 1).toLowerCase() ===
                             currentPatient.substr(0, 1).toLowerCase() &&
                         index <= currentIndex
                     ) ||
-                    currentPatient == '' ||
-                    lastInstance == currentPatient
+                    currentPatient === '' ||
+                    lastInstance === currentPatient
                 );
             });
 
             // Get the chip we need
             const currentKeyChip = currentArray.find(chip => {
                 return (
-                    chip.value.substr(0, 1).toLowerCase() ==
+                    chip.value.substr(0, 1).toLowerCase() ===
                     event.key.toLowerCase()
                 );
             });
@@ -477,7 +471,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(!problemChip.selected)
         {
-            this.updatePatientProblemArray("477",problemChip);
+            this.updatePatientProblemArray(problemChip);
             return;
         }
 
@@ -491,31 +485,31 @@ export class AnimalSelectionComponent implements OnInit {
             !(this.animalTypeChips.selected instanceof MatChip)
         ) {
 
-            //TODO replace this with a better dialog.
+            // TODO replace this with a better dialog.
             alert('Please select an animal');
             problemChip.selected = false;
             return;
         }
         else {
-            this.updatePatientProblemArray("496",problemChip);
+            this.updatePatientProblemArray(problemChip);
         }
     }
 
-    hideIrrelevantChips(source, animalTypeChip) {
+    hideIrrelevantChips(animalTypeChip) {
 
         const currentExclusions = this.exclusions.filter(
-            animalType => animalType.animalType == animalTypeChip.value,
+            animalType => animalType.animalType === animalTypeChip.value,
         );
 
-        //Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls, two for the new patient type,
-        //followed by an unset for the old patient type
-        let currentPatient = this.getcurrentPatient();
+        // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
+        // two for the new patient type, followed by an unset for the old patient type
+        const currentPatient = this.getcurrentPatient();
 
         if(!currentPatient){
             return;
         }
 
-        if(!(currentPatient.get("animalType")?.value === animalTypeChip.value) && !animalTypeChip.selected){
+        if(!(currentPatient.get('animalType')?.value === animalTypeChip.value) && !animalTypeChip.selected){
             return;
         }
 
@@ -538,7 +532,7 @@ export class AnimalSelectionComponent implements OnInit {
                     chip.selectable = false;
                     chip.selected = false;
                 }
-            })
+            });
         });
     }
 
@@ -546,7 +540,7 @@ export class AnimalSelectionComponent implements OnInit {
         return this.selection.selected[0];
     }
 
-    deletePatientRow(row) {
+    deletePatientRow(row:FormGroup) {
         const position = row.get('position').value;
 
         const deleted = row.get('deleted').value;
@@ -562,7 +556,7 @@ export class AnimalSelectionComponent implements OnInit {
             patients.removeAt(removeIndex);
         } else {
             const currentPatient = patients.controls.find(
-                patient => patient.get('position').value == position,
+                patient => patient.get('position').value === position,
             );
 
             currentPatient.get('deleted').setValue(!deleted);
@@ -575,7 +569,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.selection.clear();
     }
 
-    updatePatientProblemArray(source, problemChip) {
+    updatePatientProblemArray(problemChip) {
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
@@ -585,7 +579,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         // Get the current list of problems and replace the existing problem array
         const problemsObject: ProblemDropdownResponse = this.problems$.find(
-            item => item.Problem == problemChip.value,
+            item => item.Problem === problemChip.value,
         );
 
         const problemsGroup = this.fb.group({
@@ -599,10 +593,10 @@ export class AnimalSelectionComponent implements OnInit {
 
         const problemIndex = problems.controls.findIndex(
             problem =>
-                problem.get('problemId').value == problemsObject.ProblemId,
+                problem.get('problemId').value === problemsObject.ProblemId,
         );
 
-        if (problemChip.selected && problemIndex == -1) {
+        if (problemChip.selected && problemIndex === -1) {
             problems.push(problemsGroup);
             currentPatient.get('updated').setValue(true);
         }
@@ -624,8 +618,8 @@ export class AnimalSelectionComponent implements OnInit {
 
         if(this.selection.selected.length === 0){
 
-            //TODO make this a pretty dialog
-            alert("Please select a patient to update");
+            // TODO make this a pretty dialog
+            alert('Please select a patient to update');
             return;
         }
 
@@ -652,58 +646,65 @@ export class AnimalSelectionComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
 
             if (result) {
-                const currentPatient = this.getcurrentPatient();
+                const resultCurrentPatient = this.getcurrentPatient();
 
-                currentPatient.get('tagNumber').setValue(result.value);
+                resultCurrentPatient.get('tagNumber').setValue(result.value);
 
-                currentPatient.get('duplicateTag').setValue(result.status);
+                resultCurrentPatient.get('duplicateTag').setValue(result.status);
 
-                currentPatient.get('updated').setValue(true);
+                resultCurrentPatient.get('updated').setValue(true);
                 this.patientTable.renderRows();
             }
         });
     }
 
-    openMediaDialog(event, mediaObject:MediaItem): void{
+    openMediaDialog(mediaObject:MediaItem): void{
 
+        const currentPatient: FormGroup = this.getcurrentPatient();
 
-        const currentPatient: Patient = event.value;
-
-        const dialogRef = this.dialog.open(MediaDialog, {
+        const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
-                tagNumber: currentPatient.tagNumber,
-                patientId: currentPatient.patientId,
+                tagNumber: currentPatient.get('tagNumber').value,
+                patientId: currentPatient.get('patientId').value,
                 mediaItem: mediaObject
             }
         });
 
     }
 
+    printEmergencyCard(row:FormGroup){
+
+        const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+        this.printService.printPatientDocument(printTemplateId, row.get('patientId').value);
+
+    }
+
     getAnimalFromObservable(name: string) {
         return this.animalTypes$.find(
-            animalType => animalType.AnimalType == name,
+            animalType => animalType.AnimalType === name,
         );
     }
 
-    //If you tab into the chip lists, you have to tab through them all to get out.
-    //So the below finds the last element and skips to the next value
+    // If you tab into the chip lists, you have to tab through them all to get out.
+    // So the below finds the last element and skips to the next value
     tabPressed(list:string){
 
-        if(list === "AnimalType"){
+        if(list === 'AnimalType'){
             this.animalTypeChips.chips.last.focus();
         }
-        else if (list === "ProblemType"){
+        else if (list === 'ProblemType'){
             this.problemChips.chips.last.focus();
         }
     }
 
     shiftTabPressed(list:string){
 
-        if(list === "AnimalType"){
+        if(list === 'AnimalType'){
             this.animalTypeChips.chips.first.focus();
         }
-        else if (list === "ProblemType"){
+        else if (list === 'ProblemType'){
             this.problemChips.chips.first.focus();
         }
     }

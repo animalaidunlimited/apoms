@@ -45,7 +45,7 @@ export class CaseService extends APIService {
             if (online) {
                 this.online = true;
 
-                this.toaster.successSnackBar('Connection restored', 'OK')
+                this.toaster.successSnackBar('Connection restored', 'OK');
 
                 await this.postFromLocalStorage(
                     this.storage.getItemArray('POST'),
@@ -59,8 +59,8 @@ export class CaseService extends APIService {
                             const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
                             setTimeout(() => {
-                                this.toaster.successSnackBar('Synced updated cases with server', 'OK')
-                            }, insertWaitToShowMessage)
+                                this.toaster.successSnackBar('Synced updated cases with server', 'OK');
+                            }, insertWaitToShowMessage);
 
                         }
 
@@ -79,7 +79,7 @@ export class CaseService extends APIService {
 
 
                         setTimeout(() => {
-                            this.toaster.successSnackBar('Synced updated cases with server', 'OK')
+                            this.toaster.successSnackBar('Synced updated cases with server', 'OK');
                         }, insertWaitToShowMessage);
 
                         }
@@ -112,9 +112,9 @@ export class CaseService extends APIService {
                     (result: EmergencyResponse) => {
 
                         if (
-                            result.emergencyCaseSuccess == 1 ||
-                            result.emergencyCaseSuccess == 3 ||
-                            result.emergencyCaseSuccess == 2
+                            result.emergencyCaseSuccess === 1 ||
+                            result.emergencyCaseSuccess === 3 ||
+                            result.emergencyCaseSuccess === 2
                         ) {
                             this.storage.remove(elem.key);
                         }
@@ -134,11 +134,11 @@ export class CaseService extends APIService {
 
                 await this.baseUpdateCase(JSON.parse(elem.value)).then(
                                 (result: EmergencyResponse) => {
-                                    
+
                                     if (
-                                        result.emergencyCaseSuccess == 1 ||
-                                        result.emergencyCaseSuccess == 3 ||
-                                        result.emergencyCaseSuccess == 2
+                                        result.emergencyCaseSuccess === 1 ||
+                                        result.emergencyCaseSuccess === 3 ||
+                                        result.emergencyCaseSuccess === 2
                                     ) {
                                         this.storage.remove(elem.key);
                                     }
@@ -167,7 +167,7 @@ export class CaseService extends APIService {
             return result;
         }).catch(async error => {
 
-            if (error.status == 504 || !this.online) {
+            if (error.status === 504 || !this.online) {
                 this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                 this.saveCaseFail = true;
@@ -195,7 +195,7 @@ export class CaseService extends APIService {
             })
             .catch(async error => {
 
-                if (error.status == 504 || !this.online) {
+                if (error.status === 504 || !this.online) {
                     this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                     this.saveCaseFail = true;
@@ -235,19 +235,10 @@ export class CaseService extends APIService {
         }
     }
 
-    public checkEmergencyNumberExists(
-        emergencyNumber: number,
-        emergencyCaseId: number,
-    ): Observable<any> {
-        const emergencyNumberQuery =
-            'EmergencyNumber=' +
-            emergencyNumber +
-            '&EmergencyCaseId=' +
-            emergencyCaseId;
+    public checkEmergencyNumberExists( emergencyNumber: number, emergencyCaseId: number ): Observable<any> {
+        const emergencyNumberQuery = 'EmergencyNumber=' + emergencyNumber + '&EmergencyCaseId=' +  emergencyCaseId;
 
-        return this.getByField(
-            'CheckEmergencyNumberExists',
-            emergencyNumberQuery,
+        return this.getByField('CheckEmergencyNumberExists', emergencyNumberQuery
         ).pipe(
             map(value => {
                 return value;

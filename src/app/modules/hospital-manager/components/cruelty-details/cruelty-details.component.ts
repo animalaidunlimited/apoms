@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
@@ -14,6 +14,8 @@ export class CrueltyDetailsComponent implements OnInit {
 
     errorMatcher = new CrossFieldErrorMatcher();
 
+    crueltyDetails:FormGroup;
+
     constructor(private fb: FormBuilder, private dropdowns: DropdownService) {}
 
     ngOnInit() {
@@ -26,5 +28,7 @@ export class CrueltyDetailsComponent implements OnInit {
                 crueltyInspector: [''],
             }),
         });
+
+        this.crueltyDetails = this.crueltyForm.get('crueltyDetails') as FormGroup
     }
 }

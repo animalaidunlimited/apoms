@@ -30,7 +30,7 @@ export class RescueDetailsDialogComponent implements OnInit {
     private fb:FormBuilder,
     private detector: ChangeDetectorRef,
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {}
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export class RescueDetailsDialogComponent implements OnInit {
 
     this.canExit.valueChanges.subscribe((values:CanExitChange) => {
 
-      //TODO update this to handle any errors and display them to a toast.
+      // TODO update this to handle any errors and display them to a toast.
       if(values.outcomeUpdateComplete != 0 && values.rescueDetailsUpdateComplete != 0){
 
         this.result.success = 1;
@@ -80,10 +80,10 @@ export class RescueDetailsDialogComponent implements OnInit {
   }
 
   onRescueDetailsResult(result:UpdateResponse){
-    this.canExit.get("rescueDetailsUpdateComplete").setValue(result.success);
+    this.canExit.get('rescueDetailsUpdateComplete').setValue(result.success);
   }
 
   onOutcomeResult(result:UpdateResponse){
-    this.canExit.get("outcomeUpdateComplete").setValue(result.success);
+    this.canExit.get('outcomeUpdateComplete').setValue(result.success);
   }
 }

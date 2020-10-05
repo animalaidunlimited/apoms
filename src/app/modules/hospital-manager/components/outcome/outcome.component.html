@@ -1,31 +1,31 @@
-<fieldset [formGroup]="outcomeForm.get('vaccinationDetails')" class="form-sub-group">
-    
-          
+<fieldset [formGroup]="vaccinationDetails" class="form-sub-group">
+
+
     <legend class="legend">Vaccination details</legend>
 
     <div fxLayout="row wrap" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
 
     <mat-form-field>
-        <input formControlName="megavac1Date" name="megavac1Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>                                                             
+        <input formControlName="megavac1Date" name="megavac1Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="megavac2Date" name="megavac2Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>                                                             
+        <input formControlName="megavac2Date" name="megavac2Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>                                                             
+        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>
     </mat-form-field>
 
     </div>
-    
+
 
 
 </fieldset>
 
-<fieldset [formGroup]="outcomeForm.get('antibioticDetails')" class="form-sub-group">
-    
-          
+<fieldset [formGroup]="antibioticDetails" class="form-sub-group">
+
+
     <legend class="legend">Antibiotic details</legend>
 
     <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
@@ -64,14 +64,14 @@
 </mat-chip-list>
 
     </div>
-    
+
 
 
 </fieldset>
 
-<fieldset [formGroup]="outcomeForm.get('isoReason')" class="form-sub-group">
-    
-          
+<fieldset [formGroup]="isoReason" class="form-sub-group">
+
+
     <legend class="legend">Isolation reason</legend>
 
     <mat-form-field>

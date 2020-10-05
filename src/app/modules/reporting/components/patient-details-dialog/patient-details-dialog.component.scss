@@ -2,4 +2,16 @@
 .table{
     width: 100%;
   }
-  
+
+.mat-dialog-content{
+  max-height: fit-content;
+}
+
+@media print {
+  .non-printable {
+    display: none !important;
+  }
+  .printable {
+    display: block !important;
+  }
+}
