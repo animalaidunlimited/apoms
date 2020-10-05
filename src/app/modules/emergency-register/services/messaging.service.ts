@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
@@ -92,7 +92,7 @@ constructor(
         const subscriptionBody = {
             token,
             topic: `${organisation}_UPDATING_RESCUE`
-        }
+        };
 
         const result = await this.post(subscriptionBody);
 

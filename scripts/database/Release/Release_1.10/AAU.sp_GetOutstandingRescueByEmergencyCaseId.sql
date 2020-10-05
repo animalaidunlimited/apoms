@@ -1,19 +1,17 @@
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId!!
+
 DELIMITER $$
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId$$
-
-DELIMITER $$
-
 CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
 BEGIN
 
 
-/*****************************************
+/**************************************************************************
 Author: Jim Mackenzie
 Date: 16/04/2020
-Purpose: To retrieve outstanding rescues
-for display in the rescue board.
-*****************************************/
+Purpose: To retrieve outstanding rescues for display in the rescue board.
+***************************************************************************/
 
 SELECT 
 JSON_MERGE_PRESERVE(
@@ -37,10 +35,10 @@ JSON_MERGE_PRESERVE(
             JSON_OBJECT("latitude", ec.Latitude),
             JSON_OBJECT("longitude", ec.Longitude),
 			JSON_OBJECT("latLngLiteral",
-            JSON_MERGE_PRESERVE(
-            JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
-            JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            )),            
+				JSON_MERGE_PRESERVE(
+				JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
+				)),            
             JSON_OBJECT("animalTypes", p.AnimalTypes),
             JSON_OBJECT("patients", p.Patients),
             JSON_OBJECT("isLargeAnimal", p.IsLargeAnimal)
@@ -50,8 +48,8 @@ FROM AAU.EmergencyCase ec
 INNER JOIN
 (
 SELECT p.EmergencyCaseId,
-	JSON_ARRAYAGG(JSON_OBJECT("animalType", ant.AnimalType)) AS AnimalTypes,
-    JSON_ARRAYAGG(JSON_OBJECT("patientId", p.PatientId)) AS Patients,
+	JSON_ARRAYAGG(ant.AnimalType) AS AnimalTypes,
+    JSON_ARRAYAGG(p.PatientId) AS Patients,
 	MAX(LargeAnimal) as IsLargeAnimal
 FROM AAU.Patient p
 INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
@@ -63,4 +61,3 @@ LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
 WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
 
 END$$
-DELIMITER ;

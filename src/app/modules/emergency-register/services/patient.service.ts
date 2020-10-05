@@ -39,8 +39,8 @@ export class PatientService extends APIService {
         );
     }
 
-    public getPatientsByEmergencyCaseId(number: number): Observable<Patients> {
-        const request = '?emergencyCaseId=' + number;
+    public getPatientsByEmergencyCaseId(emergencyCaseId: number): Observable<Patients> {
+        const request = '?emergencyCaseId=' + emergencyCaseId;
 
         return this.getObservable(request).pipe(
             map((response: Patients) => {

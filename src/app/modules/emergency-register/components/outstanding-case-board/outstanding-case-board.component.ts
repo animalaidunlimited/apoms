@@ -165,7 +165,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       )
       .subscribe(value => {
           this.outstandingCaseService.onSearchChange(value);
-      })
+      });
   }
 
   drop(event: CdkDragDrop<any>) {
@@ -177,7 +177,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
         this.changeDetector.detectChanges();
       }
       catch(e){
-        console.log(e)
+        console.log(e);
       }
     } else {
 
@@ -207,7 +207,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
           });
       }
       catch(e){
-        console.log(e)
+        console.log(e);
       }
     }
   }
@@ -269,7 +269,7 @@ openCase(caseSearchResult:OutstandingRescue)
     Longitude: caseSearchResult.longitude,
     CurrentLocation: null,
 
-  }
+  };
 
   this.openEmergencyCase.emit(result);
 }
