@@ -8,12 +8,13 @@
         <mat-icon matSuffix style="cursor: pointer;">search</mat-icon>
     </span>
     <input class="search-box" formControlName="searchTerm" autocomplete="off" type="text" matInput>
+
     <button mat-button *ngIf="searchForm.get('searchTerm').value"
     matSuffix mat-icon-button aria-label="Clear"
-    (click)="searchForm.get('searchTerm').setValue('')"
-    >
+    (click)="searchForm.get('searchTerm').setValue('')">
     <mat-icon>close</mat-icon>
     </button>
+
   </mat-form-field>
 
   </form>
@@ -46,9 +47,6 @@
 
 <div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
-
-
-
 
       <h2>{{lane.rescueStatusName}}</h2>
 

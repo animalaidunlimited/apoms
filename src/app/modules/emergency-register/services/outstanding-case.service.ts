@@ -74,7 +74,7 @@ export class OutstandingCaseService {
 
       currentOutstanding = cases;
 
-    })
+    });
 
     // Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
@@ -115,7 +115,7 @@ export class OutstandingCaseService {
         rescueStatus: updatedRescue.rescueStatus,
         rescueStatusName: rescueStatusName[updatedRescue.rescueStatus],
         rescuerGroups: [newRescueGroup]
-      })
+      });
     }
 
     // Check to see if the rescuers exist and insert if not
@@ -125,7 +125,7 @@ export class OutstandingCaseService {
       {
        return rescueState.rescuerGroups
       .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
-                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id)
+                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id);
       }
     });
 
@@ -133,7 +133,7 @@ export class OutstandingCaseService {
 
       currentOutstanding.forEach(rescueState => {
 
-        if(rescueState.rescueStatus == updatedRescue.rescueStatus){
+        if(rescueState.rescueStatus === updatedRescue.rescueStatus){
           rescueState.rescuerGroups.push(newRescueGroup);
         }
       });
@@ -163,7 +163,7 @@ export class OutstandingCaseService {
         status.rescuerGroups.forEach((group,index) => {
 
             const removeIndex = group.rescues
-                              .findIndex(current => current.emergencyCaseId == rescue.emergencyCaseId);
+                              .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
 
             if(removeIndex > -1){
 
@@ -175,7 +175,7 @@ export class OutstandingCaseService {
               }
               return;
             }
-          })
+          });
     });
 
     return outstanding;
@@ -209,11 +209,13 @@ export class OutstandingCaseService {
         o.moved = moved;
 
         if(!timeout){
-          setTimeout(() => this.setMoved(o, emergencyCaseId, false, true), 3500)
+          setTimeout(() => this.setMoved(o, emergencyCaseId, false, true), 3500);
         }
 
       }
-      let result, p;
+      let result;
+      let p;
+
       for (p in o) {
           if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
               result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
@@ -226,13 +228,13 @@ export class OutstandingCaseService {
 
   onSearchChange(searchValue: string): void {
 
-    let outstanding
+    let outstanding;
 
     this.outstandingCases$.subscribe(cases => {
 
-      outstanding = cases
+      outstanding = cases;
 
-    })
+    });
 
     if(!outstanding){
       return;
