@@ -136,7 +136,7 @@ export const navRoutes: NavRoute[] = [
         group: 'Settings',
         path: 'print-templates',
         loadChildren: () =>
-            import('./pages/print-templates-page/print-templates-page.module')
+            import('./modules/print-templates/print-templates-page.module')
             .then(m => m.PrintTemplatesPageModule),
     },
 ];

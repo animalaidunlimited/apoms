@@ -4,7 +4,7 @@ import { CensusRecord } from '../../census-details/census-details.component';
 
 
 export interface DialogData {
-  censusUpdateDate : string;
+  censusUpdateDate : Date;
 }
 
 @Component({
@@ -23,21 +23,18 @@ export class UpdateCensusDialogComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) { }
 
-  ngOnInit(): void {
-
-
-  }
+  ngOnInit(): void {}
 
   onCancel(): void {
     this.dialogRef.close();
   }
 
   onCensusSaveResult(result : CensusRecord){
-    let value : any = result;
+    const value : any = result;
     this.onAdd.emit(value);
   }
   onCensusRemoveResult(remove : CensusRecord){
-    let value : any = remove;
+    const value : any = remove;
     this.onRemove.emit(value);
   }
 

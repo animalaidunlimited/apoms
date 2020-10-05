@@ -1,7 +1,6 @@
-import { ReportingPageComponent } from './pages/reporting-page/reporting-page.component';
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ReportingPageComponent } from './pages/reporting-page/reporting-page.component';
 
 const routes: Routes = [
     {

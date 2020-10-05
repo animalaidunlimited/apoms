@@ -9,13 +9,14 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
     styleUrls: ['./patient-record.component.scss'],
 })
 export class PatientRecordComponent implements OnInit {
+
     recordForm: FormGroup;
 
     @Input() incomingPatient: SearchRecordTab;
 
     patientCallPatientId: number;
 
-    patientLoaded:boolean = true;
+    patientLoaded = true;
 
     hideMenu: boolean;
 
@@ -55,7 +56,7 @@ export class PatientRecordComponent implements OnInit {
                 callerAlternativeNumber: [''],
             }),
             callOutcome: this.fb.group({
-                CallOutcome: ["{'CallOutcomeId': " + this.incomingPatient.callOutcomeId + ", 'CallOutcome': " + this.incomingPatient.callOutcome + "}"],
+                CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId + ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
                 sameAsNumber: []
             }),
         });

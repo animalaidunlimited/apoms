@@ -2,11 +2,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { Observable } from 'rxjs';
 
 
 @Component({
@@ -20,9 +19,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   @Input() tagNumber: string;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
 
-
-
-  @ViewChild('videoPlayer',{ read: ElementRef, static:false }) videoplayer: ElementRef;
+  @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer: ElementRef;
 
   addOnBlur = true;
   removable = true;
@@ -51,13 +48,13 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false
-    })
+    });
 
-    this.tags = this.mediaForm.get("tags") as FormArray;
+    this.tags = this.mediaForm.get('tags') as FormArray;
 
       this.mediaItem.tags.forEach(tag => {
 
-        let newTag = JSON.parse(JSON.stringify(tag));
+        const newTag = JSON.parse(JSON.stringify(tag));
 
         this.tags.push(this.fb.control({
           tag: newTag.tag
@@ -80,11 +77,11 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
 
-        this.mediaForm.get("patientMediaItemId").setValue(itemId);
+        this.mediaForm.get('patientMediaItemId').setValue(itemId);
 
-        //TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
-        //We should turn this into an observable.
-        this.mediaForm.get("remoteURL").setValue(this.mediaItem.remoteURL);
+        // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
+        // We should turn this into an observable.
+        this.mediaForm.get('remoteURL').setValue(this.mediaItem.remoteURL);
 
         this.patientService.savePatientMedia(this.mediaForm.value);
       });
@@ -93,7 +90,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
   }
 
-  toggleVideo(event: any) {
+toggleVideo() {
     this.videoplayer.nativeElement.play();
 }
 

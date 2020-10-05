@@ -8,12 +8,13 @@
         <mat-icon matSuffix style="cursor: pointer;">search</mat-icon>
     </span>
     <input class="search-box" formControlName="searchTerm" autocomplete="off" type="text" matInput>
+
     <button mat-button *ngIf="searchForm.get('searchTerm').value"
     matSuffix mat-icon-button aria-label="Clear"
-    (click)="searchForm.get('searchTerm').setValue('')"
-    >
+    (click)="searchForm.get('searchTerm').setValue('')">
     <mat-icon>close</mat-icon>
     </button>
+
   </mat-form-field>
 
   </form>
@@ -36,11 +37,16 @@
 
 </div>
 
-<outstanding-case-map (onOpenEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
+<div [hidden]="!loading" style="height: 500px">
+  <mat-spinner class="mat-spinner"></mat-spinner>
+</div>
 
-<div cdkDropListGroup [hidden]="!hideMap">
+
+
+<outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
+
+<div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
-
 
       <h2>{{lane.rescueStatusName}}</h2>
 
@@ -73,15 +79,15 @@
 
           <div fxFlex="15">
 
-            <mat-icon (click)="openRescueEdit(outstandingCase)" style="cursor:'pointer'">departure_board</mat-icon>
+            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon>
           </div>
 
           <div fxFlex="25">
-            <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+            <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
           </div>
 
             <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.patients}})
+              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.animalTypes}})
             </div>
               <div fxFlex="none"
 
@@ -89,6 +95,10 @@
                 'dot-red' : outstandingCase.emergencyCodeId == 1,
                 'dot-green' : outstandingCase.emergencyCodeId == 2,
                 'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
+              </div>
+
+              <div fxFlex="25">
+                <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
               </div>
 
             </mat-expansion-panel-header>

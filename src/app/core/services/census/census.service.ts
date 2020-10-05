@@ -7,7 +7,7 @@ interface CensusTable {
     sortArea : number;
     actionId: number;
     sortAction : number;
-    tagNumber: number;
+    tagNumber: string;
     date: Date;
 }
 
@@ -21,14 +21,7 @@ export class CensusService extends APIService {
     }
 
     public async insertCensusData(
-        areaId,
-        sortArea,
-        actionId,
-        sortAction,
-        tagNumber,
-        date,
-    ): Promise<any> {
-        const request = 'censusData';
+        areaId:number, sortArea:number, actionId:number, sortAction:number, tagNumber:string, date: Date ): Promise<any> {
 
         const data: CensusTable = {
             areaId,
@@ -54,20 +47,15 @@ export class CensusService extends APIService {
     }
 
     public async deleteCensusData(
-        areaId,
-        sortArea,
-        actionId,
-        sortAction,
-        tagNumber,
-        date,
-        ): Promise<any> {
+        areaId:number, sortArea:number, actionId:number, sortAction:number, tagNumber:string, date: Date ): Promise<any> {
+
         const data: CensusTable = {
             areaId,
             sortArea,
             actionId,
             sortAction,
             tagNumber,
-            date,
+            date
         };
         return await this.delete(data).then(data=>
             {
@@ -88,8 +76,9 @@ export class CensusService extends APIService {
         return this.get(request);
     }
 
-    public async getPatientDetialsByArea(area): Promise<any>{
+    public async getPatientDetailsByArea(area): Promise<any>{
         const request = '?Area=' + area;
+        console.log("Here");
         return this.get(request);
     }
 

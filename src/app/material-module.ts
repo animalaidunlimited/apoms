@@ -6,7 +6,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule, MediaMarshaller } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -95,8 +95,35 @@ import { ReactiveFormsModule } from '@angular/forms';
         ScrollingModule,
     ],
 })
-export class MaterialModule {}
+export class MaterialModule {
 
-/**  Copyright 2019 Google LLC. All Rights Reserved.
+    lastValue;
+
+    public constructor (
+      m: MediaMarshaller,
+    ) {
+      // hack until resolve: https://github.com/angular/flex-layout/issues/1201
+      // @ts-ignore
+      m.subject.subscribe((x) => {
+        // @ts-ignore
+        if (m.activatedBreakpoints.filter((b) => b.alias === 'print').length === 0) {
+          // @ts-ignore
+          this.lastValue = [...m.activatedBreakpoints];
+        } else {
+          // @ts-ignore
+          m.activatedBreakpoints = [...this.lastValue];
+          // @ts-ignore
+          m.hook.collectActivations = () => {};
+          // @ts-ignore
+          m.hook.deactivations = [...this.lastValue];
+        }
+      });
+    }
+
+
+}
+
+/*  Copyright 2019 Google LLC. All Rights Reserved.
     Use of this source code is governed by an MIT-style license that
-    can be found in the LICENSE file at http://angular.io/license */
+    can be found in the LICENSE file at http://angular.io/license
+*/

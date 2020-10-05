@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -6,7 +6,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -20,15 +19,16 @@ export class RescueDetailsComponent implements OnInit {
   @Input() emergencyCaseId: number;
   @Input() recordForm: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
-  @ViewChild("rescueTimeField" ,{ read: ElementRef, static:true }) rescueTimeField: ElementRef;
+  @ViewChild('rescueTimeField' ,{ read: ElementRef, static:true }) rescueTimeField: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  currentCallDateTime;
-  currentAdmissionTime;
-  currentAmbulanceArrivalTime;
-  currentRescueTime;
-  currentTime;
+
+  currentCallDateTime: AbstractControl;
+  currentAdmissionTime: AbstractControl;
+  currentAmbulanceArrivalTime: AbstractControl;
+  currentRescueTime: AbstractControl;
+  currentTime: string;
 
   rescuer1Id:AbstractControl;
   rescuer2Id:AbstractControl;
@@ -39,32 +39,38 @@ export class RescueDetailsComponent implements OnInit {
   callOutcome:AbstractControl;
   callDateTime:AbstractControl;
 
-  constructor(private dropdowns: DropdownService,
-    private rescueDetailsService: RescueDetailsService,
-    private zone: NgZone,
-    private fb: FormBuilder) {}
+  rescueDetails:FormGroup;
 
   rescuers$;
-  rescueDetails$
+  rescueDetails$;
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
     event.preventDefault();
     this.rescueTimeField.nativeElement.focus();
-    };
+    }
+
+  constructor(private dropdowns: DropdownService,
+    private rescueDetailsService: RescueDetailsService,
+    private zone: NgZone,
+    private fb: FormBuilder) {}
+
+
 
   ngOnInit() {
 
     this.rescuers$ = this.dropdowns.getRescuers();
 
     this.recordForm.addControl(
-      "rescueDetails", this.fb.group({
+      'rescueDetails', this.fb.group({
         rescuer1Id: [],
         rescuer2Id: [],
         ambulanceArrivalTime: [''],
         rescueTime: [''],
         admissionTime: ['']
       }));
+
+    this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 
     this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
     .subscribe((rescueDetails: RescueDetailsParent) => {
@@ -73,19 +79,16 @@ export class RescueDetailsComponent implements OnInit {
 
         this.recordForm.patchValue(rescueDetails);
 
-      })
-
-
-
+      });
     });
 
-    this.rescuer1Id           = this.recordForm.get("rescueDetails.rescuer1Id");
-    this.rescuer2Id           = this.recordForm.get("rescueDetails.rescuer2Id");
-    this.ambulanceArrivalTime = this.recordForm.get("rescueDetails.ambulanceArrivalTime");
-    this.rescueTime           = this.recordForm.get("rescueDetails.rescueTime");
-    this.admissionTime        = this.recordForm.get("rescueDetails.admissionTime");
-    this.callDateTime         = this.recordForm.get("emergencyDetails.callDateTime");
-    this.callOutcome          = this.recordForm.get("callOutcome.CallOutcome");
+    this.rescuer1Id           = this.recordForm.get('rescueDetails.rescuer1Id');
+    this.rescuer2Id           = this.recordForm.get('rescueDetails.rescuer2Id');
+    this.ambulanceArrivalTime = this.recordForm.get('rescueDetails.ambulanceArrivalTime');
+    this.rescueTime           = this.recordForm.get('rescueDetails.rescueTime');
+    this.admissionTime        = this.recordForm.get('rescueDetails.admissionTime');
+    this.callDateTime         = this.recordForm.get('emergencyDetails.callDateTime');
+    this.callOutcome          = this.recordForm.get('callOutcome.CallOutcome');
 
     this.updateTimes();
 
@@ -97,11 +100,11 @@ export class RescueDetailsComponent implements OnInit {
 
     this.recordForm.valueChanges.subscribe(val => {
 
-      //The values won't have bubbled up to the parent yet, so wait for one tick
+      // The values won't have bubbled up to the parent yet, so wait for one tick
       setTimeout(() =>
 
         this.updateValidators()
-      )
+      );
     });
   }
 
@@ -119,55 +122,55 @@ updateValidators()
  this.admissionTime.updateValueAndValidity({emitEvent: false });
 
 
-  //if rescuer1Id || rescuer2Id then set the other to required
+  // if rescuer1Id || rescuer2Id then set the other to required
   if(this.rescuer1Id.value > 0 || this.rescuer2Id.value > 0)
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  //if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required
+  // if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required
   if(this.ambulanceArrivalTime.value)
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  //if rescue time then rescuer1Id, rescuer2Id, ambulance arrived required
+  // if rescue time then rescuer1Id, rescuer2Id, ambulance arrived required
   if(this.rescueTime.value)
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
   }
 
-  if(this.ambulanceArrivalTime.value < this.callDateTime.value && this.ambulanceArrivalTime.value != "")
+  if(this.ambulanceArrivalTime.value < this.callDateTime.value && this.ambulanceArrivalTime.value !== '')
   {
-    this.ambulanceArrivalTime.setErrors({ "ambulanceArrivalBeforeCallDatetime" : true});
+    this.ambulanceArrivalTime.setErrors({ ambulanceArrivalBeforeCallDatetime : true});
   }
 
-  if(this.ambulanceArrivalTime.value > this.rescueTime.value && this.rescueTime.value != "" && this.ambulanceArrivalTime.value != "")
+  if(this.ambulanceArrivalTime.value > this.rescueTime.value && this.rescueTime.value !== '' && this.ambulanceArrivalTime.value !== '')
   {
-    this.ambulanceArrivalTime.setErrors({ "ambulanceArrivalAfterRescue" : true});
+    this.ambulanceArrivalTime.setErrors({ ambulanceArrivalAfterRescue : true});
   }
 
-  if(this.rescueTime.value < this.callDateTime.value && this.rescueTime.value != "")
+  if(this.rescueTime.value < this.callDateTime.value && this.rescueTime.value !== '')
   {
-    this.rescueTime.setErrors({ "rescueBeforeCallDatetime" : true});
+    this.rescueTime.setErrors({ rescueBeforeCallDatetime : true});
   }
 
-  if(this.admissionTime.value < this.callDateTime.value && this.admissionTime.value != "")
+  if(this.admissionTime.value < this.callDateTime.value && this.admissionTime.value !== '')
   {
-    this.admissionTime.setErrors({ "admissionBeforeCallDatetime" : true});
+    this.admissionTime.setErrors({ admissionBeforeCallDatetime : true});
   }
 
-  //if admission time then rescuer1Id, rescuer2Id, ambulance arrived required, rescue time
+  // if admission time then rescuer1Id, rescuer2Id, ambulance arrived required, rescue time
   if(this.admissionTime.value)
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
     if(this.rescueTime.value < this.callDateTime.value){
-      this.rescueTime.setErrors({ "rescueBeforeCallDatetime": true});
+      this.rescueTime.setErrors({ rescueBeforeCallDatetime: true});
     }
     else{
       this.rescueTime.setValidators([Validators.required]);
@@ -175,14 +178,14 @@ updateValidators()
     }
   }
 
-  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value != "")
+  if(this.rescueTime.value > this.admissionTime.value && this.admissionTime.value !== '')
   {
-    this.rescueTime.setErrors({ "rescueAfterAdmission": true});
-    this.admissionTime.setErrors({ "rescueAfterAdmission" : true});
+    this.rescueTime.setErrors({ rescueAfterAdmission: true});
+    this.admissionTime.setErrors({ rescueAfterAdmission : true});
   }
 
-  //When we select admission, we need to check that we have rescue details
-  if(this.callOutcome.value?.CallOutcome === "Admission"){
+  // When we select admission, we need to check that we have rescue details
+  if(this.callOutcome.value?.CallOutcome === 'Admission'){
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
 
@@ -199,19 +202,19 @@ updateValidators()
 
   setInitialTime(event)
   {
-    //TODO put this back in when we go live with the desk doing realtime entries
+    // TODO put this back in when we go live with the desk doing realtime entries
 
     this.currentCallDateTime = this.callDateTime;
 
     let currentTime;
 
-    currentTime = this.recordForm.get("rescueDetails").get(event.target.name).value;
+    currentTime = this.recordForm.get('rescueDetails').get(event.target.name).value;
 
 
     if(!currentTime)
     {
-      //TODO put this back in when we go live with the desk doing realtime entries
-      this.recordForm.get("rescueDetails").get(event.target.name).setValue(getCurrentTimeString());
+      // TODO put this back in when we go live with the desk doing realtime entries
+      this.recordForm.get('rescueDetails').get(event.target.name).setValue(getCurrentTimeString());
       // this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
     }
 
@@ -221,7 +224,7 @@ updateValidators()
   {
     this.currentCallDateTime = this.callDateTime;
 
-    let currentTime = getCurrentTimeString();
+    const currentTime = getCurrentTimeString();
 
     this.currentRescueTime = this.rescueTime.value || currentTime;
     this.currentAdmissionTime = this.admissionTime.value || currentTime;
@@ -236,7 +239,7 @@ updateValidators()
     // If we haven't touched the form, don't do anything.
     if(!this.recordForm.touched){
 
-      let emptyResult:UpdateResponse = {
+      const emptyResult:UpdateResponse = {
         success: null,
         socketEndPoint: null
       };
@@ -250,7 +253,7 @@ updateValidators()
     await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
 {
 
-  this.result.emit(data)
+  this.result.emit(data);
 
 }
 

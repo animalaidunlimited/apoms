@@ -10,6 +10,8 @@ import { NavComponent } from './core/components/nav/nav.component';
 import { AuthGuard } from './auth/auth.guard';
 import { CustomRouteReuseStrategy } from './core/nav-reuse-strategy';
 import { NavGuard } from './core/nav.guard';
+import { PrintContentComponent } from './modules/print-templates/components/print-content/print-content.component';
+import { PrintWrapperComponent } from './modules/print-templates/components/print-wrapper/print-wrapper.component';
 
 const routes: Routes = [
     {
@@ -30,7 +32,7 @@ const routes: Routes = [
         path: 'surgery-register',
         loadChildren: () =>
             import(
-                './modules/surgeryregister/surgery-register-page.module'
+                './modules/surgery-register/surgery-register-page.module'
             ).then(m => m.SurgeryRegisterPageModule),
     },
     {
@@ -60,6 +62,14 @@ const routes: Routes = [
             import('./pages/login-page/login-page.module').then(
                 m => m.LoginPageModule,
             ),
+    },
+    {
+        path: 'print',
+        outlet: 'print',
+        component: PrintWrapperComponent,
+        children: [
+        { path: 'print-content/:printTemplate', component: PrintContentComponent }
+        ]
     },
     {
         path: sideNavPath,

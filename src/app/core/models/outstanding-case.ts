@@ -19,7 +19,8 @@ export interface OutstandingRescue {
     emergencyNumber: number;
     rescuer1Abbreviation: string;
     rescuer2Abbreviation: string;
-    patients: string[];
+    animalTypes: string;
+    patients: number[];
     isLargeAnimal: boolean;
     moved?: boolean;
     searchCandidate?: boolean;
@@ -36,6 +37,7 @@ export interface RescuerGroup {
 
 export interface OutstandingCase {
     rescueStatus: number;
+    rescueStatusName: string;
     rescuerGroups: RescuerGroup[];
 }
 
