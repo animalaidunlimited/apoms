@@ -10,12 +10,13 @@ import {
 import { OutstandingCaseBoardComponent } from './outstanding-case-board.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { RouterTestingModule } from '@angular/router/testing';
 
 @Component({
     selector: 'rescue-details',
@@ -44,11 +45,12 @@ describe('OutstandingCaseBoardComponent', () => {
                 MatDialogModule,
                 BrowserAnimationsModule,
                 AngularFireMessagingModule,
+                RouterTestingModule,
                 AngularFireModule.initializeApp(environment.firebase),
             ],
             providers: [
                 MatDialog,
-                OVERLAY_PROVIDERS,
+                Overlay,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,

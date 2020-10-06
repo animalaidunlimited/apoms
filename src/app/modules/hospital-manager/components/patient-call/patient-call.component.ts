@@ -17,7 +17,7 @@ import {
     PatientCalls,
     PatientCallModifyResponse,
 } from 'src/app/core/models/patients';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 @Component({
     selector: 'patient-call',

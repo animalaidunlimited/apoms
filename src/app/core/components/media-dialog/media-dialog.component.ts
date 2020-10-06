@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MediaPasteService } from '../../services/media-paste.service';
+import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';

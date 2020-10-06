@@ -15,7 +15,7 @@ import {
     AbstractControl,
 } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
-import { UserOptionsService } from '../../services/user-options.service';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
 
 import { LocationDetailsService } from './location-details.service';
 
