@@ -13,11 +13,12 @@ import { EmergencyDetailsComponent } from './emergency-details.component';
 import { MaterialModule } from 'src/app/material-module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatePipe } from '@angular/common';
 
 describe('EmergencyDetailsComponent', () => {
     let component: EmergencyDetailsComponent;
     let fixture: ComponentFixture<EmergencyDetailsComponent>;
-
+    
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -27,7 +28,7 @@ describe('EmergencyDetailsComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
-
+            providers: [DatePipe],
             declarations: [EmergencyDetailsComponent],
         }).compileComponents();
     }));

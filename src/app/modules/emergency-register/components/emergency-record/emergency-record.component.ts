@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@a
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';

@@ -1,8 +1,8 @@
 export interface PrintElement {
     printTemplateElementId: number;
     printableElementId: number;
-    name: String;
-    example: String;
+    name: string;
+    example: string;
     value: string;
     width: number;
     height: number;
@@ -34,14 +34,14 @@ export interface PrintElement {
     paperDimensions: PaperDimensions;
     orientation: string;
     printElements: PrintElement[];
-    updated: Boolean;
+    updated: boolean;
     updateDateTime: string | Date;
   }
 
   export interface SavePrintTemplateResponse {
     printTemplateId: number;
     success: number;
-    printTemplateElementResponse: PrintTemplateElementResponse[]
+    printTemplateElementResponse: PrintTemplateElementResponse[];
   }
 
   export interface PrintTemplateResponse{

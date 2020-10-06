@@ -3,7 +3,7 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { UserOptionsService } from '../../services/user-options.service';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';

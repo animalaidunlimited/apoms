@@ -1,16 +1,15 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { MediaItem, MediaItemReturnObject } from '../models/media';
+import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, of, Subscription } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { isImageFile, isVideoFile } from '../helpers/utils';
-import { EventListenerFocusTrapInertStrategy } from '@angular/cdk/a11y';
+import { isImageFile, isVideoFile } from '../../helpers/utils';
 
 interface IResizeImageOptions {
   maxSize: number;

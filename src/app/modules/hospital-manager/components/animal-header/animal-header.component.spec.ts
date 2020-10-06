@@ -14,11 +14,15 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
 
 describe('AnimalHeaderComponent', () => {
     let component: AnimalHeaderComponent;
@@ -41,10 +45,13 @@ describe('AnimalHeaderComponent', () => {
                 MatDialogModule,
                 FormsModule,
                 ReactiveFormsModule,
+                AngularFireMessagingModule,
+                AngularFireModule.initializeApp(environment.firebase)
             ],
             providers: [
                 MatDialog,
-                OVERLAY_PROVIDERS,
+                DatePipe,
+                Overlay,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,

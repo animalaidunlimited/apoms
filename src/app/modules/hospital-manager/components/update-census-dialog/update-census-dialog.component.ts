@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CensusRecord } from '../../census-details/census-details.component';
+import { CensusRecord } from '../census-details/census-details.component';
 
 
 export interface DialogData {
@@ -14,7 +14,7 @@ export interface DialogData {
 })
 export class UpdateCensusDialogComponent implements OnInit {
 
-  result : CensusRecord
+  result : CensusRecord;
   @Output() public onAdd = new EventEmitter<any>();
   @Output() public onRemove = new EventEmitter<any>();
 

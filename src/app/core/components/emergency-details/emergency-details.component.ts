@@ -5,7 +5,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
-import { UserOptionsService } from '../../services/user-options.service';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';

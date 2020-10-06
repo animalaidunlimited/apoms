@@ -25,7 +25,8 @@ describe('PatientRecordComponent', () => {
         animalType: '',
         currentLocation: '',
         callDateTime: '2020-04-09T12:52',
-        callOutcome: 1,
+        callOutcomeId: 1,
+        callOutcome: 'Admission',
         icon: 'close',
     };
 

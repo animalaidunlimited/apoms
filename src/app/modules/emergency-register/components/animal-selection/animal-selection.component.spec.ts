@@ -13,10 +13,16 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { environment } from 'src/environments/environment';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { DatePipe } from '@angular/common';
 
 describe('AnimalSelectionComponent', () => {
     let component: AnimalSelectionComponent;
@@ -31,18 +37,23 @@ describe('AnimalSelectionComponent', () => {
 
     let dialog: MatDialogRef<TagNumberDialog>;
 
+    
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
                 MatDialogModule,
                 BrowserAnimationsModule,
+                RouterTestingModule,
                 ReactiveFormsModule,
                 FormsModule,
+                AngularFireMessagingModule,
+                AngularFireModule.initializeApp(environment.firebase)
             ],
             providers: [
+                DatePipe,
                 MatDialog,
-                OVERLAY_PROVIDERS,
+                Overlay,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,
