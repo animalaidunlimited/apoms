@@ -26,7 +26,11 @@ export class SearchResultCardComponent implements OnInit {
         private printService: PrintTemplateService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    this.printService.initialisePrintTemplates();
+
+  }
 
   openCase(caseSearchResult: SearchResponse) {
 

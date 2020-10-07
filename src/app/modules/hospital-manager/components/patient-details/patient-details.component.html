@@ -2,7 +2,7 @@
 
     <legend class="legend">Patient Details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
         <mat-form-field formGroupName="patientDetails">
             <mat-label>Animal type</mat-label>
             <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
@@ -11,29 +11,72 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+
+        <mat-form-field formGroupName="patientDetails">
+            <mat-label>Treatment priority</mat-label>
+            <mat-select  formControlName="treatmentPriority" aria-labelledby="treatmentPriority-label">
+                <mat-option value="1">Urgent</mat-option>
+                <mat-option value="2">High</mat-option>
+                <mat-option value="3">Normal</mat-option>
+                <mat-option value="4">Low</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+
     </div>
-    <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start">
 
-        <div fxLayout="row flex" fxLayoutGap="20px" fxLayoutAlign="space-between start">
 
-            <mat-form-field formGroupName="patientDetails" class="wide">
+
+
+    <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-around start">
+
+
+
+            <mat-form-field class="wide">
                 <input formControlName="mainProblems" type="text" placeholder="Main Problem(s)" matInput>
             </mat-form-field>
 
-            <ng-container formGroupName="patientDetails">
+            <mat-form-field formGroupName="patientDetails" class="wide">
+                <input formControlName="description" type="text" placeholder="Description" matInput>
+            </mat-form-field>
+
+            <ng-container>
                 <mat-radio-group  formControlName="sex" aria-labelledby="sex-label">
                     <mat-radio-button value="0">Female</mat-radio-button>
                     <mat-radio-button value="1">Male</mat-radio-button>
                 </mat-radio-group>
             </ng-container>
+
         </div>
 
-        <mat-form-field formGroupName="patientDetails" class="wide">
-            <input formControlName="description" type="text" placeholder="Description" matInput>
-        </mat-form-field>
+            <div fxLayout="row flex" fxLayoutGap="20px" formGroupName="patientDetails" fxLayoutAlign="space-around center">
 
-    </div>
-    
+            <mat-form-field formGroupName="patientDetails">
+                <mat-label>Temperament</mat-label>
+                <mat-select  formControlName="temperament" aria-labelledby="temperament-label">
+                    <mat-option value="1">Friendly</mat-option>
+                    <mat-option value="2">Shy</mat-option>
+                    <mat-option value="3">Very fearful</mat-option>
+                    <mat-option value="4">Aggressive</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field formGroupName="patientDetails">
+                <mat-label>ABC status</mat-label>
+                    <mat-select  formControlName="abcStatus" aria-labelledby="abcStatus-label">
+                        <mat-option value="1">ABC complete</mat-option>
+                        <mat-option value="2">To be done</mat-option>
+                        <mat-option value="3">Do not ABC</mat-option>
+                        <mat-option value="4">ABC Priority</mat-option>
+                    </mat-select>
+            </mat-form-field>
+
+        </div>
+
+
+
+
+
   </fieldset>
 
-  

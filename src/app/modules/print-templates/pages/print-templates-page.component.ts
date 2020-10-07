@@ -22,7 +22,7 @@ export class PrintTemplatesPageComponent implements OnInit {
   errorMatcher = new CrossFieldErrorMatcher();
 
   constructor(
-    private templateService: PrintTemplateService,
+    private printService: PrintTemplateService,
     private dropdown: DropdownService,
     private snackbar: SnackbarService,
     private fb: FormBuilder) { }
@@ -62,9 +62,11 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.printService.initialisePrintTemplates();
+
     this.printableElements = this.dropdown.getPrintableElements();
     this.paperDimensions = this.dropdown.getPaperDimensions();
-    this.templates = this.templateService.getPrintTemplates();
+    this.templates = this.printService.getPrintTemplates();
 
     this.printPage = this.fb.group({
       printTemplateId: [],
@@ -406,11 +408,11 @@ saveForm(){
 
     if(!this.printPage.get('printTemplateId').value) {
 
-      this.templateService.insertTemplate(this.printPage.value).then(result => {
+      this.printService.insertTemplate(this.printPage.value).then(result => {
 
         const printTemplateId = this.processResult(result);
         this.printPage.get('printTemplateId').setValue(printTemplateId);
-        this.templateService.insertIntoPrintTemplateList(this.printPage.value);
+        this.printService.insertIntoPrintTemplateList(this.printPage.value);
 
       }).catch(error => {
 
@@ -420,10 +422,10 @@ saveForm(){
     }
     else
     {
-      this.templateService.updateTemplate(this.printPage.value).then(result => {
+      this.printService.updateTemplate(this.printPage.value).then(result => {
 
         this.processResult(result);
-        this.templateService.updatePrintTemplateList(this.printPage.value);
+        this.printService.updatePrintTemplateList(this.printPage.value);
 
 
       }).catch(error => {

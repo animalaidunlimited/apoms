@@ -12,6 +12,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { RescueDetails } from 'src/app/core/models/responses';
+import { AnimalType } from 'src/app/core/models/animal-type';
 
 @Component({
     selector: 'patient-details',
@@ -19,10 +20,10 @@ import { RescueDetails } from 'src/app/core/models/responses';
     styleUrls: ['./patient-details.component.scss'],
 })
 export class PatientDetailsComponent implements OnInit {
-    animalTypes$;
+    animalTypes$:AnimalType[];
     @Input() recordForm: FormGroup;
     dialog: any;
-    maxDate;
+    maxDate:string;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -33,9 +34,7 @@ export class PatientDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.dropdown
-            .getAnimalTypes()
-            .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
+        this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
         const patientDetails = this.recordForm.get(
             'patientDetails',
@@ -55,6 +54,22 @@ export class PatientDetailsComponent implements OnInit {
         );
         patientDetails.addControl(
             'sex',
+            new FormControl('', Validators.required),
+        );
+        patientDetails.addControl(
+            'treatmentPriority',
+            new FormControl('', Validators.required),
+        );
+        patientDetails.addControl(
+            'abcStatus',
+            new FormControl('', Validators.required),
+        );
+        patientDetails.addControl(
+            'releaseStatus',
+            new FormControl('', Validators.required),
+        );
+        patientDetails.addControl(
+            'temperament',
             new FormControl('', Validators.required),
         );
 

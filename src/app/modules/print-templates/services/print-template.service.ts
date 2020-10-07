@@ -22,7 +22,6 @@ export class PrintTemplateService extends APIService {
     private patientService: PatientService,
     private router: Router) {
     super(http);
-    this.initialisePrintTemplates();
   }
 
   public setIsPrinting(isPrinting:boolean){
@@ -33,7 +32,7 @@ export class PrintTemplateService extends APIService {
     return this.isPrinting;
   }
 
-  private initialisePrintTemplates(){
+  public initialisePrintTemplates(){
 
     this.getObservable('').subscribe((templates:any[]) => {
 
@@ -189,7 +188,8 @@ private toCamelCase(str) {
     this.isPrinting.next(true);
 
     this.router.navigate(['/',
-    { outlets: {
+    {
+      outlets: {
       print: ['print', 'print-content', contentToPrint]
     }}]);
 
