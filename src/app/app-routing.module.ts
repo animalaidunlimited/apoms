@@ -63,10 +63,19 @@ const routes: Routes = [
                 m => m.LoginPageModule,
             ),
     },
+
+    //{
+    //    path: 'print',
+    //    loadChildren: () =>
+    //        import('./modules/print-templates/print-templates-page.module').then(
+    //            m => m.PrintTemplatesPageModule,
+    //        ),
+    //},
     {
         path: 'print',
         outlet: 'print',
         component: PrintWrapperComponent,
+        canActivate: [AuthGuard],
         children: [
         { path: 'print-content/:printTemplate', component: PrintContentComponent }
         ]

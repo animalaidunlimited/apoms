@@ -83,6 +83,8 @@ export class AnimalSelectionComponent implements OnInit {
     }
     ngOnInit() {
 
+        
+
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get(
