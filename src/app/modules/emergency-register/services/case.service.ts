@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OnlineStatusService } from 'apoms/src/app/core/services/online-status.service';
+import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 
 @Injectable({
     providedIn: 'root',

@@ -4,7 +4,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PatientDetailsDialogComponent } from 'apoms/src/app/modules/reporting/components/patient-details-dialog/patient-details-dialog.component';
+import { PatientDetailsDialogComponent } from '../../components/patient-details-dialog/patient-details-dialog.component';
 
 import { ReportingPageComponent } from './reporting-page.component';
 
