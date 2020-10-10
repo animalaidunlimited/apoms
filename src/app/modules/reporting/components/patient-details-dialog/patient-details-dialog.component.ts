@@ -1,19 +1,13 @@
-import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { BehaviorSubject } from 'rxjs';
-
-interface ReportPatientRecord {
-  emergencynumber: number;
-  tagnumber: string;
-  species: string;
-  callername : string;
-  number : number;
-  calldate : string;
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
+import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
+import { map } from 'rxjs/operators';
 
 interface DialogData{
 areaName : string;
@@ -28,7 +22,10 @@ areaName : string;
 
 export class PatientDetailsDialogComponent implements OnInit {
 
-  displayedColumns: string[] = ['emergencynumber', 'tagnumber', 'species','callername', 'number', 'calldate'];
+  displayedColumns: BehaviorSubject<string[]>
+          = new BehaviorSubject<string[]>(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
+
+  columnsExcludingIndex: Observable<string[]>;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -40,13 +37,27 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   patientRecords: MatTableDataSource<ReportPatientRecord>;
   isPrinting: BehaviorSubject<boolean>;
+  layoutType = 'census';
 
 
   ngOnInit() {
 
+    this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index')));
+
     this.isPrinting = this.printService.getIsPrinting();
 
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
+
+      response = response.map(patient => {
+
+        patient['ABC status'] = ABCStatus[patient['ABC status']];
+        patient['Release status'] = ReleaseStatus[patient['Release status']];
+        patient['Temperament'] = Temperament[patient['Temperament']];
+        patient['Treatment priority'] = TreatmentPriority[patient['Treatment priority']];
+
+        return patient;
+
+      });
 
       this.patientRecords = new MatTableDataSource(response);
       this.patientRecords.sort = this.sort;
@@ -56,16 +67,40 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   print(){
 
-    this.printService.setIsPrinting(true);
+     this.dialogRef.close();
 
-    window.print();
+     this.displayedColumns.subscribe(printColumns => {
 
-    this.printService.setIsPrinting(false);
+      const printContent: CensusPrintContent = {
+        area: this.data.areaName,
+        displayColumns: printColumns,
+        printList: this.patientRecords.data
+       };
+
+       this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+
+     });
+
+
+
   }
 
 
   onCancel(){
-    this.dialogRef.close();
+
+  }
+
+  treatmentLayout(){
+
+    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready']);
+
+  }
+
+  censusLayout(){
+
+    this.displayedColumns.next(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
+
+
   }
 
 }

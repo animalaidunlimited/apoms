@@ -6,12 +6,9 @@ import {
     FormBuilder,
     FormControl,
 } from '@angular/forms';
-import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { RescueDetails } from 'src/app/core/models/responses';
 import { AnimalType } from 'src/app/core/models/animal-type';
 
 @Component({
@@ -36,13 +33,15 @@ export class PatientDetailsComponent implements OnInit {
     ngOnInit() {
         this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
+        let initialNumber: number;
+
         const patientDetails = this.recordForm.get(
             'patientDetails',
         ) as FormGroup;
 
         patientDetails.addControl(
             'animalTypeId',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
         patientDetails.addControl(
             'mainProblems',
@@ -54,36 +53,38 @@ export class PatientDetailsComponent implements OnInit {
         );
         patientDetails.addControl(
             'sex',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
         patientDetails.addControl(
             'treatmentPriority',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
         patientDetails.addControl(
             'abcStatus',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
         patientDetails.addControl(
             'releaseStatus',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
         patientDetails.addControl(
             'temperament',
-            new FormControl('', Validators.required),
+            new FormControl(initialNumber, Validators.required),
         );
 
         this.maxDate = getCurrentTimeString();
 
         this.patientService
-            .getPatientByPatientId(
-                this.recordForm.get('patientDetails.patientId').value,
-            )
+            .getPatientByPatientId(this.recordForm.get('patientDetails.patientId').value)
             .subscribe(result => {
                 this.recordForm.patchValue(result);
+
+                console.log(result);
+                console.log(this.recordForm.get('patientDetails.'));
+
                 this.recordForm
-                    .get('patientDetails.animalTypeId')
-                    .setValue(result.animalTypeId);
+                    .get('patientDetails')
+                    .patchValue(result);
             });
     }
 }

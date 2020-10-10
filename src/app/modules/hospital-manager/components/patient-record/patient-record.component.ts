@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 
 @Component({
     selector: 'patient-record',
@@ -20,7 +22,11 @@ export class PatientRecordComponent implements OnInit {
 
     hideMenu: boolean;
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private snackbar: SnackbarService
+        ) {}
 
     ngOnInit() {
         this.hideMenu = window.innerWidth > 840 ? false : true;
@@ -79,6 +85,13 @@ export class PatientRecordComponent implements OnInit {
     }
 
     saveForm() {
-        alert('Save the form!');
+
+        this.patientService.updatePatientDetails(this.recordForm.get('patientDetails').value).then(result => {
+            result.success === 1 ?
+                this.snackbar.successSnackBar('Update successful','OK')
+                :
+                this.snackbar.errorSnackBar('Update failed','OK');
+        });
+
     }
 }
