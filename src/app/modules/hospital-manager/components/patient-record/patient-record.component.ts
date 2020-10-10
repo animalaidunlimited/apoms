@@ -2,8 +2,31 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { SafeUrl } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+import { MediaItem } from 'src/app/core/models/media';
+
+
+// interface MediaItems{
+//     mediaItemId: Observable<number>;
+//     mediaType: string;
+//     localURL: SafeUrl;
+//     remoteURL: string;
+//     isPrimary: boolean;
+//     datetime: string;
+//     comment: string;
+//     patientId: number;
+//     heightPX: number;
+//     widthPX: number;
+//     tags: string[];
+//     uploadProgress$: Observable<number>;
+//     updated: boolean;
+// }
+
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'patient-record',
     templateUrl: './patient-record.component.html',
     styleUrls: ['./patient-record.component.scss'],
@@ -20,7 +43,12 @@ export class PatientRecordComponent implements OnInit {
 
     hideMenu: boolean;
 
-    constructor(private fb: FormBuilder) {}
+    profileUrl: SafeUrl;
+
+    mediaData: Observable<MediaItem[]>;
+
+    constructor(private fb: FormBuilder,
+        private patientService: PatientService) {}
 
     ngOnInit() {
         this.hideMenu = window.innerWidth > 840 ? false : true;
@@ -56,13 +84,25 @@ export class PatientRecordComponent implements OnInit {
                 callerAlternativeNumber: [''],
             }),
             callOutcome: this.fb.group({
-                CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId + ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
+                CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId +
+                 ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
                 sameAsNumber: []
             }),
         });
 
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
+
+        const patientId  = this.incomingPatient.patientId;
+
+        this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
+        if(this.mediaData){
+        this.mediaData.subscribe(media=>{
+            const mediaItem = media.find(item=>Boolean(item.isPrimary) === true);
+            this.profileUrl = mediaItem.localURL;
+
+        });
+    }
     }
 
     tabChanged(event: MatTabChangeEvent) {

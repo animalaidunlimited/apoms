@@ -6,6 +6,7 @@ export interface MediaItem{
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
+    isPrimary:boolean;
     datetime: Date|string;
     comment: string;
     patientId: number;

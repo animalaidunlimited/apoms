@@ -38,7 +38,7 @@ export class AddSurgeryDialogComponent implements OnInit {
 
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
-            if (values.surgeryDetailsSaveComplete != 0) {
+            if (values.surgeryDetailsSaveComplete !== 0) {
                 this.dialogRef.close(this.result);
             }
         });

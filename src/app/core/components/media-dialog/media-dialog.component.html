@@ -24,7 +24,8 @@
     <div *ngFor="let mediaItem of mediaItems">
 
         <!-- <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"  (itemUploaded)="onMediaItemUploaded(mediaItem)"></media-card> -->
-        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem" (itemDeleted)=onMediaItemDeleted(mediaItem)></media-card>
+        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"
+        [isPrimaryChanged]="isPrimaryChanged" (itemDeleted)=onMediaItemDeleted(mediaItem)></media-card>
 
 
     </div>
@@ -34,6 +35,6 @@
 <div mat-dialog-actions>
 
   <button type="button" mat-button [disabled]="uploading > 0" (click)="onSave()">Save</button>
-
+    
 
 </div>
