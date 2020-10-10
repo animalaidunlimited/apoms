@@ -5,7 +5,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({
-    selector: 'outcome',
+    selector: 'app-outcome',
     templateUrl: './outcome.component.html',
     styleUrls: ['./outcome.component.scss'],
 })

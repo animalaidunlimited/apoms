@@ -155,6 +155,7 @@ return returnObject;
       mediaItemId: new Observable<number>(),
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
+      isPrimary:null,
       remoteURL: null,
       datetime: now,
       comment: '',

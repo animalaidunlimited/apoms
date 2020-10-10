@@ -4,22 +4,25 @@ import { MediaPasteService } from '../../services/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 interface IncomingData {
   tagNumber: string;
   patientId: number;
-  pastedImage: File;
+  // pastedImage: File;
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'media-dialog',
   templateUrl: './media-dialog.component.html',
   styleUrls: ['./media-dialog.component.scss']
 })
 
 export class MediaDialogComponent implements OnInit {
+
+  isPrimaryChanged : BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   mediaItems: MediaItem [] = [];
 
@@ -51,6 +54,7 @@ export class MediaDialogComponent implements OnInit {
           mediaType: mediaItem.mediaType,
           localURL: mediaItem.localURL,
           remoteURL: mediaItem.remoteURL,
+          isPrimary :mediaItem.isPrimary,
           datetime: mediaItem.datetime,
           comment: mediaItem.comment,
           patientId: mediaItem.patientId,
@@ -60,16 +64,15 @@ export class MediaDialogComponent implements OnInit {
           uploadProgress$: of(100),
           updated: false
         };
-
         return newItem;
 
         });
 
       }
 
-      if(this.data.pastedImage){
-        this.uploadFile(this.data.pastedImage);
-      }
+      // if(this.data.pastedImage){
+      //   this.uploadFile(this.data.pastedImage);
+      // }
 
     });
 
@@ -142,6 +145,12 @@ onSave(): void {
     this.dialogRef.close();
 }
 
+clearPrimary(){
+  this.mediaItems.forEach(mediaItem=>{
+    mediaItem.isPrimary = false;
+  });
+  console.log(this.mediaItems);
+}
 
 
 }
