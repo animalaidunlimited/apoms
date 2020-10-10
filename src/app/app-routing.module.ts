@@ -12,6 +12,7 @@ import { CustomRouteReuseStrategy } from './core/nav-reuse-strategy';
 import { NavGuard } from './core/nav.guard';
 import { PrintContentComponent } from './modules/print-templates/components/print-content/print-content.component';
 import { PrintWrapperComponent } from './modules/print-templates/components/print-wrapper/print-wrapper.component';
+import { CensusListContentComponent } from './modules/print-templates/components/census-list-content/census-list-content.component';
 
 const routes: Routes = [
     {
@@ -64,13 +65,13 @@ const routes: Routes = [
             ),
     },
 
-    //{
+    // {
     //    path: 'print',
     //    loadChildren: () =>
     //        import('./modules/print-templates/print-templates-page.module').then(
     //            m => m.PrintTemplatesPageModule,
     //        ),
-    //},
+    // },
     {
         path: 'print',
         outlet: 'print',
@@ -78,6 +79,15 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
         { path: 'print-content/:printTemplate', component: PrintContentComponent }
+        ]
+    },
+    {
+        path: 'census-list',
+        outlet: 'census-list',
+        component: PrintWrapperComponent,
+        canActivate: [AuthGuard],
+        children: [
+        { path: 'census-list-content/:censusList', component: CensusListContentComponent }
         ]
     },
     {

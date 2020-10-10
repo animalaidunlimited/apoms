@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { PatientService } from '../../emergency-register/services/patient.service';
 import { map } from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -183,7 +184,7 @@ private toCamelCase(str) {
 
   }
 
-  private sendContentToPrinter(contentToPrint: string){
+  public sendContentToPrinter(contentToPrint: string){
 
     this.isPrinting.next(true);
 
@@ -195,12 +196,33 @@ private toCamelCase(str) {
 
   }
 
-  public onDataReady() {
+  public sendCensusListToPrinter(contentToPrint: string){
+
+    this.isPrinting.next(true);
+
+    this.router.navigate(['/',
+    {
+      outlets: {
+      'census-list': ['census-list', 'census-list-content', contentToPrint]
+    }}]);
+
+  }
+
+  public onDataReady(printItemName:string) {
 
     setTimeout(() => {
       window.print();
       this.isPrinting.next(false);
-      this.router.navigate([{ outlets: { print: null }}]);
+
+      if(printItemName === 'print-template'){
+        this.router.navigate([{ outlets: { print: null }}]);
+
+      }
+      else if(printItemName === 'census-list'){
+        this.router.navigate([{ outlets: { 'census-list': null }}]);
+      }
+
+
     });
   }
 

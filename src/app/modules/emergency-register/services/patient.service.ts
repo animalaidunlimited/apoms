@@ -89,6 +89,19 @@ export class PatientService extends APIService {
             });
     }
 
+    public async updatePatientDetails(patientDetails: any) {
+
+        console.log("This is a function...")
+
+        return await this.put(patientDetails)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     public getPatientCallsByPatientId(
         patientId: number,
     ): Observable<PatientCalls> {
@@ -159,7 +172,7 @@ export class PatientService extends APIService {
         return this.getObservable(request).pipe(
             map((response: any) => {
 
-                return response
+                return response;
             }),
         );
     }

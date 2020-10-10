@@ -112,6 +112,8 @@ export class MediaPasteService {
 
                 newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
 
+                // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
+
                 uploadResult.then((result) => {
 
                   result.ref.getDownloadURL().then(url => {

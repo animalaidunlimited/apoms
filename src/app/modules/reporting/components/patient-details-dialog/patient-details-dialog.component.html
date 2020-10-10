@@ -1,56 +1,35 @@
-
-
-<h1 mat-dialog-title
-class="non-printable"
-cdkDragRootElement=".cdk-overlay-pane">
-</h1>
-
 <div mat-dialog-content>
     <fieldset class="form-sub-group">
 
-        <legend class="legend ">{{data.areaName}} - ({{patientRecords?.data.length}})</legend>
+      <legend class="legend ">{{data.areaName}} - ({{patientRecords?.data.length}})</legend>
 
-        <table mat-table [dataSource]="patientRecords" matSort class="mat-elevation-z8 table">
+      <button type="button" mat-raised-button color="primary" (click)="censusLayout()">Census layout</button>
 
-            <ng-container matColumnDef="emergencynumber">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Emergency number </th>
-              <td mat-cell *matCellDef="let element">{{element.emergencynumber}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="tagnumber">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Tag number </th>
-              <td mat-cell *matCellDef="let element"> {{element.tagnumber}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="species">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Species </th>
-              <td mat-cell *matCellDef="let element"> {{element.species}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="callername">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Caller name </th>
-              <td mat-cell *matCellDef="let element"> {{element.callername}} </td>
-            </ng-container>
+      <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
 
 
-            <ng-container matColumnDef="number">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Number </th>
-                <td mat-cell *matCellDef="let element"> {{element.number}} </td>
-            </ng-container>
+        <table mat-table matSort [dataSource]="patientRecords" class="mat-elevation-z8 table">
 
-            <ng-container matColumnDef="calldate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Call date </th>
-                <td mat-cell *matCellDef="let element"> {{element.calldate}} </td>
-            </ng-container>
+        <!-- Index Column -->
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef> Count </th>
+          <td mat-cell *matCellDef="let index = index"> {{index + 1}} </td>
+        </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+        <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex | async">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef> {{column}} </th>
+          <td mat-cell *matCellDef="let element;" > {{element[column]}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns | async"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns | async;"></tr>
+      </table>
+
 
     </fieldset>
 </div>
 
-<div mat-dialog-action class="non-printable">
+<div mat-dialog-action>
   <button type="button" mat-raised-button color="primary" (click)="onCancel()">Close</button>
   <button type="button" mat-raised-button color="primary" (click)="print()">Print</button>
 </div>

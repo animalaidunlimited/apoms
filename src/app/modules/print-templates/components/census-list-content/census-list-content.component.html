@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>
+  Area: {{censusList.area}} - Print date: {{printDate | date:'d MMM y'}} - Count: {{censusList.printList.length}}
+</h1>
+
+
+
+<table mat-table matSort [dataSource]="tableData" class="mat-elevation-z8 table">
+
+  <ng-container matColumnDef="index">
+    <th mat-header-cell *matHeaderCellDef> Count </th>
+    <td mat-cell *matCellDef="let index = index"> {{index + 1}} </td>
+  </ng-container>
+
+    <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> {{column}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
