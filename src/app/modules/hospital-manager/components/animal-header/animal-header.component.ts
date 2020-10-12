@@ -95,8 +95,12 @@ export class AnimalHeaderComponent implements OnInit {
             }
         });
 
-        dialogRef.afterClosed().subscribe(data=>{
-            console.log(data);
+        dialogRef.afterClosed().subscribe(updatedMedia=>{
+            if(updatedMedia){
+                if(updatedMedia.isPrimary === true){
+                    this.profileUrl = updatedMedia.localURL;
+                }
+            }
         });
     }
 

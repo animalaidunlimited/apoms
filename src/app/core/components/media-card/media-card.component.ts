@@ -21,6 +21,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   @Input() tagNumber: string;
   @Input() isPrimaryChanged: BehaviorSubject<number>;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
+  @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
 
   @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer: ElementRef;
 
@@ -80,10 +81,17 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     });
 
     this.mediaForm.get('isPrimary').valueChanges.subscribe(changedPrimary=>{
+      console.log(changedPrimary);
+      if(changedPrimary){
+
+        setTimeout(()=>{
+          this.updatedMedia.emit(this.mediaForm.value);
+        },0);
+        
+      }
 
       const mediaItemId$ = this.mediaForm.get('mediaItemId').value as Observable<number>;
-      mediaItemId$.subscribe(mediaId=>{
-        
+      mediaItemId$.subscribe(mediaId=>{     
           this.isPrimaryChanged.next(mediaId);
 
       });
@@ -138,7 +146,11 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         // We should turn this into an observable.
         this.mediaForm.get('remoteURL').setValue(this.mediaItem.remoteURL);
 
-        this.patientService.savePatientMedia(this.mediaForm.value);
+        // Save the new or update the media
+        this.patientService.savePatientMedia(this.mediaForm.value).then(val=>{
+          console.log(val);
+        });
+
       });
 
     }

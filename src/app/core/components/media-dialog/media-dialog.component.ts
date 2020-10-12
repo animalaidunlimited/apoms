@@ -28,6 +28,10 @@ export class MediaDialogComponent implements OnInit {
 
   uploading = 0;
 
+  newItem : MediaItem;
+
+  primaryMedia : MediaItem;
+
 
   @HostListener('window:paste', ['$event']) handleWindowPaste( $event ){
     this.handlePaste( $event);
@@ -49,7 +53,7 @@ export class MediaDialogComponent implements OnInit {
 
         this.mediaItems = mediaItems.map(mediaItem => {
 
-        const newItem:MediaItem = {
+         this.newItem  = {
           mediaItemId: of(mediaItem.mediaItemId),
           mediaType: mediaItem.mediaType,
           localURL: mediaItem.localURL,
@@ -64,19 +68,14 @@ export class MediaDialogComponent implements OnInit {
           uploadProgress$: of(100),
           updated: false
         };
-        return newItem;
-
+        return this.newItem;
         });
 
       }
-
-      // if(this.data.pastedImage){
-      //   this.uploadFile(this.data.pastedImage);
-      // }
-
     });
 
   }
+
 
 public handlePaste(event: ClipboardEvent){
 
@@ -140,16 +139,27 @@ onMediaItemDeleted(deletedMediaItem: MediaItem){
 
 }
 
-onSave(): void {
 
-    this.dialogRef.close();
-}
 
 clearPrimary(){
   this.mediaItems.forEach(mediaItem=>{
     mediaItem.isPrimary = false;
   });
-  console.log(this.mediaItems);
+}
+
+onMediaUpdate(updatedMedia:MediaItem){
+  if(updatedMedia.isPrimary === true){
+    this.primaryMedia = updatedMedia;
+  }
+}
+
+onSave(): void {
+  if(this.primaryMedia){
+    this.dialogRef.close(this.primaryMedia);
+  }
+  else{
+    this.dialogRef.close();
+  }
 }
 
 
