@@ -8,7 +8,7 @@ export interface DialogData {
     surgeryId: number;
     animalType: string;
     tagNumber:string;
-    emergencyNumber:number
+    emergencyNumber:number;
 }
 
 interface CanExitChange {
@@ -38,7 +38,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
 
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
-            if (values.surgeryDetailsUpdateComplete != 0) {
+            if (values.surgeryDetailsUpdateComplete !== 0) {
                 this.dialogRef.close(this.result);
             }
         });

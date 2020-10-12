@@ -25,7 +25,8 @@
 
         <!-- <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"  (itemUploaded)="onMediaItemUploaded(mediaItem)"></media-card> -->
         <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"
-        [isPrimaryChanged]="isPrimaryChanged" (itemDeleted)=onMediaItemDeleted(mediaItem)></media-card>
+        [isPrimaryChanged]="isPrimaryChanged" (itemDeleted)=onMediaItemDeleted(mediaItem)
+        (updatedMedia)=onMediaUpdate($event)></media-card>
 
 
     </div>
