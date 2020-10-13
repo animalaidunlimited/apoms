@@ -48,7 +48,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
         this.recordForm.patchValue(result)
 
-        )
+        );
 
     }
 
@@ -64,7 +64,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
       this.outcomeChanged();
 
-    })
+    });
 
     this.changeDetector.detectChanges();
   }

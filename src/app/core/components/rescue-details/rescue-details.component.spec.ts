@@ -33,7 +33,7 @@ describe('RescueDetailsComponent', () => {
         fixture = TestBed.createComponent(RescueDetailsComponent);
         component = fixture.componentInstance;
 
-        component.emergencyCaseId;
+        component.emergencyCaseId = 1;
 
         component.recordForm = fb.group({
             emergencyDetails: fb.group({
@@ -41,7 +41,8 @@ describe('RescueDetailsComponent', () => {
                 callDateTime: [''],
             }),
             callOutcome: fb.group({
-                callOutcome: [''],
+                CallOutcome: [''],
+                CallOutcomeId: []
             }),
         });
 

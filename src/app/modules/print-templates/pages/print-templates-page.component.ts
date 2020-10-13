@@ -29,7 +29,6 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   currentSubscription:Subscription;
 
-
   loading = false;
 
   printElements:FormArray;
@@ -37,7 +36,7 @@ export class PrintTemplatesPageComponent implements OnInit {
   templates:Observable<PrintTemplate[]>;
 
   printableElements:Observable<PrintElement[]>;
-  orientations:String[] = ['Portrait', 'Landscape'];
+  orientations:string[] = ['Portrait', 'Landscape'];
 
   printPage:FormGroup;
 
@@ -442,15 +441,15 @@ processResult(result:SavePrintTemplateResponse){
   let success = true;
 
   if(result[0].success !== 1) {
-    success = false
-  };
+    success = false;
+  }
 
-  result[1].forEach(result => {
+  result[1].forEach(val => {
 
-      if(result.success !== 1){
+      if(val.success !== 1){
         success = false;
       }
-  })
+  });
 
   success ?
   this.snackbar.successSnackBar('Print template updated', 'OK') :

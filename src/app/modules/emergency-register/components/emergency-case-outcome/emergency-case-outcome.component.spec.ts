@@ -39,7 +39,7 @@ describe('EmergencyCaseOutcomeComponent', () => {
                 emergencyCaseId: [1],
             }),
             callOutcome: fb.group({
-                callOutcome: [''],
+                CallOutcome: ['Admission'],
             }),
         });
 

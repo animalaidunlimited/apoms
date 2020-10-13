@@ -49,9 +49,10 @@ export class CensusRecordComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-      this.censusDate = this.fb.group({
-          CensusDate: [this.getCurrentDate()],
-      });
+
+    this.censusDate = this.fb.group({
+        CensusDate: [this.getCurrentDate()],
+    });
 
 
   if(this.censusUpdateDate){

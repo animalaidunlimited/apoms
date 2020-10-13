@@ -1,4 +1,9 @@
+import { OverlayModule, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UpdateCensusDialogComponent } from 'apoms/src/app/modules/hospital-manager/components/update-census-dialog/update-census-dialog/update-census-dialog.component';
 
 import { CensusDetailsComponent } from './census-details.component';
 
@@ -6,8 +11,34 @@ describe('CensusDetailsComponent', () => {
     let component: CensusDetailsComponent;
     let fixture: ComponentFixture<CensusDetailsComponent>;
 
+    const mockDialogRef = {
+        open: jasmine.createSpy('open'),
+        close: jasmine.createSpy('close'),
+    };
+
+    const dialogData = {};
+
+    let dialog: MatDialogRef<UpdateCensusDialogComponent>;
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                BrowserAnimationsModule,
+                MatDialogModule,
+                OverlayModule
+            ],
+            providers: [
+                MatDialog,
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: dialogData,
+                },
+                {
+                    provide: MatDialogRef,
+                    useValue: mockDialogRef,
+                },
+            ],
             declarations: [CensusDetailsComponent],
         }).compileComponents();
     }));
@@ -15,6 +46,7 @@ describe('CensusDetailsComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(CensusDetailsComponent);
         component = fixture.componentInstance;
+        dialog = TestBed.get(MatDialog);
         fixture.detectChanges();
     });
 
