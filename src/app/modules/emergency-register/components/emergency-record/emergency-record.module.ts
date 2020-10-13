@@ -14,6 +14,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaCardComponent } from 'src/app/core/components/media-card/media-card.component';
 
+
 @NgModule({
     declarations: [
         EmergencyRecordComponent,

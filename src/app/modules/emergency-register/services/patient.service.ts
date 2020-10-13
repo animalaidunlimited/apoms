@@ -140,7 +140,6 @@ export class PatientService extends APIService {
     }
 
     public async savePatientMedia(mediaItem: MediaItem){
-
         return await this.put(mediaItem)
             .then(data => {
                 return data;
@@ -159,7 +158,7 @@ export class PatientService extends APIService {
         return this.getObservable(request).pipe(
             map((response: any) => {
 
-                return response
+                return response;
             }),
         );
     }
