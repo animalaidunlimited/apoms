@@ -18,6 +18,7 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { UserOptionsService } from 'src/app/core/services/user-options.service';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'animal-selection',
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
@@ -659,7 +660,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     openMediaDialog(mediaObject:MediaItem): void{
-
+        console.log(mediaObject.localURL);
         const currentPatient: FormGroup = this.getcurrentPatient();
 
         const dialogRef = this.dialog.open(MediaDialogComponent, {

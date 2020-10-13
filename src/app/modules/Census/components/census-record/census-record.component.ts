@@ -10,6 +10,7 @@ import { CensusRecord } from 'src/app/modules/hospital-manager/components/census
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'census-record',
   templateUrl: './census-record.component.html',
   styleUrls: ['./census-record.component.scss']
@@ -159,21 +160,22 @@ export class CensusRecordComponent implements OnInit {
                                             this.cdref.detectChanges();
                                         }
 
-                                         this.censusArea.forEach(area=>
+                                         this.censusArea.forEach(censusAreas=>
                                             {
 
-                                                area.actions.forEach(action=>{
-                                                    action.patients.forEach(patient=>{
+                                                censusAreas.actions.forEach(censusActions=>{
+                                                    censusActions.patients.forEach(censusPatients=>{
 
-                                                        if(patient.tagNumber === tag.toUpperCase() || patient.patientId === response[0].vPatientId){
-                                                            patient.errorCode = response[0].vErrorCode;
+                                                        if(censusPatients.tagNumber === tag.toUpperCase() ||
+                                                        censusPatients.patientId === response[0].vPatientId){
+                                                            censusPatients.errorCode = response[0].vErrorCode;
                                                             this.cdref.detectChanges();
                                                         }
-                                                    })
+                                                    });
 
 
-                                                })
-                                            })
+                                                });
+                                            });
                                     });
 
                                     const CensusTableData : CensusRecord = {
@@ -182,7 +184,7 @@ export class CensusRecordComponent implements OnInit {
                                         action : action.actionName,
                                         days : 0,
                                         order: 0
-                                    }
+                                    };
                                     this.result.emit(CensusTableData);
                         }
                     });
@@ -238,20 +240,20 @@ export class CensusRecordComponent implements OnInit {
                           if(response){
                               this.loading = false;
 
-                              this.censusArea.forEach(area=>
+                              this.censusArea.forEach(censusAreas=>
                                 {
 
-                                    area.actions.forEach(action=>{
-                                        action.patients.forEach(patient=>{
+                                    censusAreas.actions.forEach(censusActions=>{
+                                        censusActions.patients.forEach(censusPatients=>{
 
-                                            if(patient.tagNumber === response.prm_TagNumber){
-                                                patient.errorCode = response.vErrorCode;
+                                            if(censusPatients.tagNumber === response.prm_TagNumber){
+                                                censusPatients.errorCode = response.vErrorCode;
                                                this.cdref.detectChanges();
                                             }
-                                        })
+                                        });
 
-                                    })
-                                })
+                                    });
+                                });
 
 
                             }
@@ -264,7 +266,7 @@ export class CensusRecordComponent implements OnInit {
                             action : action.actionName,
                             days : 0,
                             order: 0
-                        }
+                        };
                     this.remove.emit(CensusTableData);
                   }
               });

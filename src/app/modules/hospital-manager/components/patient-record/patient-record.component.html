@@ -10,10 +10,12 @@
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
         <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
-            <animal-header [recordForm]="recordForm"></animal-header>
+            <animal-header [recordForm]="recordForm"
+                           [profileUrl] = "profileUrl">
+            </animal-header>
 
 
-            <thumbnail-slider></thumbnail-slider>
+            <thumbnail-slider [mediaData]="mediaData"></thumbnail-slider>
 
             <patient-details [recordForm]="recordForm"></patient-details>
 
@@ -74,7 +76,7 @@
     <mat-tab label="Outcome" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
 
-        <outcome></outcome>
+        <app-outcome></app-outcome>
     </mat-tab>
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
 
