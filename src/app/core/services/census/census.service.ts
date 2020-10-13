@@ -21,9 +21,10 @@ export class CensusService extends APIService {
     }
 
     public async insertCensusData(
-        areaId:number, sortArea:number, actionId:number, sortAction:number, tagNumber:string, date: Date ): Promise<any> {
+        areaId:number, sortArea:number, actionId:number,
+        sortAction:number, tagNumber:string, date: Date ): Promise<any> {
 
-        const data: CensusTable = {
+        const postData: CensusTable = {
             areaId,
             sortArea,
             actionId,
@@ -31,8 +32,7 @@ export class CensusService extends APIService {
             tagNumber,
             date,
         };
-
-        return await this.post(data)
+        return await this.post(postData)
             .then(data => {
                 return data;
             })
@@ -49,7 +49,7 @@ export class CensusService extends APIService {
     public async deleteCensusData(
         areaId:number, sortArea:number, actionId:number, sortAction:number, tagNumber:string, date: Date ): Promise<any> {
 
-        const data: CensusTable = {
+        const deleteData: CensusTable = {
             areaId,
             sortArea,
             actionId,
@@ -57,9 +57,9 @@ export class CensusService extends APIService {
             tagNumber,
             date
         };
-        return await this.delete(data).then(data=>
+        return await this.delete(deleteData).then(value=>
             {
-                return data;
+                return deleteData;
             })
             .catch(error => {
                 console.log(error);
@@ -78,6 +78,10 @@ export class CensusService extends APIService {
 
     public async getPatientDetailsByArea(area:any): Promise<any>{
         const request = '?Area=' + area;
+<<<<<<< HEAD
+=======
+        // console.log("Here");
+>>>>>>> develop
         return this.get(request);
     }
 

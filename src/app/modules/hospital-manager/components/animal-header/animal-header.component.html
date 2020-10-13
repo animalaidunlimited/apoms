@@ -7,7 +7,7 @@
 <!-- <img mat-card-image (click)="launchImageModal()"  src="../../../../../assets/images/image_placeholder.png" width="100%" height="100%"  style="cursor: pointer" alt="Click to upload"> -->
 
 <!-- <ng-template ngFor let-imageUrl [ngForOf]="imageUrls"> -->
-    <img [src]="imageUrls[0]" (click)="launchImageModal()" style="cursor: pointer" width="100%" height="100%" alt="Click to upload" />
+    <img [src]="profileUrl" (click)="launchImageModal()" style="cursor: pointer" width="100%" height="100%" alt="Click to upload" />
 <!-- </ng-template> -->
 
 
@@ -23,11 +23,16 @@
 <div class="primary-font-color">Tag number</div>
 </div>
 
+<div>
+    <mat-icon class="add-image-icon" (click)="openMediaDialog()">add_photo_alternate</mat-icon>
+</div>
+
 <div fxLayout="column" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
 <div>
 <label class="current-area">{{recordForm.get('patientDetails.currentLocation')?.value}}</label>
 </div>
 <div class="primary-font-color">Current area</div>
+
 </div>
 
 

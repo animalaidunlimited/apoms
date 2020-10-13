@@ -4,16 +4,16 @@ import { MediaPasteService } from '../../services/media-paste/media-paste.servic
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 interface IncomingData {
   tagNumber: string;
   patientId: number;
-  pastedImage: File;
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'media-dialog',
   templateUrl: './media-dialog.component.html',
   styleUrls: ['./media-dialog.component.scss']
@@ -21,9 +21,15 @@ interface IncomingData {
 
 export class MediaDialogComponent implements OnInit {
 
+  isPrimaryChanged : BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
   mediaItems: MediaItem [] = [];
 
   uploading = 0;
+
+  newItem : MediaItem;
+
+  primaryMedia : MediaItem;
 
 
   @HostListener('window:paste', ['$event']) handleWindowPaste( $event:any ){
@@ -46,11 +52,12 @@ export class MediaDialogComponent implements OnInit {
 
         this.mediaItems = mediaItems.map((mediaItem:any) => {
 
-        const newItem:MediaItem = {
+         this.newItem  = {
           mediaItemId: of(mediaItem.mediaItemId),
           mediaType: mediaItem.mediaType,
           localURL: mediaItem.localURL,
           remoteURL: mediaItem.remoteURL,
+          isPrimary :mediaItem.isPrimary,
           datetime: mediaItem.datetime,
           comment: mediaItem.comment,
           patientId: mediaItem.patientId,
@@ -60,20 +67,14 @@ export class MediaDialogComponent implements OnInit {
           uploadProgress$: of(100),
           updated: false
         };
-
-        return newItem;
-
+        return this.newItem;
         });
 
       }
-
-      if(this.data.pastedImage){
-        this.uploadFile(this.data.pastedImage);
-      }
-
     });
 
   }
+
 
 public handlePaste(event: ClipboardEvent){
 
@@ -145,11 +146,28 @@ onMediaItemDeleted(deletedMediaItem: MediaItem){
 
 }
 
-onSave(): void {
 
-    this.dialogRef.close();
+
+clearPrimary(){
+  this.mediaItems.forEach(mediaItem=>{
+    mediaItem.isPrimary = false;
+  });
 }
 
+onMediaUpdate(updatedMedia:MediaItem){
+  if(updatedMedia.isPrimary === true){
+    this.primaryMedia = updatedMedia;
+  }
+}
+
+onSave(): void {
+  if(this.primaryMedia){
+    this.dialogRef.close(this.primaryMedia);
+  }
+  else{
+    this.dialogRef.close();
+  }
+}
 
 
 }
