@@ -2,15 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
-<<<<<<< HEAD
-import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-=======
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
->>>>>>> develop
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -20,7 +16,7 @@ import { MediaItem } from 'src/app/core/models/media';
 })
 export class PatientRecordComponent implements OnInit {
 
-    recordForm: FormGroup;
+    recordForm: FormGroup = new FormGroup({});
 
     @Input() incomingPatient!: SearchRecordTab;
 
@@ -30,65 +26,17 @@ export class PatientRecordComponent implements OnInit {
 
     hideMenu = false;
 
-<<<<<<< HEAD
-    constructor(
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private snackbar: SnackbarService
-        ) {
+    profileUrl: SafeUrl = '';
 
-            this.recordForm = this.fb.group({
-                emergencyDetails: this.fb.group({
-                    emergencyCaseId: [this.incomingPatient.emergencyCaseId],
-                    emergencyNumber: [this.incomingPatient.emergencyNumber],
-                    callDateTime: [this.incomingPatient.callDateTime],
-                }),
-
-                patientDetails: this.fb.group({
-                    patientId: [this.incomingPatient.patientId],
-                    tagNumber: [
-                        this.incomingPatient.tagNumber,
-                        Validators.required,
-                    ],
-                    currentLocation: [this.incomingPatient.currentLocation],
-                    animalType: [this.incomingPatient.animalType],
-                }),
-                patientStatus: this.fb.group({
-                    status: [''],
-                    releaseDate: [''],
-                    diedDate: [''],
-                    escapeDate: [''],
-                    PN: [''],
-                    suspectedRabies: [''],
-                }),
-                callerDetails: this.fb.group({
-                    callerId: [''],
-                    callerName: [''],
-                    callerNumber: [''],
-                    callerAlternativeNumber: [''],
-                }),
-                callOutcome: this.fb.group({
-                    CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId + ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
-                    sameAsNumber: []
-                }),
-            });
-
-        }
-=======
-    profileUrl: SafeUrl;
-
-    mediaData: Observable<MediaItem[]>;
+    mediaData!: Observable<MediaItem[]>;
 
     constructor(private fb: FormBuilder,
+        private snackbar: SnackbarService,
         private patientService: PatientService) {}
->>>>>>> develop
 
     ngOnInit() {
         this.hideMenu = window.innerWidth > 840 ? false : true;
 
-<<<<<<< HEAD
-
-=======
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
                 emergencyCaseId: [this.incomingPatient.emergencyCaseId],
@@ -125,7 +73,6 @@ export class PatientRecordComponent implements OnInit {
                 sameAsNumber: []
             }),
         });
->>>>>>> develop
 
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
@@ -135,8 +82,12 @@ export class PatientRecordComponent implements OnInit {
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
         if(this.mediaData){
         this.mediaData.subscribe(media=>{
-            const mediaItem = media.find(item=>Boolean(item.isPrimary) === true);
-            this.profileUrl = mediaItem.localURL;
+
+            if(!media){
+                return;
+            }
+
+            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
     }

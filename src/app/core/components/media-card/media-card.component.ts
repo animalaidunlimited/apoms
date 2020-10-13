@@ -17,14 +17,9 @@ import { BehaviorSubject, of, Observable } from 'rxjs';
 })
 export class MediaCardComponent implements OnInit, OnDestroy {
 
-<<<<<<< HEAD
   @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
-=======
-  @Input() mediaItem: MediaItem;
-  @Input() tagNumber: string;
-  @Input() isPrimaryChanged: BehaviorSubject<number>;
->>>>>>> develop
+  @Input() isPrimaryChanged!: BehaviorSubject<number>;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
   @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
 
@@ -34,14 +29,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   removable = true;
   selectable = true;
   visible = true;
-<<<<<<< HEAD
-
   mediaForm:FormGroup = new FormGroup({});
   tags:FormArray = new FormArray([]);
-=======
-  mediaForm:FormGroup;
-  tags:FormArray;
->>>>>>> develop
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -52,7 +41,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.mediaItem.isPrimary = Boolean(this.mediaItem.isPrimary);
-    this.mediaForm = this.fb.group({ 
+    this.mediaForm = this.fb.group({
       mediaItemId: of(this.mediaItem.mediaItemId),
       patientMediaItemId: null,
       mediaType: this.mediaItem.mediaType,
@@ -65,16 +54,16 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false
-    
+
     });
 
     this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
-      
-      const mediaItemId$ = this.mediaForm.get('mediaItemId').value as Observable<number>;
+
+      const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
 
       mediaItemId$.subscribe(itemId=>{
         if(itemId !== changedPrimaryMediaItemId && changedPrimaryMediaItemId !== 0){
-          
+
           const isPrimaryControl =  this.mediaForm.get('isPrimary') as AbstractControl;
 
           if(isPrimaryControl.value !== false){
@@ -90,17 +79,17 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
     });
 
-    this.mediaForm.get('isPrimary').valueChanges.subscribe(changedPrimary=>{
+    this.mediaForm.get('isPrimary')?.valueChanges.subscribe(changedPrimary=>{
       if(changedPrimary){
 
         setTimeout(()=>{
           this.updatedMedia.emit(this.mediaForm.value);
         },0);
-        
+
       }
 
-      const mediaItemId$ = this.mediaForm.get('mediaItemId').value as Observable<number>;
-      mediaItemId$.subscribe(mediaId=>{     
+      const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
+      mediaItemId$.subscribe(mediaId=>{
           this.isPrimaryChanged.next(mediaId);
 
       });

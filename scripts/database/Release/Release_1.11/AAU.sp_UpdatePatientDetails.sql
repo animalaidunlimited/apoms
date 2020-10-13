@@ -23,9 +23,11 @@ Purpose: Used to update the status of a patient.
 */
 
 DECLARE vOrganisationId INT;
+DECLARE vSuccess INT;
 
 DECLARE vPatientExists INT;
 SET vPatientExists = 0;
+SET vSuccess = 0;
 
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE PatientId = prm_PatientId;
 
@@ -48,19 +50,21 @@ START TRANSACTION;
    
 COMMIT;         
             
-    SELECT 1 INTO prm_Success;
+    SELECT 1 INTO vSuccess;
     
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_UserName,prm_PatientId,'Patient',CONCAT('Update patient details'), NOW());
 
 ELSEIF vPatientExists >= 1 THEN
 
-	SELECT 2 INTO prm_Success;
+	SELECT 2 INTO vSuccess;
 
 ELSE
 
-	SELECT 3 INTO prm_Success;
+	SELECT 3 INTO vSuccess;
 END IF;
+
+SELECT vSuccess;
 
 END$$
 DELIMITER ;

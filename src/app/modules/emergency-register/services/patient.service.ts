@@ -80,6 +80,7 @@ export class PatientService extends APIService {
     }
 
     public async updatePatientStatus(patient: any) {
+
         return await this.put(patient)
             .then(data => {
                 return data;

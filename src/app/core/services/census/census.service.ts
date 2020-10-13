@@ -78,10 +78,6 @@ export class CensusService extends APIService {
 
     public async getPatientDetailsByArea(area:any): Promise<any>{
         const request = '?Area=' + area;
-<<<<<<< HEAD
-=======
-        // console.log("Here");
->>>>>>> develop
         return this.get(request);
     }
 

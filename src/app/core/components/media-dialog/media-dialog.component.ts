@@ -27,10 +27,10 @@ export class MediaDialogComponent implements OnInit {
 
   uploading = 0;
 
-  newItem : MediaItem;
+  newItem! : MediaItem;
 
-  primaryMedia : MediaItem;
-
+  primaryMedia! : MediaItem;
+  
 
   @HostListener('window:paste', ['$event']) handleWindowPaste( $event:any ){
     this.handlePaste( $event);

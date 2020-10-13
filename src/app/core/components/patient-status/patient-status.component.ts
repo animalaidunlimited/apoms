@@ -4,10 +4,12 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { PatientStatusResponse } from '../../models/responses';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -17,15 +19,15 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 })
 export class PatientStatusComponent implements OnInit {
     errorMatcher = new CrossFieldErrorMatcher();
-    patientStates$;
+    patientStates$!:Observable<PatientStatusResponse[]>;
     @Input() patientId!: number;
 
-    patientStatusForm;
-    currentTime;
+    patientStatusForm!:FormGroup;
+    currentTime = '';
     tagNumber:string | undefined;
     createdDate = '';
 
-    notificationDurationSeconds;
+    notificationDurationSeconds = 3;
 
     constructor(
         private dropdowns: DropdownService,
@@ -35,6 +37,14 @@ export class PatientStatusComponent implements OnInit {
         private fb: FormBuilder,
         private showSnackBar: SnackbarService,
     ) {
+
+        this.patientStates$ = this.dropdowns.getPatientStates();
+
+    }
+
+
+
+    ngOnInit() {
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -48,7 +58,7 @@ export class PatientStatusComponent implements OnInit {
             suspectedRabies: [false],
         });
 
-        this.patientStates$ = this.dropdowns.getPatientStates();
+
 
         this.patientService
             .getPatientByPatientId(
@@ -62,11 +72,6 @@ export class PatientStatusComponent implements OnInit {
 
         this.currentTime = getCurrentTimeString();
 
-    }
-
-
-
-    ngOnInit() {
 
     }
 

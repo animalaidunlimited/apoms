@@ -16,20 +16,17 @@ export class OutcomeComponent implements OnInit {
     maxDate: string | Date = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
-    vaccinationDetails: FormGroup;
-    antibioticDetails: FormGroup;
-    isoReason: FormGroup;
+    vaccinationDetails!: FormGroup;
+    antibioticDetails!: FormGroup;
+    isoReason!: FormGroup;
 
 
     constructor(private fb: FormBuilder, private dropdown: DropdownService) {
 
-        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
-        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
-        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
-
     }
 
     ngOnInit() {
+
         this.antibiotics = this.dropdown.getAntibiotics();
         this.isoReasons = this.dropdown.getIsoReasons();
         this.maxDate = getCurrentTimeString();
@@ -49,6 +46,10 @@ export class OutcomeComponent implements OnInit {
                 isoReason: [''],
             }),
         });
+
+        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
+        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
+        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
 
 
     }

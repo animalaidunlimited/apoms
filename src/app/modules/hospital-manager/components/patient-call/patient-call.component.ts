@@ -27,7 +27,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 export class PatientCallComponent implements OnInit, OnChanges {
     @Input() patientId!: number;
 
-    patientCallForm: FormGroup = new FormGroup({});
+    patientCallForm!: FormGroup;
 
     callerHappy = true;
     hasVisited = false;
@@ -79,12 +79,13 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
             if(patientIdControl){
                 patientIdControl.setValue(changes.patientId.currentValue);
+                this.loadPatientCalls();
             }
-            else{
-                throw new Error('PatientIdControl is empty');
-            }
+            //else{
+            //    throw new Error('PatientIdControl is empty');
+            //}
 
-            this.loadPatientCalls();
+
         }
     }
 

@@ -160,8 +160,8 @@ return returnObject;
       mediaItemId: new Observable<number>(),
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
-      isPrimary:null,
-      remoteURL: null,
+      isPrimary: false,
+      remoteURL: '',
       datetime: now,
       comment: '',
       patientId,
@@ -236,12 +236,12 @@ getVideoDimension(video:any): Observable<any> {
 }
 
 
-  handlePaste(event: ClipboardEvent, patientId: number): MediaItem|undefined {
+  handlePaste(event: ClipboardEvent, patientId: number): MediaItem {
 
     const pastedImage:File|undefined = this.getPastedImage(event);
 
     if (!pastedImage) {
-        return;
+        return {} as MediaItem;
     }
 
     // Send the currentSize as the next mediaImageId so that it has its own ID.

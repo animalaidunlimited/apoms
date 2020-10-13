@@ -131,7 +131,6 @@ export class SurgeryRecordComponent implements OnInit {
 
                 if (value) {
 
-<<<<<<< HEAD
                     const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
                     const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
                     const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
@@ -147,13 +146,6 @@ export class SurgeryRecordComponent implements OnInit {
                     if (surgerySiteForTable === undefined) {
                         throw new TypeError('Missing surgery site!');
                     }
-=======
-                    const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId').value );
-                    const surgeryTypeForTable = this.surgeryTypes.find
-                    (surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value );
-                    const surgerySiteForTable = this.surgerySites.find
-                    (surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value );
->>>>>>> develop
 
                     const surgeryTableData: SurgeryRecord = {
                         surgeryId: value.surgeryId,
