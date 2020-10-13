@@ -2,22 +2,31 @@ import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, 
 import { COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { BehaviorSubject, of, Observable } from 'rxjs';
 
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'media-card',
   templateUrl: './media-card.component.html',
   styleUrls: ['./media-card.component.scss']
 })
 export class MediaCardComponent implements OnInit, OnDestroy {
 
+<<<<<<< HEAD
   @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
+=======
+  @Input() mediaItem: MediaItem;
+  @Input() tagNumber: string;
+  @Input() isPrimaryChanged: BehaviorSubject<number>;
+>>>>>>> develop
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
+  @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
 
   @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer!: ElementRef;
 
@@ -25,9 +34,14 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   removable = true;
   selectable = true;
   visible = true;
+<<<<<<< HEAD
 
   mediaForm:FormGroup = new FormGroup({});
   tags:FormArray = new FormArray([]);
+=======
+  mediaForm:FormGroup;
+  tags:FormArray;
+>>>>>>> develop
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -37,18 +51,62 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.mediaForm = this.fb.group({
+    this.mediaItem.isPrimary = Boolean(this.mediaItem.isPrimary);
+    this.mediaForm = this.fb.group({ 
+      mediaItemId: of(this.mediaItem.mediaItemId),
       patientMediaItemId: null,
       mediaType: this.mediaItem.mediaType,
       localURL: this.mediaItem.localURL,
       remoteURL: this.mediaItem.remoteURL,
+      isPrimary: [this.mediaItem.isPrimary],
       datetime: this.mediaItem.datetime,
       comment: [this.mediaItem.comment],
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false
+    
     });
+
+    this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
+      
+      const mediaItemId$ = this.mediaForm.get('mediaItemId').value as Observable<number>;
+
+      mediaItemId$.subscribe(itemId=>{
+        if(itemId !== changedPrimaryMediaItemId && changedPrimaryMediaItemId !== 0){
+          
+          const isPrimaryControl =  this.mediaForm.get('isPrimary') as AbstractControl;
+
+          if(isPrimaryControl.value !== false){
+
+            isPrimaryControl.setValue(false,{emitEvent:false});
+
+            this.mediaForm.markAsTouched();
+          }
+
+        }
+
+      });
+
+    });
+
+    this.mediaForm.get('isPrimary').valueChanges.subscribe(changedPrimary=>{
+      if(changedPrimary){
+
+        setTimeout(()=>{
+          this.updatedMedia.emit(this.mediaForm.value);
+        },0);
+        
+      }
+
+      const mediaItemId$ = this.mediaForm.get('mediaItemId').value as Observable<number>;
+      mediaItemId$.subscribe(mediaId=>{     
+          this.isPrimaryChanged.next(mediaId);
+
+      });
+
+    });
+
 
     this.tags = this.mediaForm.get('tags') as FormArray;
 
@@ -60,16 +118,10 @@ export class MediaCardComponent implements OnInit, OnDestroy {
           tag: newTag.tag
         }));
       });
+
   }
 
   ngOnDestroy(){
-
-
-
-    // this.mediaItem.mediaItemId.subscribe(resultObject => {
-
-    //   this.mediaForm.get("patientMediaItemId").setValue(resultObject);
-    // })
 
     if(this.mediaForm.touched){
 
@@ -83,7 +135,9 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         // We should turn this into an observable.
         this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
 
+        // Save the new or update the media
         this.patientService.savePatientMedia(this.mediaForm.value);
+
       });
 
     }
