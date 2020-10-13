@@ -14,9 +14,9 @@ import { map } from 'rxjs/operators';
 export class PrintTemplateService extends APIService {
 
   endpoint = 'PrintTemplate';
-  public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
-  public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>(null);
+  public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>([]);
 
   constructor(
     http: HttpClient,
@@ -35,17 +35,18 @@ export class PrintTemplateService extends APIService {
 
   public initialisePrintTemplates(){
 
+    // TODO type this properly
     this.getObservable('').subscribe((templates:any[]) => {
 
       templates.forEach(template => {
 
         // The database returns 0 instead of false, so we need to change to booleans.
-        template.printElements.forEach(element => {
+        template.printElements.forEach((element:any) => {
 
-          element.bold = element.bold === 0 ? false : true;
-          element.italics = element.italics === 0 ? false : true;
-          element.underlined = element.underlined === 0 ? false : true;
-          element.showStyleBar = element.showStyleBar === 0 ? false : true;
+          element.bold = Boolean(element.bold);
+          element.italics = Boolean(element.italics);
+          element.underlined = Boolean(element.underlined);
+          element.showStyleBar = Boolean(element.showStyleBar);
 
         });
 
@@ -67,10 +68,18 @@ export class PrintTemplateService extends APIService {
 
     let templateList: PrintTemplate[];
 
+    let haveRun = false;
+
     const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
+      if(haveRun){
+        return;
+      }
+      else{
+        haveRun = true;
+      }
+
       templateList = templates;
-    });
 
       if(templateList){
         templateList.push(template);
@@ -79,6 +88,10 @@ export class PrintTemplateService extends APIService {
       this.printTemplates.next(templateList);
 
       printTemplateSubscription.unsubscribe();
+    });
+
+
+
 
   }
 
@@ -86,29 +99,42 @@ export class PrintTemplateService extends APIService {
 
     let templateList: PrintTemplate[];
 
+    let haveRun = false;
+
     const printTemplateSubscription = this.printTemplates.subscribe(templates => {
 
+      if(haveRun){
+        return;
+      }
+      else{
+        haveRun = true;
+      }
+
       templateList = templates;
+
+      const index = templateList.findIndex(existingElement => existingElement.printTemplateId === template.printTemplateId);
+
+      templateList.splice(index, 1, template);
+
+      this.printTemplates.next(templateList);
+
+
     });
 
-    const index = templateList.findIndex(existingElement => existingElement.printTemplateId === template.printTemplateId);
-
-    templateList.splice(index, 1, template);
-
-    this.printTemplates.next(templateList);
-
     printTemplateSubscription.unsubscribe();
+
+
 
   }
 
   public async insertTemplate(template:PrintTemplate) :Promise<SavePrintTemplateResponse>{
 
-    return await this.post(template);
+    return this.post(template);
   }
 
-  public async updateTemplate(template:PrintTemplate) :Promise<SavePrintTemplateResponse>{
+  public async updateTemplate(template:PrintTemplate) :Promise<any>{
 
-    return await this.put(template);
+    return this.put(template);
   }
 
   public printPatientDocument(printTemplateId: number, patientId: number) {
@@ -135,7 +161,12 @@ export class PrintTemplateService extends APIService {
 
     newTemplate.printElements.forEach(element => {
 
-      element.value = printPatient[this.toCamelCase(element.name)];
+      const elementName = this.toCamelCase(element.name);
+
+      // The typescript interface is only at compile time, so change this to an object so we can access its values by property name.
+      const patientObject = JSON.parse(JSON.stringify(printPatient));
+
+      element.value = patientObject[elementName];
 
     });
 
@@ -167,7 +198,7 @@ export class PrintTemplateService extends APIService {
       });
 }
 
-private toCamelCase(str) {
+private toCamelCase(str:string) : string {
   return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
     if (+match === 0) {return '';} // or if (/\s+/.test(match)) for white spaces
     return index === 0 ? match.toLowerCase() : match.toUpperCase();
@@ -176,11 +207,17 @@ private toCamelCase(str) {
 
   private getPrintTemplate(printTemplateId: number) : Observable<PrintTemplate>{
 
-    return this.getPrintTemplates().pipe(map((templates:PrintTemplate[]) =>
+    return this.getPrintTemplates().pipe(map((templates:PrintTemplate[]) =>{
 
-      templates.find(template => template.printTemplateId === printTemplateId)
+      const foundTemplate = templates.find(template => template.printTemplateId === printTemplateId);
 
-    ));
+      if (foundTemplate === undefined) {
+        throw new TypeError('Missing print template!');
+      }
+
+      return foundTemplate;
+
+    }));
 
   }
 

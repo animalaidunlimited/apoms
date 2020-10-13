@@ -17,21 +17,21 @@ import { MediaItem } from 'src/app/core/models/media';
     styleUrls: ['./animal-header.component.scss'],
 })
 export class AnimalHeaderComponent implements OnInit {
-    @Input() recordForm: FormGroup;
+    @Input() recordForm!: FormGroup;
 
-    status: string;
+    status = '';
 
-    imageUrls: SafeUrl[];
+    imageUrls: SafeUrl[] = [];
 
-    lastObjectUrl: string;
+    lastObjectUrl = '';
 
     // Only doing this so the checker doesn't complain.
-    patientDetailsFormGroup:FormGroup;
+    patientDetailsFormGroup:FormGroup = new FormGroup({});
 
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
-        this.status = this.recordForm.get('patientStatus.status').value;
+        this.status = this.recordForm.get('patientStatus.status')?.value;
         this.imageUrls = ['../../../../../assets/images/image_placeholder.png'];
         this.lastObjectUrl = '';
 
@@ -52,12 +52,12 @@ export class AnimalHeaderComponent implements OnInit {
 
     public handlePaste(event: ClipboardEvent){
 
-        const patientId = this.recordForm.get('patientDetails.patientId').value;
+        const patientId = this.recordForm.get('patientDetails.patientId')?.value;
 
         // Pass the clipboard event down to the service, expect it to return an image URL
-        const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId)
+        const newItem: MediaItem | undefined = this.mediaPaster.handlePaste(event, patientId);
 
-        this.imageUrls[0] = newItem.localURL;
+        this.imageUrls[0] = newItem?.localURL || '';
 
     }
 }

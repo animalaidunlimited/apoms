@@ -11,7 +11,7 @@ export class UniqueTagNumberValidator {
     validate(emergencyCaseId: number, patientId: AbstractControl): AsyncValidatorFn {
         return (
             control: AbstractControl,
-        ): Observable<{ [key: string]: any } | null> => {
+        ): Observable<any | null> => {
 
             if(!control.value){
 
@@ -19,7 +19,7 @@ export class UniqueTagNumberValidator {
 
                     observer.next(null);
 
-                })
+                });
 
             }
             else
@@ -27,13 +27,20 @@ export class UniqueTagNumberValidator {
                 return this.patientService
                 .checkTagNumberExists(control.value, emergencyCaseId, patientId.value)
                 .pipe(
-                    map(res => {
+                    map((res:any) => {
                         if (res) {
                             // if tag number is already taken
-                            if (res[0]['@success'] == '1') {
+                            if (res[0]['@success'] === '1') {
                                 // return error
                                 return { tagNumberTaken: true };
                             }
+                            else{
+                                return null;
+                            }
+
+                        }
+                        else{
+                            return null;
                         }
                     }),
                 );

@@ -15,19 +15,19 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 })
 export class MediaCardComponent implements OnInit, OnDestroy {
 
-  @Input() mediaItem: MediaItem;
-  @Input() tagNumber: string;
+  @Input() mediaItem!: MediaItem;
+  @Input() tagNumber!: string;
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
 
-  @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer: ElementRef;
+  @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer!: ElementRef;
 
   addOnBlur = true;
   removable = true;
   selectable = true;
   visible = true;
 
-  mediaForm:FormGroup;
-  tags:FormArray;
+  mediaForm:FormGroup = new FormGroup({});
+  tags:FormArray = new FormArray([]);
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -77,11 +77,11 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
 
-        this.mediaForm.get('patientMediaItemId').setValue(itemId);
+        this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
 
         // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
         // We should turn this into an observable.
-        this.mediaForm.get('remoteURL').setValue(this.mediaItem.remoteURL);
+        this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
 
         this.patientService.savePatientMedia(this.mediaForm.value);
       });
@@ -138,7 +138,7 @@ deleteMediaItem(){
   dialogRef.afterClosed().subscribe((confirmed: boolean) => {
     if (confirmed) {
       this.itemDeleted.emit(true);
-      this.mediaForm.get('deleted').setValue(true);
+      this.mediaForm.get('deleted')?.setValue(true);
       this.mediaForm.markAsTouched();
     }
   });

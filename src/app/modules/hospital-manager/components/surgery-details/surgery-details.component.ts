@@ -20,18 +20,18 @@ export class SurgeryDetailsComponent implements OnInit {
         public dialog: MatDialog,
     ) {}
 
-    @Input() patientId: number;
-    @Input() tagNumber: string;
-    @Input() emergencyNumber: number;
-    @Input() animalType: string;
-    @ViewChild(MatTable) surgeryTable: MatTable<any>;
+    @Input() patientId!: number;
+    @Input() tagNumber!: string;
+    @Input() emergencyNumber!: number;
+    @Input() animalType!: string;
+    @ViewChild(MatTable) surgeryTable!: MatTable<any>;
 
-    tagnumber: string;
-    date: string | Date;
-    type: string;
-    surgeon: string;
-    site: string;
-    anesthesiaMinutes: number;
+    tagnumber = '';
+    date: string | Date = '';
+    type = '';
+    surgeon = '';
+    site = '';
+    anesthesiaMinutes = 0;
 
     displayedColumns: string[] = [
         'Date',
@@ -57,7 +57,7 @@ export class SurgeryDetailsComponent implements OnInit {
             } );
     }
 
-    launchSurgeryDialog(row: SurgeryRecord): void {
+    launchSurgeryDialog(row: SurgeryRecord | null): void {
 
         const dialogRef = this.dialog.open(SurgeryRecordDialogComponent, {
 

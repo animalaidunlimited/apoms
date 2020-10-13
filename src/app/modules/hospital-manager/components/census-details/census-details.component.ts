@@ -25,13 +25,13 @@ export class CensusDetailsComponent implements OnInit {
     constructor(private census : CensusService ,
         private dialog : MatDialog) {}
 
-    @Input() tagNumber: string;
+    @Input() tagNumber!: string;
 
-    censusUpdatedate : Date | string;
+    censusUpdatedate : Date | string = '';
 
-    @ViewChild(MatTable) censusTable: MatTable<any>;
+    @ViewChild(MatTable) censusTable!: MatTable<any>;
 
-    tagnumber: string;
+    tagnumber = '';
 
 
     displayedColumns: string[] = ['Date', 'Area', 'Action','Days'];
@@ -61,7 +61,7 @@ export class CensusDetailsComponent implements OnInit {
             },
         });
 
-        dialogRef.componentInstance.onAdd.subscribe(value=>{
+        dialogRef.componentInstance.addCensusRecord.subscribe((value:CensusRecord)=>{
            if(value.action === 'Moved Out'){
                const lastDate : any = this.censusRecords[this.censusRecords.length-1].date;
                const date1:any = new Date(lastDate);
@@ -79,7 +79,7 @@ export class CensusDetailsComponent implements OnInit {
 
         });
 
-        dialogRef.componentInstance.onRemove.subscribe(value=>{
+        dialogRef.componentInstance.removeCensusRecord.subscribe((value:CensusRecord)=>{
             this.censusRecords.forEach(record=>{
                 if(record.area === value.area && record.action === value.action
                     && record.date === value.date){
@@ -93,7 +93,7 @@ export class CensusDetailsComponent implements OnInit {
         dialogRef.afterClosed();
     }
 
-    editCensus(element){
+    editCensus(element:CensusRecord){
         this.updateCensusDialog(element);
     }
 

@@ -20,9 +20,9 @@ interface CanExitChange {
 })
 export class AddSurgeryDialogComponent implements OnInit {
 
-    result: UpdatedSurgery;
-    canExit: FormGroup;
-    invalidSurgeryForm: boolean;
+    result: UpdatedSurgery | undefined;
+    canExit: FormGroup = new FormGroup({});
+    invalidSurgeryForm = false;
 
     constructor(
         public dialogRef: MatDialogRef<AddSurgeryDialogComponent>,
@@ -38,7 +38,7 @@ export class AddSurgeryDialogComponent implements OnInit {
 
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
-            if (values.surgeryDetailsSaveComplete != 0) {
+            if (values.surgeryDetailsSaveComplete !== 0) {
                 this.dialogRef.close(this.result);
             }
         });
@@ -53,7 +53,17 @@ export class AddSurgeryDialogComponent implements OnInit {
         this.result = result;
 
         if (this.result) {
-            this.canExit.get('surgeryDetailsSaveComplete').setValue(1);
+
+            const surgeryDetailsSaveCompleteControl = this.canExit.get('surgeryDetailsSaveComplete');
+
+            if(surgeryDetailsSaveCompleteControl){
+                surgeryDetailsSaveCompleteControl.setValue(1);
+            }
+            else{
+                throw new Error('SurgeryDetailsSaveComplete control is empty');
+
+            }
+
         }
     }
 

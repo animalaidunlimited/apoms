@@ -22,12 +22,12 @@
 
             <ng-container matColumnDef="animalType">
                 <th mat-header-cell *matHeaderCellDef #speciesLabel> Species </th>
-                <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"> {{row.get("animalType").value}} </td>
+                <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"> {{row.get("animalType")?.value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="mainProblem">
                     <th mat-header-cell *matHeaderCellDef> Main problem(s) </th>
-                    <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"> {{row.get("problemsString").value}} </td>
+                    <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"> {{row.get("problemsString")?.value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="tagNo">
@@ -35,10 +35,10 @@
                     <td mat-cell *matCellDef="let row"
                     (click)="selectIfNotSelected(row); updateTag(row)"
                     [ngClass]="{
-                        duplicate: row.get('duplicateTag').value == 'INVALID',
-                        pending: row.get('duplicateTag').value == 'PENDING'
+                        duplicate: row.get('duplicateTag')?.value == 'INVALID',
+                        pending: row.get('duplicateTag')?.value == 'PENDING'
                     }"
-                    style="cursor:pointer"> {{row.get("tagNumber").value}} </td>
+                    style="cursor:pointer"> {{row.get("tagNumber")?.value}} </td>
             </ng-container>
 
             <ng-container matColumnDef="media">
@@ -60,15 +60,15 @@
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef>Delete</th>
                 <td mat-cell *matCellDef="let row">
-                <mat-icon (click)="deletePatientRow(row)" *ngIf="!row.get('deleted').value" style="cursor:pointer">delete</mat-icon>
-                <mat-icon (click)="deletePatientRow(row)" *ngIf="row.get('deleted').value" style="cursor:pointer">undo</mat-icon>
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="!row.get('deleted')?.value" style="cursor:pointer">delete</mat-icon>
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="row.get('deleted')?.value" style="cursor:pointer">undo</mat-icon>
 
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;"
-            [class.deleted]="row.get('deleted').value"
+            [class.deleted]="row.get('deleted')?.value"
             [class.invalid-row]="row.invalid"></tr>
 
 

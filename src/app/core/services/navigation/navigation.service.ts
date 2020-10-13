@@ -5,7 +5,7 @@ import { NavRoute, NavRouteService } from '../../../nav-routing';
 export class Page {
     title: string;
     isChild: boolean;
-    constructor(title, isChild) {
+    constructor(title:string, isChild:boolean) {
         this.title = title;
         this.isChild = isChild;
     }
@@ -16,8 +16,8 @@ export class Page {
 })
 export class NavigationService {
     private readonly navigationItems: NavRoute[];
-    private selectedNavigationItem: NavRoute = {} as NavRoute;
-    private activePage: Page;
+    private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
+    private activePage: Page = new Page('', false);
     private navigationStack: Array<Array<string>> = [];
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
@@ -32,7 +32,7 @@ export class NavigationService {
 
     public selectNavigationItemByPath(path: string) {
         this.selectedNavigationItem = this.navigationItems
-            .reduce((flatList, navItem) => {
+            .reduce((flatList:NavRoute[], navItem:NavRoute) => {
                 if (navItem.groupedNavRoutes) {
                     navItem.groupedNavRoutes.forEach(route => {
                         flatList.push(route);
@@ -45,7 +45,7 @@ export class NavigationService {
             .find(navItem => navItem.path === path);
     }
 
-    public getSelectedNavigationItem(): NavRoute {
+    public getSelectedNavigationItem(): NavRoute | undefined {
         return this.selectedNavigationItem;
     }
 
@@ -85,11 +85,7 @@ export class NavigationService {
 
     public toggleIsOpen() {
 
-        let currentIsOpen:boolean;
-
-        this.isOpen.subscribe(currentValue => currentIsOpen = currentValue);
-
-        this.isOpen.next(!currentIsOpen);
+        this.isOpen.subscribe(currentValue => this.isOpen.next(!currentValue));
 
     }
 

@@ -14,58 +14,62 @@ export class PatientRecordComponent implements OnInit {
 
     recordForm: FormGroup;
 
-    @Input() incomingPatient: SearchRecordTab;
+    @Input() incomingPatient!: SearchRecordTab;
 
-    patientCallPatientId: number;
+    patientCallPatientId = -1;
 
     patientLoaded = true;
 
-    hideMenu: boolean;
+    hideMenu = false;
 
     constructor(
         private fb: FormBuilder,
         private patientService: PatientService,
         private snackbar: SnackbarService
-        ) {}
+        ) {
+
+            this.recordForm = this.fb.group({
+                emergencyDetails: this.fb.group({
+                    emergencyCaseId: [this.incomingPatient.emergencyCaseId],
+                    emergencyNumber: [this.incomingPatient.emergencyNumber],
+                    callDateTime: [this.incomingPatient.callDateTime],
+                }),
+
+                patientDetails: this.fb.group({
+                    patientId: [this.incomingPatient.patientId],
+                    tagNumber: [
+                        this.incomingPatient.tagNumber,
+                        Validators.required,
+                    ],
+                    currentLocation: [this.incomingPatient.currentLocation],
+                    animalType: [this.incomingPatient.animalType],
+                }),
+                patientStatus: this.fb.group({
+                    status: [''],
+                    releaseDate: [''],
+                    diedDate: [''],
+                    escapeDate: [''],
+                    PN: [''],
+                    suspectedRabies: [''],
+                }),
+                callerDetails: this.fb.group({
+                    callerId: [''],
+                    callerName: [''],
+                    callerNumber: [''],
+                    callerAlternativeNumber: [''],
+                }),
+                callOutcome: this.fb.group({
+                    CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId + ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
+                    sameAsNumber: []
+                }),
+            });
+
+        }
 
     ngOnInit() {
         this.hideMenu = window.innerWidth > 840 ? false : true;
 
-        this.recordForm = this.fb.group({
-            emergencyDetails: this.fb.group({
-                emergencyCaseId: [this.incomingPatient.emergencyCaseId],
-                emergencyNumber: [this.incomingPatient.emergencyNumber],
-                callDateTime: [this.incomingPatient.callDateTime],
-            }),
 
-            patientDetails: this.fb.group({
-                patientId: [this.incomingPatient.patientId],
-                tagNumber: [
-                    this.incomingPatient.tagNumber,
-                    Validators.required,
-                ],
-                currentLocation: [this.incomingPatient.currentLocation],
-                animalType: [this.incomingPatient.animalType],
-            }),
-            patientStatus: this.fb.group({
-                status: [''],
-                releaseDate: [''],
-                diedDate: [''],
-                escapeDate: [''],
-                PN: [''],
-                suspectedRabies: [''],
-            }),
-            callerDetails: this.fb.group({
-                callerId: [''],
-                callerName: [''],
-                callerNumber: [''],
-                callerAlternativeNumber: [''],
-            }),
-            callOutcome: this.fb.group({
-                CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId + ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],
-                sameAsNumber: []
-            }),
-        });
 
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
@@ -74,9 +78,7 @@ export class PatientRecordComponent implements OnInit {
     tabChanged(event: MatTabChangeEvent) {
         // Only populate the ids when we want to load the data
         if (event.tab.textLabel === 'Patient Calls') {
-            this.patientCallPatientId = this.recordForm.get(
-                'patientDetails.patientId',
-            ).value;
+            this.patientCallPatientId = this.recordForm.get('patientDetails.patientId')?.value;
         }
     }
 
@@ -86,7 +88,7 @@ export class PatientRecordComponent implements OnInit {
 
     saveForm() {
 
-        this.patientService.updatePatientDetails(this.recordForm.get('patientDetails').value).then(result => {
+        this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
             result.success === 1 ?
                 this.snackbar.successSnackBar('Update successful','OK')
                 :

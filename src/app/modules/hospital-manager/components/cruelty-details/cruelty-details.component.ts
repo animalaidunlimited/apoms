@@ -14,11 +14,10 @@ export class CrueltyDetailsComponent implements OnInit {
 
     errorMatcher = new CrossFieldErrorMatcher();
 
-    crueltyDetails:FormGroup;
+    crueltyDetails:FormGroup = new FormGroup({});
 
-    constructor(private fb: FormBuilder, private dropdowns: DropdownService) {}
+    constructor(private fb: FormBuilder, private dropdowns: DropdownService) {
 
-    ngOnInit() {
         this.crueltyInspectors$ = this.dropdowns.getCrueltyInspectors();
 
         this.crueltyForm = this.fb.group({
@@ -29,6 +28,11 @@ export class CrueltyDetailsComponent implements OnInit {
             }),
         });
 
-        this.crueltyDetails = this.crueltyForm.get('crueltyDetails') as FormGroup
+    }
+
+    ngOnInit() {
+
+
+        this.crueltyDetails = this.crueltyForm.get('crueltyDetails') as FormGroup;
     }
 }

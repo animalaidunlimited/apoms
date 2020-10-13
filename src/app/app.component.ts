@@ -28,6 +28,8 @@ export class AppComponent implements OnInit{
         private auth: AuthService,
         private outstandingCaseService: OutstandingCaseService
         ) {
+            this.isPrinting = this.printService.getIsPrinting();
+            this.message = this.messagingService.currentMessage;
 
             window.addEventListener('beforeunload', () => {
 
@@ -46,17 +48,15 @@ export class AppComponent implements OnInit{
     ngOnInit() {
 
         this.messagingService.requestPermission();
-        this.message = this.messagingService.currentMessage;
-        this.isPrinting = this.printService.getIsPrinting();
 
         // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
-            if(event.data){
+            // if(event.data?.firebaseMessaging?.payload){
 
-                // this.messagingService.receiveBackgroundMessage(event.data.firebaseMessaging.payload);
+                this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
 
-            }
+           //  }
 
             });
 

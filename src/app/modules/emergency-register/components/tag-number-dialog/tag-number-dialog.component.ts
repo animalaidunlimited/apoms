@@ -26,7 +26,7 @@ export class TagNumberDialog implements OnInit {
         private uniqueTagNumberValidator: UniqueTagNumberValidator,
     ) {}
 
-    tagForm: FormGroup;
+    tagForm: FormGroup = new FormGroup({});
 
     ngOnInit() {
 

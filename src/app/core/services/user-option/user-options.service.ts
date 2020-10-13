@@ -4,9 +4,12 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class UserOptionsService{
-    homeCoordinates$;
-    notifactionDuration:number;
-    minimumDate:Date;
+    homeCoordinates$ = {
+        lat: 24.57127,
+        lng: 73.691544,
+    };
+    notifactionDuration = 3;
+    minimumDate = new Date('2010-01-01');
 
     constructor() {}
 

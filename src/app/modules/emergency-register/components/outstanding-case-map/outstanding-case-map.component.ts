@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingCase, OutstandingRescue, } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { OutstandingCase, OutstandingRescue, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
@@ -15,22 +15,22 @@ import { map } from 'rxjs/operators';
 })
 export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
-  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
+  @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  caseSubscription: Subscription;
+  caseSubscription: Subscription = new Subscription();
 
-  center: google.maps.LatLngLiteral;
+  center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
   zoom = 13;
 
-  infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>(null);
+  infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
   rescues:any = [];
 
-  options : google.maps.MapOptions;
-  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
+  options : google.maps.MapOptions = {};
+  outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject<OutstandingCase[]>([]);
 
-  ambulanceLocations$;
+  ambulanceLocations$!:Observable<any>;
 
   iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
@@ -81,9 +81,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
                 }
                 else{
 
-                  current.forEach(currentRescueGroup => {
+                  current.forEach((currentRescueGroup:RescuerGroup) => {
 
-                    const index = aggregatedLocations.findIndex(parentRescueGroup => {
+                    const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
 
                       return parentRescueGroup.rescuer1 === currentRescueGroup.rescuer1 &&
                           parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2;
@@ -101,7 +101,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
 
                 }}, [])
-              .map(rescueGroup => {
+              .map((rescueGroup:RescuerGroup) => {
 
                 const maxRescue = rescueGroup.rescues.reduce((current, previous) => {
 

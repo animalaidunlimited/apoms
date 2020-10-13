@@ -1,22 +1,22 @@
 export interface Area {
-    areaId: number;
+    areaId: number | undefined;
     areaName: string;
-    sortArea: number;
+    sortArea: number | undefined;
     actions: Action[];
 }
 
 export interface Action {
-    actionId: number;
+    actionId: number | undefined;
     actionName: string;
-    sortAction: number;
+    sortAction: number | undefined;
     patients: CensusPatient[];
 }
 
 export interface CensusPatient {
-    patientId: number;
+    patientId: number | undefined;
     tagNumber: string;
     colour: string;
-    errorCode: number;
+    errorCode: number | undefined;
 }
 
 export interface CensusArea {

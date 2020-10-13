@@ -17,10 +17,10 @@ import { AnimalType } from 'src/app/core/models/animal-type';
     styleUrls: ['./patient-details.component.scss'],
 })
 export class PatientDetailsComponent implements OnInit {
-    animalTypes$:AnimalType[];
-    @Input() recordForm: FormGroup;
+    animalTypes$:AnimalType[] = [];
+    @Input() recordForm!: FormGroup;
     dialog: any;
-    maxDate:string;
+    maxDate = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -33,7 +33,7 @@ export class PatientDetailsComponent implements OnInit {
     ngOnInit() {
         this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
-        let initialNumber: number;
+        const initialNumber = -1;
 
         const patientDetails = this.recordForm.get(
             'patientDetails',
@@ -75,16 +75,21 @@ export class PatientDetailsComponent implements OnInit {
         this.maxDate = getCurrentTimeString();
 
         this.patientService
-            .getPatientByPatientId(this.recordForm.get('patientDetails.patientId').value)
+            .getPatientByPatientId(this.recordForm.get('patientDetails.patientId')?.value)
             .subscribe(result => {
                 this.recordForm.patchValue(result);
 
-                console.log(result);
-                console.log(this.recordForm.get('patientDetails.'));
+                const patientDetailsControl = this.recordForm.get('patientDetails');
 
-                this.recordForm
-                    .get('patientDetails')
-                    .patchValue(result);
+                if(patientDetailsControl){
+                    patientDetailsControl.patchValue(result);
+                }
+                else
+                {
+                    throw new Error('PatientDetails control is empty');
+                }
+
+
             });
     }
 }

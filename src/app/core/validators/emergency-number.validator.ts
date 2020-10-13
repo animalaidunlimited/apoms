@@ -11,19 +11,20 @@ export class UniqueEmergencyNumberValidator {
     validate(emergencyNumber: number, checkExists: number): AsyncValidatorFn {
         return (
             control: AbstractControl,
-        ): Observable<{ [key: string]: any } | null> => {
+        ): Observable<any | null> => {
             // If the form hasn't been touched then don't validate
             if (control.pristine) {
                 return of(null);
             }
 
-            return this.caseService
-                .checkEmergencyNumberExists(control.value, emergencyNumber)
-                .pipe(
-                    map(res => {
+            return this.caseService.checkEmergencyNumberExists(control.value, emergencyNumber).pipe(map((res:any) => {
                         // if emergency number is already taken
-                        if (res[0]['@success'] == checkExists) {
+                        if (res[0]['@success'] === checkExists) {
                             return { emergencyNumberTaken: true };
+                        }
+                        else
+                        {
+                            return null;
                         }
                     }),
                 );

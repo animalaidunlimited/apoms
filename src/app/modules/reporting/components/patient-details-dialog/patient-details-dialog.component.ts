@@ -27,33 +27,54 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   columnsExcludingIndex: Observable<string[]>;
 
-  @ViewChild(MatSort) sort: MatSort;
+
+
+  patientRecords: MatTableDataSource<ReportPatientRecord>
+  isPrinting: BehaviorSubject<boolean>;
+  layoutType = 'census';
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private printService: PrintTemplateService,
-    private census: CensusService ) { }
-
-  patientRecords: MatTableDataSource<ReportPatientRecord>;
-  isPrinting: BehaviorSubject<boolean>;
-  layoutType = 'census';
-
-
-  ngOnInit() {
+    private census: CensusService ) {
 
     this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index')));
 
     this.isPrinting = this.printService.getIsPrinting();
 
+    const emptyReportPatient:ReportPatientRecord = {'Emergency number': 0,
+    'Tag number': '',
+    Species: '',
+    'Caller name' : '',
+    Number : 0,
+    'Call date' : '',
+    'ABC status': '',
+    'Release ready': false,
+    'Release status': '',
+    Temperament: '',
+    'Treatment priority': ''};
+
+    this.patientRecords = new MatTableDataSource([emptyReportPatient]);
+
+
+
+    }
+
+  ngOnInit() {
+
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
 
       response = response.map(patient => {
 
-        patient['ABC status'] = ABCStatus[patient['ABC status']];
-        patient['Release status'] = ReleaseStatus[patient['Release status']];
-        patient['Temperament'] = Temperament[patient['Temperament']];
-        patient['Treatment priority'] = TreatmentPriority[patient['Treatment priority']];
+        const patientObject = JSON.parse(JSON.stringify(patient));
+
+        patient['ABC status'] = ABCStatus[patientObject['ABC status']];
+        patient['Release status'] = ReleaseStatus[patientObject['Release status']];
+        patient['Temperament'] = Temperament[patientObject['Temperament']];
+        patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
 
         return patient;
 
@@ -80,8 +101,6 @@ export class PatientDetailsDialogComponent implements OnInit {
        this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
 
      });
-
-
 
   }
 

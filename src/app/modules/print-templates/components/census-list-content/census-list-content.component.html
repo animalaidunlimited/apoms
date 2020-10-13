@@ -1,8 +1,11 @@
-<h1 mat-dialog-title>
-  Area: {{censusList.area}} - Print date: {{printDate | date:'d MMM y'}} - Count: {{censusList.printList.length}}
-</h1>
+<div mat-dialog-title>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
 
+    <div style="font-size:larger; font-weight: bold">{{censusList.area}} - ({{censusList.printList.length}})</div>
 
+    <div style="font-size:large; font-weight: bold">{{printDate | date:'d MMM y'}}</div>
+  </div>
+</div>
 
 <table mat-table matSort [dataSource]="tableData" class="mat-elevation-z8 table">
 

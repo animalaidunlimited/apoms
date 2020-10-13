@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SearchResponse } from 'src/app/core/models/responses';
+import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+
 
 @Component({
     selector: 'hospital-manager-tab-bar',
@@ -9,7 +11,7 @@ import { SearchResponse } from 'src/app/core/models/responses';
 })
 export class HospitalManagerTabBarComponent implements OnInit {
 
-    tabs = [];
+    tabs:SearchRecordTab[] = [];
 
     selected = new FormControl(0);
 
@@ -18,6 +20,7 @@ export class HospitalManagerTabBarComponent implements OnInit {
     }
 
     addEmptyTab(value: string) {
+
         this.tabs.push({
             id: 0,
             value,

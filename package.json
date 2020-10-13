@@ -42,6 +42,7 @@
     "@angular/service-worker": "^10.1.5",
     "@kolkov/ngx-gallery": "^1.2.3",
     "@types/googlemaps": "^3.39.2",
+    "@types/uuid": "^8.3.0",
     "ally.js": "^1.4.1",
     "axobject-query": "^2.2.0",
     "canvasjs": "^1.8.3",

@@ -11,8 +11,8 @@ import {
     styleUrls: ['./thumbnail-slider.component.scss'],
 })
 export class ThumbnailSliderComponent implements OnInit {
-    galleryOptions: NgxGalleryOptions[];
-    galleryImages: NgxGalleryImage[];
+    galleryOptions: NgxGalleryOptions[] = [];
+    galleryImages: NgxGalleryImage[] = [];
 
     constructor() {}
 
@@ -83,7 +83,7 @@ export class ThumbnailSliderComponent implements OnInit {
         ];
     }
 
-    deleteImage(event, index): void {
+    deleteImage(event:any, index:any): void {
         this.galleryImages.splice(index, 1);
     }
 }

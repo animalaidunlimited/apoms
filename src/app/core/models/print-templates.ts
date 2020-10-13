@@ -38,9 +38,9 @@ export interface PrintElement {
     updateDateTime: string | Date;
   }
 
+
   export interface SavePrintTemplateResponse {
-    printTemplateId: number;
-    success: number;
+    printTemplateResponse: PrintTemplateResponse;
     printTemplateElementResponse: PrintTemplateElementResponse[];
   }
 
