@@ -29,11 +29,9 @@ export class ThumbnailSliderComponent implements OnInit{
         this.mediaData.subscribe(mediaItems=>{
             this.mediaItem = mediaItems;
             this.mediaItem.forEach(item=>{
-            //    const imageDate = item.datetime.slice(0,-16);
                this.galleryImages.push({small:item.localURL,
                                         medium:item.localURL,
                                         big:item.localURL,
-                                        // description: imageDate,
                                         });
             });
         });
@@ -81,18 +79,6 @@ export class ThumbnailSliderComponent implements OnInit{
             },
            
         ];
-
-
-        
-
-        // this.mediaData.subscribe(mediaItems=>{
-        //     this.mediaItem = mediaItems;
-        //     this.galleryImages = this.mediaItem.map(item=>{
-        //        return item.localURL;
-                
-        //     });
-        //     console.log(this.galleryImages);
-        // });
 
     }
 

@@ -10,7 +10,6 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 interface IncomingData {
   tagNumber: string;
   patientId: number;
-  // pastedImage: File;
 }
 
 @Component({

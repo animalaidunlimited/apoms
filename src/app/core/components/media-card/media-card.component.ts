@@ -31,7 +31,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   visible = true;
   mediaForm:FormGroup;
   tags:FormArray;
-  // isPrimary:boolean;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -81,7 +80,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     });
 
     this.mediaForm.get('isPrimary').valueChanges.subscribe(changedPrimary=>{
-      console.log(changedPrimary);
       if(changedPrimary){
 
         setTimeout(()=>{
@@ -99,18 +97,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     });
 
 
-    // if(this.isPrimaryChanged){
-    //   console.log('true');
-    // }
-
-    // this.mediaForm.valueChanges.subscribe(changedPrimary=>{
-    //   console.log(changedPrimary.mediaItemId);
-    //   // if(changedPrimary.mediaItemId !== this.mediaItem.mediaItemId){
-
-    //   // }
-    // });
-   
-
     this.tags = this.mediaForm.get('tags') as FormArray;
 
       this.mediaItem.tags.forEach(tag => {
@@ -122,17 +108,9 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         }));
       });
 
-      // this.mediaForm.get('flag').patchValue(this.mediaItem.isPrimary);
   }
 
   ngOnDestroy(){
-
-
-
-    // this.mediaItem.mediaItemId.subscribe(resultObject => {
-
-    //   this.mediaForm.get("patientMediaItemId").setValue(resultObject);
-    // })
 
     if(this.mediaForm.touched){
 
@@ -147,9 +125,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         this.mediaForm.get('remoteURL').setValue(this.mediaItem.remoteURL);
 
         // Save the new or update the media
-        this.patientService.savePatientMedia(this.mediaForm.value).then(val=>{
-          console.log(val);
-        });
+        this.patientService.savePatientMedia(this.mediaForm.value);
 
       });
 
