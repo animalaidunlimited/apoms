@@ -7,6 +7,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
+import { of } from 'rxjs';
 
 
 
@@ -23,21 +24,15 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class AnimalHeaderComponent implements OnInit {
     @Input() recordForm!: FormGroup;
 
-<<<<<<< HEAD
+    @Input() profileUrl!: SafeUrl;
+
+    selection!: SelectionModel<FormGroup>;
+
     status = '';
-
-    imageUrls: SafeUrl[] = [];
-=======
-    @Input() profileUrl: SafeUrl;
-
-    selection: SelectionModel<FormGroup>;
-
-    status: string;
->>>>>>> develop
 
     lastObjectUrl = '';
 
-    mediaObject: MediaItem;
+    mediaObject!: MediaItem;
 
     // Only doing this so the checker doesn't complain.
     patientDetailsFormGroup:FormGroup = new FormGroup({});
@@ -45,13 +40,8 @@ export class AnimalHeaderComponent implements OnInit {
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
-<<<<<<< HEAD
         this.status = this.recordForm.get('patientStatus.status')?.value;
-        this.imageUrls = ['../../../../../assets/images/image_placeholder.png'];
-=======
-        this.status = this.recordForm.get('patientStatus.status').value;
-        this.profileUrl = ['../../../../../assets/images/image_placeholder.png'];
->>>>>>> develop
+        this.profileUrl = '../../../../../../assets/images/image_placeholder.png';
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
@@ -60,16 +50,16 @@ export class AnimalHeaderComponent implements OnInit {
             isPrimary : false,
             tags : [''],
             comment : '',
-            widthPX : null,
+            widthPX : 0,
             datetime : '',
-            heightPX: null,
+            heightPX: 0,
             localURL: '',
             mediaType: '',
-            patientId: null,
+            patientId: 0,
             remoteURL: '',
-            mediaItemId: null,
+            mediaItemId: of(0),
             uploadProgress$: null,
-            updated: null
+            updated: false
         };
     }
 
@@ -90,14 +80,9 @@ export class AnimalHeaderComponent implements OnInit {
         const patientId = this.recordForm.get('patientDetails.patientId')?.value;
 
         // Pass the clipboard event down to the service, expect it to return an image URL
-<<<<<<< HEAD
-        const newItem: MediaItem | undefined = this.mediaPaster.handlePaste(event, patientId);
-
-        this.imageUrls[0] = newItem?.localURL || '';
-=======
         const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId);
 
-        this.profileUrl = newItem.localURL;
+        this.profileUrl = newItem?.localURL;
 
     }
 
@@ -105,8 +90,8 @@ export class AnimalHeaderComponent implements OnInit {
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
-                tagNumber: this.recordForm.get('patientDetails.tagNumber').value,
-                patientId: this.recordForm.get('patientDetails.patientId').value,
+                tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
+                patientId: this.recordForm.get('patientDetails.patientId')?.value,
             }
         });
 
@@ -118,7 +103,6 @@ export class AnimalHeaderComponent implements OnInit {
             }
         });
     }
->>>>>>> develop
 
     getcurrentPatient() {
         return this.selection.selected[0];

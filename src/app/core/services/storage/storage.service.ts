@@ -15,9 +15,16 @@ export class StorageService {
         this.storage.setItem(key, value);
     }
 
-    public read(key: string): any {
-        const value = this.storage.getItem(key) || '';
-        return JSON.parse(value);
+    public read(key: string): string | null {
+        const value = this.storage.getItem(key);
+
+        if(value){
+            return JSON.parse(value);
+        }
+        else{
+            return null;
+        }
+
     }
 
     public remove(key: string) {

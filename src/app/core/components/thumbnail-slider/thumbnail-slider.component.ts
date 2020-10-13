@@ -1,46 +1,50 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {
     NgxGalleryOptions,
     NgxGalleryImage,
-    NgxGalleryAnimation,
-    NgxGalleryLayout
+    NgxGalleryAnimation
 } from '@kolkov/ngx-gallery';
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
     selector: 'thumbnail-slider',
     templateUrl: './thumbnail-slider.component.html',
     styleUrls: ['./thumbnail-slider.component.scss'],
 })
-<<<<<<< HEAD
-export class ThumbnailSliderComponent implements OnInit {
+export class ThumbnailSliderComponent implements OnInit{
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
-=======
-export class ThumbnailSliderComponent implements OnInit{
-    galleryOptions: NgxGalleryOptions[];
-    galleryImages: NgxGalleryImage[] = [];
-    mediaItem: MediaItem[];
-    @Input() mediaData: Observable<MediaItem[]>;
-    constructor() {
->>>>>>> develop
+    @Input() mediaData!: Observable<MediaItem[]>;
 
-    }
+    constructor() {}
 
     ngOnInit() {
 
-        this.mediaData.subscribe(mediaItems=>{
-            this.mediaItem = mediaItems;
-            this.mediaItem.forEach(item=>{
+        this.mediaData.subscribe(mediaItems => {
+
+            if(!mediaItems){
+
+                this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
+                    medium:'../../../../../assets/images/image_placeholder.png',
+                    big:'../../../../../assets/images/image_placeholder.png',
+                    });
+
+            }
+
+            if(!mediaItems){
+                return;
+            }
+
+            mediaItems.forEach(item=>{
                this.galleryImages.push({small:item.localURL,
                                         medium:item.localURL,
                                         big:item.localURL,
                                         });
             });
-        });
+
+         });
 
         this.galleryOptions = [
             {
@@ -83,12 +87,13 @@ export class ThumbnailSliderComponent implements OnInit{
                 preview: true,
 
             },
-           
+
         ];
 
     }
 
     deleteImage(event:any, index:any): void {
+
         this.galleryImages.splice(index, 1);
     }
 }

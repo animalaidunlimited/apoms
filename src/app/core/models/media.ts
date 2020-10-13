@@ -5,12 +5,8 @@ export interface MediaItem{
     mediaItemId: Observable<number>;
     mediaType: string;
     localURL: SafeUrl;
-<<<<<<< HEAD
-    remoteURL: string | null;
-=======
     remoteURL: string;
     isPrimary:boolean;
->>>>>>> develop
     datetime: Date|string;
     comment: string;
     patientId: number;

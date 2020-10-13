@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -27,11 +27,11 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   columnsExcludingIndex: Observable<string[]>;
 
-
-
-  patientRecords: MatTableDataSource<ReportPatientRecord>
+  patientRecords: MatTableDataSource<ReportPatientRecord>;
   isPrinting: BehaviorSubject<boolean>;
   layoutType = 'census';
+
+  @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -59,11 +59,10 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.patientRecords = new MatTableDataSource([emptyReportPatient]);
 
-
-
     }
 
   ngOnInit() {
+
 
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
 
@@ -84,7 +83,10 @@ export class PatientDetailsDialogComponent implements OnInit {
       this.patientRecords.sort = this.sort;
 
     });
+
+
   }
+
 
   print(){
 
@@ -106,6 +108,8 @@ export class PatientDetailsDialogComponent implements OnInit {
 
 
   onCancel(){
+
+    this.dialogRef.close();
 
   }
 
