@@ -7,24 +7,6 @@ import { SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
 
-
-// interface MediaItems{
-//     mediaItemId: Observable<number>;
-//     mediaType: string;
-//     localURL: SafeUrl;
-//     remoteURL: string;
-//     isPrimary: boolean;
-//     datetime: string;
-//     comment: string;
-//     patientId: number;
-//     heightPX: number;
-//     widthPX: number;
-//     tags: string[];
-//     uploadProgress$: Observable<number>;
-//     updated: boolean;
-// }
-
-
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'patient-record',

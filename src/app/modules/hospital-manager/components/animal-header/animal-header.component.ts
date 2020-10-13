@@ -91,7 +91,6 @@ export class AnimalHeaderComponent implements OnInit {
             data: {
                 tagNumber: this.recordForm.get('patientDetails.tagNumber').value,
                 patientId: this.recordForm.get('patientDetails.patientId').value,
-                // mediaItem: this.mediaObject
             }
         });
 
