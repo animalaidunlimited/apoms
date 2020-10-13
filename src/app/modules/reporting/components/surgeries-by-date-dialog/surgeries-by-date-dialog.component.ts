@@ -21,17 +21,17 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
 
   displayedColumns: string[] = ['tagNumber', 'animalType', 'type', 'surgeon','site','anesthesiaMinutes'];
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<PatientCallDialogComponent>
-  ) { }
-
-  ngOnInit(){
-
+  ) {
     this.dataSource = new MatTableDataSource(this.data.surgeries);
     this.surgeryDate = this.data.surgeries[0].date;
+   }
+
+  ngOnInit(){
   }
 
   ngAfterViewInit() {

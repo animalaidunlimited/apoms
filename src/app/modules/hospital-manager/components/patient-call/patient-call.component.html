@@ -2,14 +2,14 @@
 
     <div formArrayName="calls">
 
-    <mat-expansion-panel *ngFor="let call of calls.controls; let i = index" [expanded]="call.get('expanded').value">
+    <mat-expansion-panel *ngFor="let call of calls.controls; let i = index" [expanded]="call.get('expanded')?.value">
 
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{calls.controls[i].get('callDateTime').value | date: 'dd/MM/yyyy'}}
+            {{calls.controls[i].get('callDateTime')?.value | date: 'dd/MM/yyyy'}}
           </mat-panel-title>
           <mat-panel-description>
-            {{calls.controls[i].get('assignedTo').value?.FirstName}} : {{calls.controls[i].get('callType').value?.CallType}}
+            {{calls.controls[i].get('assignedTo')?.value?.FirstName}} : {{calls.controls[i].get('callType')?.value?.CallType}}
           </mat-panel-description>
         </mat-expansion-panel-header>
 

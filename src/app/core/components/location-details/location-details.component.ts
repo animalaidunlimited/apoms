@@ -6,6 +6,7 @@ import {
     Output,
     EventEmitter,
     ChangeDetectorRef,
+    AfterViewInit,
 } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import {
@@ -19,14 +20,14 @@ import { UserOptionsService } from '../../services/user-option/user-options.serv
 
 import { LocationDetailsService } from './location-details.service';
 
-export interface position {
+export interface Position {
     lat: number;
     lng: number;
 }
 
-export interface marker {
-    position: position;
-    label?: string;
+export interface Marker {
+    position: Position;
+    label: string;
     options: any;
 }
 
@@ -35,14 +36,14 @@ export interface marker {
     templateUrl: './location-details.component.html',
     styleUrls: ['./location-details.component.scss'],
 })
-export class LocationDetailsComponent implements OnInit {
-    @Input() recordForm: FormGroup;
+export class LocationDetailsComponent implements OnInit, AfterViewInit {
+    @Input() recordForm!: FormGroup;
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
     @ViewChild('addressSearch') addresstext: any;
     @ViewChild('googlemap') googlemap: any;
 
     errorMatcher = new CrossFieldErrorMatcher();
-    center: google.maps.LatLngLiteral;
+    center!: google.maps.LatLngLiteral;
 
     constructor(
         private locationService: LocationDetailsService,
@@ -51,15 +52,15 @@ export class LocationDetailsComponent implements OnInit {
         private changeDetector: ChangeDetectorRef
     ) {}
 
-    zoom: number;
-    latitude: AbstractControl;
-    longitude: AbstractControl;
+    zoom = 13;
+    latitude!: AbstractControl;
+    longitude!: AbstractControl;
 
-    locationDetails: FormGroup;
+    locationDetails!: FormGroup;
 
-    location$: Location;
+    location$!: Location;
 
-    markers: marker[] = [];
+    markers: Marker[] = [];
 
     ngOnInit() {
         this.recordForm.addControl(
@@ -75,7 +76,7 @@ export class LocationDetailsComponent implements OnInit {
 
         this.locationService
             .getLocationByEmergencyCaseId(
-                this.recordForm.get('emergencyDetails.emergencyCaseId').value,
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
             )
             .subscribe((location: LocationResponse) => {
                 this.recordForm.patchValue(location);
@@ -109,8 +110,8 @@ export class LocationDetailsComponent implements OnInit {
                 const coordinates:Location = {
                     latitude: coords.lat,
                     longitude: coords.lng,
-                    location: null
-                }
+                    location: ''
+                };
 
                 this.initialiseLocation(coordinates);
 
@@ -141,19 +142,22 @@ export class LocationDetailsComponent implements OnInit {
 
     }
 
-    invokeEvent(place: Object) {
+    invokeEvent(place: any) {
         this.setAddress.emit(place);
 
         const result = place as google.maps.places.PlaceResult;
 
-        this.recordForm
-            .get('locationDetails.location')
-            .setValue(result.formatted_address);
+        this.recordForm.get('locationDetails.location')?.setValue(result.formatted_address);
 
-        this.updateLocation(
-            result.geometry.location.lat(),
-            result.geometry.location.lng(),
-        );
+        if(result.geometry){
+
+            this.updateLocation(
+                result.geometry.location.lat(),
+                result.geometry.location.lng(),
+            );
+        }
+
+
     }
 
     initialiseLocation(coordinates: Location) {
@@ -161,7 +165,7 @@ export class LocationDetailsComponent implements OnInit {
 
         this.markers = [];
 
-        const marker: marker = {
+        const marker: Marker = {
             position: { lat: coordinates.latitude, lng: coordinates.longitude },
             label: '',
             options: { draggable: true },
@@ -173,8 +177,8 @@ export class LocationDetailsComponent implements OnInit {
 
     updateLocation(latitude: number, longitude: number) {
 
-        this.recordForm.get('locationDetails.latitude').setValue(latitude);
-        this.recordForm.get('locationDetails.longitude').setValue(longitude);
+        this.recordForm.get('locationDetails.latitude')?.setValue(latitude);
+        this.recordForm.get('locationDetails.longitude')?.setValue(longitude);
 
         this.markers[0].position = { lat: latitude, lng: longitude };
 
@@ -185,8 +189,8 @@ export class LocationDetailsComponent implements OnInit {
 
     markerDragEnd(event: google.maps.MouseEvent) {
         const position = event.latLng.toJSON();
-        this.recordForm.get('locationDetails.latitude').setValue(position.lat);
-        this.recordForm.get('locationDetails.longitude').setValue(position.lng);
+        this.recordForm.get('locationDetails.latitude')?.setValue(position.lat);
+        this.recordForm.get('locationDetails.longitude')?.setValue(position.lng);
 
         this.center = { lat: position.lat, lng: position.lng };
     }
@@ -198,18 +202,24 @@ export class LocationDetailsComponent implements OnInit {
         );
 
         const searchRequest = {
-            query: this.recordForm.get('locationDetails.location').value,
+            query: this.recordForm.get('locationDetails.location')?.value,
             fields: ['name', 'geometry', 'formatted_address'],
         };
 
         addressSearcher.findPlaceFromQuery(searchRequest, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                for (let i = 0; i < results.length; i++) {
+                for (const result of results) {
 
-                    this.updateLocation(
-                        results[0].geometry.location.lat(),
-                        results[0].geometry.location.lng(),
-                    );
+                    if(result.geometry){
+
+                        this.updateLocation(
+                            result.geometry.location.lat(),
+                            result.geometry.location.lng(),
+                        );
+
+                    }
+
+
                 }
             }
         });

@@ -19,9 +19,9 @@ export interface Response {
 export class AuthService extends APIService {
     endpoint = 'Auth';
     token: string;
-    response: Response;
-    redirectUrl: string;
-    socketEndPoint: string;
+    response!: Response;
+    redirectUrl!: string;
+    socketEndPoint!: string;
 
     constructor(
         http: HttpClient,

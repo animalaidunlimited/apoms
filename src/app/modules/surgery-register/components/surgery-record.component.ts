@@ -22,25 +22,23 @@ interface Antibiotic {
 })
 export class SurgeryRecordComponent implements OnInit {
 
-    @Input() surgeryId: number;
-    @Input() patientId: number;
-    @Input() tagNumber: string;
-    @Input() emergencyNumber: number;
-    @Input() animalType: string;
+    @Input() surgeryId!: number;
+    @Input() patientId!: number;
+    @Input() tagNumber!: string;
+    @Input() emergencyNumber!: number;
+    @Input() animalType!: string;
     @Output() public result = new EventEmitter<SurgeryRecord>();
     @Output() public surgeryFormInvalid = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    surgeons: User[];
-    surgerySites: SurgerySite[];
-    surgeryTypes: SurgeryType[];
-    surgeriesById: Observable<SurgeryById[]>;
-    animalTypes$: Observable<AnimalType[]>;
-    surgeryDateTime;
-    diedDateTime;
-    callDateTime;
-
-    DiedDate: AbstractControl;
+    surgeons!: User[];
+    surgerySites!: SurgerySite[];
+    surgeryTypes!: SurgeryType[];
+    surgeriesById!: Observable<SurgeryById[]>;
+    animalTypes$!: Observable<AnimalType[]>;
+    surgeryDateTime: string | Date = new Date();
+    diedDateTime: string | Date = new Date();
+    callDateTime: string | Date = new Date();
 
     surgeryForm = this.fb.group({
         SurgeryId: [],
@@ -69,14 +67,18 @@ export class SurgeryRecordComponent implements OnInit {
         private dropdown: DropdownService,
         private surgeryService: SurgeryService,
         private showSnackBar : SnackbarService
-    ) {}
+    ) {
+
+
+
+    }
 
 
     ngOnInit() {
 
-        this.dropdown.getSurgeon().subscribe(surgeon => { this.surgeons = surgeon;});
-        this.dropdown.getSurgerySite().subscribe(site => {this.surgerySites = site;});
-        this.dropdown.getSurgeryType().subscribe(type => {this.surgeryTypes = type;});
+        this.dropdown.getSurgeon().subscribe(surgeon => { this.surgeons = surgeon; });
+        this.dropdown.getSurgerySite().subscribe(site => { this.surgerySites = site; });
+        this.dropdown.getSurgeryType().subscribe(type => { this.surgeryTypes = type; });
 
         this.animalTypes$ = this.dropdown.getAnimalTypes();
 
@@ -104,20 +106,22 @@ export class SurgeryRecordComponent implements OnInit {
     // TODO: Abstract this out into the utils class.
     setInitialTime(event: FocusEvent) {
         let currentTime;
-        currentTime = this.surgeryForm.get(
-            (event.target as HTMLInputElement).name,
-        ).value;
+        currentTime = this.surgeryForm.get((event.target as HTMLInputElement).name)?.value;
 
         if (!currentTime) {
-            this.surgeryForm
-                .get((event.target as HTMLInputElement).name)
-                .setValue(getCurrentTimeString());
+
+            const target = this.surgeryForm.get((event.target as HTMLInputElement).name);
+
+            if(target){
+                target.setValue(getCurrentTimeString());
+            }
+
         }
     }
 
     async saveSurgery() {
         if (!this.surgeryForm.touched) {
-            this.result.emit(null);
+            this.result.emit(undefined);
             return;
         }
 
@@ -126,24 +130,32 @@ export class SurgeryRecordComponent implements OnInit {
 
                 if (value) {
 
-                    const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId').value );
-                    const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId').value );
-                    const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId').value );
+                    const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
+                    const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
+                    const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
+
+                    if (surgeonNameForTable === undefined) {
+                        throw new TypeError('Missing surgeon name!');
+                    }
+
+                    if (surgeryTypeForTable === undefined) {
+                        throw new TypeError('Missing surgery type!');
+                    }
+
+                    if (surgerySiteForTable === undefined) {
+                        throw new TypeError('Missing surgery site!');
+                    }
 
                     const surgeryTableData: SurgeryRecord = {
                         surgeryId: value.surgeryId,
-                        date: this.surgeryForm.get('SurgeryDate').value,
-                        died: this.surgeryForm.get('DiedDate').value,
+                        date: this.surgeryForm.get('SurgeryDate')?.value,
+                        died: this.surgeryForm.get('DiedDate')?.value,
                         site: surgerySiteForTable.SurgerySite,
                         surgeon: surgeonNameForTable.FirstName,
                         type: surgeryTypeForTable.SurgeryType,
-                        anesthesiaMinutes: this.surgeryForm.get(
-                            'AnesthesiaMinutes',
-                        ).value,
-                        antibioticsGiven: this.surgeryForm.get(
-                            'AntibioticsGiven',
-                        ).value,
-                        comments: this.surgeryForm.get('Comment').value,
+                        anesthesiaMinutes: this.surgeryForm.get('AnesthesiaMinutes')?.value,
+                        antibioticsGiven: this.surgeryForm.get('AntibioticsGiven')?.value,
+                        comments: this.surgeryForm.get('Comment')?.value,
                     };
 
                     this.showSnackBar.successSnackBar('Surgery saved!' , 'Ok');

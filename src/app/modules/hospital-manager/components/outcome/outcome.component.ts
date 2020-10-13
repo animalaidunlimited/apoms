@@ -10,10 +10,10 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
     styleUrls: ['./outcome.component.scss'],
 })
 export class OutcomeComponent implements OnInit {
-    outcomeForm;
-    antibiotics;
-    isoReasons;
-    maxDate;
+    outcomeForm:any;
+    antibiotics:any;
+    isoReasons:any;
+    maxDate: string | Date = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
     vaccinationDetails: FormGroup;
@@ -21,7 +21,13 @@ export class OutcomeComponent implements OnInit {
     isoReason: FormGroup;
 
 
-    constructor(private fb: FormBuilder, private dropdown: DropdownService) {}
+    constructor(private fb: FormBuilder, private dropdown: DropdownService) {
+
+        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
+        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
+        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
+
+    }
 
     ngOnInit() {
         this.antibiotics = this.dropdown.getAntibiotics();
@@ -44,18 +50,16 @@ export class OutcomeComponent implements OnInit {
             }),
         });
 
-        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
-        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
-        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
-    }
-
-
-
-    cycleChips($event){
 
     }
 
-    toggleAntibioticChip(antibiotic){
+
+
+    cycleChips($event:any){
+
+    }
+
+    toggleAntibioticChip(antibiotic:any){
 
     }
 }

@@ -7,8 +7,8 @@ import { Page } from '../../../services/navigation/navigation.service';
     styleUrls: ['./nav-toolbar.component.scss'],
 })
 export class NavToolbarComponent implements OnInit {
-    @Input() activePage: Page;
-    @Input() previousUrl: string[];
+    @Input() activePage!: Page;
+    @Input() previousUrl!: string[];
     @Output() toggleSideNav = new EventEmitter();
     @Output() logout = new EventEmitter();
 

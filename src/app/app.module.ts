@@ -28,7 +28,7 @@ class UIErrorHandler extends ErrorHandler {
   constructor() {
     super();
   }
-  handleError(error) {
+  handleError(error:any) {
     super.handleError(error);
     // TODO Style these errors properly and provide them in a dialog with more info about what to do.
     console.log(`Error occurred:${error.message}`);
@@ -56,7 +56,7 @@ class UIErrorHandler extends ErrorHandler {
     providers: [
         DatePipe,
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
-        { provide: LOCALE_ID, useValue: 'it-IT' },
+        // { provide: LOCALE_ID, useValue: 'it-IT' },
         { provide: ErrorHandler, useClass: UIErrorHandler }
     ],
     bootstrap: [AppComponent],

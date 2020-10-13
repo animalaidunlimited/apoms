@@ -19,7 +19,7 @@
 
             <fieldset class="form-sub-group" autocomplete=false>
                 <legend class="legend">Status</legend>
-                <patient-status [patientId]="recordForm.get('patientDetails.patientId').value"></patient-status>
+                <patient-status [patientId]="recordForm.get('patientDetails.patientId')?.value"></patient-status>
             </fieldset>
 
             <emergency-details [recordForm]="recordForm"></emergency-details>
@@ -35,18 +35,18 @@
                 <legend class="legend">Rescue details</legend>
                 <rescue-details
                     [recordForm]="recordForm"
-                    [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId').value">
+                    [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId')?.value">
                 </rescue-details>
              </fieldset>
 
-            <census-details 
-                [tagNumber] = "recordForm.get('patientDetails.tagNumber').value">
+            <census-details
+                [tagNumber] = "recordForm.get('patientDetails.tagNumber')?.value">
             </census-details>
 
-            <surgery-details [patientId]="recordForm.get('patientDetails.patientId').value"
-                             [tagNumber]="recordForm.get('patientDetails.tagNumber').value"
-                             [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber').value"
-                             [animalType]="recordForm.get('patientDetails.animalType').value">
+            <surgery-details [patientId]="recordForm.get('patientDetails.patientId')?.value"
+                             [tagNumber]="recordForm.get('patientDetails.tagNumber')?.value"
+                             [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber')?.value"
+                             [animalType]="recordForm.get('patientDetails.animalType')?.value">
             </surgery-details>
 
             <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">

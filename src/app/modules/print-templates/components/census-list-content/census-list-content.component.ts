@@ -12,7 +12,7 @@ import { PrintTemplateService } from '../../services/print-template.service';
 })
 export class CensusListContentComponent implements OnInit {
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns:string[] = [];
   columnsExcludingIndex: string[] = [];
@@ -25,17 +25,14 @@ export class CensusListContentComponent implements OnInit {
     private printService: PrintTemplateService
   ) {
     this.censusList = JSON.parse(route.snapshot.params.censusList);
-
+    this.tableData = new MatTableDataSource(this.censusList.printList);
   }
 
   ngOnInit(): void {
 
     this.displayedColumns = this.censusList.displayColumns;
     this.columnsExcludingIndex = this.displayedColumns.filter(column => column !== 'index');
-
-    this.tableData = new MatTableDataSource(this.censusList.printList);
     this.tableData.sort = this.sort;
-
     this.printService.onDataReady('census-list');
 
   }

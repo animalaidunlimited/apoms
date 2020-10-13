@@ -3,7 +3,7 @@
                      class="mat-elevation-z0">
     <mat-expansion-panel-header>
         <mat-panel-title class="group-title">
-            {{navigationItem.group | titlecase}}
+            {{navigationItem.group || '' | titlecase}}
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div>

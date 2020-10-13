@@ -5,19 +5,19 @@ export interface MediaItem{
     mediaItemId: Observable<number>;
     mediaType: string;
     localURL: SafeUrl;
-    remoteURL: string;
+    remoteURL: string | null;
     datetime: Date|string;
     comment: string;
     patientId: number;
     heightPX: number;
     widthPX: number;
     tags: string[];
-    uploadProgress$: Observable<number>;
+    uploadProgress$: Observable<number> | null;
     updated: boolean;
   }
 
   export interface MediaItemReturnObject{
-    mediaItem: MediaItem;
-    mediaItemId: BehaviorSubject<number>;
+    mediaItem: MediaItem | undefined;
+    mediaItemId: BehaviorSubject<number | undefined>;
     result: string;
   }
