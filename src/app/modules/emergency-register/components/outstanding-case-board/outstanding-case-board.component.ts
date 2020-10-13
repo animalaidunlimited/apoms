@@ -11,7 +11,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { SearchResponse } from 'src/app/core/models/responses';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 export interface Swimlane{

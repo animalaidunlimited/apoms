@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OutstandingCase, OutstandingRescue, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';

@@ -29,10 +29,10 @@ import { PatientDetailsComponent } from './components/patient-details/patient-de
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
-import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
-import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog/update-census-dialog.component';
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
+import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
+import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
 
 @NgModule({
     declarations: [
