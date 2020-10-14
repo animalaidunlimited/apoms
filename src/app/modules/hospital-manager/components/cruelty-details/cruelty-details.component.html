@@ -10,18 +10,76 @@
         </mat-form-field>
 
         <mat-form-field class="extra-wide">
-            <textarea formControlName="postCrueltyReport" rows="3" placeholder="Post cruelty report" [errorStateMatcher]="errorMatcher" matInput></textarea>
+            <textarea formControlName="postCrueltyReport" rows="3" placeholder="Post cruelty report" matInput></textarea>
         </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="crueltyDate" type="date"
+            (focus)="setInitialTime($event)"
+            [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Cruelty inspector</mat-label>
+            <mat-select formControlName="crueltyInspector" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let inspector of crueltyInspectors$ | async" [value]="inspector.UserId">
+                    {{inspector.FirstName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="crueltyCode"  placeholder="Cruelty code" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="animalCondition"  placeholder="Animal condition" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="nameOfAccused"  placeholder="Name of accused" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="mobileNumberOfAccused"  placeholder="Mobile number of accused" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="firNumber"  placeholder="FIR/Report/Parivaad No" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="act"  placeholder="Act" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="policeStation"  placeholder="Police station" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="policeOfficerName"  placeholder="Police officer name" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="policeOfficerNumber"  placeholder="Police officer number" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="policeOfficerDesignation"  placeholder="Police officer designation" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="actionTaken"  placeholder="Action taken" matInput>
+        </mat-form-field>
+
+        <mat-form-field class="wide">
+            <input type="text" formControlName="animalLocationAfterAction"  placeholder="Animal location after action" matInput>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="saveForm()" [disabled]="crueltyDetails.invalid">Save</button>
 
     </div>
 
-    <mat-form-field>
-        <mat-label>Cruelty inspector</mat-label>
-        <mat-select formControlName="crueltyInspector" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let inspector of crueltyInspectors$ | async" [value]="inspector.UserId">
-                {{inspector.FirstName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+
 
 </fieldset>

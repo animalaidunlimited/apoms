@@ -430,14 +430,9 @@ async saveForm(){
 
         this.printService.updatePrintTemplateList(this.printPage.value);
 
-        console.log(updateResult);
-
           this.processResult(updateResult);
 
-
       });
-
-
 
     }
 

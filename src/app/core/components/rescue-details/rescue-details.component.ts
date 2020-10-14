@@ -237,16 +237,11 @@ updateValidators()
 
     this.currentCallDateTime = this.callDateTime;
 
-    let currentTime;
-
-    currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
-
+    const currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
 
     if(!currentTime)
     {
-      // TODO put this back in when we go live with the desk doing realtime entries
       this.recordForm.get('rescueDetails')?.get(event.target.name)?.setValue(getCurrentTimeString());
-      // this.recordForm.get("rescueDetails").get(event.target.name).setValue(this.currentCallDateTime.value);
     }
 
    }

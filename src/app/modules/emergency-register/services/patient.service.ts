@@ -3,7 +3,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients } from 'src/app/core/models/patients';
+import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients, CrueltyReport, CrueltyReportResult } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 
@@ -99,6 +99,46 @@ export class PatientService extends APIService {
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    public getCrueltyForm(
+        patientId: number,
+    ): Observable<CrueltyReport> {
+        const request = '/CrueltyReport?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: CrueltyReport) => {
+                return response;
+            }),
+        );
+    }
+
+    public async saveCrueltyForm(crueltyForm: CrueltyReport) : Promise<CrueltyReportResult> {
+
+        if(crueltyForm.crueltyReportId){
+
+            return await this.put(crueltyForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+        else{
+
+            return await this.post(crueltyForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
     }
 
     public getPatientCallsByPatientId(
