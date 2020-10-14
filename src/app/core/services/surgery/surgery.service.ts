@@ -16,7 +16,7 @@ export class SurgeryService extends APIService {
         super(http);
     }
 
-    public async saveSurgery(surgeryData): Promise<any> {
+    public async saveSurgery(surgeryData:any): Promise<any> {
         const request = 'surgery';
         if (surgeryData.SurgeryId) {
             return await this.put(surgeryData);

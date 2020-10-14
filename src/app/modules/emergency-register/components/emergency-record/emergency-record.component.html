@@ -9,7 +9,7 @@
 
             <emergency-details [recordForm]="recordForm" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-              <animal-selection [recordForm]="recordForm"></animal-selection>
+            <animal-selection [recordForm]="recordForm"></animal-selection>
 
           </div>
 
@@ -25,7 +25,7 @@
 
                   <rescue-details
                       [recordForm]="recordForm"
-                      [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId').value">
+                      [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId')?.value">
                   </rescue-details>
 
               </fieldset>

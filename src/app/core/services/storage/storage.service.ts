@@ -15,9 +15,16 @@ export class StorageService {
         this.storage.setItem(key, value);
     }
 
-    public read(key: string): any {
+    public read(key: string): string | null {
         const value = this.storage.getItem(key);
-        return JSON.parse(value);
+
+        if(value){
+            return JSON.parse(value);
+        }
+        else{
+            return null;
+        }
+
     }
 
     public remove(key: string) {
@@ -30,7 +37,7 @@ export class StorageService {
         for (let i = 0; i < this.storage.length; i++) {
             const item = this.storage.key(i);
 
-            if (item.substr(0, type.length) === type) {
+            if (item?.substr(0, type.length) === type) {
                 result.push({ key: item, value: this.storage.getItem(item) });
             }
         }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PrintTemplateService } from '../../print-templates/services/print-template.service';
 
 @Component({
     selector: 'emergency-register-page',
@@ -6,7 +7,11 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./emergency-register-page.component.scss'],
 })
 export class EmergencyRegisterPageComponent implements OnInit {
-    constructor() {}
+    constructor(private printService: PrintTemplateService) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+
+        this.printService.initialisePrintTemplates();
+
+    }
 }

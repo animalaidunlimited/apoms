@@ -34,8 +34,7 @@
               "src/theme.scss",
               "src/app/core/styles/nav-styles.scss"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -52,7 +51,7 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -62,12 +61,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
               "serviceWorker": true,

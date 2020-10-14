@@ -6,6 +6,7 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 import { SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -15,21 +16,22 @@ import { MediaItem } from 'src/app/core/models/media';
 })
 export class PatientRecordComponent implements OnInit {
 
-    recordForm: FormGroup;
+    recordForm: FormGroup = new FormGroup({});
 
-    @Input() incomingPatient: SearchRecordTab;
+    @Input() incomingPatient!: SearchRecordTab;
 
-    patientCallPatientId: number;
+    patientCallPatientId = -1;
 
     patientLoaded = true;
 
-    hideMenu: boolean;
+    hideMenu = false;
 
-    profileUrl: SafeUrl;
+    profileUrl: SafeUrl = '';
 
-    mediaData: Observable<MediaItem[]>;
+    mediaData!: Observable<MediaItem[]>;
 
     constructor(private fb: FormBuilder,
+        private snackbar: SnackbarService,
         private patientService: PatientService) {}
 
     ngOnInit() {
@@ -80,8 +82,12 @@ export class PatientRecordComponent implements OnInit {
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
         if(this.mediaData){
         this.mediaData.subscribe(media=>{
-            const mediaItem = media.find(item=>Boolean(item.isPrimary) === true);
-            this.profileUrl = mediaItem.localURL;
+
+            if(!media){
+                return;
+            }
+
+            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
     }
@@ -90,9 +96,7 @@ export class PatientRecordComponent implements OnInit {
     tabChanged(event: MatTabChangeEvent) {
         // Only populate the ids when we want to load the data
         if (event.tab.textLabel === 'Patient Calls') {
-            this.patientCallPatientId = this.recordForm.get(
-                'patientDetails.patientId',
-            ).value;
+            this.patientCallPatientId = this.recordForm.get('patientDetails.patientId')?.value;
         }
     }
 
@@ -101,6 +105,13 @@ export class PatientRecordComponent implements OnInit {
     }
 
     saveForm() {
-        alert('Save the form!');
+
+        this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
+            result.success === 1 ?
+                this.snackbar.successSnackBar('Update successful','OK')
+                :
+                this.snackbar.errorSnackBar('Update failed','OK');
+        });
+
     }
 }

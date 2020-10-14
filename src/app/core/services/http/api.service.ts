@@ -75,7 +75,7 @@ export abstract class APIService<T = any> {
         return response;
     }
 
-    public async put(body): Promise<any> {
+    public async put(body: any): Promise<any> {
         let response = null;
         try {
             response = await this.http
@@ -87,7 +87,7 @@ export abstract class APIService<T = any> {
         return response;
     }
 
-    public async post(body): Promise<any> {
+    public async post(body: any): Promise<any> {
         let response = null;
         try {
             response = await this.http

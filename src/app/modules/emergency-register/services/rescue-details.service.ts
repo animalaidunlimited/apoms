@@ -15,9 +15,9 @@ export class RescueDetailsService extends APIService {
     }
 
     endpoint = 'RescueDetails';
-    redirectUrl: string;
+    redirectUrl = '';
 
-    outstandingRescues$: Observable<OutstandingCaseResponse>;
+    outstandingRescues$: Observable<OutstandingCaseResponse> | undefined;
 
     public getRescueDetailsByEmergencyCaseId(
         emergencyCaseId: number,
@@ -47,19 +47,5 @@ export class RescueDetailsService extends APIService {
         }
 
         return this.outstandingRescues$;
-
-        // let observable:Observable<OutstandingCaseResponse> = new Observable(observer => {
-
-        //   this.socket.on('OUTSTANDING_RESCUES', (data: any) => {
-
-        //     //TODO fix this. For some reason these needs to be parsed instead of being able to
-        //     //cast directly to the type
-        //     observer.next(JSON.parse(data));
-        //   });
-        //   // return () => {
-        //   //   this.socket.disconnect();
-        //   // };
-        // })
-        // return observable;
     }
 }

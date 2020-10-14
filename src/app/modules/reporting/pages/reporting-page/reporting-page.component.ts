@@ -30,24 +30,16 @@ export class ReportingPageComponent implements OnInit {
         private dialog: MatDialog,
         private surgeryService: SurgeryService) {}
 
-    areaId: number;
-
-    censusAreas$ : Observable<CensusArea[]>;
-    censusArea : FormGroup;
-    displayString : string;
+    censusAreas$! : Observable<CensusArea[]>;
+    censusArea! : FormGroup;
     errorMatcher = new CrossFieldErrorMatcher();
-    patientCountData : PatientCountInArea[];
-    surgeries: Observable<SurgeryRecord[]>;
+    patientCountData : PatientCountInArea[] = [{area : '',count : 0}];
+    surgeries!: Observable<SurgeryRecord[]>;
     surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    surgeryDetails: FormGroup;
-    totalPatientCount : number;
+    surgeryDetails!: FormGroup;
+    totalPatientCount = 0;
 
     ngOnInit() {
-
-        this.patientCountData = [{
-                area : '',
-                count : 0
-        }];
 
         this.census.getCensusPatientCount().then(response => {
             this.patientCountData = response;
@@ -57,13 +49,13 @@ export class ReportingPageComponent implements OnInit {
             surgeryDate: [, Validators.required]
         });
 
-        this.surgeryDetails.get('surgeryDate').valueChanges.subscribe(() => {
+        this.surgeryDetails.get('surgeryDate')?.valueChanges.subscribe(() => {
 
-            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.surgeryDetails.get('surgeryDate').value);
+            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.surgeryDetails.get('surgeryDate')?.value);
             this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
         });
 
-        this.surgeryDetails.get('surgeryDate').setValue(getCurrentDateString());
+        this.surgeryDetails.get('surgeryDate')?.setValue(getCurrentDateString());
 
     }
 

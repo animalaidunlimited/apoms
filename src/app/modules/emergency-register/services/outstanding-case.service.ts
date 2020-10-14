@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { OutstandingRescue, OutstandingCase, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
@@ -9,20 +9,23 @@ import { ThemePalette } from '@angular/material/core';
 })
 export class OutstandingCaseService {
 
-  constructor(private rescueService: RescueDetailsService, private zone:NgZone) { }
-  autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(false);
-  autoRefreshState:boolean;
+  constructor(
+    private rescueService: RescueDetailsService,
+    private zone:NgZone
+    ) { }
+  autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+  autoRefreshState = false;
 
-  outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject(null);
-  ambulanceLocations$:BehaviorSubject<RescuerGroup[]> = new BehaviorSubject(null);
+  outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject([] as OutstandingCase[]);
+  ambulanceLocations$:BehaviorSubject<RescuerGroup[]> = new BehaviorSubject([] as RescuerGroup[]);
 
-  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(null);
+  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
   notificationPermissionGranted = false;
 
-  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary');
+  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
 
-  initialRescueListSubscription:Subscription;
+  initialRescueListSubscription:Subscription | undefined;
 
   initialised = false;
 
@@ -61,7 +64,7 @@ export class OutstandingCaseService {
 
 
     // Make sure we close the subscription as we only need to get this once when we initialise
-    this.initialRescueListSubscription.unsubscribe();
+    this.initialRescueListSubscription?.unsubscribe();
 
   }
 
@@ -73,25 +76,9 @@ export class OutstandingCaseService {
     this.outstandingCases$.subscribe(cases => {
 
       currentOutstanding = cases;
+      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
 
-    });
-
-    // Here we only do the refresh if the user has the toggle turned on.
-    if(!this.autoRefreshState){
-      this.zone.run(() => this.refreshColour.next('warn'));
-      return;
-    }
-
-    currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
-
-    // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
-    if(!updatedRescue.rescueStatus){
-      this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
-
-      return;
-    }
-
-    // Check to see if the swimlane exists and insert if not
+      // Check to see if the swimlane exists and insert if not
     const laneExists = currentOutstanding.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
 
     const newRescueGroup:RescuerGroup = {
@@ -99,7 +86,7 @@ export class OutstandingCaseService {
       rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
       rescuer2: updatedRescue.rescuer2Id,
       rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
-      latestLocation: null,
+      latestLocation: undefined,
       rescues: [updatedRescue],
     };
 
@@ -127,6 +114,9 @@ export class OutstandingCaseService {
       .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
                             rescueGroup.rescuer2 === updatedRescue.rescuer2Id);
       }
+
+      return '';
+
     });
 
     if(!rescuersExist){
@@ -146,6 +136,23 @@ export class OutstandingCaseService {
 
     // Set the rescue to show as moved
     currentOutstanding = this.setMoved(currentOutstanding, updatedRescue.emergencyCaseId, true, false);
+
+    });
+
+    // Here we only do the refresh if the user has the toggle turned on.
+    if(!this.autoRefreshState){
+      this.zone.run(() => this.refreshColour.next('warn'));
+      return;
+    }
+
+    // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
+    if(!updatedRescue.rescueStatus){
+      this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
+
+      return;
+    }
+
+
 
     this.zone.run(() => this.refreshColour.next('primary'));
     this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
@@ -228,42 +235,50 @@ export class OutstandingCaseService {
 
   onSearchChange(searchValue: string): void {
 
-    let outstanding;
+    let haveRun = false;
+
+    let outstanding:OutstandingCase[];
 
     this.outstandingCases$.subscribe(cases => {
 
       outstanding = cases;
 
+      // We've already made a change, so no need to do anything further
+      if(!outstanding || haveRun){
+        return;
+      }
+
+      haveRun = true;
+
+      outstanding.forEach(status =>
+        {
+          status.rescuerGroups.forEach(group => {
+
+              group.rescues.forEach(rescue => {
+
+                rescue.searchCandidate = false;
+
+                // Because we can't use an observable as the source for the board, we need to add a
+                // flag to the records that match our search.
+                if(
+                  Object.keys(rescue)
+                  .reduce((currentTerm: string, key: string) => {
+                    return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
+                  }, '').toLowerCase().indexOf(searchValue) > -1
+                  && searchValue !== ''
+                ){
+                  rescue.searchCandidate = true;
+                }
+              });
+            });
+        });
+
+         this.zone.run(() => {
+          this.outstandingCases$.next(outstanding);
+         });
+
     });
 
-    if(!outstanding){
-      return;
-    }
-
-    outstanding.forEach(status =>
-      {
-        status.rescuerGroups.forEach(group => {
-
-            group.rescues.forEach(rescue => {
-
-              rescue.searchCandidate = false;
-
-              // Because we can't use an observable as the source for the board, we need to add a
-              // flag to the records that match our search.
-              if(
-                Object.keys(rescue)
-                .reduce((currentTerm: string, key: string) => {
-                  return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
-                }, '').toLowerCase().indexOf(searchValue) > -1
-                && searchValue !== ''
-              ){
-                rescue.searchCandidate = true;
-              }
-            });
-          });
-      });
-
-      this.zone.run(() => this.outstandingCases$.next(outstanding));
 
 
   }
@@ -274,14 +289,14 @@ export class OutstandingCaseService {
     return this.autoRefresh;
   }
 
-  setAutoRefresh(value){
+  setAutoRefresh(value:boolean){
     this.zone.run(() => this.autoRefresh.next(value));
 
   }
 
   toggleAutoRefresh(){
 
-    let currentValue;
+    let currentValue:boolean;
 
     this.autoRefresh.subscribe(value => {
       currentValue = value;

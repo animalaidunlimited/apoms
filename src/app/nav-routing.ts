@@ -145,23 +145,33 @@ export const navRoutes: NavRoute[] = [
     providedIn: 'root',
 })
 export class NavRouteService {
-    navRoute: Route;
+    navRoute!: Route;
     navRoutes: NavRoute[];
 
     constructor(router: Router) {
-        this.navRoute = router.config.find(route => route.path === sideNavPath);
-        this.navRoutes = this.navRoute.children
-            .filter(route => route.data && route.data.title)
+
+        const routes = router.config.find(route => route.path === sideNavPath);
+
+        if(routes){
+            this.navRoute = routes;
+        }
+
+        if(!this.navRoute.children){
+            throw new Error ('No routes detected');
+        }
+
+        this.navRoutes = this.navRoute.children.filter(route => route.data && route.data.title)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
                 if (route.group) {
-                    const group: NavRoute = groupedList.find(navRoute => {
+                    const group: NavRoute | undefined = groupedList.find(navRoute => {
                         return (
                             navRoute.group === route.group &&
                             navRoute.groupedNavRoutes !== undefined
                         );
                     });
+
                     if (group) {
-                        group.groupedNavRoutes.push(route);
+                        group.groupedNavRoutes?.push(route);
                     } else {
                         groupedList.push({
                             group: route.group,

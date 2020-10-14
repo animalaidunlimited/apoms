@@ -52,6 +52,23 @@ changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutstandingCaseBoardComponent implements OnInit {
 
+  autoRefresh = false;
+
+  hideMap = true;
+
+  loading = true;
+
+  notificationPermissionGranted = false;
+
+  outstandingCases!:OutstandingCase[];
+  outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
+
+  refreshColour$!:BehaviorSubject<ThemePalette>;
+  refreshColour:ThemePalette = 'primary';
+
+  refreshForm:FormGroup = new FormGroup({});
+  searchForm:FormGroup = new FormGroup({});
+
   constructor(
     public rescueDialog: MatDialog,
     private fb: FormBuilder,
@@ -66,22 +83,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  autoRefresh:boolean;
 
-  hideMap = true;
-
-  loading = true;
-
-  notificationPermissionGranted = false;
-
-  outstandingCases:OutstandingCase[];
-  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
-
-  refreshColour$:BehaviorSubject<ThemePalette>;
-  refreshColour:ThemePalette = 'primary';
-
-  refreshForm:FormGroup;
-  searchForm:FormGroup;
 
   ngOnInit(): void {
 
@@ -158,7 +160,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     });
 
-    this.searchForm.get('searchTerm').valueChanges
+    this.searchForm.get('searchTerm')?.valueChanges
       .pipe(
         debounceTime(250),
         startWith('')
@@ -254,20 +256,20 @@ openCase(caseSearchResult:OutstandingRescue)
     EmergencyCaseId: caseSearchResult.emergencyCaseId,
     EmergencyNumber: caseSearchResult.emergencyNumber,
     CallDateTime: caseSearchResult.callDateTime.toString(),
-    CallerId: null,
+    CallerId: 0,
     Name: caseSearchResult.callerName,
     Number: caseSearchResult.callerNumber,
-    AnimalTypeId: null,
-    AnimalType: null,
-    PatientId: null,
-    TagNumber: null,
+    AnimalTypeId: 0,
+    AnimalType: '',
+    PatientId: 0,
+    TagNumber: undefined,
     CallOutcomeId: caseSearchResult.callOutcomeId,
-    CallOutcome: null,
-    sameAsNumber: null,
+    CallOutcome: undefined,
+    sameAsNumber: undefined,
     Location: caseSearchResult.location,
     Latitude: caseSearchResult.latitude,
     Longitude: caseSearchResult.longitude,
-    CurrentLocation: null,
+    CurrentLocation: undefined,
 
   };
 
