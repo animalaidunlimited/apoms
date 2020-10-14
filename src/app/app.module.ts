@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Injectable, ErrorHandler } from '@angular/core';
+import { NgModule, Injectable, ErrorHandler, LOCALE_ID } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavModule } from './core/components/nav/nav.module';
@@ -14,9 +14,11 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
-import { AngularFireStorageModule } from '@angular/fire/storage'
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
-import { DatePipe } from '@angular/common';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import localeIt from '@angular/common/locales/it';
+registerLocaleData(localeIt);
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +28,7 @@ class UIErrorHandler extends ErrorHandler {
   constructor() {
     super();
   }
-  handleError(error) {
+  handleError(error:any) {
     super.handleError(error);
     // TODO Style these errors properly and provide them in a dialog with more info about what to do.
     console.log(`Error occurred:${error.message}`);
@@ -53,8 +55,9 @@ class UIErrorHandler extends ErrorHandler {
     exports: [],
     providers: [
         DatePipe,
-        {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
-        {provide: ErrorHandler, useClass: UIErrorHandler}
+        { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+        // { provide: LOCALE_ID, useValue: 'it-IT' },
+        { provide: ErrorHandler, useClass: UIErrorHandler }
     ],
     bootstrap: [AppComponent],
 })

@@ -4,6 +4,7 @@ import {
     FormGroup,
     Validators,
     FormBuilder,
+    AbstractControl,
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Callers, Caller } from '../../models/responses';
@@ -24,16 +25,16 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
     styleUrls: ['./caller-details.component.scss'],
 })
 export class CallerDetailsComponent implements OnInit {
-    @Input() recordForm: FormGroup;
+    @Input() recordForm!: FormGroup;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
-    public callerAutoComplete$; // TODO: type this Observable<Callers>;
+    public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
 
-    callerDetails:FormGroup;
+    callerDetails!:FormGroup;
 
-    callerNumber;
-    caller$: Caller;
+    callerNumber!:AbstractControl|null;
+    caller$!: Caller;
 
     constructor(
         private callerService: CallerDetailsService,
@@ -61,12 +62,12 @@ export class CallerDetailsComponent implements OnInit {
                 ],
             }),
         );
-
+        
         this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
 
         this.callerService
             .getCallerByEmergencyCaseId(
-                this.recordForm.get('emergencyDetails.emergencyCaseId').value,
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
             )
             .subscribe((caller: Caller) => {
                 this.recordForm.patchValue(caller);
@@ -76,13 +77,13 @@ export class CallerDetailsComponent implements OnInit {
 
         this.callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
-        this.callerAutoComplete$ = this.callerNumber.valueChanges.pipe(
+        this.callerAutoComplete$ = this.callerNumber?.valueChanges.pipe(
             startWith(''),
             // delay emits
             debounceTime(300),
             // use switch map so as to cancel previous subscribed events, before creating new one
             switchMap(value => {
-                if (value !== '' && !this.callerNumber.pristine) {
+                if (value !== '' && !this.callerNumber?.pristine) {
                     return this.lookup(value);
                 } else {
                     // if no value is present, return null
@@ -92,14 +93,14 @@ export class CallerDetailsComponent implements OnInit {
         );
     }
 
-    lookup(value): Observable<Callers> {
+    lookup(value:any): Observable<Callers|null> {
         return this.callerService.getCallerByNumber(value).pipe(
             map(
-                results => results,
+                results => results
             ),
             catchError(_ => {
                 return of(null);
-            }),
+            })
         );
     }
 
@@ -108,16 +109,16 @@ export class CallerDetailsComponent implements OnInit {
         const callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
         if (
-            (callerName.value || callerNumber.value) &&
-            !(callerName.value && callerNumber.value)
+            (callerName?.value || callerNumber?.value) &&
+            !(callerName?.value && callerNumber?.value)
         ) {
-            !!callerName.value == true
-                ? callerNumber.setValidators([Validators.required])
-                : callerName.setValidators([Validators.required]);
+            !!callerName?.value === true
+                ? callerNumber?.setValidators([Validators.required])
+                : callerName?.setValidators([Validators.required]);
         }
 
-        callerName.updateValueAndValidity({ emitEvent: false });
-        callerNumber.updateValueAndValidity({ emitEvent: false });
+        callerName?.updateValueAndValidity({ emitEvent: false });
+        callerNumber?.updateValueAndValidity({ emitEvent: false });
     }
 
     onChanges(): void {
@@ -130,13 +131,9 @@ export class CallerDetailsComponent implements OnInit {
     setCallerDetails($event: MatAutocompleteSelectedEvent) {
         const caller = $event.option.value;
 
-        this.recordForm.get('callerDetails.callerId').setValue(caller.CallerId);
-        this.recordForm
-            .get('callerDetails.callerNumber')
-            .setValue(caller.Number);
-        this.recordForm.get('callerDetails.callerName').setValue(caller.Name);
-        this.recordForm
-            .get('callerDetails.callerAlternativeNumber')
-            .setValue(caller.AlternativeNumber);
+        this.recordForm.get('callerDetails.callerId')?.setValue(caller.CallerId);
+        this.recordForm.get('callerDetails.callerNumber')?.setValue(caller.Number);
+        this.recordForm.get('callerDetails.callerName')?.setValue(caller.Name);
+        this.recordForm.get('callerDetails.callerAlternativeNumber')?.setValue(caller.AlternativeNumber);
     }
 }

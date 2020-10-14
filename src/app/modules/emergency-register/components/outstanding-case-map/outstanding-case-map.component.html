@@ -17,7 +17,7 @@
 
                         <map-marker
                         *ngFor="let rescue of rescuerGroups.rescues;"
-                        #marker
+                        #marker="mapMarker"
                         [position]="rescue.latLngLiteral"
                         (mapClick)="openInfoWindow(marker, rescue)"
                         [options]="{icon:
@@ -47,7 +47,7 @@
             </div>
                         <!-- Add the ambulance locations -->
                         <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
-                        #ambulanceMarker
+                        #ambulanceMarker="mapMarker"
                         (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.rescues)"
                         [position]="ambulance.latestLocation"
                         [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">

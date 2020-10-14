@@ -27,12 +27,12 @@ export class MediaDialogComponent implements OnInit {
 
   uploading = 0;
 
-  newItem : MediaItem;
+  newItem! : MediaItem;
 
-  primaryMedia : MediaItem;
+  primaryMedia! : MediaItem;
+  
 
-
-  @HostListener('window:paste', ['$event']) handleWindowPaste( $event ){
+  @HostListener('window:paste', ['$event']) handleWindowPaste( $event:any ){
     this.handlePaste( $event);
   }
 
@@ -50,7 +50,7 @@ export class MediaDialogComponent implements OnInit {
 
         if(mediaItems){
 
-        this.mediaItems = mediaItems.map(mediaItem => {
+        this.mediaItems = mediaItems.map((mediaItem:any) => {
 
          this.newItem  = {
           mediaItemId: of(mediaItem.mediaItemId),
@@ -79,12 +79,16 @@ export class MediaDialogComponent implements OnInit {
 public handlePaste(event: ClipboardEvent){
 
     // Pass the clipboard event down to the service, expect it to return an image file
-    const mediaFile: File = this.mediaPaster.getPastedImage(event);
+    const mediaFile: File | undefined = this.mediaPaster.getPastedImage(event);
+
+    if(mediaFile){
 
       const mediaItem = this.upload(mediaFile, this.data.patientId);
 
-      this.addToMediaItems(mediaItem.mediaItem);
-
+      if(mediaItem.mediaItem){
+        this.addToMediaItems(mediaItem.mediaItem);
+      }
+    }
 }
 
 upload(file: File, patientId: number) : MediaItemReturnObject{
@@ -101,7 +105,7 @@ upload(file: File, patientId: number) : MediaItemReturnObject{
 
 }
 
-uploadFile($event) {
+uploadFile($event:any) {
 
   // We're uploading a file
   this.uploading++;
@@ -110,10 +114,14 @@ uploadFile($event) {
   {
     const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
 
-    mediaItem.result === 'nomedia' ?
-      this.snackbar.errorSnackBar('Upload images or video only','OK')
-      :
+    if(mediaItem.result === 'nomedia'){
+      this.snackbar.errorSnackBar('Upload images or video only','OK');
+    }
+    else if(mediaItem.mediaItem){
+
       this.addToMediaItems(mediaItem.mediaItem);
+
+    }
 
   }
 

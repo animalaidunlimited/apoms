@@ -6,19 +6,17 @@ import { CallOutcomeResponse } from '../../models/call-outcome';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
     ProblemDropdownResponse,
-    PatientStatus,
     CallType,
     PatientCallOutcome,
+    Exclusions,
+    PatientStatusResponse
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
-import {
-    SurgerySite,
-    SurgeryType,
-} from '../../models/surgery-details';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
+import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -30,28 +28,32 @@ export interface AnimalTypeResponse {
 export class DropdownService extends APIService {
     endpoint = 'Dropdown';
 
-    rescuers$: Observable<User[]>;
-    emergencyCodes$: Observable<EmergencyCode[]>;
-    areas$: any[];
-    dispatchers$: Observable<User[]>;
-    callOutcomes$: Observable<CallOutcomeResponse[]>;
-    crueltyIspectors$: Observable<User[]>;
-    antibiotics$;
-    isoReasons$;
-    animalTypes$: Observable<AnimalType[]>;
-    problems$: Observable<ProblemDropdownResponse[]>;
-    exclusions$;
-    officeStaff$: Observable<User[]>;
-    callStaff$: Observable<User[]>;
-    patientStates$: Observable<PatientStatus[]>;
-    callTypes$: Observable<CallType[]>;
-    patientCallOutcome$: Observable<PatientCallOutcome[]>;
-    surgeons$: Observable<User[]>;
-    surgerySites$: Observable<SurgerySite[]>;
-    surgeryTypes$: Observable<SurgeryType[]>;
-    censusAreas$ : Observable<CensusArea[]>;
-    printableElements$: Observable<PrintElement[]>
-    paperDimensions$: Observable<PaperDimensions[]>;
+
+    animalTypes$!: Observable<AnimalType[]>;
+    antibiotics$!: any[];
+
+    areas$!: any[];
+    callOutcomes$!: Observable<CallOutcomeResponse[]>;
+    callStaff$!: Observable<User[]>;
+    callTypes$!: Observable<CallType[]>;
+    censusAreas$!: Observable<CensusArea[]>;
+    crueltyIspectors$!: Observable<User[]>;
+    dispatchers$!: Observable<User[]>;
+    emergencyCodes$!: Observable<EmergencyCode[]>;
+    exclusions$!: Exclusions[];
+    isoReasons$!: any[];
+    officeStaff$!: Observable<User[]>;
+    paperDimensions$!: Observable<PaperDimensions[]>;
+    patientCallOutcome$!: Observable<PatientCallOutcome[]>;
+    patientStates$!: Observable<PatientStatusResponse[]>;
+    printableElements$!: Observable<PrintElement[]>;
+    problems$!: Observable<ProblemDropdownResponse[]>;
+    rescuers$!: Observable<User[]>;
+    surgeons$!: Observable<User[]>;
+    surgerySites$!: Observable<SurgerySite[]>;
+    surgeryTypes$!: Observable<SurgeryType[]>;
+
+
 
     constructor(http: HttpClient) {
         super(http);
@@ -84,6 +86,8 @@ export class DropdownService extends APIService {
 
         return this.callStaff$;
     }
+
+
 
     getExclusions() {
         if (!this.exclusions$) {
@@ -422,12 +426,12 @@ export class DropdownService extends APIService {
         return this.emergencyCodes$;
     }
 
-    getPatientStates(): Observable<PatientStatus[]> {
+    getPatientStates(): Observable<PatientStatusResponse[]> {
         const request = '/PatientStates';
 
         if (!this.patientStates$) {
             this.patientStates$ = this.getObservable(request).pipe(
-                map((response: PatientStatus[]) => {
+                map((response: PatientStatusResponse[]) => {
                     return response;
                 }),
             );

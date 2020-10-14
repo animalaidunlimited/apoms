@@ -3,15 +3,8 @@
     width: 100%;
   }
 
-.mat-dialog-content{
-  max-height: fit-content;
-}
-
-@media print {
-  .non-printable {
-    display: none !important;
+  @media print {
+    .isPrinting > * { display: none; }
+    .mat-dialog-container { display: none !important; }
+    .cdk_overlay_pane > * { display: none !important; }
   }
-  .printable {
-    display: block !important;
-  }
-}

@@ -9,14 +9,14 @@ import { Observable } from 'rxjs';
 export interface SearchValue {
     id: number;
     inputType: string;
-    searchValue: string;
-    databaseField: string;
-    name: string;
+    searchValue: string | undefined;
+    databaseField: string | undefined;
+    name: string | undefined;
     inNotIn: boolean;
 }
 
 export class Search {
-    searchString: string;
+    searchString = '';
 }
 
 @Component({
@@ -55,8 +55,8 @@ export class RecordSearchComponent implements OnInit {
 
     searchFieldForm = new FormControl();
 
-    searchForm: FormGroup;
-    searchRows: FormArray;
+    searchForm: FormGroup = new FormGroup({});
+    searchRows: FormArray = new FormArray([]);
 
     searchShowing = false;
 
@@ -66,9 +66,9 @@ export class RecordSearchComponent implements OnInit {
         {
             id: 0,
             inputType: 'text',
-            searchValue: null,
-            databaseField: null,
-            name: null,
+            searchValue: undefined,
+            databaseField: undefined,
+            name: undefined,
             inNotIn: false
         },
         {
@@ -193,7 +193,7 @@ export class RecordSearchComponent implements OnInit {
         private caseService: CaseService,
     ) {}
 
-    searchResults$:Observable<SearchResponse[]>;
+    searchResults$!:Observable<SearchResponse[]>;
 
     ngOnInit() {
         this.searchForm = this.formBuilder.group({
@@ -232,19 +232,19 @@ export class RecordSearchComponent implements OnInit {
                 const splitItem = item.split(':');
 
                 const option = this.options.find(
-                    option => option.searchValue == splitItem[0].toLowerCase(),
+                    optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
                 );
 
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
-                if(option.inNotIn){
+                if(option?.inNotIn){
 
 
-                    option.databaseField = option.databaseField.replace(' NOT IN (', ' IN (')
+                    option.databaseField = option.databaseField?.replace(' NOT IN (', ' IN (');
 
                     if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === 'no'){
 
-                        option.databaseField = option.databaseField.replace(' IN (', ' NOT IN (')
+                        option.databaseField = option.databaseField?.replace(' IN (', ' NOT IN (');
                     }
 
                     return option.databaseField;
@@ -252,7 +252,7 @@ export class RecordSearchComponent implements OnInit {
                 }
                 else{
 
-                    return option.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
+                    return option?.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
                 }
             })
             .join('&');
@@ -290,11 +290,11 @@ export class RecordSearchComponent implements OnInit {
             const splitItem = item.split(':');
 
             const option = this.options.find(
-                option => option.searchValue == splitItem[0].toLowerCase(),
+                optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
             );
 
             this.searchRows.push(
-                this.createItem(option.id, splitItem[1].trim()),
+                this.createItem(option?.id, splitItem[1].trim()),
             );
         });
 
@@ -317,7 +317,7 @@ export class RecordSearchComponent implements OnInit {
         const delimiter = new RegExp(regex);
 
         const toSplit =
-            (this.search.searchString.toLowerCase().search(delimiter) != 0
+            (this.search.searchString.toLowerCase().search(delimiter) !== 0
                 ? 'tagno:'
                 : '') + this.search.searchString;
 
@@ -333,7 +333,7 @@ export class RecordSearchComponent implements OnInit {
             .map(item => {
                 const option = this.options.find(currentOption => currentOption.id === item.value.searchField);
 
-                return option.searchValue + ':' + item.value.searchTerm;
+                return option?.searchValue + ':' + item.value.searchTerm;
             })
             .join(' ');
 
@@ -346,7 +346,7 @@ export class RecordSearchComponent implements OnInit {
         this.searchRows.push(this.createItem('', ''));
     }
 
-    removeRow(i) {
+    removeRow(i:any) {
         this.searchRows.removeAt(i);
     }
 

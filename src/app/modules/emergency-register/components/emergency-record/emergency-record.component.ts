@@ -14,18 +14,18 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
     styleUrls: ['./emergency-record.component.scss'],
 })
 export class EmergencyRecordComponent implements OnInit {
-    @Input() emergencyCaseId: number;
+    @Input() emergencyCaseId!: number;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
-    recordForm: FormGroup;
+    recordForm: FormGroup = new FormGroup({});
 
     windowWidth = window.innerWidth;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
-    currentTime: string;
+    currentTime = '';
 
-    notificationDurationSeconds: number;
+    notificationDurationSeconds = 3;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
@@ -112,16 +112,12 @@ export class EmergencyRecordComponent implements OnInit {
 
                 patientFormArray.controls.forEach(currentPatient => {
                     if (
-                        currentPatient.get('position').value === patient.position
+                        currentPatient.get('position')?.value === patient.position
                     ) {
 
-                        currentPatient
-                            .get('patientId')
-                            .setValue(patient.patientId);
+                        currentPatient.get('patientId')?.setValue(patient.patientId);
 
-                        currentPatient
-                            .get('tagNumber')
-                            .setValue(patient.tagNumber);
+                        currentPatient.get('tagNumber')?.setValue(patient.tagNumber);
                     }
                 });
             } else {
@@ -159,17 +155,15 @@ export class EmergencyRecordComponent implements OnInit {
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
-            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber').pending){
+            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
 
-                this.recordForm.get('emergencyDetails.emergencyNumber').setErrors({ stuckInPending: true});
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
                 return;
             }
         }
 
         if (this.recordForm.valid) {
-            this.recordForm
-                .get('emergencyDetails.updateTime')
-                .setValue(getCurrentTimeString());
+            this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
 
             const emergencyForm = {
                 emergencyForm: this.recordForm.value,
@@ -190,12 +184,8 @@ export class EmergencyRecordComponent implements OnInit {
                         } else {
                             const resultBody = data as EmergencyResponse;
 
-                            this.recordForm
-                                .get('emergencyDetails.emergencyCaseId')
-                                .setValue(resultBody.emergencyCaseId);
-                            this.recordForm
-                                .get('callerDetails.callerId')
-                                .setValue(resultBody.callerId);
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
@@ -227,9 +217,7 @@ export class EmergencyRecordComponent implements OnInit {
 
                             const resultBody = data as EmergencyResponse;
 
-                            this.recordForm
-                            .get('callerDetails.callerId')
-                            .setValue(resultBody.callerId);
+                            this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }

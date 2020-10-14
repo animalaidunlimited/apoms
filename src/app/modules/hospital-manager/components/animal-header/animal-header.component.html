@@ -18,7 +18,7 @@
     <div fxLayout="column" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
 
 <div class="tag-number">
-<label >{{recordForm.get('patientDetails.tagNumber').value}}</label>
+<label >{{recordForm.get('patientDetails.tagNumber')?.value}}</label>
 </div>
 <div class="primary-font-color">Tag number</div>
 </div>
@@ -29,7 +29,7 @@
 
 <div fxLayout="column" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
 <div>
-<label class="current-area">{{recordForm.get('patientDetails.currentLocation').value}}</label>
+<label class="current-area">{{recordForm.get('patientDetails.currentLocation')?.value}}</label>
 </div>
 <div class="primary-font-color">Current area</div>
 

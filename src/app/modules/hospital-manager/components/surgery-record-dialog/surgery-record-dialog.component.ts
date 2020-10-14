@@ -22,19 +22,24 @@ interface CanExitChange {
 })
 export class SurgeryRecordDialogComponent implements OnInit {
 
-    result: UpdatedSurgery;
+    result: UpdatedSurgery | undefined;
     canExit: FormGroup;
 
     constructor(
         public dialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         private fb: FormBuilder,
-    ) {}
+    ) {
 
-    ngOnInit() {
+
         this.canExit = this.fb.group({
             surgeryDetailsUpdateComplete: [0],
         });
+
+    }
+
+    ngOnInit() {
+
 
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
@@ -52,7 +57,17 @@ export class SurgeryRecordDialogComponent implements OnInit {
 
         this.result = result;
         if (result) {
-            this.canExit.get('surgeryDetailsUpdateComplete').setValue(1);
+
+            const canExitControl = this.canExit.get('surgeryDetailsUpdateComplete');
+
+            if(canExitControl){
+                canExitControl.setValue(1);
+            }
+            else {
+                throw new Error('surgeryDetailsUpdateComplete is empty');
+
+            }
+
         }
     }
 }

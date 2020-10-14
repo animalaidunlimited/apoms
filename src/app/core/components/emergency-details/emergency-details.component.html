@@ -7,11 +7,11 @@
     <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" appearance="outline" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
-            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber').errors?.emergencyNumberTaken">
+            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
                 The emergency number already exists.
             </mat-error>
 
-            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber').errors?.stuckInPending">
+            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.stuckInPending">
                 Connectivity lost, please recheck
             </mat-error>
 
@@ -37,13 +37,13 @@
             <mat-label>Code</mat-label>
             <mat-select tabindex="9" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
-                <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code').value?.EmergencyCodeId">
+                <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId">
 
                     <mat-icon [ngClass]="{
-                        'dot-grey' : recordForm.get('emergencyDetails.code').value.EmergencyCodeId == 4,
-                        'dot-red' : recordForm.get('emergencyDetails.code').value.EmergencyCodeId == 1,
-                        'dot-green' : recordForm.get('emergencyDetails.code').value.EmergencyCodeId == 2,
-                        'dot-yellow' : recordForm.get('emergencyDetails.code').value.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{recordForm.get('emergencyDetails.code').value.EmergencyCode}}</mat-select-trigger>
+                        'dot-grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
+                        'dot-red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
+                        'dot-green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
+                        'dot-yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{recordForm.get('emergencyDetails.code')?.value?.EmergencyCode}}</mat-select-trigger>
 
 
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">

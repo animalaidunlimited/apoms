@@ -7,9 +7,9 @@ import {
     SearchResponse,
 } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { v4 as uuid } from 'uuid';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -31,12 +31,12 @@ export class CaseService extends APIService {
     }
 
     endpoint = 'EmergencyRegister';
-    response: EmergencyResponse;
-    redirectUrl: string;
+    response: EmergencyResponse = {} as EmergencyResponse;
+    redirectUrl = '';
 
     online: boolean;
 
-    saveCaseFail:boolean;
+    saveCaseFail = false;
 
     private async checkStatus(onlineStatus: OnlineStatusService) {
 
@@ -104,9 +104,9 @@ export class CaseService extends APIService {
         });
     }
 
-    private async postFromLocalStorage(postsToSync) {
+    private async postFromLocalStorage(postsToSync:any) {
         const promiseArray = postsToSync.map(
-            async elem =>
+            async (elem:any) =>
 
                 await this.baseInsertCase(JSON.parse(elem.value)).then(
                     (result: EmergencyResponse) => {
@@ -127,10 +127,10 @@ export class CaseService extends APIService {
         });
     }
 
-    private async putFromLocalStorage(putsToSync) {
+    private async putFromLocalStorage(putsToSync:any) {
 
         const promiseArray = putsToSync.map(
-            async elem =>
+            async (elem:any) =>
 
                 await this.baseUpdateCase(JSON.parse(elem.value)).then(
                                 (result: EmergencyResponse) => {
@@ -177,6 +177,9 @@ export class CaseService extends APIService {
                 // The server is offline, so let's save this to the database
                 return await this.saveToLocalDatabase('PUT', emergencyCase);
             }
+            else{
+                return '';
+            }
         });
     }
 
@@ -206,6 +209,9 @@ export class CaseService extends APIService {
                         'POST',
                         emergencyCase,
                     );
+                }
+                else{
+                    return '';
                 }
             });
     }
@@ -256,9 +262,9 @@ export class CaseService extends APIService {
         );
     }
 
-    private async saveToLocalDatabase(key, body) {
+    private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
-        const guid = uuid();
+        const guid = uuidv4();
 
         try {
             this.storage.save(key + guid, body);

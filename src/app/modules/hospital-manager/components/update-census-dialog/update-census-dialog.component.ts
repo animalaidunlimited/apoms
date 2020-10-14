@@ -14,9 +14,8 @@ export interface DialogData {
 })
 export class UpdateCensusDialogComponent implements OnInit {
 
-  result : CensusRecord;
-  @Output() public onAdd = new EventEmitter<any>();
-  @Output() public onRemove = new EventEmitter<any>();
+  @Output() public addCensusRecord = new EventEmitter<any>();
+  @Output() public removeCensusRecord = new EventEmitter<any>();
 
   constructor(
     public dialogRef: MatDialogRef<UpdateCensusDialogComponent>,
@@ -31,11 +30,11 @@ export class UpdateCensusDialogComponent implements OnInit {
 
   onCensusSaveResult(result : CensusRecord){
     const value : any = result;
-    this.onAdd.emit(value);
+    this.addCensusRecord.emit(value);
   }
   onCensusRemoveResult(remove : CensusRecord){
     const value : any = remove;
-    this.onRemove.emit(value);
+    this.removeCensusRecord.emit(value);
   }
 
 }

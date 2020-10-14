@@ -10,7 +10,7 @@ import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { PatientService } from '../../services/patient.service';
-import { ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
@@ -36,19 +36,19 @@ export class AnimalSelectionComponent implements OnInit {
         private mediaPaster: MediaPasteService
     ) {}
 
-    @Input() recordForm: FormGroup;
-    @ViewChild(MatTable, { static: true }) patientTable: MatTable<any>;
-    @ViewChild('animalTypeChips', { static: true }) animalTypeChips: MatChipList;
-    @ViewChild('problemChips', { static: true }) problemChips: MatChipList;
+    @Input() recordForm!: FormGroup;
+    @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
+    @ViewChild('animalTypeChips', { static: true }) animalTypeChips!: MatChipList;
+    @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
 
-    @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement: ElementRef;
+    @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
-    animalTypes$: AnimalType[];
+    animalTypes$: AnimalType[] = [] as AnimalType[];
 
-    currentPatientChip = '';
-    emergencyCaseId: number;
-    exclusions;
+    currentPatientChip: string | undefined;
+    emergencyCaseId: number | undefined;
+    exclusions: Exclusions[] = [] as Exclusions[];
 
     patientArrayDisplayedColumns: string[] = [
         'select',
@@ -60,14 +60,16 @@ export class AnimalSelectionComponent implements OnInit {
         'delete',
     ];
 
-    patientArray: FormArray;
-    patientDataSource: MatTableDataSource<FormGroup>;
+    patientArray:FormArray  = new FormArray([]);
 
-    problems$: ProblemDropdownResponse[];
+    form = new FormGroup({});
+    patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
 
-    selection: SelectionModel<FormGroup>;
-    tagNumber: string;
-    validRow: boolean;
+    problems$: ProblemDropdownResponse[] = [];
+
+    selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
+    tagNumber: string | undefined;
+    validRow =true;
 
     emergencyCardHTML = '';
 
@@ -84,11 +86,11 @@ export class AnimalSelectionComponent implements OnInit {
     }
     ngOnInit() {
 
+
+
         this.recordForm.addControl('patients', this.fb.array([]));
 
-        this.emergencyCaseId = this.recordForm.get(
-            'emergencyDetails.emergencyCaseId',
-        ).value;
+        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
@@ -109,7 +111,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     subscribeToChanges() {
-        this.recordForm.get('patients').valueChanges.subscribe(items => {
+        this.recordForm.get('patients')?.valueChanges.subscribe(items => {
             if (items.length > 0) {
                 if (items[0].patientId == null && items[0].position == null) {
                     this.initPatientArray();
@@ -164,8 +166,12 @@ export class AnimalSelectionComponent implements OnInit {
 
         const patientIdControl = newPatient.get('patientId');
 
-        newPatient.get('tagNumber').setAsyncValidators(this.tagNumberValidator.validate(
-            this.emergencyCaseId,
+        if(!patientIdControl){
+            throw new TypeError('patientIdControl is undefined');
+        }
+
+        newPatient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
+            this.emergencyCaseId || -1,
             patientIdControl,
         ));
 
@@ -261,7 +267,7 @@ export class AnimalSelectionComponent implements OnInit {
         }
         return `${
             this.selection.isSelected(row) ? 'deselect' : 'select'
-        } row ${row.get('position').value + 1}`;
+        } row ${row.get('position')?.value + 1}`;
     }
 
     clearChips() {
@@ -288,7 +294,7 @@ export class AnimalSelectionComponent implements OnInit {
             return;
         }
 
-        const currentAnimal = currentPatient.get('animalType').value;
+        const currentAnimal = currentPatient.get('animalType')?.value;
 
         this.animalTypeChips.chips.forEach(chip => {
             currentAnimal === chip.value
@@ -302,7 +308,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         problems.controls.forEach(problem => {
             this.problemChips.chips.forEach(chip => {
-                problem.get('problem').value === chip.value
+                problem.get('problem')?.value === chip.value
                     ? chip.toggleSelected()
                     // tslint:disable-next-line: no-unused-expression
                     : chip.deselect;
@@ -310,7 +316,7 @@ export class AnimalSelectionComponent implements OnInit {
         });
     }
 
-    animalChipSelected(animalTypeChip) {
+    animalChipSelected(animalTypeChip:any) {
 
         this.currentPatientChip = undefined;
 
@@ -339,23 +345,19 @@ export class AnimalSelectionComponent implements OnInit {
 
             const currentPatient = this.getcurrentPatient();
 
-            currentPatient
-                .get('animalType')
-                .setValue(
+            currentPatient.get('animalType')?.setValue(
                     animalTypeChip.selected
-                        ? animalTypeObject.AnimalType
+                        ? animalTypeObject?.AnimalType
                         : null,
                 );
 
-            currentPatient
-                .get('animalTypeId')
-                .setValue(
+            currentPatient.get('animalTypeId')?.setValue(
                     animalTypeChip.selected
-                        ? animalTypeObject.AnimalTypeId
+                        ? animalTypeObject?.AnimalTypeId
                         : null,
                 );
 
-            currentPatient.get('updated').setValue(true);
+            currentPatient.get('updated')?.setValue(true);
         }
 
         // if there are no rows, then we need to add a new one
@@ -366,9 +368,9 @@ export class AnimalSelectionComponent implements OnInit {
 
             const newPatient = this.getEmptyPatient();
 
-            newPatient.get('position').setValue(position);
-            newPatient.get('animalTypeId').setValue(currentAnimalType.AnimalTypeId);
-            newPatient.get('animalType').setValue(currentAnimalType.AnimalType);
+            newPatient.get('position')?.setValue(position);
+            newPatient.get('animalTypeId')?.setValue(currentAnimalType?.AnimalTypeId);
+            newPatient.get('animalType')?.setValue(currentAnimalType?.AnimalType);
 
             this.patientArray.push(newPatient);
 
@@ -381,14 +383,19 @@ export class AnimalSelectionComponent implements OnInit {
 
     setSelected(position: number) {
         // Set the new row to be selected
-        this.selection.select(
-            this.patientDataSource.data.find(
-                row => row.get('position').value === position,
-            ),
-        );
+
+
+        const selected = this.patientDataSource.data.find(row => row.get('position')?.value === position);
+
+        if(selected === undefined){
+            throw new TypeError('Selected value was not found!');
+        }
+
+
+        this.selection.select(selected);
     }
 
-    focusProblemChip(event, problemChip) {
+    focusProblemChip(event:any, problemChip:any) {
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const chips = this.problemChips.chips;
 
@@ -411,11 +418,11 @@ export class AnimalSelectionComponent implements OnInit {
         }
     }
 
-    cycleChips(event, chipGroup: string, property: string) {
+    cycleChips(event:any, chipGroup: string, property: string) {
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const currentPatient =
-                this.getcurrentPatient().get(property).value || '';
+                this.getcurrentPatient().get(property)?.value || '';
 
             let chips;
 
@@ -426,11 +433,11 @@ export class AnimalSelectionComponent implements OnInit {
             }
 
             let lastInstance = '';
-            let currentIndex;
+            let currentIndex:any;
 
             // Get the last value of the current key (e.g. last animal beginning with p)
             // Also get the index of the current item
-            chips.forEach((item, index) => {
+            chips?.forEach((item, index) => {
                 if (
                     item.value.substr(0, 1).toLowerCase() ===
                     currentPatient.substr(0, 1).toLowerCase()
@@ -444,7 +451,7 @@ export class AnimalSelectionComponent implements OnInit {
             });
 
             // Filter out any previous records so we can go directly to the next one in the list
-            const currentArray = chips.filter((chip, index) => {
+            const currentArray = chips?.filter((chip, index) => {
                 return (
                     !(
                         chip.value.substr(0, 1).toLowerCase() ===
@@ -457,18 +464,21 @@ export class AnimalSelectionComponent implements OnInit {
             });
 
             // Get the chip we need
-            const currentKeyChip = currentArray.find(chip => {
+            const currentKeyChip = currentArray?.find(chip => {
                 return (
                     chip.value.substr(0, 1).toLowerCase() ===
                     event.key.toLowerCase()
                 );
             });
 
-            currentKeyChip.selected = true;
+            if(currentKeyChip){
+                currentKeyChip.selected = true;
+            }
+
         }
     }
 
-    problemChipSelected(problemChip) {
+    problemChipSelected(problemChip:any) {
 
         if(!problemChip.selected)
         {
@@ -496,10 +506,10 @@ export class AnimalSelectionComponent implements OnInit {
         }
     }
 
-    hideIrrelevantChips(animalTypeChip) {
+    hideIrrelevantChips(animalTypeChip:any) {
 
         const currentExclusions = this.exclusions.filter(
-            animalType => animalType.animalType === animalTypeChip.value,
+            (animalType) => animalType.animalType === animalTypeChip.value,
         );
 
         // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
@@ -524,7 +534,7 @@ export class AnimalSelectionComponent implements OnInit {
             return;
         }
 
-        currentExclusions[0].exclusionList.forEach(exclusion => {
+        currentExclusions[0]?.exclusionList.forEach((exclusion:any) => {
 
             this.problemChips.chips.forEach(chip => {
 
@@ -542,26 +552,26 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     deletePatientRow(row:FormGroup) {
-        const position = row.get('position').value;
+        const position = row.get('position')?.value;
 
-        const deleted = row.get('deleted').value;
+        const deleted = row.get('deleted')?.value;
 
         const patients = this.recordForm.get('patients') as FormArray;
 
         const removeIndex = patients.controls.findIndex(
-            patient => patient.get('position').value === position,
+            patient => patient.get('position')?.value === position,
         );
 
         // if there's no patient id and we click delete, let's get rid of the patient.
-        if (!row.get('patientId').value) {
+        if (!row.get('patientId')?.value) {
             patients.removeAt(removeIndex);
         } else {
             const currentPatient = patients.controls.find(
-                patient => patient.get('position').value === position,
+                patient => patient.get('position')?.value === position,
             );
 
-            currentPatient.get('deleted').setValue(!deleted);
-            currentPatient.get('updated').setValue(true);
+            currentPatient?.get('deleted')?.setValue(!deleted);
+            currentPatient?.get('updated')?.setValue(true);
         }
         this.clearChips();
 
@@ -570,7 +580,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.selection.clear();
     }
 
-    updatePatientProblemArray(problemChip) {
+    updatePatientProblemArray(problemChip:any) {
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
@@ -579,9 +589,13 @@ export class AnimalSelectionComponent implements OnInit {
         }
 
         // Get the current list of problems and replace the existing problem array
-        const problemsObject: ProblemDropdownResponse = this.problems$.find(
-            item => item.Problem === problemChip.value,
-        );
+        let problemsObject: ProblemDropdownResponse | undefined;
+
+        problemsObject = this.problems$.find(item => item.Problem === problemChip.value);
+
+        if(problemsObject === undefined){
+            throw new TypeError('Missing problem in problem list!');
+        }
 
         const problemsGroup = this.fb.group({
             problemId: [problemsObject.ProblemId, Validators.required],
@@ -594,12 +608,12 @@ export class AnimalSelectionComponent implements OnInit {
 
         const problemIndex = problems.controls.findIndex(
             problem =>
-                problem.get('problemId').value === problemsObject.ProblemId,
+                problem.get('problemId')?.value === problemsObject?.ProblemId,
         );
 
         if (problemChip.selected && problemIndex === -1) {
             problems.push(problemsGroup);
-            currentPatient.get('updated').setValue(true);
+            currentPatient.get('updated')?.setValue(true);
         }
 
         if (!problemChip.selected) {
@@ -607,15 +621,15 @@ export class AnimalSelectionComponent implements OnInit {
         }
 
         const problemString = problems.controls
-            .map(problem => problem.get('problem').value)
+            .map(problem => problem.get('problem')?.value)
             .join(',');
 
-        currentPatient.get('problemsString').setValue(problemString);
+        currentPatient.get('problemsString')?.setValue(problemString);
 
         this.patientTable.renderRows();
     }
 
-    updateTag(currentPatient) {
+    updateTag(currentPatient:any) {
 
         if(this.selection.selected.length === 0){
 
@@ -630,7 +644,7 @@ export class AnimalSelectionComponent implements OnInit {
         }
     }
 
-    openTagNumberDialog(event): void {
+    openTagNumberDialog(event:any): void {
 
         const currentPatient: Patient = event;
 
@@ -649,11 +663,11 @@ export class AnimalSelectionComponent implements OnInit {
             if (result) {
                 const resultCurrentPatient = this.getcurrentPatient();
 
-                resultCurrentPatient.get('tagNumber').setValue(result.value);
+                resultCurrentPatient.get('tagNumber')?.setValue(result.value);
 
-                resultCurrentPatient.get('duplicateTag').setValue(result.status);
+                resultCurrentPatient.get('duplicateTag')?.setValue(result.status);
 
-                resultCurrentPatient.get('updated').setValue(true);
+                resultCurrentPatient.get('updated')?.setValue(true);
                 this.patientTable.renderRows();
             }
         });
@@ -666,8 +680,8 @@ export class AnimalSelectionComponent implements OnInit {
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
-                tagNumber: currentPatient.get('tagNumber').value,
-                patientId: currentPatient.get('patientId').value,
+                tagNumber: currentPatient.get('tagNumber')?.value,
+                patientId: currentPatient.get('patientId')?.value,
                 mediaItem: mediaObject
             }
         });
@@ -678,7 +692,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
-        this.printService.printPatientDocument(printTemplateId, row.get('patientId').value);
+        this.printService.printPatientDocument(printTemplateId, row.get('patientId')?.value);
 
     }
 
