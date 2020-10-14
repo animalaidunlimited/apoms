@@ -674,7 +674,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     openMediaDialog(mediaObject:MediaItem): void{
-        console.log(mediaObject.localURL);
+        
         const currentPatient: FormGroup = this.getcurrentPatient();
 
         const dialogRef = this.dialog.open(MediaDialogComponent, {

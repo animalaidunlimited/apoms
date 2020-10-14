@@ -68,7 +68,7 @@
 
             <legend class="legend">Patient calls</legend>
 
-            <patient-call [patientId]="patientCallPatientId"></patient-call>
+            <patient-call [patientId]="patientId"></patient-call>
         </fieldset>
     </mat-tab>
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
@@ -76,14 +76,14 @@
     <mat-tab label="Outcome" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
 
-        <app-outcome></app-outcome>
+        <app-outcome [patientId]="patientId"></app-outcome>
     </mat-tab>
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
 
     <mat-tab label="Cruelty" [disabled]="patientLoaded">
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()">menu</mat-icon>
 
-        <cruelty-details></cruelty-details>
+        <cruelty-details [patientId]="patientId"></cruelty-details>
     </mat-tab>
   </mat-tab-group>
 

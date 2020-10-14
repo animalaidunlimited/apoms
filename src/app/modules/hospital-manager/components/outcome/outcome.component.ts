@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { Input } from '@angular/core';
 
 @Component({
     selector: 'app-outcome',
@@ -10,6 +11,9 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
     styleUrls: ['./outcome.component.scss'],
 })
 export class OutcomeComponent implements OnInit {
+
+    @Input() patientId!: number;
+
     outcomeForm:any;
     antibiotics:any;
     isoReasons:any;

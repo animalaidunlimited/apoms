@@ -49,3 +49,16 @@ export interface PatientCallModifyResponse {
     position: number;
     results: PatientCallResult;
 }
+
+export interface CrueltyReportResult{
+    success: number;
+    crueltyReportId: number;
+}
+
+export interface CrueltyReport{
+    crueltyReportId: number;
+    patientId: number;
+    crueltyReport: string;
+    postCrueltyReport: string;
+    crueltyInspectorId: number;
+}
