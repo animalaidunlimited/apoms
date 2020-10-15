@@ -52,6 +52,8 @@ export class MediaDialogComponent implements OnInit {
 
         this.mediaItems = mediaItems.map((mediaItem:any) => {
 
+          console.log(mediaItem);
+
          this.newItem  = {
           mediaItemId: of(mediaItem.mediaItemId),
           mediaType: mediaItem.mediaType,
