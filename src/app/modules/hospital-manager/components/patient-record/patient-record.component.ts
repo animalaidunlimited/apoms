@@ -86,7 +86,7 @@ export class PatientRecordComponent implements OnInit {
             if(!media){
                 return;
             }
-            
+
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
         });

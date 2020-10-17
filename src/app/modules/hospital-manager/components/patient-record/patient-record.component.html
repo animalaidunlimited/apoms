@@ -1,4 +1,3 @@
-
 <mat-tab-group (selectedTabChange)="tabChanged($event)" [class.hospital-tab-group]="hideMenu">
 
     <mat-tab label="Home">
@@ -7,9 +6,9 @@
 
         <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
 
-                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start" style="overflow-anchor: none">
+                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
-                <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start" style="overflow-anchor: none">
+                <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
                     <animal-header [recordForm]="recordForm"
                                 [profileUrl] = "profileUrl">
                     </animal-header>
@@ -24,11 +23,11 @@
                         <patient-status [patientId]="recordForm.get('patientDetails.patientId')?.value"></patient-status>
                     </fieldset>
 
-                    <emergency-details [recordForm]="recordForm"></emergency-details>
+                    <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="false"></emergency-details>
 
                 </div>
 
-                <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="start" style="overflow-anchor: none">
+                <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
 
                     <caller-details [recordForm]="recordForm"></caller-details>
                     <location-details [recordForm]="recordForm"></location-details>
@@ -60,6 +59,8 @@
         </form>
     </mat-tab>
 
+
+
     <mat-tab label="Patient Calls" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
 
@@ -71,6 +72,7 @@
             <patient-call [patientId]="patientId"></patient-call>
         </fieldset>
     </mat-tab>
+
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
 
     <mat-tab label="Outcome" [disabled]="patientLoaded">
@@ -78,6 +80,7 @@
 
         <app-outcome [patientId]="patientId"></app-outcome>
     </mat-tab>
+
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
 
     <mat-tab label="Cruelty" [disabled]="patientLoaded">
