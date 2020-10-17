@@ -49,8 +49,6 @@ IF vCrueltyReportExists = 1 THEN
 START TRANSACTION;
 
 	UPDATE AAU.CrueltyReport SET
-				CrueltyReportId				= prm_CrueltyReportId,
-				PatientId					= prm_PatientId,
 				CrueltyDate					= prm_CrueltyDate,
 				CrueltyReport				= prm_CrueltyReport,
 				PostCrueltyReport			= prm_PostCrueltyReport,
@@ -75,7 +73,7 @@ COMMIT;
     SELECT 1 INTO vSuccess;
     
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_CrueltyReportId,'CrueltyReport',CONCAT('Update cruelty report'), NOW());
+	VALUES (vOrganisationId, prm_UserName,prm_CrueltyReportId,'Cruelty Report',CONCAT('Update cruelty report'), NOW());
 
 ELSEIF vCrueltyReportExists >= 1 THEN
 
