@@ -55,16 +55,9 @@ export class RescueDetailsComponent implements OnInit {
   constructor(private dropdowns: DropdownService,
     private rescueDetailsService: RescueDetailsService,
     private zone: NgZone,
-    private fb: FormBuilder) {
-
-
-
-    }
-
-
+    private fb: FormBuilder) {}
 
   ngOnInit() {
-
 
     this.recordForm.addControl(
       'rescueDetails', this.fb.group({
@@ -75,11 +68,8 @@ export class RescueDetailsComponent implements OnInit {
         admissionTime: ['']
       }));
 
-
     this.rescuers$ = this.dropdowns.getRescuers();
     this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
-
-
 
     this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
     .subscribe((rescueDetails: RescueDetailsParent) => {

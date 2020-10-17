@@ -6,20 +6,18 @@
     <div fxLayout="row wrap" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
 
     <mat-form-field>
-        <input formControlName="megavac1Date" name="megavac1Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>
+        <input formControlName="megavac1Date" name="megavac1Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="megavac2Date" name="megavac2Date" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>
+        <input formControlName="megavac2Date" name="megavac2Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="datetime-local" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>
+        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>
     </mat-form-field>
 
     </div>
-
-
 
 </fieldset>
 
@@ -35,8 +33,7 @@
     <mat-chip-list #antibiotic1Chips aria-label="Antibiotic 1" selectable>
             <mat-chip
             (click)="antibiotic1.toggleSelected()"
-            (keydown)="cycleChips($event.key)"
-            (selectionChange)="toggleAntibioticChip(antibiotic1)"
+            (selectionChange)="toggleAntibioticChip('antibiotics1', antibiotic, antibiotic1)"
             #antibiotic1="matChip"
             *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
     </mat-chip-list>
@@ -46,8 +43,7 @@
     <mat-chip-list #antibiotic2Chips aria-label="Antibiotic 2" selectable>
         <mat-chip
         (click)="antibiotic2.toggleSelected()"
-        (keydown)="cycleChips($event.key)"
-        (selectionChange)="toggleAntibioticChip(antibiotic2)"
+        (selectionChange)="toggleAntibioticChip('antibiotics2', antibiotic, antibiotic2)"
         #antibiotic2="matChip"
         *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
 </mat-chip-list>
@@ -57,8 +53,7 @@
 <mat-chip-list #antibiotic3Chips aria-label="Antibiotic 3" selectable>
         <mat-chip
         (click)="antibiotic3.toggleSelected()"
-        (keydown)="cycleChips($event.key)"
-        (selectionChange)="toggleAntibioticChip(antibiotic3)"
+        (selectionChange)="toggleAntibioticChip('antibiotics3', antibiotic, antibiotic3)"
         #antibiotic3="matChip"
         *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
 </mat-chip-list>
@@ -84,3 +79,5 @@
     </mat-form-field>
 
 </fieldset>
+
+<button mat-raised-button color="primary" (click)="saveOutcomeDetails()" [disabled]="outcomeForm.invalid">Save</button>
