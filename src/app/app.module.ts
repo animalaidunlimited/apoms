@@ -24,7 +24,7 @@ registerLocaleData(localeIt);
     providedIn: 'root'
   })
 
-class UIErrorHandler extends ErrorHandler {
+export class UIErrorHandler extends ErrorHandler {
   constructor() {
     super();
   }
@@ -36,7 +36,7 @@ class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
-    declarations: [AppComponent,  ConfirmationDialog],
+    declarations: [AppComponent, ConfirmationDialog],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
