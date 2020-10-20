@@ -7,7 +7,7 @@
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
 
-            <emergency-details [recordForm]="recordForm" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
+            <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
 

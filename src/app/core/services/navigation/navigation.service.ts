@@ -85,7 +85,20 @@ export class NavigationService {
 
     public toggleIsOpen() {
 
-        this.isOpen.subscribe(currentValue => this.isOpen.next(!currentValue));
+        let haveRun = false;
+
+        this.isOpen.subscribe(currentValue => {
+
+            if(haveRun){
+                return;
+            }
+            else{
+
+                haveRun = true;
+                this.isOpen.next(!currentValue);
+            }
+
+        });
 
     }
 

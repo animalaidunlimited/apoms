@@ -49,3 +49,50 @@ export interface PatientCallModifyResponse {
     position: number;
     results: PatientCallResult;
 }
+
+export interface CrueltyReportResult{
+    success: number;
+    crueltyReportId: number;
+}
+
+export interface CrueltyReport{
+    crueltyReportId: number;
+    patientId: number;
+    crueltyReport: string;
+    postCrueltyReport: string;
+    crueltyInspectorId: number;
+}
+
+export interface Antibiotic{
+    antibioticId: number;
+    antibiotic: string;
+}
+
+export interface PatientOutcome{
+    patientOutcomeDetailsId: number;
+    patientId: number;
+    vaccinationDetails: VaccinationDetails;
+    antibioticDetails: AntibioticDetails;
+    isoReason: IsoReason;
+}
+
+export interface VaccinationDetails{
+    megavac1Date: string | Date;
+    megavac2Date: string | Date;
+    rabiesVaccinationDate: string | Date;
+}
+
+export interface AntibioticDetails{
+    antibiotics1: number;
+    antibiotics2: number;
+    antibiotics3: number;
+}
+
+export interface IsoReason{
+    isoReason: number;
+}
+
+export interface PatientOutcomeResponse{
+    patientOutcomeId: number;
+    success: number;
+}

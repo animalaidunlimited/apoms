@@ -17,6 +17,7 @@ import { User } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
+import { Antibiotic } from '../../models/patients';
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -330,27 +331,27 @@ export class DropdownService extends APIService {
         return this.isoReasons$;
     }
 
-    getAntibiotics() {
+    getAntibiotics() : Antibiotic[] {
         if (!this.antibiotics$) {
             this.antibiotics$ = [
-                { id: 1, antibiotic: 'Amoxicillin' },
-                { id: 2, antibiotic: 'Azithromycin' },
-                { id: 3, antibiotic: 'Bactoclav' },
-                { id: 4, antibiotic: 'Biotrim' },
-                { id: 5, antibiotic: 'Bovicef' },
-                { id: 6, antibiotic: 'Cefpet' },
-                { id: 7, antibiotic: 'Clindamycin' },
-                { id: 8, antibiotic: 'Doxycycline' },
-                { id: 9, antibiotic: 'Enrofloxacin' },
-                { id: 10, antibiotic: 'Intacef' },
-                { id: 11, antibiotic: 'Meloxicam' },
-                { id: 12, antibiotic: 'Metrogyl' },
-                { id: 13, antibiotic: 'Metronidazole' },
-                { id: 14, antibiotic: 'Metroxyl' },
-                { id: 15, antibiotic: 'Penicillin' },
-                { id: 16, antibiotic: 'Septran' },
-                { id: 17, antibiotic: 'Tramadol' },
-                { id: 18, antibiotic: 'Tribivet' },
+                { antibioticId: 1, antibiotic: 'Amoxicillin' },
+                { antibioticId: 2, antibiotic: 'Azithromycin' },
+                { antibioticId: 3, antibiotic: 'Bactoclav' },
+                { antibioticId: 4, antibiotic: 'Biotrim' },
+                { antibioticId: 5, antibiotic: 'Bovicef' },
+                { antibioticId: 6, antibiotic: 'Cefpet' },
+                { antibioticId: 7, antibiotic: 'Clindamycin' },
+                { antibioticId: 8, antibiotic: 'Doxycycline' },
+                { antibioticId: 9, antibiotic: 'Enrofloxacin' },
+                { antibioticId: 10, antibiotic: 'Intacef' },
+                { antibioticId: 11, antibiotic: 'Meloxicam' },
+                { antibioticId: 12, antibiotic: 'Metrogyl' },
+                { antibioticId: 13, antibiotic: 'Metronidazole' },
+                { antibioticId: 14, antibiotic: 'Metroxyl' },
+                { antibioticId: 15, antibiotic: 'Penicillin' },
+                { antibioticId: 16, antibiotic: 'Septran' },
+                { antibioticId: 17, antibiotic: 'Tramadol' },
+                { antibioticId: 18, antibiotic: 'Tribivet' },
             ];
         }
 
