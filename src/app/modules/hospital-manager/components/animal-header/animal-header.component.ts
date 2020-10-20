@@ -20,44 +20,26 @@ import { of } from 'rxjs';
     styleUrls: ['./animal-header.component.scss'],
 })
 export class AnimalHeaderComponent implements OnInit {
-<<<<<<< HEAD
-    
-=======
->>>>>>> develop
     @Input() recordForm!: FormGroup;
 
     @Input() profileUrl!: SafeUrl;
 
     selection!: SelectionModel<FormGroup>;
 
-<<<<<<< HEAD
-    status!: string;
-
-    lastObjectUrl!: string;
-=======
     status = '';
 
     lastObjectUrl = '';
->>>>>>> develop
 
     mediaObject!: MediaItem;
 
     // Only doing this so the checker doesn't complain.
-<<<<<<< HEAD
-    patientDetailsFormGroup!:FormGroup;
-=======
     patientDetailsFormGroup:FormGroup = new FormGroup({});
->>>>>>> develop
 
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status')?.value;
-<<<<<<< HEAD
-        this.profileUrl = this.profileUrl ? this.profileUrl :  '../../../../../assets/images/image_placeholder.png';
-=======
         this.profileUrl = '../../../../../../assets/images/image_placeholder.png';
->>>>>>> develop
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
