@@ -5,7 +5,7 @@ cdkDragHandle>Enter tag number</h1>
 <div mat-dialog-content>
   <mat-form-field>
     <input matInput formControlName="tagNumber" name="tag-number" [errorStateMatcher]="errorMatcher">
-    <mat-error *ngIf="tagForm.get('tagNumber').hasError('tagNumberTaken')">
+    <mat-error *ngIf="tagForm.get('tagNumber')?.hasError('tagNumberTaken')">
       The tag number already exists.
   </mat-error>
   </mat-form-field>

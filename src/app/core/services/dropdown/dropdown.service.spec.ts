@@ -30,7 +30,7 @@ describe('DropdownService', () => {
     it('getExclusions() should return data', () => {
         const dummyExclusions = [
             {
-                animalType: 'Bird',
+                animalType: 'Bird (other)',
                 exclusionList: [
                     'Horn/hoof problem',
                     'Normal behaviour - biting',
@@ -98,6 +98,16 @@ describe('DropdownService', () => {
                 exclusionList: ['Can\'t fly', 'Shifted puppies'],
             },
             {
+                animalType: 'Egret',
+                exclusionList: [
+                    'Horn/hoof problem',
+                    'Normal behaviour - biting',
+                    'Penis coming out',
+                    'Pregnancy problem',
+                    'Shifted puppies',
+                ],
+            },
+            {
                 animalType: 'Fox',
                 exclusionList: [
                     'Horn/hoof problem',
@@ -115,6 +125,22 @@ describe('DropdownService', () => {
             },
             {
                 animalType: 'Kitten',
+                exclusionList: [
+                    'Horn/hoof problem',
+                    'Can\'t fly',
+                    'Shifted puppies',
+                ],
+            },
+            {
+                animalType: 'Monkey',
+                exclusionList: [
+                    'Horn/hoof problem',
+                    'Can\'t fly',
+                    'Shifted puppies',
+                ],
+            },
+            {
+                animalType: 'Nevala',
                 exclusionList: [
                     'Horn/hoof problem',
                     'Can\'t fly',
@@ -148,6 +174,14 @@ describe('DropdownService', () => {
             {
                 animalType: 'Puppy',
                 exclusionList: ['Horn/hoof problem', 'Can\'t fly'],
+            },
+            {
+                animalType: 'Rabbit',
+                exclusionList: [
+                    'Horn/hoof problem',
+                    'Can\'t fly',
+                    'Shifted puppies',
+                ],
             },
             {
                 animalType: 'Sheep',

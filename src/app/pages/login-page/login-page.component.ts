@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
     styleUrls: ['./login-page.component.scss'],
 })
 export class LoginPageComponent implements OnInit {
-    username: string;
-    password: string;
-    errorMessage: string;
+    username = '';
+    password = '';
+    errorMessage = '';
     hide = true;
 
     constructor(private authService: AuthService, private router: Router) {}
@@ -31,7 +31,7 @@ export class LoginPageComponent implements OnInit {
             this.navigateTo(url);
         } catch (e) {
             this.errorMessage =
-                e.status == 504
+                e.status === 504
                     ? 'Cannot connect to server'
                     : 'Wrong Credentials!';
         }

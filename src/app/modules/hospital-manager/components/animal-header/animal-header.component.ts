@@ -2,11 +2,12 @@ import { Component, OnInit, Input, Type } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MediaPasteService } from 'src/app/core/services/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
+import { of } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -19,27 +20,44 @@ import { SelectionModel } from '@angular/cdk/collections';
     styleUrls: ['./animal-header.component.scss'],
 })
 export class AnimalHeaderComponent implements OnInit {
+<<<<<<< HEAD
     
+=======
+>>>>>>> develop
     @Input() recordForm!: FormGroup;
 
     @Input() profileUrl!: SafeUrl;
 
     selection!: SelectionModel<FormGroup>;
 
+<<<<<<< HEAD
     status!: string;
 
     lastObjectUrl!: string;
+=======
+    status = '';
+
+    lastObjectUrl = '';
+>>>>>>> develop
 
     mediaObject!: MediaItem;
 
     // Only doing this so the checker doesn't complain.
+<<<<<<< HEAD
     patientDetailsFormGroup!:FormGroup;
+=======
+    patientDetailsFormGroup:FormGroup = new FormGroup({});
+>>>>>>> develop
 
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status')?.value;
+<<<<<<< HEAD
         this.profileUrl = this.profileUrl ? this.profileUrl :  '../../../../../assets/images/image_placeholder.png';
+=======
+        this.profileUrl = '../../../../../../assets/images/image_placeholder.png';
+>>>>>>> develop
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
@@ -48,16 +66,16 @@ export class AnimalHeaderComponent implements OnInit {
             isPrimary : false,
             tags : [''],
             comment : '',
-            widthPX : null,
+            widthPX : 0,
             datetime : '',
-            heightPX: null,
+            heightPX: 0,
             localURL: '',
             mediaType: '',
-            patientId: null,
+            patientId: 0,
             remoteURL: '',
-            mediaItemId: null,
+            mediaItemId: of(0),
             uploadProgress$: null,
-            updated: null
+            updated: false
         };
     }
 
@@ -75,12 +93,12 @@ export class AnimalHeaderComponent implements OnInit {
 
     public handlePaste(event: ClipboardEvent){
 
-        const patientId = this.recordForm.get('patientDetails.patientId').value;
+        const patientId = this.recordForm.get('patientDetails.patientId')?.value;
 
         // Pass the clipboard event down to the service, expect it to return an image URL
         const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId);
 
-        this.profileUrl = newItem.localURL;
+        this.profileUrl = newItem?.localURL;
 
     }
 
@@ -88,8 +106,8 @@ export class AnimalHeaderComponent implements OnInit {
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
-                tagNumber: this.recordForm.get('patientDetails.tagNumber').value,
-                patientId: this.recordForm.get('patientDetails.patientId').value,
+                tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
+                patientId: this.recordForm.get('patientDetails.patientId')?.value,
             }
         });
 

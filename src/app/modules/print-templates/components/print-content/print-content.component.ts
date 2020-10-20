@@ -21,9 +21,7 @@ export class PrintContentComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
-
-    this.printService.onDataReady();
+    this.printService.onDataReady('print-template');
 
   }
 

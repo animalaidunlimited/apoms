@@ -16,19 +16,19 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 })
 export class EmergencyCaseOutcomeComponent implements OnInit {
 
-  @Input() recordForm: FormGroup;
+  @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
-  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField: ElementRef;
+  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  callOutcomes$:Observable<CallOutcomeResponse[]>;
-  currentOutcomeId:number;
+  callOutcomes$!:Observable<CallOutcomeResponse[]>;
+  currentOutcomeId:number | undefined;
 
-  sameAs:boolean;
-  sameAsId:number;
+  sameAs:boolean | undefined;
+  sameAsId:number | undefined;
 
-  callOutcome:FormGroup;
+  callOutcome:FormGroup = new FormGroup({});
 
   constructor(
     private dropdowns: DropdownService,
@@ -42,13 +42,13 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.callOutcome = this.recordForm.get('callOutcome') as FormGroup;
 
-    if(this.recordForm.get('emergencyDetails.emergencyCaseId').value){
+    if(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value){
 
-      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId').value).subscribe(result =>
+      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value).subscribe(result =>
 
         this.recordForm.patchValue(result)
 
-        )
+        );
 
     }
 
@@ -56,15 +56,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.callOutcomes$.subscribe(callOutcome => {
 
-      this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as').CallOutcomeId;
+      this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;
 
     });
 
-    this.recordForm.get('callOutcome.CallOutcome').valueChanges.subscribe(() => {
+    this.recordForm.get('callOutcome.CallOutcome')?.valueChanges.subscribe(() => {
 
       this.outcomeChanged();
 
-    })
+    });
 
     this.changeDetector.detectChanges();
   }
@@ -74,21 +74,21 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     const sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
 
     // Check if we need to show the same as field.
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcome').value?.CallOutcomeId;
+    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
 
-    if(!sameAsNumber.value && this.sameAs){
-      sameAsNumber.setValidators(Validators.required);
-      sameAsNumber.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId').value, 0)]);
+    if(!sameAsNumber?.value && this.sameAs){
+      sameAsNumber?.setValidators(Validators.required);
+      sameAsNumber?.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value, 0)]);
     }
 
     // We might have selected something other than Same As, so hide the field.
     if(!this.sameAs){
-      sameAsNumber.setValue(null);
-      sameAsNumber.clearValidators()
-      sameAsNumber.clearAsyncValidators();
+      sameAsNumber?.setValue(null);
+      sameAsNumber?.clearValidators()
+      sameAsNumber?.clearAsyncValidators();
     }
 
-    sameAsNumber.updateValueAndValidity();
+    sameAsNumber?.updateValueAndValidity();
     this.changeDetector.detectChanges();
 
     // Make sure we focus when we're selecting same as
@@ -102,11 +102,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   async save(){
 
     // If we haven't touched the form, don't do anything.
-    if(this.recordForm.get('callOutcome').pristine || !this.recordForm.get('callOutcome').value){
+    if(this.recordForm.get('callOutcome')?.pristine || !this.recordForm.get('callOutcome')?.value){
 
       const emptyResult:UpdateResponse = {
-        success: null,
-        socketEndPoint: null
+        success: 1,
+        socketEndPoint: ''
       };
 
       this.result.emit(emptyResult);

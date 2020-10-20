@@ -7,7 +7,7 @@ body {
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
-$standard-width: 175px;
+$standard-width: 180px;
 
 .mat-focused {
   border:1.5px dashed #607d8b99;
@@ -20,6 +20,10 @@ $standard-width: 175px;
 
 .mat-form-field-infix{
   width: 183px;
+}
+
+.mat-chip-list-wrapper{
+  margin: 16px 4px 16px 4px !important;
 }
 
 .form-sub-group
@@ -104,7 +108,6 @@ mat-radio-button{
 }
 
 @media print {
-  .isPrinting > * { display: none; }
+  .isPrinting > * { display: none;}
   .isPrinting print-wrapper { display: block; }
-  .isPrinting .printable { display: block; }
 }

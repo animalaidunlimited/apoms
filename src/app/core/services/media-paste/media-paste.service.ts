@@ -1,16 +1,15 @@
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { MediaItem, MediaItemReturnObject } from '../models/media';
+import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, of, Subscription } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
-import { isImageFile, isVideoFile } from '../helpers/utils';
-import { EventListenerFocusTrapInertStrategy } from '@angular/cdk/a11y';
+import { isImageFile, isVideoFile } from '../../helpers/utils';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -39,16 +38,16 @@ export class MediaPasteService {
     private patientService: PatientService,
     private fireAuth: AngularFireAuth) { }
 
-    user: firebase.auth.UserCredential;
-    mediaItemId$: BehaviorSubject<number>;
+    user!: firebase.auth.UserCredential;
+    mediaItemId$!: BehaviorSubject<number>;
 
 
   handleUpload(file: File, patientId: number): MediaItemReturnObject {
 
     if(!file.type.match(/image.*|video.*/)){
       return {
-        mediaItem: null,
-        mediaItemId: null,
+        mediaItem: undefined,
+        mediaItemId: new BehaviorSubject<number | undefined>(undefined),
         result: 'nonmedia'
     };
     }
@@ -57,7 +56,7 @@ export class MediaPasteService {
 
       const returnObject:MediaItemReturnObject = {
           mediaItem: newMediaItem,
-          mediaItemId: new BehaviorSubject<number>(null),
+          mediaItemId: new BehaviorSubject<number | undefined>(undefined),
           result: 'success'
       };
 
@@ -68,7 +67,7 @@ export class MediaPasteService {
 
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
 
-      newMediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString);
+      newMediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString || '');
 
               const options: IResizeImageOptions = {
                 maxSize: 5000,
@@ -77,14 +76,17 @@ export class MediaPasteService {
 
               if(newMediaItem.mediaType === 'image'){
 
-                this.resizeImage(options).then(async (resizedImage:ResizedImage) => {
+                this.resizeImage(options).then(async (resizedImageIncoming:unknown) => {
+
+                  const resizedImage = JSON.parse(JSON.stringify(resizedImageIncoming)) as ResizedImage;
 
                   newMediaItem.widthPX = resizedImage.width;
                   newMediaItem.heightPX = resizedImage.height;
 
                   const uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
 
-                  newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
+                  // TODO - Type s properly
+                  newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map((s:any) => (s.bytesTransferred / s.totalBytes) * 100));
 
                   uploadResult.then((result) => {
 
@@ -113,7 +115,10 @@ export class MediaPasteService {
 
                 const uploadResult = this.uploadFile(newMediaItem, file);
 
-                newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map(s => (s.bytesTransferred / s.totalBytes) * 100));
+                // TODO - Type s properly
+                newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map((s:any) => (s.bytesTransferred / s.totalBytes) * 100));
+
+                // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
                 uploadResult.then((result) => {
 
@@ -157,8 +162,8 @@ return returnObject;
       mediaItemId: new Observable<number>(),
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
-      isPrimary:null,
-      remoteURL: null,
+      isPrimary: false,
+      remoteURL: '',
       datetime: now,
       comment: '',
       patientId,
@@ -183,15 +188,17 @@ return returnObject;
       }
       else if (isVideo) {
         mediaObservable = this.getVideoDimension(uploadImage);
-      }
 
-      // Get the dimensions of the image
-      mediaObservable.subscribe((image) => {
+        // Get the dimensions of the image
+        mediaObservable.subscribe((image) => {
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;
 
       });
+      }
+
+
 
     }
 
@@ -199,11 +206,11 @@ return returnObject;
 
   }
 
-  getImageDimension(image): Observable<any> {
+  getImageDimension(image:any): Observable<any> {
 
     return new Observable(observer => {
         const img = new Image();
-        img.onload = function (event) {
+        img.onload = (event) => {
             const loadedImage: any = event.currentTarget;
             image.width = loadedImage.width;
             image.height = loadedImage.height;
@@ -214,12 +221,12 @@ return returnObject;
     });
 }
 
-getVideoDimension(video): Observable<any> {
+getVideoDimension(video:any): Observable<any> {
 
   return new Observable(observer => {
       const vid = new HTMLVideoElement();
 
-      vid.onload = function (event) {
+      vid.onload = (event) => {
           const loadedImage: any = event.currentTarget;
           video.width = loadedImage.width;
           video.height = loadedImage.height;
@@ -233,10 +240,10 @@ getVideoDimension(video): Observable<any> {
 
   handlePaste(event: ClipboardEvent, patientId: number): MediaItem {
 
-    const pastedImage:File = this.getPastedImage(event);
+    const pastedImage:File|undefined = this.getPastedImage(event);
 
     if (!pastedImage) {
-        return;
+        return {} as MediaItem;
     }
 
     // Send the currentSize as the next mediaImageId so that it has its own ID.
@@ -246,7 +253,7 @@ getVideoDimension(video): Observable<any> {
 
 }
 
-getPastedImage(event: ClipboardEvent): File | null {
+getPastedImage(event: ClipboardEvent): File | undefined {
 
     if (
         event.clipboardData &&
@@ -257,11 +264,15 @@ getPastedImage(event: ClipboardEvent): File | null {
         return event.clipboardData.files[0];
     }
 
-    return null;
+    return undefined;
 }
 
 uploadFile(mediaItem: MediaItem, file:Blob) : AngularFireUploadTask
 {
+
+  if(!mediaItem.remoteURL){
+    throw new Error ('No image URL provided');
+  }
 
   return this.storage.upload(mediaItem.remoteURL, file);
 
@@ -294,6 +305,10 @@ async getRemoteURL(localURL: SafeUrl){
 
 
   const localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL);
+
+  if(!localURLString){
+    throw new Error('No local URL provided');
+  }
 
   this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
     remoteURL = url;
@@ -340,7 +355,7 @@ resizeImage(settings: IResizeImageOptions) {
 
     canvas.width = width;
     canvas.height = height;
-    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+    canvas.getContext('2d')?.drawImage(image, 0, 0, width, height);
     const dataUrl = canvas.toDataURL('image/jpeg');
 
     const resizedImage:ResizedImage = {

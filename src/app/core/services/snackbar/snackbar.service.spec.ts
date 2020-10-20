@@ -1,8 +1,6 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 
 import { SnackbarService } from './snackbar.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -10,6 +8,7 @@ import {
     HttpTestingController,
     HttpClientTestingModule,
 } from '@angular/common/http/testing';
+import { Overlay } from '@angular/cdk/overlay';
 
 describe('SnackbarService', () => {
     let injector: TestBed;
@@ -20,11 +19,11 @@ describe('SnackbarService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [MatSnackBarModule, HttpClientTestingModule],
-            providers: [MatSnackBar, SnackbarService],
+            providers: [MatSnackBar, SnackbarService, Overlay],
         });
         injector = getTestBed();
-        service = injector.get(SnackbarService);
-        httpMock = injector.get(HttpTestingController);
+        service = injector.inject(SnackbarService);
+        httpMock = injector.inject(HttpTestingController);
     });
 
 

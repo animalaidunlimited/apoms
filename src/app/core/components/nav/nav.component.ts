@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {
-    NavigationService,
-    Page,
-} from '../../services/navigation/navigation.service';
+import { NavigationService, Page } from '../../services/navigation/navigation.service';
 import { NavRoute } from '../../../nav-routing';
 import { AuthService } from '../../../auth/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -15,16 +12,20 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class NavComponent implements OnInit {
     isOpen: BehaviorSubject<boolean>;
-    screenWidth: number;
+    screenWidth = 0;
 
     constructor(
         private navigationService: NavigationService,
         private authService: AuthService,
         private router: Router,
-    ) {}
+    ) {
+
+        this.isOpen = this.navigationService.getIsOpen();
+
+    }
 
     ngOnInit() {
-        this.isOpen = this.navigationService.getIsOpen();
+
     }
 
     public toggleSideNav() {

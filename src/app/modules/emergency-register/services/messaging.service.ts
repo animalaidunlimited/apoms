@@ -12,11 +12,11 @@ import { OutstandingCaseService } from './outstanding-case.service';
 export class MessagingService extends APIService {
 
 
-currentMessage = new BehaviorSubject(null);
+currentMessage = new BehaviorSubject(Boolean(false));
 endpoint = 'Messaging';
-havePermission = new BehaviorSubject(null);
-haveReceivedFocus = new BehaviorSubject(null);
-token;
+havePermission = new BehaviorSubject(Boolean(false));
+haveReceivedFocus = new BehaviorSubject(Boolean(false));
+token = '';
 
 constructor(
     private angularFireMessaging: AngularFireMessaging,
@@ -30,13 +30,18 @@ constructor(
 
     }
 
-    receiveBackgroundMessage(message){
+    receiveBackgroundMessage(message:string){
 
         this.distributeMessage(message);
 
     }
 
-    distributeMessage(payload){
+    // TODO - Type this properly as an Angular Fire Message
+    distributeMessage(payload:any){
+
+        if(!payload){
+            return;
+        }
 
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
 
@@ -68,8 +73,8 @@ constructor(
             (token) => {
                 this.zone.run(() => this.havePermission.next(true));
 
-                this.token = token;
-                this.subscribeToTopics(token);
+                this.token = token || '';
+                this.subscribeToTopics(this.token);
 
             },
             (err) => {
@@ -84,7 +89,7 @@ constructor(
         this.zone.run(() => this.havePermission.next(currentState === 'granted' ? true : false));
     }
 
-    async subscribeToTopics(token){
+    async subscribeToTopics(token:string){
 
         // send the token to the server and subscribe it to the relevant topics
         const organisation = this.authService.getOrganisationSocketEndPoint();

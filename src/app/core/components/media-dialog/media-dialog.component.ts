@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MediaPasteService } from '../../services/media-paste.service';
+import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
@@ -27,12 +27,12 @@ export class MediaDialogComponent implements OnInit {
 
   uploading = 0;
 
-  newItem : MediaItem;
+  newItem! : MediaItem;
 
-  primaryMedia : MediaItem;
+  primaryMedia! : MediaItem;
+  
 
-
-  @HostListener('window:paste', ['$event']) handleWindowPaste( $event ){
+  @HostListener('window:paste', ['$event']) handleWindowPaste( $event:any ){
     this.handlePaste( $event);
   }
 
@@ -49,6 +49,7 @@ export class MediaDialogComponent implements OnInit {
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
 
         if(mediaItems){
+<<<<<<< HEAD
           this.mediaItems = mediaItems.map(mediaItem => {
             this.newItem  = {
               mediaItemId: mediaItem.mediaItemId,
@@ -67,6 +68,28 @@ export class MediaDialogComponent implements OnInit {
             };
             return this.newItem;
           });
+=======
+
+        this.mediaItems = mediaItems.map((mediaItem:any) => {
+
+         this.newItem  = {
+          mediaItemId: of(mediaItem.mediaItemId),
+          mediaType: mediaItem.mediaType,
+          localURL: mediaItem.localURL,
+          remoteURL: mediaItem.remoteURL,
+          isPrimary :mediaItem.isPrimary,
+          datetime: mediaItem.datetime,
+          comment: mediaItem.comment,
+          patientId: mediaItem.patientId,
+          heightPX: mediaItem.heightPX,
+          widthPX: mediaItem.widthPX,
+          tags: mediaItem.tags,
+          uploadProgress$: of(100),
+          updated: false
+        };
+        return this.newItem;
+        });
+>>>>>>> develop
 
       }
     });
@@ -77,12 +100,16 @@ export class MediaDialogComponent implements OnInit {
 public handlePaste(event: ClipboardEvent){
 
     // Pass the clipboard event down to the service, expect it to return an image file
-    const mediaFile: File = this.mediaPaster.getPastedImage(event);
+    const mediaFile: File | undefined = this.mediaPaster.getPastedImage(event);
+
+    if(mediaFile){
 
       const mediaItem = this.upload(mediaFile, this.data.patientId);
 
-      this.addToMediaItems(mediaItem.mediaItem);
-
+      if(mediaItem.mediaItem){
+        this.addToMediaItems(mediaItem.mediaItem);
+      }
+    }
 }
 
 upload(file: File, patientId: number) : MediaItemReturnObject{
@@ -99,7 +126,7 @@ upload(file: File, patientId: number) : MediaItemReturnObject{
 
 }
 
-uploadFile($event) {
+uploadFile($event:any) {
 
   // We're uploading a file
   this.uploading++;
@@ -108,10 +135,14 @@ uploadFile($event) {
   {
     const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
 
-    mediaItem.result === 'nomedia' ?
-      this.snackbar.errorSnackBar('Upload images or video only','OK')
-      :
+    if(mediaItem.result === 'nomedia'){
+      this.snackbar.errorSnackBar('Upload images or video only','OK');
+    }
+    else if(mediaItem.mediaItem){
+
       this.addToMediaItems(mediaItem.mediaItem);
+
+    }
 
   }
 

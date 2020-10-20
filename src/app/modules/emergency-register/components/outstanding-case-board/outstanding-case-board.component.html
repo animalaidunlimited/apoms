@@ -1,4 +1,3 @@
-
 <div fxLayout="row wrap" fxLayoutAlign="space-between center">
   <form [formGroup]="searchForm">
 
@@ -7,16 +6,16 @@
     <span matPrefix>
         <mat-icon matSuffix style="cursor: pointer;">search</mat-icon>
     </span>
-    <input class="search-box" formControlName="searchTerm" autocomplete="off" type="text" matInput>
+    <input class="search-box" formControlName="searchTerm" (keydown.enter)="$event.preventDefault()" autocomplete="off" type="text" matInput>
 
-    <button mat-button *ngIf="searchForm.get('searchTerm').value"
+    <button mat-button *ngIf="searchForm.get('searchTerm')?.value"
     matSuffix mat-icon-button aria-label="Clear"
-    (click)="searchForm.get('searchTerm').setValue('')">
+    (click)="searchForm.get('searchTerm')?.setValue('')">
     <mat-icon>close</mat-icon>
     </button>
 
   </mat-form-field>
-
+  
   </form>
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
@@ -87,7 +86,8 @@
           </div>
 
             <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}} - ({{outstandingCase.animalTypes}})
+              {{outstandingCase.emergencyNumber}}
+              ({{outstandingCase.animalTypes}})
             </div>
               <div fxFlex="none"
 

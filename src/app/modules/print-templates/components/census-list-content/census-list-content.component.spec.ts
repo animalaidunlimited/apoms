@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateCensusDialogComponent } from './update-census-dialog.component';
+import { CensusListContentComponent } from './census-list-content.component';
 
-describe('UpdateCensusDialogComponent', () => {
-  let component: UpdateCensusDialogComponent;
-  let fixture: ComponentFixture<UpdateCensusDialogComponent>;
+describe('CensusListContentComponent', () => {
+  let component: CensusListContentComponent;
+  let fixture: ComponentFixture<CensusListContentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UpdateCensusDialogComponent ]
+      declarations: [ CensusListContentComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UpdateCensusDialogComponent);
+    fixture = TestBed.createComponent(CensusListContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
