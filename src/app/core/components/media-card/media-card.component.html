@@ -6,7 +6,7 @@
     </mat-card-header>
 
 
-    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.remoteURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
     <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
 

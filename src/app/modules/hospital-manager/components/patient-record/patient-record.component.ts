@@ -4,9 +4,10 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -16,6 +17,21 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 })
 export class PatientRecordComponent implements OnInit {
 
+<<<<<<< HEAD
+    recordForm!: FormGroup;
+
+    @Input() incomingPatient!: SearchRecordTab;
+
+    patientCallPatientId!: number;
+
+    patientLoaded = true;
+
+    hideMenu!: boolean;
+
+    profileUrl!: SafeUrl;
+
+    mediaData!: BehaviorSubject<MediaItem[]>;
+=======
     recordForm: FormGroup = new FormGroup({});
 
     @Input() incomingPatient!: SearchRecordTab;
@@ -29,6 +45,7 @@ export class PatientRecordComponent implements OnInit {
     profileUrl: SafeUrl = '';
 
     mediaData!: Observable<MediaItem[]>;
+>>>>>>> develop
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
@@ -80,8 +97,17 @@ export class PatientRecordComponent implements OnInit {
         const patientId  = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
-        if(this.mediaData){
+       
         this.mediaData.subscribe(media=>{
+<<<<<<< HEAD
+            if(media.length!==0){
+                media.forEach(mediaItem=>{
+                    if(Boolean(mediaItem.isPrimary)===true){
+                        this.profileUrl = mediaItem.remoteURL;
+                    }
+                });
+            }
+=======
 
             if(!media){
                 return;
@@ -89,14 +115,22 @@ export class PatientRecordComponent implements OnInit {
 
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
+>>>>>>> develop
         });
-    }
+        
+
     }
 
     tabChanged(event: MatTabChangeEvent) {
         // Only populate the ids when we want to load the data
         if (event.tab.textLabel === 'Patient Calls') {
+<<<<<<< HEAD
+            this.patientCallPatientId = this.recordForm.get(
+                'patientDetails.patientId',
+            )?.value;
+=======
             this.patientCallPatientId = this.recordForm.get('patientDetails.patientId')?.value;
+>>>>>>> develop
         }
     }
 
