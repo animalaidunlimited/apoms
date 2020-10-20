@@ -4,8 +4,9 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -15,19 +16,19 @@ import { MediaItem } from 'src/app/core/models/media';
 })
 export class PatientRecordComponent implements OnInit {
 
-    recordForm: FormGroup;
+    recordForm!: FormGroup;
 
-    @Input() incomingPatient: SearchRecordTab;
+    @Input() incomingPatient!: SearchRecordTab;
 
-    patientCallPatientId: number;
+    patientCallPatientId!: number;
 
     patientLoaded = true;
 
-    hideMenu: boolean;
+    hideMenu!: boolean;
 
-    profileUrl: SafeUrl;
+    profileUrl!: SafeUrl;
 
-    mediaData: Observable<MediaItem[]>;
+    mediaData!: BehaviorSubject<MediaItem[]>;
 
     constructor(private fb: FormBuilder,
         private patientService: PatientService) {}
@@ -78,13 +79,18 @@ export class PatientRecordComponent implements OnInit {
         const patientId  = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
-        if(this.mediaData){
+       
         this.mediaData.subscribe(media=>{
-            const mediaItem = media.find(item=>Boolean(item.isPrimary) === true);
-            this.profileUrl = mediaItem.localURL;
-
+            if(media.length!==0){
+                media.forEach(mediaItem=>{
+                    if(Boolean(mediaItem.isPrimary)===true){
+                        this.profileUrl = mediaItem.remoteURL;
+                    }
+                });
+            }
         });
-    }
+        
+
     }
 
     tabChanged(event: MatTabChangeEvent) {
@@ -92,7 +98,7 @@ export class PatientRecordComponent implements OnInit {
         if (event.tab.textLabel === 'Patient Calls') {
             this.patientCallPatientId = this.recordForm.get(
                 'patientDetails.patientId',
-            ).value;
+            )?.value;
         }
     }
 

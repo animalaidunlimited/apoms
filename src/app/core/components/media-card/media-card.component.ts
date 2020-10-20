@@ -113,10 +113,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   ngOnDestroy(){
 
     if(this.mediaForm.touched){
-
-
       this.mediaItem.mediaItemId.subscribe((itemId) => {
-
 
         this.mediaForm.get('patientMediaItemId').setValue(itemId);
 

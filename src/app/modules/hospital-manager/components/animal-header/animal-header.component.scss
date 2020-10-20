@@ -28,3 +28,25 @@ $standard-width: 183px;
     cursor: pointer;
     margin-top: 30px;
 }
+
+
+.container {
+position: relative;
+width: auto;
+}
+
+.containerImage {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.containerButton {
+    cursor: pointer;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color:white;
+    color: black;
+
+}
