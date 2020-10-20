@@ -115,12 +115,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     if(this.mediaForm.touched){
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
-<<<<<<< HEAD
-        this.mediaForm.get('patientMediaItemId').setValue(itemId);
-=======
 
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
->>>>>>> develop
 
         // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
         // We should turn this into an observable.
