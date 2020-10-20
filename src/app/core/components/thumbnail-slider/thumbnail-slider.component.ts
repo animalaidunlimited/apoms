@@ -2,11 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import {
     NgxGalleryOptions,
     NgxGalleryImage,
-<<<<<<< HEAD
-    NgxGalleryAnimation,
-=======
     NgxGalleryAnimation
->>>>>>> develop
 } from '@kolkov/ngx-gallery';
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
@@ -18,37 +14,14 @@ import { MediaItem } from '../../models/media';
     styleUrls: ['./thumbnail-slider.component.scss'],
 })
 export class ThumbnailSliderComponent implements OnInit{
-<<<<<<< HEAD
-
-    galleryOptions: NgxGalleryOptions[];
-
-    galleryImages: NgxGalleryImage[] = [];
-
-    mediaItem: MediaItem[];
-
-    @Input() mediaData: Observable<MediaItem[]>;
-=======
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
     @Input() mediaData!: Observable<MediaItem[]>;
->>>>>>> develop
 
     constructor() {}
 
     ngOnInit() {
 
-<<<<<<< HEAD
-                this.mediaData.subscribe(mediaItems=>{
-                this.mediaItem = mediaItems;
-                this.galleryImages = this.mediaItem.map(item=>
-                                            {return{small:item.remoteURL,
-                                            medium:item.remoteURL,
-                                            big:item.remoteURL,
-                                            };});
-                });
-        
-
-=======
         this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
@@ -72,9 +45,8 @@ export class ThumbnailSliderComponent implements OnInit{
             });
 
          });
->>>>>>> develop
 
-                
+
         this.galleryOptions = [
             {
                 imageSwipe:true,
@@ -92,7 +64,7 @@ export class ThumbnailSliderComponent implements OnInit{
                 imageAnimation: NgxGalleryAnimation.Zoom,
                 previewCloseOnClick: true,
                 image: false,
-            
+
             },
             // max-width 800
             {
@@ -115,11 +87,7 @@ export class ThumbnailSliderComponent implements OnInit{
 
     }
 
-<<<<<<< HEAD
-    deleteImage(event, index): void {
-=======
     deleteImage(event:any, index:any): void {
->>>>>>> develop
 
         this.galleryImages.splice(index, 1);
 

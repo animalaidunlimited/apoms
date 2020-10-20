@@ -4,9 +4,9 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -93,7 +93,8 @@ export class PatientRecordComponent implements OnInit {
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
-        
+    }
+
 
     }
 
