@@ -94,7 +94,9 @@ export class MediaPasteService {
 
                       const savetoDB = from(this.patientService.savePatientMedia(newMediaItem));
 
-                      newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
+                      // newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
+
+                      savetoDB.pipe(map(response => console.log(response)));
 
                       newMediaItem.mediaItemId.subscribe(id => {
                         returnObject.mediaItemId.next(id);
@@ -119,7 +121,7 @@ export class MediaPasteService {
 
                     newMediaItem.remoteURL = url;
 
-                    const savetoDB = from(this.patientService.savePatientMedia(newMediaItem));
+                    const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
 
                     newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
 

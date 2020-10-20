@@ -8,8 +8,6 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 
-
-
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'animal-header',
@@ -21,26 +19,27 @@ import { SelectionModel } from '@angular/cdk/collections';
     styleUrls: ['./animal-header.component.scss'],
 })
 export class AnimalHeaderComponent implements OnInit {
-    @Input() recordForm: FormGroup;
+    
+    @Input() recordForm!: FormGroup;
 
-    @Input() profileUrl: SafeUrl;
+    @Input() profileUrl!: SafeUrl;
 
-    selection: SelectionModel<FormGroup>;
+    selection!: SelectionModel<FormGroup>;
 
-    status: string;
+    status!: string;
 
-    lastObjectUrl: string;
+    lastObjectUrl!: string;
 
-    mediaObject: MediaItem;
+    mediaObject!: MediaItem;
 
     // Only doing this so the checker doesn't complain.
-    patientDetailsFormGroup:FormGroup;
+    patientDetailsFormGroup!:FormGroup;
 
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
-        this.status = this.recordForm.get('patientStatus.status').value;
-        this.profileUrl = ['../../../../../assets/images/image_placeholder.png'];
+        this.status = this.recordForm.get('patientStatus.status')?.value;
+        this.profileUrl = this.profileUrl ? this.profileUrl :  '../../../../../assets/images/image_placeholder.png';
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
@@ -97,7 +96,7 @@ export class AnimalHeaderComponent implements OnInit {
         dialogRef.afterClosed().subscribe(updatedMedia=>{
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
-                    this.profileUrl = updatedMedia.localURL;
+                    this.profileUrl = updatedMedia.remoteURL;
                 }
             }
         });
