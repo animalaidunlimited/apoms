@@ -75,6 +75,12 @@ export interface SearchResponseWrapper {
     caseSearchResult: SearchResponse[];
 }
 
+export interface Exclusions
+{
+    animalType: string;
+    exclusionList: string[];
+}
+
 export interface SearchResponse {
     EmergencyCaseId: number;
     EmergencyNumber: number;
@@ -85,20 +91,26 @@ export interface SearchResponse {
     AnimalTypeId: number;
     AnimalType: string;
     PatientId: number;
-    TagNumber: string;
-    CallOutcomeId: number;
-    CallOutcome: string;
-    sameAsNumber: number;
+    TagNumber: string | undefined;
+    CallOutcomeId: number | undefined;
+    CallOutcome: string | undefined;
+    sameAsNumber: number | undefined;
     Location: string;
     Latitude: number;
     Longitude: number;
-    CurrentLocation: string;
+    CurrentLocation: string | undefined;
 }
 
 export interface PatientStatus {
     PatientId: number;
     PatientStatusId: number;
+    PatientStatus: string;
     PatientStatusDate: Date;
+}
+
+export interface PatientStatusResponse {
+    PatientStatusId: number;
+    PatientStatus: string;
 }
 
 export interface CallType {

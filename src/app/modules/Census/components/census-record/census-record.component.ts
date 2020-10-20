@@ -17,21 +17,21 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class CensusRecordComponent implements OnInit {
 
-  @Input() censusUpdateDate : Date;
+  @Input() censusUpdateDate! : Date;
   @Output() public result = new EventEmitter<CensusRecord>();
   @Output() public remove = new EventEmitter<CensusRecord>();
 
-  @ViewChild('chipList') chipList : MatChipList;
+  @ViewChild('chipList') chipList! : MatChipList;
 
   loading = false;
 
   addOnBlur = true;
 
-  censusDate: FormGroup;
+  censusDate: FormGroup = new FormGroup({});
 
-  censusArea: Area[];
+  censusArea: Area[] = [];
 
-  date: Date;
+  date: Date = new Date();
 
   removable = true;
 
@@ -49,35 +49,36 @@ export class CensusRecordComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-      this.censusDate = this.fb.group({
-          CensusDate: [this.getCurrentDate()],
-      });
+
+    this.censusDate = this.fb.group({
+        CensusDate: [this.getCurrentDate()],
+    });
 
 
   if(this.censusUpdateDate){
         this.censusDate.patchValue({CensusDate : this.censusUpdateDate});
-        this.loadCensusData(this.censusDate.get('CensusDate').value);
+        this.loadCensusData(this.censusDate.get('CensusDate')?.value);
   }
   else{
-    this.loadCensusData(this.censusDate.get('CensusDate').value);
+    this.loadCensusData(this.censusDate.get('CensusDate')?.value);
   }
 
       this.censusArea = [
           {
-              areaId: null,
+              areaId: undefined,
               areaName: '',
-              sortArea: null,
+              sortArea: undefined,
               actions: [
                   {
-                      actionId: null,
+                      actionId: undefined,
                       actionName: '',
-                      sortAction: null,
+                      sortAction: undefined,
                       patients: [
                           {
-                              patientId: null,
+                              patientId: undefined,
                               tagNumber: '',
                               colour: '',
-                              errorCode: null,
+                              errorCode: undefined,
                           },
                       ],
                   },
@@ -100,17 +101,17 @@ export class CensusRecordComponent implements OnInit {
   }
 
   /* Sorts the arrays from censusdata object. */
-  getSortedResponse(censusData) {
-      const sortedAreaResponse = censusData.sort((a, b) => {
+  getSortedResponse(censusData:any) {
+      const sortedAreaResponse = censusData.sort((a:any, b:any) => {
           return a.sortArea - b.sortArea;
       });
       return this.getSortedAction(sortedAreaResponse);
   }
 
   /*Sorts the area.actions arrays from the censusdata Object and return it back tio the getSortedResponce function*/
-  getSortedAction(areas) {
-      areas.forEach(area => {
-          area.actions.sort((a, b) => {
+  getSortedAction(areas:any) {
+      areas.forEach((area:any) => {
+          area.actions.sort((a:any, b:any) => {
               return a.sortAction - b.sortAction;
           });
       });
@@ -120,7 +121,16 @@ export class CensusRecordComponent implements OnInit {
 
   /* Add the patients tagNumber to the chips input field*/
 
-  addPatients(incomingAreaId:number, incomingActionId:number, event: MatChipInputEvent): void {
+  addPatients(incomingAreaId:number | undefined, incomingActionId:number | undefined, event: MatChipInputEvent): void {
+
+    if(!incomingAreaId){
+        throw new Error ('IncomingAreaId is undefineed');
+    }
+
+    if(!incomingActionId){
+        throw new Error ('IncomingActionId is undefineed');
+    }
+
       const input = event.input;
       const tag = event.value.trim();
       if (tag || '') {
@@ -139,13 +149,12 @@ export class CensusRecordComponent implements OnInit {
                               ? (this.snackBar.errorSnackBar('Duplicate Error!','OK',), this.loading = false)
                               : this.census
                                     .insertCensusData(
-                                        area.areaId,
-                                        area.sortArea,
+                                        area.areaId || -1,
+                                        area.sortArea || -1,
                                         action.actionId,
-                                        action.sortAction,
+                                        action.sortAction || -1,
                                         tag,
-                                        this.censusDate.get('CensusDate')
-                                            .value,
+                                        this.censusDate.get('CensusDate')?.value
                                     )
                                     .then(response => {
 
@@ -179,7 +188,7 @@ export class CensusRecordComponent implements OnInit {
                                     });
 
                                     const CensusTableData : CensusRecord = {
-                                        date : this.censusDate.get('CensusDate').value,
+                                        date : this.censusDate.get('CensusDate')?.value,
                                         area : area.areaName,
                                         action : action.actionName,
                                         days : 0,
@@ -210,30 +219,26 @@ export class CensusRecordComponent implements OnInit {
 
   setInitialTime(event: FocusEvent) {
       let currentTime;
-      currentTime = this.censusDate.get(
-          (event.target as HTMLInputElement).name,
-      ).value;
+      currentTime = this.censusDate.get((event.target as HTMLInputElement).name)?.value;
 
       if (!currentTime) {
-          this.censusDate
-              .get((event.target as HTMLInputElement).name)
-              .setValue(this.getCurrentDate());
+          this.censusDate.get((event.target as HTMLInputElement).name)?.setValue(this.getCurrentDate());
       }
   }
 
   /* Removes the patient tagNumber from chips input field*/
 
-  removePatients(incomingAreaId, incomingActionId, patient): void {
+  removePatients(incomingAreaId:any, incomingActionId:any, patient:any): void {
       this.censusArea.forEach(area => {
           if (area.areaId === incomingAreaId) {
               area.actions.forEach(action => {
                   if (action.actionId === incomingActionId) {
                       this.loading = true;
                       this.census.deleteCensusData(
-                          area.areaId,
-                          area.sortArea,
-                          action.actionId,
-                          action.sortAction,
+                          area.areaId || -1,
+                          area.sortArea || -1,
+                          action.actionId || -1,
+                          action.sortAction || -1,
                           patient.tagNumber,
                           this.date,
                       ).then(response=>{
@@ -261,7 +266,7 @@ export class CensusRecordComponent implements OnInit {
                       const index = action.patients.indexOf(patient);
                       action.patients.splice(index, 1);
                       const CensusTableData : CensusRecord = {
-                            date : this.censusDate.get('CensusDate').value,
+                            date : this.censusDate.get('CensusDate')?.value,
                             area : area.areaName,
                             action : action.actionName,
                             days : 0,

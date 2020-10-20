@@ -86,7 +86,19 @@ export class PatientService extends APIService {
     }
 
     public async updatePatientStatus(patient: any) {
+
         return await this.put(patient)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    public async updatePatientDetails(patientDetails: any) {
+
+        return await this.put(patientDetails)
             .then(data => {
                 return data;
             })

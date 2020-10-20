@@ -31,7 +31,7 @@ export interface RescuerGroup {
     rescuer1Abbreviation: string;
     rescuer2: number;
     rescuer2Abbreviation: string;
-    latestLocation: google.maps.LatLngLiteral;
+    latestLocation: google.maps.LatLngLiteral | undefined;
     rescues: OutstandingRescue[];
 }
 

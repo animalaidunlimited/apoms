@@ -97,7 +97,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class MaterialModule {
 
-    lastValue;
+    lastValue:any;
 
     public constructor (
       m: MediaMarshaller,

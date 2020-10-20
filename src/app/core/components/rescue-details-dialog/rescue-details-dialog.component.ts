@@ -24,22 +24,23 @@ interface CanExitChange {
 })
 export class RescueDetailsDialogComponent implements OnInit {
     result: UpdateResponse;
-    canExit: FormGroup;
+    canExit: FormGroup = new FormGroup({});
 
   constructor(
     private fb:FormBuilder,
     private detector: ChangeDetectorRef,
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-    ) {}
+    ) {
 
-  ngOnInit() {
+      this.result = {
+        success: 0,
+        socketEndPoint: ''
+      };
 
-    this.result = {
-      success: 0,
-      socketEndPoint: null
     }
 
+  ngOnInit() {
 
     this.data.recordForm = this.fb.group({
 
@@ -62,7 +63,7 @@ export class RescueDetailsDialogComponent implements OnInit {
     this.canExit.valueChanges.subscribe((values:CanExitChange) => {
 
       // TODO update this to handle any errors and display them to a toast.
-      if(values.outcomeUpdateComplete != 0 && values.rescueDetailsUpdateComplete != 0){
+      if(values.outcomeUpdateComplete !== 0 && values.rescueDetailsUpdateComplete !== 0){
 
         this.result.success = 1;
 
@@ -80,10 +81,10 @@ export class RescueDetailsDialogComponent implements OnInit {
   }
 
   onRescueDetailsResult(result:UpdateResponse){
-    this.canExit.get('rescueDetailsUpdateComplete').setValue(result.success);
+    this.canExit.get('rescueDetailsUpdateComplete')?.setValue(result.success);
   }
 
   onOutcomeResult(result:UpdateResponse){
-    this.canExit.get('outcomeUpdateComplete').setValue(result.success);
+    this.canExit.get('outcomeUpdateComplete')?.setValue(result.success);
   }
 }

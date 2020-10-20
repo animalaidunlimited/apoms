@@ -1,20 +1,26 @@
 {
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictTemplates": true
-  },
+
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+  	"forceConsistentCasingInFileNames": true,
+    "strict": true,
     "sourceMap": false,
+	  "noImplicitAny": true,
+  	"noImplicitReturns": true,
+  	"noImplicitThis": true,
+  	"noFallthroughCasesInSwitch": true,
+  	"strictNullChecks": true,
     "declaration": false,
-    "module": "esnext",
-    "moduleResolution": "node",
+	  "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
+
     "importHelpers": true,
     "target": "es2015",
+	"module": "esnext",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -23,9 +29,10 @@
       "dom"
     ]
   },
-  "noImplicitAny": true,
-  "noImplicitReturns": true,
-  "noImplicitThis": true,
-  "noFallthroughCasesInSwitch": true,
-  "strictNullChecks": true,
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+  	"strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

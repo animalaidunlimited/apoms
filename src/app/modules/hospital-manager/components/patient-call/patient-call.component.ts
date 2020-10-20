@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import {
     FormBuilder,
     AbstractControl,
@@ -17,28 +17,26 @@ import {
     PatientCalls,
     PatientCallModifyResponse,
 } from 'src/app/core/models/patients';
-import { UserOptionsService } from 'src/app/core/services/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 @Component({
     selector: 'patient-call',
     templateUrl: './patient-call.component.html',
     styleUrls: ['./patient-call.component.scss'],
 })
-export class PatientCallComponent implements OnInit {
-    @Input() patientId: number;
+export class PatientCallComponent implements OnInit, OnChanges {
+    @Input() patientId!: number;
 
-    patientCallForm: FormGroup;
+    patientCallForm!: FormGroup;
 
-    callerHappy: boolean;
-    hasVisited: boolean;
-    maxDate: string | Date;
-    notificationDurationSeconds: number;
+    callerHappy = true;
+    hasVisited = false;
+    maxDate: string | Date = '';
+    notificationDurationSeconds = 3;
+
     callTypes$: Observable<CallType[]>;
     callOutcomes$: Observable<PatientCallOutcome[]>;
-
     assignedTo$: Observable<User[]>;
-
-    currentCallType: CallType;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -48,14 +46,18 @@ export class PatientCallComponent implements OnInit {
         private patientService: PatientService,
         private dropdown: DropdownService,
         private showSnackBar: SnackbarService,
-    ) {}
+    ) {
 
-    calls: FormArray;
-
-    ngOnInit() {
         this.assignedTo$ = this.dropdown.getCallStaff();
         this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
         this.callTypes$ = this.dropdown.getCallTypes();
+
+    }
+
+    calls: FormArray = new FormArray([]);
+
+    ngOnInit() {
+
 
         this.maxDate = getCurrentTimeString();
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
@@ -73,10 +75,17 @@ export class PatientCallComponent implements OnInit {
             // This form.
             this.patientCallForm = this.buildPatientForm(this.patientCallForm);
 
-            this.patientCallForm
-                .get('patientId')
-                .setValue(changes.patientId.currentValue);
-            this.loadPatientCalls();
+            const patientIdControl = this.patientCallForm.get('patientId');
+
+            if(patientIdControl){
+                patientIdControl.setValue(changes.patientId.currentValue);
+                this.loadPatientCalls();
+            }
+            //else{
+            //    throw new Error('PatientIdControl is empty');
+            //}
+
+
         }
     }
 
@@ -94,12 +103,12 @@ export class PatientCallComponent implements OnInit {
     loadPatientCalls() {
         this.patientService
             .getPatientCallsByPatientId(this.patientId)
-            .subscribe((data: PatientCalls) => {this.populatePatientCalls(data)});
+            .subscribe((data: PatientCalls) => {this.populatePatientCalls(data);});
     }
 
     populatePatientCalls(data: PatientCalls) {
 
-        const length:number = data?.calls.length
+        const length:number = data?.calls.length;
 
         if(length){
 
@@ -132,7 +141,7 @@ export class PatientCallComponent implements OnInit {
     setInitialTime(element: string, index: number) {
         const currentCall: FormGroup = this.calls.controls[index] as FormGroup;
 
-        const currentElement: AbstractControl = currentCall.get(element);
+        const currentElement: AbstractControl = currentCall.get(element) as AbstractControl;
 
         const currentTime: string | Date = currentElement.value;
 
@@ -145,7 +154,15 @@ export class PatientCallComponent implements OnInit {
         // TODO replace this with a filter to return only the touched elements
         this.calls.controls.forEach(element => {
             if (element.touched) {
-                element.get('updated').setValue(true);
+                const updatedControl = element.get('updated');
+
+                if(updatedControl){
+                updatedControl.setValue(true);
+                }
+                else {
+                    throw new Error('Updated control is empty');
+
+                }
             }
         });
 
@@ -161,7 +178,7 @@ export class PatientCallComponent implements OnInit {
                         ) as AbstractControl;
 
                         currentPatientCallId.setValue(
-                            callResult.position === call.get('position').value
+                            callResult.position === call.get('position')?.value
                                 ? callResult.results.patientCallId
                                 : currentPatientCallId.value,
                         );
@@ -183,12 +200,12 @@ export class PatientCallComponent implements OnInit {
         // a success message, otherwise toast a fail message.
 
         const successCount = bread
-            .map(message => {
-                return message.results.success;
+            .map(messageVal => {
+                return messageVal.results.success;
             })
             .reduce(
-                (successCount: number, callResult) =>
-                    (successCount += callResult),
+                (successCountVal: number, callResult) =>
+                    (successCountVal += callResult),
             );
 
         const message =

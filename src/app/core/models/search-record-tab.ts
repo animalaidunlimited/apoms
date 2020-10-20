@@ -1,16 +1,16 @@
 export interface SearchRecordTab {
     id: number;
-    value: string;
+    value: string | undefined;
     emergencyCaseId: number;
     emergencyNumber: number;
     patientId: number;
-    tagNumber: string;
+    tagNumber: string | undefined;
     animalType: string;
-    currentLocation: string;
+    currentLocation: string | undefined;
     callDateTime: string;
-    callOutcomeId: number;
-    callOutcome: string;
-    icon: string;
+    callOutcomeId: number | undefined;
+    callOutcome: string | undefined;
+    icon: string | undefined;
 }
 
 export interface SearchResponseWrapper {

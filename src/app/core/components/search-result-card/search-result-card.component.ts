@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';
-import { UserOptionsService } from '../../services/user-options.service';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog/surgery-record-dialog.component';
+import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 
 @Component({
   selector: 'search-result-card',
@@ -15,7 +15,7 @@ import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/c
 })
 export class SearchResultCardComponent implements OnInit {
 
-  @Input() record:SearchResponse;
+  @Input() record!:SearchResponse;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   constructor(
@@ -26,21 +26,25 @@ export class SearchResultCardComponent implements OnInit {
         private printService: PrintTemplateService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    this.printService.initialisePrintTemplates();
+
+  }
 
   openCase(caseSearchResult: SearchResponse) {
 
     this.openEmergencyCase.emit(caseSearchResult);
 }
 
-quickUpdate(patientId: number, tagNumber: string) {
+quickUpdate(patientId: number, tagNumber: string | undefined) {
   this.dialog.open(PatientEditDialog, {
       width: '500px',
       data: { patientId, tagNumber },
   });
 }
 
-rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number, CallOutcome: string,  sameAsNumber: number) {
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number | undefined, CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
       width: '500px',
@@ -54,7 +58,7 @@ rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcome
   });
 }
 
-callUpdate(patientId: number, tagNumber: string) {
+callUpdate(patientId: number, tagNumber: string | undefined) {
   this.callDialog.open(PatientCallDialogComponent, {
       width: '500px',
       data: { patientId, tagNumber },
@@ -63,7 +67,7 @@ callUpdate(patientId: number, tagNumber: string) {
 
 openSurgeryDialog(
   patientId: number,
-  tagNumber: string,
+  tagNumber: string | undefined,
   emergencyNumber: number,
   animalType: string,
 ) {
@@ -80,7 +84,7 @@ openSurgeryDialog(
   dialogRef.afterClosed().subscribe(() => {});
 }
 
-addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalType:string) {
+addSurgery(patientId:number, tagNumber:string | undefined, emergencyNumber:number, animalType:string) {
   this.openSurgeryDialog(
       patientId,
       tagNumber,

@@ -13,6 +13,7 @@ import { EmergencyDetailsComponent } from './emergency-details.component';
 import { MaterialModule } from 'src/app/material-module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatePipe } from '@angular/common';
 
 describe('EmergencyDetailsComponent', () => {
     let component: EmergencyDetailsComponent;
@@ -27,7 +28,7 @@ describe('EmergencyDetailsComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
-
+            providers: [DatePipe],
             declarations: [EmergencyDetailsComponent],
         }).compileComponents();
     }));
@@ -48,7 +49,7 @@ describe('EmergencyDetailsComponent', () => {
         fixture.detectChanges();
     }));
 
-    afterEach(function(done) {
+    afterEach((done) => {
         component.recordForm.reset();
         done();
     });
@@ -58,31 +59,28 @@ describe('EmergencyDetailsComponent', () => {
     });
 
     it('Valid form - all records', () => {
-        component.recordForm
-            .get('emergencyDetails.emergencyNumber')
-            .setValue('70022');
-        component.recordForm.get('emergencyDetails.dispatcher').setValue('1');
-        component.recordForm.get('emergencyDetails.code').setValue('1');
+        component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue('70022');
+        component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
+        component.recordForm.get('emergencyDetails.code')?.setValue('1');
 
-        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
             true,
         );
     });
 
     it('Invalid form - no records', () => {
-        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
             false,
         );
     });
 
     it('Invalid form - Missing code', () => {
         component.recordForm
-            .get('emergencyDetails.emergencyNumber')
-            .setValue(70022);
+            .get('emergencyDetails.emergencyNumber')?.setValue(70022);
 
-        component.recordForm.get('emergencyDetails.dispatcher').setValue(1);
+        component.recordForm.get('emergencyDetails.dispatcher')?.setValue(1);
 
-        expect(component.recordForm.get('emergencyDetails').valid).toEqual(
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
             false,
         );
     });
@@ -92,12 +90,10 @@ describe('EmergencyDetailsComponent', () => {
 
         const testTime = new Date();
 
-        component.recordForm
-            .get('emergencyDetails.callDateTime')
-            .setValue(testTime);
+        component.recordForm.get('emergencyDetails.callDateTime')?.setValue(testTime);
 
         expect(
-            component.recordForm.get('emergencyDetails.callDateTime').value,
+            component.recordForm.get('emergencyDetails.callDateTime')?.value
         ).toEqual(testTime);
     });
 });

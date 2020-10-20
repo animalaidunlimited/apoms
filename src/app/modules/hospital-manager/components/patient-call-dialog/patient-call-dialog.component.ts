@@ -14,7 +14,7 @@ export interface DialogData {
     styleUrls: ['./patient-call-dialog.component.scss'],
 })
 export class PatientCallDialogComponent implements OnInit {
-    result: UpdatedRescue;
+    result: UpdatedRescue | undefined;
 
     constructor(
         private fb: FormBuilder,
@@ -28,7 +28,7 @@ export class PatientCallDialogComponent implements OnInit {
         this.dialogRef.close(this.result);
     }
 
-    onResult($event) {
+    onResult($event:any) {
         this.dialogRef.close($event);
     }
 }

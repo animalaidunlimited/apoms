@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
@@ -13,15 +14,19 @@ export interface DialogData {
 })
 export class PatientEditDialog implements OnInit {
     patientId: number;
-    @Input() patientStatusForm;
+    @Input() patientStatusForm!: FormGroup;
 
     constructor(
         public dialogRef: MatDialogRef<PatientEditDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    ) {}
+    ) {
+
+        this.patientId = this.data.patientId;
+
+    }
 
     ngOnInit() {
-        this.patientId = this.data.patientId;
+
     }
 
     onCancel(): void {

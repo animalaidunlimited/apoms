@@ -5,7 +5,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
-import { UserOptionsService } from '../../services/user-options.service';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
@@ -18,29 +18,31 @@ import { User } from '../../models/user';
 })
 export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
+    @Input() recordForm!: FormGroup;
+    @Output() public loadEmergencyNumber = new EventEmitter<any>();
+    errorMatcher = new CrossFieldErrorMatcher();
+
+    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
+    @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
+
+    dispatchers$!: Observable<User[]>;
+    emergencyCodes$!: Observable<EmergencyCode[]>;
+    callDateTime: string | Date = getCurrentTimeString();
+    minimumDate = '';
+
+    emergencyDetails!: FormGroup;
+
     constructor(
         private dropdowns: DropdownService,
         private caseService: CaseService,
         private datePipe: DatePipe,
         private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
-    ) {}
+    ) {
 
-    @Input() recordForm: FormGroup;
-    @Output() public loadEmergencyNumber = new EventEmitter<any>();
-    errorMatcher = new CrossFieldErrorMatcher();
+    }
 
-    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField: ElementRef;
-    @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField: ElementRef;
 
-    dispatchers$: Observable<User[]>;
-    emergencyCodes$: Observable<EmergencyCode[]>;
-    callDateTime: string | Date = getCurrentTimeString();
-    minimumDate: string;
-
-    emergencyDetails: FormGroup;
-
-    selected;
 
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
@@ -51,7 +53,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
-        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms');
+        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms') || '';
 
         this.emergencyDetails = this.recordForm.get(
             'emergencyDetails',
@@ -64,12 +66,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
                 [Validators.required],
                 [
                     this.emergencyNumberValidator.validate(
-                        this.recordForm.get('emergencyDetails.emergencyCaseId')
-                            .value,
-                        1,
-                    ),
-                ],
-            ),
+                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1,)
+                ]
+            )
         );
         this.emergencyDetails.addControl(
             'callDateTime',
@@ -86,7 +85,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.caseService
             .getEmergencyCaseById(
-                this.recordForm.get('emergencyDetails.emergencyCaseId').value,
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
             )
             .subscribe(result => {
 
@@ -95,8 +94,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             });
 
         this.recordForm
-            .get('emergencyDetails.emergencyNumber')
-            .valueChanges.subscribe(val => {
+            .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
                 if(!val){
                     this.emergencyNumberField.nativeElement.focus();
                 }
@@ -119,8 +117,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             'emergencyDetails.callDateTime',
         );
 
-        if (!currentTime.value) {
-            currentTime.setValue(getCurrentTimeString());
+        if (!currentTime?.value) {
+            currentTime?.setValue(getCurrentTimeString());
         }
     }
 
@@ -129,7 +127,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
     }
 
-    selectEmergencyCode($event){
+    selectEmergencyCode($event:any){
 
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
         this.emergencyCodes$.subscribe((codes:EmergencyCode[]) => {
@@ -141,7 +139,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             });
 
             if(selectedCode){
-                this.recordForm.get('emergencyDetails.code').setValue(selectedCode);
+                this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
             }
         })
 

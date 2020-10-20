@@ -13,6 +13,7 @@ import { PatientStatusModule } from '../patient-status/patient-status.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatePipe } from '@angular/common';
 
 describe('PatientEditDialog', () => {
     let component: PatientEditDialog;
@@ -26,7 +27,7 @@ describe('PatientEditDialog', () => {
     const dialogData = {};
 
     let dialog: MatDialogRef<PatientEditDialog>;
-
+    
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -37,6 +38,7 @@ describe('PatientEditDialog', () => {
             ],
             providers: [
                 DropdownService,
+                DatePipe,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,
