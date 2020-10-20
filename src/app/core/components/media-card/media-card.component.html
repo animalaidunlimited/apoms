@@ -6,14 +6,14 @@
     </mat-card-header>
 
 
-    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.remoteURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.remoteURL || mediaItem.localURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
     <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
 
 
     <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
 
-        <source [src]="mediaItem.localURL" type="video/mp4"/>
+        <source [src]="mediaItem.remoteURL || mediaItem.localURL" type="video/mp4"/>
         Browser not supported
 
     </video>
@@ -40,7 +40,7 @@
                  [matChipInputAddOnBlur]="addOnBlur"
                  (matChipInputTokenEnd)="add($event)"
                  autocomplete="off">
-        </mat-chip-list> 
+        </mat-chip-list>
       </mat-form-field>
 
       <mat-checkbox formControlName='isPrimary'>Primary Image</mat-checkbox>
