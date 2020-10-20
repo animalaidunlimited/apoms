@@ -22,3 +22,8 @@ export interface MediaItem{
     mediaItemId: BehaviorSubject<number | undefined>;
     result: string;
   }
+
+  export interface MediaItemsDataObject{
+    patientId: number;
+    mediaItem: BehaviorSubject<MediaItem[]>;
+  }

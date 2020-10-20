@@ -31,6 +31,21 @@ $primary-font-colour: #626262;
     }
 }
 
+
+/* This is the one found in the documentation*/
+
+// ngx-gallery /deep/ ngx-gallery-thumbnails .ngx-gallery-arrow {
+//   background-color: black !important;
+//   color: white !important;
+//   border-radius: 90% !important;
+// }
+
+// ngx-gallery deep ngx-gallery-thumbnails .ngx-gallery-arrow {
+//   background-color: black !important;
+//   color: white !important;
+//   border-radius: 90% !important;
+// }
+
 .mat-drawer-inner-container {
     box-sizing: unset !important;
 }
@@ -40,3 +55,19 @@ $primary-font-colour: #626262;
 }
 
 
+// .arrow {
+//     border: solid black;
+//     border-width: 0 3px 3px 0;
+//     display: inline-block;
+//     padding: 3px;
+//   }
+  
+//   .right {
+//     transform: rotate(-45deg);
+//     -webkit-transform: rotate(-45deg);
+//   }
+  
+//   .left {
+//     transform: rotate(135deg);
+//     -webkit-transform: rotate(135deg);
+//   }

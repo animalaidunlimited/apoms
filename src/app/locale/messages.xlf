@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="8973bc8c23a3f7c42aa9bd447386a3b0d26b74bc" datatype="html">
+        <source>menu</source>
+        <target>menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="81b97b8ea996ad1e4f9fca8415021850214884b1" datatype="html">
+        <source>Status</source>
+        <target>menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9526f988d0efd86807395d84e6705f3b338095f3" datatype="html">
+        <source>Rescue details</source>
+        <target>menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="06c663bf1474713f57551123a46b34318543b67d" datatype="html">
+        <source>Reset</source>
+        <target>menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="30c53508c5f5b1cc40ba50452c5f0b89a6c97746" datatype="html">
+        <source>Patient calls</source>
+        <target>menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/modules/hospital-manager/components/patient-record/patient-record.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
