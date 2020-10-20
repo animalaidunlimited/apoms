@@ -6,7 +6,7 @@ import { PatientService } from 'src/app/modules/emergency-register/services/pati
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class PatientRecordComponent implements OnInit {
 
     profileUrl: SafeUrl = '';
 
-    mediaData!: Observable<MediaItem[]>;
+    mediaData!: BehaviorSubject<MediaItem[]>;
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
@@ -86,11 +86,11 @@ export class PatientRecordComponent implements OnInit {
         this.mediaData.subscribe(media=>{
 
 
-            if(!media){
+            if(media.length === 0){
                 return;
             }
 
-            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
+            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
     }

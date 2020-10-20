@@ -61,18 +61,6 @@ export class AnimalHeaderComponent implements OnInit {
         };
     }
 
-    launchImageModal(): void {
-        const dialogRef = this.dialog.open(ImageUploadDialog, {
-            width: '350px',
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result != null) {
-            }
-        });
-
-    }
-
     public handlePaste(event: ClipboardEvent){
 
         const patientId = this.recordForm.get('patientDetails.patientId')?.value;

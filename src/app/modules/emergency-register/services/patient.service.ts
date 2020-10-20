@@ -3,7 +3,9 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients, CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
+import { Patient, PatientCalls, PatientCallModifyResponse, 
+    PatientCallResult, Patients, CrueltyReport, CrueltyReportResult, 
+    PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
@@ -16,7 +18,7 @@ export class PatientService extends APIService {
     mediaItemData : MediaItemsDataObject[] = [];
 
     mediaItemObject! : MediaItem;
-     
+
     returnMediaItem : BehaviorSubject<MediaItem[]> = new BehaviorSubject<MediaItem[]>([]);
 
     constructor(http: HttpClient) {
@@ -199,16 +201,21 @@ export class PatientService extends APIService {
     }
 
     public async savePatientMedia(mediaItem: MediaItem){
-        console.log(mediaItem);
+
+console.log(mediaItem);
+console.log(JSON.stringify(mediaItem));
+
+
         return await this.put(mediaItem)
             .then(data => {
                 if(data.mediaItemId){
                     this.mediaItemData.forEach(mediaData=>{
                         if(mediaData.patientId === mediaItem.patientId){
                             const dataItem = mediaData.mediaItem.getValue();
-                            console.log(dataItem);
                             dataItem.push(mediaItem);
+                            console.log('Weve pushed');
                             mediaData.mediaItem.next(dataItem);
+
                         }
                     });
                 }
@@ -230,10 +237,15 @@ export class PatientService extends APIService {
             patientMediaItemVal.patientId === patientId
         );
 
-        const returnBehaviorSubject: BehaviorSubject<MediaItem[]> = 
+        const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
 
         this.getObservable(request).subscribe((media : any[])=>{
+
+            if(!media){
+                return;
+            }
+
             const savedMediaItems: MediaItem[] = media.map(item=>{
                 return {
                     mediaItemId : of(item.mediaItemId),
@@ -250,14 +262,13 @@ export class PatientService extends APIService {
                     uploadProgress$: of(100),
                     updated: false
                 };
-                
+
             });
-            
+
             if(patientMediaItem){
 
                 const mediaArray = patientMediaItem.mediaItem.getValue();
-                Object.assign(mediaArray,savedMediaItems);
-                patientMediaItem.mediaItem.next(mediaArray);
+                Object.assign(savedMediaItems, mediaArray);
             }
             else{
                 const newItemData : MediaItemsDataObject = {

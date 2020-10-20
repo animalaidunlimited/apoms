@@ -37,12 +37,17 @@ export class ThumbnailSliderComponent implements OnInit{
                 return;
             }
 
-            mediaItems.forEach(item=>{
-               this.galleryImages.push({small:item.localURL,
-                                        medium:item.localURL,
-                                        big:item.localURL,
-                                        });
+
+
+            this.galleryImages = mediaItems.map(item=>{
+               return {
+                        small:item.remoteURL,
+                        medium:item.remoteURL,
+                        big:item.remoteURL,
+                      };
             });
+
+
 
          });
 
@@ -68,7 +73,7 @@ export class ThumbnailSliderComponent implements OnInit{
             },
             // max-width 800
             {
-                breakpoint: 800,
+                breakpoint: 1028,
                 width: '100%',
                 height: '600px',
                 imagePercent: 100,
@@ -79,9 +84,8 @@ export class ThumbnailSliderComponent implements OnInit{
             // max-width 400
             {
                 breakpoint: 400,
-                preview: true,
-
-            },
+                preview: true
+            }
 
         ];
 
