@@ -49,6 +49,26 @@ export class MediaDialogComponent implements OnInit {
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
 
         if(mediaItems){
+<<<<<<< HEAD
+          this.mediaItems = mediaItems.map(mediaItem => {
+            this.newItem  = {
+              mediaItemId: mediaItem.mediaItemId,
+              mediaType: mediaItem.mediaType,
+              localURL: mediaItem.localURL,
+              remoteURL: mediaItem.remoteURL,
+              isPrimary :mediaItem.isPrimary,
+              datetime: mediaItem.datetime,
+              comment: mediaItem.comment,
+              patientId: mediaItem.patientId,
+              heightPX: mediaItem.heightPX,
+              widthPX: mediaItem.widthPX,
+              tags: mediaItem.tags,
+              uploadProgress$: of(100),
+              updated: false
+            };
+            return this.newItem;
+          });
+=======
 
         this.mediaItems = mediaItems.map((mediaItem:any) => {
 
@@ -69,6 +89,7 @@ export class MediaDialogComponent implements OnInit {
         };
         return this.newItem;
         });
+>>>>>>> develop
 
       }
     });
