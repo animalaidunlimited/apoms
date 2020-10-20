@@ -19,6 +19,7 @@ import { User } from '../../models/user';
 export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @Input() recordForm!: FormGroup;
+    @Input() focusEmergencyNumber!: boolean;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -93,9 +94,11 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
             });
 
+            console.log(this.focusEmergencyNumber);
+
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
-                if(!val){
+                if(!val && this.focusEmergencyNumber){
                     this.emergencyNumberField.nativeElement.focus();
                 }
 
@@ -105,7 +108,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(){
 
+        if(this.focusEmergencyNumber) {
         setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
+        }
     }
 
     updateEmergencyNumber(emergencyNumber: number) {

@@ -4,9 +4,10 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -20,7 +21,7 @@ export class PatientRecordComponent implements OnInit {
 
     @Input() incomingPatient!: SearchRecordTab;
 
-    patientCallPatientId = -1;
+    patientId!:number;
 
     patientLoaded = true;
 
@@ -77,11 +78,13 @@ export class PatientRecordComponent implements OnInit {
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
 
-        const patientId  = this.incomingPatient.patientId;
+        this.patientId = this.incomingPatient.patientId;
 
-        this.mediaData = this.patientService.getPatientMediaItemsByPatientId(patientId);
+        this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
         if(this.mediaData){
+
         this.mediaData.subscribe(media=>{
+
 
             if(!media){
                 return;
@@ -90,13 +93,14 @@ export class PatientRecordComponent implements OnInit {
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].localURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
-    }
+        
+
     }
 
     tabChanged(event: MatTabChangeEvent) {
         // Only populate the ids when we want to load the data
         if (event.tab.textLabel === 'Patient Calls') {
-            this.patientCallPatientId = this.recordForm.get('patientDetails.patientId')?.value;
+            this.patientId = this.recordForm.get('patientDetails.patientId')?.value;
         }
     }
 
