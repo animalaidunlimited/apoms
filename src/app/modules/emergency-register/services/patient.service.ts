@@ -3,7 +3,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients } from 'src/app/core/models/patients';
+import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients, CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
@@ -105,6 +105,46 @@ export class PatientService extends APIService {
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    public getCrueltyForm(
+        patientId: number,
+    ): Observable<CrueltyReport> {
+        const request = '/CrueltyReport?patientId=' + patientId;
+
+        return this.getObservable(request).pipe(
+            map((response: CrueltyReport) => {
+                return response;
+            }),
+        );
+    }
+
+    public async saveCrueltyForm(crueltyForm: CrueltyReport) : Promise<CrueltyReportResult> {
+
+        if(crueltyForm.crueltyReportId){
+
+            return await this.put(crueltyForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+        else{
+
+            return await this.post(crueltyForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
     }
 
     public getPatientCallsByPatientId(
@@ -230,19 +270,46 @@ export class PatientService extends APIService {
         return returnBehaviorSubject;
     }
 
+    public getPatientOutcomeForm(
+        patientId: number,
+    ): Observable<PatientOutcome> {
+        const request = '/PatientOutcomeDetails?patientId=' + patientId;
 
-    // public getPatientMediaItemsByPatientId(
-    //     patientId: number,
-    // ): Observable<any> {
-    //     const request = '/PatientMediaItems?patientId=' + patientId;
+        return this.getObservable(request).pipe(
+            map((response: PatientOutcome) => {
+                return response;
+            }),
+        );
+    }
 
-    //     return this.getObservable(request).pipe(
-    //         map((response: any) => {
+    public async savePatientOutcomeForm(outcomeForm: PatientOutcome) : Promise<PatientOutcomeResponse> {
 
-    //             return response;
-    //         }),
-    //     );
-    // }
+        if(outcomeForm.patientOutcomeDetailsId){
+
+            return await this.put(outcomeForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+        else{
+
+            return await this.post(outcomeForm)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
+    }
+
 
 }
 
