@@ -42,9 +42,10 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
     this.mediaItem.isPrimary = Boolean(this.mediaItem.isPrimary);
     this.mediaForm = this.fb.group({
-      mediaItemId: of(this.mediaItem.mediaItemId),
-      patientMediaItemId: null,
+      mediaItemId: this.mediaItem.mediaItemId,
+      patientMediaItemId: this.mediaItem.patientMediaItemId,
       mediaType: this.mediaItem.mediaType,
+      patientId: this.mediaItem.patientId,
       localURL: this.mediaItem.localURL,
       remoteURL: this.mediaItem.remoteURL,
       isPrimary: [this.mediaItem.isPrimary],
@@ -115,7 +116,6 @@ export class MediaCardComponent implements OnInit, OnDestroy {
     if(this.mediaForm.touched){
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
-
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
 
         // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
@@ -178,7 +178,7 @@ deleteMediaItem(){
 
   dialogRef.afterClosed().subscribe((confirmed: boolean) => {
     if (confirmed) {
-      this.itemDeleted.emit(true);
+      this.itemDeleted.emit(this.mediaForm.value);
       this.mediaForm.get('deleted')?.setValue(true);
       this.mediaForm.markAsTouched();
     }

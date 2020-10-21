@@ -3,10 +3,15 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients, CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
+import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
+    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
+
+interface SuccessResult{
+    success: number;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -200,22 +205,33 @@ export class PatientService extends APIService {
 
     public async savePatientMedia(mediaItem: MediaItem){
 
-console.log(mediaItem);
-console.log(JSON.stringify(mediaItem));
-
-
         return await this.put(mediaItem)
-            .then(data => {
-                if(data.mediaItemId){
-                    this.mediaItemData.forEach(mediaData=>{
-                        if(mediaData.patientId === mediaItem.patientId){
-                            const dataItem = mediaData.mediaItem.getValue();
-                            dataItem.push(mediaItem);
-                            console.log('Weve pushed');
-                            mediaData.mediaItem.next(dataItem);
+            .then((data:SuccessResult) => {
 
-                        }
-                    });
+                if(data.success === 1){
+
+                    const patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
+                        patientMediaItemVal.patientId === mediaItem.patientId
+                    );
+
+                    if(!patientMediaItem){
+                        throw new TypeError('Unable to find patient media');
+                    }
+
+                    let dataItem = patientMediaItem.mediaItem.getValue();
+
+                    if(mediaItem.deleted){
+
+                        dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
+
+                    }
+                    else{
+                        dataItem.push(mediaItem);
+
+                    }
+
+                    patientMediaItem.mediaItem.next(dataItem);
+
                 }
 
                 return data;
@@ -245,8 +261,10 @@ console.log(JSON.stringify(mediaItem));
             }
 
             const savedMediaItems: MediaItem[] = media.map(item=>{
+
                 return {
                     mediaItemId : of(item.mediaItemId),
+                    patientMediaItemId: item.mediaItemId,
                     mediaType: item.mediaType,
                     localURL: item.localURL,
                     remoteURL: item.remoteURL,
@@ -258,15 +276,17 @@ console.log(JSON.stringify(mediaItem));
                     widthPX: item.widthPX,
                     tags: item.tags,
                     uploadProgress$: of(100),
-                    updated: false
+                    updated: false,
+                    deleted: false
                 };
 
             });
 
             if(patientMediaItem){
 
-                const mediaArray = patientMediaItem.mediaItem.getValue();
-                Object.assign(savedMediaItems, mediaArray);
+                console.log("Nexting");
+                patientMediaItem.mediaItem.next(savedMediaItems);
+
             }
             else{
                 const newItemData : MediaItemsDataObject = {
@@ -274,6 +294,7 @@ console.log(JSON.stringify(mediaItem));
                     mediaItem : returnBehaviorSubject
                 };
                 returnBehaviorSubject.next(savedMediaItems);
+                console.log("Pushing");
                 this.mediaItemData.push(newItemData);
             }
         });
