@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
 import { COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MediaItem } from '../../models/media';
@@ -15,7 +15,7 @@ import { BehaviorSubject, of, Observable } from 'rxjs';
   templateUrl: './media-card.component.html',
   styleUrls: ['./media-card.component.scss']
 })
-export class MediaCardComponent implements OnInit, OnDestroy {
+export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
   @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
@@ -114,6 +114,27 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       this.mediaSourceURL = this.mediaForm.get('remoteURL')?.value === '' ?
       this.mediaForm.get('localURL')?.value : this.mediaForm.get('remoteURL')?.value;
 
+
+
+  }
+
+  ngAfterViewInit(){
+
+    if(this.mediaItem.mediaType.includes('video') && this.mediaItem.heightPX === 0){
+
+      const video: HTMLVideoElement = this.videoplayer.nativeElement;
+
+      video.addEventListener('loadeddata', () => {
+        this.mediaItem.heightPX = video.videoHeight;
+        this.mediaItem.widthPX = video.videoWidth;
+        this.mediaForm.get('heightPX')?.setValue(video.videoHeight);
+        this.mediaForm.get('widthPX')?.setValue(video.videoWidth);
+        this.mediaForm.get('updated')?.setValue(true);
+        this.mediaForm.markAsTouched();
+      }, false);
+
+    }
+
   }
 
   ngOnDestroy(){
@@ -125,7 +146,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
         // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
         // We should turn this into an observable.
-        //this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
+        // this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
         this.mediaForm.get('updated')?.setValue(true);
 
         // Save the new or update the media
