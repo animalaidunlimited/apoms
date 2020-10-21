@@ -225,9 +225,9 @@ export class PatientService extends APIService {
                         dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
 
                     }
-                    else{
-                        dataItem.push(mediaItem);
 
+                    if(!mediaItem.updated){
+                        dataItem.push(mediaItem);
                     }
 
                     patientMediaItem.mediaItem.next(dataItem);
@@ -283,8 +283,6 @@ export class PatientService extends APIService {
             });
 
             if(patientMediaItem){
-
-                console.log("Nexting");
                 patientMediaItem.mediaItem.next(savedMediaItems);
 
             }
@@ -294,7 +292,6 @@ export class PatientService extends APIService {
                     mediaItem : returnBehaviorSubject
                 };
                 returnBehaviorSubject.next(savedMediaItems);
-                console.log("Pushing");
                 this.mediaItemData.push(newItemData);
             }
         });

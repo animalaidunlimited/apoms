@@ -147,8 +147,6 @@ onMediaItemDeleted(deletedMediaItem: MediaItem){
 
 }
 
-
-
 clearPrimary(){
   this.mediaItems.forEach(mediaItem=>{
     mediaItem.isPrimary = false;

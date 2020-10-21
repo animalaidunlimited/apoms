@@ -31,6 +31,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
   visible = true;
   mediaForm:FormGroup = new FormGroup({});
   tags:FormArray = new FormArray([]);
+  mediaSourceURL = '';
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -54,8 +55,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
-      deleted: false
-
+      deleted: false,
+      updated: false
     });
 
     this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
@@ -85,6 +86,7 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
         setTimeout(()=>{
           this.updatedMedia.emit(this.mediaForm.value);
+          this.mediaForm.get('updated')?.setValue(true);
         },0);
 
       }
@@ -109,6 +111,9 @@ export class MediaCardComponent implements OnInit, OnDestroy {
         }));
       });
 
+      this.mediaSourceURL = this.mediaForm.get('remoteURL')?.value === '' ?
+      this.mediaForm.get('localURL')?.value : this.mediaForm.get('remoteURL')?.value;
+
   }
 
   ngOnDestroy(){
@@ -120,7 +125,8 @@ export class MediaCardComponent implements OnInit, OnDestroy {
 
         // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
         // We should turn this into an observable.
-        this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
+        //this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
+        this.mediaForm.get('updated')?.setValue(true);
 
         // Save the new or update the media
         this.patientService.savePatientMedia(this.mediaForm.value);
