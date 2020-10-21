@@ -200,8 +200,6 @@ return returnObject;
       });
       }
 
-
-
     }
 
     return newMediaItem;

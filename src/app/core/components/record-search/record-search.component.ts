@@ -75,7 +75,7 @@ export class RecordSearchComponent implements OnInit {
             id: 1,
             inputType: 'text',
             searchValue: 'emno',
-            databaseField: 'ec.EmergencyNumber',
+            databaseField: 'search.EmergencyNumber',
             name: 'Em. no.',
             inNotIn: false
         },
@@ -83,7 +83,7 @@ export class RecordSearchComponent implements OnInit {
             id: 2,
             inputType: 'date',
             searchValue: 'date',
-            databaseField: 'CAST(ec.CallDateTime AS DATE)',
+            databaseField: 'CAST(search.CallDateTime AS DATE)',
             name: 'Date',
             inNotIn: false
         },
@@ -91,7 +91,7 @@ export class RecordSearchComponent implements OnInit {
             id: 3,
             inputType: 'text',
             searchValue: 'tagno',
-            databaseField: 'p.TagNumber',
+            databaseField: 'search.TagNumber',
             name: 'Tag no.',
             inNotIn: false
         },
@@ -99,7 +99,7 @@ export class RecordSearchComponent implements OnInit {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
-            databaseField: 'c.Name',
+            databaseField: 'search.Name',
             name: 'Caller name',
             inNotIn: false
         },
@@ -107,7 +107,7 @@ export class RecordSearchComponent implements OnInit {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
-            databaseField: 'c.Number',
+            databaseField: 'search.Number',
             name: 'Caller no.',
             inNotIn: false
         },
@@ -115,23 +115,15 @@ export class RecordSearchComponent implements OnInit {
             id: 6,
             inputType: 'text',
             searchValue: 'location',
-            databaseField: 'ec.Location',
+            databaseField: 'search.Location',
             name: 'Location',
-            inNotIn: false
-        },
-        {
-            id: 7,
-            inputType: 'text',
-            searchValue: 'area',
-            databaseField: '',
-            name: 'Area',
             inNotIn: false
         },
         {
             id: 8,
             inputType: 'text',
             searchValue: 'species',
-            databaseField: 'at.AnimalType',
+            databaseField: 'search.AnimalType',
             name: 'Animal type',
             inNotIn: false
         },
@@ -139,7 +131,7 @@ export class RecordSearchComponent implements OnInit {
             id: 9,
             inputType: 'text',
             searchValue: 'problem',
-            databaseField: 'pp.Problem',
+            databaseField: 'search.Problem',
             name: 'Problem',
             inNotIn: false
         },
@@ -147,7 +139,7 @@ export class RecordSearchComponent implements OnInit {
             id: 10,
             inputType: 'text',
             searchValue: 'outcome',
-            databaseField: 'o.CallOutcome',
+            databaseField: 'search.CallOutcome',
             name: 'Result',
             inNotIn: false
         },
@@ -155,7 +147,7 @@ export class RecordSearchComponent implements OnInit {
             id: 11,
             inputType: 'text',
             searchValue: 'cloc',
-            databaseField: '',
+            databaseField: 'search.CurrentLocation',
             name: 'Current location',
             inNotIn: false
         },
@@ -163,7 +155,7 @@ export class RecordSearchComponent implements OnInit {
             id: 12,
             inputType: 'date',
             searchValue: 'releasedate',
-            databaseField: 'CAST(p.ReleaseDate AS DATE)',
+            databaseField: 'CAST(search.ReleaseDate AS DATE)',
             name: 'Release date',
             inNotIn: false
         },
@@ -171,7 +163,7 @@ export class RecordSearchComponent implements OnInit {
             id: 13,
             inputType: 'date',
             searchValue: 'dieddate',
-            databaseField: 'CAST(p.DiedDate AS DATE)',
+            databaseField: 'CAST(search.DiedDate AS DATE)',
             name: 'Died date',
             inNotIn: false
         },
@@ -179,7 +171,7 @@ export class RecordSearchComponent implements OnInit {
             id: 14,
             inputType: 'boolean',
             searchValue: 'tycall',
-            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
             name: 'Thanked',
             inNotIn: true
         },
