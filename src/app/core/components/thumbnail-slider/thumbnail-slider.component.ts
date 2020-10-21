@@ -36,8 +36,6 @@ export class ThumbnailSliderComponent implements OnInit{
                 return;
             }
 
-
-
             this.galleryImages = mediaItems.map(item=>{
                return {
                         small:item.remoteURL,
