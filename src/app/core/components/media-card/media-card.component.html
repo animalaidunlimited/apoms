@@ -11,7 +11,7 @@
 
 
 
-    <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (370 / mediaItem.widthPX) * mediaItem.heightPX}">
 
         <source [src]="mediaItem.remoteURL || mediaItem.localURL" type="video/mp4"/>
         Browser not supported
