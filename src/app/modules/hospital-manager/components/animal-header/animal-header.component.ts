@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Type } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { SafeUrl } from '@angular/platform-browser';
@@ -56,8 +55,10 @@ export class AnimalHeaderComponent implements OnInit {
             patientId: 0,
             remoteURL: '',
             mediaItemId: of(0),
+            patientMediaItemId: 0,
             uploadProgress$: null,
-            updated: false
+            updated: false,
+            deleted: false
         };
     }
 

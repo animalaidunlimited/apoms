@@ -160,6 +160,7 @@ return returnObject;
 
     const newMediaItem:MediaItem = {
       mediaItemId: new Observable<number>(),
+      patientMediaItemId: 0,
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
       isPrimary: false,
@@ -171,7 +172,8 @@ return returnObject;
       widthPX: 0,
       tags: [],
       uploadProgress$: null,
-      updated: false
+      updated: false,
+      deleted: false
     };
 
     if(isImage){

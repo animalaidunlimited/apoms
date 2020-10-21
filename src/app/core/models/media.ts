@@ -3,11 +3,13 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface MediaItem{
     mediaItemId: Observable<number>;
+    patientMediaItemId: number;
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
     isPrimary:boolean;
     datetime: Date|string;
+    deleted: boolean;
     comment: string;
     patientId: number;
     heightPX: number;

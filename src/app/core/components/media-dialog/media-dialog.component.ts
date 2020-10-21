@@ -55,7 +55,8 @@ export class MediaDialogComponent implements OnInit {
           console.log(mediaItem);
 
          this.newItem  = {
-          mediaItemId: of(mediaItem.mediaItemId),
+          mediaItemId: mediaItem.mediaItemId,
+          patientMediaItemId: mediaItem.patientMediaItemId,
           mediaType: mediaItem.mediaType,
           localURL: mediaItem.localURL,
           remoteURL: mediaItem.remoteURL,
@@ -67,7 +68,8 @@ export class MediaDialogComponent implements OnInit {
           widthPX: mediaItem.widthPX,
           tags: mediaItem.tags,
           uploadProgress$: of(100),
-          updated: false
+          updated: false,
+          deleted: false
         };
         return this.newItem;
         });
@@ -141,10 +143,9 @@ addToMediaItems(item: MediaItem){
 
 onMediaItemDeleted(deletedMediaItem: MediaItem){
 
-  this.mediaItems = this.mediaItems.filter((mediaItem) => {
-
-    return mediaItem.mediaItemId !== deletedMediaItem.mediaItemId;
-  });
+  this.mediaItems = this.mediaItems.filter(mediaItem =>
+          mediaItem.mediaItemId !== deletedMediaItem.mediaItemId
+  );
 
 }
 

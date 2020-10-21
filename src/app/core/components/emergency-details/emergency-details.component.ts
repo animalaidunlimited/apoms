@@ -94,8 +94,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
             });
 
-            console.log(this.focusEmergencyNumber);
-
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
