@@ -85,12 +85,11 @@ export class PatientRecordComponent implements OnInit {
 
         this.mediaData.subscribe(media=>{
 
-
             if(media.length === 0){
                 return;
             }
 
-            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true) || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
+            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
         });
     }
