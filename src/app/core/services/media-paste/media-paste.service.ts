@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { Observable, from, BehaviorSubject, of } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -28,7 +28,6 @@ interface ResizedImage{
 })
 
 export class MediaPasteService {
-
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -153,6 +152,8 @@ return returnObject;
 
     const lastObjectUrl = URL.createObjectURL(file);
 
+    console.log(file);
+
     const now = new Date();
 
     const isImage = isImageFile(file);
@@ -176,31 +177,37 @@ return returnObject;
       deleted: false
     };
 
-    if(isImage){
-
       const uploadImage = {
         url: lastObjectUrl,
-        context: ''
+        context: '',
+        height: 0,
+        width: 0
       };
 
-      let mediaObservable: Observable<any>;
+      if(isImage || isVideo){
 
-      if(isImage){
-        mediaObservable = this.getImageDimension(uploadImage);
-      }
-      else if (isVideo) {
-        mediaObservable = this.getVideoDimension(uploadImage);
+        console.log(isImage + ' ' + isVideo);
+
+
+        const mediaObservable = isImage ? this.getImageDimension(uploadImage) :
+        this.getVideoDimension(uploadImage);
+
+        console.log(mediaObservable);
+
 
         // Get the dimensions of the image
         mediaObservable.subscribe((image) => {
+
+        console.log(image);
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;
 
       });
+
       }
 
-    }
+
 
     return newMediaItem;
 
@@ -224,16 +231,19 @@ return returnObject;
 getVideoDimension(video:any): Observable<any> {
 
   return new Observable(observer => {
-      const vid = new HTMLVideoElement();
+      const vid = document.createElement('video');
 
       vid.onload = (event) => {
-          const loadedImage: any = event.currentTarget;
-          video.width = loadedImage.width;
-          video.height = loadedImage.height;
+          const loadedVideo: any = event.currentTarget;
+          video.width = loadedVideo.width;
+          video.height = loadedVideo.height;
+          console.log(loadedVideo);
           observer.next(video);
           observer.complete();
       };
+
       vid.src = video.url;
+      vid.load();
   });
 }
 
