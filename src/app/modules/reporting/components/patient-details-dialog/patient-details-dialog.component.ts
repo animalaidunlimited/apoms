@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
+import { MatChip } from '@angular/material/chips';
 
 interface DialogData{
 areaName : string;
@@ -41,7 +42,7 @@ export class PatientDetailsDialogComponent implements OnInit {
     private printService: PrintTemplateService,
     private census: CensusService ) {
 
-    this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index')));
+    this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index' && column !== 'complete')));
 
     this.isPrinting = this.printService.getIsPrinting();
 
@@ -115,7 +116,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   treatmentLayout(){
 
-    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready']);
+    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
 
   }
 
@@ -123,6 +124,13 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.displayedColumns.next(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
 
+  }
+
+  toggleTreatment(chip:MatChip, row:ReportPatientRecord){
+
+    
+
+    console.log(row);
 
   }
 
