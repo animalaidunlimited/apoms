@@ -1,1 +1,69 @@
-<p>users-page works!</p>
+<form [formGroup]= "userDetails" (ngSubmit)='Submit(userDetails)'>
+    <fieldset class="form-sub-group">
+        <legend class="legend">User Details</legend>
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+            <mat-form-field>
+                <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
+            </mat-form-field>
+            <mat-form-field>
+                <input type= 'text' placeholder='Last name' formControlName='lastName' matInput required>
+            </mat-form-field>
+            <mat-form-field>
+                <input type= 'tel' placeholder='Phone number' formControlName= 'phoneNumber' matInput required>
+            </mat-form-field>
+            <mat-form-field>
+                <input type= 'text' placeholder='Initials' formControlName= 'userInitials' matInput required>
+            </mat-form-field>
+            
+        </div>
+
+
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+            <mat-form-field>
+                <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
+            </mat-form-field>
+            <mat-form-field>
+                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'password' matInput required>
+                <mat-icon matSuffix style="cursor: pointer;" (click)="hide=!hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Pick color</mat-label>
+                <input type="color" formControlName='userColor' matInput required>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+            <mat-form-field appearance="fill">
+                <mat-label>-Team-</mat-label>
+                <mat-select formControlName= 'teamId' required>
+                    <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
+                    {{name.TeamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>-StreetTreat role-</mat-label>
+                <mat-select formControlName='streetTreatRoleId' required>
+                    <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
+                        {{role.roleName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>-User job type-</mat-label>
+                <mat-select formControlName= 'userJobTypeId' multiple  required>
+                    <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
+                        {{jobType.Title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+            <button type='submit' [disabled]="!userDetails.valid" mat-raised-button color='primary'>Save</button>
+            <button type='button' mat-raised-button color='primary'>Reset</button>
+            <button type='button' mat-raised-button color='primary'>Delete</button>
+        </div>
+    </fieldset>
+</form>

@@ -14,7 +14,9 @@ const PROXY_CONFIG = [
             "/SurgeryRegister",
             "/Messaging",
             "/CensusData",
-            "/PrintTemplate"
+            "/PrintTemplate",
+            "/Team",
+            "/Users"
 
         ],
         target: "http://localhost:8080/",
