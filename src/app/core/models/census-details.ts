@@ -36,6 +36,7 @@ export interface ReportPatientRecord {
     'Release status': number | string;
     'Temperament': number | string;
     'Treatment priority': number | string;
+    treatedToday: boolean;
 }
 
 export interface CensusPrintContent{

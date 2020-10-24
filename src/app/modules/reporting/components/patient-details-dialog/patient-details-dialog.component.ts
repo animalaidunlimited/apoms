@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -9,6 +9,9 @@ import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/ap
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
 import { MatChip } from '@angular/material/chips';
+import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
 
 interface DialogData{
 areaName : string;
@@ -39,7 +42,9 @@ export class PatientDetailsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private dialog: MatDialog,
     private printService: PrintTemplateService,
+    private treatmentService: TreatmentService,
     private census: CensusService ) {
 
     this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index' && column !== 'complete')));
@@ -56,7 +61,8 @@ export class PatientDetailsDialogComponent implements OnInit {
     'Release ready': false,
     'Release status': '',
     Temperament: '',
-    'Treatment priority': ''};
+    'Treatment priority': '',
+    treatedToday: false};
 
     this.patientRecords = new MatTableDataSource([emptyReportPatient]);
 
@@ -126,12 +132,52 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   }
 
-  toggleTreatment(chip:MatChip, row:ReportPatientRecord){
+  toggleTreatment(row:ReportPatientRecord){
 
-    
+    row.treatedToday = !row.treatedToday;
 
-    console.log(row);
+    if(row.treatedToday){
+      this.openTreatmentDialog(row);
+    }
+    else {
+
+      const dialogRef = this.dialog.open(ConfirmationDialog,{
+        data:{
+          message: 'Do you want to clear today\'s treatment(s) for this patient?',
+          buttonText: {
+            ok: 'Yes',
+            cancel: 'Cancel'
+          }
+        }
+      });
+
+      dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+        if (confirmed) {
+
+          // To do clear the treatment for this date
+          this.treatmentService.deleteTreatmentsByDate(new Date());
+
+        }
+      });
+
+    }
 
   }
+
+  openTreatmentDialog(row:ReportPatientRecord): void {
+
+    const dialogRef = this.dialog.open(TreatmentRecordComponent, {
+        width: '650px',
+        data: {
+        },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+        if (result) {
+
+        }
+    });
+}
 
 }
