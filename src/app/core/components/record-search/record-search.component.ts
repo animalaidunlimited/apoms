@@ -61,7 +61,7 @@ export class RecordSearchComponent implements OnInit {
     searchShowing = false;
 
     search = new Search();
-
+    
     options: SearchValue[] = [
         {
             id: 0,

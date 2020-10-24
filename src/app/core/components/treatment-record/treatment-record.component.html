@@ -8,18 +8,18 @@
 <mat-form-field>
     <input formControlName="treatmentDateTime" name="treatmentDateTime" type="datetime-local"
     (focus)="setInitialTime($event)"
-        [max]="currentTime" [errorStateMatcher]="errorMatcher" placeholder="Treatment date" matInput>
+        [max]="currentTime" placeholder="Treatment date" matInput>
 </mat-form-field>
 
 <mat-form-field>
     <input formControlName="nextTreatmentDateTime" name="nextTreatmentDateTime" type="datetime-local"
     (focus)="setInitialTime($event)"
-    [max]="currentTime" [errorStateMatcher]="errorMatcher" placeholder="Next treatment date" matInput>
+    [max]="currentTime" placeholder="Next treatment date" matInput>
 </mat-form-field>
 
 </div>
 
-<label class="label">Eye discharge</label>
+<label class="label">Eye discharge &#8853;</label>
 <mat-chip-list>
     <mat-chip #edChip="matChip"
     (click)="edChip.toggleSelected()"
@@ -46,5 +46,5 @@
 
 <mat-dialog-actions >
     <button type="button" mat-raised-button color="primary" mat-dialog-close>Cancel</button>
-    <button type="button" mat-raised-button color="primary" (click)="saveTreatment()" cdkFocusInitial>Save</button>
+    <button type="button" mat-raised-button color="primary" (click)="saveTreatment()" [disabled]="treatmentDetails.invalid">Save</button>
   </mat-dialog-actions>
