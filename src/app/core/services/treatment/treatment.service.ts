@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TreatmentRecord } from '../../models/treatment';
 import { APIService } from '../http/api.service';
 
 @Injectable({
@@ -32,9 +33,18 @@ getTreatmentByTreatmentId(treatmentId: number){
 
 }
 
-saveTreatment(){
+saveTreatment(saveData:TreatmentRecord){
 
-  return {success : 1};
+  if(saveData.treatmentId){
+
+    this.put(saveData);
+
+  }
+  else{
+
+    this.post(saveData);
+
+  }
 
 }
 
