@@ -25,9 +25,8 @@
           <th mat-header-cell *matHeaderCellDef> Treated </th>
           <td mat-cell *matCellDef="let row">
             <mat-chip-list>
-            <mat-chip #treatedChip>
-              <mat-icon class="complete" (click)="toggleTreatment(treatedChip, row)">check_circle</mat-icon>
-              <!--<mat-icon>check_box_outline_blank</mat-icon>-->
+            <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
+              <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
             </mat-chip>
           </mat-chip-list>
           </td>
