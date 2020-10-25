@@ -20,7 +20,7 @@
 </div>
 
 <label class="label">Eye discharge &#8853;</label>
-<mat-chip-list>
+<mat-chip-list #edChips>
     <mat-chip #edChip="matChip"
     (click)="edChip.toggleSelected()"
     (selectionChange)="edChipSelected(edChip);"
@@ -30,7 +30,7 @@
 
 <label class="label">Nasal discharge</label>
 
-<mat-chip-list>
+<mat-chip-list #ndChips>
     <mat-chip #ndChip="matChip"
     (click)="ndChip.toggleSelected()"
     (selectionChange)="ndChipSelected(ndChip);"
