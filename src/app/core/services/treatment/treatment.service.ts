@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { TreatmentRecord } from '../../models/treatment';
 import { APIService } from '../http/api.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,34 +16,44 @@ export class TreatmentService extends APIService {
 }
 
 
-getTreatmentsByPatientId(patientId: number){
+public async getTreatmentsByPatientId(patientId: number): Promise<any>{
 
-  return {success : 1};
+  const request:string = '?patientId=' + patientId;
 
-}
-
-getLastTreatmentByDate(treatmentDate: string | Date){
-
-  return {success : 1};
+  return await this.get(request);
 
 }
 
-getTreatmentByTreatmentId(treatmentId: number){
+public async getLastTreatmentByDate(patientId: number, treatmentDate: string | Date): Promise<any>{
 
-  return {success : 1};
+  const request:string = '?patientId=' + patientId + '&treatmentDate=' + treatmentDate;
+
+  console.log(request);
+
+  return await this.get(request);
 
 }
 
-saveTreatment(saveData:TreatmentRecord){
+public async getTreatmentByTreatmentId(treatmentId: number): Promise<any>{
+
+  const request:string = '?treatmentId=' + treatmentId;
+
+  return await this.get(request);
+
+}
+
+public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
+
+  console.log(saveData);
 
   if(saveData.treatmentId){
 
-    this.put(saveData);
+    return await this.put(saveData);
 
   }
   else{
 
-    this.post(saveData);
+    return await this.post(saveData);
 
   }
 

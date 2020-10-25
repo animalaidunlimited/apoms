@@ -26,6 +26,7 @@ export interface CensusArea {
 
 export interface ReportPatientRecord {
     'Emergency number': number;
+    'PatientId': number;
     'Tag number': string;
     'Species': string;
     'Caller name' : string;

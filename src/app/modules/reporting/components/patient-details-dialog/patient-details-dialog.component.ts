@@ -8,7 +8,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
-import { MatChip } from '@angular/material/chips';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
@@ -52,6 +51,7 @@ export class PatientDetailsDialogComponent implements OnInit {
     this.isPrinting = this.printService.getIsPrinting();
 
     const emptyReportPatient:ReportPatientRecord = {'Emergency number': 0,
+    PatientId: 0,
     'Tag number': '',
     Species: '',
     'Caller name' : '',
@@ -134,7 +134,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   toggleTreatment(row:ReportPatientRecord){
 
-    row.treatedToday = !row.treatedToday;
+
 
     if(row.treatedToday){
       this.openTreatmentDialog(row);
@@ -151,12 +151,18 @@ export class PatientDetailsDialogComponent implements OnInit {
         }
       });
 
-      dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
         if (confirmed) {
-
           // To do clear the treatment for this date
-          this.treatmentService.deleteTreatmentsByDate(new Date());
+          const response = await this.treatmentService.deleteTreatmentsByDate(new Date());
 
+          if(response.success === 1){
+            row.treatedToday = !row.treatedToday;
+          }
+
+        }
+        else{
+          this.openTreatmentDialog(row);
         }
       });
 
@@ -169,6 +175,7 @@ export class PatientDetailsDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(TreatmentRecordComponent, {
         width: '650px',
         data: {
+          patientId: row.PatientId
         },
     });
 
