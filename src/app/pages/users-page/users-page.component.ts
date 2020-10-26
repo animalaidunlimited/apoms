@@ -3,6 +3,7 @@ import { UserDetailsService } from 'src/app/core/services/user-details/user-deta
 import { Team, UserJobType } from 'src/app/core/models/userDetails';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 interface StreetTreatRole {
   roleId: number;
@@ -19,22 +20,25 @@ export class UsersPageComponent implements OnInit {
     teamNames!: Team[];
     jobTypes!: UserJobType[];
     hide = true;
-    constructor(private userDetail : UserDetailsService,
+    streetTreatdropdown = false;
+    isChecked = true;
+    constructor(private dropdown : DropdownService,
       private fb : FormBuilder,
       private userAction : UserActionService) {}
 
     userDetails = this.fb.group({
-      userId : [],
-      firstName : ['',Validators.required],
-      lastName: ['',Validators.required],
+      userUserId : [],
+      userFirstName : ['',Validators.required],
+      userSurname: ['',Validators.required],
+      userTelephone:[,Validators.required],
       userInitials: ['',Validators.required],
-      phoneNumber:[,Validators.required],
-      userName:['',Validators.required],
-      password: ['',Validators.required],
+      userUserName:['',Validators.required],
+      userPassword: ['',Validators.required],
       userColor:['',Validators.required],
-      teamId:[,Validators.required],
-      streetTreatRoleId:[,Validators.required],
-      userJobTypeId:[,Validators.required]
+      userTeamId:[],
+      userRoleId:[],
+      userJobTypeId:[,Validators.required],
+      userIsDeleted: []
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -44,15 +48,26 @@ export class UsersPageComponent implements OnInit {
     }];
 
     ngOnInit() {
-        this.userDetail.getAllTeams().subscribe(team=>{
+        this.dropdown.getAllTeams().subscribe(team=>{
           this.teamNames = team;
         });
-        this.userDetail.getUserJobType().subscribe(jobType=>{
+        this.dropdown.getUserJobType().subscribe(jobType=>{
           this.jobTypes = jobType;
         });
     }
 
     Submit(userDetailsForm: any) {
-      this.userAction.insertUser(userDetailsForm.value);
+      if(userDetailsForm.value.userJobTypeId)
+     {
+        console.log(userDetailsForm.value);
+        this.userAction.insertUser(userDetailsForm.value);
+     }
     }
+
+    changed(){
+      if(this.isChecked) {
+        this.streetTreatdropdown = !this.streetTreatdropdown;
+      }
+    }
+
 }

@@ -6,15 +6,13 @@ import { APIService } from '../http/api.service';
   providedIn: 'root'
 })
 export class UserActionService extends APIService{
-endpoint = 'Users';
+endpoint = 'UserAdmin';
 constructor(public http: HttpClient) { 
   super(http);
 }
 
 
 public async insertUser(userDetails:any): Promise<any> {
-  console.log(userDetails);
-  const request = 'User';
   if (userDetails.UserId) {
       return await this.put(userDetails);
   } else {

@@ -15,8 +15,7 @@ const PROXY_CONFIG = [
             "/Messaging",
             "/CensusData",
             "/PrintTemplate",
-            "/Team",
-            "/Users"
+            "/UserAdmin"
 
         ],
         target: "http://localhost:8080/",
