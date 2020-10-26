@@ -6,7 +6,6 @@ export enum TreatmentPriority{
 }
 
 export enum Temperament {
-
     Friendly = 1,
     Shy = 2,
     'Very Fearful' = 3,

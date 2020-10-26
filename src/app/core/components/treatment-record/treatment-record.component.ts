@@ -85,17 +85,23 @@ export class TreatmentRecordComponent implements OnInit {
 
 edChipSelected(chip: MatChip){
 
-  const eyeDischarge = this.eyeDischarge.find(elem => elem.value === chip.value.trim());
+  if(chip.selected){
 
-  this.treatmentDetails.get('eyeDischarge')?.setValue(eyeDischarge?.key);
+      const eyeDischarge = this.eyeDischarge.find(elem => elem.value === chip.value.trim());
+
+      this.treatmentDetails.get('eyeDischarge')?.setValue(eyeDischarge?.key);
+  }
 
 }
 
 ndChipSelected(chip: MatChip){
 
-  const nasalDischarge = this.nasalDischarge.find(elem => elem.value === chip.value.trim());
+  if(chip.selected){
 
-  this.treatmentDetails.get('nasalDischarge')?.setValue(nasalDischarge?.key);
+    const nasalDischarge = this.nasalDischarge.find(elem => elem.value === chip.value.trim());
+
+    this.treatmentDetails.get('nasalDischarge')?.setValue(nasalDischarge?.key);
+  }
 
 }
 

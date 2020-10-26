@@ -89,12 +89,16 @@ JSON_OBJECT("Treatment priority", p.TreatmentPriority),
 JSON_OBJECT("ABC status", p.ABCStatus),
 JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
-JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END)
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", CASE WHEN t.PatientId IS NOT NULL THEN TRUE ELSE FALSE END)
 ))patientDetails
 FROM AAU.Patient p
 INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId;
+INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
+LEFT JOIN AAU.Treatment t ON t.PatientId = p.PatientId AND CAST(t.TreatmentDateTime AS DATE) = CURRENT_DATE();
+
+
 
 ELSE
 
@@ -112,12 +116,14 @@ JSON_OBJECT("Treatment priority", p.TreatmentPriority),
 JSON_OBJECT("ABC status", p.ABCStatus),
 JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
-JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END)
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", CASE WHEN t.PatientId IS NOT NULL THEN TRUE ELSE FALSE END)
 ))patientDetails
 FROM AAU.Patient p
 INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
+LEFT JOIN AAU.Treatment t ON t.PatientId = p.PatientId AND CAST(t.TreatmentDateTime AS DATE) = CURRENT_DATE()
 WHERE p.TagNumber IN
 (
 	SELECT cn.TagNumber  

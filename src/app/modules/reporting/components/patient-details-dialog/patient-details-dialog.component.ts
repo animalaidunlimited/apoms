@@ -134,39 +134,41 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   toggleTreatment(row:ReportPatientRecord){
 
-
-
-    if(row.treatedToday){
-      this.openTreatmentDialog(row);
-    }
-    else {
-
-      const dialogRef = this.dialog.open(ConfirmationDialog,{
-        data:{
-          message: 'Do you want to clear today\'s treatment(s) for this patient?',
-          buttonText: {
-            ok: 'Yes',
-            cancel: 'Cancel'
-          }
-        }
-      });
-
-      dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
-        if (confirmed) {
-          // To do clear the treatment for this date
-          const response = await this.treatmentService.deleteTreatmentsByDate(new Date());
-
-          if(response.success === 1){
-            row.treatedToday = !row.treatedToday;
-          }
-
-        }
-        else{
-          this.openTreatmentDialog(row);
-        }
-      });
+    if(!row.treatedToday){
+      row.treatedToday = !row.treatedToday;
 
     }
+
+    this.openTreatmentDialog(row);
+
+    //else {
+
+    //  const dialogRef = this.dialog.open(ConfirmationDialog,{
+    //    data:{
+    //      message: 'Do you want to clear today\'s treatment(s) for this patient?',
+    //      buttonText: {
+    //        ok: 'Yes',
+    //        cancel: 'Cancel'
+    //      }
+    //    }
+    //  });
+
+    //  dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+    //    if (confirmed) {
+    //      // To do clear the treatment for this date
+    //      const response = await this.treatmentService.deleteTreatmentsByDate(new Date());
+
+    //      if(response.success === 1){
+    //        row.treatedToday = !row.treatedToday;
+    //      }
+
+    //    }
+    //    else{
+    //      this.openTreatmentDialog(row);
+    //    }
+    //  });
+
+    //}
 
   }
 
