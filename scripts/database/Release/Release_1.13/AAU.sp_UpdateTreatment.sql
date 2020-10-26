@@ -13,7 +13,8 @@ IN prm_TreatmentDateTime DATETIME,
 IN prm_NextTreatmentDateTime DATETIME,
 IN prm_EyeDischarge INT,
 IN prm_NasalDischarge INT,
-IN prm_Comment VARCHAR(1024))
+IN prm_Comment VARCHAR(1024),
+IN prm_IsDeleted BOOLEAN)
 BEGIN
 
 /*
@@ -41,7 +42,9 @@ START TRANSACTION;
 			NextTreatmentDateTime	= prm_NextTreatmentDateTime,
 			EyeDischargeId			= prm_EyeDischarge,
 			NasalDischargeId		= prm_NasalDischarge,
-			Comment					= prm_Comment
+			Comment					= prm_Comment,
+            IsDeleted				= IFNULL(prm_IsDeleted,0),
+            DeletedDate				= CASE WHEN prm_IsDeleted = 1 THEN CURRENT_TIMESTAMP ELSE NULL END
 		WHERE TreatmentId = prm_TreatmentId;
 COMMIT;
 

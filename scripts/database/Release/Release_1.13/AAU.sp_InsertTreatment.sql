@@ -7,8 +7,8 @@ DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertTreatment(
 IN prm_Username VARCHAR(64),
 IN prm_PatientId INT,
-IN prm_TreatmentDateTime DATE,
-IN prm_NextTreatmentDateTime DATE,
+IN prm_TreatmentDateTime DATETIME,
+IN prm_NextTreatmentDateTime DATETIME,
 IN prm_EyeDischarge INT,
 IN prm_NasalDischarge INT,
 IN prm_Comment VARCHAR(1024)
@@ -49,8 +49,8 @@ START TRANSACTION;
 		(
         vOrganisationId,
         prm_PatientId,
-        STR_TO_DATE(LEFT(prm_TreatmentDateTime,19), '%Y-%m-%dT%H:%i:%s'),
-        STR_TO_DATE(LEFT(prm_NextTreatmentDateTime,19), '%Y-%m-%dT%H:%i:%s'),
+        prm_TreatmentDateTime,
+        prm_NextTreatmentDateTime,
         prm_EyeDischarge,
         prm_NasalDischarge,
         prm_Comment

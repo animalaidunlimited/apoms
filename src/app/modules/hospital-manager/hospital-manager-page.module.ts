@@ -33,6 +33,7 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
+import { TreatmentComponent } from './components/treatment/treatment.component';
 
 @NgModule({
     declarations: [
@@ -51,6 +52,7 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
+        TreatmentComponent,
         
     ],
     imports: [

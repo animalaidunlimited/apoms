@@ -25,7 +25,8 @@ JSON_MERGE_PRESERVE(
 ) AS Result   
     
 FROM AAU.Treatment t
-WHERE t.TreatmentId = prm_TreatmentId;
+WHERE t.TreatmentId = prm_TreatmentId
+AND t.IsDeleted = 0;
 
 END$$
 DELIMITER ;

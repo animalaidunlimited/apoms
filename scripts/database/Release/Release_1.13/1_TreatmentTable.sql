@@ -7,6 +7,9 @@ CREATE TABLE IF NOT EXISTS AAU.Treatment (
   `EyeDischargeId` INT NULL,
   `NasalDischargeId` INT NULL,
   `Comment` NVARCHAR(1024) NULL,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TreatmentId`),
   INDEX `FK_TreatmentPatientId_PatientPatientId_idx` (`PatientId` ASC) VISIBLE,
   CONSTRAINT `FK_TreatmentPatientId_PatientPatientId`
