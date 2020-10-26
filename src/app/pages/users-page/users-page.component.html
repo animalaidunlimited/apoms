@@ -1,15 +1,17 @@
-<form [formGroup]= "userDetails" (ngSubmit)='Submit(userDetails)'>
-    <fieldset class="form-sub-group">
+<form [formGroup]='userDetails' (ngSubmit)='Submit(userDetails)'>
+    <fieldset class='form-sub-group'>
         <legend class="legend">User Details</legend>
+
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field>
-                <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
+                <input type= 'text' placeholder='First name' formControlName='userFirstName' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input type= 'text' placeholder='Last name' formControlName='lastName' matInput required>
+                <input type= 'text' placeholder='Last name' formControlName='userSurname' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input type= 'tel' placeholder='Phone number' formControlName= 'phoneNumber' matInput required>
+                <span matPrefix>+91 &nbsp;</span>
+                <input type= 'tel' placeholder='Phone number' formControlName= 'userTelephone' matInput required>
             </mat-form-field>
             <mat-form-field>
                 <input type= 'text' placeholder='Initials' formControlName= 'userInitials' matInput required>
@@ -20,10 +22,10 @@
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field>
-                <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
+                <input type='text' placeholder="Username" formControlName= 'userUserName' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'password' matInput required>
+                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'userPassword' matInput required>
                 <mat-icon matSuffix style="cursor: pointer;" (click)="hide=!hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </mat-form-field>
 
@@ -31,36 +33,51 @@
                 <mat-label>Pick color</mat-label>
                 <input type="color" formControlName='userColor' matInput required>
             </mat-form-field>
+
+            
         </div>
 
+
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
-            <mat-form-field appearance="fill">
-                <mat-label>-Team-</mat-label>
-                <mat-select formControlName= 'teamId' required>
-                    <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
-                    {{name.TeamName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>-StreetTreat role-</mat-label>
-                <mat-select formControlName='streetTreatRoleId' required>
-                    <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
-                        {{role.roleName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+
+            <mat-slide-toggle style="margin-bottom: auto;" (change)="changed()">Street treat user</mat-slide-toggle>
+
+            <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
+                <mat-form-field appearance="fill">
+                    <mat-label>-Team-</mat-label>
+                    <mat-select formControlName= 'userTeamId'>
+                        <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
+                        {{name.TeamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>-StreetTreat role-</mat-label>
+                    <mat-select formControlName='userRoleId'>
+                        <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
+                            {{role.roleName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        
+
+        <div fxLayout='row' fxLayoutGap= '20px' style="margin-top: 20px;" fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field appearance="fill">
                 <mat-label>-User job type-</mat-label>
-                <mat-select formControlName= 'userJobTypeId' multiple  required>
+                <mat-select  formControlName= 'userJobTypeId' multiple  required>
                     <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
                         {{jobType.Title}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+
+            <mat-slide-toggle formControlName='userIsDeleted'>IsDeleted</mat-slide-toggle>
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+        <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <button type='submit' [disabled]="!userDetails.valid" mat-raised-button color='primary'>Save</button>
             <button type='button' mat-raised-button color='primary'>Reset</button>
             <button type='button' mat-raised-button color='primary'>Delete</button>

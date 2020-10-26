@@ -94,6 +94,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
+                console.log('pinku');
         } catch (error) {
             response = this.errorHandler('POST', error);
         }
