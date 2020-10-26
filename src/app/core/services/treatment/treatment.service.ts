@@ -28,8 +28,6 @@ public async getLastTreatmentByDate(patientId: number, treatmentDate: string | D
 
   const request:string = '?patientId=' + patientId + '&treatmentDate=' + treatmentDate;
 
-  console.log(request);
-
   return await this.get(request);
 
 }
@@ -43,8 +41,6 @@ public async getTreatmentByTreatmentId(treatmentId: number): Promise<any>{
 }
 
 public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
-
-  console.log(saveData);
 
   if(saveData.treatmentId){
 
