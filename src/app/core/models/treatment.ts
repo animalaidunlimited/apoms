@@ -3,9 +3,10 @@ export interface TreatmentRecord{
     patientId: number;
     treatmentDateTime: Date | string;
     nextTreatmentDateTime: Date | string;
-    eyeDischarge: number;
-    nasalDischarge: number;
+    eyeDischarge: number | string;
+    nasalDischarge: number | string;
     comment: string;
+    deleted: boolean;
   }
 
   export interface TreatmentResponse{

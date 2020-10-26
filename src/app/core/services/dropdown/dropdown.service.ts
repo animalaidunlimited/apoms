@@ -42,7 +42,9 @@ export class DropdownService extends APIService {
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
+    eyeDischarge$!: any[];
     isoReasons$!: any[];
+    nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
     patientCallOutcome$!: Observable<PatientCallOutcome[]>;
@@ -331,6 +333,32 @@ export class DropdownService extends APIService {
         return this.isoReasons$;
     }
 
+    getEyeDischarge() {
+        if (!this.eyeDischarge$) {
+            this.eyeDischarge$ = [
+                {key: 1, value: 'Nil'},
+                {key: 2, value: 'ED'},
+                {key: 3, value: 'ED⊕'},
+                {key: 4, value: 'ED⊕⊕'}
+            ];
+        }
+
+        return this.eyeDischarge$;
+    }
+
+    getNasalDischarge() {
+        if (!this.nasalDischarge$) {
+            this.nasalDischarge$ = [
+                {key: 1, value: 'Nil'},
+                {key: 2, value: 'ND'},
+                {key: 3, value: 'ND⊕'},
+                {key: 4, value: 'ND⊕⊕'}
+            ];
+        }
+
+        return this.nasalDischarge$;
+    }
+
     getAntibiotics() : Antibiotic[] {
         if (!this.antibiotics$) {
             this.antibiotics$ = [
@@ -351,7 +379,7 @@ export class DropdownService extends APIService {
                 { antibioticId: 15, antibiotic: 'Penicillin' },
                 { antibioticId: 16, antibiotic: 'Septran' },
                 { antibioticId: 17, antibiotic: 'Tramadol' },
-                { antibioticId: 18, antibiotic: 'Tribivet' },
+                { antibioticId: 18, antibiotic: 'Tribivet' }
             ];
         }
 

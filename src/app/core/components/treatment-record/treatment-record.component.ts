@@ -5,11 +5,13 @@ import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { TreatmentRecord, TreatmentResponse } from '../../models/treatment';
+import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { TreatmentService } from '../../services/treatment/treatment.service';
 
 interface DialogData{
   patientId : number;
+  treatmentId: number;
   }
 
 @Component({
@@ -26,14 +28,16 @@ export class TreatmentRecordComponent implements OnInit {
     private snackbar: SnackbarService,
     private dialogRef:MatDialogRef<TreatmentRecordComponent>,
     private treatmentService: TreatmentService,
+    private dropdown: DropdownService,
     private datepipe: DatePipe
   ) { }
 
   @ViewChild('edChips', { static: true }) edChips!: MatChipList;
   @ViewChild('ndChips', { static: true }) ndChips!: MatChipList;
 
-  eyeDischarge = [{key: 1, value: 'Nil'},{key: 2, value: 'ED'},{key: 3, value: 'ED⊕'},{key: 4, value: 'ED⊕⊕'}];
-  nasalDischarge = [{key: 1, value: 'Nil'},{key: 2, value: 'ND'},{key: 3, value: 'ND⊕'},{key: 4, value: 'ND⊕⊕'}];
+  eyeDischarge = this.dropdown.getEyeDischarge();
+  nasalDischarge = this.dropdown.getNasalDischarge();
+
   currentTime = getCurrentTimeString();
 
   treatmentDetails = this.fb.group({
@@ -61,15 +65,22 @@ export class TreatmentRecordComponent implements OnInit {
       throw Error('Unable to create date');
     }
 
-    const treatmentDetails:TreatmentRecord = await this.treatmentService.getLastTreatmentByDate(this.data.patientId, date);
+    if(this.data.treatmentId !== -1){
 
-    this.treatmentDetails.patchValue(treatmentDetails);
+      // We may be opening from the treatment list or from the patient record, so handle both.
+      const treatmentDetails:TreatmentRecord = this.data.treatmentId !== 0 ?
+      await this.treatmentService.getTreatmentByTreatmentId(this.data.treatmentId) :
+      await this.treatmentService.getLastTreatmentByDate(this.data.patientId, date);
 
-    const edValue = this.eyeDischarge.find(elem => elem.key === treatmentDetails.eyeDischarge);
-    const ndValue = this.nasalDischarge.find(elem => elem.key === treatmentDetails.nasalDischarge);
+      this.treatmentDetails.patchValue(treatmentDetails);
 
-    this.edChips.chips.find(chip => chip.value.trim() === edValue?.value)?.select();
-    this.ndChips.chips.find(chip => chip.value.trim() === ndValue?.value)?.select();
+      const edValue = this.eyeDischarge.find(elem => elem.key === treatmentDetails.eyeDischarge);
+      const ndValue = this.nasalDischarge.find(elem => elem.key === treatmentDetails.nasalDischarge);
+
+      this.edChips.chips.find(chip => chip.value.trim() === edValue?.value)?.select();
+      this.ndChips.chips.find(chip => chip.value.trim() === ndValue?.value)?.select();
+
+    }
 
   }
 
@@ -111,9 +122,9 @@ saveTreatment(){
 
     result.success === 1 ?
       (
-        this.snackbar.successSnackBar('Treatment saved successfully', 'OK'),
         this.treatmentDetails.get('treatmentId')?.setValue(result.treatmentId),
-        this.dialogRef.close()
+        this.snackbar.successSnackBar('Treatment saved successfully', 'OK'),
+        this.dialogRef.close(this.treatmentDetails.value)
        ) :
       this.snackbar.errorSnackBar('An error occured when saving treatment', 'OK');
 

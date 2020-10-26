@@ -9,7 +9,6 @@ import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/ap
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
-import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
 
 interface DialogData{
@@ -141,35 +140,6 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.openTreatmentDialog(row);
 
-    //else {
-
-    //  const dialogRef = this.dialog.open(ConfirmationDialog,{
-    //    data:{
-    //      message: 'Do you want to clear today\'s treatment(s) for this patient?',
-    //      buttonText: {
-    //        ok: 'Yes',
-    //        cancel: 'Cancel'
-    //      }
-    //    }
-    //  });
-
-    //  dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
-    //    if (confirmed) {
-    //      // To do clear the treatment for this date
-    //      const response = await this.treatmentService.deleteTreatmentsByDate(new Date());
-
-    //      if(response.success === 1){
-    //        row.treatedToday = !row.treatedToday;
-    //      }
-
-    //    }
-    //    else{
-    //      this.openTreatmentDialog(row);
-    //    }
-    //  });
-
-    //}
-
   }
 
   openTreatmentDialog(row:ReportPatientRecord): void {
@@ -177,7 +147,8 @@ export class PatientDetailsDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(TreatmentRecordComponent, {
         width: '650px',
         data: {
-          patientId: row.PatientId
+          patientId: row.PatientId,
+          treatmentId: 0
         },
     });
 

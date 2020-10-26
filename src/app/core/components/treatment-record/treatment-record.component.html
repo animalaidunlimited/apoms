@@ -22,6 +22,7 @@
 <label class="label">Eye discharge &#8853;</label>
 <mat-chip-list #edChips>
     <mat-chip #edChip="matChip"
+    style="cursor:pointer"
     (click)="edChip.toggleSelected()"
     (selectionChange)="edChipSelected(edChip);"
     *ngFor="let ed of eyeDischarge">{{ed.value}}
@@ -32,6 +33,7 @@
 
 <mat-chip-list #ndChips>
     <mat-chip #ndChip="matChip"
+    style="cursor:pointer"
     (click)="ndChip.toggleSelected()"
     (selectionChange)="ndChipSelected(ndChip);"
     *ngFor="let nd of nasalDischarge">{{nd.value}}
@@ -45,6 +47,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions >
+    <button type="submit" mat-raised-button color="primary" (click)="saveTreatment()" [disabled]="treatmentDetails.invalid">Save</button>
     <button type="button" mat-raised-button color="primary" mat-dialog-close>Cancel</button>
-    <button type="button" mat-raised-button color="primary" (click)="saveTreatment()" [disabled]="treatmentDetails.invalid">Save</button>
-  </mat-dialog-actions>
+</mat-dialog-actions>
