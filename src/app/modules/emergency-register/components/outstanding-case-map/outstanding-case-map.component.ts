@@ -165,8 +165,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
     this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
 
-      console.log(result);
-
       this.infoContent.next(result);
       this.infoWindow.open(marker);
 
