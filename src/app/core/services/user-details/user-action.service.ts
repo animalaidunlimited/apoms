@@ -13,10 +13,13 @@ constructor(public http: HttpClient) {
 
 
 public async insertUser(userDetails:any): Promise<any> {
-  if (userDetails.UserId) {
+  if (userDetails.userUserId) {
+    console.log('i was called');
       return await this.put(userDetails);
   } else {
+    console.log('no was called');
       return await this.post(userDetails);
   }
 }
+
 }
