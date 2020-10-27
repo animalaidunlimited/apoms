@@ -11,10 +11,6 @@ import { of } from 'rxjs';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'animal-header',
-    // tslint:disable-next-line:no-host-metadata-property
-    //host: {
-    //    '(window:paste)': 'handlePaste( $event )',
-    //},
     templateUrl: './animal-header.component.html',
     styleUrls: ['./animal-header.component.scss'],
 })
