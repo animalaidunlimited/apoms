@@ -4,6 +4,7 @@ import { Team, UserJobType } from 'src/app/core/models/userDetails';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface StreetTreatRole {
   roleId: number;
@@ -18,16 +19,22 @@ interface StreetTreatRole {
 })
 export class UsersPageComponent implements OnInit {
     teamNames!: Team[];
+
     jobTypes!: UserJobType[];
+
     hide = true;
+
     streetTreatdropdown = false;
+
     isChecked = true;
+
     constructor(private dropdown : DropdownService,
       private fb : FormBuilder,
-      private userAction : UserActionService) {}
+      private userAction : UserActionService,
+      private snackBar: SnackbarService) {}
 
     userDetails = this.fb.group({
-      userUserId : [],
+      userUserId : 133, 
       userFirstName : ['',Validators.required],
       userSurname: ['',Validators.required],
       userTelephone:[,Validators.required],
@@ -57,11 +64,22 @@ export class UsersPageComponent implements OnInit {
     }
 
     Submit(userDetailsForm: any) {
-      if(userDetailsForm.value.userJobTypeId)
-     {
-        console.log(userDetailsForm.value);
-        this.userAction.insertUser(userDetailsForm.value);
-     }
+      console.log(userDetailsForm.value);
+        this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+          if(res[0].vSuccess===1){
+            
+            this.snackBar.successSnackBar('User added successfully!' , 'Ok');
+            userDetailsForm.reset();
+
+          }
+          else {
+
+            this.snackBar.errorSnackBar('Error occured!','Ok');
+
+          }
+
+        });
+
     }
 
     changed(){
