@@ -11,6 +11,31 @@ interface StreetTreatRole {
   roleName: string;
 }
 
+// interface Userdetails {
+//   userId : number;
+//   firstName: string;
+//   surName: string;
+//   initials: string;
+//   colour: string;
+//   telephone: number;
+//   userName: string;
+//   password: string;
+//   teamId: number;
+//   team: string;
+//   roleId: number;
+//   role: string;
+//   title:Title[];
+//   isDeleted: boolean;
+
+// }
+
+// interface Title {
+//   jobTypeId: number;
+//   title: string;
+// }
+
+
+// const ELEMENT_DATA: Userdetails[] = [];
 
 @Component({
     selector: 'app-users-page',
@@ -33,8 +58,25 @@ export class UsersPageComponent implements OnInit {
       private userAction : UserActionService,
       private snackBar: SnackbarService) {}
 
+
+    // displayedColumns: string[] = [
+    //   'User Id',
+    //   'First Name',
+    //   'Last Name',
+    //   'Initials',
+    //   'Colour',
+    //   'Phone Number',
+    //   'UserName',
+    //   'Team',
+    //   'StreetTreat role',
+    //   'Job Title',
+    //   'IsDeleted'
+    // ];
+
+    // userDetailRecords = ELEMENT_DATA;
+
     userDetails = this.fb.group({
-      userUserId : 133, 
+      userUserId : [], 
       userFirstName : ['',Validators.required],
       userSurname: ['',Validators.required],
       userTelephone:[,Validators.required],
