@@ -55,9 +55,9 @@ export class OutcomeComponent implements OnInit {
                 rabiesVaccinationDate: [''],
             }),
             antibioticDetails: this.fb.group({
-                antibiotics1: [''],
-                antibiotics2: [''],
-                antibiotics3: [''],
+                antibiotics1: [],
+                antibiotics2: [],
+                antibiotics3: [],
             }),
             isoReason: this.fb.group({
                 isoReason: [],
