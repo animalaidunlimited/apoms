@@ -25,6 +25,7 @@ export class NavGuard implements CanActivateChild {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
+
         if (childRoute.data && childRoute.data.title) {
             const parentPath: string = childRoute.parent!.url
                 .map(url => url.path)

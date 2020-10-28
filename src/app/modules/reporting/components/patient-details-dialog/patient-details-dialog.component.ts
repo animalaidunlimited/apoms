@@ -10,6 +10,7 @@ import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/cen
 import { map } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
+import { Router } from '@angular/router';
 
 interface DialogData{
 areaName : string;
@@ -41,6 +42,7 @@ export class PatientDetailsDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog,
+    private router: Router,
     private printService: PrintTemplateService,
     private treatmentService: TreatmentService,
     private census: CensusService ) {
@@ -159,5 +161,23 @@ export class PatientDetailsDialogComponent implements OnInit {
         }
     });
 }
+
+cellClicked(cell:string, value:any){
+
+    if(cell === 'Tag number'){
+
+      this.openHospitalManagerRecord(value);
+
+    }
+
+}
+
+openHospitalManagerRecord(tagNumber: string){
+
+  this.router.navigate(['/nav/hospital-manager', {tagNumber}], { replaceUrl: true });
+  this.dialog.closeAll();
+
+}
+
 
 }

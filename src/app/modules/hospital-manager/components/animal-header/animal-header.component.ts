@@ -58,19 +58,6 @@ export class AnimalHeaderComponent implements OnInit {
         };
     }
 
-    //public handlePaste(event: ClipboardEvent){
-
-    //    console.log(event);
-
-    //    const patientId = this.recordForm.get('patientDetails.patientId')?.value;
-
-    //    // Pass the clipboard event down to the service, expect it to return an image URL
-    //    const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId);
-
-    //    this.profileUrl = newItem?.localURL;
-
-    //}
-
     openMediaDialog(): void{
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
