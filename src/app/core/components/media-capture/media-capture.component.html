@@ -1,0 +1,27 @@
+
+
+
+<div class="container">
+
+    <div class="video-item"></div>
+
+    <div *ngIf="mediaData.length > 0" class="slider"></div>
+
+
+
+  <div class="capture-buttons">
+
+    <button mat-fab aria-label="Upload new image"(click)="toggleVideoCapture()">
+        <!--<mat-icon *ngIf="!capturing" class="stop-circle">stop_circle</mat-icon>
+        <mat-icon *ngIf="capturing" class="stop-circle">check_circle</mat-icon>-->
+        <i *ngIf="!capturing" class="material-icons stop-circle">stop_circle</i>
+        <i *ngIf="capturing" class="material-icons-outlined stop-circle">stop_circle</i>
+    </button>
+
+    <button mat-mini-fab aria-label="Upload new image" (click)="captureImage()">
+        <mat-icon class="capture-image">camera</mat-icon>
+    </button>
+
+  </div>
+
+  </div>

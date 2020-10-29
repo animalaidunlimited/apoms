@@ -16,7 +16,7 @@ export class ThumbnailSliderComponent implements OnInit{
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
     @Input() mediaData!: Observable<MediaItem[]>;
-
+    
     constructor() {}
 
     ngOnInit() {

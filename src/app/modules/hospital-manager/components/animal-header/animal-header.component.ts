@@ -7,6 +7,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of } from 'rxjs';
+import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -70,8 +71,11 @@ export class AnimalHeaderComponent implements OnInit {
     }
 
     openMediaDialog(): void{
-        const dialogRef = this.dialog.open(MediaDialogComponent, {
-            minWidth: '50%',
+
+        const dialogRef = this.dialog.open(MediaCaptureComponent, {
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            panelClass: 'media-capture-dialog',
             data: {
                 tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
                 patientId: this.recordForm.get('patientDetails.patientId')?.value,
