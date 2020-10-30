@@ -10,3 +10,28 @@ $standard-width: 175px;
     padding-right: 5px;
     width: auto;
 }
+
+table {
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;         
+    border: 1px solid $colour-border;
+    // border-radius: 2px;
+}
+
+.filter {
+    font-size: 18px;
+    width: 100%;
+}
+
+.mat-row:hover{
+  background-color: white;
+  cursor: pointer;
+}
+
+.mat-row {
+    background-color: pink;
+    font-family: sans-serif;
+}
+
+
