@@ -31,7 +31,7 @@
 
             <mat-form-field>
                 <mat-label>Pick color</mat-label>
-                <input type="color" formControlName='userColor' matInput required>
+                <input type="color" formControlName='userColor' matInput>
             </mat-form-field>
 
             
@@ -40,7 +40,7 @@
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
 
-            <mat-slide-toggle style="margin-bottom: auto;" (change)="changed()">StreetTreat user</mat-slide-toggle>
+            <mat-slide-toggle style="margin-bottom: auto;" formControlName="isStreetTreatUser" (change)="changed()">StreetTreat user</mat-slide-toggle>
 
             <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
                 <mat-form-field appearance="fill">
@@ -78,12 +78,78 @@
         </div>
 
         <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
-            <button type='submit' [disabled]="!userDetails.valid" mat-raised-button color='primary'>Save</button>
-            <button type='button' mat-raised-button color='primary'>Reset</button>
+            <button type='submit' mat-raised-button color='primary'>Save</button>
+            <button type='button' (click)="resetForm()" mat-raised-button color='primary'>Reset</button>
             <button type='button' mat-raised-button color='primary'>Delete</button>
         </div>
     </fieldset>
 </form>
+
+
+<mat-form-field class="filter">
+    <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label>
+    
+    <input matInput (keyup)="applyFilter($event)" #input>
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="First Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
+            <td mat-cell *matCellDef="let row"> {{row.firstName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Surname">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
+            <td mat-cell *matCellDef="let row"> {{row.surName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Initials">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Initials </th>
+            <td mat-cell *matCellDef="let row"> {{row.initials}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Colour">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Colour </th>
+            <td mat-cell *matCellDef="let row"> {{row.colour}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Telephone">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone Number </th>
+            <td mat-cell *matCellDef="let row"> {{row.telephone}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Username">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> User Name </th>
+            <td mat-cell *matCellDef="let row"> {{row.userName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Team">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Team </th>
+            <td mat-cell *matCellDef="let row"> {{row.team}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="StreetTreat Role">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> StreetTreat Role </th>
+            <td mat-cell *matCellDef="let row"> {{row.role}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Job Title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Job Title </th>
+            <td mat-cell *matCellDef="let row"> {{row.jobTitle}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Is Deleted">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> IsDeleted </th>
+            <td mat-cell *matCellDef="let row"> {{row.isDeleted}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
+</div>
 
 
 
