@@ -1,24 +1,27 @@
-
-
-
 <div class="container">
 
     <div class="video-item"></div>
+        <video #video class="vid" autoplay></video>
 
-    <div *ngIf="mediaData.length > 0" class="slider"></div>
+    <div *ngIf="galleryImages.length > 0" class="slider">
 
+        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
 
+    </div>
+
+    <canvas #canvas class="canvas"></canvas>
 
   <div class="capture-buttons">
 
-    <button mat-fab aria-label="Upload new image"(click)="toggleVideoCapture()">
+    <button mat-fab aria-label="Upload new image" (click)="toggleVideoCapture()" class="video-capture-button">
         <!--<mat-icon *ngIf="!capturing" class="stop-circle">stop_circle</mat-icon>
         <mat-icon *ngIf="capturing" class="stop-circle">check_circle</mat-icon>-->
-        <i *ngIf="!capturing" class="material-icons stop-circle">stop_circle</i>
-        <i *ngIf="capturing" class="material-icons-outlined stop-circle">stop_circle</i>
+        <i *ngIf="!capturing" class="material-icons stop-circle recording">stop_circle</i>
+        <i *ngIf="capturing" class="material-icons-outlined stop-circle recording">stop_circle</i>
     </button>
 
-    <button mat-mini-fab aria-label="Upload new image" (click)="captureImage()">
+
+    <button mat-mini-fab aria-label="Upload new image" (click)="captureImage()" class="image-capture-button">
         <mat-icon class="capture-image">camera</mat-icon>
     </button>
 
