@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Team, UserJobType } from 'src/app/core/models/userDetails';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
@@ -33,14 +33,12 @@ export interface UserDetails {
 }
 
 
-// const ELEMENT_DATA: Userdetails[] = [];
-
 @Component({
     selector: 'app-users-page',
     templateUrl: './users-page.component.html',
     styleUrls: ['./users-page.component.scss'],
 })
-export class UsersPageComponent implements OnInit {
+export class UsersPageComponent implements OnInit{
     teamNames!: Team[];
 
     userList!: UserDetails[];
@@ -77,23 +75,20 @@ export class UsersPageComponent implements OnInit {
       'Is Deleted'
     ];
 
-    // userDetailRecords = new MatTableDataSource(ELEMENT_DATA);
-    // new MatTableDataSource(this.userDetailRecords);
-
     userDetails = this.fb.group({
-      userUserId : [], 
-      userFirstName : ['',Validators.required],
-      userSurname: ['',Validators.required],
-      userTelephone:[,Validators.required],
-      userInitials: ['',Validators.required],
-      userUserName:['',Validators.required],
-      userPassword: ['',Validators.required],
-      userColor:[''],
+      userId : [], 
+      firstName : ['',Validators.required],
+      surName: ['',Validators.required],
+      telephone:[,Validators.required],
+      initials: ['',Validators.required],
+      userName:['',Validators.required],
+      password: ['',Validators.required],
+      colour:[''],
       isStreetTreatUser:[],
-      userTeamId:[],
-      userRoleId:[],
-      userJobTypeId:[,Validators.required],
-      userIsDeleted: []
+      teamId:[],
+      roleId:[],
+      jobTitleId:[,Validators.required],
+      isDeleted: []
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -117,6 +112,7 @@ export class UsersPageComponent implements OnInit {
         
     }
 
+
     getrefreshTableData() {
       this.userAction.getUsersByIdRange().subscribe((userListData: UserDetails[])=>{
         this.userList = userListData;
@@ -128,7 +124,7 @@ export class UsersPageComponent implements OnInit {
       this.dataSource = new MatTableDataSource(userTableData);
       setTimeout(() => {
         this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort; 
+        this.dataSource.sort = this.sort;
       });
       
      
@@ -137,15 +133,14 @@ export class UsersPageComponent implements OnInit {
     Submit(userDetailsForm: any) {
       if(userDetailsForm.valid){
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+
           if(res.vUpdateSuccess) {
-            // this.updateUserTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
             this.refreshTable();
             this.resetForm();
             this.streetTreatdropdown = false;
           }
           else if(res.vSuccess) {
-            // this.insertIntoTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User added successfully!' , 'Ok');
             this.refreshTable();
             this.resetForm();
@@ -166,38 +161,6 @@ export class UsersPageComponent implements OnInit {
     refreshTable() {
       this.getrefreshTableData();
     }
-
-    // updateUserTable(userDetailsValue: any) {
-    //   const index = this.userList.findIndex(user=> user.userId === userDetailsValue.userUserId);
-    //   const team = this.userList[index].team;
-    //   const role = this.userList[index].role;
-    //   const jobTitle = this.userList[index].jobTitle;
-    //   const userDetailsdata: UserDetails = {
-    //     userId: userDetailsValue.userUserId,
-    //     firstName: userDetailsValue.userFirstName,
-    //     surName: userDetailsValue.userSurname,
-    //     initials: userDetailsValue.userInitials,
-    //     colour: userDetailsValue.userColor,
-    //     telephone: userDetailsValue.userTelephone,
-    //     userName: userDetailsValue.userUserName,
-    //     teamId: userDetailsValue.userTeamId,
-    //     team,
-    //     roleId: userDetailsValue.userRoleId,
-    //     role,
-    //     jobTitleId: userDetailsValue.userJobTypeId,
-    //     jobTitle,
-    //     isDeleted: userDetailsValue.userIsDeleted
-              
-    //   };
-    //   this.userList.splice(index, 1, userDetailsdata);
-    //   this.initialiseTable(this.userList);
-    // }
-
-    // insertIntoTable(userDetailsValue: any) {
-    //   this.userList.push(userDetailsValue);
-    //   this.initialiseTable(this.userList);
-    //   this.table.renderRows();
-    // }
 
 
     resetForm() {
@@ -220,26 +183,23 @@ export class UsersPageComponent implements OnInit {
       }
     }
 
-    selectRow(selectedUser: any)
+    selectRow(selectedUser:any)
     {
-      let jobTypeId = [];
-      jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
-      this.userDetails.patchValue({
-        userUserId: selectedUser.userId,
-        userFirstName: selectedUser.firstName,
-        userSurname: selectedUser.surName,
-        userTelephone:selectedUser.telephone,
-        userInitials: selectedUser.initials,
-        userUserName: selectedUser.userName,
-        userPassword: selectedUser.password,
-        userColor: selectedUser.colour,
-        isStreetTreatUser:selectedUser.teamId!==null?true:false,
-        userTeamId:selectedUser.teamId,
-        userRoleId: selectedUser.roleId,
-        userJobTypeId: jobTypeId,
-        userIsDeleted: selectedUser.isDeleted==='No'?false:true
-      });
-  
+      if(typeof(selectedUser.jobTitleId)==='string'){
+        let jobTypeId = [];
+        jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
+        selectedUser.jobTitleId = jobTypeId;
+      }
+      
+      const isUserDeleted = selectedUser.isDeleted==='No'?false:selectedUser.isDeleted==='Yes'?true:false;
+
+      const isAStreetTreatUser = selectedUser.teamId!== null? true:false;
+
+      this.userDetails.patchValue(selectedUser);
+
+      this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
+      this.userDetails.get('isDeleted')?.setValue(isUserDeleted);
+    
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
       if(streetTreatUser) {
         this.streetTreatdropdown = true;

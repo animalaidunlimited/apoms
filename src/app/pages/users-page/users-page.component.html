@@ -4,17 +4,17 @@
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field>
-                <input type= 'text' placeholder='First name' formControlName='userFirstName' matInput required>
+                <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input type= 'text' placeholder='Last name' formControlName='userSurname' matInput required>
+                <input type= 'text' placeholder='Last name' formControlName='surName' matInput required>
             </mat-form-field>
             <mat-form-field>
                 <span matPrefix>+91 &nbsp;</span>
-                <input type= 'tel' placeholder='Phone number' formControlName= 'userTelephone' matInput required>
+                <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input type= 'text' placeholder='Initials' formControlName= 'userInitials' matInput required>
+                <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput required>
             </mat-form-field>
             
         </div>
@@ -22,16 +22,16 @@
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field>
-                <input type='text' placeholder="Username" formControlName= 'userUserName' matInput required>
+                <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'userPassword' matInput required>
+                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'password' matInput required>
                 <mat-icon matSuffix style="cursor: pointer;" (click)="hide=!hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </mat-form-field>
 
             <mat-form-field>
                 <mat-label>Pick color</mat-label>
-                <input type="color" formControlName='userColor' matInput>
+                <input type="color" formControlName='colour' matInput>
             </mat-form-field>
 
             
@@ -42,24 +42,25 @@
 
             <mat-slide-toggle style="margin-bottom: auto;" formControlName="isStreetTreatUser" (change)="changed()">StreetTreat user</mat-slide-toggle>
 
-            <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
-                <mat-form-field appearance="fill">
-                    <mat-label>-Team-</mat-label>
-                    <mat-select formControlName= 'userTeamId'>
-                        <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
-                        {{name.TeamName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                    <mat-label>-StreetTreat role-</mat-label>
-                    <mat-select formControlName='userRoleId'>
-                        <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
-                            {{role.roleName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+        </div>
+
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
+            <mat-form-field appearance="fill">
+                <mat-label>-Team-</mat-label>
+                <mat-select formControlName= 'teamId'>
+                    <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
+                    {{name.TeamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>-StreetTreat role-</mat-label>
+                <mat-select formControlName='roleId'>
+                    <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
+                        {{role.roleName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
 
         
@@ -67,14 +68,14 @@
         <div fxLayout='row' fxLayoutGap= '20px' style="margin-top: 20px;" fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field appearance="fill">
                 <mat-label>-User job type-</mat-label>
-                <mat-select  formControlName= 'userJobTypeId' multiple  required>
+                <mat-select  formControlName= 'jobTitleId' multiple  required>
                     <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
                         {{jobType.Title}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <mat-slide-toggle formControlName='userIsDeleted'>IsDeleted</mat-slide-toggle>
+            <mat-slide-toggle formControlName='isDeleted'>IsDeleted</mat-slide-toggle>
         </div>
 
         <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
@@ -93,7 +94,8 @@
 </mat-form-field>
 
 <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table mat-table [dataSource]="dataSource" matSort 
+    matSortActive="created" matSortDisableClear matSortDirection="desc">
 
         <ng-container matColumnDef="First Name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
