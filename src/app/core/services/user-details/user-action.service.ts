@@ -16,7 +16,8 @@ export class UserActionService extends APIService{
 
 
   public async insertUser(userDetails:any): Promise<any> {
-    if (userDetails.userUserId) {
+    console.log(userDetails);
+    if (userDetails.userId) {
       return await this.put(userDetails);
     } else {
       return await this.post(userDetails);
