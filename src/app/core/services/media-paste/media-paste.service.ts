@@ -152,8 +152,6 @@ return returnObject;
 
     const lastObjectUrl = URL.createObjectURL(file);
 
-    console.log(file);
-
     const now = new Date();
 
     const isImage = isImageFile(file);
@@ -186,19 +184,11 @@ return returnObject;
 
       if(isImage || isVideo){
 
-        console.log(isImage + ' ' + isVideo);
-
-
         const mediaObservable = isImage ? this.getImageDimension(uploadImage) :
         this.getVideoDimension(uploadImage);
 
-        console.log(mediaObservable);
-
-
         // Get the dimensions of the image
         mediaObservable.subscribe((image) => {
-
-        console.log(image);
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;

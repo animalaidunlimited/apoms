@@ -30,6 +30,7 @@ import { SurgeryRecordModule } from '../surgery-register/components/surgery-reco
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
 import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 @NgModule({
     declarations: [
@@ -62,7 +63,8 @@ import { MediaCaptureComponent } from 'src/app/core/components/media-capture/med
         RescueDetailsModule,
         EmergencyDetailsModule,
         SurgeryRecordModule,
-        CensusRecordModule
+        CensusRecordModule,
+        NgxGalleryModule
     ],
     exports: [],
 })
