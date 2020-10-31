@@ -42,6 +42,9 @@
 
             <mat-slide-toggle style="margin-bottom: auto;" formControlName="isStreetTreatUser" (change)="changed()">StreetTreat user</mat-slide-toggle>
 
+            <!-- <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
+                
+            </div> -->
         </div>
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center' *ngIf="streetTreatdropdown">
@@ -86,12 +89,12 @@
     </fieldset>
 </form>
 
-
+<!-- 
 <mat-form-field class="filter">
     <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label>
     
     <input matInput (keyup)="applyFilter($event)" #input>
-</mat-form-field>
+</mat-form-field> -->
 
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" matSort 
@@ -150,7 +153,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
+    <!-- <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator> -->
 </div>
 
 

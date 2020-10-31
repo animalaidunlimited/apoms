@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Team, UserJobType } from 'src/app/core/models/userDetails';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
@@ -7,6 +7,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
+import { EmptyError } from 'rxjs';
 
 
 interface StreetTreatRole {
@@ -33,12 +34,14 @@ export interface UserDetails {
 }
 
 
+// const ELEMENT_DATA: Userdetails[] = [];
+
 @Component({
     selector: 'app-users-page',
     templateUrl: './users-page.component.html',
     styleUrls: ['./users-page.component.scss'],
 })
-export class UsersPageComponent implements OnInit{
+export class UsersPageComponent implements OnInit {
     teamNames!: Team[];
 
     userList!: UserDetails[];
@@ -52,7 +55,7 @@ export class UsersPageComponent implements OnInit{
     isChecked = true;
 
     // 
-    dataSource!: MatTableDataSource<UserDetails>;
+    dataSource: MatTableDataSource<UserDetails> ;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
@@ -61,7 +64,26 @@ export class UsersPageComponent implements OnInit{
     constructor(private dropdown : DropdownService,
       private fb : FormBuilder,
       private userAction : UserActionService,
-      private snackBar: SnackbarService) {}
+      private snackBar: SnackbarService) {
+        const emptyUser = {
+          userId : 0,
+          firstName: '',
+          surName: '',
+          initials: '',
+          colour: '',
+          telephone: 0,
+          userName: '',
+          teamId: 0,
+          team: '',
+          roleId: 0,
+          role: '',
+          jobTitleId: 0,
+          jobTitle: '',
+          isDeleted: false,
+        };
+        this.dataSource = new MatTableDataSource([emptyUser]);
+
+      }
 
     displayedColumns: string[] = [
       'First Name',
@@ -74,6 +96,9 @@ export class UsersPageComponent implements OnInit{
       'Job Title',
       'Is Deleted'
     ];
+
+    // userDetailRecords = new MatTableDataSource(ELEMENT_DATA);
+    // new MatTableDataSource(this.userDetailRecords);
 
     userDetails = this.fb.group({
       userId : [], 
@@ -108,39 +133,47 @@ export class UsersPageComponent implements OnInit{
           this.jobTypes = jobType;
         });
 
-        this.getrefreshTableData();
+        this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
+          this.dataSource = new MatTableDataSource(userListData);
+          console.log(userListData[0].jobTitle);
+          this.dataSource.sort = this.sort;
+         });
+       
+
+        // this.getrefreshTableData();
         
     }
 
 
-    getrefreshTableData() {
-      this.userAction.getUsersByIdRange().subscribe((userListData: UserDetails[])=>{
-        this.userList = userListData;
-        this.initialiseTable(this.userList);
-      });
-    }
+    // getrefreshTableData() {
+    //   this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
+    //     this.userList = userListData;
+    //     this.initialiseTable(this.userList);
+    //   });
+    // }
 
-    initialiseTable(userTableData:UserDetails[]) {
-      this.dataSource = new MatTableDataSource(userTableData);
-      setTimeout(() => {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      });
+    // initialiseTable(userTableData:UserDetails[]) {
+    //   this.dataSource = new MatTableDataSource(userTableData);
+    //   setTimeout(() => {
+    //     this.dataSource.paginator = this.paginator;
+    //     this.dataSource.sort = this.sort; 
+    //   });
       
      
-    }   
+    // }   
 
     Submit(userDetailsForm: any) {
       if(userDetailsForm.valid){
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
-
           if(res.vUpdateSuccess) {
+            // this.updateUserTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
             this.refreshTable();
             this.resetForm();
             this.streetTreatdropdown = false;
           }
           else if(res.vSuccess) {
+            // this.insertIntoTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User added successfully!' , 'Ok');
             this.refreshTable();
             this.resetForm();
@@ -159,8 +192,40 @@ export class UsersPageComponent implements OnInit{
     }
 
     refreshTable() {
-      this.getrefreshTableData();
+      // this.getrefreshTableData();
     }
+
+    // updateUserTable(userDetailsValue: any) {
+    //   const index = this.userList.findIndex(user=> user.userId === userDetailsValue.userUserId);
+    //   const team = this.userList[index].team;
+    //   const role = this.userList[index].role;
+    //   const jobTitle = this.userList[index].jobTitle;
+    //   const userDetailsdata: UserDetails = {
+    //     userId: userDetailsValue.userUserId,
+    //     firstName: userDetailsValue.userFirstName,
+    //     surName: userDetailsValue.userSurname,
+    //     initials: userDetailsValue.userInitials,
+    //     colour: userDetailsValue.userColor,
+    //     telephone: userDetailsValue.userTelephone,
+    //     userName: userDetailsValue.userUserName,
+    //     teamId: userDetailsValue.userTeamId,
+    //     team,
+    //     roleId: userDetailsValue.userRoleId,
+    //     role,
+    //     jobTitleId: userDetailsValue.userJobTypeId,
+    //     jobTitle,
+    //     isDeleted: userDetailsValue.userIsDeleted
+              
+    //   };
+    //   this.userList.splice(index, 1, userDetailsdata);
+    //   this.initialiseTable(this.userList);
+    // }
+
+    // insertIntoTable(userDetailsValue: any) {
+    //   this.userList.push(userDetailsValue);
+    //   this.initialiseTable(this.userList);
+    //   this.table.renderRows();
+    // }
 
 
     resetForm() {
@@ -185,6 +250,7 @@ export class UsersPageComponent implements OnInit{
 
     selectRow(selectedUser:any)
     {
+      console.log(typeof(selectedUser.jobTitleId));
       if(typeof(selectedUser.jobTitleId)==='string'){
         let jobTypeId = [];
         jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
@@ -211,3 +277,5 @@ export class UsersPageComponent implements OnInit{
     }
 
 }
+
+

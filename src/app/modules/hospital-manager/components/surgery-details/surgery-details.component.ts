@@ -9,6 +9,7 @@ import { SurgeryRecordDialogComponent } from '../surgery-record-dialog/surgery-r
 const ELEMENT_DATA: SurgeryRecord[] = [];
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'surgery-details',
     templateUrl: './surgery-details.component.html',
     styleUrls: ['./surgery-details.component.scss'],
