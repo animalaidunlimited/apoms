@@ -24,13 +24,14 @@ export class UserActionService extends APIService{
     }
   }
 
-  public getUsersByIdRange(): Observable<UserDetails[]> {
+  public getUsersByIdRange(): Promise<any> {
     const request = '?GetUsersByIdRange';
-    return this.getObservable(request).pipe(
-      map((response:UserDetails[]) => {
-          return response;
-      }),
-  );
+    return this.get(request);
+  //   .pipe(
+  //     map((response:UserDetails[]) => {
+  //         return response;
+  //     }),
+  // );
 
   }
 
