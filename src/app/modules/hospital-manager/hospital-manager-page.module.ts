@@ -32,6 +32,7 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
 import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
+
 @NgModule({
     declarations: [
         HospitalManagerPageComponent,
