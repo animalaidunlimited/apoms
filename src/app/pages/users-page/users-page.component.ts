@@ -135,8 +135,11 @@ export class UsersPageComponent implements OnInit {
 
         this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
           this.dataSource = new MatTableDataSource(userListData);
-          console.log(userListData[0].jobTitle);
-          this.dataSource.sort = this.sort;
+          // console.log(userListData[0].jobTitle);
+          setTimeout(()=>{
+            this.dataSource.sort = this.sort;
+          },2000);
+          
          });
        
 
