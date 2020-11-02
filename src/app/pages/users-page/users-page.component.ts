@@ -29,8 +29,6 @@ export interface UserDetails {
   role: string;
   jobTitleId: number;
   jobTitle: string;
-  isDeleted: boolean;
-
 }
 
 
@@ -78,23 +76,21 @@ export class UsersPageComponent implements OnInit {
           roleId: 0,
           role: '',
           jobTitleId: 0,
-          jobTitle: '',
-          isDeleted: false,
+          jobTitle: ''
         };
         this.dataSource = new MatTableDataSource([emptyUser]);
 
       }
 
     displayedColumns: string[] = [
-      'First Name',
-      'Surname',
-      'Initials',
-      'Telephone',
-      'Username',
-      'Team',
-      'StreetTreat Role',
-      'Job Title',
-      'Is Deleted'
+      'firstName',
+      'surName',
+      'initials',
+      'telephone',
+      'userName',
+      'team',
+      'role',
+      'jobTitle'
     ];
 
     // userDetailRecords = new MatTableDataSource(ELEMENT_DATA);
@@ -112,8 +108,7 @@ export class UsersPageComponent implements OnInit {
       isStreetTreatUser:[],
       teamId:[],
       roleId:[],
-      jobTitleId:[,Validators.required],
-      isDeleted: []
+      jobTitleId:[,Validators.required]
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -132,38 +127,27 @@ export class UsersPageComponent implements OnInit {
         this.dropdown.getUserJobType().subscribe(jobType=>{
           this.jobTypes = jobType;
         });
-
-        this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
-          this.dataSource = new MatTableDataSource(userListData);
-          // console.log(userListData[0].jobTitle);
-          setTimeout(()=>{
-            this.dataSource.sort = this.sort;
-          },2000);
-          
-         });
-       
-
-        // this.getrefreshTableData();
+        this.getrefreshTableData();
         
     }
 
 
-    // getrefreshTableData() {
-    //   this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
-    //     this.userList = userListData;
-    //     this.initialiseTable(this.userList);
-    //   });
-    // }
+    getrefreshTableData() {
+      this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
+        this.userList = userListData;
+        this.initialiseTable(this.userList);
+      });
+    }
 
-    // initialiseTable(userTableData:UserDetails[]) {
-    //   this.dataSource = new MatTableDataSource(userTableData);
-    //   setTimeout(() => {
-    //     this.dataSource.paginator = this.paginator;
-    //     this.dataSource.sort = this.sort; 
-    //   });
+    initialiseTable(userTableData:UserDetails[]) {
+      this.dataSource = new MatTableDataSource(userTableData);
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort; 
+      });
       
      
-    // }   
+    }   
 
     Submit(userDetailsForm: any) {
       if(userDetailsForm.valid){
@@ -195,41 +179,8 @@ export class UsersPageComponent implements OnInit {
     }
 
     refreshTable() {
-      // this.getrefreshTableData();
+      this.getrefreshTableData();
     }
-
-    // updateUserTable(userDetailsValue: any) {
-    //   const index = this.userList.findIndex(user=> user.userId === userDetailsValue.userUserId);
-    //   const team = this.userList[index].team;
-    //   const role = this.userList[index].role;
-    //   const jobTitle = this.userList[index].jobTitle;
-    //   const userDetailsdata: UserDetails = {
-    //     userId: userDetailsValue.userUserId,
-    //     firstName: userDetailsValue.userFirstName,
-    //     surName: userDetailsValue.userSurname,
-    //     initials: userDetailsValue.userInitials,
-    //     colour: userDetailsValue.userColor,
-    //     telephone: userDetailsValue.userTelephone,
-    //     userName: userDetailsValue.userUserName,
-    //     teamId: userDetailsValue.userTeamId,
-    //     team,
-    //     roleId: userDetailsValue.userRoleId,
-    //     role,
-    //     jobTitleId: userDetailsValue.userJobTypeId,
-    //     jobTitle,
-    //     isDeleted: userDetailsValue.userIsDeleted
-              
-    //   };
-    //   this.userList.splice(index, 1, userDetailsdata);
-    //   this.initialiseTable(this.userList);
-    // }
-
-    // insertIntoTable(userDetailsValue: any) {
-    //   this.userList.push(userDetailsValue);
-    //   this.initialiseTable(this.userList);
-    //   this.table.renderRows();
-    // }
-
 
     resetForm() {
       this.userDetails.reset();
@@ -259,23 +210,17 @@ export class UsersPageComponent implements OnInit {
         jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
         selectedUser.jobTitleId = jobTypeId;
       }
-      
-      const isUserDeleted = selectedUser.isDeleted==='No'?false:selectedUser.isDeleted==='Yes'?true:false;
 
       const isAStreetTreatUser = selectedUser.teamId!== null? true:false;
 
       this.userDetails.patchValue(selectedUser);
 
       this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
-      this.userDetails.get('isDeleted')?.setValue(isUserDeleted);
     
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
-      if(streetTreatUser) {
-        this.streetTreatdropdown = true;
-      }
-      else {
-        this.streetTreatdropdown = false;
-      }
+
+      this.streetTreatdropdown = streetTreatUser ? true : false;
+
       
     }
 
