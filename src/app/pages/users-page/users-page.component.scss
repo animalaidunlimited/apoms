@@ -13,7 +13,7 @@ $standard-width: 175px;
 
 table {
     margin-top: 10px;
-    width: 100%;
+    width: 90%;
     align-items: center;         
     border: 1px solid $colour-border;
     // border-radius: 2px;
@@ -30,12 +30,18 @@ table {
 
 }
 
-
-
 .mat-row {
     background-color: white;
     font-family: sans-serif;
 }
 
+.streetTreatUser {
+    margin-top: 20px;
+}
+
+
+.sortTableCursor {
+    cursor: pointer;
+}
 
 
