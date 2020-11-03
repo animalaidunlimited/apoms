@@ -93,4 +93,6 @@ export class SurgeryDetailsComponent implements OnInit {
         });
     }
 
+    
+
 }

@@ -8,6 +8,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import { EmptyError } from 'rxjs';
+import { state, style, transition, animate, trigger } from '@angular/animations';
 
 
 interface StreetTreatRole {
@@ -38,6 +39,31 @@ export interface UserDetails {
     selector: 'app-users-page',
     templateUrl: './users-page.component.html',
     styleUrls: ['./users-page.component.scss'],
+    animations: [
+      trigger('openCloseDiv', [
+        state('false', style({
+          width: '0px',
+          height: '0px',
+          visibility: 'hidden'
+        })),
+        state('true',
+         style({
+          backgroundColor: '',
+          width: '200px',
+          height: '80px',
+          visibility: 'visible'
+        })),
+        transition('true => false', [animate('250ms 750ms')]),
+        transition('false => true', [animate('250ms')])
+      ]),
+
+      trigger('visibilityDiv', [
+        state('false' , style({ opacity: 0 })),
+        state('true', style({ opacity: 1})),
+        transition('false <=> true', [animate('500ms 250ms')])
+      ])
+    
+    ]
 })
 export class UsersPageComponent implements OnInit {
     teamNames!: Team[];
@@ -51,6 +77,9 @@ export class UsersPageComponent implements OnInit {
     streetTreatdropdown = false;
 
     isChecked = true;
+
+    myCheck = false;
+    currentState = 'closed';
 
     // 
     dataSource: MatTableDataSource<UserDetails> ;
@@ -187,8 +216,11 @@ export class UsersPageComponent implements OnInit {
       this.streetTreatdropdown = false;
     }
 
+    
     changed(){
       if(this.isChecked) {
+       
+        // this.currentState = this.currentState === 'closed' ? 'open' : 'closed';
         this.streetTreatdropdown = !this.streetTreatdropdown;
       }
     }
@@ -220,7 +252,7 @@ export class UsersPageComponent implements OnInit {
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
 
       this.streetTreatdropdown = streetTreatUser ? true : false;
-
+      this.currentState = 'closed' ? 'open' : 'closed'; 
       
     }
 

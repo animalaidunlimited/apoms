@@ -13,7 +13,7 @@ $standard-width: 175px;
 
 table {
     margin-top: 10px;
-    width: 90%;
+    width: 100%;
     align-items: center;         
     border: 1px solid $colour-border;
     // border-radius: 2px;
@@ -44,4 +44,19 @@ table {
     cursor: pointer;
 }
 
+
+.streetTreatDisplay {
+    height: 100px;
+    width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    animation: move 2s ease-in-out;
+  }
+
+  @keyframes move {
+      
+  }
+
+  
 
