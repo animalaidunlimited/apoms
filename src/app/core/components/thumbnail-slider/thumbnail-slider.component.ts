@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
-
+import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
@@ -35,10 +34,14 @@ export class ThumbnailSliderComponent implements OnInit{
             }
 
             this.galleryImages = mediaItems.map(item=>{
+
+                console.log(item.remoteURL);
+
                return {
                         small:item.remoteURL,
                         medium:item.remoteURL,
-                        big:item.remoteURL
+                        big:item.remoteURL,
+                        type: item.mediaType.includes('video') ? 'video' : 'image'
                       };
             });
 
