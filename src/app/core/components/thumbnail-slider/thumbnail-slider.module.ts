@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../material-module';
 
 import { ThumbnailSliderComponent } from '../thumbnail-slider/thumbnail-slider.component';
+import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 
-import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 
 @NgModule({
