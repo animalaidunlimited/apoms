@@ -8,8 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
 
+import { AddCaseMediaModule } from './components/Add-case-media/add-case-media/add-case-media.module';
+import { AddSearchMediaDialogComponent } from './components/add-search-media-dialog/add-search-media-dialog.component';
+
+import { SearchBoxComponent } from 'src/app/core/components/search-box/search-box.component';
+import { SearchBoxModule } from 'src/app/core/components/search-box/search-box.module';
+
 @NgModule({
-    declarations: [EmergencyRegisterPageComponent],
+    declarations: [EmergencyRegisterPageComponent, AddSearchMediaDialogComponent,SearchBoxComponent],
 
     imports: [
         CommonModule,
@@ -17,6 +23,8 @@ import { TabBarModule } from './components/tab-bar/tab-bar.module';
         TabBarModule,
         MaterialModule,
         FormsModule,
+        AddCaseMediaModule,
+        SearchBoxModule
     ],
     exports: [],
 })

@@ -9,7 +9,7 @@
 </mat-form-field>
 
 
-    <div [@expandSearchForm]="searchShowing ? 'open' : 'closed'"
+<div [@expandSearchForm]="searchShowing ? 'open' : 'closed'"
     class="search-form" [formGroup]="searchForm">
 
         <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index;">

@@ -22,6 +22,7 @@ export interface Swimlane{
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
   styleUrls: ['./outstanding-case-board.component.scss'],
@@ -262,7 +263,8 @@ openCase(caseSearchResult:OutstandingRescue)
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,
-    TagNumber: undefined,
+    MediaCount: 0,
+    TagNumber: '',
     CallOutcomeId: caseSearchResult.callOutcomeId,
     CallOutcome: undefined,
     sameAsNumber: undefined,
