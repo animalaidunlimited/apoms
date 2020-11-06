@@ -1,8 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmergencyTab } from 'src/app/core/models/emergency-record';
+import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
     styleUrls: ['./tab-bar.component.scss'],
@@ -15,9 +19,17 @@ export class TabBarComponent implements OnInit {
         { id: 1, value: 'Search', emergencyCaseId: 0, icon: '' },
     ];
 
-    constructor(private cdr: ChangeDetectorRef) {}
+    constructor(private cdr: ChangeDetectorRef,
+        private emergencytabBar: EmergencyRegisterTabBarService,
+        private dialog: MatDialog) {}
 
     ngOnInit() {
+
+        this.emergencytabBar.searchDialog.subscribe(imageVal=>{
+           if(imageVal){
+                this.openSearchMediaDialog(imageVal);
+           }
+        });
     }
 
     removeTab(index: number) {
@@ -27,10 +39,10 @@ export class TabBarComponent implements OnInit {
         }
     }
 
-    addTab(emergencyCaseId: number, emergencyNumber: string) {
+    addTab(emergencyCaseId: number, emergencyNumber: number | string) {
         this.tabs.push({
             id: this.tabs.length,
-            value: emergencyNumber,
+            value: emergencyNumber.toString(),
             emergencyCaseId,
             icon: 'close',
         });
@@ -52,7 +64,7 @@ export class TabBarComponent implements OnInit {
             ? (this.selected.setValue(tabExists.id), this.cdr.detectChanges())
             : this.addTab(
                   result.EmergencyCaseId,
-                  result.EmergencyNumber.toString(),
+                  result.EmergencyNumber
               );
     }
 
@@ -68,5 +80,14 @@ export class TabBarComponent implements OnInit {
         }
 
 
+    }
+    
+    openSearchMediaDialog(mediaVal:any){
+       this.dialog.open(AddSearchMediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+           mediaVal
+        }
+    });
     }
 }

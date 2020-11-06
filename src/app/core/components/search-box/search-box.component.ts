@@ -1,60 +1,47 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
-import { trigger, state, style, animate, transition, } from '@angular/animations';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { Search, SearchValue } from '../record-search/record-search.component';
 import { MatDialog } from '@angular/material/dialog';
-import { SearchResponse } from '../../models/responses';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { Observable } from 'rxjs';
+import { SearchResponse } from '../../models/responses';
+import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 
-export interface SearchValue {
-    id: number;
-    inputType: string;
-    searchValue: string | undefined;
-    databaseField: string | undefined;
-    name: string | undefined;
-    inNotIn: boolean;
-}
 
-export class Search {
-    searchString = '';
-}
 
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'record-search',
-    templateUrl: './record-search.component.html',
-    styleUrls: ['./record-search.component.scss'],
-    animations: [
-        trigger('expandSearchForm', [
-            state(
-                'void',
-                style({
-                    display: 'none',
-                    height: '0px',
-                }),
-            ),
-            state(
-                'open',
-                style({
-                    width: '97%',
-                }),
-            ),
-            state(
-                'closed',
-                style({
-                    display: 'none',
-                    height: '0px',
-                }),
-            ),
-            transition('open <=> closed', [animate('.2s')]),
-        ]),
-    ],
+  selector: 'app-search-box',
+  templateUrl: './search-box.component.html',
+  styleUrls: ['./search-box.component.scss'],
+  animations: [
+    trigger('expandSearchForm', [
+        state(
+            'void',
+            style({
+                display: 'none',
+                height: '0px',
+            }),
+        ),
+        state(
+            'open',
+            style({
+                width: '97%',
+            }),
+        ),
+        state(
+            'closed',
+            style({
+                display: 'none',
+                height: '0px',
+            }),
+        ),
+        transition('open <=> closed', [animate('.2s')]),
+    ]),
+],
 })
-
-export class RecordSearchComponent implements OnInit {
-    @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
-
-    searchFieldForm = new FormControl();
+export class SearchBoxComponent implements OnInit {
+  searchFieldForm = new FormControl();
 
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
@@ -251,7 +238,6 @@ export class RecordSearchComponent implements OnInit {
             .join('&');
 
         this.searchResults$ = this.caseService.searchCases(searchQuery);
-        
     }
 
     toggleSearchBox() {
@@ -345,9 +331,13 @@ export class RecordSearchComponent implements OnInit {
         this.searchRows.removeAt(i);
     }
 
-    openCase(searchResult: SearchResponse) {
-
-        this.openEmergencyCase.emit(searchResult);
-
-     }
+    openMediaDialog(tagNumber: string, patientId: number) {
+        this.dialog.open(MediaDialogComponent, {
+            minWidth: '50%',
+            data: {
+                tagNumber,
+                patientId,
+            }
+    });
+}
 }
