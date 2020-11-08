@@ -4,18 +4,13 @@
 <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
 
 <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
-<!-- <img mat-card-image (click)="launchImageModal()"  src="../../../../../assets/images/image_placeholder.png" width="100%" height="100%"  style="cursor: pointer" alt="Click to upload"> -->
 
-<!-- <ng-template ngFor let-imageUrl [ngForOf]="imageUrls"> -->
 <div class="container">
     <img [src]="profileUrl" class="containerImage" alt="Click to upload" />
     <button type='button' class="containerButton" mat-mini-fab>
         <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
     </button>
 </div>
-<!-- </ng-template> -->
-
-
 
 </div>
 <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="space-around center">
