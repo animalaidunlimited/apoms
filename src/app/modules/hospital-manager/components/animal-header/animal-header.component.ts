@@ -72,10 +72,8 @@ export class AnimalHeaderComponent implements OnInit {
 
     openMediaDialog(): void{
 
-        const dialogRef = this.dialog.open(MediaCaptureComponent, {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            panelClass: 'media-capture-dialog',
+        const dialogRef = this.dialog.open(MediaDialogComponent, {
+            minWidth: '50%',
             data: {
                 tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
                 patientId: this.recordForm.get('patientDetails.patientId')?.value,
@@ -89,6 +87,7 @@ export class AnimalHeaderComponent implements OnInit {
                 }
             }
         });
+
     }
 
     getcurrentPatient() {
