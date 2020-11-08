@@ -18,6 +18,8 @@ import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Antibiotic } from '../../models/patients';
+import { Team, UserJobType } from '../../models/userDetails';
+
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -53,6 +55,8 @@ export class DropdownService extends APIService {
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
+    jobTypes$!: Observable<UserJobType[]>;
+    team$!: Observable<Team[]>;
 
 
 
@@ -538,5 +542,32 @@ export class DropdownService extends APIService {
 
         return this.paperDimensions$;
     }
+
+    getAllTeams(): Observable<Team[]>{
+        const request = '/GetAllTeams';
+    
+        if(!this.team$) {
+          this.team$ = this.getObservable(request).pipe(
+            map(response=>{
+              return response;
+            })
+          );
+        }
+        return this.team$;
+      }
+
+      
+  getUserJobType(): Observable<UserJobType[]> {
+    const request = '/GetJobTypes';
+
+    if(!this.jobTypes$) {
+      this.jobTypes$ = this.getObservable(request).pipe(
+        map(response=>{
+          return response;
+        })
+      );
+    }
+    return this.jobTypes$;
+  }
 
 }
