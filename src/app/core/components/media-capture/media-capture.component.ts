@@ -1,6 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SafeUrl } from '@angular/platform-browser';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@animalaidunlimited/ngx-gallery-aau';
+import { Subject, timer } from 'rxjs';
+import { finalize, take, takeUntil } from 'rxjs/operators';
 import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 
 
@@ -14,7 +17,7 @@ interface IncomingData {
   templateUrl: './media-capture.component.html',
   styleUrls: ['./media-capture.component.scss']
 })
-export class MediaCaptureComponent implements OnInit {
+export class MediaCaptureComponent implements OnInit, OnDestroy {
 
   @ViewChild('video', { static: true }) videoElement!: ElementRef;
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
@@ -35,6 +38,12 @@ galleryImages: NgxGalleryImage[] = [];
 
 mediaRecorder!:MediaRecorder;
 
+stopTimer = new Subject();
+stream!:MediaStream;
+timer = 0;
+
+uploading = 0;
+
 videoWidth = 0;
 videoHeight = 0;
 
@@ -42,6 +51,7 @@ videoHeight = 0;
     private renderer: Renderer2,
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private changeDetector: ChangeDetectorRef,
+    private dialogRef: MatDialogRef<MediaCaptureComponent>,
     private mediaService: MediaPasteService) {
 
   }
@@ -91,6 +101,15 @@ videoHeight = 0;
 
   }
 
+  ngOnDestroy(){
+
+
+    this.stream.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+  }
+
   startCamera() {
     if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
 
@@ -110,31 +129,11 @@ handleError(error:string) {
 attachVideo(stream:MediaStream) {
 
   this.mediaRecorder = new MediaRecorder(stream);
+  this.stream = stream;
 
   this.mediaRecorder.addEventListener('dataavailable', (event:BlobEvent) => {
 
-    const newFile:any = event.data;
-
-    newFile.lastModified = new Date();
-    newFile.name = 'uploadFile';
-
-    const uploadFile = newFile as File;
-
-    console.log(uploadFile);
-
-    const returnObject = this.mediaService.handleUpload(uploadFile, this.data.patientId);
-
-    console.log(returnObject);
-
-    if(returnObject.mediaItem){
-
-      returnObject.mediaItem.heightPX = this.videoHeight;
-      returnObject.mediaItem.widthPX = this.videoWidth;
-
-      this.addNewGalleryItem(returnObject.mediaItem.remoteURL,'video');
-    }
-
-
+    this.uploadAndAddToGallery(event.data, 'video');
 
   });
 
@@ -142,9 +141,8 @@ attachVideo(stream:MediaStream) {
   this.renderer.listen(this.videoElement.nativeElement, 'play', (event) => {
       this.videoHeight = this.videoElement.nativeElement.videoHeight;
       this.videoWidth = this.videoElement.nativeElement.videoWidth;
+
   });
-
-
 
 }
 
@@ -154,11 +152,31 @@ toggleVideoCapture(){
   if(this.capturing){
 
     this.mediaRecorder.start();
+
+    timer(0, 1000).pipe(
+      takeUntil(this.stopTimer),
+      take(31),
+      finalize(() => this.stopCapture('timeup'))
+    )
+    .subscribe(t => this.timer = t * 1000);
   }
   else{
+    this.stopCapture('early');
+  }
 
+}
+
+stopCapture(state:string){
+
+  if(state === 'early'){
+    this.stopTimer.next();
+  }
+
+  if(this.mediaRecorder.state !== 'inactive'){
     this.mediaRecorder.stop();
   }
+
+  this.capturing = false;
 
 }
 
@@ -170,26 +188,65 @@ captureImage() {
 
     this.canvas.nativeElement.toBlob((blob:Blob) => {
 
-      this.addNewGalleryItem(URL.createObjectURL(blob), 'image');
+      this.uploadAndAddToGallery(blob,'image');
+
+      // this.addNewGalleryItem(URL.createObjectURL(blob), 'image');
 
     });
 }
 
-addNewGalleryItem(itemURL:string, itemType:string){
+closeDialog(){
+  this.dialogRef.close();
+}
 
-  const newGalleryImage = {
+uploadAndAddToGallery(newFile:any, type:string){
+
+  this.uploading++;
+
+  newFile.lastModified = new Date();
+  newFile.name = 'uploadFile';
+
+  const localSrc = URL.createObjectURL(newFile);
+
+  const uploadFile = newFile as File;
+
+  const returnObject = this.mediaService.handleUpload(uploadFile, this.data.patientId);
+
+  if(returnObject.mediaItem){
+
+    returnObject.mediaItem.heightPX = this.videoHeight;
+    returnObject.mediaItem.widthPX = this.videoWidth;
+
+
+    setTimeout(() => {this.addNewGalleryItem(localSrc, type);},0);
+
+    returnObject.mediaItemId.subscribe((result) => {
+
+      if(returnObject.mediaItem && result){
+        console.log(this.uploading);
+        this.uploading--;
+        this.changeDetector.detectChanges();
+        console.log(this.uploading);
+
+      }
+    });
+  }
+}
+
+addNewGalleryItem(itemURL:string|SafeUrl, itemType:string){
+
+  const newGalleryItem = {
     small: itemURL,
     medium: itemURL,
     big: itemURL,
-    type: itemType,
-    url: 'video.mp4'
+    type: itemType
   };
 
-  const newArray = this.galleryImages.map(item => item);
+  const newArray = Array.from(this.galleryImages);
 
-  newArray.unshift(newGalleryImage);
+  newArray.unshift(newGalleryItem);
 
-  this.galleryImages = newArray;
+  this.galleryImages = Array.from(newArray);
   this.changeDetector.detectChanges();
 
 }

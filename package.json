@@ -40,7 +40,7 @@
     "@angular/platform-browser-dynamic": "^10.2.1",
     "@angular/router": "^10.2.1",
     "@angular/service-worker": "^10.2.1",
-    "@animalaidunlimited/ngx-gallery-aau": "^1.2.4",
+    "@animalaidunlimited/ngx-gallery-aau": "^1.2.6",
     "@types/dom-mediacapture-record": "^1.0.7",
     "@types/googlemaps": "^3.39.2",
     "@types/uuid": "^8.3.0",
