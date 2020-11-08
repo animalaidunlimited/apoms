@@ -3,10 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HospitalManagerPageComponent } from './pages/hospital-manager-page.component';
 import { HospitalManagerPageRoutingModule } from './hospital-manager-page-routing.module';
 
-import {
-    NgxGalleryPreviewComponent
-} from '@kolkov/ngx-gallery';
-
 import { MaterialModule } from '../../material-module';
 import { HospitalManagerTabBarComponent } from './components/hospital-manager-tab-bar/hospital-manager-tab-bar.component';
 import { PatientRecordComponent } from './components/patient-record/patient-record.component';
@@ -53,7 +49,7 @@ import { TreatmentComponent } from './components/treatment/treatment.component';
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
         TreatmentComponent,
-        
+
     ],
     imports: [
         CommonModule,
