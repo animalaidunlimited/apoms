@@ -33,7 +33,6 @@ export class CensusDetailsComponent implements OnInit {
 
     tagnumber = '';
 
-
     displayedColumns: string[] = ['Date', 'Area', 'Action','Days'];
     censusRecords = ELEMENT_DATA;
 
@@ -49,8 +48,6 @@ export class CensusDetailsComponent implements OnInit {
         });
 
     }
-
-
 
     updateCensusDialog(element: CensusRecord): void {
         const dialogRef = this.dialog.open(UpdateCensusDialogComponent, {

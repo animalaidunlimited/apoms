@@ -18,6 +18,8 @@ import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Antibiotic } from '../../models/patients';
+import { Team, UserJobType } from '../../models/userDetails';
+
 
 export interface AnimalTypeResponse {
     data: AnimalType[];
@@ -42,7 +44,9 @@ export class DropdownService extends APIService {
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
+    eyeDischarge$!: any[];
     isoReasons$!: any[];
+    nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
     patientCallOutcome$!: Observable<PatientCallOutcome[]>;
@@ -53,6 +57,8 @@ export class DropdownService extends APIService {
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
+    jobTypes$!: Observable<UserJobType[]>;
+    team$!: Observable<Team[]>;
 
 
 
@@ -331,6 +337,32 @@ export class DropdownService extends APIService {
         return this.isoReasons$;
     }
 
+    getEyeDischarge() {
+        if (!this.eyeDischarge$) {
+            this.eyeDischarge$ = [
+                {key: 1, value: 'Nil'},
+                {key: 2, value: 'ED'},
+                {key: 3, value: 'ED⊕'},
+                {key: 4, value: 'ED⊕⊕'}
+            ];
+        }
+
+        return this.eyeDischarge$;
+    }
+
+    getNasalDischarge() {
+        if (!this.nasalDischarge$) {
+            this.nasalDischarge$ = [
+                {key: 1, value: 'Nil'},
+                {key: 2, value: 'ND'},
+                {key: 3, value: 'ND⊕'},
+                {key: 4, value: 'ND⊕⊕'}
+            ];
+        }
+
+        return this.nasalDischarge$;
+    }
+
     getAntibiotics() : Antibiotic[] {
         if (!this.antibiotics$) {
             this.antibiotics$ = [
@@ -351,7 +383,7 @@ export class DropdownService extends APIService {
                 { antibioticId: 15, antibiotic: 'Penicillin' },
                 { antibioticId: 16, antibiotic: 'Septran' },
                 { antibioticId: 17, antibiotic: 'Tramadol' },
-                { antibioticId: 18, antibiotic: 'Tribivet' },
+                { antibioticId: 18, antibiotic: 'Tribivet' }
             ];
         }
 
@@ -538,5 +570,32 @@ export class DropdownService extends APIService {
 
         return this.paperDimensions$;
     }
+
+    getAllTeams(): Observable<Team[]>{
+        const request = '/GetAllTeams';
+    
+        if(!this.team$) {
+          this.team$ = this.getObservable(request).pipe(
+            map(response=>{
+              return response;
+            })
+          );
+        }
+        return this.team$;
+      }
+
+      
+  getUserJobType(): Observable<UserJobType[]> {
+    const request = '/GetJobTypes';
+
+    if(!this.jobTypes$) {
+      this.jobTypes$ = this.getObservable(request).pipe(
+        map(response=>{
+          return response;
+        })
+      );
+    }
+    return this.jobTypes$;
+  }
 
 }
