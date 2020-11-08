@@ -5,6 +5,7 @@
 }
 
 .stop-circle{
+    font-size: 45px;
     color: rgb(150, 11, 11);
 }
 
@@ -55,8 +56,29 @@
     background-color: transparent;
   }
 
-  .recording{
-    line-height: unset;
-    font-size: 55px;
-    margin-top: 1px
+  .complete-button{
+    left: 80%;
+    background-color: transparent;
+  }
+
+  .seconday-icon{
+    font-size: 36px;
+  }
+
+  .timer{
+    position: absolute;
+    left: calc(50% - 20px);
+    font-weight: 400;
+  }
+
+  .no-warning{
+    color: whitesmoke;
+  }
+
+  .warning{
+    color:gold;
+  }
+
+  .alert{
+    color: rgb(218, 21, 21);
   }

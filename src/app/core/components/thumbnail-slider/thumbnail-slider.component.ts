@@ -35,8 +35,6 @@ export class ThumbnailSliderComponent implements OnInit{
 
             this.galleryImages = mediaItems.map(item=>{
 
-                console.log(item.remoteURL);
-
                return {
                         small:item.remoteURL,
                         medium:item.remoteURL,
@@ -60,8 +58,8 @@ export class ThumbnailSliderComponent implements OnInit{
                 closeIcon: 'fa fa-times',
                 width: '550px',
                 height: '300px',
-                thumbnailsColumns: 2,
-                thumbnailsRows:2,
+                thumbnailsColumns: 3,
+                thumbnailsRows:1,
                 thumbnailsSwipe:true,
                 imageSize: 'contain',
                 imageAnimation: NgxGalleryAnimation.Zoom,
@@ -72,8 +70,6 @@ export class ThumbnailSliderComponent implements OnInit{
             // max-width 800
             {
                 breakpoint: 1028,
-                width: '100%',
-                height: '600px',
                 imagePercent: 100,
                 thumbnailsPercent: 50,
                 thumbnailsMargin: 20,
