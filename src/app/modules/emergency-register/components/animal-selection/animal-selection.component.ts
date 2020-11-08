@@ -86,8 +86,6 @@ export class AnimalSelectionComponent implements OnInit {
     }
     ngOnInit() {
 
-
-
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
@@ -126,6 +124,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         return this.getPatient(problems, 1, true, 0);
     }
+
     // TODO fix any issues with the update flag here.
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
@@ -382,15 +381,13 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     setSelected(position: number) {
+
         // Set the new row to be selected
-
-
         const selected = this.patientDataSource.data.find(row => row.get('position')?.value === position);
 
         if(selected === undefined){
             throw new TypeError('Selected value was not found!');
         }
-
 
         this.selection.select(selected);
     }
@@ -674,7 +671,7 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     openMediaDialog(mediaObject:MediaItem): void{
-        
+
         const currentPatient: FormGroup = this.getcurrentPatient();
 
         const dialogRef = this.dialog.open(MediaDialogComponent, {

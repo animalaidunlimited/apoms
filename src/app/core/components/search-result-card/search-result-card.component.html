@@ -61,6 +61,6 @@
             </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
-            {{record.CallDateTime | date: 'dd/MMM/yyyy'}}
+            {{record.CallDateTime | date: 'dd/MMM/yyyy' : '00:00' }}
         </mat-card-footer>
       </mat-card>

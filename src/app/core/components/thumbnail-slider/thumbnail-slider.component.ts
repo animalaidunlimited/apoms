@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
+
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'thumbnail-slider',
     templateUrl: './thumbnail-slider.component.html',
     styleUrls: ['./thumbnail-slider.component.scss'],

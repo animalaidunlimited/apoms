@@ -26,7 +26,7 @@ DECLARE vSuccess INT;
 DECLARE vPatientOutcomeDetailsId INT;
 
 DECLARE vPatientOutcomeDetailsExists INT;
-SET vCrueltyReportExists = 0;
+SET vPatientOutcomeDetailsExists = 0;
 SET vSuccess = 0;
 
 SELECT COUNT(1) INTO vPatientOutcomeDetailsExists FROM AAU.PatientOutcomeDetails WHERE PatientId = prm_PatientId;
