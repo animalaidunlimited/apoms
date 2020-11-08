@@ -16,6 +16,7 @@ interface DialogData {
     templateUrl: './tag-number-dialog.component.html',
     styleUrls: ['./tag-number-dialog.component.scss'],
 })
+
 export class TagNumberDialog implements OnInit {
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -46,7 +47,7 @@ export class TagNumberDialog implements OnInit {
 
         this.tagForm.valueChanges.subscribe(changes => {
             this.data.tagNumber = changes.tagNumber;
-        })
+        });
 
     }
 

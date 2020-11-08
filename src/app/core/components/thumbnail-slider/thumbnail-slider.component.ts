@@ -3,7 +3,7 @@ import {
     NgxGalleryOptions,
     NgxGalleryImage,
     NgxGalleryAnimation
-} from '@kolkov/ngx-gallery';
+} from '@animalaidunlimited/ngx-gallery-aau';
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
