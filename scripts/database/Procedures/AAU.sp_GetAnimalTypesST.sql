@@ -12,4 +12,4 @@ AND StreetTreatOnly = 1;
 END$$
 DELIMITER ;
 
-CALL AAU.sp_GetAnimalTypesST()
+-- CALL AAU.sp_GetAnimalTypesST()
