@@ -17,6 +17,7 @@ areaName : string;
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'patient-details-dialog',
   templateUrl: './patient-details-dialog.component.html',
   styleUrls: ['./patient-details-dialog.component.scss']
@@ -80,6 +81,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
         patient['ABC status'] = ABCStatus[patientObject['ABC status']];
         patient['Release status'] = ReleaseStatus[patientObject['Release status']];
+        // tslint:disable-next-line:no-string-literal
         patient['Temperament'] = Temperament[patientObject['Temperament']];
         patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
 

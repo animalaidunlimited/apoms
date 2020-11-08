@@ -113,7 +113,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule),
     },
     {
-        data: { title: 'Users' },
+        data: { title: 'User Admin' },
         icon: 'none',
         group: 'Settings',
         path: 'users',

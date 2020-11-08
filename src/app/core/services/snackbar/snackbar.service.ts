@@ -9,7 +9,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 export class SnackbarService{
   notificationDurationSeconds = 3;
 
-  constructor(public snackBar: MatSnackBar , public userOptions:UserOptionsService, private zone: NgZone) { this.init()}
+  constructor(public snackBar: MatSnackBar , public userOptions:UserOptionsService, private zone: NgZone) { this.init();}
 
   init(){
     this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
