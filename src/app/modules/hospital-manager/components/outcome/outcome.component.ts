@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { getCurrentDateString } from '../../../../core/helpers/utils';
@@ -66,15 +66,21 @@ export class OutcomeComponent implements OnInit {
 
         this.patientService.getPatientOutcomeForm(this.patientId).subscribe(outcome => {
 
-            const antibiotic1Chip = this.antibiotic1Chips.chips.find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics1));
+            if(!outcome){
+                return;
+            }
 
-            antibiotic1Chip?.select();
+            this.antibiotic1Chips.chips
+                .find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics1))
+                ?.select();
 
-            const antibiotic2Chip = this.antibiotic2Chips.chips.find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics2));
-            antibiotic2Chip?.select();
+            this.antibiotic2Chips.chips
+                .find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics2))
+                ?.select();
 
-            const antibiotic3Chip = this.antibiotic3Chips.chips.find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics3));
-            antibiotic3Chip?.select();
+            this.antibiotic3Chips.chips
+                .find(chip => chip.value === this.getAntibioticId(outcome.antibioticDetails.antibiotics3))
+                ?.select();
 
             this.outcomeForm.patchValue(outcome);
         });
@@ -125,7 +131,9 @@ export class OutcomeComponent implements OnInit {
             const outcomeRespone:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
 
             outcomeRespone.success === 1 ?
-                this.snackbar.successSnackBar('Outcome saved successfully', 'OK') :
+            (
+                this.snackbar.successSnackBar('Outcome saved successfully', 'OK')
+            )   :
                 this.snackbar.errorSnackBar('Outcome save failed', 'OK');
 
 

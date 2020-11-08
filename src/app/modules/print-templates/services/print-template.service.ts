@@ -90,9 +90,6 @@ export class PrintTemplateService extends APIService {
       printTemplateSubscription.unsubscribe();
     });
 
-
-
-
   }
 
   public updatePrintTemplateList(template:PrintTemplate) : void {
