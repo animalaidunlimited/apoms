@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgxGalleryModule } from 'projects/ngx-gallery/projects/gallery/src/public-api';
 
 import { ThumbnailSliderComponent } from './thumbnail-slider.component';
-import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 describe('ThumbnailSliderComponent', () => {
     let component: ThumbnailSliderComponent;
     let fixture: ComponentFixture<ThumbnailSliderComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async() => {
         TestBed.configureTestingModule({
             imports: [NgxGalleryModule],
             declarations: [ThumbnailSliderComponent],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ThumbnailSliderComponent);
