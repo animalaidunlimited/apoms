@@ -1,9 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {
-    NgxGalleryOptions,
-    NgxGalleryImage,
-    NgxGalleryAnimation
-} from '@animalaidunlimited/ngx-gallery-aau';
+
+import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
+
 import { Observable } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
@@ -29,6 +27,7 @@ export class ThumbnailSliderComponent implements OnInit{
                 this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
                     medium:'../../../../../assets/images/image_placeholder.png',
                     big:'../../../../../assets/images/image_placeholder.png',
+                    type: 'image'
                     });
 
             }
@@ -38,10 +37,12 @@ export class ThumbnailSliderComponent implements OnInit{
             }
 
             this.galleryImages = mediaItems.map(item=>{
+
                return {
                         small:item.remoteURL,
                         medium:item.remoteURL,
                         big:item.remoteURL,
+                        type: item.mediaType.includes('video') ? 'video' : 'image'
                       };
             });
 
@@ -60,8 +61,8 @@ export class ThumbnailSliderComponent implements OnInit{
                 closeIcon: 'fa fa-times',
                 width: '550px',
                 height: '300px',
-                thumbnailsColumns: 2,
-                thumbnailsRows:2,
+                thumbnailsColumns: 3,
+                thumbnailsRows:1,
                 thumbnailsSwipe:true,
                 imageSize: 'contain',
                 imageAnimation: NgxGalleryAnimation.Zoom,
@@ -72,8 +73,6 @@ export class ThumbnailSliderComponent implements OnInit{
             // max-width 800
             {
                 breakpoint: 1028,
-                width: '100%',
-                height: '600px',
                 imagePercent: 100,
                 thumbnailsPercent: 50,
                 thumbnailsMargin: 20,

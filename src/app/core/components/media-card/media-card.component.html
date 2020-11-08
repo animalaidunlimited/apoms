@@ -9,8 +9,6 @@
     <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaSourceURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
     <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
-
-
     <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (370 / mediaItem.widthPX) * mediaItem.heightPX}">
 
         <source [src]="mediaItem.remoteURL || mediaItem.localURL" type="video/mp4"/>

@@ -7,6 +7,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of } from 'rxjs';
+import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -59,6 +60,7 @@ export class AnimalHeaderComponent implements OnInit {
     }
 
     openMediaDialog(): void{
+
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
@@ -74,6 +76,7 @@ export class AnimalHeaderComponent implements OnInit {
                 }
             }
         });
+
     }
 
     getcurrentPatient() {

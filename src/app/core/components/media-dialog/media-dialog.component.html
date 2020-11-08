@@ -15,6 +15,10 @@
     <mat-icon>add_a_photo</mat-icon>
 </button>
 
+<button mat-mini-fab color="primary" *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog">
+    <mat-icon>camera</mat-icon>
+</button>
+
 </div>
 
 <div mat-dialog-content fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start">
@@ -36,6 +40,6 @@
 <div mat-dialog-actions>
 
   <button type="button" mat-button [disabled]="uploading > 0" (click)="onSave()">Save</button>
-    
+
 
 </div>
