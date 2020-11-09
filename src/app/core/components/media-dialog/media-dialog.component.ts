@@ -181,14 +181,6 @@ openMobileMediaCaptureDialog(){
                 patientId: this.data.patientId,
             }
         });
-
-        //dialogRef.afterClosed().subscribe(updatedMedia=>{
-        //    if(updatedMedia){
-        //        if(updatedMedia.isPrimary === true){
-        //            this.profileUrl = updatedMedia.remoteURL;
-        //        }
-        //    }
-        //});
 }
 
 
