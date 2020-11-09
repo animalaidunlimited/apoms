@@ -10,13 +10,13 @@ import { map } from 'rxjs/operators';
 })
 export class UserActionService extends APIService{
   endpoint = 'UserAdmin';
-  constructor(public http: HttpClient) { 
+  constructor(public http: HttpClient) {
     super(http);
   }
 
 
   public async insertUser(userDetails:any): Promise<any> {
-    console.log(userDetails);
+    
     if (userDetails.userId) {
       return await this.put(userDetails);
     } else {
