@@ -4,7 +4,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { getCurrentDateString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { Input } from '@angular/core';
-import { Antibiotic, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
+import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -50,9 +50,9 @@ export class OutcomeComponent implements OnInit {
             patientOutcomeDetailsId: [],
             patientId: [this.patientId, Validators.required],
             vaccinationDetails: this.fb.group({
-                megavac1Date: [''],
-                megavac2Date: [''],
-                rabiesVaccinationDate: [''],
+                megavac1Date: [],
+                megavac2Date: [],
+                rabiesVaccinationDate: [],
             }),
             antibioticDetails: this.fb.group({
                 antibiotics1: [],
@@ -93,13 +93,9 @@ export class OutcomeComponent implements OnInit {
 
     getAntibioticId(antibioticId:number) : string {
 
-        const antibioticObject = this.antibiotics.find(antibiotic => antibiotic.antibioticId === antibioticId);
+        const antibioticName = this.antibiotics.find(antibiotic => antibiotic.antibioticId === antibioticId)?.antibiotic || '';
 
-        if(!antibioticObject){
-            throw Error ('Unable to find antibiotic in list');
-                }
-
-        return antibioticObject.antibiotic;
+        return antibioticName;
     }
 
     toggleAntibioticChip(source:string, antibiotic:Antibiotic, chip: MatChip){
@@ -132,7 +128,8 @@ export class OutcomeComponent implements OnInit {
 
             outcomeRespone.success === 1 ?
             (
-                this.snackbar.successSnackBar('Outcome saved successfully', 'OK')
+                this.snackbar.successSnackBar('Outcome saved successfully', 'OK'),
+                this.outcomeForm.get('patientOutcomeDetailsId').setValue(outcomeRespone.patientOutcomeDetailsId)
             )   :
                 this.snackbar.errorSnackBar('Outcome save failed', 'OK');
 
