@@ -236,7 +236,6 @@ export class UsersPageComponent implements OnInit {
 
     selectRow(selectedUser:any)
     {
-      console.log(typeof(selectedUser.jobTitleId));
       if(typeof(selectedUser.jobTitleId)==='string'){
         let jobTypeId = [];
         jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;

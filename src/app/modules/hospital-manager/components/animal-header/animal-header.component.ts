@@ -68,7 +68,7 @@ export class AnimalHeaderComponent implements OnInit {
                 patientId: this.recordForm.get('patientDetails.patientId')?.value,
             }
         });
-
+        // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
         dialogRef.afterClosed().subscribe(updatedMedia=>{
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){

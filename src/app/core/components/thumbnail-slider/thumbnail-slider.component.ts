@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 @Component({
@@ -14,7 +14,7 @@ import { MediaItem } from '../../models/media';
 export class ThumbnailSliderComponent implements OnInit{
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
-    @Input() mediaData!: Observable<MediaItem[]>;
+    @Input() mediaData!: BehaviorSubject<MediaItem[]>;
 
     constructor() {}
 
@@ -23,7 +23,6 @@ export class ThumbnailSliderComponent implements OnInit{
         this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
-
                 this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
                     medium:'../../../../../assets/images/image_placeholder.png',
                     big:'../../../../../assets/images/image_placeholder.png',
@@ -37,12 +36,12 @@ export class ThumbnailSliderComponent implements OnInit{
             }
 
             this.galleryImages = mediaItems.map(item=>{
-
                return {
                         small:item.remoteURL,
                         medium:item.remoteURL,
                         big:item.remoteURL,
-                        type: item.mediaType.includes('video') ? 'video' : 'image'
+                        type: item.mediaType.includes('video') ? 'video' : 'image',
+                        description: item.datetime.toString().replace('T',' '),
                       };
             });
 
