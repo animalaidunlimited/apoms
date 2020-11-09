@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<table mat-table matSort [dataSource]="tableData" class="mat-elevation-z8 table">
+<table mat-table matSort matSortActive="Tag number" matSortDirection="asc" [dataSource]="tableData" class="mat-elevation-z8 table">
 
   <ng-container matColumnDef="index">
     <th mat-header-cell *matHeaderCellDef> Count </th>

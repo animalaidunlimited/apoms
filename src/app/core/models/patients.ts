@@ -93,6 +93,6 @@ export interface IsoReason{
 }
 
 export interface PatientOutcomeResponse{
-    patientOutcomeId: number;
+    patientOutcomeDetailsId: number;
     success: number;
 }
