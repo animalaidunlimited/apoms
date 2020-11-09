@@ -16,7 +16,6 @@ export class UserActionService extends APIService{
 
 
   public async insertUser(userDetails:any): Promise<any> {
-    console.log(userDetails);
     if (userDetails.userId) {
       return await this.put(userDetails);
     } else {
@@ -27,11 +26,6 @@ export class UserActionService extends APIService{
   public getUsersByIdRange(): Promise<any> {
     const request = '?GetUsersByIdRange';
     return this.get(request);
-  //   .pipe(
-  //     map((response:UserDetails[]) => {
-  //         return response;
-  //     }),
-  // );
 
   }
 

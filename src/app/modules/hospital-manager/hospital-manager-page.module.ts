@@ -50,7 +50,7 @@ import { TreatmentComponent } from './components/treatment/treatment.component';
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
-        MediaCaptureComponent
+        MediaCaptureComponent,
         TreatmentComponent
     ],
     imports: [

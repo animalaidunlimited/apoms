@@ -54,8 +54,6 @@ export class MediaDialogComponent implements OnInit {
 
         this.mediaItems = mediaItems.map((mediaItem:any) => {
 
-          console.log(mediaItem);
-
          this.newItem  = {
           mediaItemId: mediaItem.mediaItemId,
           patientMediaItemId: mediaItem.patientMediaItemId,
@@ -183,14 +181,6 @@ openMobileMediaCaptureDialog(){
                 patientId: this.data.patientId,
             }
         });
-
-        //dialogRef.afterClosed().subscribe(updatedMedia=>{
-        //    if(updatedMedia){
-        //        if(updatedMedia.isPrimary === true){
-        //            this.profileUrl = updatedMedia.remoteURL;
-        //        }
-        //    }
-        //});
 }
 
 
