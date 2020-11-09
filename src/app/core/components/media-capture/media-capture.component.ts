@@ -123,7 +123,7 @@ videoHeight = 0;
 }
 
 handleError(error:string) {
-  console.log('Error: ', error);
+  console.log(error);
 }
 
 attachVideo(stream:MediaStream) {
@@ -223,10 +223,8 @@ uploadAndAddToGallery(newFile:any, type:string){
     returnObject.mediaItemId.subscribe((result) => {
 
       if(returnObject.mediaItem && result){
-        console.log(this.uploading);
         this.uploading--;
         this.changeDetector.detectChanges();
-        console.log(this.uploading);
 
       }
     });

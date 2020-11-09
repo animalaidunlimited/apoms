@@ -178,8 +178,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         this.changeDetector.detectChanges();
       }
-      catch(e){
-        console.log(e);
+      catch(error){
+        console.log(error);
       }
     } else {
 
@@ -208,8 +208,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
             }
           });
       }
-      catch(e){
-        console.log(e);
+      catch(error){
+        console.log(error);
       }
     }
   }

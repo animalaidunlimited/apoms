@@ -62,7 +62,7 @@ export interface UserDetails {
         state('true', style({ opacity: 1})),
         transition('false <=> true', [animate('500ms 250ms')])
       ])
-    
+
     ]
 })
 export class UsersPageComponent implements OnInit {
@@ -81,7 +81,7 @@ export class UsersPageComponent implements OnInit {
     myCheck = false;
     currentState = 'closed';
 
-    // 
+    //
     dataSource: MatTableDataSource<UserDetails> ;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -126,7 +126,7 @@ export class UsersPageComponent implements OnInit {
     // new MatTableDataSource(this.userDetailRecords);
 
     userDetails = this.fb.group({
-      userId : [], 
+      userId : [],
       firstName : ['',Validators.required],
       surName: ['',Validators.required],
       telephone:[,Validators.required],
@@ -146,9 +146,9 @@ export class UsersPageComponent implements OnInit {
       roleId: 2 , roleName: 'Operator'
     }];
 
-    
 
-  
+
+
     ngOnInit() {
         this.dropdown.getAllTeams().subscribe(team=>{
           this.teamNames = team;
@@ -157,7 +157,7 @@ export class UsersPageComponent implements OnInit {
           this.jobTypes = jobType;
         });
         this.getrefreshTableData();
-        
+
     }
 
 
@@ -172,11 +172,11 @@ export class UsersPageComponent implements OnInit {
       this.dataSource = new MatTableDataSource(userTableData);
       setTimeout(() => {
         this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort; 
+        this.dataSource.sort = this.sort;
       });
-      
-     
-    }   
+
+
+    }
 
     Submit(userDetailsForm: any) {
       if(userDetailsForm.valid){
@@ -216,10 +216,10 @@ export class UsersPageComponent implements OnInit {
       this.streetTreatdropdown = false;
     }
 
-    
+
     changed(){
       if(this.isChecked) {
-       
+
         // this.currentState = this.currentState === 'closed' ? 'open' : 'closed';
         this.streetTreatdropdown = !this.streetTreatdropdown;
       }
@@ -236,7 +236,6 @@ export class UsersPageComponent implements OnInit {
 
     selectRow(selectedUser:any)
     {
-      console.log(typeof(selectedUser.jobTitleId));
       if(typeof(selectedUser.jobTitleId)==='string'){
         let jobTypeId = [];
         jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
@@ -248,12 +247,12 @@ export class UsersPageComponent implements OnInit {
       this.userDetails.patchValue(selectedUser);
 
       this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
-    
+
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
 
       this.streetTreatdropdown = streetTreatUser ? true : false;
-      this.currentState = 'closed' ? 'open' : 'closed'; 
-      
+      this.currentState = 'closed' ? 'open' : 'closed';
+
     }
 
 }
