@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
@@ -33,6 +33,7 @@ export class PatientRecordComponent implements OnInit {
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
+        private changeDetector: ChangeDetectorRef,
         private patientService: PatientService) {}
 
     ngOnInit() {
@@ -90,6 +91,7 @@ export class PatientRecordComponent implements OnInit {
             }
 
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
+            this.changeDetector.detectChanges();
 
         });
     }
