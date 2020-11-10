@@ -59,7 +59,7 @@ export class CensusService extends APIService {
         };
         return await this.delete(deleteData).then(value=>
             {
-                return deleteData;
+                return value;
             })
             .catch(error => {
                 console.log(error);
