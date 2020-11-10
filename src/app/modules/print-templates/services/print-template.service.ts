@@ -38,20 +38,21 @@ export class PrintTemplateService extends APIService {
 
     // TODO type this properly
     this.getObservable('').subscribe((templates:any[]) => {
+      if(templates){
+        templates.forEach(template => {
 
-      templates.forEach(template => {
+          // The database returns 0 instead of false, so we need to change to booleans.
+          template.printElements.forEach((element:any) => {
 
-        // The database returns 0 instead of false, so we need to change to booleans.
-        template.printElements.forEach((element:any) => {
+            element.bold = Boolean(element.bold);
+            element.italics = Boolean(element.italics);
+            element.underlined = Boolean(element.underlined);
+            element.showStyleBar = Boolean(element.showStyleBar);
 
-          element.bold = Boolean(element.bold);
-          element.italics = Boolean(element.italics);
-          element.underlined = Boolean(element.underlined);
-          element.showStyleBar = Boolean(element.showStyleBar);
+          });
 
         });
-
-      });
+    }
 
       this.printTemplates.next(templates as PrintTemplate[]);
 
