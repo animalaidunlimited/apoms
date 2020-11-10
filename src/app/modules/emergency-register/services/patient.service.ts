@@ -219,8 +219,9 @@ export class PatientService extends APIService {
 
                         patientMediaItem = {
                             patientId: mediaItem.patientId,
-                            mediaItem : new BehaviorSubject<MediaItem[]>([])
+                            mediaItem : new BehaviorSubject<MediaItem[]>([mediaItem])
                         };
+
                         this.mediaItemData.push(patientMediaItem);
 
 
@@ -229,12 +230,12 @@ export class PatientService extends APIService {
                     let dataItem = patientMediaItem.mediaItem.getValue();
 
                     if(mediaItem.deleted){
-
                         dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
-
                     }
 
-                    if(!mediaItem.updated){
+                    const existingItem = dataItem.find(item => item.patientMediaItemId = mediaItem.patientMediaItemId);
+
+                    if(!existingItem){
                         dataItem.push(mediaItem);
                     }
 
@@ -260,6 +261,10 @@ export class PatientService extends APIService {
 
         const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
+
+        if(!patientMediaItem){
+            this.addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject, patientId);
+        }
 
         this.getObservable(request).subscribe((media : any[])=>{
 
@@ -291,18 +296,21 @@ export class PatientService extends APIService {
 
             if(patientMediaItem){
                 patientMediaItem.mediaItem.next(savedMediaItems);
+            }
 
-            }
-            else{
-                const newItemData : MediaItemsDataObject = {
-                    patientId,
-                    mediaItem : returnBehaviorSubject
-                };
-                returnBehaviorSubject.next(savedMediaItems);
-                this.mediaItemData.push(newItemData);
-            }
         });
         return returnBehaviorSubject;
+    }
+
+    addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject:BehaviorSubject<MediaItem[]>, patientId:number){
+
+        const newItemData : MediaItemsDataObject = {
+            patientId,
+            mediaItem : returnBehaviorSubject
+        };
+        returnBehaviorSubject.next([]);
+        this.mediaItemData.push(newItemData);
+
     }
 
     public getPatientOutcomeForm(
