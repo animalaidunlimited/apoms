@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { PrintPatient, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 export class PrintTemplateService extends APIService {
 
   endpoint = 'PrintTemplate';
+  printTemplateSubscription:Subscription | undefined;
   public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
   public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>([]);
@@ -37,20 +38,21 @@ export class PrintTemplateService extends APIService {
 
     // TODO type this properly
     this.getObservable('').subscribe((templates:any[]) => {
+      if(templates){
+        templates.forEach(template => {
 
-      templates.forEach(template => {
+          // The database returns 0 instead of false, so we need to change to booleans.
+          template.printElements.forEach((element:any) => {
 
-        // The database returns 0 instead of false, so we need to change to booleans.
-        template.printElements.forEach((element:any) => {
+            element.bold = Boolean(element.bold);
+            element.italics = Boolean(element.italics);
+            element.underlined = Boolean(element.underlined);
+            element.showStyleBar = Boolean(element.showStyleBar);
 
-          element.bold = Boolean(element.bold);
-          element.italics = Boolean(element.italics);
-          element.underlined = Boolean(element.underlined);
-          element.showStyleBar = Boolean(element.showStyleBar);
+          });
 
         });
-
-      });
+    }
 
       this.printTemplates.next(templates as PrintTemplate[]);
 
@@ -89,9 +91,6 @@ export class PrintTemplateService extends APIService {
 
       printTemplateSubscription.unsubscribe();
     });
-
-
-
 
   }
 
@@ -139,15 +138,18 @@ export class PrintTemplateService extends APIService {
 
   public printPatientDocument(printTemplateId: number, patientId: number) {
 
-    this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
+
+    this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
 
       // Get all of the patient details
       this.patientService.getPrintPatientByPatientId(patientId).subscribe((printPatient:PrintPatient) => {
 
         const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
+
         // The print content component takes an array of print templates.
         this.sendContentToPrinter(JSON.stringify([newTemplate]));
+        this.printTemplateSubscription?.unsubscribe();
 
       });
 
@@ -183,7 +185,7 @@ export class PrintTemplateService extends APIService {
 
         resultPatient.forEach(printPatient => {
 
-          this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
+          this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
 
             const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
@@ -194,6 +196,7 @@ export class PrintTemplateService extends APIService {
         });
 
         this.sendContentToPrinter(JSON.stringify(templates));
+        this.printTemplateSubscription?.unsubscribe();
 
       });
 }

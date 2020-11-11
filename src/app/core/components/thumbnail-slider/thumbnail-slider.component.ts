@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {
-    NgxGalleryOptions,
-    NgxGalleryImage,
-    NgxGalleryAnimation
-} from '@kolkov/ngx-gallery';
-import { Observable } from 'rxjs';
+
+import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
+
+import { Observable, BehaviorSubject } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 @Component({
@@ -16,7 +14,7 @@ import { MediaItem } from '../../models/media';
 export class ThumbnailSliderComponent implements OnInit{
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
-    @Input() mediaData!: Observable<MediaItem[]>;
+    @Input() mediaData!: BehaviorSubject<MediaItem[]>;
 
     constructor() {}
 
@@ -25,10 +23,10 @@ export class ThumbnailSliderComponent implements OnInit{
         this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
-
                 this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
                     medium:'../../../../../assets/images/image_placeholder.png',
                     big:'../../../../../assets/images/image_placeholder.png',
+                    type: 'image'
                     });
 
             }
@@ -42,6 +40,8 @@ export class ThumbnailSliderComponent implements OnInit{
                         small:item.remoteURL,
                         medium:item.remoteURL,
                         big:item.remoteURL,
+                        type: item.mediaType.includes('video') ? 'video' : 'image',
+                        description: item.datetime.toString().replace('T',' '),
                       };
             });
 
@@ -60,8 +60,8 @@ export class ThumbnailSliderComponent implements OnInit{
                 closeIcon: 'fa fa-times',
                 width: '550px',
                 height: '300px',
-                thumbnailsColumns: 2,
-                thumbnailsRows:2,
+                thumbnailsColumns: 3,
+                thumbnailsRows:1,
                 thumbnailsSwipe:true,
                 imageSize: 'contain',
                 imageAnimation: NgxGalleryAnimation.Zoom,
@@ -72,8 +72,6 @@ export class ThumbnailSliderComponent implements OnInit{
             // max-width 800
             {
                 breakpoint: 1028,
-                width: '100%',
-                height: '600px',
                 imagePercent: 100,
                 thumbnailsPercent: 50,
                 thumbnailsMargin: 20,

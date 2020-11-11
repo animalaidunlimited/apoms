@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -8,6 +8,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
+import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
+import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
+import { Router } from '@angular/router';
 
 interface DialogData{
 areaName : string;
@@ -39,14 +42,18 @@ export class PatientDetailsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private dialog: MatDialog,
+    private router: Router,
     private printService: PrintTemplateService,
+    private treatmentService: TreatmentService,
     private census: CensusService ) {
 
-    this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index')));
+    this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index' && column !== 'complete')));
 
     this.isPrinting = this.printService.getIsPrinting();
 
     const emptyReportPatient:ReportPatientRecord = {'Emergency number': 0,
+    PatientId: 0,
     'Tag number': '',
     Species: '',
     'Caller name' : '',
@@ -56,7 +63,8 @@ export class PatientDetailsDialogComponent implements OnInit {
     'Release ready': false,
     'Release status': '',
     Temperament: '',
-    'Treatment priority': ''};
+    'Treatment priority': '',
+    treatedToday: false};
 
     this.patientRecords = new MatTableDataSource([emptyReportPatient]);
 
@@ -117,7 +125,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   treatmentLayout(){
 
-    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready']);
+    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
 
   }
 
@@ -125,7 +133,53 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.displayedColumns.next(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
 
+  }
+
+  toggleTreatment(row:ReportPatientRecord){
+
+    if(!row.treatedToday){
+      row.treatedToday = !row.treatedToday;
+
+    }
+
+    this.openTreatmentDialog(row);
 
   }
+
+  openTreatmentDialog(row:ReportPatientRecord): void {
+
+    const dialogRef = this.dialog.open(TreatmentRecordComponent, {
+        width: '650px',
+        data: {
+          patientId: row.PatientId,
+          treatmentId: 0
+        },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+        if (result) {
+
+        }
+    });
+}
+
+cellClicked(cell:string, value:any){
+
+    if(cell === 'Tag number'){
+
+      this.openHospitalManagerRecord(value);
+
+    }
+
+}
+
+openHospitalManagerRecord(tagNumber: string){
+
+  this.router.navigate(['/nav/hospital-manager', {tagNumber}], { replaceUrl: true });
+  this.dialog.closeAll();
+
+}
+
 
 }

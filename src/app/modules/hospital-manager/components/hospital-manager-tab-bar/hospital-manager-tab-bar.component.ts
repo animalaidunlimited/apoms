@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+import { HospitalManagerTabBarService } from '../../services/hospital-manager-tab-bar.service';
 
 
 @Component({
@@ -11,12 +12,23 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 })
 export class HospitalManagerTabBarComponent implements OnInit {
 
+    constructor(private tabBarService: HospitalManagerTabBarService){
+
+    }
+
     tabs:SearchRecordTab[] = [];
 
     selected = new FormControl(0);
 
     ngOnInit() {
         this.addEmptyTab('Search');
+
+        // Watch for any new tabs being opened from other areas of the application.
+        this.tabBarService.tabCreator.subscribe(newTab => {
+
+            newTab.forEach(elem => this.addTab(elem));
+        });
+
     }
 
     addEmptyTab(value: string) {

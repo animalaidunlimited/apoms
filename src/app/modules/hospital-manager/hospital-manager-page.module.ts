@@ -3,10 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HospitalManagerPageComponent } from './pages/hospital-manager-page.component';
 import { HospitalManagerPageRoutingModule } from './hospital-manager-page-routing.module';
 
-import {
-    NgxGalleryPreviewComponent
-} from '@kolkov/ngx-gallery';
-
 import { MaterialModule } from '../../material-module';
 import { HospitalManagerTabBarComponent } from './components/hospital-manager-tab-bar/hospital-manager-tab-bar.component';
 import { PatientRecordComponent } from './components/patient-record/patient-record.component';
@@ -33,6 +29,9 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
+import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
+import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
+import { TreatmentComponent } from './components/treatment/treatment.component';
 
 @NgModule({
     declarations: [
@@ -51,7 +50,8 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
-        
+        MediaCaptureComponent,
+        TreatmentComponent
     ],
     imports: [
         CommonModule,
@@ -66,6 +66,7 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
         EmergencyDetailsModule,
         SurgeryRecordModule,
         CensusRecordModule,
+        NgxGalleryModule
     ],
     exports: [],
 })

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Injectable, ErrorHandler, LOCALE_ID } from '@angular/core';
+import { NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavModule } from './core/components/nav/nav.module';
@@ -16,8 +16,9 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
-import { DatePipe, registerLocaleData } from '@angular/common';
+import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { TreatmentRecordComponent } from './core/components/treatment-record/treatment-record.component';
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -36,7 +37,7 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
-    declarations: [AppComponent, ConfirmationDialog],
+    declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

@@ -2,14 +2,12 @@
     <mat-card-header>
       <div mat-card-avatar class="media-card-header-image"></div>
       <mat-card-title>{{tagNumber}}</mat-card-title>
-      <mat-card-subtitle><input type="datetime-local" formControlName= "datetime" (focus)="setInitialTime($event)" matInput></mat-card-subtitle>
+      <mat-card-subtitle><input type="datetime-local" formControlName= "datetime" matInput></mat-card-subtitle>
     </mat-card-header>
 
 
     <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaSourceURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
     <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
-
-
 
     <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (370 / mediaItem.widthPX) * mediaItem.heightPX}">
 

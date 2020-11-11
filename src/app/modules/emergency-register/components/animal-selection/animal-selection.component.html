@@ -44,7 +44,7 @@
             <ng-container matColumnDef="media">
                 <th mat-header-cell *matHeaderCellDef>Media</th>
                 <td mat-cell *matCellDef="let row">
-                <mat-icon (click)="selectIfNotSelected(row); openMediaDialog(row)" style="cursor:pointer">add_photo_alternate</mat-icon>
+                <mat-icon (click)="selectIfNotSelected(row); openMediaDialog(row)" style="cursor:pointer; padding-left: 10px">add_photo_alternate</mat-icon>
 
                 </td>
             </ng-container>
@@ -52,7 +52,7 @@
             <ng-container matColumnDef="print">
                 <th mat-header-cell *matHeaderCellDef>Print card</th>
                 <td mat-cell *matCellDef="let row">
-                <mat-icon (click)="selectIfNotSelected(row); printEmergencyCard(row)" style="cursor:pointer">print</mat-icon>
+                <mat-icon (click)="selectIfNotSelected(row); printEmergencyCard(row)" style="cursor:pointer; padding-left: 10px">print</mat-icon>
 
                 </td>
             </ng-container>

@@ -79,60 +79,67 @@ IF IsCensusArea = TRUE THEN
 SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
-JSON_OBJECT("emergencynumber" , ec.EmergencyNumber),
-JSON_OBJECT("tagnumber" , p.TagNumber),
-JSON_OBJECT("species" , aty.AnimalType),
-JSON_OBJECT("callername" , c.Name),
-JSON_OBJECT("number" , c.Number),
-JSON_OBJECT("calldate" , DATE_Format(ec.CallDatetime,"%Y-%m-%d")),
-JSON_OBJECT("treatmentPriority", p.TreatmentPriority),
-JSON_OBJECT("abcStatus", p.ABCStatus),
-JSON_OBJECT("releaseStatus", p.ReleaseStatus),
-JSON_OBJECT("temperament", p.Temperament),
-JSON_OBJECT("releaseReady", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN TRUE ELSE FALSE END)
+JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
+JSON_OBJECT("Tag number" , p.TagNumber),
+JSON_OBJECT("Species" , aty.AnimalType),
+JSON_OBJECT("Caller name" , c.Name),
+JSON_OBJECT("Number" , c.Number),
+JSON_OBJECT("Call date" , DATE_Format(ec.CallDatetime,"%Y-%m-%d")),
+JSON_OBJECT("Treatment priority", p.TreatmentPriority),
+JSON_OBJECT("ABC status", p.ABCStatus),
+JSON_OBJECT("Release status", p.ReleaseStatus),
+JSON_OBJECT("Temperament", p.Temperament),
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", CASE WHEN t.PatientId IS NOT NULL THEN TRUE ELSE FALSE END)
 ))patientDetails
 FROM AAU.Patient p
-INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId = 1
+INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId;
+INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
+LEFT JOIN AAU.Treatment t ON t.PatientId = p.PatientId AND CAST(t.TreatmentDateTime AS DATE) = CURRENT_DATE();
+
+
 
 ELSE
 
 SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
-JSON_OBJECT("emergencynumber" , ec.EmergencyNumber),
-JSON_OBJECT("tagnumber" , p.TagNumber),
-JSON_OBJECT("species" , aty.AnimalType),
-JSON_OBJECT("callername" , c.Name),
-JSON_OBJECT("number" , c.Number),
-JSON_OBJECT("calldate" , DATE_Format(ec.CallDatetime,"%Y-%m-%d")),
-JSON_OBJECT("treatmentPriority", p.TreatmentPriority),
-JSON_OBJECT("abcStatus", p.ABCStatus),
-JSON_OBJECT("releaseStatus", p.ReleaseStatus),
-JSON_OBJECT("temperament", p.Temperament),
-JSON_OBJECT("releaseReady", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END)
+JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
+JSON_OBJECT("PatientId" , p.PatientId),
+JSON_OBJECT("Tag number" , p.TagNumber),
+JSON_OBJECT("Species" , aty.AnimalType),
+JSON_OBJECT("Caller name" , c.Name),
+JSON_OBJECT("Number" , c.Number),
+JSON_OBJECT("Call date" , DATE_Format(ec.CallDatetime,"%Y-%m-%d")),
+JSON_OBJECT("Treatment priority", p.TreatmentPriority),
+JSON_OBJECT("ABC status", p.ABCStatus),
+JSON_OBJECT("Release status", p.ReleaseStatus),
+JSON_OBJECT("Temperament", p.Temperament),
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", CASE WHEN t.PatientId IS NOT NULL THEN TRUE ELSE FALSE END)
 ))patientDetails
 FROM AAU.Patient p
-INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId = 1
+INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
-WHERE p.PatientId IN
+LEFT JOIN AAU.Treatment t ON t.PatientId = p.PatientId AND CAST(t.TreatmentDateTime AS DATE) = CURRENT_DATE()
+WHERE p.TagNumber IN
 (
-SELECT c.PatientId  
-	FROM AAU.Census c
-	INNER JOIN AAU.CensusArea ca ON ca.AreaId = c.AreaId  
-	INNER JOIN AAU.CensusAction csa ON csa.ActionId = c.ActionId  
-	INNER JOIN  
-	(  
-		SELECT TagNumber, MAX(LatestCount) AS MaxLatestCount  
-		FROM AAU.Census c  
-		INNER JOIN AAU.CensusAction csa ON csa.ActionId = c.ActionId  
-		WHERE SortAction IN (1,3)  
-		GROUP BY TagNumber  
-	) maxAction ON maxAction.TagNumber = c.TagNumber 
-    AND maxAction.MaxLatestCount = c.LatestCount
-    AND ca.Area = prm_Area
+	SELECT cn.TagNumber  
+	FROM
+		(
+			SELECT
+			c.TagNumber,
+			ca.Area,
+			c.ActionId,
+			ROW_NUMBER() OVER ( PARTITION BY c.TagNumber ORDER BY c.CensusDate DESC, cac.SortAction DESC) RNum
+			FROM AAU.Census c
+			INNER JOIN AAU.CensusArea ca ON ca.AreaId = c.AreaId
+			INNER JOIN AAU.CensusAction cac ON cac.ActionId = c.ActionId
+		) cn
+    WHERE cn.RNum = 1
+	AND cn.Area = prm_Area
 );
 
 END IF;
@@ -140,14 +147,3 @@ END IF;
 
 
 END$$
-        
-       -- CALL AAU.sp_GetPatientDetailsbyArea2('Jim','Isolation')
-     /*
-SELECT *
-FROM AAU.Patient p
-INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
-WHERE P.AnimalTypeId IN (7,18,11)
-AND p.PatientStatusId = 1
-         
-         */

@@ -84,7 +84,7 @@ export class RecordSearchComponent implements OnInit {
             id: 2,
             inputType: 'date',
             searchValue: 'date',
-            databaseField: 'CAST(search.CallDateTime AS DATE)',
+            databaseField: `CAST(search.CallDateTime AS DATE)`,
             name: 'Date',
             inNotIn: false
         },
@@ -132,9 +132,9 @@ export class RecordSearchComponent implements OnInit {
             id: 9,
             inputType: 'text',
             searchValue: 'problem',
-            databaseField: 'search.Problem',
+            databaseField: 'search.PatientId IN (SELECT pp.PatientId FROM AAU.PatientProblem pp INNER JOIN AAU.Problem pr ON pr.ProblemId~~pp.ProblemId WHERE pr.Problem LIKE \'%||%\')',
             name: 'Problem',
-            inNotIn: false
+            inNotIn: true
         },
         {
             id: 10,
@@ -172,7 +172,7 @@ export class RecordSearchComponent implements OnInit {
             id: 14,
             inputType: 'boolean',
             searchValue: 'tycall',
-            databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId~~1)',
             name: 'Thanked',
             inNotIn: true
         },
@@ -189,6 +189,7 @@ export class RecordSearchComponent implements OnInit {
     searchResults$!:Observable<SearchResponse[]>;
 
     ngOnInit() {
+
         this.searchForm = this.formBuilder.group({
             searchRows: this.formBuilder.array([]),
         });
@@ -211,6 +212,7 @@ export class RecordSearchComponent implements OnInit {
     }
 
     executeSearch() {
+
         if (this.searchShowing) {
             this.searchShowing = !this.searchShowing;
             this.search.searchString = this.getSearchString();
@@ -230,8 +232,7 @@ export class RecordSearchComponent implements OnInit {
 
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
-                if(option?.inNotIn){
-
+                if(option?.inNotIn && option?.searchValue !== 'problem'){
 
                     option.databaseField = option.databaseField?.replace(' NOT IN (', ' IN (');
 
@@ -239,12 +240,15 @@ export class RecordSearchComponent implements OnInit {
 
                         option.databaseField = option.databaseField?.replace(' IN (', ' NOT IN (');
                     }
-
                     return option.databaseField;
 
                 }
-                else{
+                else if(option?.inNotIn && option?.searchValue === 'problem'){
 
+                    return option.databaseField?.replace('||',splitItem[1].trim());
+
+                }
+                else{
                     return option?.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
                 }
             })
