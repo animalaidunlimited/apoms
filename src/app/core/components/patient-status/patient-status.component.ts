@@ -50,11 +50,11 @@ export class PatientStatusComponent implements OnInit {
 
         this.patientStatusForm = this.fb.group({
             patientId: [this.patientId, Validators.required],
-            tagNumber: ['', Validators.required],
-            createdDate: ['', Validators.required],
-            patientStatusId: ['', Validators.required],
-            patientStatusDate: ['', Validators.required],
-            PN: [''],
+            tagNumber: [, Validators.required],
+            createdDate: [, Validators.required],
+            patientStatusId: [, Validators.required],
+            patientStatusDate: [, Validators.required],
+            PN: [],
             suspectedRabies: [false],
         });
 

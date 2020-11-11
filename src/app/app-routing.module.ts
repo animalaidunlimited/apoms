@@ -68,7 +68,8 @@ const routes: Routes = [
         path: 'print',
         outlet: 'print',
         component: PrintWrapperComponent,
-        canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard],
+        canActivateChild: [NavGuard],
         children: [
         { path: 'print-content/:printTemplate', component: PrintContentComponent }
         ]
@@ -77,7 +78,8 @@ const routes: Routes = [
         path: 'census-list',
         outlet: 'census-list',
         component: PrintWrapperComponent,
-        canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard],
+        canActivateChild: [NavGuard],
         children: [
         { path: 'census-list-content/:censusList', component: CensusListContentComponent }
         ]
@@ -87,7 +89,7 @@ const routes: Routes = [
         component: NavComponent,
         children: navRoutes,
         canActivate: [AuthGuard],
-        canActivateChild: [NavGuard],
+        canActivateChild: [NavGuard]
     },
     {
         path: '**',

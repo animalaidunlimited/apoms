@@ -56,8 +56,12 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
       deleted: false,
-      updated: false
+      updated: this.mediaItem.updated
     });
+
+    if(this.mediaItem.updated){
+      this.mediaForm.markAsTouched();
+    }
 
     this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
 
@@ -143,10 +147,6 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       this.mediaItem.mediaItemId.subscribe((itemId) => {
 
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
-
-        // TODO This is late arriving, it's luckily a timing thing that makes sure there's a value.
-        // We should turn this into an observable.
-        // this.mediaForm.get('remoteURL')?.setValue(this.mediaItem.remoteURL);
         this.mediaForm.get('updated')?.setValue(true);
 
         // Save the new or update the media
