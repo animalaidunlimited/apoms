@@ -210,12 +210,20 @@ export class PatientService extends APIService {
 
                 if(data.success === 1){
 
-                    const patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
+                    let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
                         patientMediaItemVal.patientId === mediaItem.patientId
                     );
 
                     if(!patientMediaItem){
-                        throw new TypeError('Unable to find patient media');
+                        // We're loading the service for the first time and the first patient has no photos
+
+                        patientMediaItem = {
+                            patientId: mediaItem.patientId,
+                            mediaItem : new BehaviorSubject<MediaItem[]>([])
+                        };
+                        this.mediaItemData.push(patientMediaItem);
+
+
                     }
 
                     let dataItem = patientMediaItem.mediaItem.getValue();
@@ -242,12 +250,11 @@ export class PatientService extends APIService {
 
     }
 
-    public getPatientMediaItemsByPatientId(
-        patientId: number,
-    ): BehaviorSubject<MediaItem[]> {
+    public getPatientMediaItemsByPatientId(patientId: number): BehaviorSubject<MediaItem[]> {
+
         const request = '/PatientMediaItems?patientId=' + patientId;
 
-        const patientMediaItem = this.mediaItemData.find(patientMediaItemVal=>
+        const patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
             patientMediaItemVal.patientId === patientId
         );
 

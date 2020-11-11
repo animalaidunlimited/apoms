@@ -64,19 +64,11 @@ const routes: Routes = [
                 m => m.LoginPageModule,
             ),
     },
-
-    // {
-    //    path: 'print',
-    //    loadChildren: () =>
-    //        import('./modules/print-templates/print-templates-page.module').then(
-    //            m => m.PrintTemplatesPageModule,
-    //        ),
-    // },
     {
         path: 'print',
         outlet: 'print',
         component: PrintWrapperComponent,
-        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
         children: [
         { path: 'print-content/:printTemplate', component: PrintContentComponent }
         ]
@@ -85,7 +77,7 @@ const routes: Routes = [
         path: 'census-list',
         outlet: 'census-list',
         component: PrintWrapperComponent,
-        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
         children: [
         { path: 'census-list-content/:censusList', component: CensusListContentComponent }
         ]

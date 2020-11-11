@@ -113,6 +113,7 @@ export class NavigationService {
         url: string[],
         isChild: boolean = false,
     ) {
+
         if (url.length > 0) {
             isChild ? this.pushToStack(url) : this.resetStack(url);
         }

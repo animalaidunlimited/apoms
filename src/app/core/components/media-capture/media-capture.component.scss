@@ -1,0 +1,84 @@
+.vid {
+    object-fit: fill;
+    border-radius: 4px;
+    height: 98vh;
+}
+
+.stop-circle{
+    font-size: 45px;
+    color: rgb(150, 11, 11);
+}
+
+.canvas{
+    visibility: hidden;
+}
+
+
+.container{
+    width: 98vw;
+    height: 98vh;
+    position: absolute;
+    border-radius: 4px;
+  }
+
+  .slider{
+    width: 100%;
+    height: 90px;
+    position: absolute;
+    bottom: 15%;
+    z-index: 99;
+  }
+
+  .video-item{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    height: 98vh;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .capture-buttons{
+    position: absolute;
+    bottom: 0;
+    width: 98vw;
+    height: 15%
+  }
+
+  .video-capture-button{
+    left: 50%;
+    margin: 20px 0 0 -28px;
+    background-color: whitesmoke;
+  }
+
+  .image-capture-button{
+    left: 60%;
+    margin: 20px 0 0 -28px;
+    background-color: transparent;
+  }
+
+  .complete-button{
+    left: 80%;
+    background-color: transparent;
+  }
+
+  .seconday-icon{
+    font-size: 36px;
+  }
+
+  .timer{
+    position: absolute;
+    left: calc(50% - 20px);
+    font-weight: 400;
+  }
+
+  .no-warning{
+    color: whitesmoke;
+  }
+
+  .warning{
+    color:gold;
+  }
+
+  .alert{
+    color: rgb(218, 21, 21);
+  }

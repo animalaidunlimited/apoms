@@ -1,11 +1,12 @@
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 
 interface IncomingData {
   tagNumber: string;
@@ -40,6 +41,7 @@ export class MediaDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private mediaPaster: MediaPasteService,
     private patientService: PatientService,
+    public dialog: MatDialog,
     private snackbar: SnackbarService,
     public platform: Platform) { }
 
@@ -51,8 +53,6 @@ export class MediaDialogComponent implements OnInit {
         if(mediaItems){
 
         this.mediaItems = mediaItems.map((mediaItem:any) => {
-
-          console.log(mediaItem);
 
          this.newItem  = {
           mediaItemId: mediaItem.mediaItemId,
@@ -168,6 +168,19 @@ onSave(): void {
   else{
     this.dialogRef.close();
   }
+}
+
+openMobileMediaCaptureDialog(){
+
+          const dialogRef = this.dialog.open(MediaCaptureComponent, {
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            panelClass: 'media-capture-dialog',
+            data: {
+                tagNumber: this.data.tagNumber,
+                patientId: this.data.patientId,
+            }
+        });
 }
 
 

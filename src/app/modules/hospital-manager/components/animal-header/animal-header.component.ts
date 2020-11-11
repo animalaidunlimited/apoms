@@ -7,14 +7,11 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of } from 'rxjs';
+import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'animal-header',
-    // tslint:disable-next-line:no-host-metadata-property
-    host: {
-        '(window:paste)': 'handlePaste( $event )',
-    },
     templateUrl: './animal-header.component.html',
     styleUrls: ['./animal-header.component.scss'],
 })
@@ -62,18 +59,8 @@ export class AnimalHeaderComponent implements OnInit {
         };
     }
 
-    public handlePaste(event: ClipboardEvent){
-
-        const patientId = this.recordForm.get('patientDetails.patientId')?.value;
-
-        // Pass the clipboard event down to the service, expect it to return an image URL
-        const newItem: MediaItem = this.mediaPaster.handlePaste(event, patientId);
-
-        this.profileUrl = newItem?.localURL;
-
-    }
-
     openMediaDialog(): void{
+
         const dialogRef = this.dialog.open(MediaDialogComponent, {
             minWidth: '50%',
             data: {
@@ -81,7 +68,7 @@ export class AnimalHeaderComponent implements OnInit {
                 patientId: this.recordForm.get('patientDetails.patientId')?.value,
             }
         });
-
+        // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
         dialogRef.afterClosed().subscribe(updatedMedia=>{
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
@@ -89,6 +76,7 @@ export class AnimalHeaderComponent implements OnInit {
                 }
             }
         });
+
     }
 
     getcurrentPatient() {

@@ -1,0 +1,52 @@
+
+<h2 mat-dialog-title>Treatment details</h2>
+
+<mat-dialog-content class="mat-typography" [formGroup]="treatmentDetails">
+
+<div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "start space-between">
+
+<mat-form-field>
+    <input formControlName="treatmentDateTime" name="treatmentDateTime" type="datetime-local"
+    (focus)="setInitialTime($event)"
+        [max]="currentTime" placeholder="Treatment date" matInput>
+</mat-form-field>
+
+<mat-form-field>
+    <input formControlName="nextTreatmentDateTime" name="nextTreatmentDateTime" type="datetime-local"
+    (focus)="setInitialTime($event)"
+    [max]="currentTime" placeholder="Next treatment date" matInput>
+</mat-form-field>
+
+</div>
+
+<label class="label">Eye discharge &#8853;</label>
+<mat-chip-list #edChips>
+    <mat-chip #edChip="matChip"
+    style="cursor:pointer"
+    (click)="edChip.toggleSelected()"
+    (selectionChange)="edChipSelected(edChip);"
+    *ngFor="let ed of eyeDischarge">{{ed.value}}
+    </mat-chip>
+</mat-chip-list>
+
+<label class="label">Nasal discharge</label>
+
+<mat-chip-list #ndChips>
+    <mat-chip #ndChip="matChip"
+    style="cursor:pointer"
+    (click)="ndChip.toggleSelected()"
+    (selectionChange)="ndChipSelected(ndChip);"
+    *ngFor="let nd of nasalDischarge">{{nd.value}}
+    </mat-chip>
+</mat-chip-list>
+
+<mat-form-field class="extra-wide">
+    <textarea formControlName="comment" rows="3" placeholder="Comment" matInput></textarea>
+</mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions >
+    <button type="submit" mat-raised-button color="primary" (click)="saveTreatment()" [disabled]="treatmentDetails.invalid">Save</button>
+    <button type="button" mat-raised-button color="primary" mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

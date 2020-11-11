@@ -157,7 +157,6 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
         // Save the new or update the media
         this.patientService.savePatientMedia(this.mediaForm.value);
-        console.log(this.mediaForm.value);
 
       });
 
