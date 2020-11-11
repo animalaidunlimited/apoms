@@ -1,0 +1,9 @@
+$colour-border: #a9abad;
+.form-sub-group {
+    border: 2px solid;
+    border-radius: 5px;
+    border-color: $colour-border;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: auto;
+}
