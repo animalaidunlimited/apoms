@@ -7,6 +7,7 @@
         <mat-label>Call Outcome</mat-label>
         <mat-select tabindex="13" formControlName="CallOutcome" [compareWith]="compareCallOutcome">
             <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome">
+                <mat-option>N/A</mat-option>
                 {{outcome.CallOutcome}}
             </mat-option>
         </mat-select>

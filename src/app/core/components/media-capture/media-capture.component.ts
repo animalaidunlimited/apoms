@@ -27,7 +27,8 @@ constraints = {
       facingMode: 'environment',
       mimeType: 'video/mp4',
       width: { ideal: window.innerWidth * .98, max: 1280 },
-      height: { ideal: window.innerHeight * .98, max: 720 }
+      height: { ideal: window.innerHeight * .98, max: 720 },
+      deviceId: ''
     }
 };
 
@@ -111,15 +112,27 @@ videoHeight = 0;
   }
 
   startCamera() {
-    if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
 
-                navigator.mediaDevices
-                  .getUserMedia(this.constraints)
-                  .then(this.attachVideo.bind(this))
-                  .catch(this.handleError);
-    } else {
-        alert('Sorry, camera not available.');
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+
+      const finalDevice = devices.filter(device => device.kind === 'videoinput').pop();
+
+      this.constraints.video.deviceId = finalDevice?.deviceId || '';
+
+      if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+
+        navigator.mediaDevices
+          .getUserMedia(this.constraints)
+          .then(this.attachVideo.bind(this))
+          .catch(this.handleError);
+      } else {
+      alert('Sorry, camera not available.');
+      }
+
     }
+      );
+
+
 }
 
 handleError(error:string) {
