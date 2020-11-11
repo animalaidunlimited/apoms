@@ -123,6 +123,8 @@ uploadFile($event:any) {
     }
     else if(mediaItem.mediaItem){
 
+      mediaItem.mediaItem.updated = true;
+
       this.addToMediaItems(mediaItem.mediaItem);
 
     }

@@ -3,9 +3,6 @@ ALTER TABLE AAU.UserJobType
 	ADD COLUMN `IsDeleted` TINYINT NULL DEFAULT 0 AFTER `CreatedDate`,
 	ADD COLUMN `DeletedDate` DATETIME NULL DEFAULT NULL AFTER `IsDeleted`;
 
-
-Dxcvbnm,./ELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetJobType!!
 
 DELIMITER $$
@@ -21,8 +18,6 @@ Purpose: To get the UserjobType data for dropdown.
 
 SELECT DISTINCT jt.JobTypeId , jt.Title  FROM AAU.userjobtype ujt
 INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId;
-
-END
 
 END$$
 
@@ -45,8 +40,6 @@ SELECT JobTypeId
 FROM AAU.UserJobType
 WHERE UserId = prm_UserId AND IsDeleted = FALSE;
 
-END
-
 END$$
 
 
@@ -68,9 +61,6 @@ Purpose: To insert the UserjobType Table data of the new user.
 
 INSERT INTO AAU.UserJobType (UserId , JobTypeId)
 VALUES (prm_UserId , prm_JobTypeId);
-
-
-END
 
 END$$
 
@@ -95,8 +85,6 @@ Purpose: To update the UserjobType Table data of the user.
 UPDATE AAU.UserJobType 
 SET IsDeleted = TRUE ,DeletedDate = CURDATE()
 WHERE UserId = prm_UserId AND JobTypeId = prm_JobTypeId;
-
-END
 
 END$$
 
@@ -189,8 +177,6 @@ END IF;
 
 SELECT vUserId, vSuccess;
 
-END
-
 END$$
 
 
@@ -265,8 +251,6 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.Initials, u.Colour, u.Telephone
     ORDER BY u.UserId ASC) UserDetails;
         
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
-
-END
 
 END$$
 
@@ -362,20 +346,4 @@ END IF;
 
 SELECT vUpdateSuccess;
 
-
-END
-
 END$$
-
-
-
-
-
-
-
-    
-    
-    
-    
-    
-    
