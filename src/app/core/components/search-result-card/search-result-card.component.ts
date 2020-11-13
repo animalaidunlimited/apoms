@@ -31,9 +31,6 @@ export class SearchResultCardComponent implements OnInit {
   ngOnInit(): void {
 
     this.printService.initialisePrintTemplates();
-
-    console.log(this.record);
-
   }
 
   openCase(caseSearchResult: SearchResponse) {
@@ -98,7 +95,6 @@ addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalTyp
 }
 
 openMediaDialog(patientId: number, tagNumber: string): void{
-  console.log(patientId);
   const dialogRef = this.dialog.open(MediaDialogComponent, {
       minWidth: '50%',
       data: {

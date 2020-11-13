@@ -8,7 +8,7 @@
   "start_url": "/",
   "gcm_sender_id": "275309609166",
   "share_target": {
-    "action": "/nav/emergency-register?addSearchMedia=",
+    "action": "/nav/emergency-register",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {

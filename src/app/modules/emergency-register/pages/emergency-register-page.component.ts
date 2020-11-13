@@ -20,14 +20,27 @@ export class EmergencyRegisterPageComponent implements OnInit {
 
         this.printService.initialisePrintTemplates();
 
-        this.route.queryParams.subscribe(params=>{
-           if(params){
-             if(params.addSearchMedia) {
-               this.tabBar.addTab(params.addSearchMedia);
-             }
-           }
-      
-        });
+        const data = this.route.snapshot.paramMap.get('files');
+        console.log(data);
+        
+        // this.route.params.subscribe(params=>{
+        //   console.log(params.files);
+        //    if(params){
+        //      if(params.files) {
+        //       console.log(params.files);
+        //        this.tabBar.addTab(params.files);
+        //      }
+        //    }
+        // });
 
     }
+
+    // onChange(event:any) {
+    //   const file = event.srcElement.files;
+    //   console.log(file);
+
+    //   this.tabBar.addTab(file);
+
+      // console.log(event);
+    // }
 }

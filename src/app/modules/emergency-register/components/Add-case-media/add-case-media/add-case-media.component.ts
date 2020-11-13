@@ -19,18 +19,6 @@ export class AddCaseMediaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-    // this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
-    // this.outstandingCases$.subscribe(name=>{
-    //  name.map(value=>{
-    //   value.rescuerGroups.map(data=>{
-    //    data.rescues.map(res=>{
-    //      console.log(res);
-    //    });
-    //   });
-    //  });
-    // });
-
   }
 
 }
