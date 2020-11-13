@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SurgerySite, SurgeryType, SurgeryById, SurgeryRecord } from 'src/app/core/models/surgery-details';
+import { SurgerySite, SurgeryType, SurgeryById, SurgeryRecord } from 'src/app/core/models/Surgery-details';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Observable } from 'rxjs';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';

@@ -6,7 +6,7 @@ import { APIService } from '../http/api.service';
   providedIn: 'root'
 })
 export class UserActionService extends APIService{
-  endpoint = 'UserAdmin';
+  endpoint = 'Users';
   constructor(public http: HttpClient) {
     super(http);
   }

@@ -6,6 +6,10 @@ import { TeamsPageComponent } from './teams-page.component';
 import { MaterialModule } from 'src/app/material-module';
 @NgModule({
     declarations: [TeamsPageComponent],
-    imports: [CommonModule, TeamsPageRoutingModule,MaterialModule],
+    imports: [
+        CommonModule, 
+        TeamsPageRoutingModule,
+        MaterialModule
+    ],
 })
 export class TeamsPageModule {}
