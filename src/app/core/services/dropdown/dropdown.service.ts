@@ -16,9 +16,10 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
-import { SurgerySite, SurgeryType } from '../../models/surgery-details';
+import { SurgerySite, SurgeryType } from '../../models/Surgery-details';
 import { Antibiotic } from '../../models/patients';
-import { Team, UserJobType } from '../../models/userDetails';
+import { UserJobType } from '../../models/user';
+import { TeamDetails } from "../../models/team";
 
 
 export interface AnimalTypeResponse {
@@ -58,7 +59,7 @@ export class DropdownService extends APIService {
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
     jobTypes$!: Observable<UserJobType[]>;
-    team$!: Observable<Team[]>;
+    team$!: Observable<TeamDetails[]>;
 
 
 
@@ -571,7 +572,7 @@ export class DropdownService extends APIService {
         return this.paperDimensions$;
     }
 
-    getAllTeams(): Observable<Team[]>{
+    getAllTeams(): Observable<TeamDetails[]>{
         const request = '/GetAllTeams';
     
         if(!this.team$) {
