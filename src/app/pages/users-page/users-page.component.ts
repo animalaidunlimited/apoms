@@ -1,12 +1,13 @@
-import {AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Team, UserJobType } from 'src/app/core/models/userDetails';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { UserDetails, UserJobType } from 'src/app/core/models/user';
+import { TeamDetails } from "src/app/core/models/team";
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { EmptyError } from 'rxjs';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 
@@ -14,22 +15,6 @@ import { state, style, transition, animate, trigger } from '@angular/animations'
 interface StreetTreatRole {
   roleId: number;
   roleName: string;
-}
-
-export interface UserDetails {
-  userId : number;
-  firstName: string;
-  surName: string;
-  initials: string;
-  colour: string;
-  telephone: number;
-  userName: string;
-  teamId: number;
-  team: string;
-  roleId: number;
-  role: string;
-  jobTitleId: number;
-  jobTitle: string;
 }
 
 
@@ -66,7 +51,7 @@ export interface UserDetails {
     ]
 })
 export class UsersPageComponent implements OnInit {
-    teamNames!: Team[];
+    teamNames!: TeamDetails[];
 
     userList!: UserDetails[];
 
@@ -108,7 +93,6 @@ export class UsersPageComponent implements OnInit {
           jobTitle: ''
         };
         this.dataSource = new MatTableDataSource([emptyUser]);
-
       }
 
     displayedColumns: string[] = [

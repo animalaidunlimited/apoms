@@ -16,7 +16,7 @@ Created On: 27/10/2020
 Purpose: To get the UserjobType data for dropdown.
 */
 
-SELECT DISTINCT jt.JobTypeId , jt.Title  FROM AAU.userjobtype ujt
+SELECT DISTINCT jt.JobTypeId , jt.Title  FROM AAU.UserJobType ujt
 INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId;
 
 END$$
