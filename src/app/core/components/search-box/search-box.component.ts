@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Search, SearchValue } from '../record-search/record-search.component';
@@ -42,6 +42,8 @@ import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 })
 export class SearchBoxComponent implements OnInit {
   searchFieldForm = new FormControl();
+
+  @Input() mediaVal!: File;
 
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
@@ -176,6 +178,7 @@ export class SearchBoxComponent implements OnInit {
     searchResults$!:Observable<SearchResponse[]>;
 
     ngOnInit() {
+
         this.searchForm = this.formBuilder.group({
             searchRows: this.formBuilder.array([]),
         });
@@ -337,6 +340,7 @@ export class SearchBoxComponent implements OnInit {
             data: {
                 tagNumber,
                 patientId,
+                mediaVal: this.mediaVal
             }
     });
 }

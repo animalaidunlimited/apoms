@@ -11,6 +11,7 @@ import { MediaCaptureComponent } from '../media-capture/media-capture.component'
 interface IncomingData {
   tagNumber: string;
   patientId: number;
+  mediaVal: any;
 }
 
 @Component({
@@ -47,7 +48,6 @@ export class MediaDialogComponent implements OnInit {
 
   ngOnInit(): void {
 
-
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
 
         if(mediaItems){
@@ -77,6 +77,11 @@ export class MediaDialogComponent implements OnInit {
       }
     });
 
+    if(this.data.mediaVal) {
+      const whatsAppMedia = this.data.mediaVal[0];
+      this.upload(whatsAppMedia , this.data.patientId);
+    }
+
   }
 
 
@@ -98,7 +103,6 @@ public handlePaste(event: ClipboardEvent){
 upload(file: File, patientId: number) : MediaItemReturnObject{
 
   const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
-
     mediaItem.mediaItemId.subscribe(result => {
       if(result){
         this.uploading--;

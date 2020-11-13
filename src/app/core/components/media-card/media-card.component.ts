@@ -60,11 +60,6 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       updated: false
     });
 
-
-    console.log(this.mediaForm.value);
-
-
-
     this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
 
       const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
