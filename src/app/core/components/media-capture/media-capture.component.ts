@@ -28,6 +28,7 @@ constraints = {
       mimeType: 'video/mp4',
       width: { ideal: window.innerWidth * .98, max: 1280 },
       height: { ideal: window.innerHeight * .98, max: 720 },
+      aspectRatio: { exact: 1.7777777778 },
       deviceId: ''
     }
 };
@@ -116,6 +117,8 @@ videoHeight = 0;
     navigator.mediaDevices.enumerateDevices().then(devices => {
 
       const finalDevice = devices.filter(device => device.kind === 'videoinput').pop();
+
+      console.log(devices);
 
       this.constraints.video.deviceId = finalDevice?.deviceId || '';
 
