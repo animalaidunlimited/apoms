@@ -16,10 +16,10 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
-import { SurgerySite, SurgeryType } from '../../models/Surgery-details';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
 import { TeamDetails } from "../../models/team";
+import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 
 
 export interface AnimalTypeResponse {

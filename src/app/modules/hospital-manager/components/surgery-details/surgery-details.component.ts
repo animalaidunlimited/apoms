@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { SurgeryRecord } from 'src/app/core/models/Surgery-details';
+import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { SurgeryRecordDialogComponent } from '../surgery-record-dialog/surgery-record-dialog.component';
 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { UpdatedSurgery } from 'src/app/core/models/Surgery-details';
+import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
 
 export interface DialogData {
     patientId: number;

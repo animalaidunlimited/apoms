@@ -41,7 +41,6 @@ export class TeamsPageComponent implements OnInit {
     }
 
     displayedColumns: string[] = [
-        // 'TeamId',
         'TeamName',
         'Capacity',
     ];
@@ -91,7 +90,7 @@ export class TeamsPageComponent implements OnInit {
         this.teamSubsciption?.unsubscribe();
     }
 
-    Submit() {
+    submit() {
         if (this.teamDetails.valid) {
             this.teamDetailService
                 .saveTeam(this.teamDetails.value)
