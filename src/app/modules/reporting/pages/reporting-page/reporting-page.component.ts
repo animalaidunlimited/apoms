@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
-import { SurgeryRecord } from 'src/app/core/models/Surgery-details';
+import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { MatDialog } from '@angular/material/dialog';
