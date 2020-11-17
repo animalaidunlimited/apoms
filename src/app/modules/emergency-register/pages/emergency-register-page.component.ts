@@ -20,7 +20,7 @@ export class EmergencyRegisterPageComponent implements OnInit {
 
         this.printService.initialisePrintTemplates();
 
-        const data = this.route.snapshot.paramMap.get('files');
+        const data = this.route;
         console.log(data);
         
         // this.route.params.subscribe(params=>{

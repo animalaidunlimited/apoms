@@ -46,7 +46,7 @@ export class UIErrorHandler extends ErrorHandler {
         NavModule,
         HttpClientModule,
         MaterialModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
         AngularFireMessagingModule,

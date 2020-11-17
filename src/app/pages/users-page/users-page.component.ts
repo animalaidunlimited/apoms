@@ -122,14 +122,11 @@ export class UsersPageComponent implements OnInit {
       'jobTitle'
     ];
 
-    // userDetailRecords = new MatTableDataSource(ELEMENT_DATA);
-    // new MatTableDataSource(this.userDetailRecords);
-
     userDetails = this.fb.group({
       userId : [],
       firstName : ['',Validators.required],
       surName: ['',Validators.required],
-      telephone:[,Validators.required],
+      telephone:[],
       initials: ['',Validators.required],
       userName:['',Validators.required],
       password: ['',Validators.required],
@@ -137,7 +134,7 @@ export class UsersPageComponent implements OnInit {
       isStreetTreatUser:[],
       teamId:[],
       roleId:[],
-      jobTitleId:[,Validators.required]
+      jobTitleId:[]
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -184,6 +181,7 @@ export class UsersPageComponent implements OnInit {
           if(res.vUpdateSuccess) {
             // this.updateUserTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
+            // TODO: Create a new function for these three tasks.
             this.refreshTable();
             this.resetForm();
             this.streetTreatdropdown = false;
@@ -219,8 +217,6 @@ export class UsersPageComponent implements OnInit {
 
     changed(){
       if(this.isChecked) {
-
-        // this.currentState = this.currentState === 'closed' ? 'open' : 'closed';
         this.streetTreatdropdown = !this.streetTreatdropdown;
       }
     }

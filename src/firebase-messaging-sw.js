@@ -22,6 +22,13 @@ measurementId: "G-2FQTQ26YCP"
 
   const messaging = firebase.messaging();
 
+  
+  // self.addEventListener('fetch', event => {
+
+  //   console.log(event);
+
+  // });
+
 
 //Handle messages whilst the app is in the background. We'll show a notification
 //here and also post a message to the angular app so it can be sent to the messaging service.
