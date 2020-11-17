@@ -32,6 +32,7 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
 import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
+import { PatientVisitDetailsComponent } from './components/patient-visit-details/patient-visit-details.component';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { TreatmentComponent } from './components/treatment/treatment.component';
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
         MediaCaptureComponent,
-        TreatmentComponent
+        TreatmentComponent,
+        PatientVisitDetailsComponent
     ],
     imports: [
         CommonModule,
