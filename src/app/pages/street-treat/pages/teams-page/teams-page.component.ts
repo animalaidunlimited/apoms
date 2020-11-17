@@ -135,7 +135,7 @@ export class TeamsPageComponent implements OnInit {
         dialogRef.afterClosed().subscribe((confirmed: boolean) => {
             if (confirmed) {
                 this.teamDetails.get('IsDeleted')?.setValue(true);
-                this.Submit();
+                this.submit();
             }
         });
     }
