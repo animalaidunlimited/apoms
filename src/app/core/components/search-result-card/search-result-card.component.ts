@@ -7,8 +7,10 @@ import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/com
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
+import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'search-result-card',
   templateUrl: './search-result-card.component.html',
   styleUrls: ['./search-result-card.component.scss']
@@ -27,6 +29,8 @@ export class SearchResultCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    console.log(this.record);
 
     this.printService.initialisePrintTemplates();
 
@@ -98,6 +102,20 @@ printEmergencyCard(patientId: number){
   const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
   this.printService.printPatientDocument(printTemplateId, patientId);
+
+}
+
+openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined) {
+  const dialogRef = this.dialog.open(ReleaseDetailsDialogComponent, {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    data: {
+      emergencyCaseId,
+      tagNumber
+    },
+});
+dialogRef.afterClosed().subscribe(() => {});
+
 
 }
 
