@@ -19,6 +19,10 @@ import { ConfirmationDialog } from './core/components/confirm-dialog/confirmatio
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { TreatmentRecordComponent } from './core/components/treatment-record/treatment-record.component';
+import { AssignReleaseDialogComponent } from './core/components/assign-release-dialog/assign-release-dialog.component';
+import { AssignReleaseComponent } from './core/components/assign-release/assign-release.component';
+// import { RescuerDetailsComponent } from './core/components/rescuer-details/rescuer-details.component';
+// import { ReleaseDetailsComponent } from './core/components/release-details/release-details.component';
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -37,7 +41,7 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
-    declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent],
+    declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent, AssignReleaseDialogComponent, AssignReleaseComponent],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

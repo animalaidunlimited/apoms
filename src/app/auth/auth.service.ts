@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
 import { BootController } from '../../boot-controller';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response {
@@ -27,6 +28,7 @@ export class AuthService extends APIService {
         http: HttpClient,
         private ngZone: NgZone,
         private storage: StorageService,
+        private userService: UserOptionsService,
     ) {
         super(http);
         this.token = this.storage.read(AUTH_TOKEN) || '';
@@ -43,8 +45,9 @@ export class AuthService extends APIService {
             if (!this.response.success) {
                 throw new Error('Wrong Credentials!');
             }
-            this.storage.save(AUTH_TOKEN, this.token);
+            this.userService.userName = username;
 
+            this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
 
             return this.redirectUrl;

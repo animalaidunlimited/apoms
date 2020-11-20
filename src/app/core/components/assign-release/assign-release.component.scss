@@ -1,0 +1,10 @@
+.images {
+    max-width: 10vh;
+    max-height: 10vh;
+}
+
+@media only screen and (max-width: 600px) {
+    .images {
+     display: none;
+    }
+}

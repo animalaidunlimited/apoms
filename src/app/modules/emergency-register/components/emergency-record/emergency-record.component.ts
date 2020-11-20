@@ -9,6 +9,7 @@ import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'emergency-record',
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],

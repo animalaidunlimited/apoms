@@ -1,0 +1,19 @@
+.select {
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+    .select {
+        width: auto;
+    }
+    
+}
+
+.mat-slider {
+    font-family: sans-serif;
+    margin-top: 30px;
+}
+
+.div {
+    margin-top: 20px;
+}
