@@ -105,16 +105,17 @@ printEmergencyCard(patientId: number){
 
 }
 
-openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined) {
+openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined, patientId: number| undefined) {
   const dialogRef = this.dialog.open(ReleaseDetailsDialogComponent, {
     maxWidth: '100vw',
     maxHeight: '100vh',
     data: {
       emergencyCaseId,
-      tagNumber
+      tagNumber,
+      patientId
     },
 });
-dialogRef.afterClosed().subscribe(() => {});
+dialogRef.afterClosed().subscribe(() => {}).unsubscribe();
 
 
 }
