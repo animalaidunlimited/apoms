@@ -20,6 +20,8 @@ import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
 import { TeamDetails } from "../../models/team";
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
+import { Status } from '../../models/status';
+import { VisitType } from '../../models/visit-type';
 
 
 export interface AnimalTypeResponse {
@@ -59,9 +61,9 @@ export class DropdownService extends APIService {
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
     jobTypes$!: Observable<UserJobType[]>;
-    team$!: Observable<TeamDetails[]>;
-
-
+	team$!: Observable<TeamDetails[]>;
+	status$!:Observable<Status[]>;
+	visitTypes$!:Observable<VisitType[]>;
 
     constructor(http: HttpClient) {
         super(http);
@@ -308,7 +310,6 @@ export class DropdownService extends APIService {
 
     getProblems(): Observable<ProblemDropdownResponse[]> {
         const request = '/Problems';
-
         if (!this.problems$) {
             this.problems$ = this.getObservable(request).pipe(
                 map((response: ProblemDropdownResponse[]) => {
@@ -316,7 +317,6 @@ export class DropdownService extends APIService {
                 }),
             );
         }
-
         return this.problems$;
     }
 
@@ -574,7 +574,7 @@ export class DropdownService extends APIService {
 
     getAllTeams(): Observable<TeamDetails[]>{
         const request = '/GetAllTeams';
-    
+
         if(!this.team$) {
           this.team$ = this.getObservable(request).pipe(
             map(response=>{
@@ -585,7 +585,7 @@ export class DropdownService extends APIService {
         return this.team$;
       }
 
-      
+
   getUserJobType(): Observable<UserJobType[]> {
     const request = '/GetJobTypes';
 
@@ -599,4 +599,27 @@ export class DropdownService extends APIService {
     return this.jobTypes$;
   }
 
+  getStatus(): Observable<Status[]>{
+	const request = '/GetStatus';
+
+	if(!this.status$) {
+	  this.status$ = this.getObservable(request).pipe(
+		map(response=>{
+		  return response.data;
+		})
+	  );
+	}
+	return this.status$;
+  }
+  getVisitType(): Observable<VisitType[]>{
+	  const request = '/GetVisitType';
+	  if(!this.visitTypes$){
+		this.visitTypes$ = this.getObservable(request).pipe(
+			map(response => {
+				return response.data;
+			})
+		);
+	  }
+	  return this.visitTypes$;
+  }
 }

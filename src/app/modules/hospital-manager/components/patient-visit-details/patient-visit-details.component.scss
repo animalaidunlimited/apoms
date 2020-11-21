@@ -1,0 +1,70 @@
+@media only screen and (min-width: 600px) {
+    .mat-fab-wrapper {
+        display: inline-block;
+    }
+    .vistisWrapper{
+        display: inline-block !important;
+        width: 85%;
+    }
+    #cdk-overlay-1{
+        max-width:67vw;
+    }
+    .visit_row_data{
+        position: relative;
+    }
+    .visit_row_data .mat-fab-wrapper {
+		position: absolute;
+		margin-left: 60px;
+		margin-top: 13px;
+	}
+	.add-visits-fab-btn{
+		display: inline-block;
+		margin-left: 45px;
+	}
+}
+@media only screen and (max-width: 600px) {
+    button.mat-mini-fab {
+        box-sizing: border-box;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        outline: none;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: none;
+        vertical-align: baseline;
+        text-align: center;
+        margin: 0;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        min-width: 64px;
+        line-height: 36px;
+        padding: 0 16px;
+        border-radius: 4px;
+        overflow: visible;
+        transform: translate3d(0, 0, 0);
+        transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1),
+            box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+    }
+    .mat-form-field {
+        margin: 0 !important;
+        width: 100%;
+    }
+    .mat-raised-button {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+    .vistisWrapper {
+        margin-bottom: 20px;
+    }
+    .mat-fab-wrapper {
+        width: 100%;
+    }
+}
