@@ -1,1 +1,80 @@
-<p>patient-visit-details works!</p>
+<h3 mat-dialog-title>Add Streat Treat Vists</h3>
+<form [formGroup]="visitForm">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+		<mat-form-field appearance="fill">
+			<!-- aau.priority -->
+			<mat-select placeholder="Case Priority" formControlName="casePriority">
+				<mat-option *ngFor="let priority of visitPriorityKeys" [value]="priority">
+					{{ visitPriority[priority] }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<!-- DB aau.team; -->
+		<mat-form-field appearance="fill">
+			<mat-label>Team</mat-label>
+			<mat-select formControlName='teamId'>
+				<mat-option *ngFor="let name of teamListData" [value]="name.TeamId">
+					{{name.TeamName}}
+					</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+			<mat-label>Main Problem</mat-label>
+			<mat-select  formControlName="mainProblem">
+				<mat-option *ngFor="let problem of problems$" [value]="problem.ProblemId">
+					{{ problem.Problem}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"
+		formArrayName="visits">
+		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
+			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
+				<div [formGroupName]="visitIndex">
+					<mat-form-field appearance="legacy">
+						<mat-label>Day</mat-label>
+						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
+							value="0" formControlName="visit_day" />
+						<!-- <mat-hint>Only Digits Are Allowed</mat-hint> -->
+					</mat-form-field>
+
+					<mat-form-field appearance="legacy">
+						<mat-label>Status</mat-label>
+						<mat-select placeholder="Select" formControlName="visit_status">
+							<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+
+					<mat-form-field appearance="legacy">
+						<mat-label>Visit Type</mat-label>
+						<!-- aau.visittype -->
+						<mat-select placeholder="Select" formControlName="visit_type">
+							<mat-option  *ngFor="let visitTypes of visitType$" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field appearance="legacy">
+						<textarea matInput placeholder="Admin Comments" cdkAutosizeMinRows="1" cdkTextareaAutosize
+							cdkAutosizeMaxRows="1" formControlName="visit_comments"></textarea>
+					</mat-form-field>
+
+					<div class="mat-fab-wrapper">
+						<button mat-mini-fab color="warn" aria-label="Delete this Visit"
+							(click)="deleteVisits(visitIndex)" >
+							<mat-icon>delete_outline</mat-icon>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
+		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVists($event)">
+			<mat-icon>add</mat-icon>
+		</button>
+	</div>
+	<!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+		<button mat-raised-button color="primary">Save</button>
+	</div> -->
+</form>
