@@ -7,10 +7,12 @@ import { MatSelectChange } from '@angular/material/select';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CallerDetailsComponent } from 'src/app/core/components/caller-details/caller-details.component';
+import { ReleaseService } from 'src/app/core/services/release/release.service';
 
 export interface DialogData {
   emergencyCaseId: number;
   tagNumber: string | undefined;
+  patientId: number | undefined;
 }
 
 interface Release {
@@ -65,7 +67,8 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dropdown: DropdownService,
-    private fb: FormBuilder,) { }
+    private fb: FormBuilder,
+    private releaseService: ReleaseService) { }
 
   ngOnInit() {
 
@@ -74,15 +77,25 @@ export class ReleaseDetailsDialogComponent implements OnInit {
     this.isStreatTreatRelease = false;
 
     this.releasers$ = this.dropdown.getRescuers();
+
+    // Record Form
     this.recordForm = this.fb.group({
+
+      releaseId: [],
+
       emergencyDetails : this.fb.group({
         emergencyCaseId: this.data.emergencyCaseId
       }),
+
+      patientId: this.data.patientId,
       releaseType: [,Validators.required],
       complainerNotes: [''],
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      releaseBeginDate: [],
+      releaseEndDate: []
+
     });
 
   }
@@ -92,71 +105,57 @@ export class ReleaseDetailsDialogComponent implements OnInit {
     switch(releaseType.value) {
       case 2 : {
         console.log('hi');
-        this.setInstructionRequired();
+        this.setRequired('complainerNotes');
         this.streetTreatReleaseFalse();
         this.specificStaffFalse();
         break;
       }
       case 3 : {
-        console.log('hello');
+
         this.specificStaffTrue();
         this.streetTreatReleaseFalse();
-        this.setInstructionNotRequired();
+        this.setNotRequired('complainerNotes');
         break;
       }
       case 4 : {
         this.streetTreatReleaseTrue();
-        this.setInstructionNotRequired();
+        this.setNotRequired('complainerNotes');
         this.specificStaffFalse();
         break;
       }
       default : {
-        this.setInstructionNotRequired();
+        this.setNotRequired('complainerNotes');
         this.streetTreatReleaseFalse();
         this.specificStaffFalse();
         break;
       }
     }
-
-    // if(releaseType.value===2) {
-    //   this.setInstructionRequired();
-    //   this.specificStaff = false;
-    //   this.isStreatTreatRelease = false;
-    // }
-    // else if(releaseType.value === 3) {
-    //   this.setInstructionNotRequired();
-    //   this.specificStaff = true;
-    //   this.isStreatTreatRelease = false;
-    // }
-    // else if(releaseType.value=== 4) {
-    //   this.setInstructionNotRequired();
-    //   this.specificStaff = false;
-    //   this.isStreatTreatRelease = true;
-    // }
   }
 
-  setInstructionRequired() {
+  setRequired(name: string) {
     // tslint:disable-next-line:no-string-literal
-    this.recordForm.controls['complainerNotes']?.setValidators(Validators.required);
+    this.recordForm.controls[name]?.setValidators(Validators.required);
 
     // tslint:disable-next-line:no-string-literal
-    this.recordForm.controls['complainerNotes'].updateValueAndValidity();
+    this.recordForm.controls[name].updateValueAndValidity();
   }
 
-  setInstructionNotRequired() {
+  setNotRequired(name: string) {
     // tslint:disable-next-line:no-string-literal
-    this.recordForm.controls['complainerNotes'].clearValidators();
-    // tslint:disable-next-line:no-string-literal
-    this.recordForm.controls['complainerNotes'].updateValueAndValidity();
+    this.recordForm.controls[name].clearValidators();
+    // tslint:disable-next-line:no-string-literal      
+    this.recordForm.controls[name].updateValueAndValidity();
   }
 
 
   specificStaffTrue() {
     this.specificStaff = true;
+    this.setRequired('Releaser1');
   }
 
   specificStaffFalse() {
     this.specificStaff = false;
+    this.setNotRequired('Releaser1');
   }
 
   streetTreatReleaseTrue() {
@@ -169,9 +168,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   
 
   onReleaseSubmit(releaseForm:any) {
-
-    console.log(releaseForm.value);
-
+    this.releaseService.saveRelease(releaseForm.value);
   }
 
 

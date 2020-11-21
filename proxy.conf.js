@@ -16,7 +16,8 @@ const PROXY_CONFIG = [
             "/CensusData",
             "/PrintTemplate",
             "/Treatment",
-            "/UserAdmin"
+            "/UserAdmin",
+            "/ReleaseDetails"
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",
