@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -72,9 +72,10 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   outcomeChanged(){
 
     const sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
+    const callOutcomeId = this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
 
     // Check if we need to show the same as field.
-    this.sameAs = this.sameAsId === this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
+    this.sameAs = this.sameAsId === callOutcomeId;
 
     if(!sameAsNumber?.value && this.sameAs){
       sameAsNumber?.setValidators(Validators.required);
@@ -84,11 +85,31 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     // We might have selected something other than Same As, so hide the field.
     if(!this.sameAs){
       sameAsNumber?.setValue(null);
-      sameAsNumber?.clearValidators()
+      sameAsNumber?.clearValidators();
       sameAsNumber?.clearAsyncValidators();
     }
 
     sameAsNumber?.updateValueAndValidity();
+
+    if(callOutcomeId === 1){
+
+      console.log('here');
+
+          // If we're selecting admission, check to make sure all of the animals have a TagNumber
+    const patientArray = this.recordForm.get('patients') as FormArray;
+
+    console.log(patientArray);
+
+    patientArray.controls.forEach(patient => {
+
+      patient?.get('tagNumber')?.setValidators([Validators.required]);
+
+    });
+
+    }
+
+
+
     this.changeDetector.detectChanges();
 
     // Make sure we focus when we're selecting same as
