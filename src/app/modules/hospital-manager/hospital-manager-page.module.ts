@@ -33,6 +33,8 @@ import { MediaCaptureComponent } from 'src/app/core/components/media-capture/med
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsComponent } from './components/patient-visit-details/patient-visit-details.component';
+import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
+import { ReleaseRequestFormComponent } from './components/release-request-form/release-request-form.component';
 
 @NgModule({
     declarations: [
@@ -53,7 +55,9 @@ import { PatientVisitDetailsComponent } from './components/patient-visit-details
         UpdateCensusDialogComponent,
         MediaCaptureComponent,
         TreatmentComponent,
-        PatientVisitDetailsComponent
+        PatientVisitDetailsComponent,
+        ReleaseDetailsDialogComponent,
+        ReleaseRequestFormComponent,
     ],
     imports: [
         CommonModule,
@@ -68,7 +72,8 @@ import { PatientVisitDetailsComponent } from './components/patient-visit-details
         EmergencyDetailsModule,
         SurgeryRecordModule,
         CensusRecordModule,
-        NgxGalleryModule
+        NgxGalleryModule,
+        CallerDetailsModule,
     ],
     exports: [],
 })

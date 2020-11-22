@@ -13,6 +13,13 @@
         <mat-icon>create</mat-icon>
         </button>
 
+        <button mat-icon-button color="primary"
+        class="release-button"
+        aria-label="Release details"
+        (click)="openReleaseDialog(record.EmergencyCaseId, record.TagNumber, record.PatientId)">
+        <mat-icon>airport_shuttle</mat-icon>
+        </button>
+
         <div class="location">{{record.CurrentLocation}}
             <svg height="3" width="95%">
             <line x1="0" y1="0" x2="95%" y2="0" class="location-line" />
@@ -58,6 +65,9 @@
             </button>
             <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Print card" (click)="printEmergencyCard(record.PatientId)">
                 <mat-icon>print</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add Visits" (click)="addVisits(record.PatientId,record.EmergencyCaseId,record.EmergencyNumber)" matTooltip="Add Vists">
+                <mat-icon>add_location</mat-icon>
             </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">

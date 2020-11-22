@@ -20,6 +20,7 @@ import { CallerDetailsService } from './caller-details.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'caller-details',
     templateUrl: './caller-details.component.html',
     styleUrls: ['./caller-details.component.scss'],
@@ -42,6 +43,7 @@ export class CallerDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        console.log(this.recordForm.value);
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({

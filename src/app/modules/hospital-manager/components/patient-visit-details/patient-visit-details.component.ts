@@ -49,7 +49,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	visitTypeSubscription: Subscription | undefined;
 	visitType$: VisitType[] = [];
 
-	@Input() recordForm!: FormGroup;
+	//@Input() recordForm!: FormGroup;
 
 	constructor(
 		public dialogRef: MatDialogRef<PatientVisitDetailsComponent>,
@@ -65,8 +65,8 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	//   private subscriptions: { [key: string]: Subscription } = {};
 	ngOnInit(): void {
-		console.log(this.recordForm);
-		this.recordForm.addControl(
+		// console.log(this.recordForm);
+		/* this.recordForm.addControl(
 			'visitForm',
 			this.fb.group({
 				casePriority: [, Validators.required],
@@ -74,8 +74,16 @@ export class PatientVisitDetailsComponent implements OnInit {
 				mainProblem: [, Validators.required],
 				visits: this.fb.array([this.visitFields()]),
 			}),
-		);
-		this.visitForm = this.recordForm.get('visitForm') as FormGroup;
+		); */
+		this.visitForm =
+			this.fb.group({
+				casePriority: [, Validators.required],
+				teamId: [, Validators.required],
+				mainProblem: [, Validators.required],
+				adminNotes: [,Validators.required],
+				visits: this.fb.array([this.visitFields()]),
+			});
+		//this.visitForm = this.recordForm.get('visitForm') as FormGroup;
 		this.visitsArray = this.visitForm.get('visits') as FormArray;
 		this.teamSubsciption = this.dropdown.getAllTeams().subscribe(team => {
 			this.teamListData = team;
@@ -123,6 +131,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 			visit_comments: ['', Validators.required],
 		});
 	}
+
 	keyPressNumbers(event: any) {
 		const charCode = event.which ? event.which : event.keyCode;
 		if (charCode < 48 || charCode > 57) {

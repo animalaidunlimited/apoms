@@ -85,6 +85,10 @@
             <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
           </div>
 
+          <div fxFlex="25">
+            <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog()">airport_shuttle</mat-icon>
+          </div>
+
             <div fxFlex style="text-align: center;">
               {{outstandingCase.emergencyNumber}}
               ({{outstandingCase.animalTypes}})
