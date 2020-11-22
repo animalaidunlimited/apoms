@@ -1,0 +1,41 @@
+<div class="div" fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign="start end">
+    <img _ngcontent-lei-c38="" src="assets/images/Dog.png" class="images" alt="dog_face">
+
+    <mat-form-field appearance="fill">
+        <mat-label>Releaser1</mat-label>
+            <mat-select>
+                <mat-option>N/A</mat-option>
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
+                    {{releaser.FirstName}}
+                </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Releaser2</mat-label>
+            <mat-select>
+                <mat-option>N/A</mat-option>
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
+                    {{releaser.FirstName}}
+                </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <img _ngcontent-lei-c38="" src="assets/images/Calf.png" class="images" alt="dog_face">
+</div>
+
+<div class="div" fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign="start end">
+
+    <img _ngcontent-lei-c38="" src="assets/images/Donkey.png" class="images" alt="dog_face">
+
+    <mat-form-field appearance="fill">
+        <mat-label>Release-begin-date</mat-label>
+        <input matInput type="date" name = "Requested-date">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Release-complete-date</mat-label>
+        <input matInput type="date" name = "Requested-date">
+    </mat-form-field>
+
+    <img _ngcontent-lei-c38="" src="assets/images/Cat.png" class="images" alt="dog_face">
+</div>         

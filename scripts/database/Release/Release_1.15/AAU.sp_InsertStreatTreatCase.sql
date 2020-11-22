@@ -1,5 +1,5 @@
-
-DROP procedure IF EXISTS AAU.sp_InsertStreatTreatCase;
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_InsertStreatTreatCase!!
 
 DELIMITER $$
 
@@ -12,8 +12,7 @@ CREATE PROCEDURE `sp_InsertStreatTreatCase`(
 											IN prm_AdminNotes TEXT,
 											IN prm_OperatorNotes TEXT,
 											IN prm_ClosedDate DATE,
-											IN prm_EarlyReleaseFlag BOOLEAN,
-											IN prm_IsDeleted BOOLEAN
+											IN prm_EarlyReleaseFlag BOOLEAN
 )
 BEGIN
 
@@ -43,8 +42,7 @@ IF vCaseNoExists = 0 THEN
 						AdminNotes,
 						OperatorNotes,
                         ClosedDate,
-                        EarlyReleaseFlag,
-						IsDeleted
+                        EarlyReleaseFlag
 						)
 				VALUES
 						(
@@ -56,8 +54,7 @@ IF vCaseNoExists = 0 THEN
 						prm_AdminNotes,
 						prm_OperatorNotes,
                         prm_ClosedDate,
-                        prm_EarlyReleaseFlag,
-						prm_IsDeleted
+                        prm_EarlyReleaseFlag
 						);
 	SELECT 1 INTO vSuccess;
     SELECT LAST_INSERT_ID() INTO vStreatTreatCaseId;

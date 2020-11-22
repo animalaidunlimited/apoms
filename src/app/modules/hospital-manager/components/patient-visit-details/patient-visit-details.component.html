@@ -9,7 +9,6 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<!-- DB aau.team; -->
 		<mat-form-field appearance="fill">
 			<mat-label>Team</mat-label>
 			<mat-select formControlName='teamId'>
@@ -18,7 +17,6 @@
 					</mat-option>
 			</mat-select>
 		</mat-form-field>
-
 		<mat-form-field appearance="fill">
 			<mat-label>Main Problem</mat-label>
 			<mat-select  formControlName="mainProblem">
@@ -26,6 +24,11 @@
 					{{ problem.Problem}}
 				</mat-option>
 			</mat-select>
+		</mat-form-field>
+	</div>
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
+		<mat-form-field>
+			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
 		</mat-form-field>
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"

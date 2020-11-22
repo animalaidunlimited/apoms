@@ -26,6 +26,7 @@
                 <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
 
                     <patient-details [recordForm]="recordForm"></patient-details>
+                    <!-- <patient-visit-details *ngIf="recordForm" [recordForm]="recordForm"></patient-visit-details> -->
 
                     <census-details
                         [tagNumber] = "recordForm.get('patientDetails.tagNumber')?.value">
