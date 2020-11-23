@@ -152,8 +152,6 @@ export class OutstandingCaseService {
       return;
     }
 
-
-
     this.zone.run(() => this.refreshColour.next('primary'));
     this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
 
