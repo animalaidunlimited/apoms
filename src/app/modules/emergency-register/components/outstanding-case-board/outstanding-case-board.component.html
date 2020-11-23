@@ -15,7 +15,7 @@
     </button>
 
   </mat-form-field>
-  
+
   </form>
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
@@ -78,7 +78,7 @@
 
           <div fxFlex="15">
 
-            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon>
+            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
           <div fxFlex="25">
@@ -100,6 +100,8 @@
               <div fxFlex="25">
                 <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
               </div>
+
+              <div flFlex="none">{{getTimer(outstandingCase.callDateTime)}}</div>
 
             </mat-expansion-panel-header>
 
