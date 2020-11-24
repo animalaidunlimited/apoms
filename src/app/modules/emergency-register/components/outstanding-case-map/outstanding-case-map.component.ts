@@ -9,6 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { map } from 'rxjs/operators';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'outstanding-case-map',
   templateUrl: './outstanding-case-map.component.html',
   styleUrls: ['./outstanding-case-map.component.scss']
@@ -64,15 +65,15 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
         if(cases){
 
-          return cases.filter(swimlane => swimlane.rescueStatus >= 3)
-                      .map(groups => groups.rescuerGroups)
+          return cases.filter(swimlane => swimlane.rescueReleaseStatus >= 3)
+                      .map(groups => groups.rescueReleaseGroups)
 
                         // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
                         // the last one based upon time. However if we make the changes directly to the result object of the
                         // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
                         // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
                         // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
-                      .map(rescuerGroups => JSON.parse(JSON.stringify(rescuerGroups)))
+                      .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
                       .reduce((aggregatedLocations, current) => {
 
 
@@ -91,7 +92,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
                     });
 
                     index > -1 ?
-                    aggregatedLocations[index].rescues = aggregatedLocations[index].rescues.concat(currentRescueGroup.rescues)
+                    aggregatedLocations[index].rescues = aggregatedLocations[index].rescues.concat(currentRescueGroup.ambulanceAssignment)
                       :
                       aggregatedLocations.push(currentRescueGroup);
 
@@ -101,9 +102,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
 
                 }}, [])
-              .map((rescueGroup:RescuerGroup) => {
+              .map((rescueReleaseGroup:RescuerGroup) => {
 
-                const maxRescue = rescueGroup.rescues.reduce((current, previous) => {
+                const maxRescue = rescueReleaseGroup.ambulanceAssignment.reduce((current, previous) => {
 
                 const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
                   ? current.ambulanceArrivalTime : current.rescueTime;
@@ -116,13 +117,14 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
               });
 
                return {
-                rescuer1: rescueGroup.rescuer1,
-                rescuer1Abbreviation: rescueGroup.rescuer1Abbreviation,
-                rescuer2: rescueGroup.rescuer2,
-                rescuer2Abbreviation: rescueGroup.rescuer2Abbreviation,
+                rescuer1: rescueReleaseGroup.rescuer1,
+                rescuer1Abbreviation: rescueReleaseGroup.rescuer1Abbreviation,
+                rescuer2: rescueReleaseGroup.rescuer2,
+                rescuer2Abbreviation: rescueReleaseGroup.rescuer2Abbreviation,
                 latestLocation: maxRescue.latLngLiteral,
-                rescues: rescueGroup.rescues
+                rescues: rescueReleaseGroup.ambulanceAssignment
                 };
+                
 
              });
 
