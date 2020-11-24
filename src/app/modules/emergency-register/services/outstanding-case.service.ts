@@ -38,8 +38,8 @@ export class OutstandingCaseService {
       this.initialised = true;
 
       // Get the initial list from the rescue service
-      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe(outstandingCases => {
-      this.populateOutstandingCases(outstandingCases.outstandingRescues);
+      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
+        this.populateOutstandingCases(outstandingCases.outstandingRescueRelease);
       });
 
       this.autoRefresh.subscribe(state => {
@@ -50,8 +50,8 @@ export class OutstandingCaseService {
 
   refreshRescues(){
 
-    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe(outstandingCases => {
-      this.populateOutstandingCases(outstandingCases.outstandingRescues);
+    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
+      this.populateOutstandingCases(outstandingCases.outstandingRescueRelease);
       });
 
   }
@@ -79,16 +79,18 @@ export class OutstandingCaseService {
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
 
       // Check to see if the swimlane exists and insert if not
-    const laneExists = currentOutstanding.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
+    const laneExists = currentOutstanding.find(elem => elem.rescueReleaseStatus === updatedRescue.rescueStatus);
 
-    const newRescueGroup:RescuerGroup = {
-      rescuer1: updatedRescue.rescuer1Id,
-      rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
-      rescuer2: updatedRescue.rescuer2Id,
-      rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
-      latestLocation: undefined,
-      rescues: [updatedRescue],
-    };
+    // const newRescueGroup:RescuerGroup = {
+    //   rescuer1: updatedRescue.rescuer1Id,
+    //   rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
+    //   rescuer2: updatedRescue.rescuer2Id,
+    //   rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
+    //   releaser1Abbreviation: updatedRescue.releaser1Abbreviation;
+    //   releaser2Abbreviation: updatedRescue.releaser2Abbreviation;
+    //   latestLocation: undefined,
+    //   ambulanceAssignment: [updatedRescue],
+    // };
 
     if(!laneExists){
 
@@ -98,19 +100,19 @@ export class OutstandingCaseService {
       'Rescued',
       'Admitted'];
 
-      currentOutstanding.push({
-        rescueStatus: updatedRescue.rescueStatus,
-        rescueStatusName: rescueStatusName[updatedRescue.rescueStatus],
-        rescuerGroups: [newRescueGroup]
-      });
+      // currentOutstanding.push({
+      //   rescueReleaseStatus: updatedRescue.rescueStatus,
+      //   rescueReleaseStatusName: rescueStatusName[updatedRescue.rescueStatus],
+      //   rescueReleaseGroups: [newRescueGroup]
+      // });
     }
 
     // Check to see if the rescuers exist and insert if not
     const rescuersExist = currentOutstanding.find(rescueState => {
 
-      if(rescueState.rescueStatus === updatedRescue.rescueStatus)
+      if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus)
       {
-       return rescueState.rescuerGroups
+       return rescueState.rescueReleaseGroups
       .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
                             rescueGroup.rescuer2 === updatedRescue.rescuer2Id);
       }
@@ -123,8 +125,8 @@ export class OutstandingCaseService {
 
       currentOutstanding.forEach(rescueState => {
 
-        if(rescueState.rescueStatus === updatedRescue.rescueStatus){
-          rescueState.rescuerGroups.push(newRescueGroup);
+        if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus){
+          // rescueState.rescueReleaseGroups.push(newRescueGroup);
         }
       });
     }
@@ -167,18 +169,18 @@ export class OutstandingCaseService {
 
     outstanding.forEach(status => {
 
-        status.rescuerGroups.forEach((group,index) => {
+        status.rescueReleaseGroups.forEach((group,index) => {
 
-            const removeIndex = group.rescues
+            const removeIndex = group.ambulanceAssignment
                               .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
 
             if(removeIndex > -1){
 
-              returnCase = group.rescues.splice(removeIndex, 1)[0];
+              returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
 
               // If the group is now empty, remove it.
-              if(group.rescues.length === 0){
-                status.rescuerGroups.splice(index,1);
+              if(group.ambulanceAssignment.length === 0){
+                status.rescueReleaseGroups.splice(index,1);
               }
               return;
             }
@@ -192,13 +194,13 @@ export class OutstandingCaseService {
 
     outstanding.forEach(status => {
 
-      if(status.rescueStatus === rescue.rescueStatus){
+      if(status.rescueReleaseStatus === rescue.rescueStatus){
 
-        status.rescuerGroups.forEach(group => {
+        status.rescueReleaseGroups.forEach(group => {
 
           if(group.rescuer1 === rescue.rescuer1Id && group.rescuer2 === rescue.rescuer2Id){
 
-            group.rescues.push(rescue);
+            group.ambulanceAssignment.push(rescue);
           }
         });
       }
@@ -252,22 +254,22 @@ export class OutstandingCaseService {
 
       outstanding.forEach(status =>
         {
-          status.rescuerGroups.forEach(group => {
+          status.rescueReleaseGroups.forEach(group => {
 
-              group.rescues.forEach(rescue => {
+              group.ambulanceAssignment.forEach(assignment => {
 
-                rescue.searchCandidate = false;
+                assignment.searchCandidate = false;
 
                 // Because we can't use an observable as the source for the board, we need to add a
                 // flag to the records that match our search.
                 if(
-                  Object.keys(rescue)
+                  Object.keys(assignment)
                   .reduce((currentTerm: string, key: string) => {
-                    return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
+                    return currentTerm + (assignment as {[key: string]: any})[key] + '◬';
                   }, '').toLowerCase().indexOf(searchValue) > -1
                   && searchValue !== ''
                 ){
-                  rescue.searchCandidate = true;
+                  assignment.searchCandidate = true;
                 }
               });
             });

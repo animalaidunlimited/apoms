@@ -9,14 +9,14 @@
 
             <div *ngFor="let outstandingRescues of (outstandingCases$ | async);">
 
-                <div *ngFor="let rescuerGroups of outstandingRescues.rescuerGroups;">
+                <div *ngFor="let rescuerGroups of outstandingRescues.rescueReleaseGroups;">
 
 
                         <!-- TODO alter the emergencyCodeId so that it works for all organisations -->
                         <!-- #marker="mapMarker" -->
 
                         <map-marker
-                        *ngFor="let rescue of rescuerGroups.rescues;"
+                        *ngFor="let rescue of rescuerGroups.ambulanceAssignment;"
                         #marker="mapMarker"
                         [position]="rescue.latLngLiteral"
                         (mapClick)="openInfoWindow(marker, rescue)"
@@ -48,7 +48,7 @@
                         <!-- Add the ambulance locations -->
                         <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
                         #ambulanceMarker="mapMarker"
-                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.rescues)"
+                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.ambulanceAssignment)"
                         [position]="ambulance.latestLocation"
                         [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">
 

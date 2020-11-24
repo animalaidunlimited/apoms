@@ -1,7 +1,15 @@
 export interface OutstandingRescue {
+    ambulanceAction: string;
+    requestedUser: string;
+    requestedDate: Date | undefined;
+    releaseTypeId: number;
+    releaser1Id:number;
+    releaser2Id: number;
+    releaseBeginDate: Date | undefined;
+    releaseEndDate: Date | undefined; 
     latitude: number;
     location: string;
-    latLngLiteral: google.maps.LatLngLiteral,
+    latLngLiteral: google.maps.LatLngLiteral;
     longitude: number;
     callerName: string;
     rescuer1Id: number;
@@ -29,20 +37,23 @@ export interface OutstandingRescue {
 export interface RescuerGroup {
     rescuer1: number;
     rescuer1Abbreviation: string;
+    releaser1Abbreviation: string;
+    releaser2Abbreviation: string;
     rescuer2: number;
     rescuer2Abbreviation: string;
     latestLocation: google.maps.LatLngLiteral | undefined;
-    rescues: OutstandingRescue[];
+    ambulanceAssignment: OutstandingRescue[];
 }
 
 export interface OutstandingCase {
-    rescueStatus: number;
-    rescueStatusName: string;
-    rescuerGroups: RescuerGroup[];
+    rescueReleaseStatus: number;
+    rescueReleaseStatusName: string;
+    rescueReleaseGroups: RescuerGroup[];
 }
 
 export interface OutstandingCaseResponse {
-    outstandingRescues: OutstandingCase[];
+    outstandingRescueRelease : OutstandingCase[];
+    // outstandingRescues: OutstandingCase[];
 }
 
 export interface UpdatedRescue {
