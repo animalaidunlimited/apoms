@@ -26,7 +26,7 @@ export class PatientDetailsComponent implements OnInit {
 
     constructor(
         private dropdown: DropdownService,
-        private patientService: PatientService,
+		private patientService: PatientService,
         private fb: FormBuilder,
     ) {}
 

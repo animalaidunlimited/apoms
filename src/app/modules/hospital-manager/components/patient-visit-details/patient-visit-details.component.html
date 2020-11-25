@@ -1,6 +1,6 @@
 <h3 mat-dialog-title>Add Streat Treat Vists</h3>
-<form [formGroup]="visitForm">
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+<form [formGroup]="visitForm" (ngSubmit)="submit(visitForm)">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
 		<mat-form-field appearance="fill">
 			<!-- aau.priority -->
 			<mat-select placeholder="Case Priority" formControlName="casePriority">
@@ -27,8 +27,14 @@
 		</mat-form-field>
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
-		<mat-form-field>
+		<mat-form-field appearance="fill">
 			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Status</mat-label>
+			<mat-select placeholder="Select" formControlName="stcaseStatus">
+				<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+			</mat-select>
 		</mat-form-field>
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"
@@ -39,8 +45,11 @@
 					<mat-form-field appearance="legacy">
 						<mat-label>Day</mat-label>
 						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
-							value="0" formControlName="visit_day" />
-						<!-- <mat-hint>Only Digits Are Allowed</mat-hint> -->
+							value="0" formControlName="visit_day"  />
+							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
+								<!-- <mat-error> -->
+								Should be unique
+							</mat-error>
 					</mat-form-field>
 
 					<mat-form-field appearance="legacy">
@@ -77,7 +86,7 @@
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>
-	<!-- <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+	<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 		<button mat-raised-button color="primary">Save</button>
-	</div> -->
+	</div>
 </form>

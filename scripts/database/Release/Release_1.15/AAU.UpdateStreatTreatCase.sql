@@ -1,8 +1,8 @@
 DELIMITER !!
-DROP PROCEDURE IF EXISTS AAU.UpdateStreatTreatCase!!
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateStreatTreatCase!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.UpdateStreatTreatCase(
+CREATE PROCEDURE AAU.sp_UpdateStreatTreatCase(
     IN prm_StreatTreatCaseId INT,
 	IN prm_PatientId INT,
 	IN prm_PriorityId INT,
