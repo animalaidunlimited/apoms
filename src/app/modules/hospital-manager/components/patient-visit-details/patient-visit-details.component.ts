@@ -22,15 +22,18 @@ import { TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { ReleaseService } from 'src/app/core/services/release/release.service';
+import {UniqueValidators} from 'src/app/modules/hospital-manager/components/patient-visit-details/unique-validators';
+
 interface DialogData {
-	PatientId: number;
+	patientId: number;
 	EmergencyCaseId: number;
 	EmergencyNumber: number;
 }
 
 
 @Component({
-	selector: 'patient-visit-details',
+	selector: 'app-patient-visit-details',
 	templateUrl: './patient-visit-details.component.html',
 	styleUrls: ['./patient-visit-details.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,8 +51,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	status$: Status[] = [];
 	visitTypeSubscription: Subscription | undefined;
 	visitType$: VisitType[] = [];
-
-	//@Input() recordForm!: FormGroup;
+	// @Input() recordForm!: FormGroup;
 
 	constructor(
 		public dialogRef: MatDialogRef<PatientVisitDetailsComponent>,
@@ -57,13 +59,14 @@ export class PatientVisitDetailsComponent implements OnInit {
 		private fb: FormBuilder,
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
+		private releaseService: ReleaseService,
 	) {
 		this.visitPriorityKeys = Object.keys(this.visitPriority).filter(
 			f => !isNaN(Number(f)),
 		);
 	}
 
-	//   private subscriptions: { [key: string]: Subscription } = {};
+	private subscriptions: { [key: string]: Subscription } = {};
 	ngOnInit(): void {
 		// console.log(this.recordForm);
 		/* this.recordForm.addControl(
@@ -77,14 +80,17 @@ export class PatientVisitDetailsComponent implements OnInit {
 		); */
 		this.visitForm =
 			this.fb.group({
+				patientId: this.data.patientId,
 				casePriority: [, Validators.required],
 				teamId: [, Validators.required],
 				mainProblem: [, Validators.required],
 				adminNotes: [,Validators.required],
-				visits: this.fb.array([this.visitFields()]),
+				stcaseStatus:[],
+				visits: this.fb.array([this.getVisitFormGroup()],UniqueValidators.uniqueBy('visit_day')),
 			});
-		//this.visitForm = this.recordForm.get('visitForm') as FormGroup;
+		// this.visitForm = this.recordForm.get('visitForm') as FormGroup;
 		this.visitsArray = this.visitForm.get('visits') as FormArray;
+
 		this.teamSubsciption = this.dropdown.getAllTeams().subscribe(team => {
 			this.teamListData = team;
 			this.teamSubsciption?.unsubscribe();
@@ -105,27 +111,27 @@ export class PatientVisitDetailsComponent implements OnInit {
 			this.visitType$ = visitTypes;
 			this.statusSubscription?.unsubscribe();
 		});
-		console.log(this.data);
-		// this.onChanges();
+		//this.onChanges();
 	}
 	/* ngOnDestroy() {
-	Object.keys(this.subscriptions).forEach(sk =>
-	  this.subscriptions[sk].unsubscribe()
-	);
-  } */
-	/*  onChanges(): void {
-	if (this.subscriptions.formArrayChanges) {
-	  this.subscriptions.formArrayChanges.unsubscribe();
+		Object.keys(this.subscriptions).forEach(sk =>
+		this.subscriptions[sk].unsubscribe()
+		);
 	}
-	this.subscriptions.formArrayChanges = this.visitsArray.valueChanges.subscribe(val => {
-	  (_result: any) => {
-		this.changeDetectorRef.detectChanges();
-	  }
-	});
-  } */
-	visitFields(): FormGroup {
+	onChanges(): void {
+
+		if (this.subscriptions.formArrayChanges) {
+		this.subscriptions.formArrayChanges.unsubscribe();
+		}
+	this.subscriptions.formArrayChanges = this.visitsArray.valueChanges.subscribe((visits: any) => {
+		(_result: any) => {
+			this.changeDetectorRef.detectChanges();
+		}
+		});
+  	}  */
+	getVisitFormGroup(): FormGroup {
 		return this.fb.group({
-			visit_day: [, Validators.required],
+			visit_day: [,Validators.required],
 			visit_status: [, Validators.required],
 			visit_type: [, Validators.required],
 			visit_comments: ['', Validators.required],
@@ -145,10 +151,15 @@ export class PatientVisitDetailsComponent implements OnInit {
 	addVists(event: Event) {
 		event.preventDefault();
 		if (this.visitForm.controls.visits.valid) {
-			this.visitsArray.push(this.visitFields());
+			this.visitsArray.push(this.getVisitFormGroup());
 		}
 	}
 	deleteVisits(index: number) {
 		this.visitsArray.removeAt(index);
+	}
+	submit(visitForm:any){
+		this.releaseService.saveStreatTreatCase(visitForm.value).then((res:any)=>{
+			console.log(res.vSuccess);
+		});
 	}
 }

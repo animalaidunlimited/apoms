@@ -22,4 +22,8 @@ export class ReleaseService extends APIService {
     }
   }
 
+  public async saveStreatTreatCase(streatDetails: any): Promise<any>{
+	  return await this.post(streatDetails);
+  }
+
 }

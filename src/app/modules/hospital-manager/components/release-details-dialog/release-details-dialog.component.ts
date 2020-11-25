@@ -6,7 +6,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { MatSelectChange } from '@angular/material/select';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { CallerDetailsComponent } from 'src/app/core/components/caller-details/caller-details.component';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 
 export interface DialogData {
@@ -143,7 +142,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   setNotRequired(name: string) {
     // tslint:disable-next-line:no-string-literal
     this.recordForm.controls[name].clearValidators();
-    // tslint:disable-next-line:no-string-literal      
+    // tslint:disable-next-line:no-string-literal
     this.recordForm.controls[name].updateValueAndValidity();
   }
 
@@ -165,10 +164,10 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   streetTreatReleaseFalse() {
     this.isStreatTreatRelease = false;
   }
-  
+
 
   onReleaseSubmit(releaseForm:any) {
-    this.releaseService.saveRelease(releaseForm.value);
+	this.releaseService.saveRelease(releaseForm.value);
   }
 
 

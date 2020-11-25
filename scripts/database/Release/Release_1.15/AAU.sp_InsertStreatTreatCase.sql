@@ -9,7 +9,7 @@ CREATE PROCEDURE `sp_InsertStreatTreatCase`(
 											IN prm_StatusId INT,
 											IN prm_TeamId INT,
 											IN prm_MainProblemId INT,
-											IN prm_AdminNotes TEXT,
+											IN prm_AdminComments TEXT,
 											IN prm_OperatorNotes TEXT,
 											IN prm_ClosedDate DATE,
 											IN prm_EarlyReleaseFlag BOOLEAN
@@ -22,6 +22,7 @@ Created On: 21/11/2020
 Purpose: Used to insert a new case.
 
 */
+
 
 DECLARE vCaseNoExists INT;
 DECLARE vSuccess INT;
@@ -39,7 +40,7 @@ IF vCaseNoExists = 0 THEN
 						StatusId,
 						TeamId,
                         MainProblemId,
-						AdminNotes,
+						AdminComments,
 						OperatorNotes,
                         ClosedDate,
                         EarlyReleaseFlag
@@ -51,7 +52,7 @@ IF vCaseNoExists = 0 THEN
 						prm_StatusId,
 						prm_TeamId,
                         prm_MainProblemId,
-						prm_AdminNotes,
+						prm_AdminComments,
 						prm_OperatorNotes,
                         prm_ClosedDate,
                         prm_EarlyReleaseFlag
@@ -60,16 +61,15 @@ IF vCaseNoExists = 0 THEN
     SELECT LAST_INSERT_ID() INTO vStreatTreatCaseId;
     
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,prm_CaseId,'Case','Insert', NOW());
+	VALUES (NULL,vStreatTreatCaseId,'Case','Insert', NOW());
     
-ELSEIF vCaseNoExists >= 1 THEN
+ELSEIF vCaseNoExists > 0 THEN
 	SELECT 2 INTO vSuccess;
 
 ELSE
-
 	SELECT 3 INTO vSuccess;
 END IF;
 
+SELECT vStreatTreatCaseId, vSuccess;
+
 END$$
-
-
