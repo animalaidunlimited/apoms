@@ -1,15 +1,19 @@
-CREATE TABLE AAU.streattreatcase (
-  `StreatTreatCaseId` INT NOT NULL AUTO_INCREMENT,
-  `PriorityId` INT NULL,
-  `StatusId` INT NULL,
-  `TeamId` INT NULL,
-  `MainProblemId` INT NULL,
-  `AdminComments` TEXT NULL,
-  `OperatorNotes` TEXT NULL,
-  `ClosedDate` DATE NULL,
-  `EarlyReleaseFlag` TINYINT(1) NULL,
-  `IsDeleted` TINYINT(1) NULL DEFAULT  0,
-  `PatientId` INT NULL,
-  `CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `DeletedDate` DATETIME NULL,
-  PRIMARY KEY (`StreatTreatCaseId`));
+DELIMITER !!
+DROP TABLE  AAU.Streettreatcase;!!
+
+DELIMITER $$
+CREATE TABLE AAU.Streettreatcase (
+  `StreetTreatCaseId` int NOT NULL AUTO_INCREMENT,
+  `PriorityId` int DEFAULT NULL,
+  `StatusId` int DEFAULT NULL,
+  `TeamId` int DEFAULT NULL,
+  `MainProblemId` int DEFAULT NULL,
+  `AdminComments` text,
+  `OperatorNotes` text,
+  `ClosedDate` date DEFAULT NULL,
+  `EarlyReleaseFlag` tinyint(1) DEFAULT NULL,
+  `IsDeleted` tinyint(1) DEFAULT '0',
+  `PatientId` int DEFAULT NULL,
+  `CreatedDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `DeletedDate` datetime DEFAULT 0,
+PRIMARY KEY (`StreetTreatCaseId`));$$

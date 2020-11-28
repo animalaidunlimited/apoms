@@ -102,7 +102,7 @@ addVisits(patientId:number, EmergencyCaseId:number, EmergencyNumber:number){
   const dialogRef = this.dialog.open(PatientVisitDetailsComponent,{
       maxWidth: '80vw',
       maxHeight: '90vh',
-      minWidth: '70vw',
+      minWidth: '72vw',
       data: {
 		  patientId,
 		  EmergencyCaseId,

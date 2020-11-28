@@ -22,6 +22,8 @@ import { TeamDetails } from "../../models/team";
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
+import { TreatmentPriority } from '../../enums/patient-details';
+
 
 
 export interface AnimalTypeResponse {
@@ -64,6 +66,7 @@ export class DropdownService extends APIService {
 	team$!: Observable<TeamDetails[]>;
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
+	treatmentPriority$!:Observable<TreatmentPriority[]>;
 
     constructor(http: HttpClient) {
         super(http);
@@ -622,4 +625,16 @@ export class DropdownService extends APIService {
 	  }
 	  return this.visitTypes$;
   }
+  getTreatmentPriority(): Observable<TreatmentPriority[]>{
+	  const request = '/GetTreatmentPriority';
+	  if(!this.treatmentPriority$){
+		  this.treatmentPriority$ = this.getObservable(request).pipe(
+			  map(response=> {
+				  return response;
+			  })
+		  );
+	  }
+	  return this.treatmentPriority$;
+  }
+
 }
