@@ -29,8 +29,8 @@ export class AssignReleaseDialogComponent implements OnInit {
       releaseType: this.data.caseDetails.releaseTypeId,
       complainerNotes: this.data.caseDetails.complainerNotes,
       complianerInformed: this.data.caseDetails.complainerInformed,
-      Releaser1: this.data.caseDetails.releaser1Id,
-      Releaser2: this.data.caseDetails.releaser2Id,
+      Releaser1: this.data.caseDetails.staff1,
+      Releaser2: this.data.caseDetails.staff2,
       callerDetails: {
         callerId: this.data.caseDetails.callerId
       },

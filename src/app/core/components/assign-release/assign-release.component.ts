@@ -5,6 +5,8 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
+import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-assign-release',
@@ -21,7 +23,8 @@ export class AssignReleaseComponent implements OnInit {
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
-    private releaseDetails: ReleaseService) { }
+    private releaseDetails: ReleaseService,
+    private messaging: MessagingService) { }
 
   ngOnInit() {
     this.releasers$ = this.dropdown.getRescuers();
@@ -45,15 +48,11 @@ export class AssignReleaseComponent implements OnInit {
     });
 
     this.recordForm.patchValue(this.formData);
-    console.log(this.recordForm.value);
-
   }
 
   setInitialTime(event: FocusEvent) {
     let currentTime;
     currentTime = this.recordForm.get((event.target as HTMLInputElement).name)?.value;
-
-    console.log(currentTime);
 
     if (!currentTime) {
 
@@ -68,6 +67,7 @@ export class AssignReleaseComponent implements OnInit {
 
   saveReleaseDetails() {
     this.releaseDetails.saveRelease(this.recordForm.value);
+    this.messaging.testing();
   }
 
 }

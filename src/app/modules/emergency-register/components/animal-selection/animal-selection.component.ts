@@ -181,7 +181,6 @@ export class AnimalSelectionComponent implements OnInit {
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
 
-            console.log(patients);
 
                     this.patientArray = this.recordForm.get('patients') as FormArray;
 

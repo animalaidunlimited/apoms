@@ -84,10 +84,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
                 else{
 
                   current.forEach((currentRescueGroup:RescuerGroup) => {
-                    console.log(currentRescueGroup);
 
                     const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
-                      console.log(parentRescueGroup);
 
                       return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
                           parentRescueGroup.staff2 === currentRescueGroup.staff2;
@@ -106,7 +104,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
                 }}, [])
               .map((rescueReleaseGroup:RescuerGroup) => {
-                console.log(rescueReleaseGroup);
                 // TODO: Ask jim sir about it and confirm to him about this latest location for release.
                 const maxRescue = rescueReleaseGroup.ambulanceAssignment.reduce((current, previous) => {
 
@@ -138,7 +135,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ));
 
     this.ambulanceLocations$.subscribe((val:any)=>{
-      console.log(val);
     });
 
   }
@@ -150,8 +146,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingRescue[]){
-    console.log(marker);
-    console.log(rescues);
 
     let searchQuery = ' search.EmergencyCaseId IN (';
 
@@ -172,8 +166,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   openInfoWindow(marker: MapMarker, rescue: OutstandingRescue) {
-
-    console.log(rescue);
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'search.EmergencyNumber=' + rescue.emergencyNumber;

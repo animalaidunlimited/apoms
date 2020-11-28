@@ -121,7 +121,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     switch(releaseType.value) {
       case 2 : {
-        console.log('hi');
         this.setRequired('complainerNotes');
         this.streetTreatReleaseFalse();
         this.specificStaffFalse();
