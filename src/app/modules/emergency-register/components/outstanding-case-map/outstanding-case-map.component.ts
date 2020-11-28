@@ -60,6 +60,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ]};
 
     this.outstandingCases$ = this.outstandingCases.outstandingCases$;
+
     // this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
 
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
@@ -83,16 +84,18 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
                 else{
 
                   current.forEach((currentRescueGroup:RescuerGroup) => {
+                    console.log(currentRescueGroup);
 
                     const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
+                      console.log(parentRescueGroup);
 
-                      return parentRescueGroup.rescuer1 === currentRescueGroup.rescuer1 &&
-                          parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2;
+                      return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
+                          parentRescueGroup.staff2 === currentRescueGroup.staff2;
 
                     });
 
                     index > -1 ?
-                    aggregatedLocations[index].rescues = aggregatedLocations[index].rescues.concat(currentRescueGroup.ambulanceAssignment)
+                    aggregatedLocations[index].rescues = aggregatedLocations[index].ambulanceAssignment.concat(currentRescueGroup.ambulanceAssignment)
                       :
                       aggregatedLocations.push(currentRescueGroup);
 
@@ -103,7 +106,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
                 }}, [])
               .map((rescueReleaseGroup:RescuerGroup) => {
-
+                console.log(rescueReleaseGroup);
+                // TODO: Ask jim sir about it and confirm to him about this latest location for release.
                 const maxRescue = rescueReleaseGroup.ambulanceAssignment.reduce((current, previous) => {
 
                 const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
@@ -117,12 +121,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
               });
 
                return {
-                rescuer1: rescueReleaseGroup.rescuer1,
-                rescuer1Abbreviation: rescueReleaseGroup.rescuer1Abbreviation,
-                rescuer2: rescueReleaseGroup.rescuer2,
-                rescuer2Abbreviation: rescueReleaseGroup.rescuer2Abbreviation,
+                staff1: rescueReleaseGroup.staff1,
+                staff1Abbreviation: rescueReleaseGroup.staff1Abbreviation,
+                staff2: rescueReleaseGroup.staff2,
+                staff2Abbreviation: rescueReleaseGroup.staff2Abbreviation,
                 latestLocation: maxRescue.latLngLiteral,
-                rescues: rescueReleaseGroup.ambulanceAssignment
+                ambulanceAssignment: rescueReleaseGroup.ambulanceAssignment
                 };
                 
 
@@ -130,7 +134,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
             }
         }
+  
     ));
+
+    this.ambulanceLocations$.subscribe((val:any)=>{
+      console.log(val);
+    });
 
   }
 
@@ -141,6 +150,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingRescue[]){
+    console.log(marker);
+    console.log(rescues);
 
     let searchQuery = ' search.EmergencyCaseId IN (';
 
@@ -161,6 +172,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   openInfoWindow(marker: MapMarker, rescue: OutstandingRescue) {
+
+    console.log(rescue);
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'search.EmergencyNumber=' + rescue.emergencyNumber;

@@ -56,13 +56,15 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   releasers$!:Observable<User[]>;
   specificStaff!: boolean;
   isStreatTreatRelease!: boolean;
+  incomingFormData!: Observable<any>;
 
   recordForm: FormGroup = new FormGroup({});
 
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
   {id:2 , type:'Normal + Complainer special instructions'},
   {id:3 , type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'}];
+  {id:4, type:'StreetTreat release'},
+  {id:5 , type: 'Normal release + StreetTreat release'}];
 
   constructor(public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -97,6 +99,21 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       releaseEndDate: []
 
     });
+
+    if(this.data.patientId) {
+      
+      //  CHECK IF RELEASE ALREADY EXISTS AND PATCH IT TO THE FORM.
+      this.incomingFormData = this.releaseService.getReleaseDetails(this.data.patientId);
+      this.incomingFormData.subscribe((formVal: any)=>{
+        if(formVal) {
+          this.recordForm.patchValue(formVal);
+          if(this.recordForm.get('releaseType')?.value===3) {
+            this.specificStaffTrue();
+          }
+        }
+      });
+
+    }
 
   }
 

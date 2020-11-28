@@ -42,7 +42,7 @@
 
 
 
-<!-- <outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map> -->
+<outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
 <div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
@@ -53,25 +53,13 @@
 
         <div class="rescue-group-container" *ngFor="let rescueReleaseGroup of lane.rescueReleaseGroups">
 
-        <div *ngFor="let action of rescueReleaseGroup.ambulanceAssignment" >
-        <div *ngIf="action.ambulanceAction==='Rescue'" fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
-        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.rescuer1Abbreviation">
-          <span class="initials">{{rescueReleaseGroup.rescuer1Abbreviation}}</span>
+        <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
+        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.staff1Abbreviation">
+          <span class="initials">{{rescueReleaseGroup.staff1Abbreviation}}</span>
         </div>
-        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.rescuer2Abbreviation">
-          <span class="initials">{{rescueReleaseGroup.rescuer2Abbreviation}}</span>
+        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.staff2Abbreviation">
+          <span class="initials">{{rescueReleaseGroup.staff2Abbreviation}}</span>
         </div>
-        </div>
-
-        <div *ngIf="action.ambulanceAction==='Release'" fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
-          <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.releaser1Abbreviation">
-            <span class="initials">{{rescueReleaseGroup.releaser1Abbreviation}}</span>
-          </div>
-          <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.releaser2Abbreviation">
-            <span class="initials">{{rescueReleaseGroup.releaser2Abbreviation}}</span>
-          </div>
-          </div>
-
         </div>
 
         <div 
@@ -97,10 +85,6 @@
           <div fxFlex="25">
             <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
           </div>
-
-          <!-- <div fxFlex="25">
-            <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog()">airport_shuttle</mat-icon>
-          </div> -->
 
             <div fxFlex style="text-align: center;">
               {{outstandingCase.emergencyNumber}}
@@ -144,30 +128,25 @@
 
         <div *ngIf="outstandingCase.ambulanceAction==='Release'">
 
-          <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
+          <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true" hideToggle>
             <mat-expansion-panel-header
             fxLayout="row"
             [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'"
             [ngClass]="{'search-candidate' : outstandingCase.searchCandidate == true}">
-  
+
             <div fxFlex="15">
-              <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog()">airport_shuttle</mat-icon>
-              
-              <!-- <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon> -->
+              <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog(outstandingCase)">airport_shuttle</mat-icon>
             </div>
   
             <div fxFlex="25">
               <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
             </div>
-  
-            <!-- <div fxFlex="25">
-              <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog()">airport_shuttle</mat-icon>
-            </div> -->
-  
+            
               <div fxFlex style="text-align: center;">
                 {{outstandingCase.emergencyNumber}}
                 ({{outstandingCase.animalTypes}})
               </div>
+
                 <div fxFlex="none"
   
                 class ="dot" [ngClass]="{
@@ -198,8 +177,8 @@
   
               <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
               <div class="animal-location">{{outstandingCase.location}}</div>
-          </div>
-  
+          </div> 
+
           </mat-expansion-panel>
   
           </div>
@@ -207,7 +186,5 @@
         </div>
       </div>
       </div>
-    </div>
   </div>
-
 

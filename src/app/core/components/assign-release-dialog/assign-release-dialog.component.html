@@ -6,15 +6,16 @@ cdkDragHandle>Release Details</h1>
 
 <div mat-dialog-content>
 
-    <app-assign-release></app-assign-release>
+  <app-assign-release [formData]="formData"
+    #releaseDetails> 
+  </app-assign-release>
 
 </div>
 
 <div mat-dialog-actions>
     <button mat-raised-button color="primary">Cancel</button>
-    <button mat-raised-button color="primary">Save</button>
-  </div>
+    <button mat-raised-button color="primary" (click)="releaseDetails.saveReleaseDetails()">Save</button>
+</div>
 
 
 
-<!-- <app-assign-release></app-assign-release> -->

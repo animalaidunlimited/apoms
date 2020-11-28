@@ -113,8 +113,8 @@ export class OutstandingCaseService {
       if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus)
       {
        return rescueState.rescueReleaseGroups
-      .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
-                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id);
+      .find(rescueGroup =>  rescueGroup.staff1 === updatedRescue.rescuer1Id &&
+                            rescueGroup.staff2 === updatedRescue.rescuer2Id);
       }
 
       return '';
@@ -198,7 +198,7 @@ export class OutstandingCaseService {
 
         status.rescueReleaseGroups.forEach(group => {
 
-          if(group.rescuer1 === rescue.rescuer1Id && group.rescuer2 === rescue.rescuer2Id){
+          if(group.staff1 === rescue.rescuer1Id && group.staff2 === rescue.rescuer2Id){
 
             group.ambulanceAssignment.push(rescue);
           }
