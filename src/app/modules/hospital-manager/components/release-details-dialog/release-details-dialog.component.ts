@@ -54,7 +54,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   isInstructionRequired!: boolean;
   releasers$!:Observable<User[]>;
   specificStaff!: boolean;
-  isStreatTreatRelease!: boolean;
+  isStreetTreatRelease!: boolean;
 
   recordForm: FormGroup = new FormGroup({});
 
@@ -73,7 +73,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     this.isInstructionRequired= false;
     this.specificStaff = false;
-    this.isStreatTreatRelease = false;
+    this.isStreetTreatRelease = false;
 
     this.releasers$ = this.dropdown.getRescuers();
 
@@ -158,11 +158,11 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   streetTreatReleaseTrue() {
-    this.isStreatTreatRelease = true;
+    this.isStreetTreatRelease = true;
   }
 
   streetTreatReleaseFalse() {
-    this.isStreatTreatRelease = false;
+    this.isStreetTreatRelease = false;
   }
 
 

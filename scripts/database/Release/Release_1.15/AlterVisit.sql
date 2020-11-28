@@ -1,0 +1,10 @@
+ALTER TABLE AAU.Visit 
+DROP FOREIGN KEY visit_ibfk_1;
+
+ALTER TABLE AAU.Visit 
+CHANGE COLUMN StreatTreatCaseId StreetTreatCaseId INT NULL DEFAULT NULL ;
+
+ALTER TABLE AAU.Visit 
+ADD CONSTRAINT visit_ibfk_1
+  FOREIGN KEY (StreetTreatCaseId)
+  REFERENCES AAU.case (CaseId);

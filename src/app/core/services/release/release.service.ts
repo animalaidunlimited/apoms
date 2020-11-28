@@ -22,8 +22,22 @@ export class ReleaseService extends APIService {
     }
   }
 
-  public async saveStreatTreatCase(streatDetails: any): Promise<any>{
-	  return await this.post(streatDetails);
+  public async saveStreetTreatCase(streetDetails: any): Promise<any>{
+    if(streetDetails.streetTreatCaseId)
+    {
+	  this.endpoint = `ReleaseDetails/streettreat`;
+      return await this.put(streetDetails);
+    }
+    else{
+      return await this.post(streetDetails);
+    }
   }
-
+	public getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
+		const request = `?GetStreetTreatCasesByPatientId=${patientId}`;
+		return this.get(request);
+	}
+	/* public getVisitsByStreetTreatCaseId(streetTreatCaseId:any): Promise<any>{
+    	const request = `?GetVisitsByStreetTreatCaseId=${streetTreatCaseId}`;
+    	return this.get(request);
+	} */
 }

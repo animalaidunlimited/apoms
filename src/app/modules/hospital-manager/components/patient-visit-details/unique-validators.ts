@@ -23,11 +23,10 @@ export class UniqueValidators {
 			});
 
 			if (controls.length > 1) {
-				for (let i: number = 0; i < controls.length; i++) {
+				for (let i = 0; i < controls.length; i++) {
 					const formGroup: FormGroup = controls[i] as FormGroup;
 					const mainControl = formGroup.get(field);
 					const val: string = mainControl?.value;
-// No need for caseSenetitive
 					const mainValue: string = val;
 					controls.forEach((group, index: number) => {
 						if (i === index) {
