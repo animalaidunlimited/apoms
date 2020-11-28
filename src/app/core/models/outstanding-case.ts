@@ -7,8 +7,6 @@ export interface OutstandingRescue {
     requestedUser: string;
     requestedDate: Date | undefined;
     releaseTypeId: number;
-    releaser1Id:number;
-    releaser2Id: number;
     releaseBeginDate: Date | undefined;
     releaseEndDate: Date | undefined; 
     latitude: number;
@@ -16,8 +14,8 @@ export interface OutstandingRescue {
     latLngLiteral: google.maps.LatLngLiteral;
     longitude: number;
     callerName: string;
-    rescuer1Id: number;
-    rescuer2Id: number;
+    staff1: number;
+    staff2: number;
     ambulanceArrivalTime: string | Date;
     rescueTime: string | Date;
     callDateTime: string | Date;
@@ -41,8 +39,6 @@ export interface OutstandingRescue {
 export interface RescuerGroup {
     staff1: number;
     staff1Abbreviation: string;
-    // releaser1Abbreviation: string;
-    // releaser2Abbreviation: string;
     staff2: number;
     staff2Abbreviation: string;
     latestLocation: google.maps.LatLngLiteral | undefined;

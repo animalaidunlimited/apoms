@@ -81,16 +81,14 @@ export class OutstandingCaseService {
       // Check to see if the swimlane exists and insert if not
     const laneExists = currentOutstanding.find(elem => elem.rescueReleaseStatus === updatedRescue.rescueStatus);
 
-    // const newRescueGroup:RescuerGroup = {
-    //   rescuer1: updatedRescue.rescuer1Id,
-    //   rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
-    //   rescuer2: updatedRescue.rescuer2Id,
-    //   rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
-    //   releaser1Abbreviation: updatedRescue.releaser1Abbreviation;
-    //   releaser2Abbreviation: updatedRescue.releaser2Abbreviation;
-    //   latestLocation: undefined,
-    //   ambulanceAssignment: [updatedRescue],
-    // };
+    const newRescueGroup:RescuerGroup = {
+      staff1: updatedRescue.staff1,
+      staff1Abbreviation: updatedRescue.staff1Abbreviation,
+      staff2: updatedRescue.staff2,
+      staff2Abbreviation: updatedRescue.staff2Abbreviation,
+      latestLocation: undefined,
+      ambulanceAssignment: [updatedRescue],
+    };
 
     if(!laneExists){
 
@@ -100,11 +98,11 @@ export class OutstandingCaseService {
       'Rescued',
       'Admitted'];
 
-      // currentOutstanding.push({
-      //   rescueReleaseStatus: updatedRescue.rescueStatus,
-      //   rescueReleaseStatusName: rescueStatusName[updatedRescue.rescueStatus],
-      //   rescueReleaseGroups: [newRescueGroup]
-      // });
+      currentOutstanding.push({
+        rescueReleaseStatus: updatedRescue.rescueStatus,
+        rescueReleaseStatusName: rescueStatusName[updatedRescue.rescueStatus],
+        rescueReleaseGroups: [newRescueGroup]
+      });
     }
 
     // Check to see if the rescuers exist and insert if not
@@ -113,8 +111,8 @@ export class OutstandingCaseService {
       if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus)
       {
        return rescueState.rescueReleaseGroups
-      .find(rescueGroup =>  rescueGroup.staff1 === updatedRescue.rescuer1Id &&
-                            rescueGroup.staff2 === updatedRescue.rescuer2Id);
+      .find(rescueGroup =>  rescueGroup.staff1 === updatedRescue.staff1 &&
+                            rescueGroup.staff2 === updatedRescue.staff2);
       }
 
       return '';
@@ -126,7 +124,7 @@ export class OutstandingCaseService {
       currentOutstanding.forEach(rescueState => {
 
         if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus){
-          // rescueState.rescueReleaseGroups.push(newRescueGroup);
+          rescueState.rescueReleaseGroups.push(newRescueGroup);
         }
       });
     }
@@ -198,7 +196,7 @@ export class OutstandingCaseService {
 
         status.rescueReleaseGroups.forEach(group => {
 
-          if(group.staff1 === rescue.rescuer1Id && group.staff2 === rescue.rescuer2Id){
+          if(group.staff1 === rescue.staff1 && group.staff2 === rescue.staff2){
 
             group.ambulanceAssignment.push(rescue);
           }
