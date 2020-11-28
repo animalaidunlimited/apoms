@@ -20,7 +20,7 @@ export interface OutstandingRescue {
     rescueTime: string | Date;
     callDateTime: string | Date;
     callerNumber: string;
-    rescueStatus: number;
+    actionStatus: number;
     callOutcomeId: number;
     rescuer1Colour: string;
     rescuer2Colour: string;
@@ -46,24 +46,24 @@ export interface RescuerGroup {
 }
 
 export interface OutstandingCase {
-    rescueReleaseStatus: number;
-    rescueReleaseStatusName: string;
-    rescueReleaseGroups: RescuerGroup[];
+    actionStatus: number;
+    actionStatusName: string;
+    actionGroups: RescuerGroup[];
 }
 
 export interface OutstandingCaseResponse {
-    outstandingRescueRelease : OutstandingCase[];
+    outstandingActions : OutstandingCase[];
     // outstandingRescues: OutstandingCase[];
 }
 
 export interface UpdatedRescue {
     success: number;
     emergencyCaseId: number;
-    rescuer1Id: number;
-    rescuer1Abbreviation: string;
-    rescuer2Id: number;
-    rescuer2Abbreviation: string;
-    rescueStatus: number;
+    staff1Id: number;
+    staff1Abbreviation: string;
+    staff2Id: number;
+    staff2Abbreviation: string;
+    actionStatus: number;
 }
 
 export interface UpdateResponse{

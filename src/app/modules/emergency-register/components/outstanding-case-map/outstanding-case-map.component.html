@@ -9,7 +9,7 @@
 
             <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
 
-                <div *ngFor="let assignments of outstandingActions.rescueReleaseGroups;">
+                <div *ngFor="let assignments of outstandingActions.actionGroups;">
 
 
                         <!-- TODO alter the emergencyCodeId so that it works for all organisations -->

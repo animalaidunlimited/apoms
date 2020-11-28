@@ -66,8 +66,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
         if(cases){
 
-          return cases.filter(swimlane => swimlane.rescueReleaseStatus >= 3)
-                      .map(groups => groups.rescueReleaseGroups)
+          return cases.filter(swimlane => swimlane.actionStatus >= 3)
+                      .map(groups => groups.actionGroups)
 
                         // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
                         // the last one based upon time. However if we make the changes directly to the result object of the

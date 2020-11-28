@@ -67,7 +67,6 @@ export class AssignReleaseComponent implements OnInit {
 
   saveReleaseDetails() {
     this.releaseDetails.saveRelease(this.recordForm.value);
-    this.messaging.testing();
   }
 
 }

@@ -47,28 +47,28 @@
 <div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
 
-      <h2>{{lane.rescueReleaseStatusName}}</h2>
+      <h2>{{lane.actionStatusName}}</h2>
 
       <div >
 
-        <div class="rescue-group-container" *ngFor="let rescueReleaseGroup of lane.rescueReleaseGroups">
+        <div class="rescue-group-container" *ngFor="let actionGroup of lane.actionGroups">
 
         <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
-        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.staff1Abbreviation">
-          <span class="initials">{{rescueReleaseGroup.staff1Abbreviation}}</span>
+        <div fxFlex="none" class="avatar-circle" *ngIf="actionGroup.staff1Abbreviation">
+          <span class="initials">{{actionGroup.staff1Abbreviation}}</span>
         </div>
-        <div fxFlex="none" class="avatar-circle" *ngIf="rescueReleaseGroup.staff2Abbreviation">
-          <span class="initials">{{rescueReleaseGroup.staff2Abbreviation}}</span>
+        <div fxFlex="none" class="avatar-circle" *ngIf="actionGroup.staff2Abbreviation">
+          <span class="initials">{{actionGroup.staff2Abbreviation}}</span>
         </div>
         </div>
 
         <div 
         cdkDropList
-        [cdkDropListData]="rescueReleaseGroup.ambulanceAssignment"
+        [cdkDropListData]="actionGroup.ambulanceAssignment"
         class="drag-drop-list"
         style="background-color: transparent;"
         (cdkDropListDropped)="drop($event)">
-        <div *ngFor="let outstandingCase of rescueReleaseGroup.ambulanceAssignment;" cdkDrag>
+        <div *ngFor="let outstandingCase of actionGroup.ambulanceAssignment;" cdkDrag>
         <div *ngIf="outstandingCase.ambulanceAction==='Rescue'">
 
         <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>

@@ -3,3 +3,7 @@ export interface User {
     FirstName: string;
     Initials: string;
 }
+
+export interface ReleaseManager {
+    FirstName: string;
+}

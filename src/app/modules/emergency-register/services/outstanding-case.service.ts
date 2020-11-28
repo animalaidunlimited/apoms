@@ -39,7 +39,8 @@ export class OutstandingCaseService {
 
       // Get the initial list from the rescue service
       this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
-        this.populateOutstandingCases(outstandingCases.outstandingRescueRelease);
+        console.log(outstandingCases);
+        this.populateOutstandingCases(outstandingCases.outstandingActions);
       });
 
       this.autoRefresh.subscribe(state => {
@@ -51,7 +52,7 @@ export class OutstandingCaseService {
   refreshRescues(){
 
     this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
-      this.populateOutstandingCases(outstandingCases.outstandingRescueRelease);
+      this.populateOutstandingCases(outstandingCases.outstandingActions);
       });
 
   }
@@ -79,7 +80,7 @@ export class OutstandingCaseService {
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
 
       // Check to see if the swimlane exists and insert if not
-    const laneExists = currentOutstanding.find(elem => elem.rescueReleaseStatus === updatedRescue.rescueStatus);
+    const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedRescue.actionStatus);
 
     const newRescueGroup:RescuerGroup = {
       staff1: updatedRescue.staff1,
@@ -99,20 +100,20 @@ export class OutstandingCaseService {
       'Admitted'];
 
       currentOutstanding.push({
-        rescueReleaseStatus: updatedRescue.rescueStatus,
-        rescueReleaseStatusName: rescueStatusName[updatedRescue.rescueStatus],
-        rescueReleaseGroups: [newRescueGroup]
+        actionStatus: updatedRescue.actionStatus,
+        actionStatusName: rescueStatusName[updatedRescue.actionStatus],
+        actionGroups: [newRescueGroup]
       });
     }
 
     // Check to see if the rescuers exist and insert if not
-    const rescuersExist = currentOutstanding.find(rescueState => {
+    const rescuersExist = currentOutstanding.find(actionState => {
 
-      if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus)
+      if(actionState.actionStatus === updatedRescue.actionStatus)
       {
-       return rescueState.rescueReleaseGroups
-      .find(rescueGroup =>  rescueGroup.staff1 === updatedRescue.staff1 &&
-                            rescueGroup.staff2 === updatedRescue.staff2);
+       return actionState.actionGroups
+      .find((actionGroup: any) =>  actionGroup.staff1 === updatedRescue.staff1 &&
+                            actionGroup.staff2 === updatedRescue.staff2);
       }
 
       return '';
@@ -123,8 +124,8 @@ export class OutstandingCaseService {
 
       currentOutstanding.forEach(rescueState => {
 
-        if(rescueState.rescueReleaseStatus === updatedRescue.rescueStatus){
-          rescueState.rescueReleaseGroups.push(newRescueGroup);
+        if(rescueState.actionStatus === updatedRescue.actionStatus){
+          rescueState.actionGroups.push(newRescueGroup);
         }
       });
     }
@@ -146,7 +147,7 @@ export class OutstandingCaseService {
     }
 
     // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
-    if(!updatedRescue.rescueStatus){
+    if(!updatedRescue.actionStatus){
       this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
 
       return;
@@ -167,7 +168,7 @@ export class OutstandingCaseService {
 
     outstanding.forEach(status => {
 
-        status.rescueReleaseGroups.forEach((group,index) => {
+        status.actionGroups.forEach((group,index) => {
 
             const removeIndex = group.ambulanceAssignment
                               .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
@@ -178,7 +179,7 @@ export class OutstandingCaseService {
 
               // If the group is now empty, remove it.
               if(group.ambulanceAssignment.length === 0){
-                status.rescueReleaseGroups.splice(index,1);
+                status.actionGroups.splice(index,1);
               }
               return;
             }
@@ -188,17 +189,17 @@ export class OutstandingCaseService {
     return outstanding;
   }
 
-  insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
+  insertRescue(outstanding:OutstandingCase[], action:OutstandingRescue){
 
     outstanding.forEach(status => {
 
-      if(status.rescueReleaseStatus === rescue.rescueStatus){
+      if(status.actionStatus === action.actionStatus){
 
-        status.rescueReleaseGroups.forEach(group => {
+        status.actionGroups.forEach(group => {
 
-          if(group.staff1 === rescue.staff1 && group.staff2 === rescue.staff2){
+          if(group.staff1 === action.staff1 && group.staff2 === action.staff2){
 
-            group.ambulanceAssignment.push(rescue);
+            group.ambulanceAssignment.push(action);
           }
         });
       }
@@ -252,7 +253,7 @@ export class OutstandingCaseService {
 
       outstanding.forEach(status =>
         {
-          status.rescueReleaseGroups.forEach(group => {
+          status.actionGroups.forEach(group => {
 
               group.ambulanceAssignment.forEach(assignment => {
 
