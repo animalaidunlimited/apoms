@@ -1,5 +1,5 @@
 <!-- <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'"> -->
-    <mat-form-field class="er-case-search-box" >
+   <!--<mat-form-field class="er-case-search-box" >
 
     <span matPrefix (click)="executeSearch()">
         <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
@@ -55,7 +55,9 @@
         </button>
     </div>
 
-<div>
+<div>-->
+
+    <app-search-box (onSearchQuery)="searchQuery")></app-search-box>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" class="search-results">
 
@@ -66,12 +68,6 @@
             <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
 
         </div>
-
-
-
-
-
-
 
     </div>
 

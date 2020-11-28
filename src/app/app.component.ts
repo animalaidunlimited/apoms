@@ -4,7 +4,8 @@ import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 import { BehaviorSubject } from 'rxjs';
-import { AuthService } from './auth/auth.service';
+import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
+import { PromptUpdateService } from './core/services/update-service.service';
 
 
 @Component({
@@ -25,7 +26,8 @@ export class AppComponent implements OnInit{
     constructor(
         private messagingService: MessagingService,
         private printService: PrintTemplateService,
-        private auth: AuthService,
+        private emergencyTabBar: EmergencyRegisterTabBarService,
+        private updateService: PromptUpdateService,
         private outstandingCaseService: OutstandingCaseService
         ) {
             this.isPrinting = this.printService.getIsPrinting();
@@ -52,11 +54,22 @@ export class AppComponent implements OnInit{
         // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
-            // if(event.data?.firebaseMessaging?.payload){
+            console.log('Message posted');
+            console.log(event);
+
+            if(event.data.hasOwnProperty('image')){
+
+                console.log('Sharing media item');
+                this.emergencyTabBar.receiveSharedMediaItem(event.data);
+
+            }
+
+            if(event.hasOwnProperty('data')){
 
                 this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
 
-           //  }
+
+           }
 
             });
 

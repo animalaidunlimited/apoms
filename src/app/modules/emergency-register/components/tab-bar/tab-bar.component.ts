@@ -25,9 +25,20 @@ export class TabBarComponent implements OnInit {
 
     ngOnInit() {
 
-        this.emergencytabBar.searchDialog.subscribe(imageVal=>{
-           if(imageVal){
-                this.openSearchMediaDialog(imageVal);
+        const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
+
+        console.log('sharedMediaItem value');
+        console.log(sharedMediaItem.getValue());
+
+        sharedMediaItem.subscribe((mediaItem:File[])=>{
+
+            console.log('Inside tab bar component');
+            console.log(mediaItem);
+
+           if(mediaItem.length > 0){
+                console.log('mediaItem array has length > 0');
+                console.log(mediaItem);
+                this.openSearchMediaDialog(mediaItem);
            }
         });
     }
@@ -71,7 +82,7 @@ export class TabBarComponent implements OnInit {
     updateEmergencyNumber(emergencyNumber: number) {
 
         if(this.tabs[this.selected.value].value !== 'Board' && this.tabs[this.selected.value].value !== 'Search'){
-            
+
             this.tabs[this.selected.value].value = (
                 emergencyNumber || 'New Case*'
             ).toString();
@@ -81,8 +92,11 @@ export class TabBarComponent implements OnInit {
 
 
     }
-    
+
     openSearchMediaDialog(mediaVal:any){
+
+        console.log('Opening dialog');
+
        this.dialog.open(AddSearchMediaDialogComponent, {
         minWidth: '50%',
         data: {

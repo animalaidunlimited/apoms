@@ -1,9 +1,14 @@
+import { Input } from '@angular/core';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { SearchResponse } from 'src/app/core/models/responses';
+import { CaseService } from '../../services/case.service';
 
 
 interface DialogData{
-  mediaVal : File;
+  mediaVal : File[];
 }
 
 @Component({
@@ -13,13 +18,41 @@ interface DialogData{
 })
 export class AddSearchMediaDialogComponent implements OnInit {
 
-  constructor( public dialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,) { }
+  @Input() mediaVal!: File[];
+
+  searchResults$!:Observable<SearchResponse[]>;
+
+  constructor(
+              public dialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              public dialog: MatDialog,
+              private caseService: CaseService
+              ) { }
 
   ngOnInit(): void {
 
     console.log(this.data.mediaVal);
 
   }
+
+  onSearchQuery(searchQuery:string){
+
+    this.searchResults$ = this.caseService.searchCases(searchQuery);
+
+  }
+
+  openMediaDialog(tagNumber: string, patientId: number) {
+      this.dialog.open(MediaDialogComponent, {
+          minWidth: '50%',
+          data: {
+              tagNumber,
+              patientId,
+              mediaVal: this.mediaVal
+          }
+  });
+
+  }
+
+
 
 }

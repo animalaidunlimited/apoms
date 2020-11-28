@@ -1,1 +1,16 @@
-<app-search-box [mediaVal]= "data.mediaVal"></app-search-box>
+<app-search-box (onSearchQuery)="searchQuery")></app-search-box>
+
+<mat-accordion>
+    <mat-expansion-panel hideToggle class="expansion-panel-margin"
+    *ngFor="let searchResult of searchResults$ | async"
+    (click)="openMediaDialog(searchResult.TagNumber, searchResult.PatientId)">
+        <mat-expansion-panel-header>
+            <mat-panel-title >
+                {{searchResult.TagNumber}}
+            </mat-panel-title>
+            <mat-panel-description>
+               {{searchResult.EmergencyNumber}}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    </mat-expansion-panel>
+</mat-accordion>
