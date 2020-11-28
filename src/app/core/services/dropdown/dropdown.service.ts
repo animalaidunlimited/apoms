@@ -13,7 +13,7 @@ import {
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../../models/user';
+import { User, ReleaseManager } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
@@ -59,6 +59,7 @@ export class DropdownService extends APIService {
     surgeryTypes$!: Observable<SurgeryType[]>;
     jobTypes$!: Observable<UserJobType[]>;
     team$!: Observable<Team[]>;
+    releaseManagers$!: Observable<ReleaseManager[]>;
 
 
 
@@ -596,6 +597,21 @@ export class DropdownService extends APIService {
       );
     }
     return this.jobTypes$;
+  }
+
+  getReleaseManagers(): Observable<ReleaseManager[]> {
+    const request = '/GetReleaseManagers';
+
+    if(!this.releaseManagers$) {
+        this.releaseManagers$ = this.getObservable(request).pipe(
+            map((response: ReleaseManager[])=>{
+                return response;
+            })
+        );
+    }
+
+    return this.releaseManagers$;
+      
   }
 
 }

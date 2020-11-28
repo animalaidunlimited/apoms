@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { Observable } from 'rxjs';
+import { ReleaseManager } from 'src/app/core/models/user';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
 interface User {
@@ -19,11 +20,13 @@ export class ReleaseRequestFormComponent implements OnInit {
 
   @Input() recordForm!: FormGroup;
   @Input() incomingFormData!: Observable<any>;
+  releaseManagers$!: Observable<ReleaseManager[]>;
 
   releaseRequestForm!: FormGroup;
 
   constructor(private userService: UserOptionsService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private dropdown: DropdownService) { }
 
   // imagePath: any = 'src/assets/Dogface.jpg';
 
@@ -35,6 +38,8 @@ export class ReleaseRequestFormComponent implements OnInit {
   username: any = this.userService.getUserName();
 
   ngOnInit() {
+
+    this.releaseManagers$ = this.dropdown.getReleaseManagers();
 
     this.userList.push({
       userName: this.username

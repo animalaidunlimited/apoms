@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { User } from 'src/app/core/models/user';
+import { User, ReleaseManager } from 'src/app/core/models/user';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { MatSelectChange } from '@angular/material/select';
@@ -54,6 +54,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   isInstructionRequired!: boolean;
   releasers$!:Observable<User[]>;
+  releaseManagers$!: Observable<ReleaseManager[]>;
   specificStaff!: boolean;
   isStreatTreatRelease!: boolean;
   incomingFormData!: Observable<any>;
@@ -80,6 +81,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     this.releasers$ = this.dropdown.getRescuers();
 
+
     // Record Form
     this.recordForm = this.fb.group({
 
@@ -95,6 +97,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      pickupdate: [],
       releaseBeginDate: [],
       releaseEndDate: []
 
@@ -184,6 +187,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   
 
   onReleaseSubmit(releaseForm:any) {
+    console.log(releaseForm.value);
     this.releaseService.saveRelease(releaseForm.value);
   }
 
