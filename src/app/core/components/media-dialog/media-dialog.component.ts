@@ -77,6 +77,9 @@ export class MediaDialogComponent implements OnInit {
       }
     });
 
+    console.log('inside media dialog');
+    console.log(this.data.mediaVal);
+
     if(this.data.mediaVal) {
       const whatsAppMedia = this.data.mediaVal[0];
       this.upload(whatsAppMedia , this.data.patientId);

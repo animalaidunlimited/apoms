@@ -1,14 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Search, SearchValue } from '../record-search/record-search.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { Observable } from 'rxjs';
-import { SearchResponse } from '../../models/responses';
-import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
-
-
 
 @Component({
   selector: 'app-search-box',
@@ -41,9 +35,10 @@ import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 ],
 })
 export class SearchBoxComponent implements OnInit {
-  searchFieldForm = new FormControl();
 
-  @Input() mediaVal!: File;
+    searchFieldForm = new FormControl();
+
+    @Output() public searchStringEmitter = new EventEmitter<string>();
 
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
@@ -168,14 +163,10 @@ export class SearchBoxComponent implements OnInit {
     ];
 
     constructor(
-        public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
-        private formBuilder: FormBuilder,
-        private caseService: CaseService,
+        private formBuilder: FormBuilder
     ) {}
-
-    searchResults$!:Observable<SearchResponse[]>;
 
     ngOnInit() {
 
@@ -240,7 +231,7 @@ export class SearchBoxComponent implements OnInit {
             })
             .join('&');
 
-        this.searchResults$ = this.caseService.searchCases(searchQuery);
+        this.searchStringEmitter.emit(searchQuery);
     }
 
     toggleSearchBox() {
@@ -334,14 +325,5 @@ export class SearchBoxComponent implements OnInit {
         this.searchRows.removeAt(i);
     }
 
-    openMediaDialog(tagNumber: string, patientId: number) {
-        this.dialog.open(MediaDialogComponent, {
-            minWidth: '50%',
-            data: {
-                tagNumber,
-                patientId,
-                mediaVal: this.mediaVal
-            }
-    });
-}
+
 }

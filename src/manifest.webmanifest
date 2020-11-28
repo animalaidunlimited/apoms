@@ -17,11 +17,11 @@
       "url": "link",
       "files": [
         {
-          "name": "images",
+          "name": "image",
           "accept": "image/*"
         },
         {
-          "name": "videos",
+          "name": "video",
           "accept": "video/*"
         }
       ]
