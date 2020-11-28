@@ -30,6 +30,43 @@ constructor(
 
     }
 
+    testing() {
+        const message= {
+            data: {
+              messageData: {latitude: 24.57127000, 
+                location:'Udaipur',
+                patients: [655506],
+                staff1Id: null, 
+                staff2Id: null, 
+                longitude: 73.69154400, 
+                callerName: 'Arpit', 
+                rescueTime: null, 
+                animalTypes: ['Cat'], 
+                callDateTime: '2020-09-15 11:33:00.000000', 
+                callerNumber: 8769184667, 
+                rescueStatus: 1, 
+                staff1Colour: null, 
+                staff2Colour: null, 
+                callOutcomeId: null, 
+                isLargeAnimal: 0, 
+                latLngLiteral: {
+                    lat: 24.57127000, 
+                    lng: 73.69154400
+                }, 
+                ambulanceAction: 'Rescue', 
+                emergencyCaseId: 736270, 
+                emergencyCodeId: 1, 
+                emergencyNumber: 3698, 
+                staff1Abbreviation: null, 
+                staff2Abbreviation: null, 
+                ambulanceArrivalTime: null}
+            },
+            topic: 'aau_UPDATING_ASSIGNMENT'
+          };
+
+        this.distributeMessage(message);
+    }
+
     receiveBackgroundMessage(message:string){
 
         this.distributeMessage(message);

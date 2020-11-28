@@ -3,7 +3,8 @@
 <form [formGroup]="recordForm" (ngSubmit)="onReleaseSubmit(recordForm)">
 
 <div mat-dialog-content style="overflow: hidden;">
-    <release-request-form [recordForm]="recordForm">
+    <release-request-form [recordForm]="recordForm"
+    [incomingFormData]="incomingFormData">
 
     </release-request-form>
 

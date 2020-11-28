@@ -1,4 +1,8 @@
 export interface OutstandingRescue {
+    releaseId: number;
+    callerId: number;
+    complainerNotes: string;
+    complainerInformed: boolean;
     ambulanceAction: string;
     requestedUser: string;
     requestedDate: Date | undefined;
@@ -25,8 +29,8 @@ export interface OutstandingRescue {
     emergencyCaseId: number;
     emergencyCodeId: number;
     emergencyNumber: number;
-    rescuer1Abbreviation: string;
-    rescuer2Abbreviation: string;
+    staff1Abbreviation: string;
+    staff2Abbreviation: string;
     animalTypes: string;
     patients: number[];
     isLargeAnimal: boolean;
@@ -35,12 +39,12 @@ export interface OutstandingRescue {
 }
 
 export interface RescuerGroup {
-    rescuer1: number;
-    rescuer1Abbreviation: string;
-    releaser1Abbreviation: string;
-    releaser2Abbreviation: string;
-    rescuer2: number;
-    rescuer2Abbreviation: string;
+    staff1: number;
+    staff1Abbreviation: string;
+    // releaser1Abbreviation: string;
+    // releaser2Abbreviation: string;
+    staff2: number;
+    staff2Abbreviation: string;
     latestLocation: google.maps.LatLngLiteral | undefined;
     ambulanceAssignment: OutstandingRescue[];
 }

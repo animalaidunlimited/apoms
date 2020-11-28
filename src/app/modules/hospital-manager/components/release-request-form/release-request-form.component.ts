@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
+import { Observable } from 'rxjs';
 
 
 interface User {
@@ -17,6 +18,7 @@ interface User {
 export class ReleaseRequestFormComponent implements OnInit {
 
   @Input() recordForm!: FormGroup;
+  @Input() incomingFormData!: Observable<any>;
 
   releaseRequestForm!: FormGroup;
 
@@ -48,10 +50,18 @@ export class ReleaseRequestFormComponent implements OnInit {
 
     this.releaseRequestForm = this.recordForm.get('releaseRequestForm') as FormGroup;
 
-    this.releaseRequestForm.patchValue({
-      requestedUser: this.username,
-      requestedDate: (new Date()).toISOString().substring(0,10)
+    this.incomingFormData.subscribe((formVal: any)=>{
+      if(formVal) {
+        this.releaseRequestForm.patchValue(formVal);
+      }
+      else {
+        this.releaseRequestForm.patchValue({
+              requestedUser: this.username,
+              requestedDate: (new Date()).toISOString().substring(0,10)
+            });
+      }
     });
+    
   }
   
 }

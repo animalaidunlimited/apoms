@@ -292,12 +292,12 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
-openAssignReleaseDialog() {
+openAssignReleaseDialog(caseDetails: OutstandingRescue) {
   const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
     maxWidth: '100vw',
     maxHeight: '100vh',
     data: {
-      
+      caseDetails
     }
   });
 }
