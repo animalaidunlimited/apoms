@@ -7,36 +7,36 @@
             [center]="center"
             [zoom]="zoom">
 
-            <div *ngFor="let outstandingRescues of (outstandingCases$ | async);">
+            <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
 
-                <div *ngFor="let rescuerGroups of outstandingRescues.rescuerGroups;">
+                <div *ngFor="let assignments of outstandingActions.actionGroups;">
 
 
                         <!-- TODO alter the emergencyCodeId so that it works for all organisations -->
                         <!-- #marker="mapMarker" -->
 
                         <map-marker
-                        *ngFor="let rescue of rescuerGroups.rescues;"
+                        *ngFor="let action of assignments.ambulanceAssignment"
                         #marker="mapMarker"
-                        [position]="rescue.latLngLiteral"
-                        (mapClick)="openInfoWindow(marker, rescue)"
+                        [position]="action.latLngLiteral"
+                        (mapClick)="openInfoWindow(marker, action)"
                         [options]="{icon:
 
                             (
-                                rescue.isLargeAnimal ?
-                                    (rescue.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                                action.isLargeAnimal ?
+                                    (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                                     :
-                                    rescue.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                                    action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
                                     :
-                                    rescue.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                                    action.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
                                     :
                                     'assets/icons/large_animal_grey.png')
                                 :
-                                    (rescue.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                                    (action.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
                                     :
-                                    rescue.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                                    action.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
                                     :
-                                    rescue.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                                    action.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
                                     :
                                     'assets/icons/small_animal_grey.png')
                         )}">
@@ -48,9 +48,9 @@
                         <!-- Add the ambulance locations -->
                         <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
                         #ambulanceMarker="mapMarker"
-                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.rescues)"
+                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.ambulanceAssignment)"
                         [position]="ambulance.latestLocation"
-                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.rescuer1Abbreviation + ' + ' + ambulance.rescuer2Abbreviation}">
+                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.staff1Abbreviation + ' + ' + ambulance.staff2Abbreviation}">
 
                         </map-marker>
 

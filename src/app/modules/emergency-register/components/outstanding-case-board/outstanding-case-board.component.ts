@@ -105,7 +105,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$.subscribe(() => {
+    this.outstandingCases$.subscribe((value) => {
+      console.log(value);
         this.loading = false;
         this.changeDetector.detectChanges();
     });
@@ -291,12 +292,12 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
-openAssignReleaseDialog() {
+openAssignReleaseDialog(caseDetails: OutstandingRescue) {
   const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
     maxWidth: '100vw',
     maxHeight: '100vh',
     data: {
-      
+      caseDetails
     }
   });
 }

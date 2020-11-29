@@ -76,7 +76,6 @@ export abstract class APIService<T = any> {
     }
 
     public async put(body: any): Promise<any> {
-        console.log(body);
         let response = null;
         try {
             response = await this.http
