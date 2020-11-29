@@ -66,9 +66,6 @@
             <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Print card" (click)="printEmergencyCard(record.PatientId)">
                 <mat-icon>print</mat-icon>
             </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add Visits" (click)="addVisits(record.PatientId,record.EmergencyCaseId,record.EmergencyNumber)" matTooltip="Add Vists">
-                <mat-icon>add_location</mat-icon>
-            </button>
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
             {{record.CallDateTime | date: 'dd/MMM/yyyy' : '00:00' }}

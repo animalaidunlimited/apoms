@@ -1,6 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogData } from '../patient-edit/patient-edit.component';
+import { OutstandingRescue } from '../../models/outstanding-case';
+
+interface IncomingCaseDetails {
+  caseDetails: OutstandingRescue;
+}
 
 @Component({
   selector: 'app-assign-release-dialog',
@@ -9,10 +13,32 @@ import { DialogData } from '../patient-edit/patient-edit.component';
 })
 export class AssignReleaseDialogComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<AssignReleaseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+  formData!: any;
 
-  ngOnInit(): void {
+  constructor(public dialogRef: MatDialogRef<AssignReleaseDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
+
+  ngOnInit() {
+
+    this.formData = {
+      releaseId: this.data.caseDetails.releaseId,
+      releaseRequestForm : {
+        requestedUser: this.data.caseDetails.requestedUser,
+        requestedDate: this.data.caseDetails.requestedDate,
+      },
+      releaseType: this.data.caseDetails.releaseTypeId,
+      complainerNotes: this.data.caseDetails.complainerNotes,
+      complianerInformed: this.data.caseDetails.complainerInformed,
+      Releaser1: this.data.caseDetails.staff1,
+      Releaser2: this.data.caseDetails.staff2,
+      callerDetails: {
+        callerId: this.data.caseDetails.callerId
+      },
+      releaseBeginDate: this.data.caseDetails.releaseBeginDate,
+      releaseEndDate: this.data.caseDetails.releaseEndDate
+
+    };
+
   }
 
 }
