@@ -23,11 +23,11 @@ SET vVisitExisits = 0;
 
 SELECT prm_VisitDate INTO prm_OutVisitDate;
 
-SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit WHERE StreatTreatCaseId = prm_StreatTreatCaseId AND Date = prm_VisitDate AND IsDeleted = 0 AND Day = prm_day ;
+SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit  WHERE StreatTreatCaseId = prm_StreatTreatCaseId AND Date = prm_VisitDate AND IsDeleted = 0 AND Day = prm_day ;
 
 IF vVisitExisits = 0 THEN
 
-	INSERT INTO AAU.Visit	(
+	INSERT INTO AAU.Visit 	(
 							StreatTreatCaseId,
 							VisitTypeId,
 							Date,

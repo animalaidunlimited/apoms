@@ -9,13 +9,13 @@ BEGIN
 DECLARE vSuccess INT;
 DECLARE visitExists INT;
 
-SELECT count(1) INTO visitExists FROM AAU.visit WHERE StreetTreatCaseId = (SELECT StreetTreatCaseId FROM AAU.streettreatcase WHERE PatientId=prm_PatientId );
+SELECT count(1) INTO visitExists FROM AAU.visit WHERE StreetTreatCaseId = (SELECT s.StreetTreatCaseId FROM AAU.streettreatcase s, AAU.visit v WHERE s.PatientId=prm_PatientId  AND (v.IsDeleted IS NULL OR v.IsDeleted = 0));
 
-IF visitExists > 1 THEN
+IF visitExists >= 1 THEN
 SELECT
 	JSON_MERGE_PRESERVE(
 			JSON_OBJECT("streetTreatCaseId",s.StreetTreatCaseId),
-			JSON_OBJECT("patientId",""),
+			JSON_OBJECT("patientId",s.PatientId),
 			JSON_OBJECT("casePriority",s.PriorityId),
 			JSON_OBJECT("teamId",s.TeamId),
 			JSON_OBJECT("mainProblem",s.MainProblemId),
@@ -35,15 +35,15 @@ SELECT
 	) 
 AS Result
 	FROM
-		AAU.visit v
-        LEFT JOIN AAU.streettreatcase s ON s.StreetTreatCaseId = v.StreetTreatCaseId
+		AAU.Visit  v
+        LEFT JOIN AAU.Streettreatcase s ON s.StreetTreatCaseId = v.StreetTreatCaseId
 	WHERE 
 		s.PatientId = prm_PatientId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0);
 ELSE 
 	SELECT
 	JSON_MERGE_PRESERVE(
 			JSON_OBJECT("streetTreatCaseId",s.StreetTreatCaseId),
-			JSON_OBJECT("patientId",""),
+			JSON_OBJECT("patientId",s.PatientId),
 			JSON_OBJECT("casePriority",s.PriorityId),
 			JSON_OBJECT("teamId",s.TeamId),
 			JSON_OBJECT("mainProblem",s.MainProblemId),
@@ -62,9 +62,10 @@ ELSE
             )
 		)
 	AS Result
-		FROM AAU.streettreatcase s
+		FROM
+		AAU.Streettreatcase s
 	WHERE
-		s.PatientId = prm_PatientId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0);
+		s.PatientId = prm_PatientId ;
 	
 END IF;
 END$$

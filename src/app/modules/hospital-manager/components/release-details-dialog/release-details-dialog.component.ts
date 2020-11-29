@@ -7,7 +7,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
-
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 export interface DialogData {
   emergencyCaseId: number;
   tagNumber: string | undefined;
@@ -67,7 +67,8 @@ export class ReleaseDetailsDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dropdown: DropdownService,
     private fb: FormBuilder,
-    private releaseService: ReleaseService) { }
+	private releaseService: ReleaseService,
+	private showSnackBar: SnackbarService) { }
 
   ngOnInit() {
 
@@ -96,11 +97,10 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       releaseEndDate: []
 
     });
-
+	this.initReleaseDetailsForm();
   }
 
   valueChanged(releaseType: MatSelectChange) {
-
     switch(releaseType.value) {
       case 2 : {
         console.log('hi');
@@ -165,10 +165,30 @@ export class ReleaseDetailsDialogComponent implements OnInit {
     this.isStreetTreatRelease = false;
   }
 
-
-  onReleaseSubmit(releaseForm:any) {
-	this.releaseService.saveRelease(releaseForm.value);
+  initReleaseDetailsForm(){
+	this.releaseService.getReleaseDetailsById(this.data.patientId).then((res:any)=> {
+		this.recordForm.patchValue(res);
+	});
   }
-
+  onReleaseSubmit(releaseForm:any) {
+	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{
+		if(this.isStreetTreatRelease){
+			this.releaseService.saveStreetTreatCase(releaseForm.value).then((res:any)=>{
+				(result.vSuccess >= 1 && result.vSuccess < 3)
+                    ? (
+						this.showSnackBar.successSnackBar(
+                          'Release details save successfully',
+                          'OK',
+						),
+						this.dialogRef.close(releaseForm.value)
+					)
+                    : this.showSnackBar.errorSnackBar(
+                          'Error updating release details status',
+                          'OK',
+					);
+			});
+		}
+	});
+  }
 
 }

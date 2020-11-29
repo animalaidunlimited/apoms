@@ -23,13 +23,13 @@ DECLARE vPatientExists INT;
 SET vPatientExists = 0;
 SET vSTCaseCount = 0;
 
-SELECT COUNT(1) INTO vSTCaseCount FROM AAU.streattreatcase WHERE StreatTreatCaseId = prm_StreatTreatCaseId;
+SELECT COUNT(1) INTO vSTCaseCount FROM AAU.Streattreatcase WHERE StreatTreatCaseId = prm_StreatTreatCaseId;
 
-SELECT COUNT(1) INTO vPatientExists FROM AAU.streattreatcase WHERE PatientId = prm_PatientId; 
+SELECT COUNT(1) INTO vPatientExists FROM AAU.Streattreatcase WHERE PatientId = prm_PatientId; 
 
 IF vPatientExists = 1 THEN
 
-	UPDATE AAU.streattreatcase
+	UPDATE AAU.Streattreatcase
 		SET	
 			PriorityId 				= prm_PriorityId,
 			StatusId 				= prm_StatusId,

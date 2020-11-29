@@ -43,7 +43,6 @@ export class CallerDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log(this.recordForm.value);
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
@@ -64,7 +63,7 @@ export class CallerDetailsComponent implements OnInit {
                 ],
             }),
         );
-        
+
         this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
 
         this.callerService

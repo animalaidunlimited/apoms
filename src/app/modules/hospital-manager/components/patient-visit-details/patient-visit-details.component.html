@@ -1,8 +1,8 @@
-<h3 mat-dialog-title>Add Street Treat Vists</h3>
-<form [formGroup]="visitForm" (ngSubmit)="submit(visitForm)">
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
+
+<h5 mat-dialog-title>Add Street Treat Visits</h5>
+<form [formGroup]="visitForm" >
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 		<mat-form-field appearance="fill">
-			<!-- aau.priority -->
 			<mat-select placeholder="Case Priority" formControlName="casePriority">
 				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
@@ -26,8 +26,8 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
-		<mat-form-field appearance="fill">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom" >
+		<mat-form-field appearance="fill"  style="flex-grow: 2;">
 			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
@@ -47,7 +47,7 @@
 						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
 							value="0" formControlName="visit_day"  />
 							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
-								<!-- <mat-error> -->
+
 								Should be unique
 							</mat-error>
 					</mat-form-field>
@@ -61,14 +61,14 @@
 
 					<mat-form-field appearance="fill">
 						<mat-label>Visit Type</mat-label>
-						<!-- aau.visittype -->
+
 						<mat-select placeholder="Select" formControlName="visit_type">
 							<mat-option  *ngFor="let visitTypes of visitType$" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<mat-form-field appearance="fill">
 						<textarea matInput placeholder="Admin Comments" cdkAutosizeMinRows="1" cdkTextareaAutosize
-							cdkAutosizeMaxRows="1" formControlName="visit_comments"></textarea>
+							cdkAutosizeMaxRows="2" formControlName="visit_comments"></textarea>
 					</mat-form-field>
 
 					<div class="mat-fab-wrapper">
@@ -86,7 +86,5 @@
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-		<button mat-raised-button color="primary">Save</button>
-	</div>
+
 </form>
