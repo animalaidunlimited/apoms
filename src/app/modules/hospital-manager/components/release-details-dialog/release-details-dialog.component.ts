@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { User } from 'src/app/core/models/user';
+import { User, ReleaseManager } from 'src/app/core/models/user';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { MatSelectChange } from '@angular/material/select';
@@ -53,15 +53,18 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   isInstructionRequired!: boolean;
   releasers$!:Observable<User[]>;
+  releaseManagers$!: Observable<ReleaseManager[]>;
   specificStaff!: boolean;
   isStreetTreatRelease!: boolean;
+  incomingFormData!: Observable<any>;
 
   recordForm: FormGroup = new FormGroup({});
 
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
   {id:2 , type:'Normal + Complainer special instructions'},
   {id:3 , type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'}];
+  {id:4, type:'StreetTreat release'},
+  {id:5 , type: 'Normal release + StreetTreat release'}];
 
   constructor(public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -78,6 +81,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     this.releasers$ = this.dropdown.getRescuers();
 
+
     // Record Form
     this.recordForm = this.fb.group({
 
@@ -93,6 +97,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      pickupdate: [],
       releaseBeginDate: [],
       releaseEndDate: []
 
@@ -103,7 +108,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   valueChanged(releaseType: MatSelectChange) {
     switch(releaseType.value) {
       case 2 : {
-        console.log('hi');
         this.setRequired('complainerNotes');
         this.streetTreatReleaseFalse();
         this.specificStaffFalse();
@@ -166,9 +170,28 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   initReleaseDetailsForm(){
-	this.releaseService.getReleaseDetailsById(this.data.patientId).then((res:any)=> {
-		this.recordForm.patchValue(res);
-	});
+	if(this.data.patientId) {
+		this.releaseService.getReleaseDetailsById(this.data.patientId).then((res:any)=> {
+			if(res) {
+				this.recordForm.patchValue(res);
+				if(this.recordForm.get('releaseType')?.value===3) {
+				this.specificStaffTrue();
+				}
+			}
+		});
+	}
+	/* if(this.data.patientId) {
+		//  CHECK IF RELEASE ALREADY EXISTS AND PATCH IT TO THE FORM.
+		this.incomingFormData = this.releaseService.getReleaseDetails(this.data.patientId);
+		this.incomingFormData.subscribe((formVal: any)=>{
+		  if(formVal) {
+			this.recordForm.patchValue(formVal);
+			if(this.recordForm.get('releaseType')?.value===3) {
+			  this.specificStaffTrue();
+			}
+		  }
+		});
+	  } */
   }
   onReleaseSubmit(releaseForm:any) {
 	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{

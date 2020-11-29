@@ -9,6 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { map } from 'rxjs/operators';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'outstanding-case-map',
   templateUrl: './outstanding-case-map.component.html',
   styleUrls: ['./outstanding-case-map.component.scss']
@@ -59,20 +60,21 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ]};
 
     this.outstandingCases$ = this.outstandingCases.outstandingCases$;
+
     // this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
 
     this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
         if(cases){
 
-          return cases.filter(swimlane => swimlane.rescueStatus >= 3)
-                      .map(groups => groups.rescuerGroups)
+          return cases.filter(swimlane => swimlane.actionStatus >= 3)
+                      .map(groups => groups.actionGroups)
 
                         // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
                         // the last one based upon time. However if we make the changes directly to the result object of the
                         // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
                         // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
                         // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
-                      .map(rescuerGroups => JSON.parse(JSON.stringify(rescuerGroups)))
+                      .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
                       .reduce((aggregatedLocations, current) => {
 
 
@@ -85,13 +87,13 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
                     const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
 
-                      return parentRescueGroup.rescuer1 === currentRescueGroup.rescuer1 &&
-                          parentRescueGroup.rescuer2 === currentRescueGroup.rescuer2;
+                      return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
+                          parentRescueGroup.staff2 === currentRescueGroup.staff2;
 
                     });
 
                     index > -1 ?
-                    aggregatedLocations[index].rescues = aggregatedLocations[index].rescues.concat(currentRescueGroup.rescues)
+                    aggregatedLocations[index].rescues = aggregatedLocations[index].ambulanceAssignment.concat(currentRescueGroup.ambulanceAssignment)
                       :
                       aggregatedLocations.push(currentRescueGroup);
 
@@ -101,9 +103,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
 
                 }}, [])
-              .map((rescueGroup:RescuerGroup) => {
-
-                const maxRescue = rescueGroup.rescues.reduce((current, previous) => {
+              .map((rescueReleaseGroup:RescuerGroup) => {
+                // TODO: Ask jim sir about it and confirm to him about this latest location for release.
+                const maxRescue = rescueReleaseGroup.ambulanceAssignment.reduce((current, previous) => {
 
                 const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
                   ? current.ambulanceArrivalTime : current.rescueTime;
@@ -116,19 +118,24 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
               });
 
                return {
-                rescuer1: rescueGroup.rescuer1,
-                rescuer1Abbreviation: rescueGroup.rescuer1Abbreviation,
-                rescuer2: rescueGroup.rescuer2,
-                rescuer2Abbreviation: rescueGroup.rescuer2Abbreviation,
+                staff1: rescueReleaseGroup.staff1,
+                staff1Abbreviation: rescueReleaseGroup.staff1Abbreviation,
+                staff2: rescueReleaseGroup.staff2,
+                staff2Abbreviation: rescueReleaseGroup.staff2Abbreviation,
                 latestLocation: maxRescue.latLngLiteral,
-                rescues: rescueGroup.rescues
+                ambulanceAssignment: rescueReleaseGroup.ambulanceAssignment
                 };
+                
 
              });
 
             }
         }
+  
     ));
+
+    this.ambulanceLocations$.subscribe((val:any)=>{
+    });
 
   }
 

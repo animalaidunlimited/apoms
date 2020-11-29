@@ -13,7 +13,7 @@ import {
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../../models/user';
+import { User, ReleaseManager } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
@@ -67,6 +67,9 @@ export class DropdownService extends APIService {
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
 	treatmentPriority$!:Observable<TreatmentPriority[]>;
+    releaseManagers$!: Observable<ReleaseManager[]>;
+
+
 
     constructor(http: HttpClient) {
         super(http);
@@ -635,6 +638,20 @@ export class DropdownService extends APIService {
 		  );
 	  }
 	  return this.treatmentPriority$;
+	}
+  getReleaseManagers(): Observable<ReleaseManager[]> {
+    const request = '/GetReleaseManagers';
+
+    if(!this.releaseManagers$) {
+        this.releaseManagers$ = this.getObservable(request).pipe(
+            map((response: ReleaseManager[])=>{
+                return response;
+            })
+        );
+    }
+
+    return this.releaseManagers$;
+
   }
 
 }

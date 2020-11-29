@@ -1,9 +1,10 @@
+<form [formGroup]='recordForm'>
 <div class="div" fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign="start end">
     <img _ngcontent-lei-c38="" src="assets/images/Dog.png" class="images" alt="dog_face">
 
     <mat-form-field appearance="fill">
         <mat-label>Releaser1</mat-label>
-            <mat-select>
+            <mat-select formControlName="Releaser1">
                 <mat-option>N/A</mat-option>
                 <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
                     {{releaser.FirstName}}
@@ -12,7 +13,7 @@
     </mat-form-field>
     <mat-form-field appearance="fill">
         <mat-label>Releaser2</mat-label>
-            <mat-select>
+            <mat-select formControlName="Releaser2">
                 <mat-option>N/A</mat-option>
                 <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
                     {{releaser.FirstName}}
@@ -29,13 +30,14 @@
 
     <mat-form-field appearance="fill">
         <mat-label>Release-begin-date</mat-label>
-        <input matInput type="date" name = "Requested-date">
+        <input (focus)="setInitialTime($event)" matInput type="date" formControlName="releaseBeginDate">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Release-complete-date</mat-label>
-        <input matInput type="date" name = "Requested-date">
+        <input matInput (focus)="setInitialTime($event)" type="date" formControlName="releaseEndDate">
     </mat-form-field>
 
     <img _ngcontent-lei-c38="" src="assets/images/Cat.png" class="images" alt="dog_face">
-</div>         
+</div>
+</form>         

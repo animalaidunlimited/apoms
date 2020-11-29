@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ɵCodegenComponentFactoryResolver } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ReleaseService } from '../../services/release/release.service';
+import { getCurrentTimeString } from '../../helpers/utils';
+import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-assign-release',
@@ -11,10 +16,57 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 export class AssignReleaseComponent implements OnInit {
 
   releasers$!: Observable<User[]>;
-  constructor(private dropdown: DropdownService) { }
+
+  recordForm!: FormGroup;
+
+  @Input() formData!: any;
+
+  constructor(private dropdown: DropdownService,
+    private fb: FormBuilder,
+    private releaseDetails: ReleaseService,
+    private messaging: MessagingService) { }
 
   ngOnInit() {
     this.releasers$ = this.dropdown.getRescuers();
+
+    this.recordForm = this.fb.group({
+      releaseId: [],
+      releaseType: [],
+      complainerNotes: [''],
+      complainerInformed:[],
+      Releaser1: [],
+      Releaser2: [],
+      releaseBeginDate: [],
+      releaseEndDate: [],
+      releaseRequestForm: this.fb.group({
+        requestedUser:[],
+        requestedDate: []
+      }),
+      callerDetails: this.fb.group({
+        callerId : []
+      })
+    });
+
+    this.recordForm.patchValue(this.formData);
+  }
+
+  setInitialTime(event: FocusEvent) {
+    let currentTime;
+    currentTime = this.recordForm.get((event.target as HTMLInputElement).name)?.value;
+
+    if (!currentTime) {
+
+        const target = this.recordForm.get((event.target as HTMLInputElement).name);
+
+        if(target){
+            target.setValue(getCurrentTimeString());
+        }
+
+    }
+}
+
+  saveReleaseDetails() {
+    this.releaseDetails.saveRelease(this.recordForm.value);
   }
 
 }
