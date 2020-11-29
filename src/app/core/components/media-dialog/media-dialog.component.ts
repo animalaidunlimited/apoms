@@ -11,7 +11,7 @@ import { MediaCaptureComponent } from '../media-capture/media-capture.component'
 interface IncomingData {
   tagNumber: string;
   patientId: number;
-  mediaVal: any;
+  mediaVal: File[];
 }
 
 @Component({
@@ -81,8 +81,17 @@ export class MediaDialogComponent implements OnInit {
     console.log(this.data.mediaVal);
 
     if(this.data.mediaVal) {
-      const whatsAppMedia = this.data.mediaVal[0];
-      this.upload(whatsAppMedia , this.data.patientId);
+
+      this.data.mediaVal.forEach((item:File) => {
+
+        const addedItem = this.upload(item , this.data.patientId);
+
+        if(addedItem.mediaItem){
+
+          this.mediaItems.push(addedItem.mediaItem);
+        }
+      });
+
     }
 
   }
