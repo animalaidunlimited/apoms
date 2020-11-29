@@ -6,6 +6,8 @@ import { PrintTemplateService } from './modules/print-templates/services/print-t
 import { BehaviorSubject } from 'rxjs';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
 import { PromptUpdateService } from './core/services/update-service.service';
+import { HttpClient } from '@angular/common/http';
+import { SharedMediaPackage } from './core/models/media';
 
 
 @Component({
@@ -28,6 +30,7 @@ export class AppComponent implements OnInit{
         private printService: PrintTemplateService,
         private emergencyTabBar: EmergencyRegisterTabBarService,
         private updateService: PromptUpdateService,
+        private http: HttpClient,
         private outstandingCaseService: OutstandingCaseService
         ) {
             this.isPrinting = this.printService.getIsPrinting();
@@ -50,6 +53,24 @@ export class AppComponent implements OnInit{
     ngOnInit() {
 
         this.messagingService.requestPermission();
+
+        setTimeout(() => {
+
+            this.http.get('/assets/images/aau_logo.jpg', { responseType: 'blob' }).subscribe(res => {
+
+                const newFile = new File([res], 'aau_logo.jpg', { type: 'image/jpg' });
+
+        const event:SharedMediaPackage = {
+            message: 'newMedia',
+            image: [newFile],
+            video: []
+        };
+
+        this.emergencyTabBar.receiveSharedMediaItem(event);
+
+      });
+
+        }, 5000)
 
         // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
