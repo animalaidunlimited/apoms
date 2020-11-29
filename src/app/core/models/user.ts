@@ -24,3 +24,6 @@ export interface UserDetails {
     jobTitleId: number;
     jobTitle: string;
   }
+export interface ReleaseManager {
+    FirstName: string;
+}

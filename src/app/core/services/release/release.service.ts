@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +24,16 @@ export class ReleaseService extends APIService {
     }
   }
   public async getReleaseDetailsById(patientId:any): Promise<any>{
-	this.endpoint = `ReleaseDetails`;
 	const request = `?PatientId=${patientId}`;
 	return await this.get(request);
+  }
+  public getReleaseDetails(patientId:number) : Observable<any> {
+    const request:string = '?PatientId=' + patientId;
+    return this.getObservable(request).pipe(
+      map((res: any)=> {
+        return res;
+      })
+    );
   }
   public async getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
 	this.endpoint = `ReleaseDetails`;
@@ -42,6 +51,5 @@ export class ReleaseService extends APIService {
 		return await this.post(streetDetails);
 		}
   	}
-
 
 }
