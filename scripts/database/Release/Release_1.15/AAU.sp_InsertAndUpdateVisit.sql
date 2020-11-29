@@ -19,11 +19,11 @@ DECLARE vSuccess TINYINT(1);
 
 SET vVisitExisits = 0;
 
-SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND IsDeleted = 0 AND VisitId = prm_VisitId;
+SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit  WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND IsDeleted = 0 AND VisitId = prm_VisitId;
 
 IF vVisitExisits = 0 THEN
 
-	INSERT INTO AAU.Visit	(
+	INSERT INTO AAU.Visit 	(
 								StreetTreatCaseId,
 								VisitTypeId,
 								Date,
@@ -53,7 +53,7 @@ IF vVisitExisits = 0 THEN
         
            
 ELSEIF vVisitExisits >= 1 THEN
-	UPDATE AAU.Visit 
+	UPDATE AAU.Visit  
 		SET
 			VisitTypeId= prm_VisitTypeId,
             Date = prm_Date,

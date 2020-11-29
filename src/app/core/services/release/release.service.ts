@@ -21,23 +21,27 @@ export class ReleaseService extends APIService {
       return await this.post(releaseDetails);
     }
   }
-
-  public async saveStreetTreatCase(streetDetails: any): Promise<any>{
-    if(streetDetails.streetTreatCaseId)
-    {
-	  this.endpoint = `ReleaseDetails/streettreat`;
-      return await this.put(streetDetails);
-    }
-    else{
-      return await this.post(streetDetails);
-    }
+  public async getReleaseDetailsById(patientId:any): Promise<any>{
+	this.endpoint = `ReleaseDetails`;
+	const request = `?PatientId=${patientId}`;
+	return await this.get(request);
   }
-	public getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
-		const request = `?GetStreetTreatCasesByPatientId=${patientId}`;
-		return this.get(request);
-	}
-	/* public getVisitsByStreetTreatCaseId(streetTreatCaseId:any): Promise<any>{
-    	const request = `?GetVisitsByStreetTreatCaseId=${streetTreatCaseId}`;
-    	return this.get(request);
-	} */
+  public async getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
+	this.endpoint = `ReleaseDetails`;
+	const request = `?GetStreetTreatCasesByPatientId=${patientId}`;
+	return await this.get(request);
+}
+
+  	public async saveStreetTreatCase(streetDetails: any): Promise<any>{
+		this.endpoint = `ReleaseDetails/streettreat`;
+		if(streetDetails.visitForm.streetTreatCaseId)
+		{
+		return await this.put(streetDetails);
+		}
+		else{
+		return await this.post(streetDetails);
+		}
+  	}
+
+
 }

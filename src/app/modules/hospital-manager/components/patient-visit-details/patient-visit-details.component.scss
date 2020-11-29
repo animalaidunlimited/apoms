@@ -4,7 +4,7 @@
     }
     .vistisWrapper{
         display: inline-block !important;
-        width: 91%;
+        width: 94%;
     }
     #cdk-overlay-1{
         max-width:67vw;
@@ -19,7 +19,23 @@
 	}
 	.add-visits-fab-btn{
 		display: inline-block;
-		margin-left: 45px;
+	}
+	.visit_row_data mat-form-field {
+		width: calc(100%/5 );
+		min-width: 140px;
+		max-width: 160px;
+	}
+	.visit_row_data mat-form-field:nth-child(2) {
+		width: 35% !important;
+		max-width: unset !important;
+	}
+	.visit_row_data mat-form-field:first-child {
+		min-width: unset !important;
+		width: 10% !important;
+	}
+	.patientVisitFrom mat-form-field {
+		flex-basis: 0;
+		flex-grow: 1;
 	}
 }
 @media only screen and (max-width: 600px) {

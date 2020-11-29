@@ -5,7 +5,6 @@ import {
 	Component,
 	OnInit,
 	Inject,
-	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 	Input
 } from '@angular/core';
@@ -18,7 +17,6 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -34,8 +32,7 @@ interface DialogData {
 @Component({
 	selector: 'app-patient-visit-details',
 	templateUrl: './patient-visit-details.component.html',
-	styleUrls: ['./patient-visit-details.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+	styleUrls: ['./patient-visit-details.component.scss']
 })
 export class PatientVisitDetailsComponent implements OnInit {
 	visitForm!: FormGroup;
@@ -50,7 +47,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	treatmentPrioritySubscription: Subscription | undefined;
 	visitType$: VisitType[] = [];
 	treatmentPriority$: any;
-	// @Input() recordForm!: FormGroup;
+	@Input() recordForm!: FormGroup;
 
 	constructor(
 		public dialogRef: MatDialogRef<PatientVisitDetailsComponent>,
@@ -63,29 +60,21 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	private subscriptions: { [key: string]: Subscription } = {};
 	ngOnInit(): void {
-		// console.log(this.recordForm);
-		/* this.recordForm.addControl(
+
+		this.recordForm.addControl(
 			'visitForm',
 			this.fb.group({
+				streetTreatCaseId:[],
+				patientId: [this.data.patientId,Validators.required],
 				casePriority: [, Validators.required],
 				teamId: [, Validators.required],
 				mainProblem: [, Validators.required],
-				visits: this.fb.array([this.visitFields()]),
-			}),
-		); */
-
-		this.visitForm =
-		this.fb.group({
-			streetTreatCaseId:[],
-			patientId: [this.data.patientId,Validators.required],
-			casePriority: [, Validators.required],
-			teamId: [, Validators.required],
-			mainProblem: [, Validators.required],
-			adminNotes: [,Validators.required],
-			streetTreatCaseStatus:[],
-			visits: this.fb.array([this.getVisitFormGroup()],UniqueValidators.uniqueBy('visit_day')),
-		});
-		// this.visitForm = this.recordForm.get('visitForm') as FormGroup;
+				adminNotes: [,Validators.required],
+				streetTreatCaseStatus:[],
+				visits: this.fb.array([this.getVisitFormGroup()],UniqueValidators.uniqueBy('visit_day')),
+			})
+		);
+		this.visitForm = this.recordForm.get('visitForm') as FormGroup;
 		this.visitsArray = this.visitForm.get('visits') as FormArray;
 
 		this.teamSubscription = this.dropdown.getAllTeams().subscribe(team => {
@@ -109,24 +98,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 			this.treatmentPrioritySubscription?.unsubscribe();
 		});
 		this.initStreetTreatForm();
-		//this.onChanges();
 	}
-	/* ngOnDestroy() {
-		Object.keys(this.subscriptions).forEach(sk =>
-		this.subscriptions[sk].unsubscribe()
-		);
-	}
-	onChanges(): void {
 
-		if (this.subscriptions.formArrayChanges) {
-		this.subscriptions.formArrayChanges.unsubscribe();
-		}
-	this.subscriptions.formArrayChanges = this.visitsArray.valueChanges.subscribe((visits: any) => {
-		(_result: any) => {
-			this.changeDetectorRef.detectChanges();
-		}
-		});
-  	}  */
+
 	getVisitFormGroup(): FormGroup {
 		return this.fb.group({
 			visitId:[],
@@ -156,12 +130,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	deleteVisits(index: number) {
 		this.visitsArray.removeAt(index);
 	}
-	submit(visitForm:any){
-		visitForm.value.patientId = this.data.patientId;
-		this.releaseService.saveStreetTreatCase(visitForm.value).then((res:any)=>{
-			console.log(res.vSuccess);
-		});
-	}
+
 	initStreetTreatForm(){
 		this.releaseService.getStreetTreatCasesByPatientId(this.data.patientId).then((res:any) =>{
 			for(let i = 0; i<res.visits.length-1;i++)
@@ -169,7 +138,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 				this.visitsArray.push(this.getVisitFormGroup());
 			}
 			this.visitForm.patchValue(res);
+			this.changeDetectorRef.detectChanges();
 		});
-		console.log(this.visitsArray);
 	}
 }
