@@ -2,7 +2,7 @@
 
 <form [formGroup]="recordForm" (ngSubmit)="onReleaseSubmit(recordForm)">
 
-<div mat-dialog-content style="overflow: hidden;">
+<div mat-dialog-content>
     <release-request-form [recordForm]="recordForm"
     >
 	<!-- [incomingFormData]="incomingFormData" -->
@@ -16,7 +16,7 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-	<app-patient-visit-details *ngIf="isStreetTreatRelease || (recordForm.get('releaseType')?.value == 4)" [recordForm]="recordForm"></app-patient-visit-details>
+	<app-patient-visit-details *ngIf="isStreetTreatRelease" [recordForm]="recordForm"></app-patient-visit-details>
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
     <div [@openCloseDiv]= specificStaff [@visibilityDiv]= specificStaff>
         <mat-form-field appearance="fill">

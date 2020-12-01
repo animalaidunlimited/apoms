@@ -63,8 +63,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
   {id:2 , type:'Normal + Complainer special instructions'},
   {id:3 , type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'},
-  {id:5 , type: 'Normal release + StreetTreat release'}];
+  {id:4, type:'StreetTreat release'}];
 
   constructor(public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -125,7 +124,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         this.setNotRequired('complainerNotes');
         this.specificStaffFalse();
         break;
-      }
+	  }
       default : {
         this.setNotRequired('complainerNotes');
         this.streetTreatReleaseFalse();
@@ -175,8 +174,10 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 			if(res) {
 				this.recordForm.patchValue(res);
 				if(this.recordForm.get('releaseType')?.value===3) {
-				this.specificStaffTrue();
+					this.specificStaffTrue();
 				}
+				if((this.recordForm.get('releaseType')?.value===4))
+					this.streetTreatReleaseTrue();
 			}
 		});
 	}
@@ -195,9 +196,8 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
   onReleaseSubmit(releaseForm:any) {
 	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{
-		if(this.isStreetTreatRelease){
-			this.releaseService.saveStreetTreatCase(releaseForm.value).then((res:any)=>{
-				(result.vSuccess >= 1 && result.vSuccess < 3)
+
+				((result.vSuccess >= 1 && result.vSuccess < 3) || (result.vUpdateSuccess >= 1 && result.vUpdateSuccess <3))
                     ? (
 						this.showSnackBar.successSnackBar(
                           'Release details save successfully',
@@ -209,8 +209,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
                           'Error updating release details status',
                           'OK',
 					);
-			});
-		}
+
 	});
   }
 
