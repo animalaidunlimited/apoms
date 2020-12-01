@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 
 @Component({
   selector: 'app-assign-release',
@@ -21,6 +21,12 @@ export class AssignReleaseComponent implements OnInit {
 
   @Input() formData!: any;
 
+  releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
+  {id:2 , type:'Normal + Complainer special instructions'},
+  {id:3 , type:'Specific staff for release'},
+  {id:4, type:'StreetTreat release'},
+  {id:5 , type: 'Normal release + StreetTreat release'}];
+
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
     private releaseDetails: ReleaseService,
@@ -31,23 +37,16 @@ export class AssignReleaseComponent implements OnInit {
 
     this.recordForm = this.fb.group({
       releaseId: [],
+      emergencyCaseId:[],
       releaseType: [],
-      complainerNotes: [''],
-      complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
-      releaseRequestForm: this.fb.group({
-        requestedUser:[],
-        requestedDate: []
-      }),
-      callerDetails: this.fb.group({
-        callerId : []
-      })
+      pickupDate: [],
     });
-
     this.recordForm.patchValue(this.formData);
+
   }
 
   setInitialTime(event: FocusEvent) {
@@ -66,7 +65,11 @@ export class AssignReleaseComponent implements OnInit {
 }
 
   saveReleaseDetails() {
-    this.releaseDetails.saveRelease(this.recordForm.value);
-  }
+    this.releaseDetails.saveRelease(this.recordForm.value).then((response: any)=>{
+      if(response[1][0].ambulanceAssignment) {
+        this.messaging.testing(response[1][0].ambulanceAssignment);
+      }
 
+    });
+  }
 }

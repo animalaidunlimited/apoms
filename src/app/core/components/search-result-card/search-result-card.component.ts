@@ -30,8 +30,6 @@ export class SearchResultCardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    console.log(this.record);
-
     this.printService.initialisePrintTemplates();
 
   }
