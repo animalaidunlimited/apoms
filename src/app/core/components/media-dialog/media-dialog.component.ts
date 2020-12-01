@@ -77,9 +77,6 @@ export class MediaDialogComponent implements OnInit {
       }
     });
 
-    console.log('inside media dialog');
-    console.log(this.data.mediaVal);
-
     if(this.data.mediaVal) {
 
       this.data.mediaVal.forEach((item:File) => {

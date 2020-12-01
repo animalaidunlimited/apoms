@@ -27,17 +27,9 @@ export class TabBarComponent implements OnInit {
 
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
-        console.log('sharedMediaItem value');
-        console.log(sharedMediaItem.getValue());
-
         sharedMediaItem.subscribe((mediaItem:File[])=>{
 
-            console.log('Inside tab bar component');
-            console.log(mediaItem);
-
            if(mediaItem.length > 0){
-                console.log('mediaItem array has length > 0');
-                console.log(mediaItem);
                 this.openSearchMediaDialog(mediaItem);
            }
         });
@@ -47,6 +39,7 @@ export class TabBarComponent implements OnInit {
         // TODO find out why the ngif in the mat-label causes and error and fix
         if (index > 1 && index < this.tabs.length) {
             this.tabs.splice(index, 1);
+            this.selected.setValue(this.tabs.length - 1);
         }
     }
 
@@ -93,9 +86,7 @@ export class TabBarComponent implements OnInit {
 
     }
 
-    openSearchMediaDialog(mediaVal:any){
-
-        console.log('Opening dialog');
+    openSearchMediaDialog(mediaVal:File[]){
 
        this.dialog.open(AddSearchMediaDialogComponent, {
         minWidth: '50%',

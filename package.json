@@ -16,7 +16,9 @@
     "format:check": "prettier --config ./.prettierrc --list-different \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
     "format:fix": "prettier --config ./.prettierrc --write \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
     "genpage": "node ./scripts/generatePage",
-    "postgenpage": "ng lint --fix"
+    "postgenpage": "ng lint --fix",
+    "build:stats": "ng build --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/apoms/stats.json"
   },
   "husky": {
     "hooks": {
@@ -45,6 +47,7 @@
     "@types/googlemaps": "^3.39.2",
     "@types/uuid": "^8.3.0",
     "ally.js": "^1.4.1",
+    "angular2-uuid": "^1.1.1",
     "axobject-query": "^2.2.0",
     "canvasjs": "^1.8.3",
     "core-js": "^2.6.11",
@@ -52,7 +55,6 @@
     "hammerjs": "^2.0.8",
     "rxjs": "^6.5.3",
     "tslib": "^2.0.0",
-    "uuid": "^3.4.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

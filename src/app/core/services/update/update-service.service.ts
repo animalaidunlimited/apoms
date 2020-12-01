@@ -8,6 +8,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class PromptUpdateService {
 
   constructor(private swUpdate: SwUpdate, private snackbar: MatSnackBar) {
+    
     this.swUpdate.available.subscribe(() => {
 
     const snack = this.snackbar.open('Update Available', 'Reload',{

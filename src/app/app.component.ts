@@ -5,7 +5,7 @@ import { OutstandingCaseService } from './modules/emergency-register/services/ou
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 import { BehaviorSubject } from 'rxjs';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
-import { PromptUpdateService } from './core/services/update-service.service';
+//import { PromptUpdateService } from './core/services/update-service.service';
 import { HttpClient } from '@angular/common/http';
 import { SharedMediaPackage } from './core/models/media';
 
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit{
         private messagingService: MessagingService,
         private printService: PrintTemplateService,
         private emergencyTabBar: EmergencyRegisterTabBarService,
-        private updateService: PromptUpdateService,
+        //private updateService: PromptUpdateService,
         private http: HttpClient,
         private outstandingCaseService: OutstandingCaseService
         ) {
@@ -54,45 +54,20 @@ export class AppComponent implements OnInit{
 
         this.messagingService.requestPermission();
 
-        setTimeout(() => {
-
-            this.http.get('/assets/images/aau_logo.jpg', { responseType: 'blob' }).subscribe(res => {
-
-                const newFile = new File([res], 'aau_logo.jpg', { type: 'image/jpg' });
-
-        const event:SharedMediaPackage = {
-            message: 'newMedia',
-            image: [newFile],
-            video: []
-        };
-
-        this.emergencyTabBar.receiveSharedMediaItem(event);
-
-      });
-
-        }, 5000)
-
         // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
-            console.log('Message posted');
-            console.log(event);
+            if(event.data.hasOwnProperty('image') || event.data.hasOwnProperty('video')){
 
-            if(event.data.hasOwnProperty('image')){
-
-                console.log('Sharing media item');
                 this.emergencyTabBar.receiveSharedMediaItem(event.data);
-
             }
 
             if(event.hasOwnProperty('data')){
 
                 this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
-
-
            }
 
-            });
+        });
 
         // Watch the status of permissions to watch for them being revoked. Because we'll need to
         // tell the user to refresh.

@@ -1,5 +1,4 @@
 {
-
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -17,10 +16,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-
     "importHelpers": true,
     "target": "es2015",
-	"module": "es2020",
+	  "module": "es2020",
     "typeRoots": [
       "node_modules/@types"
     ],
