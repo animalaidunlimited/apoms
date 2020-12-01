@@ -54,6 +54,7 @@ export class HospitalManagerTabBarComponent implements OnInit {
     removeTab(index: number) {
         if (index > 0 && index < this.tabs.length) {
             this.tabs.splice(index, 1);
+            this.selected.setValue(this.tabs.length - 1);
         }
     }
 

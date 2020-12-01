@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,7 +18,6 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
-import { TreatmentRecordComponent } from './core/components/treatment-record/treatment-record.component';
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -37,17 +36,19 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
-    declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent],
+    declarations: [AppComponent, ConfirmationDialog],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        CommonModule,
+        HammerModule,
         AppRoutingModule,
         MatDialogModule,
         NavModule,
         HttpClientModule,
         MaterialModule,
-        // ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
+        // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
         AngularFireMessagingModule,

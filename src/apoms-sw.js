@@ -1,31 +1,34 @@
+self.addEventListener('fetch', event => {
 
-importScripts('./ngsw-worker.js');
-
-/*
-this.addEventListener('fetch', event => {
-  console.log('this.addEventListener fetch');
-
+  // Handle the share_target shares
   if (event.request.method === 'POST') {
-    console.log(event);
 
+    // Make sure we're only getting shares to the emergency-register route
+    const path = event.request.url.split("/").pop();
+
+    if(path === "emergency-register"){
+
+        //Get the images and videos from the share request
+        event.request.formData().then(formData => {
+
+            // Find the correct client in order to share the results.
+            const clientId = event.resultingClientId !== "" ? event.resultingClientId : event.clientId;
+            self.clients.get(clientId).then(client => {
+
+                // Send them to the client
+                client.postMessage(
+                    {
+                        message: "newMedia",
+                        image: formData.getAll('image'),
+                        video: formData.getAll('video')
+                    }
+                );
+            });
+        });
+    }
   }
-
-
-  //const formData = await event.request.formData();
-
-  //event.respondWith((async () => {
-  //  const formData = await event.request.formData();
-
-  //  console.log(formData);
-
-  //  //const link = formData.get('link') || '';
-  //  //const responseUrl = await saveBookmark(link);
-  //  //return Response.redirect(responseUrl, 303);
-  //})());
-
-
 });
 
 
-*/
+importScripts('./ngsw-worker.js');
 

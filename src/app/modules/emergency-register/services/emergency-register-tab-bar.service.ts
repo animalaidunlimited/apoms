@@ -23,18 +23,9 @@ export class EmergencyRegisterTabBarService {
 
   receiveSharedMediaItem(sharedPackage:SharedMediaPackage){
 
-    console.log('SharedMediaItem.next');
-    console.log(sharedPackage.image);
-    console.log(sharedPackage.video);
-
-    const sharedItem = sharedPackage.image || sharedPackage.video;
-
-    console.log('sharedItem');
-    console.log(sharedItem);
+    const sharedItem = sharedPackage.image.length > 0 ? sharedPackage.image : sharedPackage.video;
 
     this.sharedMediaItem.next(sharedItem);
-
-    console.log(this.sharedMediaItem.getValue());
 
   }
 }

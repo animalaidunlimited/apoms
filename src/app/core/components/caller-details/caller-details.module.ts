@@ -8,6 +8,6 @@ import { CallerDetailsComponent } from '../caller-details/caller-details.compone
 @NgModule({
     declarations: [CallerDetailsComponent],
     imports: [CommonModule, MaterialModule],
-    exports: [CallerDetailsComponent],
+    exports: [CallerDetailsComponent]
 })
 export class CallerDetailsModule {}
