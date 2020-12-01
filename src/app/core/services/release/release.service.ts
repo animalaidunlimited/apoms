@@ -35,21 +35,9 @@ export class ReleaseService extends APIService {
       })
     );
   }
-  public async getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
-	this.endpoint = `ReleaseDetails`;
+  /* public async getStreetTreatCasesByPatientId(patientId:any): Promise<any>{
 	const request = `?GetStreetTreatCasesByPatientId=${patientId}`;
 	return await this.get(request);
-}
-
-  	public async saveStreetTreatCase(streetDetails: any): Promise<any>{
-		this.endpoint = `ReleaseDetails/streettreat`;
-		if(streetDetails.visitForm.streetTreatCaseId)
-		{
-		return await this.put(streetDetails);
-		}
-		else{
-		return await this.post(streetDetails);
-		}
-  	}
+ } */
 
 }
