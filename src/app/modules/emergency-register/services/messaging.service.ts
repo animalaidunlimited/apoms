@@ -30,10 +30,11 @@ constructor(
 
     }
 
-    testing() {
+    testing(data: any) {
+        const messageData = JSON.stringify(data);
         const message= {
             data: {
-              messageData: '"{\\"latitude\\": 24.58257090, \\"location\\": \\"Subhash Nagar, Udaipur, Rajasthan 313001, India\\", \\"patients\\": [655504], \\"staff1Id\\": 7, \\"staff2Id\\": \\"10\\", \\"longitude\\": 73.71909950, \\"callerName\\": \\"Arpit\\", \\"rescueTime\\": \\"2020-11-24 11:58:00.000000\\", \\"animalTypes\\": [\\"Dog\\"], \\"callDateTime\\": \\"2020-08-07 10:48:40.000000\\", \\"callerNumber\\": \\"8769184667\\", \\"actionStatus\\": 4, \\"staff1Colour\\": \\"#ff0000\\", \\"staff2Colour\\": \\"\\", \\"callOutcomeId\\": null, \\"isLargeAnimal\\": 0, \\"latLngLiteral\\": {\\"lat\\": 24.58257090, \\"lng\\": 73.71909950}, \\"ambulanceAction\\": \\"Release\\", \\"emergencyCaseId\\": 736254, \\"emergencyCodeId\\": 3, \\"emergencyNumber\\": 4561, \\"staff1Abbreviation\\": \\"AG\\", \\"staff2Abbreviation\\": \\"10\\", \\"ambulanceArrivalTime\\": \\"2020-11-24 11:58:00.000000\\"}"'
+              messageData
             },
             topic: 'aau_UPDATING_ASSIGNMENT'
           };
@@ -55,8 +56,6 @@ constructor(
         }
 
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
-
-        console.log(message);
 
         // This is a rescue message, so pass this on to the outstanding-case service
         if(message.hasOwnProperty('actionStatus')){

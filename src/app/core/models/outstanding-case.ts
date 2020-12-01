@@ -6,6 +6,7 @@ export interface OutstandingRescue {
     ambulanceAction: string;
     requestedUser: string;
     requestedDate: Date | undefined;
+    pickupDate: Date | undefined;
     releaseTypeId: number;
     releaseBeginDate: Date | undefined;
     releaseEndDate: Date | undefined; 
