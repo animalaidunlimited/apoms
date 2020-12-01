@@ -2,11 +2,11 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject } from 'rxjs';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 
 
 @Component({
@@ -82,6 +82,7 @@ export class PatientRecordComponent implements OnInit {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
+
         if(this.mediaData){
 
         this.mediaData.subscribe(media=>{
@@ -91,6 +92,7 @@ export class PatientRecordComponent implements OnInit {
             }
 
             this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
+
             this.changeDetector.detectChanges();
 
         });

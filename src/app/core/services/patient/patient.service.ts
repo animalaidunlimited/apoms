@@ -294,8 +294,6 @@ export class PatientService extends APIService {
 
             });
 
-            console.log(patientMediaItem);
-
             if(patientMediaItem){
                 patientMediaItem.mediaItem.next(savedMediaItems);
             }
@@ -305,8 +303,6 @@ export class PatientService extends APIService {
     }
 
     addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject:BehaviorSubject<MediaItem[]>, patientId:number) : MediaItemsDataObject {
-
-        console.log('Here now')
 
         const newItemData : MediaItemsDataObject = {
             patientId,

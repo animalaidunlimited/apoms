@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { getCurrentDateString } from '../../../../core/helpers/utils';
@@ -6,7 +6,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { Input } from '@angular/core';
 import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MatChip, MatChipList } from '@angular/material/chips';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
