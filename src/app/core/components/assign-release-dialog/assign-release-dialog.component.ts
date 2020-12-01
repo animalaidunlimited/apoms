@@ -22,6 +22,7 @@ export class AssignReleaseDialogComponent implements OnInit {
 
     this.formData = {
       releaseId: this.data.caseDetails.releaseId,
+      emergencyCaseId: this.data.caseDetails.emergencyCaseId,
       releaseRequestForm : {
         requestedUser: this.data.caseDetails.requestedUser,
         requestedDate: this.data.caseDetails.requestedDate,
@@ -34,6 +35,7 @@ export class AssignReleaseDialogComponent implements OnInit {
       callerDetails: {
         callerId: this.data.caseDetails.callerId
       },
+      pickupDate: this.data.caseDetails.pickupDate,
       releaseBeginDate: this.data.caseDetails.releaseBeginDate,
       releaseEndDate: this.data.caseDetails.releaseEndDate
 

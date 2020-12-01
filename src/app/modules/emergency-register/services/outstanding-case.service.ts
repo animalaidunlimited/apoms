@@ -39,8 +39,9 @@ export class OutstandingCaseService {
 
       // Get the initial list from the rescue service
       this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
-        console.log(outstandingCases);
-        this.populateOutstandingCases(outstandingCases.outstandingActions);
+        if(outstandingCases){
+          this.populateOutstandingCases(outstandingCases.outstandingActions);
+        }
       });
 
       this.autoRefresh.subscribe(state => {
@@ -52,7 +53,10 @@ export class OutstandingCaseService {
   refreshRescues(){
 
     this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
-      this.populateOutstandingCases(outstandingCases.outstandingActions);
+      if(outstandingCases)
+      {
+        this.populateOutstandingCases(outstandingCases.outstandingActions);
+      }
       });
 
   }
@@ -70,14 +74,14 @@ export class OutstandingCaseService {
   }
 
 
-  receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue){
+  receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue) {
 
-    let currentOutstanding: OutstandingCase[];
+    let currentOutstanding: OutstandingCase[];                                 
 
-    this.outstandingCases$.subscribe(cases => {
+    this.outstandingCases$.subscribe((cases: any) => {
 
       currentOutstanding = cases;
-      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
+      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);                                                             
 
       // Check to see if the swimlane exists and insert if not
     const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedRescue.actionStatus);
@@ -91,17 +95,17 @@ export class OutstandingCaseService {
       ambulanceAssignment: [updatedRescue],
     };
 
-    if(!laneExists){
+    if(!laneExists && updatedRescue.actionStatus){
 
       const rescueStatusName = ['Received',
       'Assigned',
-      'Arrived',
-      'Rescued',
+      'Arrived/Picked',
+      'Rescued/Released',
       'Admitted'];
 
       currentOutstanding.push({
         actionStatus: updatedRescue.actionStatus,
-        actionStatusName: rescueStatusName[updatedRescue.actionStatus],
+        actionStatusName: rescueStatusName[updatedRescue.actionStatus - 1],
         actionGroups: [newRescueGroup]
       });
     }
@@ -123,7 +127,7 @@ export class OutstandingCaseService {
     if(!rescuersExist){
 
       currentOutstanding.forEach(rescueState => {
-
+        
         if(rescueState.actionStatus === updatedRescue.actionStatus){
           rescueState.actionGroups.push(newRescueGroup);
         }
@@ -140,7 +144,7 @@ export class OutstandingCaseService {
 
     });
 
-    // Here we only do the refresh if the user has the toggle turned on.
+    // // Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
       this.zone.run(() => this.refreshColour.next('warn'));
       return;
@@ -177,16 +181,19 @@ export class OutstandingCaseService {
 
               returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
 
+             
+
               // If the group is now empty, remove it.
               if(group.ambulanceAssignment.length === 0){
                 status.actionGroups.splice(index,1);
               }
+              
               return;
             }
           });
     });
 
-    return outstanding;
+    return outstanding.filter(cases => cases.actionGroups.length !== 0);
   }
 
   insertRescue(outstanding:OutstandingCase[], action:OutstandingRescue){

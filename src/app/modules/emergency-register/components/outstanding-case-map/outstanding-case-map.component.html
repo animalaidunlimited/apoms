@@ -21,26 +21,36 @@
                         [position]="action.latLngLiteral"
                         (mapClick)="openInfoWindow(marker, action)"
                         [options]="{icon:
+                                        (
+                                            action.ambulanceAction == 'Release'? (
+                                                action.isLargeAnimal?
+                                                    'assets/icons/large_animal_release_purple1.png'
+                                                    :
+                                                    'assets/icons/small_animal_release_purple.png'
+                                                )
+                                                :
+                                                (
+                                                    action.isLargeAnimal ?
+                                                            (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                                                            :
+                                                            action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                                                            :
+                                                            action.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                                                            :
+                                                            'assets/icons/large_animal_grey.png')
+                                                        :
+                                                            (action.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                                                            :
+                                                            action.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                                                            :
+                                                            action.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                                                            :
+                                                            'assets/icons/small_animal_grey.png')
+                                                )
 
-                            (
-                                action.isLargeAnimal ?
-                                    (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
-                                    :
-                                    action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
-                                    :
-                                    action.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
-                                    :
-                                    'assets/icons/large_animal_grey.png')
-                                :
-                                    (action.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
-                                    :
-                                    action.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
-                                    :
-                                    action.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
-                                    :
-                                    'assets/icons/small_animal_grey.png')
-                        )}">
-
+                                        )
+                        }"
+                        >
                         </map-marker>
                 </div>
 
