@@ -14,7 +14,7 @@ export interface DialogData {
   patientId: number | undefined;
 }
 
-interface Release {
+export interface Release {
   id: number;
   type: string;
 }
@@ -96,10 +96,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
-      pickupdate: [],
-      releaseBeginDate: [],
-      releaseEndDate: []
-
     });
 	this.initReleaseDetailsForm();
   }
@@ -195,6 +191,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 	  } */
   }
   onReleaseSubmit(releaseForm:any) {
+
 	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{
 
 				((result.vSuccess >= 1 && result.vSuccess < 3) || (result.vUpdateSuccess >= 1 && result.vUpdateSuccess <3))

@@ -106,7 +106,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe((value) => {
-      console.log(value);
         this.loading = false;
         this.changeDetector.detectChanges();
     });
