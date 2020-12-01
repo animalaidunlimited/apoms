@@ -3,10 +3,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
+import { PatientService } from '../../services/patient/patient.service';
 
 interface IncomingData {
   tagNumber: string;

@@ -1,14 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
-import {
-    FormGroup,
-    Validators,
-    FormBuilder,
-    FormControl,
-} from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 
 @Component({
