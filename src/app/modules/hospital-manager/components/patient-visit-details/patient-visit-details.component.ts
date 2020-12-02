@@ -133,13 +133,17 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	initStreetTreatForm(){
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((res:any) =>{
-			console.log(res);
-			/* for(let i = 0; i<res.visits.length-1;i++)
-			{
-				this.visitsArray.push(this.getVisitFormGroup());
+			if(res.visitForm){
+				if(res.visitForm.visits.length)
+				{
+					for(let i = 0; i<res.visitForm.visits.length-1;i++)
+					{
+						this.visitsArray.push(this.getVisitFormGroup());
+					}
+					this.visitForm.patchValue(res.visitForm);
+				}
+				this.changeDetectorRef.detectChanges();
 			}
-			this.visitForm.patchValue(res);
-			this.changeDetectorRef.detectChanges(); */
 		});
 	}
 }

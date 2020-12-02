@@ -1,8 +1,7 @@
 DELIMITER $$
-
 DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails;
 
-CREATE PROCEDURE AAU.sp_InsertReleaseDetails (IN prm_UserName NVARCHAR(45),
+CREATE PROCEDURE AAU.sp_InsertReleaseDetails(IN prm_UserName NVARCHAR(45),
 												IN prm_PatientId INT,
 												IN prm_ReleaseTypeId INT,
 												IN prm_ComplainerNotes NVARCHAR(450),
@@ -75,4 +74,4 @@ END IF;
 SELECT vReleaseId, vSuccess;
 
 END$$
-DELIMITER ;
+

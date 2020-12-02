@@ -1,17 +1,19 @@
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_GetStreetTreatCaseByPatientId;!!
+DROP procedure IF EXISTS AAU.sp_GetStreetTreatCaseByPatientId!!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetStreetTreatCaseByPatientId(
 							IN prm_PatientId INT
-)
-BEGIN
+)BEGIN
 DECLARE vSuccess INT;
 DECLARE visitExists INT;
+DECLARE vStreetTreatCaseIdExists INT;
 
-SELECT count(1) INTO visitExists FROM AAU.visit WHERE StreetTreatCaseId = (SELECT s.StreetTreatCaseId FROM AAU.streettreatcase s, AAU.visit v WHERE s.PatientId=prm_PatientId  AND (v.IsDeleted IS NULL OR v.IsDeleted = 0));
+SELECT count(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.Streettreatcase WHERE PatientId=prm_PatientId;
 
-IF visitExists >= 1 THEN
+SELECT count(1) INTO visitExists FROM AAU.Visit WHERE StreetTreatCaseId = (SELECT DISTINCT s.StreetTreatCaseId FROM AAU.Streettreatcase s, AAU.Visit v WHERE s.PatientId=prm_PatientId  AND (v.IsDeleted IS NULL OR v.IsDeleted = 0));
+
+IF visitExists > 0 AND vStreetTreatCaseIdExists> 0 THEN
 SELECT
 	JSON_MERGE_PRESERVE(
 			JSON_OBJECT("streetTreatCaseId",s.StreetTreatCaseId),
@@ -35,11 +37,12 @@ SELECT
 	) 
 AS Result
 	FROM
-		AAU.Visit  v
+		AAU.Visit v
         LEFT JOIN AAU.Streettreatcase s ON s.StreetTreatCaseId = v.StreetTreatCaseId
 	WHERE 
 		s.PatientId = prm_PatientId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0);
-ELSE 
+        
+ELSEIF visitExists = 0  AND vStreetTreatCaseIdExists > 0 THEN 
 	SELECT
 	JSON_MERGE_PRESERVE(
 			JSON_OBJECT("streetTreatCaseId",s.StreetTreatCaseId),
@@ -63,9 +66,11 @@ ELSE
 		)
 	AS Result
 		FROM
-		AAU.Streettreatcase s
+			AAU.Streettreatcase s
 	WHERE
 		s.PatientId = prm_PatientId ;
-	
+ELSE
+	SELECT null AS Result;
 END IF;
+
 END$$

@@ -16,9 +16,8 @@ CREATE  PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
 BEGIN
 /*
 Created By: Ankit Singh
-Created On: 27/11/2029
-Purpose: Used to insert a new Streat treat case and update a Street treat case.
-
+Created On: 02/12/2020
+Purpose: Used to insert a new case.
 */
 
 DECLARE vCaseNoExists INT;

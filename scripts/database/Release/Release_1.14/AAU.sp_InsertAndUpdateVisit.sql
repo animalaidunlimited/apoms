@@ -19,11 +19,18 @@ DECLARE vSuccess TINYINT(1);
 
 SET vVisitExisits = 0;
 
-SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit  WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND IsDeleted = 0 AND VisitId = prm_VisitId;
+SELECT COUNT(1) INTO vVisitExisits 
+	FROM 
+    AAU.Visit 
+    WHERE 
+    VisitId = prm_VisitId 
+    AND 
+    StreetTreatCaseId = prm_StreetTreatCaseId
+    AND (IsDeleted = 0 OR IsDeleted IS NULL) ;
 
-IF vVisitExisits = 0 THEN
+IF vVisitExisits = 0 AND prm_VisitId IS NULL THEN
 
-	INSERT INTO AAU.Visit 	(
+	INSERT INTO AAU.Visit	(
 								StreetTreatCaseId,
 								VisitTypeId,
 								Date,
@@ -47,16 +54,17 @@ IF vVisitExisits = 0 THEN
                             
     SELECT LAST_INSERT_ID() INTO prm_VisitId;    
     SELECT 1 INTO vSuccess;
-    
+
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,prm_VisitId,'Visit','Insert', NOW());
         
            
 ELSEIF vVisitExisits >= 1 THEN
-	UPDATE AAU.Visit  
+
+	UPDATE AAU.Visit 
 		SET
 			VisitTypeId= prm_VisitTypeId,
-            Date = prm_Date,
+            Date = prm_VisitDate,
             StatusId = prm_StatusId,
             AdminNotes = prm_AdminNotes,
             OperatorNotes = prm_OperatorNotes,
@@ -64,9 +72,9 @@ ELSEIF vVisitExisits >= 1 THEN
             Day = prm_Day
 		WHERE
 			VisitTypeId= prm_VisitTypeId AND StreetTreatCaseId = prm_StreetTreatCaseId;
-    
+
     SELECT 2 INTO vSuccess;
-  
+
 ELSE 
 	
     SELECT 3 INTO vSuccess;

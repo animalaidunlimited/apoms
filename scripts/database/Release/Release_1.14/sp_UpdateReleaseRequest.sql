@@ -1,6 +1,9 @@
-DELIMITER $$
+DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseRequest;
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseRequest!!
+
+
+DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_UpdateReleaseRequest(IN prm_EmergencyCaseId INT,
 											IN prm_ReleaseId INT,
@@ -57,4 +60,3 @@ SELECT vUpdateSuccess;
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
 END$$
-DELIMITER ;
