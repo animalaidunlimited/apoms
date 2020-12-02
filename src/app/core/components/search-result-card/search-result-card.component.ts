@@ -10,6 +10,8 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { PatientVisitDetailsComponent } from 'src/app/modules/hospital-manager/components/patient-visit-details/patient-visit-details.component';
+import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,7 +35,6 @@ export class SearchResultCardComponent implements OnInit {
   ngOnInit(): void {
 
     this.printService.initialisePrintTemplates();
-
   }
 
   openCase(caseSearchResult: SearchResponse) {
@@ -88,13 +89,25 @@ openSurgeryDialog(
   dialogRef.afterClosed().subscribe(() => {});
 }
 
-addSurgery(patientId:number, tagNumber:string | undefined, emergencyNumber:number, animalType:string) {
+addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalType:string) {
   this.openSurgeryDialog(
       patientId,
       tagNumber,
       emergencyNumber,
       animalType,
   );
+}
+
+openMediaDialog(patientId: number, tagNumber: string): void{
+  const dialogRef = this.dialog.open(MediaDialogComponent, {
+      minWidth: '50%',
+      data: {
+          tagNumber,
+          patientId,
+      }
+  });
+
+  dialogRef.afterClosed();
 }
 
 printEmergencyCard(patientId: number){

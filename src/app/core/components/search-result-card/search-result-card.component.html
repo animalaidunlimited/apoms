@@ -7,7 +7,7 @@
         <mat-card-content>
 
         <button mat-icon-button color="primary"
-        class="circle-button"
+        class="circle-edit-button"
         aria-label="Edit record"
         (click)="openCase(record)">
         <mat-icon>create</mat-icon>
@@ -20,12 +20,22 @@
         <mat-icon>airport_shuttle</mat-icon>
         </button>
 
+        <button mat-icon-button color="primary"
+        class="circle-image-button">
+        <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_photo_alternate</mat-icon>
+        <i>{{record.MediaCount}}</i>
+        </button>
+    
+        
+
         <div class="location">{{record.CurrentLocation}}
             <svg height="3" width="95%">
             <line x1="0" y1="0" x2="95%" y2="0" class="location-line" />
             Sorry, your browser does not support inline SVG.
             </svg>
         </div>
+
+        
 
         <div fxLayout="column" fxLayoutAlign="space-around start" >
             <div class="name">{{record.Name}}</div>

@@ -14,6 +14,8 @@ import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+
 
 export interface Swimlane{
   label:string;
@@ -80,7 +82,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
     private userOptions: UserOptionsService,
-    private printService: PrintTemplateService
+    private printService: PrintTemplateService,
+    private dialog: MatDialog
 
     ) { }
 
@@ -101,7 +104,19 @@ export class OutstandingCaseBoardComponent implements OnInit {
       updateRequired: [false, Validators.requiredTrue]
     });
 
+    this.initialiseBoard();
+    this.refreshColour$ = this.outstandingCaseService.refreshColour;
 
+    this.refreshColour$.subscribe(colour => {
+      this.refreshColour = colour;
+      this.changeDetector.detectChanges();
+    });
+
+    this.setup();
+
+  }
+
+  initialiseBoard() {
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
@@ -111,15 +126,16 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
     this.outstandingCaseService.initialise();
+  }
 
-    this.refreshColour$ = this.outstandingCaseService.refreshColour;
-
-    this.refreshColour$.subscribe(colour => {
-      this.refreshColour = colour;
-      this.changeDetector.detectChanges();
+  openMediaDialog(patientId: number, tagNumber: string | null): void{
+    const dialogRef = this.dialog.open(MediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+            tagNumber,
+            patientId,
+        }
     });
-
-    this.setup();
 
   }
 
@@ -265,7 +281,8 @@ openCase(caseSearchResult:OutstandingRescue)
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,
-    TagNumber: undefined,
+    MediaCount: 0,
+    TagNumber: '',
     CallOutcomeId: caseSearchResult.callOutcomeId,
     CallOutcome: undefined,
     sameAsNumber: undefined,
@@ -299,6 +316,32 @@ openAssignReleaseDialog(caseDetails: OutstandingRescue) {
       caseDetails
     }
   });
+  
+getTimer(startDateTime: Date | string) : string {
+
+  if(typeof startDateTime === 'string'){
+    startDateTime = new Date(startDateTime);
+  }
+
+  const result = Math.floor((new Date()).getTime() - startDateTime.getTime());
+
+  let elapsedTime = '';
+
+  if(result < 3600000){
+    elapsedTime = Math.round(result / 60000) + 'm';
+  }
+  else if (result >= 3600000 && result < 86400000){
+    elapsedTime = Math.round(result / 3600000) + 'h';
+  }
+  else if (result >= 86400000){
+    elapsedTime = Math.round(result / 86400000) + 'd';
+  }
+  else {
+    elapsedTime = 'Unk';
+  }
+
+  return elapsedTime;
+
 }
 
 }

@@ -5,8 +5,11 @@
       <mat-card-subtitle><input type="datetime-local" formControlName= "datetime" matInput></mat-card-subtitle>
     </mat-card-header>
 
+    <div class="media-content">
 
-    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL || mediaItem.remoteURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">
+    <!--<img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL || mediaItem.remoteURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">-->
+    <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL || mediaItem.remoteURL" alt="Media" [ngStyle]="{'width.%': 85}">
+
     <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
     <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (370 / mediaItem.widthPX) * mediaItem.heightPX}">
@@ -15,6 +18,8 @@
         Browser not supported
 
     </video>
+
+  </div>
 
     <mat-card-content>
       <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>

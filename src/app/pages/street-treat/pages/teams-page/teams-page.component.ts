@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
     templateUrl: './teams-page.component.html',
     styleUrls: ['./teams-page.component.scss'],
 })
-export class TeamsPageComponent implements OnInit {
+export class TeamsPageComponent implements OnInit, OnDestroy {
     // teamList!: TeamDetails[];
     dataSource: MatTableDataSource<TeamDetails>;
     teamSubsciption: Subscription | undefined;

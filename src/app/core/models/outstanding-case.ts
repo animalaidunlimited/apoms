@@ -35,6 +35,9 @@ export interface OutstandingRescue {
     isLargeAnimal: boolean;
     moved?: boolean;
     searchCandidate?: boolean;
+    mediaCount: number;
+    patientId: number;
+    tagNumber:string;
 }
 
 export interface RescuerGroup {

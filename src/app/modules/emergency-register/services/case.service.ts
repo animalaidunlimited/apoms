@@ -9,7 +9,7 @@ import {
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
+import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -189,6 +189,8 @@ export class CaseService extends APIService {
     }
 
     public async insertCase(emergencyCase: EmergencyCase): Promise<any> {
+
+
         return await this.baseInsertCase(emergencyCase)
             .then(result => {
 
@@ -264,7 +266,7 @@ export class CaseService extends APIService {
 
     private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
-        const guid = uuidv4();
+        const guid = UUID.UUID();
 
         try {
             this.storage.save(key + guid, body);
