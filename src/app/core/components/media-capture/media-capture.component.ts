@@ -118,8 +118,6 @@ videoHeight = 0;
 
       const finalDevice = devices.filter(device => device.kind === 'videoinput').pop();
 
-      console.log(devices);
-
       this.constraints.video.deviceId = finalDevice?.deviceId || '';
 
       if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
