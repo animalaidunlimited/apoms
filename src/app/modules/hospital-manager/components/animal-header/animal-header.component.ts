@@ -69,9 +69,6 @@ export class AnimalHeaderComponent implements OnInit {
         // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
         dialogRef.afterClosed().subscribe(updatedMedia => {
 
-            console.log(updatedMedia);
-
-
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
 

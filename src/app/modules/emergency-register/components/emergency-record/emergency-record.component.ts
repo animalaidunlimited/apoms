@@ -150,6 +150,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         if(this.recordForm.pending){
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
