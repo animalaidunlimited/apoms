@@ -27,6 +27,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/firebase-messaging-sw.js",
+              "src/apoms-sw.js",
               "src/manifest.webmanifest"
             ],
             "styles": [
@@ -62,12 +63,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "2.1mb"
+                  "maximumError": "12.1mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "16kb"
                 }
               ],
               "serviceWorker": true,

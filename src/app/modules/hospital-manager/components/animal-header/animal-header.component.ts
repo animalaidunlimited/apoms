@@ -7,7 +7,6 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of } from 'rxjs';
-import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -69,10 +68,15 @@ export class AnimalHeaderComponent implements OnInit {
             }
         });
         // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
-        dialogRef.afterClosed().subscribe(updatedMedia=>{
+        dialogRef.afterClosed().subscribe(updatedMedia => {
+
+            console.log(updatedMedia);
+
+
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
-                    this.profileUrl = updatedMedia.remoteURL;
+
+                    this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL;
                 }
             }
         });
