@@ -11,7 +11,7 @@
             </mat-form-field>
             <mat-form-field>
                 <span matPrefix>+91 &nbsp;</span>
-                <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput required>
+                <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput>
             </mat-form-field>
             <mat-form-field>
                 <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput required>
@@ -72,7 +72,7 @@
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
             <mat-form-field style="padding-top: 20px;" appearance="fill">
                 <mat-label>-User job type-</mat-label>
-                <mat-select formControlName= 'jobTitleId' multiple  required>
+                <mat-select formControlName= 'jobTitleId' multiple>
                     <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
                         {{jobType.Title}}
                     </mat-option>

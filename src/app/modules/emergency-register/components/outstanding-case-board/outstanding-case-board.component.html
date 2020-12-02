@@ -82,7 +82,11 @@
           </div>
 
           <div fxFlex="25">
-            <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
+            <!-- <button mat-icon-button color="primary"
+            class="circle-image-button"> -->
+            <mat-icon class="imageIcon" (click)="openMediaDialog(outstandingCase.patients[0], outstandingCase.tagNumber)">add_photo_alternate</mat-icon>
+            <i class="imageCount">{{outstandingCase.mediaCount}}</i>
+          <!-- </button> -->
           </div>
 
             <div fxFlex style="text-align: center;">
@@ -107,6 +111,8 @@
 
           <div fxLayout="column" fxLayoutAlign="space-around start" >
             <div class="name">{{outstandingCase.callerName}}</div>
+
+          <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
 
             <div fxLayout="row" fxLayoutAlign="start center" >
                 <div class="telephone-dash-container">
