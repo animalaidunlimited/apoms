@@ -8,7 +8,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { isImageFile, isVideoFile } from '../../helpers/utils';
 
 interface IResizeImageOptions {
