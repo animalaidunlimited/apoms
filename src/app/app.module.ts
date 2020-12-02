@@ -18,6 +18,10 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { TreatmentRecordComponent } from './core/components/treatment-record/treatment-record.component';
+import { AssignReleaseDialogComponent } from './core/components/assign-release-dialog/assign-release-dialog.component';
+import { AssignReleaseComponent } from './core/components/assign-release/assign-release.component';
+
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -36,7 +40,9 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
-    declarations: [AppComponent, ConfirmationDialog],
+  
+    declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent, AssignReleaseDialogComponent, AssignReleaseComponent],
+
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

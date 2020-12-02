@@ -13,7 +13,9 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+
 
 export interface Swimlane{
   label:string;
@@ -73,6 +75,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   constructor(
     public rescueDialog: MatDialog,
+    public assignReleaseDialog: MatDialog,
     private fb: FormBuilder,
     private zone: NgZone,
     private messagingService: MessagingService,
@@ -305,6 +308,15 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
+openAssignReleaseDialog(caseDetails: OutstandingRescue) {
+  const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    data: {
+      caseDetails
+    }
+  });
+  
 getTimer(startDateTime: Date | string) : string {
 
   if(typeof startDateTime === 'string'){

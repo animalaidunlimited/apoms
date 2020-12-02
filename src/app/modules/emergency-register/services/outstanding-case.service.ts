@@ -38,8 +38,10 @@ export class OutstandingCaseService {
       this.initialised = true;
 
       // Get the initial list from the rescue service
-      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe(outstandingCases => {
-      this.populateOutstandingCases(outstandingCases.outstandingRescues);
+      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
+        if(outstandingCases){
+          this.populateOutstandingCases(outstandingCases.outstandingActions);
+        }
       });
 
       this.autoRefresh.subscribe(state => {
@@ -50,8 +52,11 @@ export class OutstandingCaseService {
 
   refreshRescues(){
 
-    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe(outstandingCases => {
-      this.populateOutstandingCases(outstandingCases.outstandingRescues);
+    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
+      if(outstandingCases)
+      {
+        this.populateOutstandingCases(outstandingCases.outstandingActions);
+      }
       });
 
   }
@@ -69,50 +74,50 @@ export class OutstandingCaseService {
   }
 
 
-  receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue){
+  receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue) {
 
-    let currentOutstanding: OutstandingCase[];
+    let currentOutstanding: OutstandingCase[];                                 
 
-    this.outstandingCases$.subscribe(cases => {
+    this.outstandingCases$.subscribe((cases: any) => {
 
       currentOutstanding = cases;
-      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);
+      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);                                                             
 
       // Check to see if the swimlane exists and insert if not
-    const laneExists = currentOutstanding.find(elem => elem.rescueStatus === updatedRescue.rescueStatus);
+    const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedRescue.actionStatus);
 
     const newRescueGroup:RescuerGroup = {
-      rescuer1: updatedRescue.rescuer1Id,
-      rescuer1Abbreviation: updatedRescue.rescuer1Abbreviation,
-      rescuer2: updatedRescue.rescuer2Id,
-      rescuer2Abbreviation: updatedRescue.rescuer2Abbreviation,
+      staff1: updatedRescue.staff1,
+      staff1Abbreviation: updatedRescue.staff1Abbreviation,
+      staff2: updatedRescue.staff2,
+      staff2Abbreviation: updatedRescue.staff2Abbreviation,
       latestLocation: undefined,
-      rescues: [updatedRescue],
+      ambulanceAssignment: [updatedRescue],
     };
 
-    if(!laneExists){
+    if(!laneExists && updatedRescue.actionStatus){
 
       const rescueStatusName = ['Received',
       'Assigned',
-      'Arrived',
-      'Rescued',
+      'Arrived/Picked',
+      'Rescued/Released',
       'Admitted'];
 
       currentOutstanding.push({
-        rescueStatus: updatedRescue.rescueStatus,
-        rescueStatusName: rescueStatusName[updatedRescue.rescueStatus],
-        rescuerGroups: [newRescueGroup]
+        actionStatus: updatedRescue.actionStatus,
+        actionStatusName: rescueStatusName[updatedRescue.actionStatus - 1],
+        actionGroups: [newRescueGroup]
       });
     }
 
     // Check to see if the rescuers exist and insert if not
-    const rescuersExist = currentOutstanding.find(rescueState => {
+    const rescuersExist = currentOutstanding.find(actionState => {
 
-      if(rescueState.rescueStatus === updatedRescue.rescueStatus)
+      if(actionState.actionStatus === updatedRescue.actionStatus)
       {
-       return rescueState.rescuerGroups
-      .find(rescueGroup =>  rescueGroup.rescuer1 === updatedRescue.rescuer1Id &&
-                            rescueGroup.rescuer2 === updatedRescue.rescuer2Id);
+       return actionState.actionGroups
+      .find((actionGroup: any) =>  actionGroup.staff1 === updatedRescue.staff1 &&
+                            actionGroup.staff2 === updatedRescue.staff2);
       }
 
       return '';
@@ -122,9 +127,9 @@ export class OutstandingCaseService {
     if(!rescuersExist){
 
       currentOutstanding.forEach(rescueState => {
-
-        if(rescueState.rescueStatus === updatedRescue.rescueStatus){
-          rescueState.rescuerGroups.push(newRescueGroup);
+        
+        if(rescueState.actionStatus === updatedRescue.actionStatus){
+          rescueState.actionGroups.push(newRescueGroup);
         }
       });
     }
@@ -139,14 +144,14 @@ export class OutstandingCaseService {
 
     });
 
-    // Here we only do the refresh if the user has the toggle turned on.
+    // // Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
       this.zone.run(() => this.refreshColour.next('warn'));
       return;
     }
 
     // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
-    if(!updatedRescue.rescueStatus){
+    if(!updatedRescue.actionStatus){
       this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
 
       return;
@@ -165,38 +170,41 @@ export class OutstandingCaseService {
 
     outstanding.forEach(status => {
 
-        status.rescuerGroups.forEach((group,index) => {
+        status.actionGroups.forEach((group,index) => {
 
-            const removeIndex = group.rescues
+            const removeIndex = group.ambulanceAssignment
                               .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
 
             if(removeIndex > -1){
 
-              returnCase = group.rescues.splice(removeIndex, 1)[0];
+              returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
+
+             
 
               // If the group is now empty, remove it.
-              if(group.rescues.length === 0){
-                status.rescuerGroups.splice(index,1);
+              if(group.ambulanceAssignment.length === 0){
+                status.actionGroups.splice(index,1);
               }
+              
               return;
             }
           });
     });
 
-    return outstanding;
+    return outstanding.filter(cases => cases.actionGroups.length !== 0);
   }
 
-  insertRescue(outstanding:OutstandingCase[], rescue:OutstandingRescue){
+  insertRescue(outstanding:OutstandingCase[], action:OutstandingRescue){
 
     outstanding.forEach(status => {
 
-      if(status.rescueStatus === rescue.rescueStatus){
+      if(status.actionStatus === action.actionStatus){
 
-        status.rescuerGroups.forEach(group => {
+        status.actionGroups.forEach(group => {
 
-          if(group.rescuer1 === rescue.rescuer1Id && group.rescuer2 === rescue.rescuer2Id){
+          if(group.staff1 === action.staff1 && group.staff2 === action.staff2){
 
-            group.rescues.push(rescue);
+            group.ambulanceAssignment.push(action);
           }
         });
       }
@@ -250,22 +258,22 @@ export class OutstandingCaseService {
 
       outstanding.forEach(status =>
         {
-          status.rescuerGroups.forEach(group => {
+          status.actionGroups.forEach(group => {
 
-              group.rescues.forEach(rescue => {
+              group.ambulanceAssignment.forEach(assignment => {
 
-                rescue.searchCandidate = false;
+                assignment.searchCandidate = false;
 
                 // Because we can't use an observable as the source for the board, we need to add a
                 // flag to the records that match our search.
                 if(
-                  Object.keys(rescue)
+                  Object.keys(assignment)
                   .reduce((currentTerm: string, key: string) => {
-                    return currentTerm + (rescue as {[key: string]: any})[key] + '◬';
+                    return currentTerm + (assignment as {[key: string]: any})[key] + '◬';
                   }, '').toLowerCase().indexOf(searchValue) > -1
                   && searchValue !== ''
                 ){
-                  rescue.searchCandidate = true;
+                  assignment.searchCandidate = true;
                 }
               });
             });

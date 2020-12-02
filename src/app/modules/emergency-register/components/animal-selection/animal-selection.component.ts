@@ -181,6 +181,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
 
+
                     this.patientArray = this.recordForm.get('patients') as FormArray;
 
                     patients.patients.forEach(patient => {
