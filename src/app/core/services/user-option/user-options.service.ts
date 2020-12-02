@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UserOptionsService{
+
+    userName!: any;
+    token!:any;
+
     homeCoordinates$ = {
         lat: 24.57127,
         lng: 73.691544,
@@ -11,7 +16,7 @@ export class UserOptionsService{
     notifactionDuration = 3;
     minimumDate = new Date('2010-01-01');
 
-    constructor() {}
+    constructor(private storage: StorageService) {}
 
     getCoordinates() : google.maps.LatLngLiteral{
         if (!this.homeCoordinates$) {
@@ -47,6 +52,18 @@ export class UserOptionsService{
 
         return 7;
 
+    }
+
+    getUserName(): any {
+        if(this.userName) {
+            return this.userName;
+        }
+        else {
+            this.token = this.storage.read('AUTH_TOKEN');
+            let tokenData: any = window.atob(this.token.split('.')[1]);
+            tokenData = JSON.parse(tokenData);
+            return tokenData.username;
+        }
     }
 
     // TODO implement custom debounce time for autocompletes

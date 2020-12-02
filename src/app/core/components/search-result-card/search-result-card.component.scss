@@ -51,6 +51,18 @@
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.release-button {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    bottom: 80px;
+    color: #607d8b;
+    font-weight: bold;
+    right: 7px;
+    background: #ffffff;
+}
+
 .location {
     font-style: normal;
     font-weight: bold;

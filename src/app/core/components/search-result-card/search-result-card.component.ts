@@ -1,3 +1,4 @@
+import { EmergencyCase } from './../../models/emergency-record';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchResponse } from '../../models/responses';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,7 +8,10 @@ import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/com
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
+import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
+import { PatientVisitDetailsComponent } from 'src/app/modules/hospital-manager/components/patient-visit-details/patient-visit-details.component';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -36,7 +40,7 @@ export class SearchResultCardComponent implements OnInit {
   openCase(caseSearchResult: SearchResponse) {
 
     this.openEmergencyCase.emit(caseSearchResult);
-}
+  }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
   this.dialog.open(PatientEditDialog, {
@@ -111,6 +115,21 @@ printEmergencyCard(patientId: number){
   const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
   this.printService.printPatientDocument(printTemplateId, patientId);
+
+}
+
+openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined, patientId: number| undefined) {
+  const dialogRef = this.dialog.open(ReleaseDetailsDialogComponent, {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    data: {
+      emergencyCaseId,
+      tagNumber,
+      patientId
+    },
+});
+dialogRef.afterClosed().subscribe(() => {}).unsubscribe();
+
 
 }
 

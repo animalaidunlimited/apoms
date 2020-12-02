@@ -14,7 +14,14 @@
         </button>
 
         <button mat-icon-button color="primary"
-            class="circle-image-button">
+        class="release-button"
+        aria-label="Release details"
+        (click)="openReleaseDialog(record.EmergencyCaseId, record.TagNumber, record.PatientId)">
+        <mat-icon>airport_shuttle</mat-icon>
+        </button>
+
+        <button mat-icon-button color="primary"
+        class="circle-image-button">
         <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_photo_alternate</mat-icon>
         <i>{{record.MediaCount}}</i>
         </button>

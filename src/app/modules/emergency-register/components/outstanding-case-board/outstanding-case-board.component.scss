@@ -148,6 +148,7 @@
 .mat-expansion-panel{
     margin-bottom: 8px;
     border: solid .1px lightgray;
+    // border-radius: 20%;
 }
 
 
@@ -163,3 +164,15 @@
     z-index: 5000;
     margin: auto;
   }
+
+
+.mat-release-panel{
+    margin-bottom: 8px;
+    border-radius: 30px;
+    min-height: 50px;
+    border-bottom: solid;
+    border-color: grey;
+}
+.mat-release-panel.mat-expanded {
+    border-radius: 20px !important; 
+}
