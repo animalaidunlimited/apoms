@@ -42,5 +42,10 @@ export class AssignReleaseDialogComponent implements OnInit {
     };
 
   }
+  onSaveResponse(result:any){
+	if(result > 0){
+		this.dialogRef.close();
+	}
+  }
 
 }

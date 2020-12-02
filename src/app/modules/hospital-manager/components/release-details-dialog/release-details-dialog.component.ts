@@ -56,7 +56,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   releaseManagers$!: Observable<ReleaseManager[]>;
   specificStaff!: boolean;
   isStreetTreatRelease!: boolean;
-  incomingFormData!: Observable<any>;
+  /* incomingFormData!: Observable<any>; */
 
   recordForm: FormGroup = new FormGroup({});
 
@@ -166,29 +166,18 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   initReleaseDetailsForm(){
 	if(this.data.patientId) {
-		this.releaseService.getReleaseDetailsById(this.data.patientId).then((res:any)=> {
-			if(res) {
-				this.recordForm.patchValue(res);
+		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+			if(formVal) {
+				this.recordForm.patchValue(formVal);
 				if(this.recordForm.get('releaseType')?.value===3) {
 					this.specificStaffTrue();
 				}
-				if((this.recordForm.get('releaseType')?.value===4))
+				if((this.recordForm.get('releaseType')?.value===4)){
 					this.streetTreatReleaseTrue();
+				}
 			}
 		});
 	}
-	/* if(this.data.patientId) {
-		//  CHECK IF RELEASE ALREADY EXISTS AND PATCH IT TO THE FORM.
-		this.incomingFormData = this.releaseService.getReleaseDetails(this.data.patientId);
-		this.incomingFormData.subscribe((formVal: any)=>{
-		  if(formVal) {
-			this.recordForm.patchValue(formVal);
-			if(this.recordForm.get('releaseType')?.value===3) {
-			  this.specificStaffTrue();
-			}
-		  }
-		});
-	  } */
   }
   onReleaseSubmit(releaseForm:any) {
 

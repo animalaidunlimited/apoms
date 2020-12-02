@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ɵCodegenComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
@@ -7,6 +7,8 @@ import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
 import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+
 
 @Component({
   selector: 'app-assign-release',
@@ -20,7 +22,7 @@ export class AssignReleaseComponent implements OnInit {
   recordForm!: FormGroup;
 
   @Input() formData!: any;
-
+  @Output() public saveSuccessResponse = new EventEmitter<any>();
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
   {id:2 , type:'Normal + Complainer special instructions'},
   {id:3 , type:'Specific staff for release'},
@@ -30,7 +32,9 @@ export class AssignReleaseComponent implements OnInit {
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
     private releaseDetails: ReleaseService,
-    private messaging: MessagingService) { }
+	private messaging: MessagingService,
+	private showSnackBar: SnackbarService
+	) { }
 
   ngOnInit() {
     this.releasers$ = this.dropdown.getRescuers();
@@ -69,6 +73,16 @@ export class AssignReleaseComponent implements OnInit {
       if(response[1][0].ambulanceAssignment) {
         this.messaging.testing(response[1][0].ambulanceAssignment);
       }
+	  response[0][0].vUpdateSuccess === 1
+                    ? this.showSnackBar.successSnackBar(
+                          'Patient status updated successfully',
+                          'OK',
+                      )
+                    : this.showSnackBar.errorSnackBar(
+                          'Error updating patient status',
+                          'OK',
+					  );
+	this.saveSuccessResponse.emit(response[0][0].vUpdateSuccess);
 
     });
   }

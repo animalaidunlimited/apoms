@@ -1,5 +1,5 @@
-
-DROP PROCEDURE IF EXISTS AAU.sp_UpdateVisitById;
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateVisitById!!
 
 
 DELIMITER $$
@@ -17,14 +17,14 @@ SET vVisitExists = 0;
 SELECT 
     COUNT(1)
 INTO vVisitExists FROM
-    AAU.Visit 
+    AAU.Visit
 WHERE
     VisitId = prm_VisitId;														
                                                         
 														
 IF vVisitExists = 1 THEN
 
-UPDATE AAU.Visit  SET
+UPDATE AAU.Visit SET
 	IsDeleted		= 1
 WHERE VisitId = prm_VisitId;
 

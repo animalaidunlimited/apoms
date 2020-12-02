@@ -7,4 +7,4 @@ CHANGE COLUMN CaseId StreetTreatCaseId INT NULL DEFAULT NULL ;
 ALTER TABLE AAU.Visit  
 ADD CONSTRAINT FK_VisitStreetTreatCaseId_StreettreatcaseStreetTreatCaseId
   FOREIGN KEY (StreetTreatCaseId)
-  REFERENCES AAU.Streattreatcase (StreetTreatCaseId);
+  REFERENCES AAU.Streettreatcase (StreetTreatCaseId);

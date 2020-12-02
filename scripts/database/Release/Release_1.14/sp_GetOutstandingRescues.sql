@@ -1,7 +1,7 @@
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues!!
+
 DELIMITER $$
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues;
-
 CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
@@ -179,17 +179,6 @@ WHERE ec.OrganisationId = 1 AND (
 			AND p.ReleaseDetailsId IS NOT NULL
 			AND p.EndDate IS NULL
 		)
-	OR (
-			ec.Rescuer1Id IS NULL
-			OR ec.Rescuer2Id IS NULL
-			OR (
-					ec.AmbulanceArrivalTime IS NULL
-					AND ec.RescueTime IS NULL
-				)
-			OR ec.RescueTime IS NULL
-			OR ec.AdmissionTime IS NULL
-			OR ec.CallOutcomeId IS NULL
-		)
 )
 GROUP BY AAU.fn_GetRescueStatus(p.ReleaseDetailsId, 
 								p.RequestedUser, 
@@ -240,6 +229,4 @@ FROM outstandingActions raw
 
  ) AS grouped;
  
- 
 END$$
-DELIMITER ;
