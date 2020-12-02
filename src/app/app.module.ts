@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,8 +21,7 @@ import localeIt from '@angular/common/locales/it';
 import { TreatmentRecordComponent } from './core/components/treatment-record/treatment-record.component';
 import { AssignReleaseDialogComponent } from './core/components/assign-release-dialog/assign-release-dialog.component';
 import { AssignReleaseComponent } from './core/components/assign-release/assign-release.component';
-// import { RescuerDetailsComponent } from './core/components/rescuer-details/rescuer-details.component';
-// import { ReleaseDetailsComponent } from './core/components/release-details/release-details.component';
+
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -41,16 +40,21 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
+  
     declarations: [AppComponent, ConfirmationDialog, TreatmentRecordComponent, AssignReleaseDialogComponent, AssignReleaseComponent],
+
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        CommonModule,
+        HammerModule,
         AppRoutingModule,
         MatDialogModule,
         NavModule,
         HttpClientModule,
         MaterialModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
+        // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
         AngularFireMessagingModule,

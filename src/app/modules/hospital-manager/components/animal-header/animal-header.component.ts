@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
@@ -7,7 +7,6 @@ import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of } from 'rxjs';
-import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -18,7 +17,7 @@ import { MediaCaptureComponent } from 'src/app/core/components/media-capture/med
 export class AnimalHeaderComponent implements OnInit {
     @Input() recordForm!: FormGroup;
 
-    @Input() profileUrl!: SafeUrl;
+    @Input() profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
     selection!: SelectionModel<FormGroup>;
 
@@ -35,7 +34,6 @@ export class AnimalHeaderComponent implements OnInit {
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status')?.value;
-        this.profileUrl = '../../../../../../assets/images/image_placeholder.png';
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;
@@ -69,10 +67,12 @@ export class AnimalHeaderComponent implements OnInit {
             }
         });
         // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
-        dialogRef.afterClosed().subscribe(updatedMedia=>{
+        dialogRef.afterClosed().subscribe(updatedMedia => {
+
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
-                    this.profileUrl = updatedMedia.remoteURL;
+
+                    this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL;
                 }
             }
         });

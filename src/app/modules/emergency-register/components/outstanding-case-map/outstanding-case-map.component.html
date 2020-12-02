@@ -66,16 +66,16 @@
 
                         <map-info-window>
 
-                                <div class="ambulance-window" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+                            <div class="ambulance-window" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-                                    <div *ngFor="let patient of infoContent | async">
+                                <div *ngFor="let patient of infoContent | async">
 
-                                        <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
-
-                                    </div>
+                                    <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
 
                                 </div>
 
-                            </map-info-window>
+                            </div>
+
+                        </map-info-window>
 
         </google-map>

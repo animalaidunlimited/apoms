@@ -14,6 +14,6 @@ import { LocationDetailsComponent } from '../location-details/location-details.c
                 GoogleMapsModule
             ],
     exports: [LocationDetailsComponent],
-    entryComponents: [],
+    entryComponents: []
 })
 export class LocationDetailsModule {}

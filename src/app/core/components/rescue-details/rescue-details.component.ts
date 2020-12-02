@@ -214,6 +214,11 @@ updateValidators()
     this.rescueTime.updateValueAndValidity({emitEvent: false });
     this.admissionTime.setValidators([Validators.required]);
     this.admissionTime.updateValueAndValidity({emitEvent: false });
+
+
+    
+
+
   }
 
   this.rescuer1Id.updateValueAndValidity({emitEvent: false });

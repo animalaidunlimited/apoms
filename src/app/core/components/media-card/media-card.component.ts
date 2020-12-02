@@ -5,8 +5,9 @@ import { MediaItem } from '../../models/media';
 import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { BehaviorSubject, of, Observable } from 'rxjs';
+import { PatientService } from '../../services/patient/patient.service';
+import { getCurrentTimeString } from '../../helpers/utils';
 
 
 @Component({
@@ -211,6 +212,21 @@ deleteMediaItem(){
     }
   });
 
+}
+
+setInitialTime(event: FocusEvent) {
+  let currentTime;
+  currentTime = this.mediaForm.get((event.target as HTMLInputElement).name)?.value;
+
+  if (!currentTime) {
+
+      const target = this.mediaForm.get((event.target as HTMLInputElement).name);
+
+      if(target){
+          target.setValue(getCurrentTimeString());
+      }
+
+  }
 }
 
 }

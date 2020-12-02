@@ -15,7 +15,7 @@
     </button>
 
   </mat-form-field>
-  
+
   </form>
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
@@ -79,11 +79,15 @@
 
           <div fxFlex="15">
 
-            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)" >departure_board</mat-icon>
+            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
           <div fxFlex="25">
-            <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
+            <!-- <button mat-icon-button color="primary"
+            class="circle-image-button"> -->
+            <mat-icon class="imageIcon" (click)="openMediaDialog(outstandingCase.patients[0], outstandingCase.tagNumber)">add_photo_alternate</mat-icon>
+            <i class="imageCount">{{outstandingCase.mediaCount}}</i>
+          <!-- </button> -->
           </div>
 
             <div fxFlex style="text-align: center;">
@@ -102,10 +106,14 @@
                 <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
               </div>
 
+              <div flFlex="none">{{getTimer(outstandingCase.callDateTime)}}</div>
+
             </mat-expansion-panel-header>
 
           <div fxLayout="column" fxLayoutAlign="space-around start" >
             <div class="name">{{outstandingCase.callerName}}</div>
+
+          <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
 
             <div fxLayout="row" fxLayoutAlign="start center" >
                 <div class="telephone-dash-container">

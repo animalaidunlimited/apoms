@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PrintTemplateService } from '../../print-templates/services/print-template.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -8,7 +9,8 @@ import { PrintTemplateService } from '../../print-templates/services/print-templ
     styleUrls: ['./emergency-register-page.component.scss'],
 })
 export class EmergencyRegisterPageComponent implements OnInit {
-    constructor(private printService: PrintTemplateService) {}
+    constructor(
+        private printService: PrintTemplateService) {}
 
     ngOnInit() {
 

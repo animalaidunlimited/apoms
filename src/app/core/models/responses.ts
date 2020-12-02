@@ -91,7 +91,9 @@ export interface SearchResponse {
     AnimalTypeId: number;
     AnimalType: string;
     PatientId: number;
-    TagNumber: string | undefined;
+    MediaCount: number;
+    // TagNumber: string | undefined;
+    TagNumber: string;
     CallOutcomeId: number | undefined;
     CallOutcome: string | undefined;
     sameAsNumber: number | undefined;

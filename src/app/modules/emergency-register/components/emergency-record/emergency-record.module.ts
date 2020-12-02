@@ -21,7 +21,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         AnimalSelectionComponent,
         TagNumberDialog,
         MediaDialogComponent,
-        MediaCardComponent
+        MediaCardComponent,
     ],
     providers: [],
     imports: [
