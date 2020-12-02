@@ -16,6 +16,6 @@ import { PatientStatusModule } from '../patient-status/patient-status.module';
         MaterialModule,
         PatientStatusModule,
         ],
-    exports: [SearchResultCardComponent],
+    exports: [SearchResultCardComponent]
 })
 export class SearchResultCardModule {}

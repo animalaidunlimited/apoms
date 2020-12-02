@@ -13,6 +13,7 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 
 export interface Swimlane{
   label:string;
@@ -22,6 +23,7 @@ export interface Swimlane{
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
   styleUrls: ['./outstanding-case-board.component.scss'],
@@ -77,7 +79,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
     private userOptions: UserOptionsService,
-    private printService: PrintTemplateService
+    private printService: PrintTemplateService,
+    private dialog: MatDialog
 
     ) { }
 
@@ -98,17 +101,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       updateRequired: [false, Validators.requiredTrue]
     });
 
-
-    this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
-
-    // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$.subscribe(() => {
-        this.loading = false;
-        this.changeDetector.detectChanges();
-    });
-
-    this.outstandingCaseService.initialise();
-
+    this.initialiseBoard();
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
 
     this.refreshColour$.subscribe(colour => {
@@ -117,6 +110,29 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
     this.setup();
+
+  }
+
+  initialiseBoard() {
+    this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
+
+    // Attempting to force change detection here causes the whole thing to hang.
+    this.outstandingCases$.subscribe((value) => {
+        this.loading = false;
+        this.changeDetector.detectChanges();
+    });
+
+    this.outstandingCaseService.initialise();
+  }
+
+  openMediaDialog(patientId: number, tagNumber: string | null): void{
+    const dialogRef = this.dialog.open(MediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+            tagNumber,
+            patientId,
+        }
+    });
 
   }
 
@@ -262,7 +278,8 @@ openCase(caseSearchResult:OutstandingRescue)
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,
-    TagNumber: undefined,
+    MediaCount: 0,
+    TagNumber: '',
     CallOutcomeId: caseSearchResult.callOutcomeId,
     CallOutcome: undefined,
     sameAsNumber: undefined,

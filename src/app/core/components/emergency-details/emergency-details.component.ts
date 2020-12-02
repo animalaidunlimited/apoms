@@ -43,8 +43,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     }
 
-
-
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
         event.preventDefault();
@@ -67,7 +65,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
                 [Validators.required],
                 [
                     this.emergencyNumberValidator.validate(
-                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1,)
+                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1)
                 ]
             )
         );

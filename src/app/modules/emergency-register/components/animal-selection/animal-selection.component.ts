@@ -570,11 +570,12 @@ export class AnimalSelectionComponent implements OnInit {
             currentPatient?.get('deleted')?.setValue(!deleted);
             currentPatient?.get('updated')?.setValue(true);
         }
+
+        this.selection.clear();
+
         this.clearChips();
 
         this.patientTable.renderRows();
-
-        this.selection.clear();
     }
 
     updatePatientProblemArray(problemChip:any) {

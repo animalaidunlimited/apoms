@@ -5,6 +5,7 @@ import { MaterialModule } from '../../../material-module';
 
 import { RecordSearchComponent } from '../record-search/record-search.component';
 import { SearchResultCardModule } from '../search-result-card/search-result-card.module';
+import { SearchFieldModule } from '../search-field/search-field.module';
 
 @NgModule({
     declarations: [
@@ -13,8 +14,11 @@ import { SearchResultCardModule } from '../search-result-card/search-result-card
     imports: [
         CommonModule,
         MaterialModule,
-
-        SearchResultCardModule],
-    exports: [RecordSearchComponent],
+        SearchResultCardModule,
+        SearchFieldModule
+    ],
+    exports: [
+        RecordSearchComponent
+    ]
 })
 export class RecordSearchModule {}

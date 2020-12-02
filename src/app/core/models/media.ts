@@ -29,3 +29,9 @@ export interface MediaItem{
     patientId: number;
     mediaItem: BehaviorSubject<MediaItem[]>;
   }
+
+  export interface SharedMediaPackage{
+    message: string;
+    image: File[];
+    video: File[];
+  }
