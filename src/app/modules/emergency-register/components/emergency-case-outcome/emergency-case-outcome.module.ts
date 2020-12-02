@@ -7,6 +7,6 @@ import { EmergencyCaseOutcomeComponent } from './emergency-case-outcome.componen
 @NgModule({
     declarations: [EmergencyCaseOutcomeComponent],
     imports: [CommonModule, MaterialModule],
-    exports: [EmergencyCaseOutcomeComponent],
+    exports: [EmergencyCaseOutcomeComponent]
 })
 export class EmergencyCaseOutcomeModule {}

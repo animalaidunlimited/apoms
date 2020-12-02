@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>Patient search</h1>
+
+<app-search-field (searchString)="onSearchQuery($event)"></app-search-field>
+
+<mat-accordion>
+
+    <div *ngIf="searchResults$ | async as searchResults;">
+
+        <div *ngIf="searchResults.length === 0;">No results</div>
+
+        <mat-expansion-panel hideToggle class="expansion-panel-margin"
+        *ngFor="let searchResult of searchResults"
+        (click)="openMediaDialog(searchResult.TagNumber, searchResult.PatientId)">
+
+            <mat-expansion-panel-header>
+                <mat-panel-title >
+                    {{searchResult.TagNumber}}
+                </mat-panel-title>
+                <mat-panel-description>
+                    {{searchResult.EmergencyNumber}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+        </mat-expansion-panel>
+
+    </div>
+
+</mat-accordion>

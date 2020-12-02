@@ -1,6 +1,6 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import 'hammerjs';
+
 import { BootController } from './boot-controller';
 
 import { AppModule } from './app/app.module';
@@ -14,7 +14,7 @@ const init = () => {
     platformBrowserDynamic().bootstrapModule(AppModule)
     .then(() => (window as any).appBootstrap && (window as any).appBootstrap())
     .catch(err => console.error('NG Bootstrap Error =>', err));
-  }
+  };
 
 // Init on first load
 init();

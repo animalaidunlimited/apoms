@@ -6,7 +6,15 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./settings-page.component.scss'],
 })
 export class SettingsPageComponent implements OnInit {
+    releaseVersion! : string;
+
     constructor() {}
 
-    ngOnInit() {}
+    ngOnInit() {
+
+        this.releaseVersion = '1.0.12';
+
+
+
+    }
 }
