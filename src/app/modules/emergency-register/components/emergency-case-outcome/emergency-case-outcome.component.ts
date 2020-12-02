@@ -93,22 +93,17 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     if(callOutcomeId === 1){
 
-      console.log('here');
+      // If we're selecting admission, check to make sure all of the animals have a TagNumber
+      const patientArray = this.recordForm.get('patients') as FormArray;
 
-          // If we're selecting admission, check to make sure all of the animals have a TagNumber
-    const patientArray = this.recordForm.get('patients') as FormArray;
+      patientArray.controls.forEach(patient => {
 
-    console.log(patientArray);
+        patient?.get('tagNumber')?.setValidators(Validators.required);
+        patient?.get('tagNumber')?.updateValueAndValidity();
 
-    patientArray.controls.forEach(patient => {
-
-      patient?.get('tagNumber')?.setValidators([Validators.required]);
-
-    });
+      });
 
     }
-
-
 
     this.changeDetector.detectChanges();
 

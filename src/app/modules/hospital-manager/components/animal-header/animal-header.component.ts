@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
@@ -17,7 +17,7 @@ import { of } from 'rxjs';
 export class AnimalHeaderComponent implements OnInit {
     @Input() recordForm!: FormGroup;
 
-    @Input() profileUrl!: SafeUrl;
+    @Input() profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
     selection!: SelectionModel<FormGroup>;
 
@@ -34,7 +34,6 @@ export class AnimalHeaderComponent implements OnInit {
 
     ngOnInit() {
         this.status = this.recordForm.get('patientStatus.status')?.value;
-        this.profileUrl = '../../../../../../assets/images/image_placeholder.png';
         this.lastObjectUrl = '';
 
         this.patientDetailsFormGroup = this.recordForm.get('patientDetails') as FormGroup;

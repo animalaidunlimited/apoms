@@ -50,12 +50,10 @@ export class SurgeryDetailsComponent implements OnInit {
             .getSurgeryByPatientId(this.patientId)
             .then(response => {
 
-                if(response){
-                    this.surgeryRecords = response;
-                    this.surgeryRecords.sort((s1, s2) => (new Date(s2.date) as any) - (new Date(s1.date) as any));
-                }
-
-            } );
+                this.surgeryRecords = response ? response : [];
+                this.surgeryRecords.sort((s1, s2) => (new Date(s2.date) as any) - (new Date(s1.date) as any));
+                
+            });
     }
 
     launchSurgeryDialog(row: SurgeryRecord | null): void {
@@ -93,6 +91,6 @@ export class SurgeryDetailsComponent implements OnInit {
         });
     }
 
-    
+
 
 }
