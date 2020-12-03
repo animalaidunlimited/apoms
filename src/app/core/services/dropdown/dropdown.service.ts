@@ -9,7 +9,8 @@ import {
     CallType,
     PatientCallOutcome,
     Exclusions,
-    PatientStatusResponse
+    PatientStatusResponse,
+    StreetTreatMainProblem
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
@@ -18,11 +19,11 @@ import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
-import { TeamDetails } from "../../models/team";
+import { TeamDetails } from '../../models/team';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
-import { TreatmentPriority } from '../../enums/patient-details';
+import { TreatmentPriority as Priority } from '../../enums/patient-details';
 
 
 
@@ -66,8 +67,10 @@ export class DropdownService extends APIService {
 	team$!: Observable<TeamDetails[]>;
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
-	treatmentPriority$!:Observable<TreatmentPriority[]>;
+	priority$!:Observable<Priority[]>;
     releaseManagers$!: Observable<ReleaseManager[]>;
+    streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
+
 
 
 
@@ -628,17 +631,18 @@ export class DropdownService extends APIService {
 	  }
 	  return this.visitTypes$;
   }
-  getTreatmentPriority(): Observable<TreatmentPriority[]>{
-	  const request = '/GetTreatmentPriority';
-	  if(!this.treatmentPriority$){
-		  this.treatmentPriority$ = this.getObservable(request).pipe(
+  getPriority(): Observable<Priority[]>{
+	  const request = '/GetPriority';
+	  if(!this.priority$){
+		  this.priority$ = this.getObservable(request).pipe(
 			  map(response=> {
 				  return response;
 			  })
 		  );
 	  }
-	  return this.treatmentPriority$;
-	}
+	  return this.priority$;
+    }
+
   getReleaseManagers(): Observable<ReleaseManager[]> {
     const request = '/GetReleaseManagers';
 
@@ -651,6 +655,22 @@ export class DropdownService extends APIService {
     }
 
     return this.releaseManagers$;
+
+
+    }
+
+    getStreetTreatMainProblems(): Observable<StreetTreatMainProblem[]> {
+      const request = '/GetStreetTreatMainProblem';
+
+      if(!this.streetTreatMainProblem$) {
+        this.streetTreatMainProblem$ = this.getObservable(request).pipe(
+            map((response: StreetTreatMainProblem[])=>{
+                return response;
+            })
+        );
+    }
+
+    return this.streetTreatMainProblem$;
 
   }
 

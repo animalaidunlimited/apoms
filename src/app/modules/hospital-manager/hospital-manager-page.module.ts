@@ -34,7 +34,6 @@ import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsComponent } from './components/patient-visit-details/patient-visit-details.component';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
-import { ReleaseRequestFormComponent } from './components/release-request-form/release-request-form.component';
 
 @NgModule({
     declarations: [
@@ -56,8 +55,7 @@ import { ReleaseRequestFormComponent } from './components/release-request-form/r
         MediaCaptureComponent,
         TreatmentComponent,
         PatientVisitDetailsComponent,
-        ReleaseDetailsDialogComponent,
-        ReleaseRequestFormComponent,
+        ReleaseDetailsDialogComponent
     ],
     imports: [
         CommonModule,

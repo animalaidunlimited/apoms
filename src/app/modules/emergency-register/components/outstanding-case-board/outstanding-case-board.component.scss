@@ -33,7 +33,6 @@
 }
 
 .drag-drop-list {
-    // border: solid 1px #ccc;
     min-height: 48px;
     min-width: 250px;
     background: white;
@@ -85,21 +84,33 @@
     background-color: lightsteelblue !important;
 }
 
-.dot {
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    display: inline-block;
+.border-red {
+    border-right: 8px solid red;
 }
-.dot-red {
-    background-color: red;
+
+.border-green {
+    border-right: 8px solid green;
 }
-.dot-green {
-    background-color: green;
+
+.border-yellow {
+    border-right: 8px solid gold;
 }
-.dot-yellow {
-    background-color: gold;
-}
+
+//.dot {
+//    height: 20px;
+//    width: 20px;
+//    border-radius: 50%;
+//    display: inline-block;
+//}
+//.dot-red {
+//    background-color: red;
+//}
+//.dot-green {
+//    background-color: green;
+//}
+//.dot-yellow {
+//    background-color: gold;
+//}
 
 .name {
     margin: 10px 0px 0px 10px;
@@ -136,6 +147,8 @@
     color: black;
 }
 
+
+
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:focus,
 .mat-expansion-panel-header.mat-expanded:hover,
@@ -148,7 +161,6 @@
 .mat-expansion-panel{
     margin-bottom: 8px;
     border: solid .1px lightgray;
-    // border-radius: 20%;
 }
 
 
@@ -174,5 +186,5 @@
     border-color: grey;
 }
 .mat-release-panel.mat-expanded {
-    border-radius: 20px !important; 
+    border-radius: 20px !important;
 }

@@ -217,9 +217,8 @@ export class EmergencyRecordComponent implements OnInit {
                     .then(data => {
                         if (data.status === 'saved') {
 
-                            // this.messageService.testing();
-
                             messageResult.failure = 1;
+
                         } else {
 
                             const resultBody = data as EmergencyResponse;
@@ -234,7 +233,6 @@ export class EmergencyRecordComponent implements OnInit {
                                 'Case updated successfully',
                                 'OK',
                             );
-                            // this.messageService.testing();
                         }
                     })
                     .catch(error => {

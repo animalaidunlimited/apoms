@@ -8,6 +8,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
 import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { ReleaseDetails } from '../../models/release';
 
 
 @Component({
@@ -21,19 +22,19 @@ export class AssignReleaseComponent implements OnInit {
 
   recordForm!: FormGroup;
 
-  @Input() formData!: any;
-  @Output() public saveSuccessResponse = new EventEmitter<any>();
-  releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
-  {id:2 , type:'Normal + Complainer special instructions'},
-  {id:3 , type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'},
-  {id:5 , type: 'Normal release + StreetTreat release'}];
+  @Input() formData!: ReleaseDetails;
+  @Output() public saveSuccessResponse = new EventEmitter<number>();
+  releaseTypes:Release[] = [
+  {id:1, type: 'Normal release'},
+  {id:2, type:'Normal + Complainer special instructions'},
+  {id:3, type:'Specific staff for release'},
+  {id:4, type:'StreetTreat release'}];
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
     private releaseDetails: ReleaseService,
-	private messaging: MessagingService,
-	private showSnackBar: SnackbarService
+    private messaging: MessagingService,
+    private showSnackBar: SnackbarService
 	) { }
 
   ngOnInit() {
@@ -49,6 +50,7 @@ export class AssignReleaseComponent implements OnInit {
       releaseEndDate: [],
       pickupDate: [],
     });
+
     this.recordForm.patchValue(this.formData);
 
   }
@@ -81,7 +83,8 @@ export class AssignReleaseComponent implements OnInit {
                     : this.showSnackBar.errorSnackBar(
                           'Error updating patient status',
                           'OK',
-					  );
+            );
+
 	this.saveSuccessResponse.emit(response[0][0].vUpdateSuccess);
 
     });

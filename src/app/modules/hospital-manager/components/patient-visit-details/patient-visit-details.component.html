@@ -1,9 +1,9 @@
 
-<h5 mat-dialog-title>Add Street Treat Visits</h5>
+<h5 mat-dialog-title>Add StreetTreat visits</h5>
 <form [formGroup]="visitForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 		<mat-form-field appearance="fill">
-			<mat-select placeholder="Case Priority" formControlName="casePriority">
+			<mat-select placeholder="Case priority" formControlName="casePriority">
 				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
 				</mat-option>
@@ -18,10 +18,10 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
-			<mat-label>Main Problem</mat-label>
+			<mat-label>Main problem</mat-label>
 			<mat-select  formControlName="mainProblem">
-				<mat-option *ngFor="let problem of problems$" [value]="problem.ProblemId">
-					{{ problem.Problem}}
+				<mat-option *ngFor="let problem of problems$" [value]="problem.MainProblemId">
+					{{ problem.MainProblem}}
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
@@ -60,7 +60,7 @@
 					</mat-form-field>
 
 					<mat-form-field appearance="fill">
-						<mat-label>Visit Type</mat-label>
+						<mat-label>Visit type</mat-label>
 
 						<mat-select placeholder="Select" formControlName="visit_type">
 							<mat-option  *ngFor="let visitTypes of visitType$" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>

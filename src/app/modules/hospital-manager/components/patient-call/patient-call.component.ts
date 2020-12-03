@@ -75,9 +75,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
                 patientIdControl.setValue(changes.patientId.currentValue);
                 this.loadPatientCalls();
             }
-            //else{
-            //    throw new Error('PatientIdControl is empty');
-            //}
 
 
         }

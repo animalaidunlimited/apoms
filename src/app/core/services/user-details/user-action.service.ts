@@ -22,7 +22,6 @@ export class UserActionService extends APIService{
   public getUsersByIdRange(): Promise<any> {
     const request = '?GetUsersByIdRange';
     return this.get(request);
-
   }
 
 }

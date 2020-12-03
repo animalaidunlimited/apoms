@@ -1,4 +1,4 @@
-export interface OutstandingRescue {
+export interface OutstandingAssignment {
     releaseId: number;
     callerId: number;
     complainerNotes: string;
@@ -9,7 +9,7 @@ export interface OutstandingRescue {
     pickupDate: Date | undefined;
     releaseTypeId: number;
     releaseBeginDate: Date | undefined;
-    releaseEndDate: Date | undefined; 
+    releaseEndDate: Date | undefined;
     latitude: number;
     location: string;
     latLngLiteral: google.maps.LatLngLiteral;
@@ -46,7 +46,7 @@ export interface RescuerGroup {
     staff2: number;
     staff2Abbreviation: string;
     latestLocation: google.maps.LatLngLiteral | undefined;
-    ambulanceAssignment: OutstandingRescue[];
+    ambulanceAssignment: OutstandingAssignment[];
 }
 
 export interface OutstandingCase {
