@@ -54,7 +54,7 @@ export class UserOptionsService{
 
     }
 
-    getUserName(): any {
+    getUserName(): string {
         if(this.userName) {
             return this.userName;
         }

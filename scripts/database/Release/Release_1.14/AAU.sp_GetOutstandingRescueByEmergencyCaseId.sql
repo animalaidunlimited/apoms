@@ -1,6 +1,8 @@
-DELIMITER $$
+DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId;
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId!!
+
+DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
 BEGIN
@@ -97,7 +99,7 @@ GROUP BY p.EmergencyCaseId
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
-WHERE ec.EmergencyCaseId = prm_EmergencyCaseId
+WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
 
 END$$
 DELIMITER ;

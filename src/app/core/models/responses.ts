@@ -92,7 +92,6 @@ export interface SearchResponse {
     AnimalType: string;
     PatientId: number;
     MediaCount: number;
-    // TagNumber: string | undefined;
     TagNumber: string;
     CallOutcomeId: number | undefined;
     CallOutcome: string | undefined;
@@ -123,4 +122,9 @@ export interface CallType {
 export interface PatientCallOutcome {
     PatientCallOutcomeId: number;
     PatientCallOutcome: string;
+}
+
+export interface StreetTreatMainProblem {
+    MainProblemId: number;
+    MainProblem: string;
 }

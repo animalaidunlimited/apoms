@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { OutstandingRescue, OutstandingCase, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 
@@ -38,7 +38,7 @@ export class OutstandingCaseService {
       this.initialised = true;
 
       // Get the initial list from the rescue service
-      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
+      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: OutstandingCaseResponse) => {
         if(outstandingCases){
           this.populateOutstandingCases(outstandingCases.outstandingActions);
         }
@@ -74,28 +74,28 @@ export class OutstandingCaseService {
   }
 
 
-  receiveUpdatedRescueMessage(updatedRescue:OutstandingRescue) {
+  receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment) {
 
-    let currentOutstanding: OutstandingCase[];                                 
+    let currentOutstanding: OutstandingCase[];
 
     this.outstandingCases$.subscribe((cases: any) => {
 
       currentOutstanding = cases;
-      currentOutstanding = this.removeRescueById(currentOutstanding, updatedRescue);                                                             
+      currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
-    const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedRescue.actionStatus);
+    const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedAssignment.actionStatus);
 
     const newRescueGroup:RescuerGroup = {
-      staff1: updatedRescue.staff1,
-      staff1Abbreviation: updatedRescue.staff1Abbreviation,
-      staff2: updatedRescue.staff2,
-      staff2Abbreviation: updatedRescue.staff2Abbreviation,
+      staff1: updatedAssignment.staff1,
+      staff1Abbreviation: updatedAssignment.staff1Abbreviation,
+      staff2: updatedAssignment.staff2,
+      staff2Abbreviation: updatedAssignment.staff2Abbreviation,
       latestLocation: undefined,
-      ambulanceAssignment: [updatedRescue],
+      ambulanceAssignment: [updatedAssignment],
     };
 
-    if(!laneExists && updatedRescue.actionStatus){
+    if(!laneExists && updatedAssignment.actionStatus){
 
       const rescueStatusName = ['Received',
       'Assigned',
@@ -104,8 +104,8 @@ export class OutstandingCaseService {
       'Admitted'];
 
       currentOutstanding.push({
-        actionStatus: updatedRescue.actionStatus,
-        actionStatusName: rescueStatusName[updatedRescue.actionStatus - 1],
+        actionStatus: updatedAssignment.actionStatus,
+        actionStatusName: rescueStatusName[updatedAssignment.actionStatus - 1],
         actionGroups: [newRescueGroup]
       });
     }
@@ -113,11 +113,11 @@ export class OutstandingCaseService {
     // Check to see if the rescuers exist and insert if not
     const rescuersExist = currentOutstanding.find(actionState => {
 
-      if(actionState.actionStatus === updatedRescue.actionStatus)
+      if(actionState.actionStatus === updatedAssignment.actionStatus)
       {
        return actionState.actionGroups
-      .find((actionGroup: any) =>  actionGroup.staff1 === updatedRescue.staff1 &&
-                            actionGroup.staff2 === updatedRescue.staff2);
+      .find((actionGroup: any) =>  actionGroup.staff1 === updatedAssignment.staff1 &&
+                            actionGroup.staff2 === updatedAssignment.staff2);
       }
 
       return '';
@@ -127,8 +127,8 @@ export class OutstandingCaseService {
     if(!rescuersExist){
 
       currentOutstanding.forEach(rescueState => {
-        
-        if(rescueState.actionStatus === updatedRescue.actionStatus){
+
+        if(rescueState.actionStatus === updatedAssignment.actionStatus){
           rescueState.actionGroups.push(newRescueGroup);
         }
       });
@@ -136,11 +136,11 @@ export class OutstandingCaseService {
 
     // Insert the rescue into its new home
     if(rescuersExist && laneExists){
-      this.insertRescue(currentOutstanding, updatedRescue);
+      this.insertRescue(currentOutstanding, updatedAssignment);
     }
 
     // Set the rescue to show as moved
-    currentOutstanding = this.setMoved(currentOutstanding, updatedRescue.emergencyCaseId, true, false);
+    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, true, false);
 
     });
 
@@ -151,7 +151,7 @@ export class OutstandingCaseService {
     }
 
     // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
-    if(!updatedRescue.actionStatus){
+    if(!updatedAssignment.actionStatus){
       this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
 
       return;
@@ -163,10 +163,10 @@ export class OutstandingCaseService {
 
   }
 
-  removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingRescue) {
+  removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingAssignment) {
 
     // Search through the outstanding cases and remove the old case
-    let returnCase:OutstandingRescue;
+    let returnCase:OutstandingAssignment;
 
     outstanding.forEach(status => {
 
@@ -179,13 +179,13 @@ export class OutstandingCaseService {
 
               returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
 
-             
+
 
               // If the group is now empty, remove it.
               if(group.ambulanceAssignment.length === 0){
                 status.actionGroups.splice(index,1);
               }
-              
+
               return;
             }
           });
@@ -194,7 +194,7 @@ export class OutstandingCaseService {
     return outstanding.filter(cases => cases.actionGroups.length !== 0);
   }
 
-  insertRescue(outstanding:OutstandingCase[], action:OutstandingRescue){
+  insertRescue(outstanding:OutstandingCase[], action:OutstandingAssignment){
 
     outstanding.forEach(status => {
 
@@ -285,11 +285,7 @@ export class OutstandingCaseService {
 
     });
 
-
-
   }
-
-
 
   getAutoRefresh(){
     return this.autoRefresh;

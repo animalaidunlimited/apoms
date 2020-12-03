@@ -17,7 +17,7 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { ProblemDropdownResponse, StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
@@ -40,7 +40,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	teamSubscription: Subscription | undefined;
 	teamListData: TeamDetails[] = [];
 	problemsSubscription: Subscription | undefined;
-	problems$: ProblemDropdownResponse[] = [];
+	problems$: StreetTreatMainProblem[] = [];
 	statusSubscription: Subscription | undefined;
 	status$: Status[] = [];
 	visitTypeSubscription: Subscription | undefined;
@@ -81,7 +81,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 			this.teamListData = team;
 			this.teamSubscription?.unsubscribe();
 		});
-		this.problemsSubscription = this.dropdown.getProblems().subscribe(problems => {
+		this.problemsSubscription = this.dropdown.getStreetTreatMainProblems().subscribe(problems => {
 			this.problems$ = problems;
 			this.problemsSubscription?.unsubscribe();
 		});
@@ -93,7 +93,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 			this.visitType$ = visitTypes;
 			this.visitTypeSubscription?.unsubscribe();
 		});
-		this.treatmentPrioritySubscription = this.dropdown.getTreatmentPriority().subscribe(treatmentPriority => {
+		this.treatmentPrioritySubscription = this.dropdown.getPriority().subscribe(treatmentPriority => {
 			this.treatmentPriority$ = treatmentPriority;
 			this.treatmentPrioritySubscription?.unsubscribe();
 		});
@@ -133,7 +133,10 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	initStreetTreatForm(){
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((res:any) =>{
-			if(res.visitForm){
+
+			console.log(res);
+
+			if(res?.visitForm){
 				if(res.visitForm.visits.length)
 				{
 					for(let i = 0; i<res.visitForm.visits.length-1;i++)

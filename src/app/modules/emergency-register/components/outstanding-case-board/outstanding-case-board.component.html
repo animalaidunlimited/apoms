@@ -62,7 +62,7 @@
         </div>
         </div>
 
-        <div 
+        <div
         cdkDropList
         [cdkDropListData]="actionGroup.ambulanceAssignment"
         class="drag-drop-list"
@@ -74,8 +74,10 @@
         <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
           <mat-expansion-panel-header
           fxLayout="row"
-          [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'"
-          [ngClass]="{'search-candidate' : outstandingCase.searchCandidate == true}">
+          [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
+              'border-green' : outstandingCase.emergencyCodeId == 2,
+              'border-yellow' : outstandingCase.emergencyCodeId == 3}"
+          [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
 
           <div fxFlex="15">
 
@@ -94,13 +96,14 @@
               {{outstandingCase.emergencyNumber}}
               ({{outstandingCase.animalTypes}})
             </div>
-              <div fxFlex="none"
+
+              <!--<div fxFlex="none"
 
               class ="dot" [ngClass]="{
                 'dot-red' : outstandingCase.emergencyCodeId == 1,
                 'dot-green' : outstandingCase.emergencyCodeId == 2,
                 'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
-              </div>
+              </div>-->
 
               <div fxFlex="25">
                 <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
@@ -136,42 +139,44 @@
 
         <div *ngIf="outstandingCase.ambulanceAction==='Release'">
 
-          <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true" hideToggle>
+          <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true"
+
+          hideToggle>
             <mat-expansion-panel-header
             fxLayout="row"
-            [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'"
-            [ngClass]="{'search-candidate' : outstandingCase.searchCandidate == true}">
+            [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
+
 
             <div fxFlex="15">
               <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog(outstandingCase)">airport_shuttle</mat-icon>
             </div>
-  
+
             <div fxFlex="25">
               <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
             </div>
-            
-              <div fxFlex style="text-align: center;">
-                {{outstandingCase.emergencyNumber}}
-                ({{outstandingCase.animalTypes}})
-              </div>
 
-                <div fxFlex="none"
-  
-                class ="dot" [ngClass]="{
-                  'dot-red' : outstandingCase.emergencyCodeId == 1,
-                  'dot-green' : outstandingCase.emergencyCodeId == 2,
-                  'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
-                </div>
-  
-                <div fxFlex="25">
-                  <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
-                </div>
-  
-              </mat-expansion-panel-header>
-  
+            <div fxFlex style="text-align: center;">
+              {{outstandingCase.emergencyNumber}}
+              ({{outstandingCase.animalTypes}})
+            </div>
+
+            <!--<div fxFlex="none"
+
+            class ="dot" [ngClass]="{
+              'dot-red' : outstandingCase.emergencyCodeId == 1,
+              'dot-green' : outstandingCase.emergencyCodeId == 2,
+              'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
+            </div>-->
+
+            <div fxFlex="25">
+              <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+            </div>
+
+            </mat-expansion-panel-header>
+
             <div fxLayout="column" fxLayoutAlign="space-around start" >
               <div class="name">{{outstandingCase.callerName}}</div>
-  
+
               <div fxLayout="row" fxLayoutAlign="start center" >
                   <div class="telephone-dash-container">
                       <svg height="11" width="25">
@@ -179,16 +184,16 @@
                       Sorry, your browser does not support inline SVG.
                       </svg>
                   </div>
-  
+
                   <div class="telephone">{{outstandingCase.callerNumber}}</div>
               </div>
-  
+
               <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
               <div class="animal-location">{{outstandingCase.location}}</div>
-          </div> 
+          </div>
 
           </mat-expansion-panel>
-  
+
           </div>
         </div>
         </div>

@@ -15,7 +15,7 @@ SELECT
 	"releaseId",ReleaseDetailsId,
 	"releaseRequestForm",
 		JSON_OBJECT(
-			"requestedUser",RequestedUser, 
+			"requestedUser",u.UserName, 
 			"requestedDate",DATE_FORMAT(RequestedDate, "%Y-%m-%d")
 		), 
 	"releaseType",ReleaseTypeId, 
@@ -48,8 +48,9 @@ SELECT
 		) 
 AS Result
 	FROM
-        aau.ReleaseDetails rd
-        LEFT JOIN  AAU.Streettreatcase s ON rd.PatientID = s.PatientId
+        AAU.ReleaseDetails rd
+        INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
+        LEFT JOIN AAU.Streettreatcase s ON rd.PatientID = s.PatientId
         LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
 	WHERE 
 		rd.PatientId =  prm_PatientId;

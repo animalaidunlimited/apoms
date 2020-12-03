@@ -1,13 +1,15 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User, ReleaseManager } from 'src/app/core/models/user';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { MatSelectChange } from '@angular/material/select';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+
 export interface DialogData {
   emergencyCaseId: number;
   tagNumber: string | undefined;
@@ -53,30 +55,41 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   isInstructionRequired!: boolean;
   releasers$!:Observable<User[]>;
-  releaseManagers$!: Observable<ReleaseManager[]>;
   specificStaff!: boolean;
   isStreetTreatRelease!: boolean;
-  /* incomingFormData!: Observable<any>; */
 
   recordForm: FormGroup = new FormGroup({});
+
+  releaseManagers: ReleaseManager[] = [];
 
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
   {id:2 , type:'Normal + Complainer special instructions'},
   {id:3 , type:'Specific staff for release'},
   {id:4, type:'StreetTreat release'}];
 
+  username = '';
+
   constructor(public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private userService: UserOptionsService,
     private dropdown: DropdownService,
     private fb: FormBuilder,
-	private releaseService: ReleaseService,
-	private showSnackBar: SnackbarService) { }
+    private changeDetector: ChangeDetectorRef,
+	  private releaseService: ReleaseService,
+    private showSnackBar: SnackbarService) { }
 
   ngOnInit() {
 
     this.isInstructionRequired= false;
     this.specificStaff = false;
     this.isStreetTreatRelease = false;
+
+    this.username = this.userService.getUserName();
+
+    this.dropdown.getReleaseManagers().subscribe(managers => {
+      this.releaseManagers = managers;
+      this.releaseManagers.unshift({FirstName: this.username});
+    });
 
     this.releasers$ = this.dropdown.getRescuers();
 
@@ -89,6 +102,10 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       emergencyDetails : this.fb.group({
         emergencyCaseId: this.data.emergencyCaseId
       }),
+      releaseRequestForm: this.fb.group({
+        requestedUser: [this.username, Validators.required],
+        requestedDate: [(new Date()).toISOString().substring(0,10), Validators.required]
+      }),
 
       patientId: this.data.patientId,
       releaseType: [,Validators.required],
@@ -97,7 +114,9 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       Releaser1: [],
       Releaser2: [],
     });
-	this.initReleaseDetailsForm();
+
+    this.initReleaseDetailsForm();
+
   }
 
   valueChanged(releaseType: MatSelectChange) {
@@ -158,14 +177,17 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   streetTreatReleaseTrue() {
     this.isStreetTreatRelease = true;
+    this.changeDetector.detectChanges();
   }
 
   streetTreatReleaseFalse() {
     this.isStreetTreatRelease = false;
+    this.changeDetector.detectChanges();
   }
 
   initReleaseDetailsForm(){
 	if(this.data.patientId) {
+
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
 			if(formVal) {
 				this.recordForm.patchValue(formVal);
@@ -179,11 +201,15 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 		});
 	}
   }
+
   onReleaseSubmit(releaseForm:any) {
+
 
 	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{
 
-				((result.vSuccess >= 1 && result.vSuccess < 3) || (result.vUpdateSuccess >= 1 && result.vUpdateSuccess <3))
+    console.log(result);
+
+				((result.success >= 1 && result.success < 3))
                     ? (
 						this.showSnackBar.successSnackBar(
                           'Release details save successfully',

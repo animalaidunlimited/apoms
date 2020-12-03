@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { OutstandingRescue } from '../../models/outstanding-case';
+import { OutstandingAssignment } from '../../models/outstanding-case';
+import { ReleaseDetails } from '../../models/release';
 
 interface IncomingCaseDetails {
-  caseDetails: OutstandingRescue;
+  caseDetails: OutstandingAssignment;
 }
 
 @Component({
@@ -13,7 +14,7 @@ interface IncomingCaseDetails {
 })
 export class AssignReleaseDialogComponent implements OnInit {
 
-  formData!: any;
+  formData!: ReleaseDetails;
 
   constructor(public dialogRef: MatDialogRef<AssignReleaseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
@@ -23,18 +24,18 @@ export class AssignReleaseDialogComponent implements OnInit {
     this.formData = {
       releaseId: this.data.caseDetails.releaseId,
       emergencyCaseId: this.data.caseDetails.emergencyCaseId,
-      releaseRequestForm : {
-        requestedUser: this.data.caseDetails.requestedUser,
-        requestedDate: this.data.caseDetails.requestedDate,
-      },
+      // releaseRequestForm : {
+      //  requestedUser: this.data.caseDetails.requestedUser,
+      //  requestedDate: this.data.caseDetails.requestedDate,
+      // },
       releaseType: this.data.caseDetails.releaseTypeId,
-      complainerNotes: this.data.caseDetails.complainerNotes,
-      complianerInformed: this.data.caseDetails.complainerInformed,
+      // complainerNotes: this.data.caseDetails.complainerNotes,
+      // complianerInformed: this.data.caseDetails.complainerInformed,
       Releaser1: this.data.caseDetails.staff1,
       Releaser2: this.data.caseDetails.staff2,
-      callerDetails: {
-        callerId: this.data.caseDetails.callerId
-      },
+      // callerDetails: {
+      //  callerId: this.data.caseDetails.callerId
+      // },
       pickupDate: this.data.caseDetails.pickupDate,
       releaseBeginDate: this.data.caseDetails.releaseBeginDate,
       releaseEndDate: this.data.caseDetails.releaseEndDate
@@ -42,10 +43,11 @@ export class AssignReleaseDialogComponent implements OnInit {
     };
 
   }
+
   onSaveResponse(result:any){
-	if(result > 0){
-		this.dialogRef.close();
-	}
+    if(result > 0){
+      this.dialogRef.close();
+    }
   }
 
 }

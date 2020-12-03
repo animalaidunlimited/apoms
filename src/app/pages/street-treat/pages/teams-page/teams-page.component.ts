@@ -18,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
     styleUrls: ['./teams-page.component.scss'],
 })
 export class TeamsPageComponent implements OnInit, OnDestroy {
-    // teamList!: TeamDetails[];
+    
     dataSource: MatTableDataSource<TeamDetails>;
     teamSubsciption: Subscription | undefined;
     @ViewChild(MatTable) table!: MatTable<TeamDetails>;

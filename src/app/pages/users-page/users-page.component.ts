@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
-import { TeamDetails } from "src/app/core/models/team";
+import { TeamDetails } from 'src/app/core/models/team';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -8,7 +8,6 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { EmptyError } from 'rxjs';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 
 
@@ -16,9 +15,6 @@ interface StreetTreatRole {
   roleId: number;
   roleName: string;
 }
-
-
-// const ELEMENT_DATA: Userdetails[] = [];
 
 @Component({
     selector: 'app-users-page',
@@ -66,7 +62,6 @@ export class UsersPageComponent implements OnInit {
     myCheck = false;
     currentState = 'closed';
 
-    //
     dataSource: MatTableDataSource<UserDetails> ;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -127,9 +122,6 @@ export class UsersPageComponent implements OnInit {
       roleId: 2 , roleName: 'Operator'
     }];
 
-
-
-
     ngOnInit() {
         this.dropdown.getAllTeams().subscribe(team=>{
           this.teamNames = team;
@@ -163,7 +155,6 @@ export class UsersPageComponent implements OnInit {
       if(userDetailsForm.valid){
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
           if(res.vUpdateSuccess) {
-            // this.updateUserTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
             // TODO: Create a new function for these three tasks.
             this.refreshTable();
@@ -171,7 +162,6 @@ export class UsersPageComponent implements OnInit {
             this.streetTreatdropdown = false;
           }
           else if(res.vSuccess) {
-            // this.insertIntoTable(userDetailsForm.value);
             this.snackBar.successSnackBar('User added successfully!' , 'Ok');
             this.refreshTable();
             this.resetForm();

@@ -129,7 +129,6 @@ export class PrintTemplatesPageComponent implements OnInit {
     if (isWithinSameContainer) {
 
       let toIndex = event.currentIndex;
-      // if (event.container.sortingDisabled) {
 
       const arr = event.container.data.controls.sort((a, b) => a.get('top')?.value - b.get('top')?.value);
       const targetIndex = arr.findIndex(item => item.get('top')?.value > top);

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingCase, OutstandingRescue, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, OutstandingAssignment, RescuerGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
@@ -125,13 +125,13 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
                 latestLocation: maxRescue.latLngLiteral,
                 ambulanceAssignment: rescueReleaseGroup.ambulanceAssignment
                 };
-                
+
 
              });
 
             }
         }
-  
+
     ));
 
     this.ambulanceLocations$.subscribe((val:any)=>{
@@ -145,7 +145,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingRescue[]){
+  openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingAssignment[]){
 
     let searchQuery = ' search.EmergencyCaseId IN (';
 
@@ -165,7 +165,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  openInfoWindow(marker: MapMarker, rescue: OutstandingRescue) {
+  openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'search.EmergencyNumber=' + rescue.emergencyNumber;

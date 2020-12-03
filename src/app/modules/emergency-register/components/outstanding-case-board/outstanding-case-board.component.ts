@@ -4,7 +4,7 @@ import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingRescue } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -233,7 +233,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     }
   }
 
-  openRescueEdit(outstandingCase:OutstandingRescue){
+  openRescueEdit(outstandingCase:OutstandingAssignment){
 
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         width: '500px',
@@ -268,7 +268,7 @@ openCaseFromMap(emergencyCase:SearchResponse){
 
 }
 
-openCase(caseSearchResult:OutstandingRescue)
+openCase(caseSearchResult:OutstandingAssignment)
 {
   const result:SearchResponse = {
 
@@ -308,7 +308,7 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
-openAssignReleaseDialog(caseDetails: OutstandingRescue) {
+openAssignReleaseDialog(caseDetails: OutstandingAssignment) {
   const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
     maxWidth: '100vw',
     maxHeight: '100vh',
@@ -316,7 +316,8 @@ openAssignReleaseDialog(caseDetails: OutstandingRescue) {
       caseDetails
     }
   });
-  
+}
+
 getTimer(startDateTime: Date | string) : string {
 
   if(typeof startDateTime === 'string'){

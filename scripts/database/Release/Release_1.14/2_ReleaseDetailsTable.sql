@@ -3,7 +3,7 @@ CREATE TABLE AAU.ReleaseDetails (
   `ReleaseDetailsId` int NOT NULL AUTO_INCREMENT,
   `OrganisationId` int NOT NULL,
   `PatientId` int NOT NULL,
-  `RequestedUser` varchar(45) NOT NULL,
+  `RequestedUser` INT NOT NULL,
   `RequestedDate` date NOT NULL,
   `ReleaseTypeId` int NOT NULL,
   `CallerId` int NOT NULL,
@@ -20,9 +20,11 @@ CREATE TABLE AAU.ReleaseDetails (
   KEY `FK_ReleaseDetailsOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId`),
   KEY `FK_ReleaseDetailsPatientId_PatientPatientId_idx` (`PatientId`),
   KEY `FK_ReleaseDetailsReleaser1Id_UserUserId_idx` (`Releaser1Id`,`Releaser2Id`),
+  KEY `FK_ReleaseDetailsRequestedUser_UserUserId_idx` (`RequestedUser`),
   KEY `FK_ReleaseReleaser2Id_UserUserId_idx` (`Releaser2Id`),
   CONSTRAINT `FK_ReleaseOrganisationId_OrganisationOrganisationId` FOREIGN KEY (`OrganisationId`) REFERENCES AAU.Organisation (`OrganisationId`),
   CONSTRAINT `FK_ReleasePatientId_PatientPatientId` FOREIGN KEY (`PatientId`) REFERENCES AAU.Patient (`PatientId`),
+  CONSTRAINT `FK_ReleaseDetailsRequestedUser_UserUserId` FOREIGN KEY (`RequestedUser`) REFERENCES AAU.User (`UserId`),
   CONSTRAINT `FK_ReleaseReleaser1Id_UserUserId` FOREIGN KEY (`Releaser1Id`) REFERENCES AAU.User (`UserId`),
   CONSTRAINT `FK_ReleaseReleaser2Id_UserUserId` FOREIGN KEY (`Releaser2Id`) REFERENCES AAU.User (`UserId`)
 );
