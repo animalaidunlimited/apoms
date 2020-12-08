@@ -32,6 +32,9 @@ constructor(
 
     receiveBackgroundMessage(message:string){
 
+        console.log("receiving message");
+        console.log(message);
+
         this.distributeMessage(message);
 
     }
