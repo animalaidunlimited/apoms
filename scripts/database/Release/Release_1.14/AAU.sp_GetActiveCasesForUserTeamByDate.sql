@@ -1,17 +1,21 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForTeamByDate !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUserTeamByDate !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForTeamByDate (	IN prm_teamId INT,
-														IN prm_visitDate DATE
-													)
+CREATE PROCEDURE AAU.sp_GetActiveCasesForUserTeamByDate(	IN prm_username VARCHAR(64),
+															IN prm_visitDate DATE
+														)
 BEGIN
 
 /*
 Created By: Jim Mackenzie
-Created On: 18/11/2020
-Purpose: Used to return active cases for the StreetTreat mobile app.
+Created On: 30/08/2018
+Purpose: Used to return active cases for the Admin screen.
+
+Modified By: Jim Mackenzie
+Modified On: 08/05/2019
+Description: Adding Main Problem Id and logging.
 
 Modified By: Jim Mackenzie
 Modified On: 07/12/2020
@@ -58,8 +62,9 @@ DECLARE prmVisitDate DATE;
 	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId AND (t.TeamId = prm_teamId OR prm_teamId = 1)
+	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
+	INNER JOIN AAU.User u ON u.TeamId = t.TeamId AND u.UserName = prm_username
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,

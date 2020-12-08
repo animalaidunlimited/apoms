@@ -18,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
     styleUrls: ['./teams-page.component.scss'],
 })
 export class TeamsPageComponent implements OnInit, OnDestroy {
-    
+
     dataSource: MatTableDataSource<TeamDetails>;
     teamSubsciption: Subscription | undefined;
     @ViewChild(MatTable) table!: MatTable<TeamDetails>;
@@ -116,8 +116,8 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
             this.teamDetails.patchValue(selectedTeam);
             this.disabledDeleteBtn =
                 this.teamDetails.get('TeamId')?.value === null ? true : false;
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log(error);
         }
         this.teamDetails.get('selectedTeam')?.setValue(selectedTeam);
     }

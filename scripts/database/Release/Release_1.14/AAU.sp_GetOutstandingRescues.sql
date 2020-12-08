@@ -169,7 +169,7 @@ INNER JOIN
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
-WHERE ec.OrganisationId = 1 AND (
+WHERE ec.OrganisationId = vOrganisationId AND (
 	(
 		ec.CallOutcomeId IS NULL 
         AND p.ReleaseDetailsId IS NULL

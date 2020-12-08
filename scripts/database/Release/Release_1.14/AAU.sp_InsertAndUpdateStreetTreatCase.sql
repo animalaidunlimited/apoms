@@ -25,11 +25,11 @@ DECLARE vSuccess INT;
 DECLARE vStreetTreatCaseId INT;
 SET vCaseNoExists = 0;
 
-SELECT COUNT(1) INTO vCaseNoExists FROM AAU.Streettreatcase WHERE PatientId = prm_PatientId;
+SELECT COUNT(1), StreetTreatCaseId INTO vCaseNoExists, vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId GROUP BY PatientId;
 
 IF vCaseNoExists = 0 THEN
 
-	INSERT INTO AAU.Streettreatcase
+	INSERT INTO AAU.StreetTreatCase
 						(
                         PatientId,
 						PriorityId,
@@ -61,24 +61,25 @@ IF vCaseNoExists = 0 THEN
     
 ELSEIF vCaseNoExists > 0 THEN
 
-	SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.Streettreatcase WHERE PatientId = prm_PatientId;
-    UPDATE  AAU.Streettreatcase
+    UPDATE  AAU.StreetTreatCase
     SET 
-		PriorityId = prm_PriorityId,
-		StatusId = prm_StatusId,
-		TeamId = prm_TeamId,
-		MainProblemId = prm_MainProblemId,
-		AdminComments = prm_AdminComments,
-		OperatorNotes = prm_OperatorNotes,
-		ClosedDate = prm_ClosedDate,
-		EarlyReleaseFlag = prm_EarlyReleaseFlag
+		PriorityId			= prm_PriorityId,
+		StatusId			= prm_StatusId,
+		TeamId				= prm_TeamId,
+		MainProblemId		= prm_MainProblemId,
+		AdminComments		= prm_AdminComments,
+		OperatorNotes		= prm_OperatorNotes,
+		ClosedDate			= prm_ClosedDate,
+		EarlyReleaseFlag	= prm_EarlyReleaseFlag
 	WHERE
-		StreetTreatCaseId = vStreetTreatCaseId;
+		PatientId = prm_PatientId;
 	SELECT 2 INTO vSuccess;
 
 ELSE
 	SELECT 3 INTO vSuccess;
 END IF;
-SELECT vStreetTreatCaseId, vSuccess;
+
+SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
+
 END$$
 

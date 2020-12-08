@@ -128,3 +128,7 @@ export interface StreetTreatMainProblem {
     MainProblemId: number;
     MainProblem: string;
 }
+
+export interface SuccessOnlyResponse{
+    success: number;
+}

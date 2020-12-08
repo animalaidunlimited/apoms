@@ -17,7 +17,7 @@ DECLARE vCaseImageExists INT;
 SET vCaseImageExists = 0;
 
 SELECT COUNT(1) INTO vCaseImageExists FROM AAU.CaseImage WHERE CaseId = prm_caseId AND
-															FileName = prm_Filename;                                                       
+															INSTR(prm_Filename, REPLACE(FileName,' ','%20')) > 0;                                                       
 														
 IF vCaseImageExists = 1 THEN
 

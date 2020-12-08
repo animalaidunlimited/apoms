@@ -85,25 +85,14 @@
           </div>
 
           <div fxFlex="25">
-            <!-- <button mat-icon-button color="primary"
-            class="circle-image-button"> -->
             <mat-icon class="imageIcon" (click)="openMediaDialog(outstandingCase.patients[0], outstandingCase.tagNumber)">add_photo_alternate</mat-icon>
             <i class="imageCount">{{outstandingCase.mediaCount}}</i>
-          <!-- </button> -->
           </div>
 
             <div fxFlex style="text-align: center;">
               {{outstandingCase.emergencyNumber}}
               ({{outstandingCase.animalTypes}})
             </div>
-
-              <!--<div fxFlex="none"
-
-              class ="dot" [ngClass]="{
-                'dot-red' : outstandingCase.emergencyCodeId == 1,
-                'dot-green' : outstandingCase.emergencyCodeId == 2,
-                'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
-              </div>-->
 
               <div fxFlex="25">
                 <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
@@ -159,14 +148,6 @@
               {{outstandingCase.emergencyNumber}}
               ({{outstandingCase.animalTypes}})
             </div>
-
-            <!--<div fxFlex="none"
-
-            class ="dot" [ngClass]="{
-              'dot-red' : outstandingCase.emergencyCodeId == 1,
-              'dot-green' : outstandingCase.emergencyCodeId == 2,
-              'dot-yellow' : outstandingCase.emergencyCodeId == 3}">
-            </div>-->
 
             <div fxFlex="25">
               <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>

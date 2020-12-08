@@ -40,7 +40,7 @@
 
     <mat-form-field appearance="fill" class="select">
         <mat-label>Pickup date</mat-label>
-        <input (focus)="setInitialTime($event)" style="width: 100%;" matInput type="date" formControlName="pickupDate">
+        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="date" name="pickupDate" formControlName="pickupDate">
     </mat-form-field>
 
 </div>
@@ -51,7 +51,7 @@
 
     <mat-form-field appearance="fill" class="select">
         <mat-label>Release begin date</mat-label>
-        <input (focus)="setInitialTime($event)" style="width: 100%;" matInput type="date" formControlName="releaseBeginDate">
+        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="date" name="releaseBeginDate" formControlName="releaseBeginDate">
     </mat-form-field>
 
     <img _ngcontent-lei-c38="" src="assets/images/Cat.png" class="images" alt="dog_face">
@@ -61,7 +61,7 @@
 
     <mat-form-field appearance="fill" class="select">
         <mat-label>Release complete date</mat-label>
-        <input matInput (focus)="setInitialTime($event)" style="width: 100%;" type="date" formControlName="releaseEndDate">
+        <input matInput (focus)="setInitialDate($event)" style="width: 100%;" type="date" name="releaseEndDate" formControlName="releaseEndDate">
     </mat-form-field>
 
 </div>

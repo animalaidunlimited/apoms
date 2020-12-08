@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS AAU.StreetTreatCase!!
 DELIMITER $$
 
 CREATE TABLE AAU.StreetTreatCase (
-  `StreetTreatCaseId` int(11) NOT NULL AUTO_INCREMENT,
+  `StreetTreatCaseId` int(11) NOT NULL,
   `PriorityId` int(11) DEFAULT NULL,
   `StatusId` int(11) DEFAULT NULL,
   `TeamId` int(11) DEFAULT NULL,
@@ -18,7 +18,6 @@ CREATE TABLE AAU.StreetTreatCase (
   `PatientId` int(11) DEFAULT NULL,
   `CreatedDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `DeletedDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`StreetTreatCaseId`),
   KEY `FK_PriorityId_PriorityPriorityId_idx` (`PriorityId`),
   KEY `FK_TeamId_TeamTeamId_idx` (`TeamId`),
   KEY `FK_MainProblemId_MainProblemMainProblemId_idx` (`MainProblemId`),

@@ -1,27 +1,23 @@
 DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForTeamByDate !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithNoVisits !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForTeamByDate (	IN prm_teamId INT,
-														IN prm_visitDate DATE
-													)
+CREATE PROCEDURE AAU.sp_GetActiveCasesWithNoVisits()
 BEGIN
 
 /*
 Created By: Jim Mackenzie
-Created On: 18/11/2020
-Purpose: Used to return active cases for the StreetTreat mobile app.
+Created On: 30/08/2018
+Purpose: Used to return active cases for the Admin screen
+
+Modified By: Jim Mackenzie
+Modified On: 08/05/2019
+Description: Adding Main Problem Id and logging.
 
 Modified By: Jim Mackenzie
 Modified On: 07/12/2020
 Description: Altering to run from new Apoms tables
 */
-
-DECLARE prmVisitDate DATE;
-
-	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
-    -- SELECT CURDATE() INTO prmVisitDate;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -35,6 +31,7 @@ DECLARE prmVisitDate DATE;
 			nv.NextVisit,
             nv.NextVisitStatusId,
 			pc.PercentComplete,
+            pc.VisitList,
 			ec.Location AS Address,
 			pr.Priority,
             pr.PriorityId,
@@ -58,36 +55,38 @@ DECLARE prmVisitDate DATE;
 	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId AND (t.TeamId = prm_teamId OR prm_teamId = 1)
+	INNER JOIN AAU.Team t ON t.TeamId = c.TeamId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
+    
 	LEFT JOIN
 		(
-		SELECT StreetTreatCaseId,
-		SUM(CASE WHEN StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete
-		FROM AAU.Visit
-        GROUP BY StreetTreatCaseId
-		) AS pc ON pc.StreetTreatCaseId = c.StreetTreatCaseId
+		SELECT v.StreetTreatCaseId AS CaseId,
+		SUM(CASE WHEN v.StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete,
+        GROUP_CONCAT(s.Status ORDER BY v.Date DESC) AS VisitList
+		FROM AAU.Visit v
+        INNER JOIN AAU.Status s ON s.StatusId = v.StatusId
+        GROUP BY v.StreetTreatCaseId
+		) AS pc ON pc.CaseId = c.StreetTreatCaseId
 
-INNER JOIN
-(
-   SELECT v.StreetTreatCaseId, v.StatusId AS NextVisitStatusId, fv.NextVisit
-   FROM
-   (
-        SELECT StreetTreatCaseId, MIN(Date) AS NextVisit
-        FROM AAU.Visit
-        WHERE Date >= prmVisitDate
-        AND IsDeleted = FALSE
-        GROUP BY StreetTreatCaseId
-	) fv
-
-	INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = fv.StreetTreatCaseId
-		AND fv.NextVisit = v.Date
-        AND v.IsDeleted = 0
-) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
-
-	WHERE nv.NextVisit = prmVisitDate -- Only get active cases
-    AND c.IsDeleted = 0
-    AND nv.NextVisit <= IFNULL(c.ClosedDate, DATE_ADD(NOW(), INTERVAL 10 YEAR));
+	LEFT JOIN
+		(
+		SELECT nvr.StreetTreatCaseId, nvr.NextVisit, v.StatusId AS NextVisitStatusId
+		FROM
+			(        
+			SELECT StreetTreatCaseId,
+			MIN(Date) AS NextVisit
+			FROM AAU.Visit
+			WHERE Date >= CURDATE()
+			AND StatusId IN (1,2)
+			GROUP BY StreetTreatCaseId
+ 			) AS nvr
+		INNER JOIN AAU.Visit v ON nvr.StreetTreatCaseId = v.StreetTreatCaseId
+           AND v.Date = nvr.NextVisit           
+            
+		) AS nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
+		
+	WHERE c.StatusId <= 3
+    AND nv.NextVisit IS NULL; -- Only get active cases
 
 END$$
 DELIMITER ;

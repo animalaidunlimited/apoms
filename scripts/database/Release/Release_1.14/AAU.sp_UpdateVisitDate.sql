@@ -1,5 +1,5 @@
-DELIMITTER!!
-DROP IF EXISTS  AAU.sp_UpdateVisitDate!!
+DELIMITER !!
+DROP PROCEDURE IF EXISTS  AAU.sp_UpdateVisitDate !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateVisitDate(
@@ -52,5 +52,5 @@ ELSE
     
 END IF;
 
-SELECT vSuccess;
+SELECT vSuccess AS success;
 END$$

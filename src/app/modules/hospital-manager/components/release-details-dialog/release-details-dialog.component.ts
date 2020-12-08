@@ -9,6 +9,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 
 export interface DialogData {
   emergencyCaseId: number;
@@ -189,6 +190,12 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 	if(this.data.patientId) {
 
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+
+      if(formVal?.success === -1){
+        this.showSnackBar.errorSnackBar('Error updating release details status','OK');
+        return;
+      }
+
 			if(formVal) {
 				this.recordForm.patchValue(formVal);
 				if(this.recordForm.get('releaseType')?.value===3) {
@@ -204,25 +211,19 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   onReleaseSubmit(releaseForm:any) {
 
+    this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
 
-	this.releaseService.saveRelease(releaseForm.value).then((result:any)=>{
+      const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
 
-    console.log(result);
+        !failure ?
+          (
+            this.showSnackBar.successSnackBar('Release details save successfully','OK'),
+            this.dialogRef.close(releaseForm.value)
+          )
+          : this.showSnackBar.errorSnackBar('Error updating release details','OK');
 
-				((result.success >= 1 && result.success < 3))
-                    ? (
-						this.showSnackBar.successSnackBar(
-                          'Release details save successfully',
-                          'OK',
-						),
-						this.dialogRef.close(releaseForm.value)
-					)
-                    : this.showSnackBar.errorSnackBar(
-                          'Error updating release details status',
-                          'OK',
-					);
+    });
 
-	});
   }
 
 }

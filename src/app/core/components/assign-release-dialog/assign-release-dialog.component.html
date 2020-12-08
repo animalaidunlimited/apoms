@@ -11,7 +11,7 @@ cdkDragHandle>Release Details</h1>
 </div>
 
 <div mat-dialog-actions>
-    <button mat-raised-button color="primary">Cancel</button>
+    <button mat-raised-button color="primary" (click)="closeDialog()">Cancel</button>
     <button mat-raised-button color="primary" (click)="releaseDetails.saveReleaseDetails()">Save</button>
 </div>
 

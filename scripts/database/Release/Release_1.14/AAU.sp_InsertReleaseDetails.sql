@@ -1,5 +1,7 @@
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails!!
+
 DELIMITER $$
-DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails;
 
 CREATE PROCEDURE AAU.sp_InsertReleaseDetails(IN prm_UserName NVARCHAR(45),
 												IN prm_PatientId INT,
@@ -25,13 +27,20 @@ DECLARE vReleaseCount INT;
 DECLARE vReleaseId INT;
 DECLARE vOrganisationId INT;
 DECLARE vUserId INT;
+DECLARE vSocketEndPoint CHAR(3);
+DECLARE vEmergencyCaseId INT;
+
 SET vReleaseCount = 0;
 SET vOrganisationId = 1;
 SET vReleaseId = 0;
 SET vSuccess = 0;
 
 SELECT COUNT(1) INTO vReleaseCount FROM AAU.ReleaseDetails WHERE PatientId = prm_PatientId;
-SELECT OrganisationId, UserId INTO vOrganisationId, vUserId FROM AAU.User WHERE UserName = prm_RequestedUser LIMIT 1;
+
+SELECT o.OrganisationId, u.UserId, o.SocketEndPoint INTO vOrganisationId, vUserId, vSocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_RequestedUser LIMIT 1;
  
 IF vReleaseCount = 0 THEN
 
@@ -74,8 +83,11 @@ SELECT 3 INTO vSuccess;
 
 END IF;
 
+SELECT EmergencycaseId INTO vEmergencyCaseId FROM AAU.Patient WHERE PatientId = prm_PatientId;
 
-SELECT vReleaseId, vSuccess;
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId);
+
+SELECT vReleaseId, vSuccess AS success, vSocketEndPoint AS socketEndPoint;
 
 END$$
 
