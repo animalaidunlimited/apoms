@@ -216,7 +216,7 @@ updateValidators()
     this.admissionTime.updateValueAndValidity({emitEvent: false });
 
 
-    
+
 
 
   }
@@ -256,7 +256,6 @@ updateValidators()
 
   async save(){
 
-
     // If we haven't touched the form, don't do anything.
     if(!this.recordForm.touched){
 
@@ -273,7 +272,7 @@ updateValidators()
 
     await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
 {
-
+  console.log(data);
   this.result.emit(data);
 
 }

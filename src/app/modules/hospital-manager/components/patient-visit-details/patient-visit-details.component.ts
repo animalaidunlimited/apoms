@@ -1,27 +1,15 @@
 
 import { VisitType } from './../../../../core/models/visit-type';
 import { TeamDetails } from './../../../../core/models/team';
-import {
-	Component,
-	OnInit,
-	Inject,
-	ChangeDetectorRef,
-	Input
-} from '@angular/core';
-import {
-	FormBuilder,
-	FormGroup,
-	FormArray,
-	FormControl,
-	Validators,
-} from '@angular/forms';
+import { Component, OnInit, Inject, ChangeDetectorRef, Input } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ProblemDropdownResponse, StreetTreatMainProblem } from 'src/app/core/models/responses';
+import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
-import {UniqueValidators} from 'src/app/modules/hospital-manager/components/patient-visit-details/unique-validators';
+import { UniqueValidators } from 'src/app/modules/hospital-manager/components/patient-visit-details/unique-validators';
 
 interface DialogData {
 	patientId: number;
@@ -59,6 +47,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	) {}
 
 	private subscriptions: { [key: string]: Subscription } = {};
+
 	ngOnInit(): void {
 
 		this.recordForm.addControl(
@@ -133,8 +122,6 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	initStreetTreatForm(){
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((res:any) =>{
-
-			console.log(res);
 
 			if(res?.visitForm){
 				if(res.visitForm.visits.length)

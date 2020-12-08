@@ -1,27 +1,24 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForTeamByDate !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithMissedLastVisitForUserTeam !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForTeamByDate (	IN prm_teamId INT,
-														IN prm_visitDate DATE
-													)
+CREATE PROCEDURE AAU.sp_GetActiveCasesWithMissedLastVisitForUserTeam( IN prm_username VARCHAR(64) )
 BEGIN
 
 /*
 Created By: Jim Mackenzie
-Created On: 18/11/2020
-Purpose: Used to return active cases for the StreetTreat mobile app.
+Created On: 30/08/2018
+Purpose: Used to return active cases for the Admin screen.
+
+Modified By: Jim Mackenzie
+Modified On: 08/05/2019
+Description: Adding Main Problem Id and logging.
 
 Modified By: Jim Mackenzie
 Modified On: 07/12/2020
 Description: Altering to run from new Apoms tables
 */
-
-DECLARE prmVisitDate DATE;
-
-	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
-    -- SELECT CURDATE() INTO prmVisitDate;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -58,8 +55,9 @@ DECLARE prmVisitDate DATE;
 	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId AND (t.TeamId = prm_teamId OR prm_teamId = 1)
+	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
+	INNER JOIN AAU.User u ON u.TeamId = t.TeamId AND u.UserName = prm_username
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,
@@ -75,8 +73,7 @@ INNER JOIN
    (
         SELECT StreetTreatCaseId, MIN(Date) AS NextVisit
         FROM AAU.Visit
-        WHERE Date >= prmVisitDate
-        AND IsDeleted = FALSE
+        WHERE IsDeleted = FALSE
         GROUP BY StreetTreatCaseId
 	) fv
 
@@ -84,9 +81,24 @@ INNER JOIN
 		AND fv.NextVisit = v.Date
         AND v.IsDeleted = 0
 ) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
+INNER JOIN
+(
+SELECT v.StreetTreatCaseId
+FROM
+	(
+			SELECT StreetTreatCaseId, MAX(Date) AS LastVisit
+			FROM AAU.Visit
+			WHERE IsDeleted = FALSE
+			AND Date <= CURDATE()
+			GROUP BY StreetTreatCaseId
+	) lv
+    INNER JOIN AAU.Visit v ON lv.StreetTreatCaseId = v.StreetTreatCaseId
+    AND v.Date = lv.LastVisit
+	AND v.StatusId = 3
+) lvm ON lvm.StreetTreatCaseId = c.StreetTreatCaseId
 
-	WHERE nv.NextVisit = prmVisitDate -- Only get active cases
-    AND c.IsDeleted = 0
+	WHERE c.IsDeleted = 0
+    AND c.StatusId < 3
     AND nv.NextVisit <= IFNULL(c.ClosedDate, DATE_ADD(NOW(), INTERVAL 10 YEAR));
 
 END$$

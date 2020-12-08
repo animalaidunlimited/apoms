@@ -1,4 +1,5 @@
-DROP procedure IF EXISTS AAU.sp_InsertAndUpdateVisit;
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateVisit !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertAndUpdateVisit(
@@ -15,18 +16,23 @@ CREATE PROCEDURE AAU.sp_InsertAndUpdateVisit(
 BEGIN
 
 DECLARE vVisitExisits INT;
+DECLARE vVisitDateExists INT;
 DECLARE vSuccess TINYINT(1);
 
 SET vVisitExisits = 0;
+SET vVisitDateExists = 0;
+SET vSuccess = -1;
 
 SELECT COUNT(1) INTO vVisitExisits 
-	FROM 
-    AAU.Visit 
-    WHERE 
-    VisitId = prm_VisitId 
-    AND 
-    StreetTreatCaseId = prm_StreetTreatCaseId
-    AND (IsDeleted = 0 OR IsDeleted IS NULL) ;
+	FROM AAU.Visit 
+    WHERE VisitId = prm_VisitId 
+    AND StreetTreatCaseId = prm_StreetTreatCaseId
+    AND (IsDeleted = 0 OR IsDeleted IS NULL);
+    
+SELECT COUNT(1) INTO vVisitDateExists FROM AAU.Visit WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND
+															VisitId <> prm_VisitId AND
+                                                            Date = prm_VisitDate AND
+                                                            isDeleted = 0;
 
 IF vVisitExisits = 0 AND prm_VisitId IS NULL THEN
 
@@ -59,27 +65,33 @@ IF vVisitExisits = 0 AND prm_VisitId IS NULL THEN
 	VALUES (NULL,prm_VisitId,'Visit','Insert', NOW());
         
            
-ELSEIF vVisitExisits >= 1 THEN
+ELSEIF vVisitExisits = 1 AND vVisitDateExists = 0 THEN
 
 	UPDATE AAU.Visit 
 		SET
-			VisitTypeId= prm_VisitTypeId,
-            Date = prm_VisitDate,
-            StatusId = prm_StatusId,
-            AdminNotes = prm_AdminNotes,
-            OperatorNotes = prm_OperatorNotes,
-            IsDeleted = prm_IsDeleted,
-            Day = prm_Day
+			VisitTypeId		= prm_VisitTypeId,
+            Date			= prm_VisitDate,
+            StatusId		= prm_StatusId,
+            AdminNotes		= prm_AdminNotes,
+            OperatorNotes	= prm_OperatorNotes,
+            IsDeleted		= prm_IsDeleted,
+            Day				= prm_Day
 		WHERE
-			VisitTypeId= prm_VisitTypeId AND StreetTreatCaseId = prm_StreetTreatCaseId;
+			VisitId = prm_VisitId;
 
     SELECT 2 INTO vSuccess;
 
-ELSE 
+ELSEIF vVisitDateExists > 0 THEN
 	
     SELECT 3 INTO vSuccess;
+    
+ELSE
+
+	SELECT 4 INTO vSuccess;
+    
 END IF;
-SELECT vSuccess;
+
+SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
 
 END$$
 

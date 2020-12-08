@@ -30,18 +30,6 @@ constructor(
 
     }
 
-    testing(data: any) {
-        const messageData = JSON.stringify(data);
-        const message= {
-            data: {
-              messageData
-            },
-            topic: 'aau_UPDATING_ASSIGNMENT'
-          };
-
-        this.distributeMessage(message);
-    }
-
     receiveBackgroundMessage(message:string){
 
         this.distributeMessage(message);

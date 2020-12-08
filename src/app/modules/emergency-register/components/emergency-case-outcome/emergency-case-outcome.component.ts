@@ -138,11 +138,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       emergencyForm: [this.recordForm.value]
     });
 
-    await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) =>
-
-      this.result.emit(data)
-
-    );
+    await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) => this.result.emit(data));
   }
 
   compareCallOutcome(outcome1: CallOutcomeResponse, outcome2: CallOutcomeResponse){

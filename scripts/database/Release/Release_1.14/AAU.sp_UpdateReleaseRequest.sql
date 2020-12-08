@@ -27,10 +27,14 @@ Purpose: Used to update a release of a patient.
 DECLARE vUpdateSuccess INT;
 DECLARE vReleaseCount INT;
 DECLARE vUserId INT;
+DECLARE vSocketEndPoint CHAR(3);
 
 SELECT COUNT(1) INTO vReleaseCount FROM AAU.ReleaseDetails WHERE ReleaseDetailsId = prm_ReleaseId;
 
-SELECT UserId INTO vUserId FROM AAU.User WHERE UserName = prm_RequestedUser LIMIT 1;
+SELECT u.UserId, o.SocketEndPoint INTO vUserId, vSocketEndPoint 
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_RequestedUser LIMIT 1;
 
 IF vReleaseCount = 1 THEN
 
@@ -60,8 +64,7 @@ SELECT 3 INTO vUpdateSuccess; -- Multiple records, we have duplicates
 
 END IF;
 
-
-SELECT vUpdateSuccess AS success;
+SELECT vUpdateSuccess AS success, vSocketEndPoint AS socketEndPoint;
 
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 

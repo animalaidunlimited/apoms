@@ -4,8 +4,7 @@ import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
-import { getCurrentTimeString } from '../../helpers/utils';
-import { MessagingService } from 'src/app/modules/emergency-register/services/messaging.service';
+import { getCurrentDateString } from '../../helpers/utils';
 import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
@@ -33,7 +32,6 @@ export class AssignReleaseComponent implements OnInit {
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
     private releaseDetails: ReleaseService,
-    private messaging: MessagingService,
     private showSnackBar: SnackbarService
 	) { }
 
@@ -55,7 +53,7 @@ export class AssignReleaseComponent implements OnInit {
 
   }
 
-  setInitialTime(event: FocusEvent) {
+  setInitialDate(event: FocusEvent) {
     let currentTime;
     currentTime = this.recordForm.get((event.target as HTMLInputElement).name)?.value;
 
@@ -64,28 +62,26 @@ export class AssignReleaseComponent implements OnInit {
         const target = this.recordForm.get((event.target as HTMLInputElement).name);
 
         if(target){
-            target.setValue(getCurrentTimeString());
+            target.setValue(getCurrentDateString());
         }
 
     }
 }
 
   saveReleaseDetails() {
-    this.releaseDetails.saveRelease(this.recordForm.value).then((response: any)=>{
-      if(response[1][0].ambulanceAssignment) {
-        this.messaging.testing(response[1][0].ambulanceAssignment);
-      }
-	  response[0][0].vUpdateSuccess === 1
-                    ? this.showSnackBar.successSnackBar(
-                          'Patient status updated successfully',
-                          'OK',
-                      )
-                    : this.showSnackBar.errorSnackBar(
-                          'Error updating patient status',
-                          'OK',
-            );
 
-	this.saveSuccessResponse.emit(response[0][0].vUpdateSuccess);
+    this.releaseDetails.saveRelease(this.recordForm.value).then((response: any)=>{
+
+      if(response?.success === -1){
+        this.showSnackBar.errorSnackBar('Error updating patient status','OK');
+        return;
+      }
+
+      response.success === 1
+                      ? this.showSnackBar.successSnackBar('Patient status updated successfully','OK')
+                      : this.showSnackBar.errorSnackBar('Error updating patient status','OK');
+
+      this.saveSuccessResponse.emit(response.success);
 
     });
   }

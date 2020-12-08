@@ -18,9 +18,6 @@ export class ReleaseService extends APIService {
 
   public async saveRelease(releaseDetails: ReleaseDetails) : Promise<any> {
 
-    console.log(releaseDetails);
-
-
     if(releaseDetails.releaseId) {
       return this.put(releaseDetails);
     }

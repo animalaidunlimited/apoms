@@ -73,7 +73,6 @@ export class OutstandingCaseService {
 
   }
 
-
   receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment) {
 
     let currentOutstanding: OutstandingCase[];

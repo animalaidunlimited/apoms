@@ -15,7 +15,7 @@ interface IncomingCaseDetails {
 export class AssignReleaseDialogComponent implements OnInit {
 
   formData!: ReleaseDetails;
-
+  
   constructor(public dialogRef: MatDialogRef<AssignReleaseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
 
@@ -48,6 +48,10 @@ export class AssignReleaseDialogComponent implements OnInit {
     if(result > 0){
       this.dialogRef.close();
     }
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
   }
 
 }
