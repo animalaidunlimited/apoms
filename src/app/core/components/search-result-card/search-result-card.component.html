@@ -31,19 +31,29 @@
         
 
         <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <div class="name">{{record.Name}}</div>
 
-            <div fxLayout="row" fxLayoutAlign="start center" >
-                <div class="telephone-dash-container">
-                    <svg height="11" width="25">
-                    <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                    Sorry, your browser does not support inline SVG.
-                    </svg>
+            
+
+            <div *ngFor="let callerDetails of callerObject">
+
+                <div fxLayout="row" fxLayoutAlign="start end">
+
+                    <div class="name">{{callerDetails.callerName}}</div>
+    
+                    <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
+                        <div class="telephone-dash-container">
+                            <svg height="11" width="25">
+                            <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                            Sorry, your browser does not support inline SVG.
+                            </svg>
+                        </div>
+    
+                    <div class="telephone">{{callerDetails.callerNumber}}</div>
+                    <!-- </div> -->
+    
                 </div>
 
-                <div class="telephone">{{record.Number}}</div>
             </div>
-
 
             <div class="animal">{{record.AnimalType}}</div>
             <div class="animal-location">{{record.Location}}</div>

@@ -1,15 +1,14 @@
 export interface OutstandingRescue {
     latitude: number;
     location: string;
-    latLngLiteral: google.maps.LatLngLiteral,
+    latLngLiteral: google.maps.LatLngLiteral;
     longitude: number;
-    callerName: string;
     rescuer1Id: number;
     rescuer2Id: number;
     ambulanceArrivalTime: string | Date;
     rescueTime: string | Date;
     callDateTime: string | Date;
-    callerNumber: string;
+    callerDetails: CallerDetails[];
     rescueStatus: number;
     callOutcomeId: number;
     rescuer1Colour: string;
@@ -27,6 +26,12 @@ export interface OutstandingRescue {
     mediaCount: number;
     patientId: number;
     tagNumber:string;
+}
+
+export interface CallerDetails {
+    callerId: number;
+    callerName: string;
+    callerNumber: string;
 }
 
 export interface RescuerGroup {

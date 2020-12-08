@@ -118,6 +118,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe((value) => {
+      console.log(value);
         this.loading = false;
         this.changeDetector.detectChanges();
     });
@@ -272,9 +273,9 @@ openCase(caseSearchResult:OutstandingRescue)
     EmergencyCaseId: caseSearchResult.emergencyCaseId,
     EmergencyNumber: caseSearchResult.emergencyNumber,
     CallDateTime: caseSearchResult.callDateTime.toString(),
-    CallerId: 0,
-    Name: caseSearchResult.callerName,
-    Number: caseSearchResult.callerNumber,
+    callerDetails: caseSearchResult.callerDetails,
+    // Name: caseSearchResult.callerName,
+    // Number: caseSearchResult.callerNumber,
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,

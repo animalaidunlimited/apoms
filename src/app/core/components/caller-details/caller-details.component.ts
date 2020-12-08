@@ -5,6 +5,7 @@ import {
     Validators,
     FormBuilder,
     AbstractControl,
+    FormArray,
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Callers, Caller } from '../../models/responses';
@@ -18,8 +19,10 @@ import {
 } from 'rxjs/operators';
 import { CallerDetailsService } from './caller-details.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'caller-details',
     templateUrl: './caller-details.component.html',
     styleUrls: ['./caller-details.component.scss'],
@@ -28,6 +31,8 @@ export class CallerDetailsComponent implements OnInit {
     @Input() recordForm!: FormGroup;
 
     errorMatcher = new CrossFieldErrorMatcher();
+
+    callerArray!: FormArray;
 
     public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
 
@@ -39,38 +44,32 @@ export class CallerDetailsComponent implements OnInit {
     constructor(
         private callerService: CallerDetailsService,
         private fb: FormBuilder,
+        private snackbar: SnackbarService,
     ) {}
 
     ngOnInit() {
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
-                callerId: [],
-                callerName: ['', Validators.required],
-                callerNumber: [
-                    '',
-                    [
-                        Validators.required,
-                        Validators.pattern(
-                            '^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$',
-                        ),
-                    ],
-                ],
-                callerAlternativeNumber: [
-                    '',
-                    Validators.pattern('^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$'),
-                ],
-            }),
+                callerArray: this.fb.array([
+                    this.getCallerFormGroup()
+                ])
+            })
         );
         
         this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
+
+        this.callerArray = this.callerDetails.get('callerArray') as FormArray;
 
         this.callerService
             .getCallerByEmergencyCaseId(
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
             )
-            .subscribe((caller: Caller) => {
-                this.recordForm.patchValue(caller);
+            .subscribe((caller: Callers) => {
+                for(let i=0 ; i< caller.length - 1 ; i++) {
+                    this.callerArray.push(this.getCallerFormGroup());
+                }
+                this.callerArray.patchValue(caller);
             });
 
 
@@ -135,5 +134,39 @@ export class CallerDetailsComponent implements OnInit {
         this.recordForm.get('callerDetails.callerNumber')?.setValue(caller.Number);
         this.recordForm.get('callerDetails.callerName')?.setValue(caller.Name);
         this.recordForm.get('callerDetails.callerAlternativeNumber')?.setValue(caller.AlternativeNumber);
+    }
+
+    getCallerFormGroup(): FormGroup {
+        return this.fb.group({
+            callerId: [],
+            callerName: ['', Validators.required],
+            callerNumber: [
+                '',
+                [
+                    Validators.required,
+                    Validators.pattern(
+                        '^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$',
+                    ),
+                ],
+            ],
+            callerAlternativeNumber: [
+                '',
+                Validators.pattern('^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$'),
+            ],
+        });
+    }
+
+    addCaller(event: Event) {
+        this.callerArray.push(this.getCallerFormGroup());
+    }
+
+    removeCaller(event: Event, index: number, caller: Caller) {
+        if(this.callerArray.length > 1) {
+            this.callerArray.removeAt(index);
+            // this.callerService.deleteCallerByCallerId(caller);
+        }
+        else {
+            this.snackbar.errorSnackBar('Invalid action','OK');
+        }
     }
 }
