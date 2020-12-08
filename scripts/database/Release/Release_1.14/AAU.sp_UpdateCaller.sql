@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateCaller!!
 
-DELIMITER$$
+DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateCaller(
 									IN prm_Username VARCHAR(64),
 									IN prm_CallerId INT,
@@ -50,5 +50,4 @@ END IF;
 
 SELECT vCallerId, vSuccess;
 
-END$$
-DELIMITER ;
+END $$

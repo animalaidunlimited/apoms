@@ -272,7 +272,6 @@ updateValidators()
 
     await this.rescueDetailsService.updateRescueDetails(this.recordForm.value).then((data:UpdateResponse) =>
 {
-  console.log(data);
   this.result.emit(data);
 
 }
