@@ -9,6 +9,7 @@ import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'emergency-record',
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],
@@ -75,6 +76,8 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
+
+        console.log(resultBody);
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -89,15 +92,39 @@ export class EmergencyRecordComponent implements OnInit {
         }
 
         // Check the caller succeeded
-        if (resultBody.callerSuccess === 1) {
+
+        resultBody.callerSuccess.forEach((callerResult: any)=>{
+        if (callerResult.callerSuccess === 1) {
             result.message += '';
-        } else if (resultBody.callerSuccess === 2) {
+        } else if (callerResult.callerSuccess === 2) {
             result.message += 'Error adding the caller: Duplicate record \n';
             result.failure++;
         } else {
             result.message += 'Other error - See admin\n';
             result.failure++;
         }
+        });
+
+        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
+            if (emergencyCallerResult.Success === 1) {
+                result.message += '';
+            } else if (emergencyCallerResult.Success === 2) {
+                result.message += 'Error adding the EmergencyCaller: Duplicate record \n';
+                result.failure++;
+            } else {
+                result.message += 'Other error - See admin\n';
+                result.failure++;
+            }
+            });
+        // if (resultBody.callerSuccess === 1) {
+        //     result.message += '';
+        // } else if (resultBody.callerSuccess === 2) {
+        //     result.message += 'Error adding the caller: Duplicate record \n';
+        //     result.failure++;
+        // } else {
+        //     result.message += 'Other error - See admin\n';
+        //     result.failure++;
+        // }
 
         // Check all of the patients and their problems succeeded
 
@@ -144,7 +171,7 @@ export class EmergencyRecordComponent implements OnInit {
                 }
             });
         });
-
+        console.log(result);
         return result;
     }
 
@@ -187,7 +214,7 @@ export class EmergencyRecordComponent implements OnInit {
                             const resultBody = data as EmergencyResponse;
 
                             this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
-                            this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
@@ -219,7 +246,7 @@ export class EmergencyRecordComponent implements OnInit {
 
                             const resultBody = data as EmergencyResponse;
 
-                            this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }

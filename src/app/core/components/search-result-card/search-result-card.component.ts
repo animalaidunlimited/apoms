@@ -8,6 +8,7 @@ import { UserOptionsService } from '../../services/user-option/user-options.serv
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+import { CallerDetails } from '../../models/emergency-record';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -20,6 +21,7 @@ export class SearchResultCardComponent implements OnInit {
   @Input() record!:SearchResponse;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
+  callerObject!: CallerDetails[];
   constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
@@ -29,6 +31,7 @@ export class SearchResultCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.callerObject = JSON.parse(this.record.callerDetails);
 
     this.printService.initialisePrintTemplates();
   }
