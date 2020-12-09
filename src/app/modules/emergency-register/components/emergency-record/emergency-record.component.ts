@@ -76,8 +76,6 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
-
-        console.log(resultBody);
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -171,13 +169,10 @@ export class EmergencyRecordComponent implements OnInit {
                 }
             });
         });
-        console.log(result);
         return result;
     }
 
     async saveForm() {
-
-        console.log(this.recordForm.value);
 
         if(this.recordForm.pending){
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
