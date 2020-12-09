@@ -1,0 +1,25 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { StreettreatTabBarComponent } from './streettreat-tab-bar.component';
+
+describe('StreettreatTabBarComponent', () => {
+  let component: StreettreatTabBarComponent;
+  let fixture: ComponentFixture<StreettreatTabBarComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ StreettreatTabBarComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(StreettreatTabBarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

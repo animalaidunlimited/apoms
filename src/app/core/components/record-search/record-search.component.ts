@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subscription } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { StreetTreatTab } from '../../models/streettreet';
 
 export interface SearchValue {
     id: number;
@@ -30,7 +31,7 @@ export class RecordSearchComponent {
     @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
     searchResults$!:Observable<SearchResponse[]>;
-
+ 
     constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
