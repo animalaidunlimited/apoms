@@ -9,17 +9,22 @@ import {
     CallType,
     PatientCallOutcome,
     Exclusions,
-    PatientStatusResponse
+    PatientStatusResponse,
+    StreetTreatMainProblem
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../../models/user';
+import { User, ReleaseManager } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
-import { TeamDetails } from "../../models/team";
+import { TeamDetails } from '../../models/team';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
+import { Status } from '../../models/status';
+import { VisitType } from '../../models/visit-type';
+import { TreatmentPriority as Priority } from '../../enums/patient-details';
+
 
 
 export interface AnimalTypeResponse {
@@ -59,7 +64,13 @@ export class DropdownService extends APIService {
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
     jobTypes$!: Observable<UserJobType[]>;
-    team$!: Observable<TeamDetails[]>;
+	team$!: Observable<TeamDetails[]>;
+	status$!:Observable<Status[]>;
+	visitTypes$!:Observable<VisitType[]>;
+	priority$!:Observable<Priority[]>;
+    releaseManagers$!: Observable<ReleaseManager[]>;
+    streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
+
 
 
 
@@ -308,7 +319,6 @@ export class DropdownService extends APIService {
 
     getProblems(): Observable<ProblemDropdownResponse[]> {
         const request = '/Problems';
-
         if (!this.problems$) {
             this.problems$ = this.getObservable(request).pipe(
                 map((response: ProblemDropdownResponse[]) => {
@@ -316,7 +326,6 @@ export class DropdownService extends APIService {
                 }),
             );
         }
-
         return this.problems$;
     }
 
@@ -574,7 +583,7 @@ export class DropdownService extends APIService {
 
     getAllTeams(): Observable<TeamDetails[]>{
         const request = '/GetAllTeams';
-    
+
         if(!this.team$) {
           this.team$ = this.getObservable(request).pipe(
             map(response=>{
@@ -585,7 +594,7 @@ export class DropdownService extends APIService {
         return this.team$;
       }
 
-      
+
   getUserJobType(): Observable<UserJobType[]> {
     const request = '/GetJobTypes';
 
@@ -597,6 +606,72 @@ export class DropdownService extends APIService {
       );
     }
     return this.jobTypes$;
+  }
+
+  getStatus(): Observable<Status[]>{
+	const request = '/GetStatus';
+
+	if(!this.status$) {
+	  this.status$ = this.getObservable(request).pipe(
+		map(response=>{
+		  return response.data;
+		})
+	  );
+	}
+	return this.status$;
+  }
+  getVisitType(): Observable<VisitType[]>{
+	  const request = '/GetVisitType';
+	  if(!this.visitTypes$){
+		this.visitTypes$ = this.getObservable(request).pipe(
+			map(response => {
+				return response.data;
+			})
+		);
+	  }
+	  return this.visitTypes$;
+  }
+  getPriority(): Observable<Priority[]>{
+	  const request = '/GetPriority';
+	  if(!this.priority$){
+		  this.priority$ = this.getObservable(request).pipe(
+			  map(response=> {
+				  return response;
+			  })
+		  );
+	  }
+	  return this.priority$;
+    }
+
+  getReleaseManagers(): Observable<ReleaseManager[]> {
+    const request = '/GetReleaseManagers';
+
+    if(!this.releaseManagers$) {
+        this.releaseManagers$ = this.getObservable(request).pipe(
+            map((response: ReleaseManager[])=>{
+                return response;
+            })
+        );
+    }
+
+    return this.releaseManagers$;
+
+
+    }
+
+    getStreetTreatMainProblems(): Observable<StreetTreatMainProblem[]> {
+      const request = '/GetStreetTreatMainProblem';
+
+      if(!this.streetTreatMainProblem$) {
+        this.streetTreatMainProblem$ = this.getObservable(request).pipe(
+            map((response: StreetTreatMainProblem[])=>{
+                return response;
+            })
+        );
+    }
+
+    return this.streetTreatMainProblem$;
+
   }
 
 }

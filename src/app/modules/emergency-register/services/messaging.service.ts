@@ -32,6 +32,9 @@ constructor(
 
     receiveBackgroundMessage(message:string){
 
+        console.log("receiving message");
+        console.log(message);
+
         this.distributeMessage(message);
 
     }
@@ -46,7 +49,7 @@ constructor(
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
 
         // This is a rescue message, so pass this on to the outstanding-case service
-        if(message.hasOwnProperty('rescueStatus')){
+        if(message.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
 

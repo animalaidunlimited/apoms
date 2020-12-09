@@ -1,0 +1,68 @@
+<form [formGroup]='recordForm'>
+
+<div fxLayout="row wrap" fxLayoutAlign="center center">
+    <mat-form-field appearance="fill" class="select" >
+        <mat-label>Release type</mat-label>
+        <mat-select formControlName="releaseType" style="width: 100%;" [disabled]="true">
+            <mat-option *ngFor="let release of releaseTypes" class="select"  [value]="release.id">
+                {{release.type}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div class="div" fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign="center center">
+    <img _ngcontent-lei-c38="" src="assets/images/Dog.png" class="images" alt="dog_face">
+
+    <mat-form-field appearance="fill">
+        <mat-label>Releaser 1</mat-label>
+            <mat-select formControlName="Releaser1">
+                <mat-option>N/A</mat-option>
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
+                    {{releaser.FirstName}}
+                </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Releaser 2</mat-label>
+            <mat-select formControlName="Releaser2">
+                <mat-option>N/A</mat-option>
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
+                    {{releaser.FirstName}}
+                </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <img _ngcontent-lei-c38="" src="assets/images/Calf.png" class="images" alt="dog_face">
+</div>
+
+<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
+
+    <mat-form-field appearance="fill" class="select">
+        <mat-label>Pickup date</mat-label>
+        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="date" name="pickupDate" formControlName="pickupDate">
+    </mat-form-field>
+
+</div>
+
+<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
+
+    <img _ngcontent-lei-c38="" src="assets/images/Donkey.png" class="images" alt="dog_face">
+
+    <mat-form-field appearance="fill" class="select">
+        <mat-label>Release begin date</mat-label>
+        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="date" name="releaseBeginDate" formControlName="releaseBeginDate">
+    </mat-form-field>
+
+    <img _ngcontent-lei-c38="" src="assets/images/Cat.png" class="images" alt="dog_face">
+</div>
+
+<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
+
+    <mat-form-field appearance="fill" class="select">
+        <mat-label>Release complete date</mat-label>
+        <input matInput (focus)="setInitialDate($event)" style="width: 100%;" type="date" name="releaseEndDate" formControlName="releaseEndDate">
+    </mat-form-field>
+
+</div>
+</form>

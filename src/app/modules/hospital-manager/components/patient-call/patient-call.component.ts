@@ -1,15 +1,9 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
-import {
-    FormBuilder,
-    AbstractControl,
-    FormArray,
-    FormGroup,
-    Validators,
-} from '@angular/forms';
+import { FormBuilder, AbstractControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { CallType, PatientCallOutcome } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
@@ -81,9 +75,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
                 patientIdControl.setValue(changes.patientId.currentValue);
                 this.loadPatientCalls();
             }
-            //else{
-            //    throw new Error('PatientIdControl is empty');
-            //}
 
 
         }

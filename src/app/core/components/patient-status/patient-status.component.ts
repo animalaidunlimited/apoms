@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Patient } from '../../models/patients';
@@ -10,6 +9,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { PatientStatusResponse } from '../../models/responses';
 import { Observable } from 'rxjs';
+import { PatientService } from '../../services/patient/patient.service';
 
 
 @Component({

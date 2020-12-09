@@ -4,7 +4,7 @@ import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 
 @Component({
     selector: 'cruelty-details',

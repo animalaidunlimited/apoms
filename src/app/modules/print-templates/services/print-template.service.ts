@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { PrintPatient, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { Router } from '@angular/router';
-import { PatientService } from '../../emergency-register/services/patient.service';
+import { PatientService } from '../../../core/services/patient/patient.service';
 import { map } from 'rxjs/operators';
 
 

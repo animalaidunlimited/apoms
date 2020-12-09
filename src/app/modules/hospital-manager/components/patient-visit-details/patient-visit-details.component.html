@@ -1,0 +1,89 @@
+
+<h5 mat-dialog-title>Add StreetTreat visits</h5>
+<form [formGroup]="visitForm" >
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
+		<mat-form-field appearance="fill">
+			<mat-select placeholder="Case priority" formControlName="casePriority">
+				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
+					{{ treatmentPriority.Priority }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Team</mat-label>
+			<mat-select formControlName='teamId'>
+				<mat-option *ngFor="let name of teamListData" [value]="name.TeamId">
+					{{name.TeamName}}
+					</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Main problem</mat-label>
+			<mat-select  formControlName="mainProblem">
+				<mat-option *ngFor="let problem of problems$" [value]="problem.MainProblemId">
+					{{ problem.MainProblem}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom" >
+		<mat-form-field appearance="fill"  style="flex-grow: 2;">
+			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>Case Status</mat-label>
+			<mat-select placeholder="Select" formControlName="streetTreatCaseStatus">
+				<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"
+		formArrayName="visits">
+		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
+			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
+				<div [formGroupName]="visitIndex">
+					<mat-form-field appearance="fill">
+						<mat-label>Day</mat-label>
+						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
+							value="0" formControlName="visit_day"  />
+							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
+								Day should be unique
+							</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="fill">
+						<mat-label>Visit status</mat-label>
+						<mat-select placeholder="Select" formControlName="visit_status">
+							<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+
+					<mat-form-field appearance="fill">
+						<mat-label>Visit type</mat-label>
+
+						<mat-select placeholder="Select" formControlName="visit_type">
+							<mat-option  *ngFor="let visitTypes of visitType$" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field appearance="fill">
+						<textarea matInput placeholder="Admin Comments" cdkAutosizeMinRows="1" cdkTextareaAutosize
+							cdkAutosizeMaxRows="2" formControlName="visit_comments"></textarea>
+					</mat-form-field>
+
+					<div class="mat-fab-wrapper">
+						<button mat-mini-fab color="warn" aria-label="Delete this Visit"
+							(click)="deleteVisits(visitIndex)" >
+							<mat-icon>delete_outline</mat-icon>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
+		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVisits($event)">
+			<mat-icon>add</mat-icon>
+		</button>
+	</div>
+
+</form>

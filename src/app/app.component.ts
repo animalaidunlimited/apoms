@@ -57,6 +57,9 @@ export class AppComponent implements OnInit{
         // Set up to receive messages from the service worker when the app is in the background.
         navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
+            console.log('Component message');
+            console.log(event);
+
             if(event.data.hasOwnProperty('image') || event.data.hasOwnProperty('video')){
 
                 this.emergencyTabBar.receiveSharedMediaItem(event.data);

@@ -4,7 +4,7 @@ import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingRescue } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -13,7 +13,9 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+
 
 export interface Swimlane{
   label:string;
@@ -73,6 +75,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   constructor(
     public rescueDialog: MatDialog,
+    public assignReleaseDialog: MatDialog,
     private fb: FormBuilder,
     private zone: NgZone,
     private messagingService: MessagingService,
@@ -230,7 +233,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     }
   }
 
-  openRescueEdit(outstandingCase:OutstandingRescue){
+  openRescueEdit(outstandingCase:OutstandingAssignment){
 
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         width: '500px',
@@ -265,7 +268,7 @@ openCaseFromMap(emergencyCase:SearchResponse){
 
 }
 
-openCase(caseSearchResult:OutstandingRescue)
+openCase(caseSearchResult:OutstandingAssignment)
 {
   const result:SearchResponse = {
 
@@ -305,6 +308,41 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
+openAssignReleaseDialog(caseDetails: OutstandingAssignment) {
+  const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    data: {
+      caseDetails
+    }
+  });
+}
 
+getTimer(startDateTime: Date | string) : string {
+
+  if(typeof startDateTime === 'string'){
+    startDateTime = new Date(startDateTime);
+  }
+
+  const result = Math.floor((new Date()).getTime() - startDateTime.getTime());
+
+  let elapsedTime = '';
+
+  if(result < 3600000){
+    elapsedTime = Math.round(result / 60000) + 'm';
+  }
+  else if (result >= 3600000 && result < 86400000){
+    elapsedTime = Math.round(result / 3600000) + 'h';
+  }
+  else if (result >= 86400000){
+    elapsedTime = Math.round(result / 86400000) + 'd';
+  }
+  else {
+    elapsedTime = 'Unk';
+  }
+
+  return elapsedTime;
+
+}
 
 }

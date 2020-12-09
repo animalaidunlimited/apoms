@@ -8,8 +8,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
-import { PatientService } from 'src/app/modules/emergency-register/services/patient.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { isImageFile, isVideoFile } from '../../helpers/utils';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -84,8 +85,7 @@ export class MediaPasteService {
 
                   const uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
 
-                  // TODO - Type s properly
-                  newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map((s:any) => (s.bytesTransferred / s.totalBytes) * 100));
+                  newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
                   uploadResult.then((result) => {
 
@@ -108,8 +108,7 @@ export class MediaPasteService {
 
                 const uploadResult = this.uploadFile(newMediaItem, file);
 
-                // TODO - Type s properly
-                newMediaItem.uploadProgress$ = uploadResult.snapshotChanges().pipe(map((s:any) => (s.bytesTransferred / s.totalBytes) * 100));
+                newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
                 // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
@@ -139,6 +138,16 @@ export class MediaPasteService {
       }).catch(error => console.log(error));
 
 return returnObject;
+
+  }
+
+  getUploadProgress(uploadResult:AngularFireUploadTask) : Observable<number>{
+
+    return uploadResult.snapshotChanges().pipe(map((snapshot:UploadTaskSnapshot|undefined) =>{
+
+      return snapshot ? (snapshot.bytesTransferred / snapshot.totalBytes) * 100 : 0;
+
+    }));
 
   }
 
