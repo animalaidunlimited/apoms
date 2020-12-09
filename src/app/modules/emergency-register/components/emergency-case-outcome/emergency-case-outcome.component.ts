@@ -10,6 +10,7 @@ import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'emergency-case-outcome',
   templateUrl: './emergency-case-outcome.component.html',
   styleUrls: ['./emergency-case-outcome.component.scss']
@@ -19,7 +20,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
-
+                                            
   errorMatcher = new CrossFieldErrorMatcher();
 
   callOutcomes$!:Observable<CallOutcomeResponse[]>;
