@@ -101,6 +101,10 @@ export interface SearchResponse {
     Longitude: number;
     CurrentLocation: string | undefined;
 }
+export interface SearchStreetTreatResponse {
+
+    [x: string] : string | any;
+}
 
 export interface PatientStatus {
     PatientId: number;
