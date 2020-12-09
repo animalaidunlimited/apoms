@@ -1,0 +1,21 @@
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCallerByNumber !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetCallerByNumber(IN prm_Number VARCHAR(45))
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 24/02/2020
+Purpose: Used to return a Caller by Number.
+*/
+
+SELECT CallerId, Name, Number, AlternativeNumber
+FROM AAU.Caller c
+INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
+WHERE Number LIKE CONCAT(prm_Number, '%') AND ecr.IsDeleted = 0
+LIMIT 10;
+
+END$$
+DELIMITER ;
