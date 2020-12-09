@@ -17,41 +17,80 @@ for display in the rescue board.
 
 SELECT 
 JSON_MERGE_PRESERVE(
-			JSON_OBJECT("rescueStatus", AAU.fn_GetRescueStatus(ec.Rescuer1Id, ec.Rescuer2Id, ec.AmbulanceArrivalTime, ec.RescueTime, ec.AdmissionTime, ec.CallOutcomeId)),
-			JSON_OBJECT("rescuer1Id", r1.UserId),
-			JSON_OBJECT("rescuer1Abbreviation", r1.Initials),
-            JSON_OBJECT("rescuer1Colour", r1.Colour),
-			JSON_OBJECT("rescuer2Id", r2.UserId),
-			JSON_OBJECT("rescuer2Abbreviation", r2.Initials),
-            JSON_OBJECT("rescuer2Colour", r1.Colour),
+			JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(p.ReleaseDetailsId, 
+																p.RequestedUser, 
+																p.RequestedDate, 
+																p.Releaser1Id, 
+																p.Releaser2Id, 
+																p.PickupDate, 
+																p.BeginDate, 
+																p.EndDate,
+																ec.Rescuer1Id,
+																ec.Rescuer2Id, 
+																ec.AmbulanceArrivalTime, 
+																ec.RescueTime, 
+																ec.AdmissionTime, 
+																ec.CallOutcomeId
+																)),
+			JSON_OBJECT("staff1", IF(p.ReleaseDetailsId IS NULL,r1.UserId,p.Releaser1Id)),
+			JSON_OBJECT("staff1Abbreviation", IF(p.ReleaseDetailsId IS NULL,r1.Initials,p.Releaser1Initials)),
+            JSON_OBJECT("staff1Colour", IF(p.ReleaseDetailsId IS NULL, r1.Colour,p.Releaser1Colour)),
+			JSON_OBJECT("staff2",IF(p.ReleaseDetailsId IS NULL,r2.UserId,p.Releaser2Id)),
+			JSON_OBJECT("staff2Abbreviation", IF(p.ReleaseDetailsId IS NULL,r2.Initials,IFNULL(p.Releaser2Initials,''))),
+            JSON_OBJECT("staff2Colour", IF(p.ReleaseDetailsId IS NULL, r2.Colour,IF(p.Releaser2Id IS NULL, null, p.Releaser2Colour))),
             JSON_OBJECT("ambulanceArrivalTime", ec.AmbulanceArrivalTime),
             JSON_OBJECT("rescueTime", ec.RescueTime),
+            JSON_OBJECT("releaseId", p.ReleaseDetailsId),
+            JSON_OBJECT("pickupDate", p.PickupDate),
+            JSON_OBJECT("releaseBeginDate", p.BeginDate),
+            JSON_OBJECT("releaseEndDate", p.EndDate),
+            JSON_OBJECT("releaseTypeId", p.ReleaseTypeId),
+            JSON_OBJECT("ambulanceAction", IF(p.ReleaseDetailsId IS NULL, 'Rescue', 'Release')),
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
             JSON_OBJECT("emergencyNumber", ec.EmergencyNumber),
             JSON_OBJECT("emergencyCodeId", ec.EmergencyCodeId),
             JSON_OBJECT("callDateTime", ec.CallDateTime),
             JSON_OBJECT("callOutcomeId", ec.CallOutcomeId),
-            JSON_OBJECT('callerDetails', ca.CallerDetails),
+			JSON_OBJECT('callerDetails', ca.CallerDetails),
+			
             JSON_OBJECT("location", ec.Location),
             JSON_OBJECT("latitude", ec.Latitude),
             JSON_OBJECT("longitude", ec.Longitude),
 			JSON_OBJECT("latLngLiteral",
-            JSON_MERGE_PRESERVE(
-            JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
-            JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            )),            
+				JSON_MERGE_PRESERVE(
+				JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
+				)),            
+            JSON_OBJECT("animalTypes", p.AnimalTypes),
             JSON_OBJECT("patients", p.Patients),
             JSON_OBJECT("isLargeAnimal", p.IsLargeAnimal)
 
-            ) AS `Rescues`
+            ) AS `ambulanceAssignment`
 FROM AAU.EmergencyCase ec
 INNER JOIN
 (
-SELECT p.EmergencyCaseId,
-JSON_ARRAYAGG(ant.AnimalType) AS Patients,
-MAX(LargeAnimal) as IsLargeAnimal
+	SELECT p.EmergencyCaseId,
+	rd.ReleaseDetailsId,
+    rl1.Initials AS Releaser1Initials,
+    rl2.Initials AS Releaser2Initials,
+    rl1.Colour AS Releaser1Colour,
+    rl2.Colour AS Releaser2Colour,
+    rd.RequestedUser,
+    rd.RequestedDate,
+    rd.ReleaseTypeId,
+    rd.Releaser1Id,
+    rd.Releaser2Id,
+    rd.PickupDate,
+    rd.BeginDate,
+    rd.EndDate,
+	JSON_ARRAYAGG(ant.AnimalType) AS AnimalTypes,
+    JSON_ARRAYAGG(p.PatientId) AS Patients,
+	MAX(LargeAnimal) as IsLargeAnimal
 FROM AAU.Patient p
 INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+LEFT JOIN AAU.User rl1 ON rl1.UserId = rd.Releaser1Id
+LEFT JOIN AAU.User rl2 ON rl2.UserId = rd.Releaser2Id
 GROUP BY p.EmergencyCaseId
 ) p ON p.EmergencyCaseId = ec.EmergencyCaseId 
 INNER JOIN (

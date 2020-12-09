@@ -276,8 +276,6 @@ openCase(caseSearchResult:OutstandingAssignment)
     EmergencyNumber: caseSearchResult.emergencyNumber,
     CallDateTime: caseSearchResult.callDateTime.toString(),
     callerDetails: caseSearchResult.callerDetails,
-    // Name: caseSearchResult.callerName,
-    // Number: caseSearchResult.callerNumber,
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,
