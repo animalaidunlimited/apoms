@@ -3,6 +3,7 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subscription } from 'rxjs';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 export interface SearchValue {
     id: number;
@@ -35,11 +36,20 @@ export class RecordSearchComponent {
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
         private caseService: CaseService,
+        private showSnackBar: SnackbarService
     ) {}
 
     onSearchQuery(searchQuery:string){
 
          this.searchResults$ = this.caseService.searchCases(searchQuery);
+         this.searchResults$.subscribe((res:any) => 
+         {
+            if(res?.success === -1){
+                this.showSnackBar.errorSnackBar('An error occured, See Admin','OK');
+                return;
+            }
+         });
+         
     }
 
     openCase(searchResult: SearchResponse) {
