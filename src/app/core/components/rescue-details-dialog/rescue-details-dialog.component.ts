@@ -18,6 +18,7 @@ interface CanExitChange {
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'rescue-details-dialog',
     templateUrl: './rescue-details-dialog.component.html',
     styleUrls: ['./rescue-details-dialog.component.scss'],

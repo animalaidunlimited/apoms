@@ -17,7 +17,9 @@ const PROXY_CONFIG = [
             "/PrintTemplate",
             "/Treatment",
             "/Users",
-            "/Teams"
+            "/Teams",
+            "/UserAdmin",
+            "/ReleaseDetails"
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",

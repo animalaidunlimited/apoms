@@ -18,6 +18,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+
 registerLocaleData(localeIt);
 
 @Injectable({
@@ -36,7 +37,9 @@ export class UIErrorHandler extends ErrorHandler {
 }
 
 @NgModule({
+
     declarations: [AppComponent, ConfirmationDialog],
+
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

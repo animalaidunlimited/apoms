@@ -14,12 +14,12 @@
         </button>
 
         <button mat-icon-button color="primary"
-            class="circle-image-button">
+        class="circle-image-button">
         <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_photo_alternate</mat-icon>
         <i>{{record.MediaCount}}</i>
         </button>
-    
-        
+
+
 
         <div class="location">{{record.CurrentLocation}}
             <svg height="3" width="95%">
@@ -28,7 +28,7 @@
             </svg>
         </div>
 
-        
+
 
         <div fxLayout="column" fxLayoutAlign="space-around start" >
 
@@ -76,9 +76,13 @@
             <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add surgery" (click)="addSurgery(record.PatientId, record.TagNumber, record.EmergencyNumber, record.AnimalType)">
                 <mat-icon>local_hospital</mat-icon>
             </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Print card" (click)="printEmergencyCard(record.PatientId)">
-                <mat-icon>print</mat-icon>
+
+            <button mat-icon-button color="primary" aria-label="Release details"
+            (click)="openReleaseDialog(record.EmergencyCaseId, record.TagNumber, record.PatientId)">
+            <mat-icon>airport_shuttle</mat-icon>
             </button>
+
+
         </mat-card-actions>
         <mat-card-footer class="emergency-card-footer">
             {{record.CallDateTime | date: 'dd/MMM/yyyy' : '00:00' }}

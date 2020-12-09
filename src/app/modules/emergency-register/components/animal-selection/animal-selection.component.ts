@@ -9,13 +9,13 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { Patient, Patients } from 'src/app/core/models/patients';
-import { PatientService } from '../../services/patient.service';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -180,6 +180,7 @@ export class AnimalSelectionComponent implements OnInit {
     loadPatientArray(emergencyCaseId: number) {
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+
 
                     this.patientArray = this.recordForm.get('patients') as FormArray;
 

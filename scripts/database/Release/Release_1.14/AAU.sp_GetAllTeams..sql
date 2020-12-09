@@ -1,21 +1,21 @@
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_GetAllTeams!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetAllVisitIdsByPatientId!!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_GetAllTeams()
+CREATE PROCEDURE AAU.sp_GetAllVisitIdsByPatientId(IN prm_PatientId INT)
 BEGIN
+
 /*
-Created By: Jim Mackenzie
-Created On: 23/08/2018
-Purpose: Used to return a list of the teams
+Created By: Ankit Singh
+Created On: 01/12/2020
+Purpose: Used to return a list of the visit IDs by patient Id.
 */
 
-SELECT t.TeamId, t.TeamName, t.Capacity, COUNT(u.UserId) AS Members, t.IsDeleted
-FROM AAU.Team t
-LEFT OUTER JOIN AAU.User u ON u.TeamId = t.TeamId
-WHERE t.IsDeleted != 1
-GROUP BY t.TeamId, t.TeamName, t.Capacity, t.IsDeleted;
-
+	SELECT v.VisitId
+	FROM AAU.Visit v 
+	INNER JOIN AAU.StreetTreatCase stc ON stc.StreetTreatCaseId = v.StreetTreatCaseId
+	WHERE PatientId = prm_PatientId;
+	
 END$$
 

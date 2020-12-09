@@ -1,17 +1,21 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForTeamByDate!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForTeamByDate !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForTeamByDate(	IN prm_teamId INT,
-																		IN prm_visitDate DATE
-																	)
+CREATE PROCEDURE AAU.sp_GetActiveCasesForTeamByDate (	IN prm_teamId INT,
+														IN prm_visitDate DATE
+													)
 BEGIN
 
 /*
 Created By: Jim Mackenzie
 Created On: 18/11/2020
 Purpose: Used to return active cases for the StreetTreat mobile app.
+
+Modified By: Jim Mackenzie
+Modified On: 07/12/2020
+Description: Altering to run from new Apoms tables
 */
 
 DECLARE prmVisitDate DATE;
@@ -20,65 +24,68 @@ DECLARE prmVisitDate DATE;
     -- SELECT CURDATE() INTO prmVisitDate;
 
 	SELECT
-			c.CaseId,
-			c.EmergencyNumber,
-            c.TagNumber,
+			c.StreetTreatCaseId AS CaseId,
+			ec.EmergencyNumber,
+            p.TagNumber,
 			at.AnimalType,
             at.AnimalTypeId,
             s.Status,
             s.StatusId,
-			c.AnimalName,
+			p.Description AS AnimalName,
 			nv.NextVisit,
             nv.NextVisitStatusId,
 			pc.PercentComplete,
-			c.Address,
-			p.Priority,
-            p.PriorityId,
+			ec.Location AS Address,
+			pr.Priority,
+            pr.PriorityId,
             t.TeamName,
             t.TeamId,
-            c.Latitude,
-            c.Longitude,
-            c.ComplainerName,
-            c.ComplainerNumber,
-            c.AdminNotes,
+            ec.Latitude,
+            ec.Longitude,
+            ca.Name AS ComplainerName,
+            ca.Number AS ComplainerNumber,
+            c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            c.ReleasedDate,
+            p.PatientStatusDate AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
             mp.MainProblem
-	FROM AAU.Case c
+	FROM AAU.StreetTreatCase c
+    INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
+    INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    INNER JOIN AAU.Caller ca ON ca.CallerId = ec.CallerId
 	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
-	INNER JOIN AAU.Priority p ON p.PriorityId = c.PriorityId
-	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = c.AnimalTypeId
-	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId AND (t.TeamId = prm_teamId OR prm_teamId = -1)
-    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId    
+	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
+	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+	INNER JOIN AAU.Team t ON c.TeamId = t.TeamId AND (t.TeamId = prm_teamId OR prm_teamId = 1)
+    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
 	LEFT JOIN
 		(
-		SELECT CaseId,
+		SELECT StreetTreatCaseId,
 		SUM(CASE WHEN StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete
 		FROM AAU.Visit
-        GROUP BY CaseId
-		) AS pc ON pc.CaseId = c.CaseId
+        GROUP BY StreetTreatCaseId
+		) AS pc ON pc.StreetTreatCaseId = c.StreetTreatCaseId
 
 INNER JOIN
 (
-   SELECT v.CaseId, v.StatusId AS NextVisitStatusId, fv.NextVisit
+   SELECT v.StreetTreatCaseId, v.StatusId AS NextVisitStatusId, fv.NextVisit
    FROM
    (
-        SELECT CaseId, MIN(Date) AS NextVisit
+        SELECT StreetTreatCaseId, MIN(Date) AS NextVisit
         FROM AAU.Visit
         WHERE Date >= prmVisitDate
         AND IsDeleted = FALSE
-        GROUP BY CaseId
+        GROUP BY StreetTreatCaseId
 	) fv
-		
-	INNER JOIN AAU.Visit v ON v.CaseId = fv.CaseId
+
+	INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = fv.StreetTreatCaseId
 		AND fv.NextVisit = v.Date
         AND v.IsDeleted = 0
-) nv ON nv.CaseId = c.CaseId
-		
-	WHERE nv.NextVisit = prmVisitDate -- Only get active cases 
+) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
+
+	WHERE nv.NextVisit = prmVisitDate -- Only get active cases
     AND c.IsDeleted = 0
     AND nv.NextVisit <= IFNULL(c.ClosedDate, DATE_ADD(NOW(), INTERVAL 10 YEAR));
 

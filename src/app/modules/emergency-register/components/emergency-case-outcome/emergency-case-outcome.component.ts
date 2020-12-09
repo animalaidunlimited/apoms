@@ -93,19 +93,17 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     if(callOutcomeId === 1){
 
+      // If we're selecting admission, check to make sure all of the animals have a TagNumber
+      const patientArray = this.recordForm.get('patients') as FormArray;
 
-    // If we're selecting admission, check to make sure all of the animals have a TagNumber
-    const patientArray = this.recordForm.get('patients') as FormArray;
+      patientArray.controls.forEach(patient => {
 
-    patientArray.controls.forEach(patient => {
+        patient?.get('tagNumber')?.setValidators(Validators.required);
+        patient?.get('tagNumber')?.updateValueAndValidity();
 
-      patient?.get('tagNumber')?.setValidators([Validators.required]);
-
-    });
+      });
 
     }
-
-
 
     this.changeDetector.detectChanges();
 
@@ -140,11 +138,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
       emergencyForm: [this.recordForm.value]
     });
 
-    await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) =>
-
-      this.result.emit(data)
-
-    );
+    await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) => this.result.emit(data));
   }
 
   compareCallOutcome(outcome1: CallOutcomeResponse, outcome2: CallOutcomeResponse){
