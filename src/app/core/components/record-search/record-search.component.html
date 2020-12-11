@@ -1,8 +1,8 @@
 <app-search-field (searchString)="onSearchQuery($event)"></app-search-field>
 
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" class="search-results">
+<div class="search-results">
 
-    <div *ngIf="searchResults$ | async as searchResults;">
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngIf="searchResults$ | async as searchResults;">
 
         <div *ngIf="searchResults.length === 0;">No results</div>
 

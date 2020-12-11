@@ -12,12 +12,12 @@ CREATE PROCEDURE AAU.sp_InsertVisit(
 	IN prm_AdminNotes TEXT,
 	IN prm_OperatorNotes TEXT,
 	IN prm_IsDeleted BOOLEAN,
-	IN prm_Day TINYINT(2)
+	IN prm_Day TINYINT
 )
 BEGIN
 
 DECLARE vVisitExisits INT;
-DECLARE vSuccess TINYINT(1);
+DECLARE vSuccess TINYINT;
 
 SET vVisitExisits = 0;
 

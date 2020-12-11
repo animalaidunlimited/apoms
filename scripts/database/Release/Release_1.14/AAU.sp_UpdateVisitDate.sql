@@ -17,9 +17,9 @@ SELECT
     count(1) 
     INTO 
     vStreetTreatCaseId, 
-	vVisitExists 
+	vVisitExists
 FROM 
-	AAU.Streettreatcase 
+	AAU.StreetTreatCase 
 WHERE 
 	PatientId = (
 		SELECT PatientId from ReleaseDetails WHERE ReleaseDetailsId = prm_ReleaseDetailsId
