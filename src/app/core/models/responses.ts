@@ -102,8 +102,28 @@ export interface SearchResponse {
     CurrentLocation: string | undefined;
 }
 export interface SearchStreetTreatResponse {
-
-    [x: string] : string | any;
+    AnimalType: string;
+    AnimalTypeId: number;
+    CallDateTime: number;
+    CallOutcome: string | undefined;
+    CallOutcomeId: number | undefined;
+    CallerId: number;
+    CurrentLocation: string | undefined;
+    EmergencyCaseId: number;
+    EmergencyNumber: number;
+    Latitude: number;
+    Location: string;
+    Longitude: number;
+    MediaCount: number;
+    Name: string;
+    Number: string;
+    PatientId: number;
+    StreetTreatCaseId: number;
+    TagNumber: string;
+    UserName: string;
+    sameAsNumber: string | undefined;
+    streetTreatCaseSuccess? : number;
+    ReleaseStatus: "Pending" | "Released";
 }
 
 export interface PatientStatus {

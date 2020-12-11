@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subscription } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
-import { StreetTreatTab } from '../../models/streettreet';
 
 export interface SearchValue {
     id: number;
@@ -54,7 +53,6 @@ export class RecordSearchComponent {
     }
 
     openCase(searchResult: SearchResponse) {
-
         this.openEmergencyCase.emit(searchResult);
     }
 }

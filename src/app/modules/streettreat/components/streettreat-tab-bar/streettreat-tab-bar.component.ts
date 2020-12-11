@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SearchStreetTreatResponse, StreetTreatTab } from 'src/app/core/models/streettreet';
-
+import { StreetTreatTab } from 'src/app/core/models/streettreet';
+import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
 @Component({
   selector: 'app-streettreat-tab-bar',
   templateUrl: './streettreat-tab-bar.component.html',
   styleUrls: ['./streettreat-tab-bar.component.scss']
 })
-export class StreettreatTabBarComponent implements OnInit {
+export class StreetTreatTabBarComponent implements OnInit {
 
   constructor() { }
   selected = new FormControl(0);
