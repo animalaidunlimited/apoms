@@ -27,16 +27,9 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-DROP TABLE IF EXISTS outstandingActions;
 
-
-CREATE TEMPORARY TABLE outstandingActions(
-ActionStatus INT,
-AmbulanceAssignment JSON
-);
-
-
-INSERT INTO outstandingActions
+WITH outstandingActions AS
+(
 SELECT 
 AAU.fn_GetRescueStatus(
 	p.ReleaseDetailsId, 
@@ -114,7 +107,7 @@ AAU.fn_GetRescueStatus(
             JSON_OBJECT("patients", p.Patients),
             JSON_OBJECT("isLargeAnimal", p.IsLargeAnimal)
             )
-    )))
+    ))) AS `AmbulanceAssignment`
     FROM AAU.EmergencyCase ec
 INNER JOIN
 (
@@ -132,14 +125,27 @@ INNER JOIN
     rd.PickupDate,
     rd.Begindate,
     rd.EndDate,
-    p.EmergencyCaseId,
-    p.TagNumber,
-	JSON_ARRAYAGG(ant.AnimalType) AS AnimalTypes,
     pm.MediaCount,
-    JSON_ARRAYAGG(p.PatientId) AS Patients,
-    MAX(LargeAnimal) as IsLargeAnimal
-	FROM AAU.Patient p
-	INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
+    pd.EmergencyCaseId,
+	pd.TagNumber,
+    pd.AnimalTypes,
+    pd.Patients,
+    pd.IsLargeAnimal    
+	FROM (
+    SELECT
+		pd.EmergencyCaseId,
+		pd.TagNumber,
+        pd.PatientId,
+		JSON_ARRAYAGG(ant.AnimalType) AS AnimalTypes,    
+		JSON_ARRAYAGG(pd.PatientId) AS Patients,
+		MAX(ant.LargeAnimal) as IsLargeAnimal
+    FROM AAU.Patient pd
+    INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = pd.AnimalTypeId
+    GROUP BY pd.EmergencyCaseId,
+    pd.PatientId,
+    pd.TagNumber
+    ) pd
+	
 	LEFT JOIN (
 		SELECT ReleaseDetailsId, 
         PatientId, 
@@ -158,13 +164,13 @@ INNER JOIN
         FROM AAU.ReleaseDetails rd
 		LEFT JOIN AAU.User rl1 ON rl1.UserId = rd.Releaser1Id
 		LEFT JOIN AAU.User rl2 ON rl2.UserId = rd.Releaser2Id
-    ) AS rd ON rd.PatientId = p.PatientId
+    ) AS rd ON rd.PatientId = pd.PatientId
     LEFT JOIN (
 		SELECT COUNT(URL) AS MediaCount,PatientId
 		FROM AAU.PatientMediaItem
 		GROUP BY PatientId
-    ) pm ON pm.PatientId = p.PatientId
-    GROUP BY p.EmergencyCaseId
+    ) pm ON pm.PatientId = pd.PatientId
+    
 ) p ON p.EmergencyCaseId = ec.EmergencyCaseId
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
@@ -195,10 +201,16 @@ GROUP BY AAU.fn_GetRescueStatus(p.ReleaseDetailsId,
 								ec.AdmissionTime, 
 								ec.CallOutcomeId
 ),
-IF(p.releaseDetailsId IS NULL,r1.UserId,p.Releaser1Id),
-IF(p.releaseDetailsId IS NULL,r1.Initials,p.releaser1Initials),
-IF(p.releaseDetailsId IS NULL,r2.UserId,p.Releaser2Id),
-IF(p.releaseDetailsId IS NULL,r2.Initials,IFNULL(p.releaser2Initials,''));
+p.releaseDetailsId,
+r1.UserId,
+p.Releaser1Id,
+r1.Initials,
+p.releaser1Initials,
+r2.UserId,
+p.Releaser2Id,
+r2.Initials,
+p.releaser2Initials
+)
 
 
 

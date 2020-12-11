@@ -1,10 +1,6 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetCaseById !!
 
-SET Success = 0;
-
-
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetCaseById( IN prm_streetTreatCaseId INT, OUT Success INT)
 BEGIN
