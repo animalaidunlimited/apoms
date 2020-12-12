@@ -111,6 +111,7 @@ export interface SearchStreetTreatResponse {
     CurrentLocation: string | undefined;
     EmergencyCaseId: number;
     EmergencyNumber: number;
+    StreetTreatCaseId:number;
     Latitude: number;
     Location: string;
     Longitude: number;
@@ -118,7 +119,6 @@ export interface SearchStreetTreatResponse {
     Name: string;
     Number: string;
     PatientId: number;
-    StreetTreatCaseId: number;
     TagNumber: string;
     UserName: string;
     sameAsNumber: string | undefined;

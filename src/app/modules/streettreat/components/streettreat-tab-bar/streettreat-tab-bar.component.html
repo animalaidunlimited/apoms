@@ -9,9 +9,8 @@
                                 <mat-icon class="tab-icon" (click)="removeTab(i)">{{tab.icon}}</mat-icon>
                         </ng-template>
 
-                        <app-streettreat-search *ngIf="i == 0" (openStreetTreatCase)="openCase($event)" class="tab-icon"></app-streettreat-search>
-                       
-                        <!-- <patient-record *ngIf="i > 0" [incomingPatient]="tab" class="tab-icon"></patient-record> -->
+                        <app-streettreat-search *ngIf="i == 1" (openStreetTreatCase)="openCase($event)" class="tab-icon"></app-streettreat-search>
+                        <app-streettreat-record *ngIf="i > 1" [inputStreetTreatCase]="tab" class="tab-icon"></app-streettreat-record>
                </mat-tab>
 
             </mat-tab-group>
