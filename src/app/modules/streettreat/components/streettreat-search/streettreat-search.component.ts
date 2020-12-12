@@ -11,12 +11,6 @@ import { StreetTreatService } from '../../services/streettreat.service';
 })
 export class StreetTreatSearchComponent implements OnInit {
   @Output() public openStreetTreatCase = new EventEmitter<SearchStreetTreatResponse>();
-
-  openCase(streetStreatSearchResult: SearchStreetTreatResponse) {
-
-    this.openStreetTreatCase.emit(streetStreatSearchResult);
-  }
-
   constructor(
     private streetTreatService: StreetTreatService,
   ) { }
@@ -27,5 +21,8 @@ export class StreetTreatSearchComponent implements OnInit {
 
   onSearchQuery(searchQuery:string){  
   this.searchResults$ = this.streetTreatService.searchCases(searchQuery);
+  }
+  openCase(searchResult: SearchStreetTreatResponse) {
+    this.openStreetTreatCase.emit(searchResult);
   }
 }

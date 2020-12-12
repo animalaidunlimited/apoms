@@ -10,13 +10,15 @@ import { StreetTreatSearchComponent } from './components/streettreat-search/stre
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import { SearchFieldModule } from 'src/app/core/components/search-field/search-field.module';
 import { SearchStreetTreetResultCardComponent } from './components/search-streettreet-result-card/search-streettreet-result-card.component';
+import { StreetTreatRecordComponent } from './components/streettreat-record/streettreat-record.component';
 
 @NgModule({
   declarations: [
     StreetTreatPageComponent, 
     StreetTreatTabBarComponent, 
-    StreetTreatSearchComponent, SearchStreetTreetResultCardComponent
-
+    StreetTreatSearchComponent, 
+    SearchStreetTreetResultCardComponent, 
+    StreetTreatRecordComponent
   ],
   imports: [
     CommonModule,
