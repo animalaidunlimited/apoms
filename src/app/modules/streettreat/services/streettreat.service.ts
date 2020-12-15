@@ -47,10 +47,11 @@ export class StreetTreatService extends APIService {
     // Insert the new emergency record
     return await this.post(streetTreatCase);
   }
-  public async baseUpdateCase(streetTreatCase: StreetTreatCase): Promise<any> {
 
+  public async baseUpdateCase(streetTreatCase: StreetTreatCase): Promise<any> {
     return await this.put(streetTreatCase);
   }
+
   private async postFromLocalStorage(postsToSync: any) {
     const promiseArray = postsToSync.map(
       async (elem: any) =>
@@ -68,9 +69,11 @@ export class StreetTreatService extends APIService {
           }
         )
     );
+    return await Promise.all(promiseArray).then(result => {
+      return result;
+    });
   } 
   private async putFromLocalStorage(putsToSync: any) {
-
     const promiseArray = putsToSync.map(
       async (elem: any) =>
         await this.baseUpdateCase(JSON.parse(elem.value)).then(
@@ -96,7 +99,8 @@ export class StreetTreatService extends APIService {
         this.online = true;
 
         this.showSnackBar.successSnackBar('Connection restored', 'OK');
-        /*await this.postFromLocalStorage(
+
+        await this.postFromLocalStorage(
           this.storage.getItemArray('POST'),
         ).then(result => {
 
@@ -110,7 +114,7 @@ export class StreetTreatService extends APIService {
         }).catch(error => {
           console.log(error);
         });
-        /*await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
+        await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
           .then(result => {
             if (result.length > 0) {
               const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
@@ -121,8 +125,15 @@ export class StreetTreatService extends APIService {
           })
           .catch(error => {
             console.log(error);
-          });*/
+          });
       }
     });
   } 
+  public getStreetTreatCaseById(streetTreatCaseId: number) {
+    return this.getById(streetTreatCaseId).pipe(
+        map(value => {
+            return value;
+        }),
+    );
+}
 }

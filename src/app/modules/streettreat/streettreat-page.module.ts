@@ -11,6 +11,12 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 import { SearchFieldModule } from 'src/app/core/components/search-field/search-field.module';
 import { SearchStreetTreetResultCardComponent } from './components/search-streettreet-result-card/search-streettreet-result-card.component';
 import { StreetTreatRecordComponent } from './components/streettreat-record/streettreat-record.component';
+import { PatientVisitDetailsModule } from '../hospital-manager/components/patient-visit-details/patient-visit-details.module';
+import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
+import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
+import { AnimalHeaderModule } from '../hospital-manager/components/animal-header/animal-header.module';
+
+
 
 @NgModule({
   declarations: [
@@ -18,7 +24,7 @@ import { StreetTreatRecordComponent } from './components/streettreat-record/stre
     StreetTreatTabBarComponent, 
     StreetTreatSearchComponent, 
     SearchStreetTreetResultCardComponent, 
-    StreetTreatRecordComponent
+    StreetTreatRecordComponent,
   ],
   imports: [
     CommonModule,
@@ -26,7 +32,11 @@ import { StreetTreatRecordComponent } from './components/streettreat-record/stre
     MaterialModule,
     RecordSearchModule,
     SearchResultCardModule,
-    SearchFieldModule
+    SearchFieldModule,
+    PatientVisitDetailsModule,
+    CallerDetailsModule,
+    LocationDetailsModule,
+    AnimalHeaderModule
   ]
 })
 export class StreetTreatPageModule { }

@@ -119,6 +119,7 @@ export interface SearchStreetTreatResponse {
     Name: string;
     Number: string;
     PatientId: number;
+    NextVisit: string;
     TagNumber: string;
     UserName: string;
     sameAsNumber: string | undefined;

@@ -43,7 +43,7 @@ export class CallerDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-
+        
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
@@ -66,7 +66,6 @@ export class CallerDetailsComponent implements OnInit {
         );
 
         this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
-
         this.callerService
             .getCallerByEmergencyCaseId(
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
@@ -74,8 +73,6 @@ export class CallerDetailsComponent implements OnInit {
             .subscribe((caller: Caller) => {
                 this.recordForm.patchValue(caller);
             });
-
-
 
         this.callerNumber = this.recordForm.get('callerDetails.callerNumber');
 
