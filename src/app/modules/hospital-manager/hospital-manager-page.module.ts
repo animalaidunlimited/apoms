@@ -17,7 +17,7 @@ import { SurgeryDetailsComponent } from './components/surgery-details/surgery-de
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
 import { OutcomeComponent } from './components/outcome/outcome.component';
-import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
+
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
 import { PatientStatusModule } from 'src/app/core/components/patient-status/patient-status.module';
@@ -32,8 +32,9 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
 import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
-import { PatientVisitDetailsComponent } from './components/patient-visit-details/patient-visit-details.component';
+import { PatientVisitDetailsModule} from './components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
+import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
 
 @NgModule({
     declarations: [
@@ -47,14 +48,12 @@ import { ReleaseDetailsDialogComponent } from './components/release-details-dial
         PatientCallDialogComponent,
         CrueltyDetailsComponent,
         OutcomeComponent,
-        AnimalHeaderComponent,
         ImageUploadDialog,
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
         MediaCaptureComponent,
         TreatmentComponent,
-        PatientVisitDetailsComponent,
         ReleaseDetailsDialogComponent
     ],
     imports: [
@@ -72,6 +71,8 @@ import { ReleaseDetailsDialogComponent } from './components/release-details-dial
         CensusRecordModule,
         NgxGalleryModule,
         CallerDetailsModule,
+        PatientVisitDetailsModule,
+        AnimalHeaderModule
     ],
     exports: [],
 })

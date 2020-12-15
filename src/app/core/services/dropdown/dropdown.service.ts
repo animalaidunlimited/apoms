@@ -23,7 +23,7 @@ import { TeamDetails } from '../../models/team';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
-import { TreatmentPriority as Priority } from '../../enums/patient-details';
+import { Priority } from '../../models/priority';
 
 
 

@@ -4,17 +4,11 @@ export interface StreetTreatTab {
     id: number;
     value: string | undefined;
     streetTreatCaseId: number;
-    close:string | undefined;
-    emergencyCaseId: number;
-    emergencyNumber: number;
-    patientId: number;
-    tagNumber: number | string |undefined;
-    animalType: string;
-    currentLocation: string | undefined;
-    callDateTime: string | undefined | number;
-    callOutcomeId: number | undefined;
-    callOutcome: string | undefined;
-    icon: string | undefined;
+    icon?: string | undefined;
+    emergencyCaseId?: string | number | undefined; 
+    patientId?: number | undefined;
+    patientStatus?: string;
+    currentLocation?:string;
 }
 
 export interface StreetTreatDetails {
@@ -22,7 +16,6 @@ export interface StreetTreatDetails {
     emergencyNumber: string;
     callDateTime: string | Date;
     dispatcher: number;
-    [x:string] : any;
 }
 
 export interface StreetTreatForm {
@@ -37,3 +30,28 @@ export interface StreetTreatForm {
 export interface StreetTreatCase {
     streetTreatForm: StreetTreatForm;
 }
+export interface StreetTreatSearchResponse {
+    CaseId: number;
+    EmergencyNumber: number;
+    TagNumber: string;
+    PercentComplete: number;
+    NextVisit: string | Date;
+    AnimalTypeId: number;
+    PriorityId: number;
+    StatusId: number;
+    TeamId: number;
+    AnimalName: string;
+    ComplainerName: string;
+    ComplainerNumber: string;
+    Address: string;
+    Latitude: number;
+    Longitude: number;
+    AdminNotes: string;
+    OperatorNotes?: any;
+    ReleasedDate: string;
+    ClosedDate?: any;
+    IsIsolation: number;
+    EarlyReleaseFlag?: any;
+    IsDeleted: number;
+    MainProblemId: number;
+  }

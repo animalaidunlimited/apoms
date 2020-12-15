@@ -21,13 +21,24 @@ FROM
          ec.Latitude,
          ec.Longitude,
          st.StreetTreatCaseId,
+	      
+         CASE
+			 WHEN 
+			  rd.EndDate IS NULL
+			 THEN
+				"Pending"
+			 ELSE
+				"Released"
+		END AS ReleaseStatus,
+        rd.EndDate,
+        ps.PatientStatus ,
          CASE
             WHEN
                ps.PatientStatusId <> 1 
             THEN
                ps.PatientStatus 
             WHEN
-               at.AnimalTypeId IN ( 5, 10) AND rd.EndDate IS NULL
+               at.AnimalTypeId IN ( 5, 10)
             THEN
                LatestArea.Area 
             WHEN
@@ -68,6 +79,7 @@ FROM
          INNER JOIN
             AAU.User u 
             ON u.OrganisationId = ec.OrganisationId 
+		
          LEFT JOIN
             AAU.CallOutcome o 
             ON o.CallOutcomeId = ec.CallOutcomeId 
@@ -75,11 +87,14 @@ FROM
             AAU.EmergencyCase sa 
             ON sa.EmergencyCaseId = ec.SameAsEmergencyCaseId 
 		LEFT JOIN 
-			AAU.releasedetails rd 
-            ON rd.PatientId = p.PatientId AND rd.EndDate IS NOT NULL
-		LEFT JOIN 
+			AAU.ReleaseDetails rd 
+            ON p.PatientId = rd.PatientId AND rd.EndDate IS NOT NULL
+		INNER JOIN 
 			AAU.streettreatcase st
             ON st.PatientId = p.PatientId
+		LEFT JOIN 
+		AAU.Visit v
+		ON v.StreetTreatCaseId = st.StreetTreatCaseId 
          LEFT JOIN
             (
                SELECT
@@ -118,5 +133,6 @@ FROM
    )
    search 
 WHERE
+   -- search.EndDate is Not Null AND
    search.Username = "ankit"
    AND search.TagNumber LIKE 'b150' LIMIT 100;
