@@ -62,6 +62,7 @@ export class StreetTreatRecordComponent implements OnInit {
           currentLocation: this.inputStreetTreatCase.currentLocation
         }
       ),
+      patientId:[this.patientId,Validators.required],
     });
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
 
