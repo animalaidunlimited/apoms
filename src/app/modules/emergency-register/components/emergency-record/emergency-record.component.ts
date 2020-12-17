@@ -19,6 +19,8 @@ export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
+    loading = false;
+
     recordForm: FormGroup = new FormGroup({});
 
     windowWidth = window.innerWidth;
@@ -176,6 +178,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
+        this.loading = true;
+
         if(this.recordForm.pending){
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
@@ -201,10 +205,14 @@ export class EmergencyRecordComponent implements OnInit {
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
 
+               
+
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-
+                        if(data) {
+                            this.loading = false;
+                        }
                         if (data.status === 'saved') {
                             messageResult.failure = 1;
                         } else {
@@ -214,7 +222,8 @@ export class EmergencyRecordComponent implements OnInit {
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                             messageResult = this.getCaseSaveMessage(resultBody);
-                        }
+
+                        } 
 
                         if (messageResult.failure === 0) {
 
@@ -236,6 +245,11 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .updateCase(emergencyForm)
                     .then(data => {
+
+                        if(data) {
+                            this.loading = false;
+                        }
+                        
                         if (data.status === 'saved') {
 
                             messageResult.failure = 1;

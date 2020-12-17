@@ -71,7 +71,6 @@ import { ReleaseDetailsDialogComponent } from './components/release-details-dial
         SurgeryRecordModule,
         CensusRecordModule,
         NgxGalleryModule,
-        CallerDetailsModule,
     ],
     exports: [],
 })
