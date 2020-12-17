@@ -37,8 +37,7 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"
-		formArrayName="visits">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" *ngIf="showComponent" formArrayName="visits">
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
 				<div [formGroupName]="visitIndex">
@@ -80,7 +79,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
+	<div *ngIf="showComponent" class="mat-fab-wrapper" class="add-visits-fab-btn">
 		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVisits($event)">
 			<mat-icon>add</mat-icon>
 		</button>

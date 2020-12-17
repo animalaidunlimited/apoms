@@ -60,7 +60,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   isStreetTreatRelease!: boolean;
 
   recordForm: FormGroup = new FormGroup({});
-
   releaseManagers: ReleaseManager[] = [];
 
   releaseTypes:Release[] = [{id:1 , type: 'Normal release'},

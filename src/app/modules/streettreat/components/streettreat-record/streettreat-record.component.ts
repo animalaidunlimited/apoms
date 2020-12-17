@@ -9,6 +9,8 @@ import { Priority } from '../../../../core/models/priority';
 import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
+import { MatCalendarCellCssClasses } from '@angular/material/datepicker';
+import { VisitResponse } from 'src/app/core/models/release';
 @Component({
   selector: 'app-streettreat-record',
   templateUrl: './streettreat-record.component.html',
@@ -23,9 +25,11 @@ export class StreetTreatRecordComponent implements OnInit {
   animalTypes$: AnimalType[] = [];
   treatmentPrioritySubscription: Subscription | undefined;
   treatmentPriority$: Priority[] = [];
-
+  streetTreatServiceSubscription: Subscription | undefined;
+  visitDates: Date[] = [];
   profileUrl: SafeUrl = '';
-
+  selectedDate!:Date;
+  
   mediaData!: BehaviorSubject<MediaItem[]>;
 
   constructor(
@@ -85,11 +89,31 @@ export class StreetTreatRecordComponent implements OnInit {
       this.treatmentPriority$ = treatmentPriority;
       this.treatmentPrioritySubscription?.unsubscribe();
     });
-
-    this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res: StreetTreatSearchResponse) => {
+    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res: StreetTreatSearchResponse) => {
       this.recordForm.patchValue(res);
+      this.streetTreatServiceSubscription?.unsubscribe();
     });
-
+    this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(this.inputStreetTreatCase.streetTreatCaseId).subscribe((visitResponse:VisitResponse[])=>{
+      visitResponse.map((visitResponse:any)=> this.visitDates.push(visitResponse.Date));
+      this.streetTreatServiceSubscription?.unsubscribe();
+    });
   }
 
+  onSelect(event:Date)
+  {
+    /* console.log(event);
+    this.selectedDate= event;*/
+  } 
+
+  dateClass() {
+    return (date: Date): MatCalendarCellCssClasses => {
+      const highlightDate = this.visitDates.map(strDate => new Date(strDate))
+      .some(d => d.getDate() === date.getDate() && d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear());
+    if(highlightDate) { 
+      return 'special-date' 
+    } else { 
+      return ''
+    }
+  };
+}
 }

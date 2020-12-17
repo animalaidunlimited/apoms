@@ -1,6 +1,6 @@
 <animal-header [recordForm]="recordForm" [profileUrl]="profileUrl"></animal-header> 
 
-<fieldset [formGroup]="recordForm" class="form-sub-group" autocomplete="off">
+<fieldset [formGroup]="recordForm" class="form-sub-group" autocomplete="off" class="streettreat_record_form">
 
       <legend class="legend">StreetTreat Details</legend>
   
@@ -24,8 +24,6 @@
                 <mat-label>% Complete</mat-label>
                 <input tabindex="4" formControlName="PercentComplete" type="text" placeholder="% Complete" matInput>
             </mat-form-field>
-      </div>
-      <div fxLayout.gt-sm="row wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start">
         <mat-form-field appearance="fill">
             <mat-label>Animal type</mat-label>
             <mat-select  formControlName="AnimalTypeId" >
@@ -35,7 +33,10 @@
             </mat-select>
         </mat-form-field>
       </div>
-      <app-patient-visit-details [recordForm]="recordForm"></app-patient-visit-details>
+      <app-patient-visit-details [recordForm]="recordForm" ></app-patient-visit-details>
+        <div *ngIf="visitDates.length>0">
+            <mat-calendar [dateClass]="dateClass()" [selected]="selectedDate" (selectedChange)="onSelect($event)"></mat-calendar>
+        </div>
 </fieldset>
 
 <caller-details [recordForm]="recordForm"></caller-details>
