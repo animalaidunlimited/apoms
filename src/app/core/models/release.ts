@@ -15,3 +15,42 @@
     releaseEndDate: Date | undefined;
     pickupDate: Date | undefined;
   }
+
+  export interface ReleaseResponse {
+    Releaser1?: any;
+    Releaser2?: any;
+    patientId: number;
+    releaseId: number;
+    releaseType: number;
+    releaseEndDate?: any;
+    complainerNotes: string;
+    streetTreatForm: StreetTreatForm;
+    releaseBeginDate?: any;
+    complainerInformed: number;
+    releaseRequestForm: ReleaseRequestForm;
+  }
+  
+  interface ReleaseRequestForm {
+    requestedDate: string;
+    requestedUser: string;
+  }
+  
+  interface StreetTreatForm {
+    teamId: number;
+    visits: VisitResponse[];
+    patientId: number;
+    adminNotes: string;
+    mainProblem: number;
+    casePriority: number;
+    streetTreatCaseId: number;
+    streetTreatCaseStatus: number;
+  }
+  
+  export interface VisitResponse {
+    visitId: number;
+    visit_day: number;
+    visit_type: number;
+    visit_status: number;
+    visit_comments?: string;
+    Date?: Date;
+  }

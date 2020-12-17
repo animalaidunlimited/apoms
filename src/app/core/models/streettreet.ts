@@ -55,3 +55,5 @@ export interface StreetTreatSearchResponse {
     IsDeleted: number;
     MainProblemId: number;
   }
+
+  

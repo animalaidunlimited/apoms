@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { VisitResponse } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
 import { StreetTreatCase } from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
@@ -131,9 +132,18 @@ export class StreetTreatService extends APIService {
   } 
   public getStreetTreatCaseById(streetTreatCaseId: number) {
     return this.getById(streetTreatCaseId).pipe(
-        map(value => {
-            return value;
-        }),
+      map(value => {
+          return value;
+      }),
     );
-}
+  }
+
+  public getVisitDatesByStreetTreatCaseId(streetTreatCaseId: number) {
+    const request = '/SearchVisits/?streetTreatCaseId=' + streetTreatCaseId;
+    return this.getObservable(request).pipe(
+     map((response: VisitResponse[]) => {
+          return response;
+      }),
+    ); 
+  }
 }

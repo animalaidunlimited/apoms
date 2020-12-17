@@ -1,7 +1,7 @@
 
 import { VisitType } from './../../../../core/models/visit-type';
 import { TeamDetails } from './../../../../core/models/team';
-import { Component, OnInit, Inject, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
@@ -10,6 +10,10 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { UniqueValidators } from 'src/app/modules/hospital-manager/components/patient-visit-details/unique-validators';
 import { Priority } from 'src/app/core/models/priority';
+import { EventEmitter } from '@angular/core';
+import { ReleaseResponse, VisitResponse } from 'src/app/core/models/release';
+
+
 
 @Component({
 	selector: 'app-patient-visit-details',
@@ -30,7 +34,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	visitType$: VisitType[] = [];
 	treatmentPriority$: Priority[]= [];
 	@Input() recordForm!: FormGroup;
-
+	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
 	constructor(
 		
 		private fb: FormBuilder,
@@ -47,7 +51,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	ngOnInit(): void {
 		if(!this.recordForm) this.recordForm = new FormGroup({});
-	
+		
 		this.recordForm.addControl(
 			'streatTreatForm',
 			this.fb.group({
@@ -61,11 +65,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 				visits: this.fb.array([this.getVisitFormGroup()],UniqueValidators.uniqueBy('visit_day')),
 			})
 		);
-	
 		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
-
+	
 		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
-
 		this.teamSubscription = this.dropdown.getAllTeams().subscribe(team => {
 			this.teamListData = team;
 			this.teamSubscription?.unsubscribe();
@@ -94,9 +96,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 		return this.fb.group({
 			visitId:[],
 			visit_day: [,Validators.required],
-			visit_status: [, Validators.required],
-			visit_type: [, Validators.required],
-			visit_comments: ['', Validators.required],
+			visit_status: [1, Validators.required],
+			visit_type: [1, Validators.required],
+			visit_comments: [, Validators.required],
 		});
 	}
 
@@ -111,7 +113,6 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	addVisits(event: Event) {
-		event.preventDefault();
 		if (this.streatTreatForm.controls.visits.valid) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
@@ -121,16 +122,16 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	initStreetTreatForm(){
-		this.releaseService.getReleaseDetails(this.patientId).subscribe((res:any) =>{
+		this.releaseService.getReleaseDetails(this.patientId).subscribe((res:ReleaseResponse) =>{
 			if(res?.streetTreatForm){
-				if(res.streetTreatForm.visits.length)
+				if(res.streetTreatForm.visits.length )
 				{
 					for(let i = 0; i<res.streetTreatForm.visits.length-1;i++)
 					{
 						this.visitsArray.push(this.getVisitFormGroup());
 					}
-					this.streatTreatForm.patchValue(res.streetTreatForm);
 				}
+				this.streatTreatForm.patchValue(res.streetTreatForm);
 				this.changeDetectorRef.detectChanges();
 			}
 		});
