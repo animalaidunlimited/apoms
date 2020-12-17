@@ -94,7 +94,20 @@ INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.User rl1 ON rl1.UserId = rd.Releaser1Id
 LEFT JOIN AAU.User rl2 ON rl2.UserId = rd.Releaser2Id
-GROUP BY p.EmergencyCaseId
+GROUP BY p.EmergencyCaseId,
+rd.ReleaseDetailsId,
+    rl1.Initials,
+    rl2.Initials,
+    rl1.Colour,
+    rl2.Colour,
+    rd.RequestedUser,
+    rd.RequestedDate,
+    rd.ReleaseTypeId,
+    rd.Releaser1Id,
+    rd.Releaser2Id,
+    rd.PickupDate,
+    rd.BeginDate,
+    rd.EndDate
 ) p ON p.EmergencyCaseId = ec.EmergencyCaseId 
 INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id

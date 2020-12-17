@@ -17,9 +17,11 @@ BEGIN
 
 DECLARE vVisitDateExists INT;
 DECLARE vVisitExists INT;
+DECLARE vSuccess INT;
 
 SET vVisitDateExists = 0;
 SET vVisitExists = 0;
+SET vSuccess = 0;
 
 SELECT COUNT(1) INTO vVisitDateExists FROM AAU.Visit WHERE	CaseId = prm_caseId AND
 															VisitId <> prm_VisitId AND
@@ -41,26 +43,26 @@ UPDATE AAU.Visit SET
 	IsDeleted		= prm_IsDeleted
 WHERE VisitId = prm_VisitId;
 
-SELECT 1 INTO prm_Success;
+SELECT 1 INTO vSuccess;
 
 INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,prm_VisitId,'Visit','Update', NOW());
 
 ELSEIF vVisitDateExists >= 1 AND vVisitExists = 1 THEN
 
-SELECT 2 INTO prm_Success;
+SELECT 2 INTO vSuccess;
 
 ELSEIF vVisitExists = 0 THEN
 
-SELECT 3 INTO prm_Success;
+SELECT 3 INTO vSuccess;
 
 ELSE
 
-SELECT 4 INTO prm_Success;
+SELECT 4 INTO vSuccess;
 
 END IF;
 
-SELECT prm_VisitDate AS visitDate, prm_Success AS success;
+SELECT prm_VisitDate AS visitDate, vSuccess AS success;
 
 END$$
 DELIMITER ;

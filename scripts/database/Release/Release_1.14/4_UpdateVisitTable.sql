@@ -7,9 +7,17 @@ ALTER TABLE AAU.Visit
 CHANGE COLUMN CaseId StreetTreatCaseId INT NOT NULL;
 
 ALTER TABLE AAU.Visit
-CHANGE COLUMN `IsDeleted` `IsDeleted` TINYINT(1) NOT NULL DEFAULT 0 ;
+CHANGE COLUMN `IsDeleted` `IsDeleted` TINYINT NOT NULL DEFAULT 0 ;
 
   ALTER TABLE AAU.Visit ADD Day TINYINT NULL;
+  
+  SELECT *
+  FROM AAU.Case
+  WHERE MainProblemId = -1;
+  
+  SELECT *
+  FROM AAU.MainProblem
+  WHERE MainProblem = 'Unknown';
 
   START TRANSACTION;
 -- Check that we've got the correct value here.
@@ -26,13 +34,8 @@ INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId AND ec
 
 ALTER TABLE AAU.StreetTreatCase ADD PRIMARY KEY (`StreetTreatCaseId`);
 
-  
-ALTER TABLE AAU.Visit
-ADD INDEX `FK_VisitStreetTreatCaseId_StreetTreatCaseStreetTreatCaseId_idx` (`StreetTreatCaseId` ASC) VISIBLE;
+ALTER TABLE AAU.StreetTreatCase 
+CHANGE COLUMN StreetTreatCaseId StreetTreatCaseId INT NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE AAU.Visit
-ADD CONSTRAINT `FK_VisitStreetTreatCaseId_StreetTreatCaseStreetTreatCaseId`
-  FOREIGN KEY (`StreetTreatCaseId`)
-  REFERENCES AAU.StreetTreatCase (`StreetTreatCaseId`);
 
 
