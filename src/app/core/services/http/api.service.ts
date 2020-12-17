@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import { SnackbarService } from '../snackbar/snackbar.service';
 
 export abstract class APIService<T = any> {
     abstract endpoint: string;
@@ -96,7 +97,17 @@ export abstract class APIService<T = any> {
         } catch (error) {
             response = this.errorHandler('POST', error);
         }
+        
+        // if(response[0].success === -1){
+        //     SnackbarService.fail
+        //     return {}
+        // }
+        // else
+        // {
+        //     return response[1];
+        // }
         return response;
+        
     }
 
     public errorHandler(

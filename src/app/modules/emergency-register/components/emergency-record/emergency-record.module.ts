@@ -13,6 +13,7 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaCardComponent } from 'src/app/core/components/media-card/media-card.component';
+// import { CallerAutocompleteComponent } from 'src/app/core/components/caller-autocomplete/caller-autocomplete.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         TagNumberDialog,
         MediaDialogComponent,
         MediaCardComponent,
+        // CallerAutocompleteComponent
     ],
     providers: [],
     imports: [
@@ -31,7 +33,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         LocationDetailsModule,
         RescueDetailsModule,
         EmergencyDetailsModule,
-        EmergencyCaseOutcomeModule
+        EmergencyCaseOutcomeModule,
     ],
     exports: [EmergencyRecordComponent],
 })

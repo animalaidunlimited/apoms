@@ -1,0 +1,33 @@
+<div [formGroup] = "callerForm">
+
+    <mat-form-field>
+    <input tabindex="3" formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput>
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="setCallerDetails($event)">
+            <mat-option *ngFor="let caller of callerAutoComplete$ | async;" [value]="caller">
+
+                <span>{{ caller.Number }}</span> |
+                <small>{{ caller.Name }}</small>
+
+            </mat-option>
+    </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input tabindex="4" formControlName="callerName" type="text" placeholder="Name" matInput>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input tabindex="5" formControlName="callerAlternativeNumber" type="tel" placeholder="Alt. Number" matInput>
+    </mat-form-field> 
+
+    <mat-checkbox class="checkBox" [checked]= "true" (change)="checkBox(callerIndex)" formControlName="primaryCaller">primary</mat-checkbox>
+    <!-- <mat-checkbox class="checkBox" [checked]= "true" formControlName="primaryCaller">primary</mat-checkbox>
+
+    <button class="deleteCallerButton" type="button" mat-mini-fab color="warn">
+        <mat-icon>delete</mat-icon>
+    </button> -->
+
+   <button class="deleteCallerButton" type="button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
+        <mat-icon>delete</mat-icon>
+    </button>
+</div>

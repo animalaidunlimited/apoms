@@ -8,6 +8,7 @@ import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Pa
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
+import { SuccessOnlyResponse } from '../../models/responses';
 
 interface SuccessResult{
     success: number;
@@ -167,7 +168,8 @@ export class PatientService extends APIService {
     public async savePatientCalls(
         patientCalls: PatientCalls,
     ): Promise<PatientCallModifyResponse[]> {
-        const response: PatientCallModifyResponse[] = [];
+        // const response: PatientCallModifyResponse[] | SuccessOnlyResponse = [];
+        const response:PatientCallModifyResponse[] = [];
 
         for (const call of patientCalls.calls) {
             if (call.patientCallId && call.updated) {
@@ -175,10 +177,22 @@ export class PatientService extends APIService {
 
                 await this.put(call)
                     .then((data: PatientCallResult) => {
-                        response.push({
-                            position: call.position,
-                            results: data,
-                        });
+                        if(data.success === -1) {
+                            response.push(
+                                {position: 0,
+                                results: {
+                                    patientCallId: 0,
+                                    success: 0
+                                },
+                                success: -1});
+                        }
+                        else{
+                            response.push({
+                                position: 0,
+                                results: data,
+                                success: 1
+                            });
+                        }
                     })
                     .catch(error => {
                         console.log(error);
@@ -189,10 +203,23 @@ export class PatientService extends APIService {
 
                 await this.post(call)
                     .then((data: PatientCallResult) => {
-                        response.push({
-                            position: call.position,
-                            results: data,
-                        });
+                        console.log(data);
+                        if(data.success === -1) {
+                            response.push(
+                                {position: 0,
+                                results: {
+                                    patientCallId: 0,
+                                    success: 0
+                                },
+                                success: -1});
+                        }
+                        else{
+                            response.push({
+                                position: call.position,
+                                results: data,
+                                success: 1
+                            });
+                        }
                     })
                     .catch(error => {
                         console.log(error);

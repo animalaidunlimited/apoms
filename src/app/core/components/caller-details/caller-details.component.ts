@@ -20,6 +20,7 @@ import {
 import { CallerDetailsService } from './caller-details.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -33,6 +34,8 @@ export class CallerDetailsComponent implements OnInit {
     errorMatcher = new CrossFieldErrorMatcher();
 
     callerArray!: FormArray;
+
+    selection = new SelectionModel<any>(false, []);
 
     public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
 
@@ -62,6 +65,10 @@ export class CallerDetailsComponent implements OnInit {
 
         this.callerArray = this.callerDetails.get('callerArray') as FormArray;
 
+        if(this.callerArray.length === 1) {
+            this.callerArray.at(0).get('primaryCaller')?.setValue(true);
+        }
+
         this.callerService
             .getCallerByEmergencyCaseId(
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
@@ -72,73 +79,11 @@ export class CallerDetailsComponent implements OnInit {
                 }
                 this.callerArray.patchValue(caller);
             });
-
-
-
-        this.callerNumber = this.recordForm.get('callerDetails.callerNumber');
-
-        this.callerAutoComplete$ = this.callerNumber?.valueChanges.pipe(
-            startWith(''),
-            // delay emits
-            debounceTime(300),
-            // use switch map so as to cancel previous subscribed events, before creating new one
-            switchMap(value => {
-                if (value !== '' && !this.callerNumber?.pristine) {
-                    return this.lookup(value);
-                } else {
-                    // if no value is present, return null
-                    return of(null);
-                }
-            }),
-        );
     }
 
-    lookup(value:any): Observable<Callers|null> {
-        return this.callerService.getCallerByNumber(value).pipe(
-            map(
-                results => results
-            ),
-            catchError(_ => {
-                return of(null);
-            })
-        );
-    }
-
-    updateValidators() {
-        const callerName = this.recordForm.get('callerDetails.callerName');
-        const callerNumber = this.recordForm.get('callerDetails.callerNumber');
-
-        if (
-            (callerName?.value || callerNumber?.value) &&
-            !(callerName?.value && callerNumber?.value)
-        ) {
-            !!callerName?.value === true
-                ? callerNumber?.setValidators([Validators.required])
-                : callerName?.setValidators([Validators.required]);
-        }
-
-        callerName?.updateValueAndValidity({ emitEvent: false });
-        callerNumber?.updateValueAndValidity({ emitEvent: false });
-    }
-
-    onChanges(): void {
-        this.recordForm.valueChanges.subscribe(val => {
-            // The values won't have bubbled up to the parent yet, so wait for one tick
-            setTimeout(() => this.updateValidators());
-        });
-    }
-
-    setCallerDetails($event: MatAutocompleteSelectedEvent) {
-        const caller = $event.option.value;
-
-        this.recordForm.get('callerDetails.callerId')?.setValue(caller.CallerId);
-        this.recordForm.get('callerDetails.callerNumber')?.setValue(caller.Number);
-        this.recordForm.get('callerDetails.callerName')?.setValue(caller.Name);
-        this.recordForm.get('callerDetails.callerAlternativeNumber')?.setValue(caller.AlternativeNumber);
-    }
 
     getCallerFormGroup(): FormGroup {
-        return this.fb.group({
+        return this.fb.group({ 
             callerId: [],
             callerName: ['', Validators.required],
             callerNumber: [
@@ -154,6 +99,7 @@ export class CallerDetailsComponent implements OnInit {
                 '',
                 Validators.pattern('^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$'),
             ],
+            primaryCaller: []
         });
     }
 
@@ -161,13 +107,38 @@ export class CallerDetailsComponent implements OnInit {
         this.callerArray.push(this.getCallerFormGroup());
     }
 
-    removeCaller(event: Event, index: number, caller: Caller) {
+    removeCaller(callerIndex: number) {
+
         if(this.callerArray.length > 1) {
-            this.callerArray.removeAt(index);
-            // this.callerService.deleteCallerByCallerId(caller);
+
+            this.callerArray.removeAt(callerIndex);
+
+            this.callerArray.length === 1 ?
+            this.callerArray.at(0).get('primaryCaller')?.setValue(true) :
+            this.autoSetPrimaryToFirst();
+
         }
         else {
             this.snackbar.errorSnackBar('Invalid action','OK');
         }
     }
+
+    primaryCaller(callerIndex: number) {
+        this.callerArray.controls.forEach((element,index)=>{
+            if(index !== callerIndex) {
+                element.get('primaryCaller')?.setValue(false);
+            }
+         });
+
+         this.autoSetPrimaryToFirst();
+    }
+
+    autoSetPrimaryToFirst() {
+        const trueValueCount = this.callerArray.controls.some(value=> value.get('primaryCaller')?.value === true);
+        if(!trueValueCount) {
+            this.callerArray.at(0).get('primaryCaller')?.setValue(true);
+
+        } 
+    }
+
 }
