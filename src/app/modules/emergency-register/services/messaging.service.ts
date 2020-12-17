@@ -26,15 +26,11 @@ constructor(
     http: HttpClient) {
         super(http);
 
-    angularFireMessaging.onMessage((payload) => this.distributeMessage(payload));
+     angularFireMessaging.onMessage((payload) => this.distributeMessage(payload));
 
     }
 
     receiveBackgroundMessage(message:string){
-
-        console.log("receiving message");
-        console.log(message);
-
         this.distributeMessage(message);
 
     }
@@ -99,7 +95,7 @@ constructor(
 
         const subscriptionBody = {
             token,
-            topic: `${organisation}_UPDATING_RESCUE`
+            topic: `${organisation}_UPDATING_ASSIGNMENT`
         };
 
         const result = await this.post(subscriptionBody);
@@ -119,7 +115,7 @@ constructor(
         const unsubscribe = {
                             unsubscribe: 'true',
                             token:  this.token,
-                            topic: `${organisation}_UPDATING_RESCUE`
+                            topic: `${organisation}_UPDATING_ASSIGNMENT`
                         };
 
         const result = await this.post(unsubscribe);

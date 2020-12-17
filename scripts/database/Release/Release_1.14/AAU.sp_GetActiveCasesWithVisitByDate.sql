@@ -1,4 +1,5 @@
 DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithVisitByDate !!
 
 DELIMITER $$

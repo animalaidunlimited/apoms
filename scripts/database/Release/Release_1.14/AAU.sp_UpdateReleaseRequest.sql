@@ -64,8 +64,8 @@ SELECT 3 INTO vUpdateSuccess; -- Multiple records, we have duplicates
 
 END IF;
 
-SELECT vUpdateSuccess AS success, vSocketEndPoint AS socketEndPoint;
-
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
+
+SELECT vUpdateSuccess AS success, vSocketEndPoint AS socketEndPoint;
 
 END$$

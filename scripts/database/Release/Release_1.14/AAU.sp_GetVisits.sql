@@ -1,8 +1,6 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetVisits !!
 
--- CALL AAU.sp_GetVisits(76, NULL,NULL,NULL)
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetVisits(	IN prm_StreetTreatCaseId INT,
 									IN prm_TeamId INT,
