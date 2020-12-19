@@ -1,6 +1,8 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between center">
   <form [formGroup]="searchForm">
 
+    <mat-spinner *ngIf="loading" class="mat-spinner"></mat-spinner>
+
   <mat-form-field class="search-box" >
 
     <span matPrefix>
@@ -17,6 +19,8 @@
   </mat-form-field>
 
   </form>
+
+
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
 
@@ -36,9 +40,9 @@
 
 </div>
 
-<div [hidden]="!loading" style="height: 500px">
-  <mat-spinner class="mat-spinner"></mat-spinner>
-</div>
+<!-- <div [hidden]="!loading" style="height: 500px">
+
+</div> -->
 
 
 

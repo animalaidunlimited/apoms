@@ -72,6 +72,7 @@ export class PatientDetailsComponent implements OnInit {
         this.patientService
             .getPatientByPatientId(this.recordForm.get('patientDetails.patientId')?.value)
             .subscribe(result => {
+                console.log(result);
                 this.recordForm.patchValue(result);
 
                 const patientDetailsControl = this.recordForm.get('patientDetails');
