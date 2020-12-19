@@ -93,7 +93,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.loading = true;
+   
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -117,6 +117,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
   }
 
   initialiseBoard() {
+
+    // this.loading = true;
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
@@ -295,7 +297,9 @@ openCase(caseSearchResult:OutstandingAssignment)
 }
 
 refreshRescues(){
- this.outstandingCaseService.refreshRescues();
+
+  this.loading = true;
+  this.outstandingCaseService.refreshRescues();
 }
 
 printEmergencyCard(emergencyCaseId: number){

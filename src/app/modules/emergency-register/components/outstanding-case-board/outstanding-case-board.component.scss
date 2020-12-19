@@ -171,12 +171,12 @@
 
 .mat-spinner {
     position: absolute;
-    top: 20%;
-    left: 50%;
+    align-self: center;
+    top: 100px;
+    left: 40%;
     z-index: 5000;
     margin: auto;
-  }
-
+}
 
 .mat-release-panel{
     margin-bottom: 8px;
@@ -188,3 +188,11 @@
 .mat-release-panel.mat-expanded {
     border-radius: 20px !important;
 }
+
+// .mat-spinner {
+//     position: absolute;
+//     top: 40%;
+//     left: 40%;
+//     z-index: 5000;
+//     margin: auto;
+// }

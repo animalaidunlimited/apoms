@@ -28,6 +28,8 @@ export class RecordSearchComponent {
 
     @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
+    loading = false;
+
     searchResults$!:Observable<SearchResponse[]>;
 
     constructor(
@@ -38,8 +40,13 @@ export class RecordSearchComponent {
     ) {}
 
     onSearchQuery(searchQuery:string){
+        this.loading = true;
+        this.searchResults$ = this.caseService.searchCases(searchQuery);
 
-         this.searchResults$ = this.caseService.searchCases(searchQuery);
+        this.searchResults$.subscribe(()=>{
+            this.loading = false;
+        });
+    
     }
 
     openCase(searchResult: SearchResponse) {

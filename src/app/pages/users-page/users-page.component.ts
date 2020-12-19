@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
 import { TeamDetails } from 'src/app/core/models/team';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -108,7 +108,7 @@ export class UsersPageComponent implements OnInit {
       telephone:[],
       initials: ['',Validators.required],
       userName:['',Validators.required],
-      password: ['',Validators.required],
+      password: [''],
       colour:[''],
       isStreetTreatUser:[],
       teamId:[],
@@ -135,6 +135,7 @@ export class UsersPageComponent implements OnInit {
 
 
     getrefreshTableData() {
+      console.log('hi');
       this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
         this.userList = userListData;   
         this.initialiseTable(this.userList);   
@@ -145,33 +146,42 @@ export class UsersPageComponent implements OnInit {
 
     initialiseTable(userTableData:UserDetails[]) {
       this.dataSource = new MatTableDataSource(userTableData);
-      setTimeout(() => {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-      });
 
 
     }
 
     Submit(userDetailsForm: any) {
+
+      if(userDetailsForm.get('password').value !== ''){
+        userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
+      }
+      else {
+        userDetailsForm.get('password').setValue('');
+      }
+
       if(userDetailsForm.valid){
+
+        console.log(userDetailsForm);
+
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
-          if(res.vUpdateSuccess) {
-            this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
-            // TODO: Create a new function for these three tasks.
-            this.refreshTable();
-            this.resetForm();
-            this.streetTreatdropdown = false;
-          }
-          else if(res.vSuccess) {
-            this.snackBar.successSnackBar('User added successfully!' , 'Ok');
-            this.refreshTable();
-            this.resetForm();
-             this.streetTreatdropdown = false;
-          }
-          else {
-            this.snackBar.errorSnackBar('Error occured!','Ok');
-          }
+
+          console.log(res);
+          // if(res.vUpdateSuccess) {
+          //   this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
+          //   // TODO: Create a new function for these three tasks.
+          //   this.refreshPage();
+          //   this.streetTreatdropdown = false;
+          // }
+          // else if(res.vSuccess) {
+          //   this.snackBar.successSnackBar('User added successfully!' , 'Ok');
+          //   this.refreshPage();
+          //    this.streetTreatdropdown = false;
+          // }
+          // else {
+          //   this.snackBar.errorSnackBar('Error occured!','Ok');
+          // }
 
         });
       }
@@ -181,8 +191,9 @@ export class UsersPageComponent implements OnInit {
 
     }
 
-    refreshTable() {
+    refreshPage() {
       this.getrefreshTableData();
+      this.resetForm();
     }
 
     resetForm() {
@@ -219,6 +230,8 @@ export class UsersPageComponent implements OnInit {
       this.userDetails.patchValue(selectedUser);
 
       this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
+
+      // this.userDetails.get('password')?.setValue('***********');
 
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
 
