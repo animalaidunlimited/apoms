@@ -26,17 +26,19 @@ constructor(
     http: HttpClient) {
         super(http);
 
-     angularFireMessaging.onMessage((payload) => this.distributeMessage(payload));
+     angularFireMessaging.onMessage((payload) => this.distributeMessage("angularFireMessaging.onMessage", payload));
 
     }
 
     receiveBackgroundMessage(message:string){
-        this.distributeMessage(message);
+        this.distributeMessage("receiveBackgroundMessage", message);
 
     }
 
     // TODO - Type this properly as an Angular Fire Message
-    distributeMessage(payload:any){
+    distributeMessage(source:string, payload:any){
+
+        console.log(source);
 
         if(!payload){
             return;
