@@ -38,6 +38,7 @@ FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE ec.OrganisationId = vOrganisationId
 AND ec.CallOutcomeId IS NULL
+AND p.IsDeleted = 0
 
 UNION
 

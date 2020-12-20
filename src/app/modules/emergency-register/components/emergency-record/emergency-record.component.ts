@@ -7,7 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MessagingService } from '../../services/messaging.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -45,8 +44,7 @@ export class EmergencyRecordComponent implements OnInit {
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService,
-        private messageService: MessagingService
+        private showSnackBar: SnackbarService
     ) {}
 
     ngOnInit() {
