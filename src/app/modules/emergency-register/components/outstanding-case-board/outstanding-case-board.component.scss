@@ -130,6 +130,10 @@
     stroke-width: 4;
 }
 
+.patients-group{
+    margin: 10px 0px 0px 10px;
+}
+
 .CallDateTime {
     margin: 10px 0px 0px 10px;
 }
@@ -147,6 +151,14 @@
     color: black;
 }
 
+::ng-deep .mat-expansion-panel-header {
+    height:unset;
+    min-height:50px;
+}
+
+::ng-deep .mat-expansion-panel-header .mat-content{
+    align-items: center;
+}
 
 
 .mat-expansion-panel-header.mat-expanded,

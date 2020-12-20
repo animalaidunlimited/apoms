@@ -77,7 +77,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     public rescueDialog: MatDialog,
     public assignReleaseDialog: MatDialog,
     private fb: FormBuilder,
-    private zone: NgZone,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
@@ -88,8 +87,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     ) { }
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
-
-
 
   ngOnInit(): void {
 
@@ -287,8 +284,8 @@ openCase(caseSearchResult:OutstandingAssignment)
     CallOutcome: undefined,
     sameAsNumber: undefined,
     Location: caseSearchResult.location,
-    Latitude: caseSearchResult.latitude,
-    Longitude: caseSearchResult.longitude,
+    Latitude: caseSearchResult.latLngLiteral.lat,
+    Longitude: caseSearchResult.latLngLiteral.lng,
     CurrentLocation: undefined,
 
   };

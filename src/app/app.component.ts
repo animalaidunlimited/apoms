@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
-import { OutstandingCaseService } from './modules/emergency-register/services/outstanding-case.service';
-import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 import { BehaviorSubject } from 'rxjs';
-import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
-//import { PromptUpdateService } from './core/services/update-service.service';
-import { HttpClient } from '@angular/common/http';
-import { SharedMediaPackage } from './core/models/media';
-
+import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 
 @Component({
     selector: 'app-root',
@@ -22,63 +15,18 @@ import { SharedMediaPackage } from './core/models/media';
 export class AppComponent implements OnInit{
 
     isPrinting:BehaviorSubject<boolean>;
-    message:BehaviorSubject<any>;
     title = 'apoms';
 
     constructor(
-        private messagingService: MessagingService,
-        private printService: PrintTemplateService,
-        private emergencyTabBar: EmergencyRegisterTabBarService,
-        //private updateService: PromptUpdateService,
-        private http: HttpClient,
-        private outstandingCaseService: OutstandingCaseService
-        ) {
-            this.isPrinting = this.printService.getIsPrinting();
-            this.message = this.messagingService.currentMessage;
+        private printService: PrintTemplateService
+    ) {
 
-            window.addEventListener('beforeunload', () => {
+        this.isPrinting = this.printService.getIsPrinting();
 
-                this.messagingService.unsubscribe();
-             });
-
-             // If we've just received focus then we may need to refresh the outstanding case board because
-             // changes might have happened while we were away
-            window.addEventListener('visibilitychange', () => {
-                if(!document.hidden){
-                    this.outstandingCaseService.receiveFocus();
-                }
-            });
-     }
+    }
 
     ngOnInit() {
 
-        this.messagingService.requestPermission();
-
-        // Set up to receive messages from the service worker when the app is in the background.
-        navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
-
-            if(event.data?.image || event.data?.video){
-
-                this.emergencyTabBar.receiveSharedMediaItem(event.data);
-            }
-
-            if(event?.data){
-                this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
-           }
-
-        });
-
-        // Watch the status of permissions to watch for them being revoked. Because we'll need to
-        // tell the user to refresh.
-        if ('permissions' in navigator) {
-            navigator.permissions.query({ name: 'notifications' }).then( (notificationPerm) => {
-                notificationPerm.onchange = () => {
-
-                    this.messagingService.alterPermissionState(notificationPerm.state);
-                };
-            });
-            }
-
-      }
+    }
 
 }

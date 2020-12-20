@@ -44,11 +44,22 @@ measurementId: "G-2FQTQ26YCP"
       includeUncontrolled: true
       })
       .then((windowClients) => {
-      for (let i = 0; i < windowClients.length; i++) {
-        const windowClient = windowClients[i];
-        windowClient.postMessage(data);
+
+        console.log("windowClients");
+        console.log(windowClients);
+
+        windowClients[0].postMessage(data);
+
+      //for (let i = 0; i < windowClients.length; i++) {
+
+      //  console.log(windowClients);
+
+      //  const windowClient = windowClients[i];
+      //  windowClient.postMessage(data);
+      //}
       }
-      });
+
+      );
       // .then(() => {
       //   return self.registration.showNotification(notificationTitle,notificationOptions);
       // });

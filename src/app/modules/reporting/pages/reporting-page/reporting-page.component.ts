@@ -10,6 +10,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { MatDialog } from '@angular/material/dialog';
 import { SurgeriesByDateDialogComponent } from '../../components/surgeries-by-date-dialog/surgeries-by-date-dialog.component';
 import { PatientDetailsDialogComponent } from '../../components/patient-details-dialog/patient-details-dialog.component';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 
 interface PatientCountInArea{
@@ -28,6 +29,7 @@ export class ReportingPageComponent implements OnInit {
         private fb: FormBuilder,
         private census: CensusService,
         private dialog: MatDialog,
+        private printService: PrintTemplateService,
         private surgeryService: SurgeryService) {}
 
     censusAreas$! : Observable<CensusArea[]>;
@@ -40,6 +42,8 @@ export class ReportingPageComponent implements OnInit {
     totalPatientCount = 0;
 
     ngOnInit() {
+
+        this.printService.initialisePrintTemplates();
 
         this.census.getCensusPatientCount().then(response => {
             this.patientCountData = response;
