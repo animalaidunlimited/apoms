@@ -104,13 +104,20 @@ export class PatientDetailsDialogComponent implements OnInit {
 
      this.displayedColumns.subscribe(printColumns => {
 
-      const printContent: CensusPrintContent = {
-        area: this.data.areaName,
-        displayColumns: printColumns,
-        printList: this.patientRecords.data
-       };
+      this.patientRecords.connect().subscribe(sortedData => {
 
-       this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+        const printContent: CensusPrintContent = {
+          area: this.data.areaName,
+          displayColumns: printColumns,
+          printList: sortedData
+         };
+
+         this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+
+
+      });
+
+
 
      });
 
