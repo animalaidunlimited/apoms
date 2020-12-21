@@ -257,8 +257,6 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
-        console.log(searchString);
-
         return this.getObservable(request).pipe(
             map((response: SearchResponse[]) => {
                 return response;

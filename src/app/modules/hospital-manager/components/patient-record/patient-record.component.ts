@@ -40,7 +40,6 @@ export class PatientRecordComponent implements OnInit {
 
     ngOnInit() {
 
-        console.log(this.incomingPatient);
         this.hideMenu = window.innerWidth > 840 ? false : true;
 
         this.recordForm = this.fb.group({

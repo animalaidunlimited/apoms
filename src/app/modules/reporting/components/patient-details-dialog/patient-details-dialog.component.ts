@@ -92,7 +92,6 @@ export class PatientDetailsDialogComponent implements OnInit {
       response = [];
 
       this.patientRecords = new MatTableDataSource(response);
-      console.log(this.patientRecords);
       this.patientRecords.sort = this.sort;
 
     });

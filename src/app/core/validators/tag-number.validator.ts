@@ -30,7 +30,6 @@ export class UniqueTagNumberValidator {
                     map((res:any) => {
                         if (res) {
                             // if tag number is already taken
-                            console.log(res);
                             if (res.success === 1) {
                                 return { tagNumberTaken: true };
                             }
