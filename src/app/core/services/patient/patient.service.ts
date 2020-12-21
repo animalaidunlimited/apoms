@@ -168,7 +168,6 @@ export class PatientService extends APIService {
     public async savePatientCalls(
         patientCalls: PatientCalls,
     ): Promise<PatientCallModifyResponse[]> {
-        // const response: PatientCallModifyResponse[] | SuccessOnlyResponse = [];
         const response:PatientCallModifyResponse[] = [];
 
         for (const call of patientCalls.calls) {
@@ -203,7 +202,6 @@ export class PatientService extends APIService {
 
                 await this.post(call)
                     .then((data: PatientCallResult) => {
-                        console.log(data);
                         if(data.success === -1) {
                             response.push(
                                 {position: 0,

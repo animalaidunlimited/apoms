@@ -1,4 +1,4 @@
-import { Problem } from './problem';
+\import { Problem } from './problem';
 
 export interface Patient {
     patientId: number;

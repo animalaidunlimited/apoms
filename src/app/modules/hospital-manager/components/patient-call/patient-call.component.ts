@@ -207,33 +207,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     }
 
-    // toastResultMessage(bread: PatientCallModifyResponse[] | any) {
-    //     if (bread.length === 0) {
-    //         this.showSnackBar.errorSnackBar(
-    //             'Failed to save - can\'t connect to server',
-    //             'OK',
-    //         );
-    //         return;
-    //     }
-
-    //     // Count the number of successful messages. If they're all successful, then toast
-    //     // a success message, otherwise toast a fail message.
-
-    //     const successCount = bread
-    //         .map(messageVal => {
-    //             return messageVal.results.success;
-    //         })
-    //         .reduce(
-    //             (successCountVal: number, callResult) =>
-    //                 (successCountVal += callResult),
-    //         );
-
-    //     const message =
-    //         successCount === bread.length ? 'Save sucessful' : 'Failed to save';
-
-    //     this.showSnackBar.successSnackBar(message, 'OK');
-    // }
-
     addPatientCall(expanded: boolean) {
         const length = (this.patientCallForm.get('calls') as FormArray).length;
 
