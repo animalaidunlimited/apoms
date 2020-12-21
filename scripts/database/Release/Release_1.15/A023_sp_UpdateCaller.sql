@@ -1,7 +1,7 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateCaller !!
 DELIMITER $$
-CREATE PROCEDURE `sp_UpdateCaller`(
+CREATE PROCEDURE AAU.sp_UpdateCaller(
 									IN prm_Username VARCHAR(64),
 									IN prm_CallerId INT,
 									IN prm_Name VARCHAR(128),

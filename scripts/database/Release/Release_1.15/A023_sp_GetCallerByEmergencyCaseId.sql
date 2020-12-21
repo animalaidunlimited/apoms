@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetCallerByEmergencyCaseId !!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_GetCallerByEmergencyCaseId( IN prm_EmergencyCaseId INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE AAU.sp_GetCallerByEmergencyCaseId ( IN prm_EmergencyCaseId INT)
 BEGIN
 
 /*
@@ -19,7 +19,8 @@ JSON_MERGE_PRESERVE(
 JSON_OBJECT("callerId", c.CallerId),
 JSON_OBJECT("callerName", c.Name),
 JSON_OBJECT("callerNumber", c.Number),
-JSON_OBJECT("callerAlternativeNumber", c.AlternativeNumber)
+JSON_OBJECT("callerAlternativeNumber", c.AlternativeNumber),
+JSON_OBJECT('primaryCaller', ecr.PrimaryCaller)
 )) AS Result
 			
 FROM AAU.Caller c

@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetOutstandingRescues (IN prm_UserName VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
 
@@ -14,13 +14,20 @@ Purpose: To retrieve outstanding rescues
 for display in the rescue board.
 *****************************************/
 
+/*****************************************
+Updated By: Arpit Trivedi
+Date: 29/11/2020
+Purpose: To retrieve outstanding rescues and releases
+for display on  board.
+*****************************************/
+
 DECLARE vOrganisationId INT;
 
 SELECT o.OrganisationId INTO vOrganisationId
 FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
- 
+
 DROP TABLE IF EXISTS outstandingActions;
 
 
@@ -221,7 +228,8 @@ WHEN 4 THEN "Rescued/Released"
 WHEN 5 THEN "Admitted"
 END
 ),
-grouped.actionGroups))) AS `Result`
+grouped.actionGroups)
+)) AS `Result`
 FROM
 	(
 	SELECT raw.ActionStatus,
@@ -230,7 +238,7 @@ FROM
 	raw.AmbulanceAssignment
 	)) AS `actionGroups`
 FROM outstandingActions raw
- GROUP BY raw.ActionStatus
+GROUP BY raw.ActionStatus
 
  ) AS grouped;
  

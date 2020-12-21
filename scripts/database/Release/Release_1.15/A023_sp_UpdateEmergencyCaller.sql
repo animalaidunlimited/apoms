@@ -3,9 +3,10 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCaller !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdateEmergencyCaller (IN prm_Username VARCHAR(64),
+CREATE PROCEDURE AAU.sp_UpdateEmergencyCaller(IN prm_Username VARCHAR(64),
 																		IN prm_EmergencyCaseId INT,
-																		IN prm_CallerId INT)
+																		IN prm_CallerId INT,
+                                                                        IN prm_PrimaryCaller INT)
 BEGIN
 
 /*
@@ -20,24 +21,20 @@ DECLARE vEmergencyCallerId INT;
 SET vCallerCount = 0;
 
 SELECT COUNT(1), EmergencyCallerId INTO vCallerCount, vEmergencyCallerId FROM AAU.EmergencyCaller WHERE EmergencyCaseId = prm_EmergencyCaseId 
-AND CallerId = prm_CallerId;
+AND CallerId = prm_CallerId AND PrimaryCaller = prm_PrimaryCaller;
                                                     
 IF vCallerCount > 0 THEN
 
 START TRANSACTION;
 
-UPDATE AAU.EmergencyCaller SET
-IsDeleted = 1,
-DeletedDate = NOW()
-WHERE CallerId = prm_CallerId
-AND EmergencyCaseId = prm_EmergencyCaseId;
+DELETE FROM AAU.EmergencyCaller
+WHERE EmergencyCaseId = prm_EmergencyCaseId AND
+CallerId = prm_CallerId AND
+PrimaryCaller = prm_PrimaryCaller;
 		
 COMMIT;
         
-SELECT EmergencyCallerId , 1 INTO vEmergencyCallerId, Success 
-FROM AAU.EmergencyCaller
-WHERE CallerId = prm_CallerId
-AND EmergencyCaseId = prm_EmergencyCaseId;
+SELECT 1 INTO Success;
    
   SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 

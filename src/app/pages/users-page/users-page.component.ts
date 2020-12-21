@@ -47,6 +47,8 @@ interface StreetTreatRole {
     ]
 })
 export class UsersPageComponent implements OnInit {
+    loading = false;
+
     teamNames!: TeamDetails[];
 
     userList!: UserDetails[];
@@ -154,6 +156,8 @@ export class UsersPageComponent implements OnInit {
 
     Submit(userDetailsForm: any) {
 
+      this.loading = true;
+
       if(userDetailsForm.get('password').value !== ''){
         userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
       }
@@ -161,34 +165,60 @@ export class UsersPageComponent implements OnInit {
         userDetailsForm.get('password').setValue('');
       }
 
-      if(userDetailsForm.valid){
-
-        console.log(userDetailsForm);
-
+      userDetailsForm.valid ?
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
-
           console.log(res);
-          // if(res.vUpdateSuccess) {
-          //   this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
-          //   // TODO: Create a new function for these three tasks.
-          //   this.refreshPage();
-          //   this.streetTreatdropdown = false;
-          // }
-          // else if(res.vSuccess) {
-          //   this.snackBar.successSnackBar('User added successfully!' , 'Ok');
-          //   this.refreshPage();
-          //    this.streetTreatdropdown = false;
-          // }
-          // else {
-          //   this.snackBar.errorSnackBar('Error occured!','Ok');
-          // }
+          this.loading = false;
 
-        });
-      }
-      else {
+          if(res.success) {
+            res.success === 1 ?
+
+            this.insertSuccess() :
+
+            res.success === -1 ?
+
+              this.connectionError() :
+
+              this.fail();
+          }
+
+          else if(res.updateSuccess) {
+            res.updateSuccess === 1 ?
+
+            this.updateSuccess() :
+
+            res.updateSuccess === -1 ?
+
+              this.connectionError() :
+
+              this.fail();
+          }
+        }) :
         this.snackBar.errorSnackBar('Invalid input fields','Ok');
-      }
+    }
 
+    insertSuccess () {
+      this.snackBar.successSnackBar('User added successfully!' , 'Ok');
+      this.afterSaveActions();
+    }
+
+    updateSuccess () {
+      this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
+      this.afterSaveActions();
+    }
+
+
+    fail() {
+      this.snackBar.errorSnackBar('Error occured!','Ok');
+    }
+
+    connectionError() {
+      this.snackBar.errorSnackBar('Connection error, See admin.','Ok');
+    }
+
+    afterSaveActions() {
+      this.refreshPage();
+      this.streetTreatdropdown = false;
     }
 
     refreshPage() {

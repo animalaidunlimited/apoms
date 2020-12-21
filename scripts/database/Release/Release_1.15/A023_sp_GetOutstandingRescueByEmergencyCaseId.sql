@@ -4,16 +4,19 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId ( IN prm_EmergencyCaseId INT)
+CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
 BEGIN
 
 
-/*****************************************
+/**************************************************************************
 Author: Jim Mackenzie
 Date: 16/04/2020
-Purpose: To retrieve outstanding rescues
-for display in the rescue board.
-*****************************************/
+Purpose: To retrieve outstanding rescues for display in the rescue board.
+
+Updated By: Arpit Trivedi
+Date: 29/11/2020
+Purpose: To retrieve outstanding rescues and releases for display on board.
+***************************************************************************/
 
 SELECT 
 JSON_MERGE_PRESERVE(
