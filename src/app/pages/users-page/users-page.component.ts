@@ -137,7 +137,6 @@ export class UsersPageComponent implements OnInit {
 
 
     getrefreshTableData() {
-      console.log('hi');
       this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
         this.userList = userListData;   
         this.initialiseTable(this.userList);   
@@ -167,7 +166,6 @@ export class UsersPageComponent implements OnInit {
 
       userDetailsForm.valid ?
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
-          console.log(res);
           this.loading = false;
 
           if(res.success) {
@@ -260,8 +258,6 @@ export class UsersPageComponent implements OnInit {
       this.userDetails.patchValue(selectedUser);
 
       this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
-
-      // this.userDetails.get('password')?.setValue('***********');
 
       const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
 
