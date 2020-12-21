@@ -110,6 +110,7 @@ export class AnimalSelectionComponent implements OnInit {
 
     subscribeToChanges() {
         this.recordForm.get('patients')?.valueChanges.subscribe(items => {
+
             if (items.length > 0) {
                 if (items[0].patientId == null && items[0].position == null) {
                     this.initPatientArray();
@@ -318,6 +319,8 @@ export class AnimalSelectionComponent implements OnInit {
 
     animalChipSelected(animalTypeChip:any) {
 
+        this.recordForm.markAsDirty();
+
         this.currentPatientChip = undefined;
 
         const selectedCount: number = this.selection.selected.length;
@@ -477,6 +480,8 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     problemChipSelected(problemChip:any) {
+
+        this.recordForm.markAsDirty();
 
         if(!problemChip.selected)
         {
@@ -640,6 +645,7 @@ export class AnimalSelectionComponent implements OnInit {
         if(this.selection.selected.length !== 0 && this.selection.isSelected(currentPatient)) {
 
             this.openTagNumberDialog(currentPatient.value);
+            this.recordForm.markAsDirty();
         }
     }
 
