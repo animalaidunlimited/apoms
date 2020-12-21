@@ -19,6 +19,7 @@ SELECT
 	c.PreferredName,
 	c.Number,
 	c.AlternativeNumber,
+	IF(ecr.PrimaryCaller = FALSE , 0 , 1),
 	c.Email,
 	c.Address,
 	c.CreatedDate,

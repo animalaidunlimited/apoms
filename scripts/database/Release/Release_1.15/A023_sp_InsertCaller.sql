@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertCaller !!
 
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE AAU.sp_InsertCaller(
+CREATE PROCEDURE AAU.sp_InsertCaller(
 IN prm_Username VARCHAR(64),
 IN prm_Name VARCHAR(128),
 IN prm_PreferredName VARCHAR(128),

@@ -1,4 +1,7 @@
 <form [formGroup]='userDetails' (ngSubmit)='Submit(userDetails)'>
+
+    <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+    
     <fieldset class='form-sub-group'>
         <legend class="legend">User Details</legend>
 
