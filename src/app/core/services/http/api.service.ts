@@ -98,14 +98,6 @@ export abstract class APIService<T = any> {
             response = this.errorHandler('POST', error);
         }
         
-        // if(response[0].success === -1){
-        //     SnackbarService.fail
-        //     return {}
-        // }
-        // else
-        // {
-        //     return response[1];
-        // }
         return response;
         
     }

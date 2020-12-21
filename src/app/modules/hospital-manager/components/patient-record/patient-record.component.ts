@@ -66,12 +66,6 @@ export class PatientRecordComponent implements OnInit {
                 PN: [''],
                 suspectedRabies: [''],
             }),
-            // callerDetails: this.fb.group({
-            //     callerId: [''],
-            //     callerName: [''],
-            //     callerNumber: [''],
-            //     callerAlternativeNumber: [''],
-            // }),
             callOutcome: this.fb.group({
                 CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId +
                  ', \'CallOutcome\': ' + this.incomingPatient.callOutcome + '}'],

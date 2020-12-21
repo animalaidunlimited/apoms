@@ -77,7 +77,6 @@ export class CensusService extends APIService {
     }
 
     public async getPatientDetailsByArea(area:any): Promise<any>{
-        console.log(area);
         const request = '?Area=' + area;
         return this.get(request);
     }

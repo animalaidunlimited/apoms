@@ -118,15 +118,6 @@ export class EmergencyRecordComponent implements OnInit {
                 result.failure++;
             }
             });
-        // if (resultBody.callerSuccess === 1) {
-        //     result.message += '';
-        // } else if (resultBody.callerSuccess === 2) {
-        //     result.message += 'Error adding the caller: Duplicate record \n';
-        //     result.failure++;
-        // } else {
-        //     result.message += 'Other error - See admin\n';
-        //     result.failure++;
-        // }
 
         // Check all of the patients and their problems succeeded
 
@@ -257,9 +248,6 @@ export class EmergencyRecordComponent implements OnInit {
                         } else {
 
                             const resultBody = data as EmergencyResponse;
-
-                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
-
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
 

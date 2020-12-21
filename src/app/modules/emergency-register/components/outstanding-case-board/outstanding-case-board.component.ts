@@ -118,7 +118,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   initialiseBoard() {
 
-    // this.loading = true;
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
