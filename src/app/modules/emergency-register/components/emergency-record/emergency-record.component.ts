@@ -31,6 +31,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     notificationDurationSeconds = 3;
 
+    hasComments!: boolean;
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
         event.preventDefault();
@@ -64,6 +66,7 @@ export class EmergencyRecordComponent implements OnInit {
                 CallOutcome: [],
                 sameAsNumber: []
             }),
+            caseComments: [],
         });
 
         if (this.emergencyCaseId) {
@@ -76,6 +79,8 @@ export class EmergencyRecordComponent implements OnInit {
        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
 
             this.recordForm.patchValue(result);
+
+            this.hasComments = this.recordForm.get('caseComments')?.value ? true : false;
         });
     }
 
@@ -169,6 +174,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         this.loading = true;
 
         if(this.recordForm.pending){
@@ -195,6 +202,8 @@ export class EmergencyRecordComponent implements OnInit {
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+
+                console.log(emergencyForm);
 
                
 
