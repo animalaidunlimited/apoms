@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxGalleryModule } from 'projects/ngx-gallery/projects/gallery/src/public-api';
+import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
+import { BehaviorSubject } from 'rxjs';
+import { MediaItem } from '../../models/media';
 
 import { ThumbnailSliderComponent } from './thumbnail-slider.component';
 
@@ -17,6 +19,10 @@ describe('ThumbnailSliderComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ThumbnailSliderComponent);
         component = fixture.componentInstance;
+
+        component.mediaData = new BehaviorSubject<MediaItem[]>([]);
+        
+
         fixture.detectChanges();
     });
 

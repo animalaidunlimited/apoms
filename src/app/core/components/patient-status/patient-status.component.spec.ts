@@ -56,17 +56,17 @@ describe('PatientStatusComponent', () => {
     it('Invalid form - Missing values', () => {
         const createdDate = new Date();
 
-        component.patientStatusForm.get('patientId').setValue(1);
-        component.patientStatusForm.get('tagNumber').setValue('B150');
-        component.patientStatusForm.get('createdDate').setValue(createdDate);
+        component.patientStatusForm.get('patientId')?.setValue(1);
+        component.patientStatusForm.get('tagNumber')?.setValue('B150');
+        component.patientStatusForm.get('createdDate')?.setValue(createdDate);
 
         // Not set
         // component.patientStatusForm.get("patientStatusId").setValue(null);
         // component.patientStatusForm.get("patientStatusDate").setValue(null);
 
         // Not requred
-        component.patientStatusForm.get('PN').setValue(null);
-        component.patientStatusForm.get('suspectedRabies').setValue(null);
+        component.patientStatusForm.get('PN')?.setValue(null);
+        component.patientStatusForm.get('suspectedRabies')?.setValue(null);
 
         expect(component.patientStatusForm.valid).toEqual(false);
     });
@@ -74,18 +74,18 @@ describe('PatientStatusComponent', () => {
     it('Valid form - No Missing values', () => {
         const createdDate = new Date();
 
-        component.patientStatusForm.get('patientId').setValue(1);
-        component.patientStatusForm.get('tagNumber').setValue('B150');
-        component.patientStatusForm.get('createdDate').setValue(createdDate);
+        component.patientStatusForm.get('patientId')?.setValue(1);
+        component.patientStatusForm.get('tagNumber')?.setValue('B150');
+        component.patientStatusForm.get('createdDate')?.setValue(createdDate);
 
-        component.patientStatusForm.get('patientStatusId').setValue(1);
+        component.patientStatusForm.get('patientStatusId')?.setValue(1);
         component.patientStatusForm
             .get('patientStatusDate')
-            .setValue(createdDate);
+            ?.setValue(createdDate);
 
         // Not requred
-        component.patientStatusForm.get('PN').setValue(null);
-        component.patientStatusForm.get('suspectedRabies').setValue(null);
+        component.patientStatusForm.get('PN')?.setValue(null);
+        component.patientStatusForm.get('suspectedRabies')?.setValue(null);
 
         expect(component.patientStatusForm.valid).toEqual(true);
     });

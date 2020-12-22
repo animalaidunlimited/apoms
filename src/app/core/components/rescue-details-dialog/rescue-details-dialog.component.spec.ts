@@ -23,9 +23,9 @@
      close: jasmine.createSpy('close')
    };
 
-   let emergencyCaseId:number;
-   let emergencyNumber:number;
-   let recordForm:FormGroup;
+   const emergencyCaseId = 0;
+   const emergencyNumber = 0;
+   let recordForm:FormGroup = new FormGroup({});
 
    const dialogData = {
      emergencyCaseId,
@@ -37,7 +37,8 @@
 
    beforeEach(async(() => {
      TestBed.configureTestingModule({
-       imports: [MatDialogModule, FormsModule, ReactiveFormsModule, HttpClientTestingModule,
+       imports: [MatDialogModule,
+        FormsModule, ReactiveFormsModule, HttpClientTestingModule,
          BrowserAnimationsModule],
        providers: [
          {

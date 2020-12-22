@@ -32,7 +32,7 @@ describe('MediaCardComponent', () => {
   };
 
   const inputMediaItem: MediaItem = {
-    mediaItemId: of(null),
+    mediaItemId: of(0),
     mediaType: 'image',
     localURL: 'SafeUrl',
     remoteURL: 'string',
@@ -42,8 +42,11 @@ describe('MediaCardComponent', () => {
     heightPX: 300,
     widthPX: 300,
     tags: ['Tag 1', 'Tag 2'],
-    uploadProgress$: of(null),
-    updated: false
+    uploadProgress$: of(0),
+    updated: false,
+    isPrimary: false,
+    deleted: false,
+    patientMediaItemId: 0
   };
 
   let dialog: MatDialogRef<MockConformationComponent>;
