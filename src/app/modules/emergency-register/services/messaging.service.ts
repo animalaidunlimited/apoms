@@ -26,12 +26,12 @@ constructor(
     http: HttpClient) {
         super(http);
 
-     angularFireMessaging.onMessage((payload) => this.distributeMessage("angularFireMessaging.onMessage", payload));
+     angularFireMessaging.onMessage((payload) => this.distributeMessage('angularFireMessaging.onMessage', payload));
 
     }
 
     receiveBackgroundMessage(message:string){
-        this.distributeMessage("receiveBackgroundMessage", message);
+        this.distributeMessage('receiveBackgroundMessage', message);
 
     }
 

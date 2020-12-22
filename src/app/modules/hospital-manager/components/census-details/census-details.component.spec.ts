@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UpdateCensusDialogComponent } from 'apoms/src/app/modules/hospital-manager/components/update-census-dialog/update-census-dialog/update-census-dialog.component';
+import { UpdateCensusDialogComponent } from '../update-census-dialog/update-census-dialog.component';
 
 import { CensusDetailsComponent } from './census-details.component';
 

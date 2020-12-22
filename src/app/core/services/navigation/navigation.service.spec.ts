@@ -5,16 +5,17 @@ import { NavRoute } from '../../../nav-routing';
 
 describe('NavigationService', () => {
     let service: NavigationService;
+
     const mockNavRouteItems: NavRoute[] = [
         { path: 'somePath', data: { title: 'someTitle' } },
         { path: 'somePath2' },
         { path: 'somePath3' },
     ];
     const mockNavRouteService = {
-        navRoute: null,
-        navRoutes: null,
+        navRoute: {},
+        navRoutes: [],
         router: null,
-        getNavRoutes: () => mockNavRouteItems,
+        getNavRoutes: () => mockNavRouteItems
     };
 
     beforeEach(async(() => {
@@ -59,7 +60,13 @@ describe('NavigationService', () => {
     describe('getSelectedNavigationItem', () => {
         it('should get the correct selectedNavigationItem', () => {
             const navigationItem = mockNavRouteItems[0];
-            service.selectNavigationItemByPath(navigationItem.path);
+
+            if(navigationItem.path){
+
+                service.selectNavigationItemByPath(navigationItem.path);
+
+            }
+
             expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
         });
     });
