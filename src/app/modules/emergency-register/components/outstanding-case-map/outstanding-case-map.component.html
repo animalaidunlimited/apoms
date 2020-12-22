@@ -1,4 +1,5 @@
 
+
 <!-- <search-result-card *ngIf="infoContent"></search-result-card> -->
 
 <google-map height="75vh"
@@ -9,10 +10,11 @@
 
             <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
 
-                <div *ngFor="let assignments of outstandingActions.actionGroups;">
+                <div *ngFor="let states of outstandingActions.statusGroups;">
 
+                    <div *ngFor="let assignments of states.actions;">
 
-                        <!-- TODO alter the emergencyCodeId so that it works for all organisations -->
+                        <!--TODO alter the emergencyCodeId so that it works for all organisations -->
                         <!-- #marker="mapMarker" -->
 
                         <map-marker
@@ -23,14 +25,14 @@
                         [options]="{icon:
                                         (
                                             action.ambulanceAction == 'Release'? (
-                                                action.isLargeAnimal?
+                                                hasLargeAninmal(action.patients)?
                                                     'assets/icons/large_animal_release_purple.png'
                                                     :
                                                     'assets/icons/small_animal_release_purple.png'
                                                 )
                                                 :
                                                 (
-                                                    action.isLargeAnimal ?
+                                                    hasLargeAninmal(action.patients) ?
                                                             (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                                                             :
                                                             action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
@@ -52,17 +54,19 @@
                         }"
                         >
                         </map-marker>
+                    </div>
                 </div>
-
             </div>
                         <!-- Add the ambulance locations -->
                         <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
                         #ambulanceMarker="mapMarker"
-                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.ambulanceAssignment)"
+                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions)"
                         [position]="ambulance.latestLocation"
                         [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.staff1Abbreviation + ' + ' + ambulance.staff2Abbreviation}">
 
                         </map-marker>
+
+
 
                         <map-info-window>
 

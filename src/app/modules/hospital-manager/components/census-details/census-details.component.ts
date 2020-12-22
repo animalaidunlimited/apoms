@@ -41,8 +41,18 @@ export class CensusDetailsComponent implements OnInit {
 
             this.censusRecords = response;
 
+            // TODO
+            // Sort by date, and if the dates are the same order by the action.
+            // This would mean if there was more than one moved it it would cause problems, so will need
+            // to tidy this up as part of https://github.com/animalaidunlimited/apoms/issues/91
             if(response){
-                this.censusRecords.sort((record1, record2 ) => record1.order - record2.order );
+               this.censusRecords
+               .sort((record1, record2 ) =>
+
+               record1.date < record2.date ? -1 :
+                    record1.date === record2.date ?
+                        (record1.action < record2.action ? 1 : -1) : 1
+               );
             }
 
         });

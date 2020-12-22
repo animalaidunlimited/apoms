@@ -21,8 +21,8 @@ describe('SearchResultCardComponent', () => {
     close: jasmine.createSpy('close')
   };
 
-  let patientId:number;
-  let tagNumber:string;
+  const patientId = 0;
+  const tagNumber = '';
 
   const dialogData = {
     patientId,
@@ -67,6 +67,7 @@ describe('SearchResultCardComponent', () => {
       PatientId: 0,
       TagNumber: '',
       CallOutcomeId: 0,
+      MediaCount: 0,
       CallOutcome: '',
       sameAsNumber: 0,
       Location: '',

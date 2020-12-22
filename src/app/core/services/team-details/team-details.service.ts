@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { APIService } from '../http/api.service';
-import { TeamDetails } from "src/app/core/models/team";
+import { TeamDetails } from 'src/app/core/models/team';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 @Injectable({
