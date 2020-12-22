@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TreatmentRecordComponent } from './treatment-record.component';
 
@@ -8,16 +9,17 @@ describe('TreatmentRecordComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [ FormsModule, ReactiveFormsModule],
       declarations: [ TreatmentRecordComponent ]
     })
     .compileComponents();
   });
 
-  beforeEach(() => {
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
     fixture = TestBed.createComponent(TreatmentRecordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
