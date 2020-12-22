@@ -2,29 +2,23 @@
 
     <legend class="legend">Caller Details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+   
 
-      <mat-form-field class="wide">
-        <input tabindex="3" formControlName="callerNumber" type="tel" placeholder="Number" [matAutocomplete]="auto" [errorStateMatcher]="errorMatcher" matInput>
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="setCallerDetails($event)">
-                <mat-option *ngFor="let caller of callerAutoComplete$ | async;" [value]="caller">
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
 
-                  <span>{{ caller.Number }}</span> |
-                  <small>{{ caller.Name }}</small>
+      <div formArrayName="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index">
 
-                </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
 
-        <mat-form-field>
-                <input tabindex="4" formControlName="callerName" type="text" placeholder="Name" [errorStateMatcher]="errorMatcher" matInput>
-        </mat-form-field>
-
-        <mat-form-field>
-                <input tabindex="5" formControlName="callerAlternativeNumber" type="tel" placeholder="Alt. Number" matInput>
-        </mat-form-field>
-
+        <app-caller-autocomplete 
+        [callerForm]="caller" 
+        [callerIndex]="callerIndex"
+        (callerDeleted) = "removeCaller($event)"
+        (isPrimary)="primaryCaller($event)"></app-caller-autocomplete>
     </div>
+    <button class="addCallerButton" type="button" (click)="addCaller($event)" mat-mini-fab color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
   </fieldset>
 

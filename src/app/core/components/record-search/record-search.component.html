@@ -1,5 +1,7 @@
 <app-search-field (searchString)="onSearchQuery($event)"></app-search-field>
 
+<mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+
 <div class="search-results">
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngIf="searchResults$ | async as searchResults;">

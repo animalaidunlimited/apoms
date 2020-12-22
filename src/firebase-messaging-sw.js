@@ -45,18 +45,8 @@ measurementId: "G-2FQTQ26YCP"
       })
       .then((windowClients) => {
 
-        console.log("windowClients");
-        console.log(windowClients);
-
         windowClients[0].postMessage(data);
 
-      //for (let i = 0; i < windowClients.length; i++) {
-
-      //  console.log(windowClients);
-
-      //  const windowClient = windowClients[i];
-      //  windowClient.postMessage(data);
-      //}
       }
 
       );

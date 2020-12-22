@@ -15,8 +15,8 @@ export class CallerDetailsService extends APIService {
 
     endpoint = 'Caller';
 
-    public getCallerByNumber(number: string): Observable<any> {
-        const request = '?number=' + number;
+    public getCallerByNumber(callerNumber: string): Observable<any> {
+        const request = '?number=' + callerNumber;
 
         return this.getObservable(request).pipe(
             map((response: Callers) => {
@@ -25,13 +25,22 @@ export class CallerDetailsService extends APIService {
         );
     }
 
-    public getCallerByEmergencyCaseId(number: string): Observable<any> {
-        const request = '?emergencyCaseId=' + number;
+    public getCallerByEmergencyCaseId(emergencyCaseId: string): Observable<any> {
+        const request = '?emergencyCaseId=' + emergencyCaseId;
 
         return this.getObservable(request).pipe(
             map((response: Caller) => {
                 return response;
             }),
         );
+    }
+
+    public async deleteCallerByCallerId(caller: any) {
+
+        return await this.delete(caller).then((output)=>{
+            return output;
+        }).catch((error:any)=>{
+            console.log(error);
+        });
     }
 }

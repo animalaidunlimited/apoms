@@ -127,43 +127,48 @@ export class SurgeryRecordComponent implements OnInit {
         }
 
         await this.surgeryService
-              .saveSurgery(this.surgeryForm.value).then((value: any) => {
+              .saveSurgery(this.surgeryForm.value).then((res: any) => {
 
-                if (value) {
+                if(res.success === -1) {
+                    this.showSnackBar.errorSnackBar('Communication error, See admin.','Ok');
+                }
+                else {
+                    if (res.success === 1) {
 
-                    const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
-                    const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
-                    const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
+                        const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
+                        const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
+                        const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
 
-                    if (surgeonNameForTable === undefined) {
-                        throw new TypeError('Missing surgeon name!');
+                        if (surgeonNameForTable === undefined) {
+                            throw new TypeError('Missing surgeon name!');
+                        }
+
+                        if (surgeryTypeForTable === undefined) {
+                            throw new TypeError('Missing surgery type!');
+                        }
+
+                        if (surgerySiteForTable === undefined) {
+                            throw new TypeError('Missing surgery site!');
+                        }
+
+                        const surgeryTableData: SurgeryRecord = {
+                            surgeryId: res.surgeryId,
+                            date: this.surgeryForm.get('SurgeryDate')?.value,
+                            died: this.surgeryForm.get('DiedDate')?.value,
+                            site: surgerySiteForTable.SurgerySite,
+                            surgeon: surgeonNameForTable.FirstName,
+                            type: surgeryTypeForTable.SurgeryType,
+                            anesthesiaMinutes: this.surgeryForm.get('AnesthesiaMinutes')?.value,
+                            antibioticsGiven: this.surgeryForm.get('AntibioticsGiven')?.value,
+                            comments: this.surgeryForm.get('Comment')?.value,
+                        };
+
+                        this.showSnackBar.successSnackBar('Surgery saved!' , 'Ok');
+
+                        this.result.emit(surgeryTableData);
+                    } else {
+                        this.showSnackBar.errorSnackBar('Error!', 'Dismiss');
                     }
-
-                    if (surgeryTypeForTable === undefined) {
-                        throw new TypeError('Missing surgery type!');
-                    }
-
-                    if (surgerySiteForTable === undefined) {
-                        throw new TypeError('Missing surgery site!');
-                    }
-
-                    const surgeryTableData: SurgeryRecord = {
-                        surgeryId: value.surgeryId,
-                        date: this.surgeryForm.get('SurgeryDate')?.value,
-                        died: this.surgeryForm.get('DiedDate')?.value,
-                        site: surgerySiteForTable.SurgerySite,
-                        surgeon: surgeonNameForTable.FirstName,
-                        type: surgeryTypeForTable.SurgeryType,
-                        anesthesiaMinutes: this.surgeryForm.get('AnesthesiaMinutes')?.value,
-                        antibioticsGiven: this.surgeryForm.get('AntibioticsGiven')?.value,
-                        comments: this.surgeryForm.get('Comment')?.value,
-                    };
-
-                    this.showSnackBar.successSnackBar('Surgery saved!' , 'Ok');
-
-                    this.result.emit(surgeryTableData);
-                } else {
-                    this.showSnackBar.errorSnackBar('Error!', 'Dismiss');
                 }
             });
     }

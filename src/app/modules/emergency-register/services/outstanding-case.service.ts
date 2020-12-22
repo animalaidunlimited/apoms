@@ -60,6 +60,8 @@ export class OutstandingCaseService {
       }
       });
 
+      return false;
+
   }
 
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
@@ -81,6 +83,7 @@ export class OutstandingCaseService {
     this.outstandingCases$.subscribe((cases: any) => {
 
       currentOutstanding = cases;
+
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
@@ -106,8 +109,6 @@ export class OutstandingCaseService {
       'Arrived/Picked',
       'Rescued/Released',
       'Admitted'];
-
-      console.log('pushing new rescue group');
 
       currentOutstanding.push({
         actionStatus: updatedAssignment.actionStatus,
@@ -135,7 +136,6 @@ export class OutstandingCaseService {
       currentOutstanding.forEach(rescueState => {
 
         if(rescueState.actionStatus === updatedAssignment.actionStatus){
-          console.log('pushing: newRescueGroup');
           rescueState.statusGroups.push(newRescueGroup);
         }
       });
@@ -175,7 +175,6 @@ export class OutstandingCaseService {
   removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingAssignment) {
 
     // Search through the outstanding cases and remove the old case
-    let returnCase:OutstandingAssignment;
 
     outstanding.forEach(status => {
 
@@ -183,21 +182,18 @@ export class OutstandingCaseService {
 
           state.actions.forEach((group, index) => {
 
-            const removeIndex = group.ambulanceAssignment
-            .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
+            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
 
             if(removeIndex > -1){
 
-            returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
+               group.ambulanceAssignment.splice(removeIndex, 1);
 
+                // If the group is now empty, remove it.
+                if(group.ambulanceAssignment.length === 0){
+                  state.actions.splice(index,1);
+                }
 
-
-            // If the group is now empty, remove it.
-            if(group.ambulanceAssignment.length === 0){
-            state.actions.splice(index,1);
-            }
-
-            return;
+                return;
             }
 
           });
@@ -221,13 +217,12 @@ export class OutstandingCaseService {
 
             if(state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
               group.ambulanceAssignment.push(action);
+
+              group.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber);
             }
           });
       });
       }
-
-
-
 
     });
 
@@ -235,6 +230,7 @@ export class OutstandingCaseService {
   }
 
   setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
+
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
@@ -293,7 +289,7 @@ export class OutstandingCaseService {
                 if(
                   Object.keys(assignment)
                   .reduce((currentTerm: string, key: string) => {
-                    
+
                     return currentTerm + (assignment as {[key: string]: any})[key] + '◬';
                   }, '').toLowerCase().indexOf(searchValue) > -1
                   && searchValue !== ''

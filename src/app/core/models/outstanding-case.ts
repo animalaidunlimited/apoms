@@ -35,7 +35,7 @@ export interface OutstandingAssignment {
     rescueTime: string | Date;
     actionStatus: number;
     callDateTime: string | Date;
-    callerNumber: string;
+    callerDetails: CallerDetails[];
     callOutcomeId: number;
     latLngLiteral: google.maps.LatLngLiteral;
     releaseTypeId: number;
@@ -50,9 +50,18 @@ export interface OutstandingAssignment {
     // These are for updated cases coming in via the messaging service
     staff1Abbreviation: string;
     staff2Abbreviation: string;
+    staff1Colour: string;
+    staff2Colour: string;
+
 
     moved?: boolean;
     searchCandidate?: boolean;
+}
+
+export interface CallerDetails {
+    callerId: number;
+    callerName: string;
+    callerNumber: string;
 }
 
 export interface ActionPatient{
@@ -63,7 +72,6 @@ export interface ActionPatient{
     largeAnimal: boolean;
     problems: string;
 }
-
 
 export interface UpdatedRescue {
     success: number;

@@ -48,6 +48,27 @@ WHERE rd.OrganisationId = vOrganisationId
 AND rd.EndDate IS NULL
 
 ),
+EmergencyCaseIds AS
+(
+SELECT EmergencyCaseId
+FROM AAU.Patient
+WHERE PatientId IN (SELECT PatientId FROM RescuesReleases)
+),
+CallerCTE AS 
+(
+SELECT ecr.EmergencyCaseId,
+	JSON_ARRAYAGG(
+	JSON_MERGE_PRESERVE(
+	JSON_OBJECT('callerId', c.CallerId),
+	JSON_OBJECT('callerName', c.Name),
+	JSON_OBJECT('callerNumber', c.Number)
+	)) AS callerDetails
+	FROM AAU.Caller c
+	INNER JOIN AAU.Emergencycaller ecr ON ecr.CallerId = c.CallerId
+    WHERE ecr.IsDeleted = 0
+    AND ecr.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds)
+	GROUP BY ecr.EmergencyCaseId
+),
 PatientsCTE AS
 (
     SELECT
@@ -64,14 +85,14 @@ PatientsCTE AS
             pp.PatientProblems
             )
 		)) AS Patients     
-    FROM AAU.Patient p
-    INNER JOIN RescuesReleases rr ON rr.PatientId = p.PatientId    
+    FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
 		SELECT pp.PatientId,
-		JSON_OBJECT("problems", GROUP_CONCAT(pr.Problem)) AS PatientProblems
+			JSON_OBJECT("problems", GROUP_CONCAT(pr.Problem)) AS PatientProblems
 		FROM AAU.PatientProblem pp
 		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
+        WHERE pp.PatientId IN (SELECT PatientId FROM RescuesReleases)
 		GROUP BY pp.PatientId
     ) pp ON pp.PatientId = p.PatientId
     LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
@@ -80,8 +101,10 @@ PatientsCTE AS
 		SELECT	pmi.PatientId,
 				COUNT(pmi.PatientId) as mediaCount
 		FROM AAU.PatientMediaItem pmi
+        WHERE pmi.PatientId IN (SELECT PatientId FROM RescuesReleases)
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
+    WHERE p.PatientId IN (SELECT PatientId FROM RescuesReleases)
     GROUP BY p.EmergencyCaseId,
     rd.ReleaseDetailsId
 ),
@@ -104,7 +127,6 @@ SELECT AAU.fn_GetRescueStatus(
 				ec.CallOutcomeId
             ) AS ActionStatus,
             IF(rd.ReleaseDetailsId IS NULL,'Rescue','Release') AS AmbulanceAction,
-            ec.CallerId,
             rd.ReleaseDetailsId,
             rd.RequestedDate,
             rd.ReleaseTypeId,
@@ -120,19 +142,16 @@ SELECT AAU.fn_GetRescueStatus(
             ec.EmergencyCodeId,
             ec.CallDateTime,
             ec.CallOutcomeId,
-            ec.Location,
-            ec.Latitude,
-            ec.Longitude,			
+            ec.Location,			
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
             ) AS latLngLiteral,            
-            c.Name,
-            c.Number,
+            c.callerDetails,
             p.Patients
 FROM PatientsCTE p
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId
+INNER JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 ),
 actionsCTE AS 
@@ -164,9 +183,7 @@ SELECT
 	JSON_OBJECT("callOutcomeId", IFNULL(r.CallOutcomeId,'')),
 	JSON_OBJECT("location", IFNULL(r.Location,'')),
 	JSON_OBJECT("latLngLiteral", r.latLngLiteral),
-	JSON_OBJECT("callerId", IFNULL(r.CallerId,'')),
-	JSON_OBJECT("callerName", IFNULL(r.Name,'')),
-	JSON_OBJECT("callerNumber", IFNULL(r.Number,'')),
+	r.callerDetails,
 	IFNULL(r.Patients,'')
     ))) AS ambulanceAssignment
 FROM ReleaseRescueCTE r

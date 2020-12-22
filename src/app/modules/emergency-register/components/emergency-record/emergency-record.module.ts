@@ -31,7 +31,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         LocationDetailsModule,
         RescueDetailsModule,
         EmergencyDetailsModule,
-        EmergencyCaseOutcomeModule
+        EmergencyCaseOutcomeModule,
     ],
     exports: [EmergencyRecordComponent],
 })

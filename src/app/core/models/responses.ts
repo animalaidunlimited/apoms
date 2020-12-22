@@ -1,8 +1,9 @@
 import { CallOutcome, EmergencyDetails } from './emergency-record';
+import { CallerDetails } from './outstanding-case';
 
 export interface EmergencyResponse {
-    callerId: number;
-    callerSuccess: number;
+   emergencyCallerSuccess: [];
+    callerSuccess: [];
     emergencyCaseId: number;
     emergencyCaseSuccess: number;
     patients: PatientResponse[];
@@ -59,10 +60,10 @@ export interface RescueDetails {
 }
 
 export interface Caller {
-    CallerId: string;
-    Name: string;
-    Number: string;
-    AlternativeNumber: string;
+    callerId: number;
+    callerName: string;
+    callerNumber: string;
+    callerAlternativeNumber: string;
 }
 
 export declare type Callers = Caller[];
@@ -85,9 +86,10 @@ export interface SearchResponse {
     EmergencyCaseId: number;
     EmergencyNumber: number;
     CallDateTime: string;
-    CallerId: number;
-    Name: string;
-    Number: string;
+    callerDetails: CallerDetails[] | any;
+    // CallerId: number;
+    // Name: string;
+    // Number: string;
     AnimalTypeId: number;
     AnimalType: string;
     PatientId: number;
