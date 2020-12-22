@@ -84,17 +84,25 @@ export class SearchFieldComponent implements OnInit {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
-            databaseField: 'search.Name',
+            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
+            'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
+            // 'WHERE c.Name =',
+            'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
             name: 'Caller name',
-            inNotIn: false
+            inNotIn: true
         },
         {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
-            databaseField: 'search.Number',
+            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
+            'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
+            // 'WHERE c.Number =',
+            'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
             name: 'Caller no.',
-            inNotIn: false
+            inNotIn: true
         },
         {
             id: 6,
@@ -220,7 +228,7 @@ executeSearch() {
                     option.databaseField = option.databaseField?.replace(' IN (', ' NOT IN (');
                 }
 
-                return option.databaseField;
+                return option.databaseField + encodeURIComponent(splitItem[1].trim());
 
             }
             else{
