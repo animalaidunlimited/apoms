@@ -29,6 +29,8 @@ export class PatientRecordComponent implements OnInit {
 
     profileUrl: SafeUrl = '';
 
+    loading = false;
+
     mediaData!: BehaviorSubject<MediaItem[]>;
 
     constructor(private fb: FormBuilder,
@@ -37,6 +39,7 @@ export class PatientRecordComponent implements OnInit {
         private patientService: PatientService) {}
 
     ngOnInit() {
+
         this.hideMenu = window.innerWidth > 840 ? false : true;
 
         this.recordForm = this.fb.group({
@@ -62,12 +65,6 @@ export class PatientRecordComponent implements OnInit {
                 escapeDate: [''],
                 PN: [''],
                 suspectedRabies: [''],
-            }),
-            callerDetails: this.fb.group({
-                callerId: [''],
-                callerName: [''],
-                callerNumber: [''],
-                callerAlternativeNumber: [''],
             }),
             callOutcome: this.fb.group({
                 CallOutcome: ['{\'CallOutcomeId\': ' + this.incomingPatient.callOutcomeId +
@@ -114,7 +111,10 @@ export class PatientRecordComponent implements OnInit {
 
     saveForm() {
 
+        this.loading = true;
+
         this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
+            this.loading = false;
             result.success === 1 ?
                 this.snackbar.successSnackBar('Update successful','OK')
                 :

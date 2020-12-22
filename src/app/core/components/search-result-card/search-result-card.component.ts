@@ -11,6 +11,7 @@ import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/c
 import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { PatientVisitDetailsComponent } from 'src/app/modules/hospital-manager/components/patient-visit-details/patient-visit-details.component';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+import { CallerDetails } from '../../models/emergency-record';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class SearchResultCardComponent implements OnInit {
   @Input() record!:SearchResponse;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
+  callerObject!: CallerDetails[];
   constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
@@ -33,6 +35,7 @@ export class SearchResultCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.callerObject = JSON.parse(this.record.callerDetails);
 
     this.printService.initialisePrintTemplates();
   }
@@ -121,8 +124,9 @@ printEmergencyCard(patientId: number){
 openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined, patientId: number| undefined) {
 
   const dialogRef = this.dialog.open(ReleaseDetailsDialogComponent, {
-    maxWidth: '100vw',
     maxHeight: '100vh',
+    maxWidth: '100vw',
+    panelClass: 'full-width-dialog',
     data: {
       emergencyCaseId,
       tagNumber,

@@ -75,6 +75,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
 
+      response ?
       response = response.map(patient => {
 
         const patientObject = JSON.parse(JSON.stringify(patient));
@@ -87,7 +88,8 @@ export class PatientDetailsDialogComponent implements OnInit {
 
         return patient;
 
-      });
+      }) :
+      response = [];
 
       this.patientRecords = new MatTableDataSource(response);
       this.patientRecords.sort = this.sort;
