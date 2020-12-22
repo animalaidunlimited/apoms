@@ -50,3 +50,12 @@ mat-tab-body {
     cursor: pointer;
     color: $primary-font-colour;
 }
+
+.mat-spinner {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    margin-left: 50%;
+    z-index: 5000;
+    margin: auto;
+}

@@ -59,6 +59,8 @@ export class OutstandingCaseService {
       }
       });
 
+      return false;
+
   }
 
   populateOutstandingCases(outstandingCases:OutstandingCase[]){

@@ -1,4 +1,4 @@
-import { Problem } from './problem';
+\import { Problem } from './problem';
 
 export interface Patient {
     patientId: number;
@@ -48,6 +48,7 @@ export interface PatientCallResult {
 export interface PatientCallModifyResponse {
     position: number;
     results: PatientCallResult;
+    success: number;
 }
 
 export interface CrueltyReportResult{

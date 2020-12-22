@@ -14,13 +14,12 @@ export interface OutstandingAssignment {
     location: string;
     latLngLiteral: google.maps.LatLngLiteral;
     longitude: number;
-    callerName: string;
     staff1: number;
     staff2: number;
     ambulanceArrivalTime: string | Date;
     rescueTime: string | Date;
     callDateTime: string | Date;
-    callerNumber: string;
+    callerDetails: CallerDetails[];
     actionStatus: number;
     callOutcomeId: number;
     rescuer1Colour: string;
@@ -38,6 +37,12 @@ export interface OutstandingAssignment {
     mediaCount: number;
     patientId: number;
     tagNumber:string;
+}
+
+export interface CallerDetails {
+    callerId: number;
+    callerName: string;
+    callerNumber: string;
 }
 
 export interface RescuerGroup {
