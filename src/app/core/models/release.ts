@@ -52,5 +52,5 @@
     visit_type: number;
     visit_status: number;
     visit_comments?: string;
-    Date?: Date;
+    visit_date?: Date;
   }
