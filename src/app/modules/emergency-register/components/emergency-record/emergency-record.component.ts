@@ -184,8 +184,6 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
-        console.log(this.recordForm.value);
-
         this.loading = true;
 
         if(this.recordForm.pending){
@@ -212,11 +210,7 @@ export class EmergencyRecordComponent implements OnInit {
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
-
-                console.log(emergencyForm);
-
-               
-
+                
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {

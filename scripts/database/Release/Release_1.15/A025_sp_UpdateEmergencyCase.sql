@@ -1,4 +1,9 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_UpdateEmergencyCase`(
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCase !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateEmergencyCase (
 									IN prm_EmergencyCaseId INT,
 									IN prm_EmergencyNumber INT,
 									IN prm_CallDateTime DATETIME,
@@ -100,4 +105,5 @@ END IF;
 
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
 
-END
+END$$
+DELIMITER ;

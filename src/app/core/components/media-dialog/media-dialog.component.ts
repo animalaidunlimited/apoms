@@ -5,7 +5,6 @@ import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
-//import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import { PatientService } from '../../services/patient/patient.service';
 
 interface IncomingData {
@@ -186,16 +185,6 @@ onSave(): void {
 }
 
 openMobileMediaCaptureDialog(){
-
-        //  const dialogRef = this.dialog.open(MediaCaptureComponent, {
-        //    maxWidth: '100vw',
-        //    maxHeight: '100vh',
-        //    panelClass: 'media-capture-dialog',
-        //    data: {
-        //        tagNumber: this.data.tagNumber,
-        //        patientId: this.data.patientId,
-        //    }
-        //});
 }
 
 

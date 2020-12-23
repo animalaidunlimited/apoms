@@ -1,4 +1,11 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_InsertEmergencyCase`(
+  
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_UserName VARCHAR(64),
 									IN prm_EmergencyNumber INT,
 									IN prm_CallDateTime DATETIME,
@@ -108,7 +115,6 @@ ELSE
 	SELECT 4 INTO prm_Success; -- Other error
 END IF;
 
+END$$
+DELIMITER ;
 
-
-
-END

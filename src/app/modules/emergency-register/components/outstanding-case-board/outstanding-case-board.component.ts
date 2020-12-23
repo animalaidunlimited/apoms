@@ -144,17 +144,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
   });
   }
 
-  //openMediaDialog(patientId: number, tagNumber: string | null): void{
-  //  const dialogRef = this.dialog.open(MediaDialogComponent, {
-  //      minWidth: '50%',
-  //      data: {
-  //          tagNumber,
-  //          patientId,
-  //      }
-  //  });
-
-  //}
-
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
   }

@@ -1,4 +1,11 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetEmergencyCaseById`( IN prm_EmergencyCaseId INT)
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCaseById !!
+
+DELIMITER $$
+
+
+CREATE PROCEDURE AAU.sp_GetEmergencyCaseById( IN prm_EmergencyCaseId INT)
 BEGIN
 
 /*
@@ -44,4 +51,5 @@ WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
 
 
-END
+END$$
+DELIMITER ;
