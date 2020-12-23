@@ -11,7 +11,7 @@
     releaseType: number;
     Releaser1: number;
     Releaser2: number;
-    releaseBeginDate: Date | undefined;
-    releaseEndDate: Date | undefined;
-    pickupDate: Date | undefined;
+    releaseBeginDate: string | Date;
+    releaseEndDate: string | Date;
+    pickupDate: string | Date;
   }

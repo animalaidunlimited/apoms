@@ -7,7 +7,8 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MessagingService } from '../../services/messaging.service';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -45,16 +46,25 @@ export class EmergencyRecordComponent implements OnInit {
         this.saveForm();
     }
 
+    @HostListener('window:beforeunload', ['$event'])
+    checkCanReload($event:BeforeUnloadEvent) {
+
+        $event.preventDefault();
+
+        return !this.recordForm.dirty;
+    }
+
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
-        private messageService: MessagingService
+        private dialog: MatDialog
     ) {}
 
-    ngOnInit() {
 
+
+    ngOnInit() {
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.recordForm = this.fb.group({
@@ -75,7 +85,7 @@ export class EmergencyRecordComponent implements OnInit {
 
     }
 
-    initialiseForm() {
+    initialiseForm() : void {
        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
 
             this.recordForm.patchValue(result);
@@ -261,10 +271,13 @@ export class EmergencyRecordComponent implements OnInit {
                         }
 
                         if (messageResult.failure === 0) {
+
                             this.showSnackBar.successSnackBar(
                                 'Case updated successfully',
                                 'OK',
                             );
+
+                            this.recordForm.markAsUntouched();
                         }
                     })
                     .catch(error => {

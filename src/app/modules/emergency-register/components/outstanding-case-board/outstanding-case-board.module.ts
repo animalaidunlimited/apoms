@@ -10,7 +10,7 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,
-        OutstandingCaseMapComponent
+         OutstandingCaseMapComponent
     ],
     imports: [
         CommonModule,
