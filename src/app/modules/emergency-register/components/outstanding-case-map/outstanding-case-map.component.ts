@@ -45,7 +45,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit(): void {
-
+    
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
@@ -61,8 +61,17 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ]};
 
     this.outstandingCases.outstandingCases$.subscribe(cases => {
-
+      
       if(cases.length > 0){
+        cases.forEach((outstandingActions) => {
+          outstandingActions.statusGroups.forEach((states) =>{
+            states.actions.forEach((assignments)=>{
+              assignments.ambulanceAssignment.forEach((action)=>{
+                console.log(action)
+              });
+            });
+          });
+        });
         this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
       }
 
@@ -121,7 +130,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   hasLargeAninmal(patients:ActionPatient[]) : boolean{
-
+    
     return patients.some(patient => patient.largeAnimal);
 
   }

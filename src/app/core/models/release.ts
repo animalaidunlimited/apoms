@@ -11,9 +11,9 @@
     releaseType: number;
     Releaser1: number;
     Releaser2: number;
-    releaseBeginDate: Date | undefined;
-    releaseEndDate: Date | undefined;
-    pickupDate: Date | undefined;
+    releaseBeginDate: Date | string;
+    releaseEndDate: Date | string;
+    pickupDate: Date | string;
   }
 
   export interface ReleaseResponse {
