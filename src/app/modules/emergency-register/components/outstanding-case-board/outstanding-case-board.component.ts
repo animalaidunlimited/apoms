@@ -14,7 +14,7 @@ import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 
 
 export interface Swimlane{
@@ -44,7 +44,7 @@ export interface Swimlane{
       background: 'transparent'
     })),
     transition('moved => still', [
-      animate('5s')
+      animate('1s')
     ]),
     transition('still => moved', [
       animate('0s')
@@ -77,7 +77,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
     public rescueDialog: MatDialog,
     public assignReleaseDialog: MatDialog,
     private fb: FormBuilder,
-    private zone: NgZone,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
@@ -89,11 +88,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-
-
   ngOnInit(): void {
 
-    this.loading = true;
+
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -117,6 +114,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
   }
 
   initialiseBoard() {
+
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
@@ -128,16 +126,26 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCaseService.initialise();
   }
 
-  openMediaDialog(patientId: number, tagNumber: string | null): void{
-    const dialogRef = this.dialog.open(MediaDialogComponent, {
-        minWidth: '50%',
-        data: {
-            tagNumber,
-            patientId,
-        }
-    });
+    openSearchMediaDialog(){
 
+      this.dialog.open(AddSearchMediaDialogComponent, {
+      minWidth: '50%',
+      data: {
+          mediaVal: []
+      }
+  });
   }
+
+  //openMediaDialog(patientId: number, tagNumber: string | null): void{
+  //  const dialogRef = this.dialog.open(MediaDialogComponent, {
+  //      minWidth: '50%',
+  //      data: {
+  //          tagNumber,
+  //          patientId,
+  //      }
+  //  });
+
+  //}
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
@@ -275,9 +283,7 @@ openCase(caseSearchResult:OutstandingAssignment)
     EmergencyCaseId: caseSearchResult.emergencyCaseId,
     EmergencyNumber: caseSearchResult.emergencyNumber,
     CallDateTime: caseSearchResult.callDateTime.toString(),
-    CallerId: 0,
-    Name: caseSearchResult.callerName,
-    Number: caseSearchResult.callerNumber,
+    callerDetails: caseSearchResult.callerDetails,
     AnimalTypeId: 0,
     AnimalType: '',
     PatientId: 0,
@@ -287,8 +293,8 @@ openCase(caseSearchResult:OutstandingAssignment)
     CallOutcome: undefined,
     sameAsNumber: undefined,
     Location: caseSearchResult.location,
-    Latitude: caseSearchResult.latitude,
-    Longitude: caseSearchResult.longitude,
+    Latitude: caseSearchResult.latLngLiteral.lat,
+    Longitude: caseSearchResult.latLngLiteral.lng,
     CurrentLocation: undefined,
 
   };
@@ -297,7 +303,9 @@ openCase(caseSearchResult:OutstandingAssignment)
 }
 
 refreshRescues(){
- this.outstandingCaseService.refreshRescues();
+
+  this.loading = true;
+  this.outstandingCaseService.refreshRescues();
 }
 
 printEmergencyCard(emergencyCaseId: number){

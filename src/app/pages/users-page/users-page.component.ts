@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
 import { TeamDetails } from 'src/app/core/models/team';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -47,6 +47,8 @@ interface StreetTreatRole {
     ]
 })
 export class UsersPageComponent implements OnInit {
+    loading = false;
+
     teamNames!: TeamDetails[];
 
     userList!: UserDetails[];
@@ -108,7 +110,7 @@ export class UsersPageComponent implements OnInit {
       telephone:[],
       initials: ['',Validators.required],
       userName:['',Validators.required],
-      password: ['',Validators.required],
+      password: [''],
       colour:[''],
       isStreetTreatUser:[],
       teamId:[],
@@ -136,51 +138,90 @@ export class UsersPageComponent implements OnInit {
 
     getrefreshTableData() {
       this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
-        this.userList = userListData;
-        this.initialiseTable(this.userList);
+        this.userList = userListData;   
+        this.initialiseTable(this.userList);   
       });
+
+      
     }
 
     initialiseTable(userTableData:UserDetails[]) {
       this.dataSource = new MatTableDataSource(userTableData);
-      setTimeout(() => {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-      });
 
 
     }
 
     Submit(userDetailsForm: any) {
-      if(userDetailsForm.valid){
-        this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
-          if(res.vUpdateSuccess) {
-            this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
-            // TODO: Create a new function for these three tasks.
-            this.refreshTable();
-            this.resetForm();
-            this.streetTreatdropdown = false;
-          }
-          else if(res.vSuccess) {
-            this.snackBar.successSnackBar('User added successfully!' , 'Ok');
-            this.refreshTable();
-            this.resetForm();
-             this.streetTreatdropdown = false;
-          }
-          else {
-            this.snackBar.errorSnackBar('Error occured!','Ok');
-          }
 
-        });
+      this.loading = true;
+
+      if(userDetailsForm.get('password').value !== ''){
+        userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
       }
       else {
-        this.snackBar.errorSnackBar('Invalid input fields','Ok');
+        userDetailsForm.get('password').setValue('');
       }
 
+      userDetailsForm.valid ?
+        this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+          this.loading = false;
+
+          if(res.success) {
+            res.success === 1 ?
+
+            this.insertSuccess() :
+
+            res.success === -1 ?
+
+              this.connectionError() :
+
+              this.fail();
+          }
+
+          else if(res.updateSuccess) {
+            res.updateSuccess === 1 ?
+
+            this.updateSuccess() :
+
+            res.updateSuccess === -1 ?
+
+              this.connectionError() :
+
+              this.fail();
+          }
+        }) :
+        this.snackBar.errorSnackBar('Invalid input fields','Ok');
     }
 
-    refreshTable() {
+    insertSuccess () {
+      this.snackBar.successSnackBar('User added successfully!' , 'Ok');
+      this.afterSaveActions();
+    }
+
+    updateSuccess () {
+      this.snackBar.successSnackBar('User updated successfully!' , 'Ok');
+      this.afterSaveActions();
+    }
+
+
+    fail() {
+      this.snackBar.errorSnackBar('Error occured!','Ok');
+    }
+
+    connectionError() {
+      this.snackBar.errorSnackBar('Connection error, See admin.','Ok');
+    }
+
+    afterSaveActions() {
+      this.refreshPage();
+      this.streetTreatdropdown = false;
+    }
+
+    refreshPage() {
       this.getrefreshTableData();
+      this.resetForm();
     }
 
     resetForm() {

@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular
 import { CdkDragDrop, CdkDragEnd, moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
-import { PaperDimensions, PrintElement, PrintTemplate, PrintTemplateElementResponse, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
+import { PaperDimensions, PrintElement, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { PrintTemplateService } from '../services/print-template.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';

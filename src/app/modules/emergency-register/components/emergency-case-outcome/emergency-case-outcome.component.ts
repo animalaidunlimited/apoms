@@ -10,6 +10,7 @@ import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'emergency-case-outcome',
   templateUrl: './emergency-case-outcome.component.html',
   styleUrls: ['./emergency-case-outcome.component.scss']
@@ -91,19 +92,29 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     sameAsNumber?.updateValueAndValidity();
 
+    const patientArray = this.recordForm.get('patients') as FormArray;
+
     if(callOutcomeId === 1){
 
       // If we're selecting admission, check to make sure all of the animals have a TagNumber
-      const patientArray = this.recordForm.get('patients') as FormArray;
-
-      patientArray.controls.forEach(patient => {
+      patientArray?.controls.forEach(patient => {
 
         patient?.get('tagNumber')?.setValidators(Validators.required);
         patient?.get('tagNumber')?.updateValueAndValidity();
-
       });
 
     }
+    else {
+
+      patientArray?.controls.forEach(patient => {
+
+        patient?.get('tagNumber')?.clearValidators();
+        patient?.get('tagNumber')?.updateValueAndValidity();
+      });
+
+    }
+
+
 
     this.changeDetector.detectChanges();
 

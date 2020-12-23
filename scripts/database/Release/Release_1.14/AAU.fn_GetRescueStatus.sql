@@ -1,6 +1,8 @@
-DELIMITER $$
+DELIMITER !!
 
-DROP FUNCTION IF EXISTS AAU.fn_GetRescueStatus;
+DROP FUNCTION IF EXISTS AAU.fn_GetRescueStatus !!
+
+DELIMITER $$
 
 CREATE FUNCTION AAU.fn_GetRescueStatus (
 	ReleaseDetailsId INT,

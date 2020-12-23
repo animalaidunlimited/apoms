@@ -75,6 +75,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
 
+      response ?
       response = response.map(patient => {
 
         const patientObject = JSON.parse(JSON.stringify(patient));
@@ -87,7 +88,8 @@ export class PatientDetailsDialogComponent implements OnInit {
 
         return patient;
 
-      });
+      }) :
+      response = [];
 
       this.patientRecords = new MatTableDataSource(response);
       this.patientRecords.sort = this.sort;
@@ -104,13 +106,20 @@ export class PatientDetailsDialogComponent implements OnInit {
 
      this.displayedColumns.subscribe(printColumns => {
 
-      const printContent: CensusPrintContent = {
-        area: this.data.areaName,
-        displayColumns: printColumns,
-        printList: this.patientRecords.data
-       };
+      this.patientRecords.connect().subscribe(sortedData => {
 
-       this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+        const printContent: CensusPrintContent = {
+          area: this.data.areaName,
+          displayColumns: printColumns,
+          printList: sortedData
+         };
+
+         this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+
+
+      });
+
+
 
      });
 

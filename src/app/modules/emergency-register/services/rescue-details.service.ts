@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { OutstandingCaseResponse, UpdateResponse } from 'src/app/core/models/outstanding-case';
 
@@ -40,6 +40,7 @@ export class RescueDetailsService extends APIService {
 
         if (!this.outstandingRescues$) {
             this.outstandingRescues$ = this.getObservable(request).pipe(
+                debounceTime(1000),
                 map(response => {
                     return response;
                 }),

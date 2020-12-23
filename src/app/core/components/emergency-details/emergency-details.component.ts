@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'emergency-details',
     templateUrl: './emergency-details.component.html',
     styleUrls: ['./emergency-details.component.scss'],
@@ -142,7 +143,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             if(selectedCode){
                 this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
             }
-        })
+        });
 
     }
 
