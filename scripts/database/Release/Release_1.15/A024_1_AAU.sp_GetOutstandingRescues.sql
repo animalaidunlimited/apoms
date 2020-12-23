@@ -74,7 +74,6 @@ PatientsCTE AS
     SELECT
 		p.EmergencyCaseId,
         MAX(p.PatientId) AS PatientId,
-        JSON_Object("patients",
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -83,7 +82,6 @@ PatientsCTE AS
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
-            )
 		)) AS Patients     
     FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
@@ -147,8 +145,8 @@ SELECT AAU.fn_GetRescueStatus(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
             ) AS latLngLiteral,            
-            c.callerDetails,
-            p.Patients
+            JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
+            JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
@@ -166,19 +164,19 @@ SELECT
     JSON_MERGE_PRESERVE(
     JSON_OBJECT("actionStatus", IFNULL(r.ActionStatus,'')),
     JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),    
-	JSON_OBJECT("releaseId", IFNULL(r.ReleaseDetailsId,'')),
+	JSON_OBJECT("releaseId", r.ReleaseDetailsId),
     JSON_OBJECT("requestedDate", IFNULL(r.RequestedDate,'')),
-	JSON_OBJECT("releaseTypeId", IFNULL(r.ReleaseTypeId,'')),
+	JSON_OBJECT("releaseTypeId", r.ReleaseTypeId),
 	JSON_OBJECT("pickupDate", IFNULL(r.PickupDate,'')),
 	JSON_OBJECT("releaseBeginDate", IFNULL(r.BeginDate,'')),
 	JSON_OBJECT("releaseEndDate", IFNULL(r.EndDate,'')),
-	JSON_OBJECT("staff1", IFNULL(r.Staff1Id,'')),
-	JSON_OBJECT("staff2", IFNULL(r.Staff2Id,'')),
+	JSON_OBJECT("staff1", r.Staff1Id),
+	JSON_OBJECT("staff2", r.Staff2Id),
 	JSON_OBJECT("ambulanceArrivalTime", IFNULL(r.AmbulanceArrivalTime,'')),
 	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),            
-	JSON_OBJECT("emergencyCaseId", IFNULL(r.EmergencyCaseId,'')),
-	JSON_OBJECT("emergencyNumber", IFNULL(r.EmergencyNumber,'')),
-	JSON_OBJECT("emergencyCodeId", IFNULL(r.EmergencyCodeId,'')),
+	JSON_OBJECT("emergencyCaseId", r.EmergencyCaseId),
+	JSON_OBJECT("emergencyNumber", r.EmergencyNumber),
+	JSON_OBJECT("emergencyCodeId", r.EmergencyCodeId),
 	JSON_OBJECT("callDateTime", IFNULL(r.CallDateTime,'')),
 	JSON_OBJECT("callOutcomeId", IFNULL(r.CallOutcomeId,'')),
 	JSON_OBJECT("location", IFNULL(r.Location,'')),
