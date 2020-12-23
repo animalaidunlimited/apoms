@@ -47,127 +47,75 @@
 
       <h2>{{lane.actionStatusName}}</h2>
 
-      <div >
-
-        <div class="rescue-group-container" *ngFor="let actionGroup of lane.actionGroups">
+        <div class="rescue-group-container" *ngFor="let statusGroup of lane.statusGroups">
 
         <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
-        <div fxFlex="none" class="avatar-circle" *ngIf="actionGroup.staff1Abbreviation">
-          <span class="initials">{{actionGroup.staff1Abbreviation}}</span>
+        <div fxFlex="none" class="avatar-circle" *ngIf="statusGroup.staff1Abbreviation">
+          <span class="initials">{{statusGroup.staff1Abbreviation}}</span>
         </div>
-        <div fxFlex="none" class="avatar-circle" *ngIf="actionGroup.staff2Abbreviation">
-          <span class="initials">{{actionGroup.staff2Abbreviation}}</span>
+        <div fxFlex="none" class="avatar-circle" *ngIf="statusGroup.staff2Abbreviation">
+          <span class="initials">{{statusGroup.staff2Abbreviation}}</span>
         </div>
         </div>
 
-        <div
-        cdkDropList
-        [cdkDropListData]="actionGroup.ambulanceAssignment"
-        class="drag-drop-list"
-        style="background-color: transparent;"
-        (cdkDropListDropped)="drop($event)">
-        <div *ngFor="let outstandingCase of actionGroup.ambulanceAssignment;" cdkDrag>
-        <div *ngIf="outstandingCase.ambulanceAction==='Rescue'">
+        <div>
 
-        <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
-          <mat-expansion-panel-header
-          fxLayout="row"
-          [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
-              'border-green' : outstandingCase.emergencyCodeId == 2,
-              'border-yellow' : outstandingCase.emergencyCodeId == 3}"
-          [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
+          <div *ngFor="let actionGroup of statusGroup.actions">
 
-          <div fxFlex="15">
+            <div
+            cdkDropList
+            [cdkDropListData]="actionGroup.ambulanceAssignment"
+            class="drag-drop-list"
+            style="background-color: transparent;"
+            (cdkDropListDropped)="drop($event)">
+            <div *ngFor="let outstandingCase of actionGroup.ambulanceAssignment;" cdkDrag>
+            <div *ngIf="outstandingCase.ambulanceAction==='Rescue'">
 
-            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
-          </div>
+            <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
+              <mat-expansion-panel-header
+              fxLayout="row"
+              [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
+                  'border-green' : outstandingCase.emergencyCodeId == 2,
+                  'border-yellow' : outstandingCase.emergencyCodeId == 3}"
+              [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
 
-          <div fxFlex="25">
-            <!--TODO - Add another dialog that lets you select which patient you want to add the image to-->
-            <!--<mat-icon class="imageIcon" (click)="openMediaDialog(outstandingCase.patients[0], outstandingCase.tagNumber)">add_photo_alternate</mat-icon>-->
-            <mat-icon class="imageIcon">add_photo_alternate</mat-icon>
-            <i class="imageCount">{{outstandingCase.mediaCount}}</i>
-          </div>
+              <div fxFlex="15">
 
-            <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}}
-              ({{outstandingCase.animalTypes}})
-            </div>
+                <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+              </div>
 
               <div fxFlex="25">
-                <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+                <!--TODO - Add another dialog that lets you select which patient you want to add the image to-->
+                <mat-icon class="imageIcon" (click)="openSearchMediaDialog()">add_photo_alternate</mat-icon>
+                <!--<mat-icon class="imageIcon">add_photo_alternate</mat-icon>-->
+                <!--<i class="imageCount">{{outstandingCase.mediaCount}}</i>-->
               </div>
 
-              <div flFlex="none">{{getTimer(outstandingCase.callDateTime)}}</div>
+                <div fxFlex="40" style="text-align: center;">
+                  {{outstandingCase.emergencyNumber}}
+                  <div fxLayout="row-wrap" fxLayoutAlign="space-around center" *ngFor="let patient of outstandingCase.patients">
+                    ({{patient.animalType}})
+                  </div>
+                </div>
 
-            </mat-expansion-panel-header>
+                  <div fxFlex="25">
+                    <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+                  </div>
 
-          <div fxLayout="column" fxLayoutAlign="space-around start" >
-            <div *ngFor="let callerDetails of outstandingCase.callerDetails">
+                  <div flFlex="none">{{getTimer(outstandingCase.callDateTime)}}</div>
 
-              <div fxLayout="row" fxLayoutAlign="start end">
+                </mat-expansion-panel-header>
 
-                  <div class="name">{{callerDetails.callerName}}</div>
-  
-                  <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
-                      <div class="telephone-dash-container">
-                          <svg height="11" width="25">
-                          <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                          Sorry, your browser does not support inline SVG.
-                          </svg>
-                      </div>
-  
-                  <div class="telephone">{{callerDetails.callerNumber}}</div>
-                  <!-- </div> -->
-  
-              </div>
+              <div fxLayout="column" fxLayoutAlign="space-around start" >
 
-          </div>
+                <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
 
-            <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-            <div class="animal-location">{{outstandingCase.location}}</div>
-          </div>
-
-        </mat-expansion-panel>
-
-        </div>
-
-        <div *ngIf="outstandingCase.ambulanceAction==='Release'">
-
-          <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true"
-
-          hideToggle>
-            <mat-expansion-panel-header
-            fxLayout="row"
-            [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
-
-
-            <div fxFlex="15">
-              <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog(outstandingCase)">airport_shuttle</mat-icon>
-            </div>
-
-            <div fxFlex="25">
-              <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
-            </div>
-
-            <div fxFlex style="text-align: center;">
-              {{outstandingCase.emergencyNumber}}
-              ({{outstandingCase.animalTypes}})
-            </div>
-
-            <div fxFlex="25">
-              <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
-            </div>
-
-            </mat-expansion-panel-header>
-
-            <div fxLayout="column" fxLayoutAlign="space-around start" >
               <div *ngFor="let callerDetails of outstandingCase.callerDetails">
 
                 <div fxLayout="row" fxLayoutAlign="start end">
-  
+
                     <div class="name">{{callerDetails.callerName}}</div>
-    
+
                     <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
                         <div class="telephone-dash-container">
                             <svg height="11" width="25">
@@ -175,22 +123,98 @@
                             Sorry, your browser does not support inline SVG.
                             </svg>
                         </div>
-    
+
                     <div class="telephone">{{callerDetails.callerNumber}}</div>
                     <!-- </div> -->
-    
+
                 </div>
-  
+
             </div>
 
-              <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-              <div class="animal-location">{{outstandingCase.location}}</div>
-          </div>
+                <div class="patients-group" *ngFor="let patient of outstandingCase.patients">
+                  {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+                </div>
 
-          </mat-expansion-panel>
+                <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+                <div class="animal-location">{{outstandingCase.location}}</div>
+            </div>
 
-          </div>
-        </div>
+            </mat-expansion-panel>
+
+            </div>
+
+            <div *ngIf="outstandingCase.ambulanceAction==='Release'">
+
+              <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true"
+
+              hideToggle>
+                <mat-expansion-panel-header
+                fxLayout="row"
+                [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
+
+
+                <div fxFlex="15">
+                  <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog(outstandingCase)">airport_shuttle</mat-icon>
+                </div>
+
+                <div fxFlex="25">
+                  <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
+                </div>
+
+                <div fxFlex style="text-align: center;">
+                  <div *ngFor="let patient of outstandingCase.patients">
+                    ({{patient.tagNumber}})
+                    ({{patient.animalType}})
+                  </div>
+                </div>
+
+                <div fxFlex="25">
+                  <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+                </div>
+
+                <div flFlex="none">{{getTimer(outstandingCase.requestedDate)}}</div>
+
+                </mat-expansion-panel-header>
+
+                <div fxLayout="column" fxLayoutAlign="space-around start" >
+                  <div class="name">{{outstandingCase.callerName}}</div>
+
+                  <div *ngFor="let patient of outstandingCase.patients">
+                    {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+                  </div>
+
+                  <div fxLayout="column" fxLayoutAlign="space-around start" >
+                    <div *ngFor="let callerDetails of outstandingCase.callerDetails">
+
+                      <div fxLayout="row" fxLayoutAlign="start end">
+
+                          <div class="name">{{callerDetails.callerName}}</div>
+
+                          <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
+                              <div class="telephone-dash-container">
+                                  <svg height="11" width="25">
+                                  <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                                  Sorry, your browser does not support inline SVG.
+                                  </svg>
+                              </div>
+
+                          <div class="telephone">{{callerDetails.callerNumber}}</div>
+                          <!-- </div> -->
+
+                      </div>
+
+                  </div>
+                </div>
+
+                  <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+                  <div class="animal-location">{{outstandingCase.location}}</div>
+              </div>
+
+              </mat-expansion-panel>
+
+              </div>
+            </div>
+            </div>
         </div>
       </div>
       </div>

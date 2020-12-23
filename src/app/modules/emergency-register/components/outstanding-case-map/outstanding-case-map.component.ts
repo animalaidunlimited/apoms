@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingCase, OutstandingAssignment, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, RescuerGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,9 +28,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   rescues:any = [];
 
   options : google.maps.MapOptions = {};
-  outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject<OutstandingCase[]>([]);
 
   ambulanceLocations$!:Observable<any>;
+  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
   iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
@@ -41,6 +40,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     private userOptions: UserOptionsService,
     private caseService: CaseService,
     private outstandingCases: OutstandingCaseService) {
+      this.outstandingCases$ = this.outstandingCases.outstandingCases$;
+      this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
    }
 
   ngOnInit(): void {
@@ -59,83 +60,14 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       }
     ]};
 
-    this.outstandingCases$ = this.outstandingCases.outstandingCases$;
+    this.outstandingCases.outstandingCases$.subscribe(cases => {
 
-    // this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
+      if(cases.length > 0){
+        this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
+      }
 
-    this.ambulanceLocations$ = this.outstandingCases$.pipe(map((cases) => {
-        if(cases){
-
-          return cases.filter(swimlane => swimlane.actionStatus >= 3)
-                      .map(groups => groups.actionGroups)
-
-                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
-                        // the last one based upon time. However if we make the changes directly to the result object of the
-                        // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
-                        // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
-                        // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
-                      .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
-                      .reduce((aggregatedLocations, current) => {
-
-
-                if(aggregatedLocations.length === 0){
-                  return current;
-                }
-                else{
-
-                  current.forEach((currentRescueGroup:RescuerGroup) => {
-
-                    const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
-
-                      return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
-                          parentRescueGroup.staff2 === currentRescueGroup.staff2;
-
-                    });
-
-                    index > -1 ?
-                    aggregatedLocations[index].rescues = aggregatedLocations[index].ambulanceAssignment.concat(currentRescueGroup.ambulanceAssignment)
-                      :
-                      aggregatedLocations.push(currentRescueGroup);
-
-                  });
-
-                  return aggregatedLocations;
-
-
-                }}, [])
-              .map((rescueReleaseGroup:RescuerGroup) => {
-                // TODO: Ask jim sir about it and confirm to him about this latest location for release.
-                const maxRescue = rescueReleaseGroup.ambulanceAssignment.reduce((current, previous) => {
-
-                const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
-                  ? current.ambulanceArrivalTime : current.rescueTime;
-
-                const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1))
-                  ? previous.ambulanceArrivalTime : previous.rescueTime;
-
-                return previousTime > currentTime ? previous : current;
-
-              });
-
-               return {
-                staff1: rescueReleaseGroup.staff1,
-                staff1Abbreviation: rescueReleaseGroup.staff1Abbreviation,
-                staff2: rescueReleaseGroup.staff2,
-                staff2Abbreviation: rescueReleaseGroup.staff2Abbreviation,
-                latestLocation: maxRescue.latLngLiteral,
-                ambulanceAssignment: rescueReleaseGroup.ambulanceAssignment
-                };
-
-
-             });
-
-            }
-        }
-
-    ));
-
-    this.ambulanceLocations$.subscribe((val:any)=>{
     });
+
 
   }
 
@@ -145,11 +77,20 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, rescues: OutstandingAssignment[]){
+  openAmbulanceInfoWindow(marker: MapMarker, rescues: RescuerGroup){
 
     let searchQuery = ' search.EmergencyCaseId IN (';
 
-    const emergencyNumbers = rescues.map(rescue => {
+    let assignments:OutstandingAssignment[] = [];
+
+    rescues.actions.forEach(action => {
+
+      action.ambulanceAssignment.forEach(ambulanceAssignments => {
+        assignments = assignments.concat(ambulanceAssignments);
+      });
+    });
+
+    const emergencyNumbers = assignments.map(rescue => {
 
       return rescue.emergencyCaseId;
 
@@ -176,6 +117,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       this.infoWindow.open(marker);
 
     });
+
+  }
+
+  hasLargeAninmal(patients:ActionPatient[]) : boolean{
+
+    return patients.some(patient => patient.largeAnimal);
 
   }
 
