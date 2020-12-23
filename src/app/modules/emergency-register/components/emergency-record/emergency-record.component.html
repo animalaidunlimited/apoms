@@ -2,9 +2,9 @@
 
 
 <form [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
-  
+
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
-    <p>{{loading}}</p>
+  
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
@@ -33,7 +33,7 @@
               </mat-expansion-panel>
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
-            
+
           </div>
 
           <div fxLayout="column" fxFlex="0 1 43" fxLayoutGap="5px" fxLayoutAlign="start">
