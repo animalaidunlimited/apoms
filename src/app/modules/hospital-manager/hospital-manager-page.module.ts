@@ -34,7 +34,8 @@ import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsModule} from './components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
-import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
+import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
+
 
 
 @NgModule({
@@ -55,7 +56,6 @@ import { AnimalHeaderComponent } from './components/animal-header/animal-header.
         UpdateCensusDialogComponent,
         TreatmentComponent,
         ReleaseDetailsDialogComponent,
-        AnimalHeaderComponent
     ],
     imports: [
         CommonModule,
@@ -73,6 +73,7 @@ import { AnimalHeaderComponent } from './components/animal-header/animal-header.
         NgxGalleryModule,
         CallerDetailsModule,
         PatientVisitDetailsModule,
+        AnimalHeaderModule
     ],
     exports: [],
 })
