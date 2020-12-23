@@ -37,7 +37,8 @@ SELECT
 								"visit_day",v.Day,
 								"visit_status",v.StatusId,
 								"visit_type",v.VisitTypeId,
-								"visit_comments",v.AdminNotes
+								"visit_comments",v.AdminNotes,
+                                "visit_date",v.Date
 						 )
 					)
 				)

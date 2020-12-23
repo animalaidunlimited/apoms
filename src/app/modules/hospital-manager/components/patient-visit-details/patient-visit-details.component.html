@@ -37,15 +37,24 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" *ngIf="showComponent" formArrayName="visits">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" formArrayName="visits">
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
 				<div [formGroupName]="visitIndex">
-					<mat-form-field appearance="fill">
+					<mat-form-field appearance="fill" *ngIf="!showVisitDate">
 						<mat-label>Day</mat-label>
 						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
 							value="0" formControlName="visit_day"  />
 							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
+								Day should be unique
+							</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="fill" *ngIf="showVisitDate" class="visit-date">
+						<mat-label>Date</mat-label>
+						<input matInput  type="date" min="0" placeholder="Date"
+							value="0" formControlName="visit_date"  />
+							<mat-error *ngIf="item.get('visit_date')?.hasError('uniqueBy')">
 								Day should be unique
 							</mat-error>
 					</mat-form-field>
@@ -79,7 +88,7 @@
 			</div>
 		</div>
 	</div>
-	<div *ngIf="showComponent" class="mat-fab-wrapper" class="add-visits-fab-btn">
+	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
 		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVisits($event)">
 			<mat-icon>add</mat-icon>
 		</button>

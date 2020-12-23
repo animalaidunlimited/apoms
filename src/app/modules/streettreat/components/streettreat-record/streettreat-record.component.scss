@@ -1,4 +1,4 @@
-.legend{
+.legend {
     font-size: large;
     color: #a9abad;
     font-weight: bold;
@@ -6,17 +6,100 @@
     text-align: center;
 }
 
-@media only screen and (max-width:600px)
-{
+@media only screen and (max-width: 600px) {
     .st_form .mat-form-field {
         width: 100%;
     }
 }
-
-::ng-deep.special-date {
-    background-color: red !important;
+@mixin border($bg-color) {
     border-radius: 50%;
+    & .mat-calendar-body-cell-content {
+        border: 5px solid white !important;
+        border: 3px solid $bg-color !important;
+        background-color: $bg-color !important;
+        box-shadow: inset 0px 0px 0px 3px rgb(255, 255, 255);
+        box-sizing: border-box;
+    }
 }
-::ng-deep.special-date .mat-calendar-body-cell-content{
-    border: 5px solid white;
+
+::ng-deep {
+    &.selected-date {
+        @include border(#607d8b);
+    }
+    &.complete {
+        @include border(#58b09c);
+    }
+    &.complete-animal-died {
+        @include border(#202030);
+    }
+    &.complete-animal-not-found {
+        @include border(#4f6d7a);
+    }
+    &.complete-early-release {
+        @include border(#386150);
+    }
+    &.in-progress {
+        @include border(#caf7e2);
+    }
+    ::ng-deep.missed {
+        @include border(#e94f37);
+    }
+    &.readmission {
+        @include border(#ef7e6c);
+    }
+    &.to-do {
+        @include border(#a9bec7);
+    }
+    &.complete-auto-closed {
+        @include border(#304047);
+    }
+    &.complete-complainer-not-reachable {
+        @include border(#a18fad);
+    }
+    &.admission-to-aau {
+        @include border(#4f776d);
+    }
+}
+@media only screen and (min-width: 600px) {
+    :host ::ng-deep {
+        & .visit_row_data {
+            & mat-form-field {
+                min-width: 340px !important;
+                width: unset !important;
+                max-width: unset !important;
+                &:first-child {
+                    min-width: 14% !important;
+                    width: 14% !important;
+                }
+                &:nth-child(3) {
+                    min-width: 16% !important;
+                    width: 16% !important;
+                }
+                &:last-of-type {
+                    min-width: 320px !important;
+                }
+            }
+            & > div:first-child {
+                display: block !important;
+                box-shadow: none !important;
+                padding: 0px 0 0 4px !important;
+                margin-bottom: 15px !important;
+            }
+            & .mat-fab-wrapper {
+                position: unset !important;
+                display: inline-block;
+                margin-left: 20px;
+            }
+        }
+        & .add-visits-fab-btn {
+            position: unset !important;
+        }
+        & .vistisWrapper > div {
+            margin-right: 0px !important;
+        }
+    }
+}
+
+:host ::ng-deep .visit_row_data {
+    position: unset !important;
 }

@@ -33,9 +33,9 @@
             </mat-select>
         </mat-form-field>
       </div>
-      <app-patient-visit-details [recordForm]="recordForm" ></app-patient-visit-details>
-        <div *ngIf="visitDates.length>0">
-            <mat-calendar [dateClass]="dateClass()" [selected]="selectedDate" (selectedChange)="onSelect($event)"></mat-calendar>
+      <app-patient-visit-details [dateSelected]="dateSelected" [recordForm]="recordForm" ></app-patient-visit-details>
+        <div *ngIf="visitDates.length > 0 ">
+            <mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" *ngIf="visitDates[0].status"></mat-calendar>
         </div>
 </fieldset>
 
