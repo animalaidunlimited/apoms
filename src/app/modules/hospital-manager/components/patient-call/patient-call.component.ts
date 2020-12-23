@@ -4,7 +4,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { CallType, PatientCallOutcome } from 'src/app/core/models/responses';
+import { CallType, PatientCallOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
 import {
@@ -13,7 +13,9 @@ import {
 } from 'src/app/core/models/patients';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'patient-call',
     templateUrl: './patient-call.component.html',
     styleUrls: ['./patient-call.component.scss'],
@@ -160,9 +162,22 @@ export class PatientCallComponent implements OnInit, OnChanges {
         await this.patientService
             .savePatientCalls(this.patientCallForm.value)
             .then((result: PatientCallModifyResponse[]) => {
-                this.toastResultMessage(result);
+               let comErrorFlag = false;
+               let resErrorFlag = false;
 
-                result.forEach(callResult => {
+               comErrorFlag = result.some(res=>
+                   res.success === -1
+               );
+
+               resErrorFlag = result.some(res=>
+                   res.results.success !== 1
+               );
+
+
+               this.toastResultMessage(comErrorFlag, resErrorFlag);
+                
+
+                result.forEach((callResult: PatientCallModifyResponse) => {
                     this.calls.controls.forEach(call => {
                         const currentPatientCallId = call.get(
                             'patientCallId',
@@ -178,31 +193,18 @@ export class PatientCallComponent implements OnInit, OnChanges {
             });
     }
 
-    toastResultMessage(bread: PatientCallModifyResponse[]) {
-        if (bread.length === 0) {
-            this.showSnackBar.errorSnackBar(
-                'Failed to save - can\'t connect to server',
-                'OK',
-            );
-            return;
-        }
+    toastResultMessage(comErrorFlag: boolean, resErrorFlag: boolean) {
+        comErrorFlag ?
 
-        // Count the number of successful messages. If they're all successful, then toast
-        // a success message, otherwise toast a fail message.
+        this.showSnackBar.errorSnackBar('Communication error, See admin.', 'Ok') :
 
-        const successCount = bread
-            .map(messageVal => {
-                return messageVal.results.success;
-            })
-            .reduce(
-                (successCountVal: number, callResult) =>
-                    (successCountVal += callResult),
-            );
+        resErrorFlag ? 
 
-        const message =
-            successCount === bread.length ? 'Save sucessful' : 'Failed to save';
+        this.showSnackBar.errorSnackBar('Failed to save', 'Ok') :
 
-        this.showSnackBar.successSnackBar(message, 'OK');
+        this.showSnackBar.successSnackBar('Save successful' , 'Ok');
+
+
     }
 
     addPatientCall(expanded: boolean) {

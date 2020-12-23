@@ -19,7 +19,8 @@ describe('PrintContentComponent', () => {
         paperDimensionsId: 1,
         name: '',
         width: '',
-        height: ''},
+        height: ''
+      },
       orientation: '',
       printElements: [],
       updated: false,

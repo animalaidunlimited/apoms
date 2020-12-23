@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { Injectable, NgZone } from '@angular/core';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class OutstandingCaseService {
   autoRefreshState = false;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject([] as OutstandingCase[]);
-  ambulanceLocations$:BehaviorSubject<RescuerGroup[]> = new BehaviorSubject([] as RescuerGroup[]);
+  ambulanceLocations$!:Observable<any>;
 
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
@@ -59,11 +60,13 @@ export class OutstandingCaseService {
       }
       });
 
+      return false;
+
   }
 
   populateOutstandingCases(outstandingCases:OutstandingCase[]){
 
-    this.zone.run(() => this.outstandingCases$.next(outstandingCases));
+    this.emitOutstandingCases(outstandingCases);
 
     this.zone.run(() => this.refreshColour.next('primary'));
 
@@ -80,6 +83,7 @@ export class OutstandingCaseService {
     this.outstandingCases$.subscribe((cases: any) => {
 
       currentOutstanding = cases;
+
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
@@ -91,7 +95,11 @@ export class OutstandingCaseService {
       staff2: updatedAssignment.staff2,
       staff2Abbreviation: updatedAssignment.staff2Abbreviation,
       latestLocation: undefined,
-      ambulanceAssignment: [updatedAssignment],
+      actions : [{
+        ambulanceAction: updatedAssignment.ambulanceAction,
+        ambulanceAssignment: [updatedAssignment]
+      }]
+
     };
 
     if(!laneExists && updatedAssignment.actionStatus){
@@ -105,7 +113,7 @@ export class OutstandingCaseService {
       currentOutstanding.push({
         actionStatus: updatedAssignment.actionStatus,
         actionStatusName: rescueStatusName[updatedAssignment.actionStatus - 1],
-        actionGroups: [newRescueGroup]
+        statusGroups: [newRescueGroup]
       });
     }
 
@@ -114,7 +122,7 @@ export class OutstandingCaseService {
 
       if(actionState.actionStatus === updatedAssignment.actionStatus)
       {
-       return actionState.actionGroups
+       return actionState.statusGroups
       .find((actionGroup: any) =>  actionGroup.staff1 === updatedAssignment.staff1 &&
                             actionGroup.staff2 === updatedAssignment.staff2);
       }
@@ -128,7 +136,7 @@ export class OutstandingCaseService {
       currentOutstanding.forEach(rescueState => {
 
         if(rescueState.actionStatus === updatedAssignment.actionStatus){
-          rescueState.actionGroups.push(newRescueGroup);
+          rescueState.statusGroups.push(newRescueGroup);
         }
       });
     }
@@ -143,21 +151,23 @@ export class OutstandingCaseService {
 
     });
 
-    // // Here we only do the refresh if the user has the toggle turned on.
+    // Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
       this.zone.run(() => this.refreshColour.next('warn'));
       return;
     }
 
-    // If the record is no longer outstanding, then removing it from the list is enogu and we're finished here
+    // If the record is no longer outstanding, then removing it from the list is enough and we're finished here
     if(!updatedAssignment.actionStatus){
-      this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
+
+      this.zone.run(() => this.emitOutstandingCases(currentOutstanding));
 
       return;
     }
 
     this.zone.run(() => this.refreshColour.next('primary'));
-    this.zone.run(() => this.outstandingCases$.next(currentOutstanding));
+
+    this.zone.run(() => this.emitOutstandingCases(currentOutstanding));
 
 
   }
@@ -165,32 +175,34 @@ export class OutstandingCaseService {
   removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingAssignment) {
 
     // Search through the outstanding cases and remove the old case
-    let returnCase:OutstandingAssignment;
 
     outstanding.forEach(status => {
 
-        status.actionGroups.forEach((group,index) => {
+        status.statusGroups.forEach((state) => {
 
-            const removeIndex = group.ambulanceAssignment
-                              .findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
+          state.actions.forEach((group, index) => {
+
+            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
 
             if(removeIndex > -1){
 
-              returnCase = group.ambulanceAssignment.splice(removeIndex, 1)[0];
+               group.ambulanceAssignment.splice(removeIndex, 1);
 
+                // If the group is now empty, remove it.
+                if(group.ambulanceAssignment.length === 0){
+                  state.actions.splice(index,1);
+                }
 
-
-              // If the group is now empty, remove it.
-              if(group.ambulanceAssignment.length === 0){
-                status.actionGroups.splice(index,1);
-              }
-
-              return;
+                return;
             }
+
           });
+
+          });
+
     });
 
-    return outstanding.filter(cases => cases.actionGroups.length !== 0);
+    return outstanding.filter(cases => cases.statusGroups.length !== 0);
   }
 
   insertRescue(outstanding:OutstandingCase[], action:OutstandingAssignment){
@@ -199,20 +211,26 @@ export class OutstandingCaseService {
 
       if(status.actionStatus === action.actionStatus){
 
-        status.actionGroups.forEach(group => {
+        status.statusGroups.forEach(state => {
 
-          if(group.staff1 === action.staff1 && group.staff2 === action.staff2){
+          state.actions.forEach(group => {
 
-            group.ambulanceAssignment.push(action);
-          }
-        });
+            if(state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
+              group.ambulanceAssignment.push(action);
+
+              group.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber);
+            }
+          });
+      });
       }
+
     });
 
     return outstanding;
   }
 
   setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
+
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
@@ -257,7 +275,10 @@ export class OutstandingCaseService {
 
       outstanding.forEach(status =>
         {
-          status.actionGroups.forEach(group => {
+
+          status.statusGroups.forEach(state => {
+
+          state.actions.forEach(group => {
 
               group.ambulanceAssignment.forEach(assignment => {
 
@@ -268,23 +289,26 @@ export class OutstandingCaseService {
                 if(
                   Object.keys(assignment)
                   .reduce((currentTerm: string, key: string) => {
+
                     return currentTerm + (assignment as {[key: string]: any})[key] + '◬';
                   }, '').toLowerCase().indexOf(searchValue) > -1
                   && searchValue !== ''
                 ){
                   assignment.searchCandidate = true;
                 }
+
               });
             });
+          });
         });
 
-         this.zone.run(() => {
-          this.outstandingCases$.next(outstanding);
-         });
+        this.emitOutstandingCases(outstanding);
 
     });
 
   }
+
+
 
   getAutoRefresh(){
     return this.autoRefresh;
@@ -311,6 +335,125 @@ export class OutstandingCaseService {
   // The window has received focus, so we may need to refresh
   receiveFocus(){
     this.zone.run(() => this.haveReceivedFocus.next(true));
+
+  }
+
+  emitOutstandingCases(outstandingCases:OutstandingCase[]){
+
+    outstandingCases.sort((a,b) => a.actionStatus - b.actionStatus);
+
+    outstandingCases.forEach(states =>
+      {
+        states.statusGroups.forEach(rescuerGroups => {
+
+          rescuerGroups.actions.sort((a,b) => b.ambulanceAction > a.ambulanceAction ? 1 : -1);
+
+          rescuerGroups.actions.forEach(action => action.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber));
+
+        });
+
+      });
+
+    this.zone.run(() => this.outstandingCases$.next(outstandingCases));
+
+  }
+
+  getAmbulanceLocations() :Observable<any>{
+
+    return this.outstandingCases$.pipe(
+      map((cases) => {
+        if(cases.length !== 0){
+
+          return cases.filter(swimlane => swimlane.actionStatus >= 3)
+                      .map(states => states.statusGroups)
+
+                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
+                        // the last one based upon time. However if we make the changes directly to the result object of the
+                        // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
+                        // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
+                        // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
+                      .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
+                      .reduce((aggregatedLocations:RescuerGroup[], current:RescuerGroup[]) => {
+
+
+                if(aggregatedLocations.length === 0){
+                  return current;
+                }
+                else{
+
+                  current.forEach((currentRescueGroup:RescuerGroup) => {
+
+                    currentRescueGroup.actions.forEach((actionGroup:ActionGroup) => {
+
+                    const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
+
+                      return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
+                          parentRescueGroup.staff2 === currentRescueGroup.staff2;
+
+                    });
+
+                    if(index > -1){
+
+                      aggregatedLocations[index].actions.forEach((action:ActionGroup) => {
+
+                        if(action.ambulanceAction === actionGroup.ambulanceAction){
+                          action.ambulanceAssignment = action.ambulanceAssignment.concat(actionGroup.ambulanceAssignment);
+                        }
+
+                      });
+                    }
+                    else
+                    {
+                      aggregatedLocations.push(currentRescueGroup);
+                    }
+
+
+                    });
+                  });
+
+                  return aggregatedLocations;
+
+                }},[])
+              .map((actionGroups:RescuerGroup) => {
+
+                let assignments:OutstandingAssignment[] = [];
+
+                actionGroups.actions.forEach(action => {
+
+                    assignments = assignments.length === 0 ? action.ambulanceAssignment : assignments.concat(action.ambulanceAssignment);
+
+                });
+
+                // TODO: Ask jim sir about it and confirm to him about this latest location for release.
+                const maxAction = assignments.reduce((current:OutstandingAssignment, previous:OutstandingAssignment) => {
+
+                  const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
+                    ? current.ambulanceArrivalTime : current.rescueTime;
+
+                  const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1))
+                    ? previous.ambulanceArrivalTime : previous.rescueTime;
+
+                  return previousTime > currentTime ? previous : current;
+
+                });
+
+               return {
+                staff1: actionGroups.staff1,
+                staff1Abbreviation: actionGroups.staff1Abbreviation,
+                staff2: actionGroups.staff2,
+                staff2Abbreviation: actionGroups.staff2Abbreviation,
+                latestLocation: maxAction.latLngLiteral,
+                actions: actionGroups
+                };
+
+
+             });
+
+            }
+        }
+
+    ));
+
 
   }
 

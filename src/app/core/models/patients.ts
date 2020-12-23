@@ -48,6 +48,7 @@ export interface PatientCallResult {
 export interface PatientCallModifyResponse {
     position: number;
     results: PatientCallResult;
+    success: number;
 }
 
 export interface CrueltyReportResult{

@@ -4,7 +4,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PrintElementFilter } from 'apoms/src/app/modules/print-templates/pipes/print-element-filter';
+import { PrintElementFilter } from '../pipes/print-element-filter';
 
 import { PrintTemplatesPageComponent } from './print-templates-page.component';
 

@@ -129,4 +129,12 @@
     color: white;
 }
 
+@media screen and (max-width: 800px) {
+    ::ng-deep.full-width-dialog{
+        width: 110vw !important;
+      }
+  }
 
+::ng-deep.full-width-dialog {
+    width: 40vw;
+}

@@ -29,12 +29,13 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
 import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
-import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
+//import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsModule} from './components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
-import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
+import { AnimalHeaderComponent } from './components/animal-header/animal-header.component';
+
 
 @NgModule({
     declarations: [
@@ -52,9 +53,9 @@ import { AnimalHeaderModule } from './components/animal-header/animal-header.mod
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
         UpdateCensusDialogComponent,
-        MediaCaptureComponent,
         TreatmentComponent,
-        ReleaseDetailsDialogComponent
+        ReleaseDetailsDialogComponent,
+        AnimalHeaderComponent
     ],
     imports: [
         CommonModule,
@@ -72,7 +73,6 @@ import { AnimalHeaderModule } from './components/animal-header/animal-header.mod
         NgxGalleryModule,
         CallerDetailsModule,
         PatientVisitDetailsModule,
-        AnimalHeaderModule
     ],
     exports: [],
 })

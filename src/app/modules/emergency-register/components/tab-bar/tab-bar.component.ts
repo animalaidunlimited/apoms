@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
@@ -33,6 +33,7 @@ export class TabBarComponent implements OnInit {
                 this.openSearchMediaDialog(mediaItem);
            }
         });
+
     }
 
     removeTab(index: number) {

@@ -339,7 +339,7 @@ export class DropdownService extends APIService {
                 { id: 5, isoReason: 'Diarrhea' },
                 { id: 6, isoReason: 'Circling' },
                 { id: 7, isoReason: 'Twitching' },
-                { id: 8, isoReason: 'Nuerological' },
+                { id: 8, isoReason: 'Neurological' },
                 { id: 9, isoReason: 'Rabies Suspected' },
             ];
         }

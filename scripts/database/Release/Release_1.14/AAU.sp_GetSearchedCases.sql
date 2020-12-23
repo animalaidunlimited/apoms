@@ -81,7 +81,7 @@ Purpose: Used to return active cases for the Admin screen
 		AND StatusId IN (1,2)
         GROUP BY StreetTreatCaseId
 		) AS nvr
-	INNER JOIN AAU.visit v ON v.Date = nvr.NextVisit
+	INNER JOIN AAU.Visit v ON v.Date = nvr.NextVisit
             AND v.StreetTreatCaseId = nvr.StreetTreatCaseId
 	) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
 		
