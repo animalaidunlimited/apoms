@@ -118,7 +118,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$.subscribe((value) => {
+    this.outstandingCases$.subscribe((assignments) => {
+
+      assignments.map((assignment)=>{
+
+      });
+
+
+
+
         this.loading = false;
         this.changeDetector.detectChanges();
     });
@@ -135,17 +143,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
       }
   });
   }
-
-  //openMediaDialog(patientId: number, tagNumber: string | null): void{
-  //  const dialogRef = this.dialog.open(MediaDialogComponent, {
-  //      minWidth: '50%',
-  //      data: {
-  //          tagNumber,
-  //          patientId,
-  //      }
-  //  });
-
-  //}
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
