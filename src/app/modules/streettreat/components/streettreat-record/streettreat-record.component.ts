@@ -10,7 +10,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-import { VisitResponse } from 'src/app/core/models/release';
+
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface visitCalender{
@@ -129,7 +129,7 @@ export class StreetTreatRecordComponent implements OnInit {
     this.calendar.updateTodaysDate(); 
   }
   loadCalendar(){
-    this.loadCalendarComponent = !this.loadCalendarComponent;
+    this.loadCalendarComponent = !this.loadCalendarComponent ;
   }
   
 

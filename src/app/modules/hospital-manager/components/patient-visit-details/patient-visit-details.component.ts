@@ -23,8 +23,8 @@ import { trigger, style, transition, animate, keyframes, query, stagger } from '
 		trigger('listAnimation',[
 			transition('* => *',[
 				query(':enter', style({opacity: 0}), {optional: true}),
-				query(':enter', stagger('300ms',[
-					animate('1s ease-in', keyframes([
+				query(':enter', stagger('100ms',[
+					animate('0.5s ease-in', keyframes([
 						style({
 							opacity: 0,
 							transform: 'translateY(-75px)',
@@ -42,8 +42,8 @@ import { trigger, style, transition, animate, keyframes, query, stagger } from '
 						}),
 					]))
 				]),{optional: true}),
-				query(':leave', stagger('300ms',[
-					animate('1s ease-in', keyframes([
+				query(':leave', stagger('100ms',[
+					animate('0.5s ease-in', keyframes([
 						style({
 							opacity: 1,
 							transform: 'translateY(0)',
@@ -79,8 +79,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 	treatmentPrioritySubscription: Subscription | undefined;
 	visitType$: VisitType[] = [];
 	treatmentPriority$: Priority[]= [];
-	showVisitDate: boolean = false;
+	showVisitDate: boolean = true;
 	prevVisits: string[] = [];
+	showEmptyVisit: boolean = false;
 	@Input() recordForm!: FormGroup;
 	private _dateSelected!: string[];
 
@@ -241,6 +242,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 			if(res?.streetTreatForm){
 				if(res.streetTreatForm.visits.length )
 				{
+					this.showEmptyVisit = false;
 					for(let i = 0; i<res.streetTreatForm.visits.length-1;i++)
 					{
 						if(res.streetTreatForm.visits[i].visit_date){
@@ -252,14 +254,13 @@ export class PatientVisitDetailsComponent implements OnInit {
 						}
 						this.visitsArray.push(this.getVisitFormGroup());
 					}
+					this.prevVisits = res.streetTreatForm.visits.map(prevVisits => {
+						if(prevVisits.visit_date) 
+							return prevVisits.visit_date.toString();
+						else
+							return '';
+					});
 				}
-				this.prevVisits = res.streetTreatForm.visits.map(prevVisits => {
-					if(prevVisits.visit_date) 
-						return prevVisits.visit_date.toString();
-					else
-						return '';
-				});
-				
 				this.streatTreatForm.patchValue(res.streetTreatForm);
 				this.changeDetectorRef.detectChanges();
 			}
