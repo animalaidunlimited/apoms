@@ -56,4 +56,15 @@ export interface StreetTreatSearchResponse {
     MainProblemId: number;
   }
 
-  
+  export interface StreetTreatSearchVisitsResponse{
+    VisitId:number; 
+    StreetTreatCaseId:number; 
+    VisitTypeId:number; 
+    VisitType:string; 
+    Date:Date; 
+    StatusId:number; 
+    Status:number; 
+    AdminNotes:string; 
+    OperatorNotes:string; 
+    IsDeleted: 0|1| null;  
+}

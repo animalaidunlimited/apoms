@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, Output, OnInit, ViewChild, ChangeD
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { StreetTreatSearchResponse, StreetTreatTab } from 'src/app/core/models/streettreet';
+import { StreetTreatSearchResponse, StreetTreatSearchVisitsResponse, StreetTreatTab } from 'src/app/core/models/streettreet';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { Priority } from '../../../../core/models/priority';
@@ -11,6 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { VisitResponse } from 'src/app/core/models/release';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface visitCalender{
   status:number,
@@ -36,6 +37,7 @@ export class StreetTreatRecordComponent implements OnInit {
   profileUrl: SafeUrl = '';
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
+  loadCalendarComponent:boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -43,6 +45,7 @@ export class StreetTreatRecordComponent implements OnInit {
     private dropdown: DropdownService,
     private patientService: PatientService,
     private changeDetector: ChangeDetectorRef,
+    private showSnackBar: SnackbarService
   ) { }
 
   public get emergencyCaseId() {
@@ -51,6 +54,10 @@ export class StreetTreatRecordComponent implements OnInit {
 
   public get patientId() {
     return this.inputStreetTreatCase.patientId as number;
+  }
+
+  public get streetTreatFrom(){
+    return this.recordForm.value;
   }
   @ViewChild(MatCalendar)
   calendar!: MatCalendar<Date>;
@@ -101,8 +108,9 @@ export class StreetTreatRecordComponent implements OnInit {
       this.streetTreatServiceSubscription?.unsubscribe();
     });
 
-    this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(this.inputStreetTreatCase.streetTreatCaseId).subscribe((visitResponse:VisitResponse[])=>{
-      visitResponse.map((visitResponse:any)=> {
+    this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(this.inputStreetTreatCase.streetTreatCaseId)
+    .subscribe((visitResponse:StreetTreatSearchVisitsResponse[])=>{
+      visitResponse.map((visitResponse)=> {
         this.visitDates.push(
         {
           status: visitResponse.StatusId,
@@ -114,12 +122,20 @@ export class StreetTreatRecordComponent implements OnInit {
     });
 
   }
-  
-   
+  dateSelectedEventHandler($event:any){
+    
+    this.dateSelected = [...$event];
+    this.calendar && 
+    this.calendar.updateTodaysDate(); 
+  }
+  loadCalendar(){
+    this.loadCalendarComponent = !this.loadCalendarComponent;
+  }
   
 
   onSelect(selectedDate:Date)
   {
+  
     const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
     const index = this.dateSelected.findIndex(x => x == date);
     if (index < 0) {
@@ -132,6 +148,22 @@ export class StreetTreatRecordComponent implements OnInit {
     this.changeDetector.detectChanges();
     this.calendar.updateTodaysDate(); 
   } 
+
+  saveForm(){
+    this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
+
+      response.success === 1
+          ? this.showSnackBar.successSnackBar('Street Treat updated successfully','OK')
+          : this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
+
+      if(response?.success === -1){
+        this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
+        return;
+      }
+
+    });
+ 
+  }
 
   dateClass() {
     return (date: Date): MatCalendarCellCssClasses  => {

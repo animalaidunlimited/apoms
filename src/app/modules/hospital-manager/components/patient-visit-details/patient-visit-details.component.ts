@@ -1,7 +1,7 @@
 
 import { VisitType } from './../../../../core/models/visit-type';
 import { TeamDetails } from './../../../../core/models/team';
-import { Component, OnInit, Inject, ChangeDetectorRef, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
@@ -12,13 +12,58 @@ import { UniqueValidators } from 'src/app/modules/hospital-manager/components/pa
 import { Priority } from 'src/app/core/models/priority';
 import { EventEmitter } from '@angular/core';
 import { ReleaseResponse, VisitResponse } from 'src/app/core/models/release';
-
+import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 
 
 @Component({
 	selector: 'app-patient-visit-details',
 	templateUrl: './patient-visit-details.component.html',
-	styleUrls: ['./patient-visit-details.component.scss']
+	styleUrls: ['./patient-visit-details.component.scss'],
+	animations:[
+		trigger('listAnimation',[
+			transition('* => *',[
+				query(':enter', style({opacity: 0}), {optional: true}),
+				query(':enter', stagger('300ms',[
+					animate('1s ease-in', keyframes([
+						style({
+							opacity: 0,
+							transform: 'translateY(-75px)',
+							offset:0
+						}),
+						style({
+							opacity: .5,
+							transform: 'translateY(35px)',
+							offset:0.3
+						}),
+						style({
+							opacity: 1,
+							transform: 'translateY(0)',
+							offset:1
+						}),
+					]))
+				]),{optional: true}),
+				query(':leave', stagger('300ms',[
+					animate('1s ease-in', keyframes([
+						style({
+							opacity: 1,
+							transform: 'translateY(0)',
+							offset:0
+						}),
+						style({
+							opacity: .5,
+							transform: 'translateY(35px)',
+							offset:0.3
+						}),
+						style({
+							opacity: 0,
+							transform: 'translateY(-75px)',
+							offset:1
+						}),
+					]))
+				]),{optional: true}),
+			])
+		])
+	]
 })
 export class PatientVisitDetailsComponent implements OnInit {
 	
@@ -35,13 +80,16 @@ export class PatientVisitDetailsComponent implements OnInit {
 	visitType$: VisitType[] = [];
 	treatmentPriority$: Priority[]= [];
 	showVisitDate: boolean = false;
-	prevVisits: any[]=[];
+	prevVisits: string[] = [];
 	@Input() recordForm!: FormGroup;
-	private _dateSelected!: any[];
-	@Input() set dateSelected(value:any[]){
+	private _dateSelected!: string[];
+
+	@Output() newDateSelected = new EventEmitter<string[]>();
+
+	@Input() set dateSelected(value:string[]){
 		this._dateSelected = value;
 	}
-	get dateSelected(): any[] {
+	get dateSelected(): string[] {
 		return this._dateSelected;
 	}
 
@@ -52,6 +100,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private releaseService: ReleaseService,
+	
 	) {}
 
 	private subscriptions: { [key: string]: Subscription } = {};
@@ -74,11 +123,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 				adminNotes: [,Validators.required],
 				streetTreatCaseStatus:[],
 				visits: this.fb.array(
-								[this.getVisitFormGroup()],
-								[
-									UniqueValidators.uniqueBy('visit_day'),
-									UniqueValidators.uniqueBy('visit_date')
-								]
+								[this.getVisitFormGroup()]
 							),
 			})
 		);
@@ -111,21 +156,24 @@ export class PatientVisitDetailsComponent implements OnInit {
 			this.treatmentPrioritySubscription?.unsubscribe();
 		});
 		this.initStreetTreatForm();
+		this.visitsArray.valueChanges.subscribe(()=>{
+			this.newDateSelected.emit(this.castedVisitArray);
+		});
+		
 	}
-	
-	public get visitArray(){
+	public get castedVisitArray(){
 		let castedVisitsArray:string[] = [];
 		this.visitsArray &&
-		this.visitsArray.controls.forEach( (value,index) => castedVisitsArray.push(value.get('visit_date')?.value));
+		this.visitsArray.controls.forEach( (value) => castedVisitsArray.push(value.get('visit_date')?.value));
 		return [...new Set(castedVisitsArray)];
 	}
 	
-
+	
 	addCalenderVisit(dateSelected:string[]){
-		let insertDate = dateSelected.filter(x => !this.visitArray.includes(x))[0];
+		let insertDate = dateSelected.filter(x => !this.castedVisitArray.includes(x))[0];
 		(insertDate) &&
 		this.visitsArray.push(this.getVisitFormGroup(insertDate));
-		let difference = this.visitArray.filter(x => ![...this.prevVisits, ...dateSelected].includes(x) && x!='null')[0];
+		let difference = this.castedVisitArray.filter(x => ![...this.prevVisits, ...dateSelected].includes(x) && x!='null')[0];
 		if(this.visitsArray)
 		{
 			let removeIndex = this.visitsArray.controls.findIndex(visitData => visitData.value.visit_date === difference);
@@ -138,7 +186,6 @@ export class PatientVisitDetailsComponent implements OnInit {
 		if(this.dateSelected){
 			this.addCalenderVisit(this.dateSelected);
 		}
-		// user remove the dates remove formgroup
 	}
 
 	getVisitFormGroup(date?: string ): FormGroup {
@@ -146,11 +193,25 @@ export class PatientVisitDetailsComponent implements OnInit {
 			visitId:[],
 			visit_status: [1, Validators.required],
 			visit_type: [1, Validators.required],
-			visit_comments: [, Validators.required],
-			visit_day:[,Validators.required],
-			visit_date:[date,Validators.required],
+			visit_comments: [],
+			visit_day:[],
+			visit_date:[date],
 		});
+	
+		if(this.castedVisitArray.length > 0)
+		{
+			if(this.prevVisits.length > 0)
+			{
+				visitArray.controls['visit_date'].setValidators(Validators.required);
+			}
+			else{
+				visitArray.controls['visit_day'].setValidators(Validators.required);
+			}
+		}
 		return visitArray;
+	}
+	ngAfterViewInit(){
+		
 	}
 
 	keyPressNumbers(event: any) {
@@ -164,10 +225,12 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	addVisits(event: Event) {
+		console.log(this.streatTreatForm.controls.visits);
 		if (this.streatTreatForm.controls.visits.valid) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
 	}
+
 	deleteVisits(index: number) {
 		this.visitsArray.removeAt(index);
 	}
@@ -182,11 +245,20 @@ export class PatientVisitDetailsComponent implements OnInit {
 					{
 						if(res.streetTreatForm.visits[i].visit_date){
 							this.showVisitDate = true;
+							this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
+						}
+						else{
+							this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 						}
 						this.visitsArray.push(this.getVisitFormGroup());
 					}
 				}
-				this.prevVisits = res.streetTreatForm.visits.map(prevVisits => prevVisits.visit_date?.toString());
+				this.prevVisits = res.streetTreatForm.visits.map(prevVisits => {
+					if(prevVisits.visit_date) 
+						return prevVisits.visit_date.toString();
+					else
+						return '';
+				});
 				
 				this.streatTreatForm.patchValue(res.streetTreatForm);
 				this.changeDetectorRef.detectChanges();

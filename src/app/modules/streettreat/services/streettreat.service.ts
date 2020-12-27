@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { VisitResponse } from 'src/app/core/models/release';
+import { VisitResponse, StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { StreetTreatCase } from 'src/app/core/models/streettreet';
+import { StreetTreatCase, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -137,13 +137,25 @@ export class StreetTreatService extends APIService {
       }),
     );
   }
-
+  
   public getVisitDatesByStreetTreatCaseId(streetTreatCaseId: number) {
     const request = '/SearchVisits/?streetTreatCaseId=' + streetTreatCaseId;
     return this.getObservable(request).pipe(
-     map((response: VisitResponse[]) => {
+     map((response: StreetTreatSearchVisitsResponse[]) => {
           return response;
       }),
     ); 
+  }
+
+  public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) : Promise<any> {
+
+    return await this.post(streetTreatCaseForm)
+    .then(data => {
+        return data;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  
   }
 }

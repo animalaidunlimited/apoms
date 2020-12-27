@@ -37,7 +37,7 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" formArrayName="visits">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
 				<div [formGroupName]="visitIndex">
