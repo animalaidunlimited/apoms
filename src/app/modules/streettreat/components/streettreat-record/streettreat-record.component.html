@@ -36,8 +36,8 @@
       <app-patient-visit-details [dateSelected]="dateSelected" (newDateSelected)="dateSelectedEventHandler($event)" [recordForm]="recordForm" ></app-patient-visit-details>
         <div class="visit-calendar-wrapper">
             <button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
-            <div *ngIf="visitDates.length > 0 " class="visit_calendar">
-                <mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" *ngIf="visitDates[0].status && loadCalendarComponent"></mat-calendar>
+            <div class="visit_calendar" [hidden]="loadCalendarComponent">
+                <mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" ></mat-calendar>
             </div>
         </div>
 </fieldset>

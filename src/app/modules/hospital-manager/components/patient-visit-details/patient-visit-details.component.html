@@ -39,8 +39,8 @@
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
-			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
-				<div [formGroupName]="visitIndex">
+			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
+				<div [formGroupName]="visitIndex" >
 					<mat-form-field appearance="fill" *ngIf="!showVisitDate">
 						<mat-label>Day</mat-label>
 						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
