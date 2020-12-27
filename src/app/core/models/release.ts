@@ -35,7 +35,7 @@
     requestedUser: string;
   }
   
-  interface StreetTreatForm {
+  export interface StreetTreatForm {
     teamId: number;
     visits: VisitResponse[];
     patientId: number;

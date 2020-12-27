@@ -61,22 +61,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ]};
 
     this.outstandingCases.outstandingCases$.subscribe(cases => {
-      
+  
       if(cases.length > 0){
-        cases.forEach((outstandingActions) => {
-          outstandingActions.statusGroups.forEach((states) =>{
-            states.actions.forEach((assignments)=>{
-              assignments.ambulanceAssignment.forEach((action)=>{
-                console.log(action)
-              });
-            });
-          });
-        });
         this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
       }
 
     });
-
 
   }
 
