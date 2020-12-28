@@ -43,5 +43,9 @@ ALTER TABLE AAU.EmergencyCase DROP INDEX `FK_EmergencyCaseCallerId_CallerCallerI
 ALTER TABLE AAU.EmergencyCase
 DROP COLUMN `CallerId`;
 
+ALTER TABLE AAU.ReleaseDetails
+DROP COLUMN `CallerId`;
+
+
 SELECT * FROM AAU.EmergencyCase LIMIT 1;
 
