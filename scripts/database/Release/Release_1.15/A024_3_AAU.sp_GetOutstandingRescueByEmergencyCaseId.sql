@@ -22,7 +22,7 @@ Purpose: To retrieve outstanding rescues and releases for display on board.
  SELECT PatientId
  FROM AAU.Patient
  WHERE EmergencyCaseId = prm_EmergencyCaseId
- AND (PatientId = prm_PatientId OR PatientId IS NULL)
+ AND (PatientId = prm_PatientId OR prm_PatientId IS NULL)
  ),
  PatientsCTE AS
  (

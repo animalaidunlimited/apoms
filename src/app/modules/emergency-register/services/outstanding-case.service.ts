@@ -190,7 +190,7 @@ export class OutstandingCaseService {
     }
 
     // Set the rescue to show as moved
-    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, true, false);
+    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
     });
 
@@ -222,7 +222,8 @@ export class OutstandingCaseService {
 
           state.actions.forEach((group, index) => {
 
-            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
+            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId &&
+                                                                                current.releaseId === rescue.releaseId);
 
             if(removeIndex > -1){
 
@@ -275,19 +276,19 @@ export class OutstandingCaseService {
     return outstanding;
   }
 
-  setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
+  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
 
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId ){
+      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseId === releaseId){
 
         o.moved = moved;
 
         if(!timeout){
           setTimeout(() => {
 
-            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, false, true));
+            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseId, false, true));
 
           }
 
@@ -300,7 +301,7 @@ export class OutstandingCaseService {
 
       for (p in o) {
           if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
+              result = this.setMoved(o[p], emergencyCaseId, releaseId, moved, timeout);
           }
       }
 

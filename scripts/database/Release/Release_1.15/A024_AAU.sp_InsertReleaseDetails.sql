@@ -10,8 +10,7 @@ CREATE PROCEDURE AAU.sp_InsertReleaseDetails (IN prm_UserName NVARCHAR(45),
 												IN prm_Releaser1Id INT,
 												IN prm_Releaser2Id INT,
 												IN prm_RequestedUser NVARCHAR(45),
-												IN prm_RequestedDate DATE,
-												IN prm_CallerId INT
+												IN prm_RequestedDate DATE
 											)
 BEGIN
 
@@ -48,7 +47,6 @@ INSERT INTO AAU.ReleaseDetails (OrganisationId,
                                 RequestedUser,
                                 RequestedDate,
                                 ReleaseTypeId,
-                                CallerId,
                                 ComplainerNotes,
                                 ComplainerInformed,
                                 Releaser1Id,
@@ -59,7 +57,6 @@ INSERT INTO AAU.ReleaseDetails (OrganisationId,
                                 vUserId,
                                 prm_RequestedDate,
                                 prm_ReleaseTypeId,
-                                prm_CallerId,
                                 prm_ComplainerNotes,
                                 IF(prm_ComplainerInformed,1,0),
                                 prm_Releaser1Id,

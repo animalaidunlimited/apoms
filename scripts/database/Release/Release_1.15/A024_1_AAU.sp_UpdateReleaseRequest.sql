@@ -12,8 +12,7 @@ CREATE PROCEDURE AAU.sp_UpdateReleaseRequest(IN prm_UserName VARCHAR(45),
 											IN prm_Releaser1Id INT,
 											IN prm_Releaser2Id INT,
 											IN prm_RequestedUser NVARCHAR(45),
-											IN prm_RequestedDate DATE,
-											IN prm_CallerId INT
+											IN prm_RequestedDate DATE
 											)
 BEGIN
 
@@ -45,8 +44,7 @@ UPDATE AAU.ReleaseDetails
                     Releaser1Id = prm_Releaser1Id,
                     Releaser2Id = prm_Releaser2Id,
                     RequestedUser = vUserId,
-                    RequestedDate = prm_RequestedDate,
-                    CallerId = prm_CallerId
+                    RequestedDate = prm_RequestedDate
 WHERE ReleaseDetailsId = prm_ReleaseId;
 
 SELECT 1 INTO vUpdateSuccess;
