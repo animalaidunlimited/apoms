@@ -67,7 +67,7 @@ export class MediaPasteService {
 
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
 
-      newMediaItem.remoteURL = this.getFileUploadLocation(file.name, timeString || '');
+      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
 
               const options: IResizeImageOptions = {
                 maxSize: 5000,
@@ -76,14 +76,12 @@ export class MediaPasteService {
 
               if(newMediaItem.mediaType === 'image'){
 
-                this.resizeImage(options).then(async (resizedImageIncoming:unknown) => {
-
-                  const resizedImage = JSON.parse(JSON.stringify(resizedImageIncoming)) as ResizedImage;
+                const resizedImage = await this.resizeImage(options);
 
                   newMediaItem.widthPX = resizedImage.width;
                   newMediaItem.heightPX = resizedImage.height;
 
-                  const uploadResult = this.uploadFile(newMediaItem, resizedImage.image);
+                  const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
 
                   newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
@@ -92,6 +90,7 @@ export class MediaPasteService {
                     result.ref.getDownloadURL().then(url => {
 
                       newMediaItem.remoteURL = url;
+
 
                       newMediaItem.mediaItemId.subscribe(id => {
                         returnObject.mediaItemId.next(id);
@@ -102,11 +101,10 @@ export class MediaPasteService {
 
                   });
 
-                  });
               }
               else{
 
-                const uploadResult = this.uploadFile(newMediaItem, file);
+                const uploadResult = this.uploadFile(uploadLocation, file);
 
                 newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
@@ -114,7 +112,7 @@ export class MediaPasteService {
 
                 uploadResult.then((result) => {
 
-                  result.ref.getDownloadURL().then(url => {
+                  result.ref.getDownloadURL().then((url:any) => {
 
                     newMediaItem.remoteURL = url;
 
@@ -267,14 +265,14 @@ getPastedImage(event: ClipboardEvent): File | undefined {
     return undefined;
 }
 
-uploadFile(mediaItem: MediaItem, file:Blob) : AngularFireUploadTask
+uploadFile(url:string, file:Blob) : AngularFireUploadTask
 {
 
-  if(!mediaItem.remoteURL){
+  if(!url){
     throw new Error ('No image URL provided');
   }
 
-  return this.storage.upload(mediaItem.remoteURL, file);
+  return this.storage.upload(url, file);
 
 }
 
@@ -319,7 +317,7 @@ return remoteURL;
 }
 
 
-resizeImage(settings: IResizeImageOptions) {
+resizeImage(settings: IResizeImageOptions) : Promise<ResizedImage>  {
   const file = settings.file;
   const maxSize = settings.maxSize;
   const reader = new FileReader();
@@ -367,17 +365,18 @@ resizeImage(settings: IResizeImageOptions) {
     return resizedImage;
   };
 
-  return new Promise((ok, no) => {
+  return new Promise<ResizedImage>((resolve, reject) => {
 
       if (!file.type.match(/image.*|video.*/)) {
-        no(new Error('Not an image or video'));
+        reject(new Error('Not an image or video'));
         return;
       }
 
       reader.onload = (readerEvent: any) => {
-        image.onload = () => ok(resize());
+        image.onload = () => resolve(resize());
         image.src = readerEvent.target.result;
       };
+
       reader.readAsDataURL(file);
   });
 }

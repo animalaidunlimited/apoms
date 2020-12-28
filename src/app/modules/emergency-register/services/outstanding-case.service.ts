@@ -178,7 +178,7 @@ export class OutstandingCaseService {
 
     outstanding.forEach(status => {
 
-        status.statusGroups.forEach((state) => {
+        status.statusGroups.forEach((state, stateIndex) => {
 
           state.actions.forEach((group, index) => {
 
@@ -191,6 +191,10 @@ export class OutstandingCaseService {
                 // If the group is now empty, remove it.
                 if(group.ambulanceAssignment.length === 0){
                   state.actions.splice(index,1);
+
+                  if(state.actions.length === 0){
+                    status.statusGroups.splice(stateIndex, 1);
+                  }
                 }
 
                 return;
@@ -239,7 +243,13 @@ export class OutstandingCaseService {
         o.moved = moved;
 
         if(!timeout){
-          setTimeout(() => this.setMoved(o, emergencyCaseId, false, true), 3500);
+          setTimeout(() => {
+
+            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, false, true));
+
+          }
+
+          , 3500);
         }
 
       }

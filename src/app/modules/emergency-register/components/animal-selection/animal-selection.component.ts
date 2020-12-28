@@ -342,23 +342,13 @@ export class AnimalSelectionComponent implements OnInit {
             // There is only 1 row selected, so we can update the animal for that row
             let animalTypeObject;
 
-            animalTypeObject = this.getAnimalFromObservable(
-                animalTypeChip.value,
-            );
+            animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
 
             const currentPatient = this.getcurrentPatient();
 
-            currentPatient.get('animalType')?.setValue(
-                    animalTypeChip.selected
-                        ? animalTypeObject?.AnimalType
-                        : null,
-                );
+            currentPatient.get('animalType')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalType : null );
 
-            currentPatient.get('animalTypeId')?.setValue(
-                    animalTypeChip.selected
-                        ? animalTypeObject?.AnimalTypeId
-                        : null,
-                );
+            currentPatient.get('animalTypeId')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalTypeId : null);
 
             currentPatient.get('updated')?.setValue(true);
         }

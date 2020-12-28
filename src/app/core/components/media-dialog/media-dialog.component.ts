@@ -51,7 +51,7 @@ export class MediaDialogComponent implements OnInit {
 
         if(mediaItems){
 
-        this.mediaItems = mediaItems.map((mediaItem:any) => {
+        this.mediaItems = mediaItems.map(mediaItem => {
 
          this.newItem  = {
           mediaItemId: mediaItem.mediaItemId,
@@ -78,7 +78,7 @@ export class MediaDialogComponent implements OnInit {
 
     if(this.data.mediaVal) {
 
-      this.data.mediaVal.forEach((item:File) => {
+      this.data.mediaVal.forEach(item => {
 
         const addedItem = this.upload(item , this.data.patientId);
 
@@ -93,7 +93,7 @@ export class MediaDialogComponent implements OnInit {
   }
 
 
-public handlePaste(event: ClipboardEvent){
+public handlePaste(event: ClipboardEvent) : void {
 
     // Pass the clipboard event down to the service, expect it to return an image file
     const mediaFile: File | undefined = this.mediaPaster.getPastedImage(event);
@@ -108,7 +108,7 @@ public handlePaste(event: ClipboardEvent){
     }
 }
 
-upload(file: File, patientId: number) : MediaItemReturnObject{
+upload(file: File, patientId: number) : MediaItemReturnObject {
 
   const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
     mediaItem.mediaItemId.subscribe(result => {
@@ -121,7 +121,7 @@ upload(file: File, patientId: number) : MediaItemReturnObject{
 
 }
 
-uploadFile($event:any) {
+uploadFile($event:any) : void {
 
   // We're uploading a file
   this.uploading++;
@@ -145,7 +145,7 @@ uploadFile($event:any) {
 
 }
 
-addToMediaItems(item: MediaItem){
+addToMediaItems(item: MediaItem) : void {
 
   if(!this.mediaItems){
     this.mediaItems = [];
@@ -155,7 +155,7 @@ addToMediaItems(item: MediaItem){
 
 }
 
-onMediaItemDeleted(deletedMediaItem: MediaItem){
+onMediaItemDeleted(deletedMediaItem: MediaItem) : void {
 
   this.mediaItems = this.mediaItems.filter(mediaItem =>
           mediaItem.mediaItemId !== deletedMediaItem.mediaItemId
@@ -163,13 +163,13 @@ onMediaItemDeleted(deletedMediaItem: MediaItem){
 
 }
 
-clearPrimary(){
+clearPrimary() : void {
   this.mediaItems.forEach(mediaItem=>{
     mediaItem.isPrimary = false;
   });
 }
 
-onMediaUpdate(updatedMedia:MediaItem){
+onMediaUpdate(updatedMedia:MediaItem) : void {
   if(updatedMedia.isPrimary === true){
     this.primaryMedia = updatedMedia;
   }
