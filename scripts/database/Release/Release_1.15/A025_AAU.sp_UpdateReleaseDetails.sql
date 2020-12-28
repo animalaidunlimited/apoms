@@ -22,6 +22,7 @@ Purpose: Used to update a release of a patient.
 
 DECLARE vUpdateSuccess INT;
 DECLARE vReleaseCount INT;
+DECLARE vPatientId INT;
 DECLARE vSocketEndPoint CHAR(3);
 
 SELECT SocketEndPoint INTO vSocketEndPoint
@@ -29,7 +30,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vReleaseCount FROM AAU.ReleaseDetails WHERE ReleaseDetailsId = prm_ReleaseId;
+SELECT COUNT(1), MAX(PatientId) INTO vReleaseCount, vPatientId FROM AAU.ReleaseDetails WHERE ReleaseDetailsId = prm_ReleaseId;
 
 IF vReleaseCount = 1 THEN
 
@@ -55,7 +56,7 @@ END IF;
 
 SELECT vUpdateSuccess AS updateSuccess, vSocketEndPoint AS socketEndPoint;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, vPatientId);
 
 END$$
 DELIMITER ;

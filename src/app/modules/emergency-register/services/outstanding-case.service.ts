@@ -87,7 +87,7 @@ export class OutstandingCaseService {
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
-    const laneExists = currentOutstanding.find(elem => elem.actionStatus === updatedAssignment.actionStatus);
+    let laneExists = currentOutstanding.some(elem => elem.actionStatus === updatedAssignment.actionStatus);
 
     const newRescueGroup:RescuerGroup = {
       staff1: updatedAssignment.staff1,
@@ -115,10 +115,12 @@ export class OutstandingCaseService {
         actionStatusName: rescueStatusName[updatedAssignment.actionStatus - 1],
         statusGroups: [newRescueGroup]
       });
+
+      laneExists = true;
     }
 
     // Check to see if the rescuers exist and insert if not
-    const rescuersExist = currentOutstanding.find(actionState => {
+    let rescuersExist = currentOutstanding.some(actionState => {
 
       if(actionState.actionStatus === updatedAssignment.actionStatus)
       {
@@ -137,17 +139,58 @@ export class OutstandingCaseService {
 
         if(rescueState.actionStatus === updatedAssignment.actionStatus){
           rescueState.statusGroups.push(newRescueGroup);
+          rescuersExist = true;
         }
       });
     }
 
+    // Check to see if the action exists for the ambulance and insert if not
+    const actionTypeExists = currentOutstanding.some(outstanding => {
+
+      return outstanding.statusGroups.some(groups => {
+
+        return groups.actions.some(action => groups.staff1 === updatedAssignment.staff1 &&
+                                                            groups.staff2 === updatedAssignment.staff2 &&
+                                                            outstanding.actionStatus === updatedAssignment.actionStatus &&
+                                                            action.ambulanceAction === updatedAssignment.ambulanceAction);
+
+      });
+
+    });
+
+      if(!actionTypeExists){
+
+        const newAction = { ambulanceAction: updatedAssignment.ambulanceAction, ambulanceAssignment: [updatedAssignment]};
+
+        currentOutstanding.forEach(outstanding => {
+
+          if(outstanding.actionStatus === updatedAssignment.actionStatus){
+
+            outstanding.statusGroups.forEach(statusGroup => {
+
+              if(statusGroup.staff1 === updatedAssignment.staff1 && statusGroup.staff2 === updatedAssignment.staff2){
+
+                statusGroup.actions.push(newAction);
+
+              }
+
+            });
+
+          }
+
+        });
+
+
+      }
+
+
     // Insert the rescue into its new home
-    if(rescuersExist && laneExists){
+    if(rescuersExist && laneExists && actionTypeExists){
       this.insertRescue(currentOutstanding, updatedAssignment);
     }
 
     // Set the rescue to show as moved
-    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, true, false);
+    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
     });
 
@@ -158,14 +201,11 @@ export class OutstandingCaseService {
     }
 
     // If the record is no longer outstanding, then removing it from the list is enough and we're finished here
-    if(!updatedAssignment.actionStatus){
+    if(updatedAssignment.actionStatus){
 
-      this.zone.run(() => this.emitOutstandingCases(currentOutstanding));
+      this.zone.run(() => this.refreshColour.next('primary'));
 
-      return;
     }
-
-    this.zone.run(() => this.refreshColour.next('primary'));
 
     this.zone.run(() => this.emitOutstandingCases(currentOutstanding));
 
@@ -182,7 +222,8 @@ export class OutstandingCaseService {
 
           state.actions.forEach((group, index) => {
 
-            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId);
+            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId &&
+                                                                                current.releaseId === rescue.releaseId);
 
             if(removeIndex > -1){
 
@@ -219,7 +260,9 @@ export class OutstandingCaseService {
 
           state.actions.forEach(group => {
 
-            if(state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
+            const caseExists = group.ambulanceAssignment.some(assignment => assignment === action);
+
+            if(!caseExists && state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
               group.ambulanceAssignment.push(action);
 
               group.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber);
@@ -233,19 +276,19 @@ export class OutstandingCaseService {
     return outstanding;
   }
 
-  setMoved(o:any, emergencyCaseId:number, moved:boolean, timeout:boolean){
+  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
 
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId ){
+      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseId === releaseId){
 
         o.moved = moved;
 
         if(!timeout){
           setTimeout(() => {
 
-            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, false, true));
+            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseId, false, true));
 
           }
 
@@ -258,7 +301,7 @@ export class OutstandingCaseService {
 
       for (p in o) {
           if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, moved, timeout);
+              result = this.setMoved(o[p], emergencyCaseId, releaseId, moved, timeout);
           }
       }
 
