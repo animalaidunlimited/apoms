@@ -1,3 +1,8 @@
+$colour-border: #a9abad;
+$primary-font-colour: #626262;
+$standard-width: 180px;
+
+
 .drag-drop-container {
     text-align: center;
     width: 18%;
@@ -177,8 +182,10 @@
 
 
 .refresh-box{
-  padding-right: 40px;
-  max-width: 300px;
+    padding-right: 40px;
+    max-width: 300px;
+    position: absolute !important;
+    right: 45px;
 }
 
 .mat-spinner {
@@ -199,4 +206,62 @@
 }
 .mat-release-panel.mat-expanded {
     border-radius: 20px !important;
+}
+
+
+.filterWrapper{
+    position: absolute !important;
+    width: 25rem;
+    right: 0;
+    top: 60px;
+    z-index: 1;
+    overflow-y: hidden;
+& .mat-expansion-panel:last-of-type {
+    overflow-y: scroll;
+    max-height: 200px;
+}
+}
+
+.filter_Btn {
+    position: relative;
+    left: -25px;
+}
+
+// .mat-focus-indicator:focus {
+//     background-color: #607d8b;
+// }
+
+@media (max-width: 768px) {
+
+    ::ng-deep {
+    .outstandingWrapper {
+        margin-top: 6%;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .drag-drop-container {
+            min-width: 80% !important;
+            width: 80%;
+            display: block;
+        }
+    } 
+    .refresh-box{
+        top: 68px !important;
+        display: flex !important;
+        flex-direction: row-reverse !important;
+        right: 0 !important;
+        padding-right: 20px !important;
+        
+        > button {
+            margin-left: 10px;
+        }
+    }
+}
+}
+
+.outstandingWrapper {
+    min-height: 500px;
+
 }

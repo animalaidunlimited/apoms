@@ -3,10 +3,10 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, NgControlStatusGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
+import { debounceTime, startWith, filter } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
@@ -22,6 +22,12 @@ export interface Swimlane{
   state:number;
   name:string;
   array:OutstandingCase[];
+}
+
+interface FilterObject {
+  groupIdValue: number;
+  valueId: number;
+  valueName: string;
 }
 
 @Component({
@@ -62,6 +68,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   loading = true;
 
+  incomingObject!: FilterObject;
+
+  filterArray: FilterObject[] = [];
+
+  showList = false;
+
   notificationPermissionGranted = false;
 
   outstandingCases!:OutstandingCase[];
@@ -69,6 +81,96 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
   refreshColour:ThemePalette = 'primary';
+
+  caseFilter = [{
+    groupId: 1,
+    groupTitle: 'Action',
+    groupValues: [{
+      id: 1 , value: 'Rescue'
+    },
+    {
+      id: 2 , value: 'Release' 
+    }]
+  },
+  {
+    groupId: 2,
+    groupTitle: 'EmergencyCode',
+    groupValues: [{
+      id:-1 , value:'Not Defined'
+    },
+    {
+      id:1 , value:'Red'
+    },
+    {
+      id:2 , value:'Green'
+    },
+    {
+      id:3 , value:'Yellow'
+    },
+  ]
+  },
+  {
+    groupId: 3,
+    groupTitle: 'EmergencyNumber',
+    groupValues: [{
+      id:1 , value:'8986'
+    },
+    {
+      id:2 , value:'8987'
+    },
+    {
+      id:3 , value:'8988'
+    },
+    {
+      id:4 , value:'8989'
+    },
+    {
+      id:5 , value:'8990'
+    },
+    {
+      id:6 , value:'8991'
+    },
+    {
+      id:7 , value:'8992'
+    },
+    {
+      id:2 , value:'8993'
+    },
+    {
+      id:3 , value:'8994'
+    },
+    {
+      id:4 , value:'8995'
+    },
+    {
+      id:5 , value:'8996'
+    },
+    {
+      id:6 , value:'8997'
+    },
+    {
+      id:7 , value:'8998'
+    },
+    {
+      id:2 , value:'8999'
+    },
+    {
+      id:3 , value:'8985'
+    },
+    {
+      id:4 , value:'8945'
+    },
+    {
+      id:5 , value:'8970'
+    },
+    {
+      id:6 , value:'8941'
+    },
+    {
+      id:7 , value:'8932'
+    }
+  ]
+  }];
 
   refreshForm:FormGroup = new FormGroup({});
   searchForm:FormGroup = new FormGroup({});
@@ -89,8 +191,6 @@ export class OutstandingCaseBoardComponent implements OnInit {
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   ngOnInit(): void {
-
-
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -119,16 +219,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe((assignments) => {
-
-      assignments.map((assignment)=>{
-
-      });
-
-
-
-
-        this.loading = false;
-        this.changeDetector.detectChanges();
+      console.log(assignments);
+      this.loading = false;
+      this.changeDetector.detectChanges();
     });
 
     this.outstandingCaseService.initialise();
@@ -146,6 +239,10 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
+  }
+
+  changeDetection(value: Event) {
+    console.log(value);
   }
 
 
@@ -237,6 +334,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       }
     }
   }
+
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
 
@@ -347,6 +445,131 @@ getTimer(startDateTime: Date | string) : string {
   }
 
   return elapsedTime;
+
+}
+
+// toggle(value:never) {
+//   if (this.filterArray.includes(value)) {
+//     const index = this.filterArray.indexOf(value);
+//     this.filterArray.splice(index, 1);
+//   }
+//   else {
+//     this.filterArray.push(value);
+//   }
+//   console.log(this.filterArray);
+// }
+
+// hasOrNot(value:never) {
+//   return this.filterArray.includes(value);
+// }
+
+toggle(groupId:number,id:number,value:string) {
+  this.incomingObject = {
+    groupIdValue: groupId,
+    valueId: id,
+    valueName: value
+  };
+
+  const objectExist = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
+  const objectExistWithDifVal = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName !== this.incomingObject.valueName);
+
+  if(!objectExist && !objectExistWithDifVal) {
+
+   this.filterArray.push(this.incomingObject);
+
+    this.filterOutstanding(this.filterArray);
+
+    console.log(this.filterArray)
+
+  }
+  else if(!objectExist && objectExistWithDifVal) {
+    const index =  this.filterArray.findIndex(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName !== this.incomingObject.valueName);
+
+    this.filterArray.splice(index,1);
+
+    this.filterArray.push(this.incomingObject);
+
+    this.filterOutstanding(this.filterArray);
+
+  }
+  else if(objectExist && !objectExistWithDifVal) {
+    const index = this.filterArray.findIndex(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
+
+    this.filterArray.splice(index,1);
+
+    this.filterOutstanding(this.filterArray);
+
+  }
+
+}
+
+hasOrNot(groupId:number, id:number ,value:string) {
+  this.incomingObject = {
+    groupIdValue: groupId,
+    valueId: id,
+    valueName: value
+  };
+  const objectExist = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
+  return objectExist;
+}
+
+filterOutstanding(arrayToFilter: FilterObject[]) {
+  const filteredArrayByAction: any[] = [];
+  const filteredArrayByCode: any[] = [];
+  const filteredArrayByEmno: any[] = [];
+
+  this.outstandingCases$.subscribe((assignments)=> {
+
+    arrayToFilter.forEach(filterVal=> {
+      if(filterVal.groupIdValue === 1) {
+        assignments.map((status)=> {
+          status.statusGroups.map((statusNames)=> {
+            const data = statusNames.actions.filter((statusName)=> statusName.ambulanceAction === arrayToFilter[0].valueName);
+            if(data.length>0){
+              filteredArrayByAction.push(data[0]);
+            }
+          });
+        });
+      }
+
+      if(filteredArrayByAction.length === 0 && filteredArrayByEmno.length === 0 && filterVal.groupIdValue === 2) {
+        assignments.map((status)=> {
+          status.statusGroups.map((statusNames)=> {
+            statusNames.actions.map((action)=> {
+              const data = action.ambulanceAssignment.filter((assignment)=>
+              assignment.emergencyCodeId === filterVal.valueId);
+              
+              if(data.length>0) 
+                filteredArrayByCode.push(data[0]);
+              
+            });
+          });
+        });
+      }
+
+      if(filteredArrayByAction.length === 0 && filteredArrayByCode.length === 0 && filterVal.groupIdValue === 3) {
+        assignments.map((status)=> {
+          status.statusGroups.map((statusNames)=> {
+            statusNames.actions.map((action)=> {
+              const data = action.ambulanceAssignment.filter((assignment)=>
+              assignment.emergencyNumber === parseInt(filterVal.valueName, 10));
+              
+              if(data.length>0) 
+                filteredArrayByEmno.push(data[0]);
+              
+            });
+          });
+        });
+      }
+
+      
+    });
+
+  });
+
+  console.log(filteredArrayByAction);
+  console.log(filteredArrayByCode);
+  console.log(filteredArrayByEmno);
 
 }
 
