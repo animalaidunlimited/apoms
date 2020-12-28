@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
+CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT, IN prm_PatientId INT)
 BEGIN
 
 
@@ -22,6 +22,7 @@ Purpose: To retrieve outstanding rescues and releases for display on board.
  SELECT PatientId
  FROM AAU.Patient
  WHERE EmergencyCaseId = prm_EmergencyCaseId
+ AND (PatientId = prm_PatientId OR PatientId IS NULL)
  ),
  PatientsCTE AS
  (
