@@ -67,9 +67,9 @@ export class SearchFieldComponent implements OnInit {
         {
             id: 2,
             inputType: 'date',
-            searchValue: 'date',
+            searchValue: 'calldate',
             databaseField: 'CAST(search.CallDateTime AS DATE)',
-            name: 'Date',
+            name: 'Call Date',
             inNotIn: false
         },
         {
@@ -84,7 +84,7 @@ export class SearchFieldComponent implements OnInit {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
-            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
             // 'WHERE c.Name =',
@@ -96,7 +96,7 @@ export class SearchFieldComponent implements OnInit {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
-            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
             // 'WHERE c.Number =',
@@ -167,7 +167,7 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
             name: 'Thanked',
             inNotIn: true
-        },
+        }
     ];
 
   constructor(
@@ -207,6 +207,7 @@ executeSearch() {
     }
 
     const searchArray = this.getSearchArray();
+
 
     const searchQuery = searchArray
         .map(item => {
