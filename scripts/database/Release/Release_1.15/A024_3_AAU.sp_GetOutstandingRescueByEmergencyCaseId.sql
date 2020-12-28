@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId;
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
@@ -89,10 +89,10 @@ JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId,
             JSON_OBJECT("ambulanceArrivalTime", ec.AmbulanceArrivalTime),
             JSON_OBJECT("rescueTime", ec.RescueTime),
             JSON_OBJECT("releaseId", rd.ReleaseDetailsId),
-            JSON_OBJECT("requestedDate", IFNULL(rd.RequestedDate,'')),
-			JSON_OBJECT("pickupDate", IFNULL(rd.PickupDate,'')),
-			JSON_OBJECT("releaseBeginDate", IFNULL(rd.BeginDate,'')),
-			JSON_OBJECT("releaseEndDate", IFNULL(rd.EndDate,'')),
+            JSON_OBJECT("requestedDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("pickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
             JSON_OBJECT("releaseTypeId", rd.ReleaseTypeId),
             JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release')),
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),

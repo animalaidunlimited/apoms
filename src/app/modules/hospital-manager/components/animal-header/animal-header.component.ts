@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
@@ -33,6 +33,7 @@ export class AnimalHeaderComponent implements OnInit {
     constructor(public dialog: MatDialog, public mediaPaster: MediaPasteService) {}
 
     ngOnInit() {
+
         this.status = this.recordForm.get('patientStatus.status')?.value;
         this.lastObjectUrl = '';
 
@@ -66,13 +67,14 @@ export class AnimalHeaderComponent implements OnInit {
                 patientId: this.recordForm.get('patientDetails.patientId')?.value,
             }
         });
-        // TODO: Add the service to update the datetime in the image description by emmiting an behavior subject.
+
+        // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
         dialogRef.afterClosed().subscribe(updatedMedia => {
 
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){
 
-                    this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL;
+                    this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
                 }
             }
         });

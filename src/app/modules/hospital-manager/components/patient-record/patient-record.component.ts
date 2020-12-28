@@ -27,7 +27,7 @@ export class PatientRecordComponent implements OnInit {
 
     hideMenu = false;
 
-    profileUrl: SafeUrl = '';
+    profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
     loading = false;
 
