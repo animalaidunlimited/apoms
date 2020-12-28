@@ -84,8 +84,6 @@ export class OutstandingCaseService {
 
       currentOutstanding = cases;
 
-      console.log('removing');
-
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
@@ -160,38 +158,18 @@ export class OutstandingCaseService {
 
     });
 
-      console.log(actionTypeExists);
-
       if(!actionTypeExists){
 
         const newAction = { ambulanceAction: updatedAssignment.ambulanceAction, ambulanceAssignment: [updatedAssignment]};
 
         currentOutstanding.forEach(outstanding => {
 
-
-          console.log("outstanding");
-          console.log(outstanding.actionStatus);
-          console.log(updatedAssignment);
-
-
           if(outstanding.actionStatus === updatedAssignment.actionStatus){
-
-          console.log("outstanding.actionStatus === updatedAssignment.actionStatus");
 
             outstanding.statusGroups.forEach(statusGroup => {
 
-          console.log("statusGroup");
-
-
               if(statusGroup.staff1 === updatedAssignment.staff1 && statusGroup.staff2 === updatedAssignment.staff2){
 
-          console.log("statusGroup.staff1 === updatedAssignment.staff1 && statusGroup.staff2 === updatedAssignment.staff2");
-
-
-                console.log(newAction);
-                console.log(currentOutstanding);
-
-                console.log('Pushing action group');
                 statusGroup.actions.push(newAction);
 
               }
@@ -208,7 +186,6 @@ export class OutstandingCaseService {
 
     // Insert the rescue into its new home
     if(rescuersExist && laneExists && actionTypeExists){
-      console.log('Inserting rescue');
       this.insertRescue(currentOutstanding, updatedAssignment);
     }
 
