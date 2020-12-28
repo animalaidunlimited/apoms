@@ -40,7 +40,6 @@ export class AnimalSelectionComponent implements OnInit {
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips!: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
-
     @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )

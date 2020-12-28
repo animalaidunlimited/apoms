@@ -121,7 +121,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   hasLargeAninmal(patients:ActionPatient[]) : boolean{
-
     return patients.some(patient => patient.largeAnimal);
 
   }
