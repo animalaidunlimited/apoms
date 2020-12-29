@@ -1,0 +1,49 @@
+
+<div cdkDropListGroup class="StreetTreat_Container">
+    <div class="StreetTreat_Container_visit_compression">
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">StreetTreet Cases</h2>
+    
+        <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="todo"
+        
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+        </div>
+    </div>
+  
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">Team Vinod</h2>
+    
+        <div
+        cdkDropList
+        #doneList="cdkDropList"
+        [cdkDropListData]="done"
+        
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+        </div>
+    </div>
+
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">Team Pushkar</h2>
+        <div
+            cdkDropList
+            #dropLaterTodo="cdkDropList"
+            [cdkDropListData]="later"
+            
+            class="example-list"
+            (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let item of later" cdkDrag>{{item}}</div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- 
+[cdkDropListConnectedTo]="[doneList,dropLaterTodo]"
+[cdkDropListConnectedTo]="[todoList, dropLaterTodo]"
+[cdkDropListConnectedTo]="[todoList]" -->
