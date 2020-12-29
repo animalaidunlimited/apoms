@@ -1,9 +1,9 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.p_GetPatientDetailsbyArea!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetPatientDetailsbyArea!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.p_GetPatientDetailsbyArea(IN prm_Username VARCHAR(45),
+CREATE PROCEDURE AAU.sp_GetPatientDetailsbyArea(IN prm_Username VARCHAR(45),
 												IN prm_Area VARCHAR(45))
 BEGIN
 
@@ -76,6 +76,7 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
+JSON_OBJECT("PatientId" , p.PatientId),
 JSON_OBJECT("Tag number" , p.TagNumber),
 JSON_OBJECT("Species" , aty.AnimalType),
 JSON_OBJECT("Caller name" , c.Name),
@@ -85,13 +86,23 @@ JSON_OBJECT("Treatment priority", p.TreatmentPriority),
 JSON_OBJECT("ABC status", p.ABCStatus),
 JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
-JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END)
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
 ))patientDetails
 FROM AAU.Patient p
 INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId AND ec.CallOutcomeId = 1
 INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
-INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId;
+INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
+LEFT JOIN
+(
+SELECT DISTINCT t.PatientId
+FROM AAU.Treatment t
+WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
+) t ON t.PatientId = p.PatientId
+
+
+;
 
 ELSE
 
@@ -99,6 +110,7 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
+JSON_OBJECT("PatientId" , p.PatientId),
 JSON_OBJECT("Tag number" , p.TagNumber),
 JSON_OBJECT("Species" , aty.AnimalType),
 JSON_OBJECT("Caller name" , c.Name),
@@ -108,13 +120,20 @@ JSON_OBJECT("Treatment priority", p.TreatmentPriority),
 JSON_OBJECT("ABC status", p.ABCStatus),
 JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
-JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END)
+JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END),
+JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
 ))patientDetails
 FROM AAU.Patient p
 INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId AND ec.CallOutcomeId = 1
 INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
 INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
+LEFT JOIN
+(
+SELECT DISTINCT t.PatientId
+FROM AAU.Treatment t
+WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
+) t ON t.PatientId = p.PatientId
 WHERE p.TagNumber IN
 (
 	SELECT cn.TagNumber  

@@ -14,7 +14,7 @@
 <mat-form-field>
     <input formControlName="nextTreatmentDateTime" name="nextTreatmentDateTime" type="datetime-local"
     (focus)="setInitialTime($event)"
-    [max]="currentTime" placeholder="Next treatment date" matInput>
+    [min]="currentTime" placeholder="Next treatment date" matInput>
 </mat-form-field>
 
 </div>
