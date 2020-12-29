@@ -90,7 +90,8 @@ JSON_OBJECT("Release ready", CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus
 FROM AAU.Patient p
 INNER JOIN AnimalTypeIds aty ON aty.AnimalTypeId = p.AnimalTypeId AND p.PatientStatusId IN (1,7)
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId AND ec.CallOutcomeId = 1
-INNER JOIN AAU.Caller c ON c.CallerId = ec.CallerId;
+INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
+INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId;
 
 ELSE
 

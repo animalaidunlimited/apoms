@@ -81,26 +81,12 @@ export class OutstandingCaseService {
     let currentOutstanding: OutstandingCase[];
 
     this.outstandingCases$.subscribe((cases: any) => {
-
       currentOutstanding = cases;
 
       currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
 
       // Check to see if the swimlane exists and insert if not
     let laneExists = currentOutstanding.some(elem => elem.actionStatus === updatedAssignment.actionStatus);
-
-    const newRescueGroup:RescuerGroup = {
-      staff1: updatedAssignment.staff1,
-      staff1Abbreviation: updatedAssignment.staff1Abbreviation,
-      staff2: updatedAssignment.staff2,
-      staff2Abbreviation: updatedAssignment.staff2Abbreviation,
-      latestLocation: undefined,
-      actions : [{
-        ambulanceAction: updatedAssignment.ambulanceAction,
-        ambulanceAssignment: [updatedAssignment]
-      }]
-
-    };
 
     if(!laneExists && updatedAssignment.actionStatus){
 
@@ -113,76 +99,71 @@ export class OutstandingCaseService {
       currentOutstanding.push({
         actionStatus: updatedAssignment.actionStatus,
         actionStatusName: rescueStatusName[updatedAssignment.actionStatus - 1],
-        statusGroups: [newRescueGroup]
+        statusGroups: []
       });
 
       laneExists = true;
     }
 
     // Check to see if the rescuers exist and insert if not
-    let rescuersExist = currentOutstanding.some(actionState => {
+    let rescuersExist = false;
+
+    currentOutstanding.forEach(actionState => {
 
       if(actionState.actionStatus === updatedAssignment.actionStatus)
       {
-       return actionState.statusGroups
-      .find((actionGroup: any) =>  actionGroup.staff1 === updatedAssignment.staff1 &&
-                            actionGroup.staff2 === updatedAssignment.staff2);
+
+        rescuersExist = actionState.statusGroups.some((actionGroup: RescuerGroup) =>
+                                                              actionGroup.staff1 === updatedAssignment.staff1 &&
+                                                              actionGroup.staff2 === updatedAssignment.staff2);
+
+        if(!rescuersExist){
+
+          const newRescueGroup:RescuerGroup = {
+            staff1: updatedAssignment.staff1,
+            staff1Abbreviation: updatedAssignment.staff1Abbreviation,
+            staff2: updatedAssignment.staff2,
+            staff2Abbreviation: updatedAssignment.staff2Abbreviation,
+            latestLocation: undefined,
+            actions : []
+          };
+
+          actionState.statusGroups.push(newRescueGroup);
+          rescuersExist = true;
+
+        }
       }
 
-      return '';
-
     });
-
-    if(!rescuersExist){
-
-      currentOutstanding.forEach(rescueState => {
-
-        if(rescueState.actionStatus === updatedAssignment.actionStatus){
-          rescueState.statusGroups.push(newRescueGroup);
-          rescuersExist = true;
-        }
-      });
-    }
 
     // Check to see if the action exists for the ambulance and insert if not
-    const actionTypeExists = currentOutstanding.some(outstanding => {
+    let actionTypeExists = false;
 
-      return outstanding.statusGroups.some(groups => {
+    currentOutstanding.forEach(outstanding => {
 
-        return groups.actions.some(action => groups.staff1 === updatedAssignment.staff1 &&
-                                                            groups.staff2 === updatedAssignment.staff2 &&
-                                                            outstanding.actionStatus === updatedAssignment.actionStatus &&
-                                                            action.ambulanceAction === updatedAssignment.ambulanceAction);
+      if(outstanding.actionStatus === updatedAssignment.actionStatus)
+      {
 
-      });
+        outstanding.statusGroups.forEach(rescuerGroup => {
 
-    });
+          if(rescuerGroup.staff1 === updatedAssignment.staff1 && rescuerGroup.staff2 === updatedAssignment.staff2){
 
-      if(!actionTypeExists){
+            actionTypeExists = rescuerGroup.actions.some(action => action.ambulanceAction === updatedAssignment.ambulanceAction);
 
-        const newAction = { ambulanceAction: updatedAssignment.ambulanceAction, ambulanceAssignment: [updatedAssignment]};
+            if(!actionTypeExists){
 
-        currentOutstanding.forEach(outstanding => {
+              const newAction = { ambulanceAction: updatedAssignment.ambulanceAction, ambulanceAssignment: []};
 
-          if(outstanding.actionStatus === updatedAssignment.actionStatus){
+              rescuerGroup.actions.push(newAction);
+              actionTypeExists = true;
 
-            outstanding.statusGroups.forEach(statusGroup => {
-
-              if(statusGroup.staff1 === updatedAssignment.staff1 && statusGroup.staff2 === updatedAssignment.staff2){
-
-                statusGroup.actions.push(newAction);
-
-              }
-
-            });
-
+            }
           }
-
         });
-
 
       }
 
+  });
 
     // Insert the rescue into its new home
     if(rescuersExist && laneExists && actionTypeExists){
@@ -192,7 +173,7 @@ export class OutstandingCaseService {
     // Set the rescue to show as moved
     currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
-    });
+    }).unsubscribe();
 
     // Here we only do the refresh if the user has the toggle turned on.
     if(!this.autoRefreshState){
@@ -260,9 +241,7 @@ export class OutstandingCaseService {
 
           state.actions.forEach(group => {
 
-            const caseExists = group.ambulanceAssignment.some(assignment => assignment === action);
-
-            if(!caseExists && state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
+            if(state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
               group.ambulanceAssignment.push(action);
 
               group.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber);
