@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    API_URL: 'https://streettreat.appspot.com',
+    API_URL: 'https://staging-dot-streettreat.el.r.appspot.com',
     firebase: {
       apiKey: 'AIzaSyB1FEu4JYuoJhxeUpYmNDq8t5EeI3RjAl4',
       authDomain: 'streettreat.firebaseapp.com',
