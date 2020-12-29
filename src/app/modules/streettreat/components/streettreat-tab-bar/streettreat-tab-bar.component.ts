@@ -19,7 +19,7 @@ export class StreetTreatTabBarComponent implements OnInit {
   selected = new FormControl(0);
   
   ngOnInit(): void {
-    this.addEmptyTab('Board',0);
+    this.addEmptyTab('Case list',0);
     this.addEmptyTab('Search',1);
     this.tabBarService.tabCreator.subscribe(newTab => {
       newTab.forEach((elem) => this.addTab(elem));
