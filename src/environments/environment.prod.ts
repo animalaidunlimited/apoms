@@ -10,8 +10,8 @@ export const environment = {
       messagingSenderId: '275309609166',
       appId: '1:275309609166:web:57881f3451f618d031909f',
       measurementId: 'G-2FQTQ26YCP',
-      email: 'jim.mackenzie@animalaidunlimited.org',
-      password: 'L33ds@AAU!23'
+      email: '@animalaidunlimited.org',
+      password: ''
     }
 
 };
