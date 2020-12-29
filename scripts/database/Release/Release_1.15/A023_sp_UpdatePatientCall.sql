@@ -2,7 +2,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatientCall !!
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE AAU.sp_UpdatePatientCall(
+CREATE PROCEDURE AAU.sp_UpdatePatientCall(
 																	IN prm_Username VARCHAR(128),
 																	IN prm_PatientCallId INT,
 																	IN prm_PatientId INT,
