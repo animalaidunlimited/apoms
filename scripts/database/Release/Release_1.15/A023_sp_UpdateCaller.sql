@@ -30,7 +30,8 @@ SET vSuccess = 0;
 SET isUpdated = 0;
 SET preCallerId = 0;
 
-SELECT COUNT(1) INTO vCallerExists FROM AAU.Caller WHERE CallerId = prm_CallerId AND Name = prm_Name AND Number = prm_Number;
+SELECT COUNT(1) INTO vCallerExists FROM AAU.Caller WHERE CallerId = prm_CallerId 
+-- AND Name = prm_Name AND Number = prm_Number;
 SELECT COUNT(1) INTO vDetailsExists FROM AAU.Caller WHERE Name = prm_Name AND Number = prm_Number AND CallerId != prm_CallerId;
 
 IF vCallerExists = 1 THEN
