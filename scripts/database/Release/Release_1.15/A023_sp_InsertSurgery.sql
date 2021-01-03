@@ -18,7 +18,7 @@ BEGIN
 /*
 Created By: Jim Mackenzie
 Created On: 22/08/2018
-Purpose: Used to update a user by id.
+Purpose: Insert a Surgery In Surgery Table.
 */
 DECLARE vSurgeryCount INT;
 DECLARE vOrganisationId INT;
@@ -30,7 +30,7 @@ SET vOrganisationId = 1;
 SET vSurgeryCount = 0;
 SET vSurgeryId = 0;
 
-SELECT COUNT(1) INTO vSurgeryCount FROM AAU.surgery WHERE SurgeryId = vSurgeryId;
+SELECT COUNT(1) INTO vSurgeryCount FROM AAU.Surgery WHERE SurgeryId = vSurgeryId;
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 IF vSurgeryCount = 0 THEN
@@ -60,7 +60,14 @@ INSERT INTO AAU.Surgery (PatientId,
                         prm_Comment);
 SELECT LAST_INSERT_ID() INTO vSurgeryId;
 SELECT 1 INTO Success;
+INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+VALUES (vOrganisationId, prm_Username,vSurgeryId,'Surgery','Insert', NOW());
 
+IF prm_SurgeryTypeId = 1 OR prm_SurgeryTypeId = 2 THEN
+
+UPDATE AAU.Patient SET ABCStatus = 1 WHERE PatientId = prm_PatientId;
+
+END IF;
 
 ELSEIF vSurgeryCount > 0 THEN
 

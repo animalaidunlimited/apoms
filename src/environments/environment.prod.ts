@@ -11,7 +11,6 @@ export const environment = {
       appId: '1:275309609166:web:57881f3451f618d031909f',
       measurementId: 'G-2FQTQ26YCP',
       email: '@animalaidunlimited.org',
-      password: ''
-    }
+      password: '' }
 
 };
