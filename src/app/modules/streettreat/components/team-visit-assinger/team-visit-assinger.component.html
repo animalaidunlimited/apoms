@@ -1,0 +1,94 @@
+
+<div cdkDropListGroup class="StreetTreat_Container">
+    <div class="StreetTreat_Container_visit_compression">
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">StreetTreet Cases</h2>
+    
+        <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="streetTreatCases"
+        
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+ 
+        <div class="example-box" *ngFor="let streetTreatCase of streetTreatCases; let index = index;" cdkDrag 
+        [ngStyle]="{'box-shadow': (index === highlightStreetTreatCase) ? '0px 10px 10px 0 rgba(0, 0, 0, 0.2)' : null }">
+            <div (mouseenter)="highLightMarker(streetTreatCase)">
+                <div class="streetreat_visit">
+                    {{streetTreatCase.CaseId}}
+                    {{streetTreatCase.TagNumber}}
+                    {{streetTreatCase.Priority}}
+                </div>
+                <div class="timeline">
+                        <div *ngFor="let visit of streetTreatCase.VisitStatusId.split(',')" class="timeline-badge">
+                            <ul>
+                                <li>
+                                    <div [ngSwitch]="visit">
+                                        <mat-icon *ngSwitchCase="4" class="timeline-badge-complete">done_all</mat-icon>
+                                        <mat-icon *ngSwitchCase="3" class="timeline-badge-missed"></mat-icon>
+                                        <mat-icon *ngSwitchCase="2" class="timeline-badge-progress"></mat-icon>
+                                        <mat-icon *ngSwitchCase="1" class="timeline-badge-todo"></mat-icon>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+  
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">Team Vinod</h2>
+    
+        <div
+        cdkDropList
+        #doneList="cdkDropList"
+        [cdkDropListData]="done"
+        
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+        </div>
+    </div>
+
+    <div class="drag-drop-container">
+        <h2 class="StreetTreat_Container_header">Team Pushkar</h2>
+        <div
+            cdkDropList
+            #dropLaterTodo="cdkDropList"
+            [cdkDropListData]="later"
+            
+            class="example-list"
+            (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let item of later" cdkDrag>{{item}}</div>
+        </div>
+    </div>
+</div>
+<div fxFlex class="StreetTreat_Container_map" #googleMap>
+    <google-map 
+        [zoom]="zoom"
+        height="100%"
+        width="100%"
+        [options]="options"
+    >
+      <map-marker
+          *ngFor="let marker of markers"
+          [position]="marker.position"
+          [label]="marker.label"
+          [options]="marker.options"
+          (mapDragend)="markerDragEnd($event)"
+          (mapClick)="markerClick(marker)" 
+          (mapMouseover)="markerClick(marker)"
+          (mapMouseout)="markerClean()"
+          [ngStyle]="{}"
+          >
+      </map-marker>
+
+    </google-map>
+
+</div>
+</div>
+

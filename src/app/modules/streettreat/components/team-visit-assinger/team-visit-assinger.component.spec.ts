@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TeamRescueAssingerComponent } from './team-rescue-assinger.component';
+import { TeamVisitAssingerComponent } from './team-visit-assinger.component';
 
-describe('TeamRescueAssingerComponent', () => {
-  let component: TeamRescueAssingerComponent;
-  let fixture: ComponentFixture<TeamRescueAssingerComponent>;
+describe('TeamVisitAssingerComponent', () => {
+  let component: TeamVisitAssingerComponent;
+  let fixture: ComponentFixture<TeamVisitAssingerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TeamRescueAssingerComponent ]
+      declarations: [ TeamVisitAssingerComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TeamRescueAssingerComponent);
+    fixture = TestBed.createComponent(TeamVisitAssingerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
