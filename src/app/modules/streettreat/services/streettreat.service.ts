@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { VisitResponse, StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { StreetTreatCase, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
+import { StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -147,8 +147,16 @@ export class StreetTreatService extends APIService {
     ); 
   }
 
-  public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) : Promise<any> {
+  public getActiveCasesWithVisitByDate(date: Date){
+    const request = '/?date='+ date;  
+    return this.getObservable(request).pipe(
+      map((response: StreetTreatCaseByVisitDateResponse[]) => {
+           return response;
+       }),
+     ); 
+  }
 
+  public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) : Promise<any> {
     return await this.post(streetTreatCaseForm)
     .then(data => {
         return data;
@@ -156,6 +164,5 @@ export class StreetTreatService extends APIService {
     .catch(error => {
         console.log(error);
     });
-  
   }
 }

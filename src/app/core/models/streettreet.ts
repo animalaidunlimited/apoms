@@ -68,3 +68,26 @@ export interface StreetTreatSearchResponse {
     OperatorNotes:string; 
     IsDeleted: 0|1| null;  
 }
+
+export interface StreetTreatCaseByVisitDateResponse {
+    CaseId: number;
+    EmergencyNumber: number;
+    TagNumber: string;
+    AnimalType: string;
+    Status: string;
+    AnimalName: string;
+    NextVisit: Date;
+    VisitStatusId: number;
+    VisitTypeId: number;
+    PercentComplete: number;
+    VisitList: string;
+    Address: string;
+    Priority: string;
+    TeamName: string;
+    Latitude: number;
+    Longitude: number;
+    ComplainerName: string;
+    ComplainerNumber: string;
+    MainProblemId: number;
+    MainProblem: string;
+}
