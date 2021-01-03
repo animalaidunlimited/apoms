@@ -4,14 +4,14 @@
 <form [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
 
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
-  
+
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
 
             <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-              
+
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
 
@@ -67,7 +67,7 @@
                 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                   <button mat-raised-button color="primary" tabindex="16" type="submit" [disabled]="recordForm.invalid">Save</button>
 
-                  <button mat-raised-button color="primary" tabindex="17" type="reset">Reset</button>
+                  <button mat-raised-button color="secondary" tabindex="17" type="reset">Reset</button>
                 </div>
 
           </div>

@@ -7,7 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -48,18 +47,19 @@ export class EmergencyRecordComponent implements OnInit {
 
     @HostListener('window:beforeunload', ['$event'])
     checkCanReload($event:BeforeUnloadEvent) {
-
         $event.preventDefault();
 
-        return !this.recordForm.dirty;
+console.log(this.recordForm);
+
+
+        return !this.recordForm.touched;
     }
 
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService,
-        private dialog: MatDialog
+        private showSnackBar: SnackbarService
     ) {}
 
 
@@ -210,7 +210,7 @@ export class EmergencyRecordComponent implements OnInit {
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
-                
+
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
@@ -227,7 +227,7 @@ export class EmergencyRecordComponent implements OnInit {
 
                             messageResult = this.getCaseSaveMessage(resultBody);
 
-                        } 
+                        }
 
                         if (messageResult.failure === 0) {
 
@@ -253,7 +253,7 @@ export class EmergencyRecordComponent implements OnInit {
                         if(data) {
                             this.loading = false;
                         }
-                        
+
                         if (data.status === 'saved') {
 
                             messageResult.failure = 1;

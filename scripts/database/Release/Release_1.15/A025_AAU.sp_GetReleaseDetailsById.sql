@@ -36,16 +36,7 @@ SELECT
 				    "mainProblem",s.MainProblemId,
 				    "adminNotes",s.AdminComments,
 				    "streetTreatCaseStatus",s.StatusId,
-					"visits",
-					JSON_ARRAYAGG(
-						JSON_OBJECT(
-								"visitId",v.VisitId,
-								"visit_day",v.Day,
-								"visit_status",v.StatusId,
-								"visit_type",v.VisitTypeId,
-								"visit_comments",v.AdminNotes
-						 )
-					)
+					"visits", v.Visits
 				)
 		) 
 AS Result
@@ -53,7 +44,22 @@ AS Result
         AAU.ReleaseDetails rd
         INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
         LEFT JOIN AAU.StreetTreatCase s ON rd.PatientID = s.PatientId
-        LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
+        LEFT JOIN
+        (
+        SELECT v.StreetTreatCaseId, JSON_ARRAYAGG(
+						JSON_OBJECT(
+								"visitId",v.VisitId,
+								"visit_day",v.Day,
+								"visit_status",v.StatusId,
+								"visit_type",v.VisitTypeId,
+								"visit_comments",v.AdminNotes
+						 )
+					) AS `visits`
+        FROM AAU.Visit v
+        WHERE IFNULL(v.IsDeleted,0) = 0
+        GROUP BY v.StreetTreatCaseId
+        ) v
+        ON v.StreetTreatCaseId = s.StreetTreatCaseId
 	WHERE 
 		rd.PatientId =  prm_PatientId;
 END
