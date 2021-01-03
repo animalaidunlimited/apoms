@@ -15,7 +15,7 @@ import { PatientVisitDetailsModule } from '../hospital-manager/components/patien
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
 import { AnimalHeaderModule } from '../hospital-manager/components/animal-header/animal-header.module';
-import { TeamRescueAssingerModule } from './components/team-rescue-assinger/team-rescue-assinger.module';
+import { TeamVisitAssingerModule } from './components/team-visit-assinger/team-visit-assinger.module';
 
 
 
@@ -38,7 +38,7 @@ import { TeamRescueAssingerModule } from './components/team-rescue-assinger/team
     CallerDetailsModule,
     LocationDetailsModule,
     AnimalHeaderModule,
-    TeamRescueAssingerModule
+    TeamVisitAssingerModule
   ]
 })
 export class StreetTreatPageModule { }
