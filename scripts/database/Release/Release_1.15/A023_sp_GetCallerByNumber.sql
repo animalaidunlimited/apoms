@@ -11,7 +11,9 @@ Created On: 24/02/2020
 Purpose: Used to return a Caller by Number.
 */
 
-SELECT c.CallerId, c.Name, c.Number, c.AlternativeNumber
+SELECT 
+-- c.CallerId, 
+c.Name, c.Number, c.AlternativeNumber
 FROM AAU.Caller c
 WHERE Number LIKE CONCAT(prm_Number, '%')
 LIMIT 10;
