@@ -17,7 +17,7 @@ export class StreetTreatTabBarComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) { }
   selected = new FormControl(0);
-  
+
   ngOnInit(): void {
     this.addEmptyTab('Case list',0);
     this.addEmptyTab('Search',1);
@@ -32,9 +32,9 @@ export class StreetTreatTabBarComponent implements OnInit {
       id,
       value,
       streetTreatCaseId: 0
-    }); 
+    });
 
-    this.selected.setValue(this.tabs.length - 1);
+    this.selected.setValue(0);
 }
 
   addTab(streetTreatResult:SearchStreetTreatResponse) {
@@ -46,7 +46,7 @@ export class StreetTreatTabBarComponent implements OnInit {
         patientId:streetTreatResult.PatientId,
         currentLocation:streetTreatResult.CurrentLocation,
         icon: 'close',
-    }); 
+    });
 
     setTimeout(() => {
       this.selected.setValue(this.tabs.length - 1);
