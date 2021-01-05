@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { StreetTreatCaseByVisitDateResponse } from 'src/app/core/models/streettreet';
@@ -34,7 +34,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     minZoom: 8,
   };
 
-  zoom = 13;
+  zoom = 11.0;
   streetTreatCases: any[] =[];
   center!:google.maps.LatLngLiteral;
   latlngboundsArray:google.maps.LatLng[] = [];
@@ -60,7 +60,8 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(
-    private streetTreatService: StreetTreatService
+    private streetTreatService: StreetTreatService,
+    private changeDetector: ChangeDetectorRef
     ) {}
 
   markerDragEnd(event: google.maps.MouseEvent) {
@@ -123,17 +124,24 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           });
           latlngbounds.extend(new google.maps.LatLng(streetTreatResponse.Latitude, streetTreatResponse.Longitude));
 
-          this.map.fitBounds(latlngbounds);
-          this.map.panToBounds(latlngbounds);
           this.streetTreatCases.push(streetTreatResponse);
+
         }
       );
 
-      console.log(this.map.getZoom());
+      this.map.fitBounds(latlngbounds);
+      this.map.panToBounds(latlngbounds);
 
-      if(this.map.getZoom() > 13){
-        this.zoom = 11;
-      }
+      this.map.zoomChanged.subscribe(() => {
+
+        if(this.map.getZoom() > 14) {
+          console.log('setZoom');
+
+          this.map.zoom = 14;
+
+        }
+
+      });
 
     });
   }
