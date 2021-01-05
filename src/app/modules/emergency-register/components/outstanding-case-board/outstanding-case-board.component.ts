@@ -15,6 +15,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 
 
 export interface Swimlane{
@@ -127,15 +128,26 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCaseService.initialise();
   }
 
-    openSearchMediaDialog(){
+  openMediaDialog(patientId: number, tagNumber: string | null): void{
+    const dialogRef = this.dialog.open(MediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+            tagNumber,
+            patientId,
+        }
+    });
 
-      this.dialog.open(AddSearchMediaDialogComponent, {
-      minWidth: '50%',
-      data: {
-          mediaVal: []
-      }
-  });
   }
+
+  // openSearchMediaDialog(){
+
+  //    this.dialog.open(AddSearchMediaDialogComponent, {
+  //    minWidth: '50%',
+  //    data: {
+  //        mediaVal: []
+  //    }
+  // });
+  // }
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();

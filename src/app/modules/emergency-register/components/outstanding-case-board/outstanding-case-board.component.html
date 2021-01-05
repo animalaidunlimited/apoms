@@ -84,12 +84,12 @@
                 <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
               </div>
 
-              <div fxFlex="25">
+              <!--<div fxFlex="25">-->
                 <!--TODO - Add another dialog that lets you select which patient you want to add the image to-->
                 <!--<mat-icon class="imageIcon" (click)="openSearchMediaDialog()">add_photo_alternate</mat-icon>-->
-                <mat-icon class="imageIcon">add_photo_alternate</mat-icon>
+                <!--<mat-icon class="imageIcon">add_photo_alternate</mat-icon>-->
                 <!--<i class="imageCount">{{outstandingCase.mediaCount}}</i>-->
-              </div>
+              <!--</div>-->
 
                 <div fxFlex="40" style="text-align: center;">
                   {{outstandingCase.emergencyNumber}}
@@ -108,21 +108,22 @@
 
               <div fxLayout="column" fxLayoutAlign="space-around start" >
 
-                <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
+                <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
+                <!--<mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>-->
 
               <div *ngFor="let callerDetails of outstandingCase.callerDetails">
 
                 <div fxLayout="row" fxLayoutAlign="start end">
 
-                    <div class="name">{{callerDetails.callerName}}</div>
-
                     <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
-                        <div class="telephone-dash-container">
-                            <svg height="11" width="25">
-                            <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                            Sorry, your browser does not support inline SVG.
-                            </svg>
-                        </div>
+                      <div class="telephone-dash-container">
+                        <svg height="11" width="25">
+                        <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                        Sorry, your browser does not support inline SVG.
+                        </svg>
+                    </div>
+
+                    <div class="name">{{callerDetails.callerName}}</div>
 
                     <div class="telephone">{{callerDetails.callerNumber}}</div>
                     <!-- </div> -->
@@ -131,8 +132,10 @@
 
             </div>
 
-                <div class="patients-group" *ngFor="let patient of outstandingCase.patients">
-                  {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+                <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap" fxLayoutAlign="space-around start">
+                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
+                  <div class="media-count">({{patient.mediaCount}})</div>
+                  <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}</div>
                 </div>
 
                 <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
@@ -157,13 +160,14 @@
                   <mat-icon aria-label="Release Details" (click)="openAssignReleaseDialog(outstandingCase)">airport_shuttle</mat-icon>
                 </div>
 
-                <div fxFlex="25">
+                <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
+                <!--<div fxFlex="25">
                   <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
-                </div>
+                </div>-->
 
                 <div fxFlex style="text-align: center;">
                   <div *ngFor="let patient of outstandingCase.patients">
-                    ({{patient.tagNumber}})
+                    {{patient.tagNumber}}
                     ({{patient.animalType}})
                   </div>
                 </div>
@@ -177,37 +181,43 @@
                 </mat-expansion-panel-header>
 
                 <div fxLayout="column" fxLayoutAlign="space-around start" >
-                  <div class="name">{{outstandingCase.callerName}}</div>
+                  <!--<div class="name">{{outstandingCase.callerName}}</div>-->
 
-                  <div *ngFor="let patient of outstandingCase.patients">
-                    {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
-                  </div>
-
-                  <div fxLayout="column" fxLayoutAlign="space-around start" >
+                <div fxLayout="column" fxLayoutAlign="space-around start" >
                     <div *ngFor="let callerDetails of outstandingCase.callerDetails">
 
                       <div fxLayout="row" fxLayoutAlign="start end">
 
+                          <div class="telephone-dash-container">
+                              <svg height="11" width="25">
+                              <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                              Sorry, your browser does not support inline SVG.
+                              </svg>
+                          </div>
+
                           <div class="name">{{callerDetails.callerName}}</div>
 
-                          <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
-                              <div class="telephone-dash-container">
-                                  <svg height="11" width="25">
-                                  <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                                  Sorry, your browser does not support inline SVG.
-                                  </svg>
-                              </div>
-
                           <div class="telephone">{{callerDetails.callerNumber}}</div>
-                          <!-- </div> -->
-
                       </div>
 
                   </div>
                 </div>
 
-                  <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-                  <div class="animal-location">{{outstandingCase.location}}</div>
+                <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap" fxLayoutAlign="space-around start">
+                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
+                  <div class="media-count">({{patient.mediaCount}})</div>
+                  <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}</div>
+                </div>
+
+                <!--<div *ngFor="let patient of outstandingCase.patients">
+                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
+                  {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+                </div>-->
+
+
+
+                <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+                <div class="animal-location">{{outstandingCase.location}}</div>
               </div>
 
               </mat-expansion-panel>

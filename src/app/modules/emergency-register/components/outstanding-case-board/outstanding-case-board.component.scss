@@ -123,6 +123,7 @@
 
 .telephone-dash-container {
     height: 100%;
+    margin-bottom: 5px;
 }
 
 .telephone-dash {
@@ -132,6 +133,17 @@
 
 .patients-group{
     margin: 10px 0px 0px 10px;
+}
+
+.media-count{
+    font-weight: bold;
+    color: #607d8b;
+    padding-top:3px;
+    margin-right: 4px;
+}
+
+.patient-details{
+    padding-top:3px;
 }
 
 .CallDateTime {
@@ -144,7 +156,8 @@
 
 .imageIcon {
     color: black;
-    margin-top: 0px;
+    //margin-top: 0px;
+    cursor: pointer;
 }
 
 .imageCount {
@@ -184,7 +197,7 @@
 .mat-spinner {
     position: absolute;
     align-self: center;
-    top: 100px;
+    top: 200px;
     left: 40%;
     z-index: 5000;
     margin: auto;
