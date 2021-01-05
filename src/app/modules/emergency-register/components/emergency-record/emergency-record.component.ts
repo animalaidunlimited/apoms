@@ -49,8 +49,6 @@ export class EmergencyRecordComponent implements OnInit {
     checkCanReload($event:BeforeUnloadEvent) {
         $event.preventDefault();
 
-console.log(this.recordForm);
-
 
         return !this.recordForm.touched;
     }

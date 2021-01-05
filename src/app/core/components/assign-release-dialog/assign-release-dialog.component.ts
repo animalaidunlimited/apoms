@@ -22,8 +22,6 @@ export class AssignReleaseDialogComponent implements OnInit {
 
   ngOnInit() {
 
-    
-
 
     this.formData = {
       releaseId: this.data.caseDetails.releaseId,
