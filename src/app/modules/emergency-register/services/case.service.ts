@@ -47,9 +47,7 @@ export class CaseService extends APIService {
 
                 this.toaster.successSnackBar('Connection restored', 'OK');
 
-                await this.postFromLocalStorage(
-                    this.storage.getItemArray('POST'),
-                )
+                await this.postFromLocalStorage(this.storage.getItemArray('POST'))
                     .then(result => {
 
                         // Only alert if we've inserted new cases.
@@ -134,6 +132,8 @@ export class CaseService extends APIService {
 
                 await this.baseUpdateCase(JSON.parse(elem.value)).then(
                                 (result: EmergencyResponse) => {
+
+                                    console.log(result);
 
                                     if (
                                         result.emergencyCaseSuccess === 1 ||

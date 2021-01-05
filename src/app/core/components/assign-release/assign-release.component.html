@@ -11,8 +11,10 @@
     </mat-form-field>
 </div>
 
-<div class="div" fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign="center center">
-    <img _ngcontent-lei-c38="" src="assets/images/Dog.png" class="images" alt="dog_face">
+<div  fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
+    <img src="assets/images/Dog.png" class="images" alt="dog_face">
+
+    <div fxFlex="60%" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
 
     <mat-form-field appearance="fill">
         <mat-label>Releaser 1</mat-label>
@@ -33,36 +35,38 @@
         </mat-select>
     </mat-form-field>
 
-    <img _ngcontent-lei-c38="" src="assets/images/Calf.png" class="images" alt="dog_face">
+    </div>
+
+    <img src="assets/images/Calf.png" class="images" alt="dog_face">
 </div>
 
-<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
+<div fxLayout="row" fxLayoutGap="22px" fxLayoutAlign="center center">
 
-    <mat-form-field appearance="fill" class="select">
-        <mat-label>Pickup time</mat-label>
-        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="datetime-local" name="pickupDate" formControlName="pickupDate">
-    </mat-form-field>
+    <img src="assets/images/Donkey.png" class="images" alt="dog_face">
 
-</div>
+    <div fxFlex="60%" fxLayout="column" fxLayoutGap="22px" fxLayoutAlign="center center">
 
-<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
+        <mat-form-field appearance="fill" class="select">
+            <mat-label>Pickup time</mat-label>
+            <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="datetime-local" name="pickupDate" formControlName="pickupDate">
+        </mat-form-field>
 
-    <img _ngcontent-lei-c38="" src="assets/images/Donkey.png" class="images" alt="dog_face">
+        <mat-form-field appearance="fill" class="select">
+            <mat-label>Release begin time</mat-label>
+            <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="datetime-local" name="releaseBeginDate" formControlName="releaseBeginDate">
+        </mat-form-field>
 
-    <mat-form-field appearance="fill" class="select">
-        <mat-label>Release begin time</mat-label>
-        <input (focus)="setInitialDate($event)" style="width: 100%;" matInput type="datetime-local" name="releaseBeginDate" formControlName="releaseBeginDate">
-    </mat-form-field>
+        <mat-form-field appearance="fill" class="select">
+            <mat-label>Release complete time</mat-label>
+            <input matInput (focus)="setInitialDate($event)" style="width: 100%;" type="datetime-local" name="releaseEndDate" formControlName="releaseEndDate">
+        </mat-form-field>
 
-    <img _ngcontent-lei-c38="" src="assets/images/Cat.png" class="images" alt="dog_face">
-</div>
+    </div>
 
-<div class="div" fxLayout="row wrap" fxLayoutGap="22px" fxLayoutAlign="center center">
-
-    <mat-form-field appearance="fill" class="select">
-        <mat-label>Release complete time</mat-label>
-        <input matInput (focus)="setInitialDate($event)" style="width: 100%;" type="datetime-local" name="releaseEndDate" formControlName="releaseEndDate">
-    </mat-form-field>
+    <img src="assets/images/Cat.png" class="images" alt="dog_face">
 
 </div>
+
+
+
 </form>
