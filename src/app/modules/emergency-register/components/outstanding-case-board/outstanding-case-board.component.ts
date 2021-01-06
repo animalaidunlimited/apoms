@@ -16,7 +16,6 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 import { MatChip, MatChipList } from '@angular/material/chips';
-import { ChipListType } from '../../pipes/chip-list-type';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
