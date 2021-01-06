@@ -93,6 +93,10 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
+
+        console.log(resultBody);
+
+
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -103,7 +107,9 @@ export class EmergencyRecordComponent implements OnInit {
             result.message = 'Success';
         } else if (resultBody.emergencyCaseSuccess === 2) {
             result.message = 'Error adding the record: Duplicate record\n';
-            result.failure++;
+            result.failure = -1;
+
+            return result;
         }
 
         // Check the caller succeeded
@@ -205,6 +211,7 @@ export class EmergencyRecordComponent implements OnInit {
 
             let messageResult = {
                 failure: 0,
+                message: ''
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
@@ -233,7 +240,14 @@ export class EmergencyRecordComponent implements OnInit {
                                 'Case inserted successfully',
                                 'OK',
                             );
-                        } else if (messageResult.failure === 1) {
+                        }
+                        else if (messageResult.failure === -1) {
+                            this.showSnackBar.successSnackBar(
+                                'Duplicate case, please reload case',
+                                'OK',
+                            );
+                        }
+                        else if (messageResult.failure === 1) {
                             this.showSnackBar.errorSnackBar(
                                 'Case saved offline',
                                 'OK',
@@ -262,6 +276,8 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult = this.getCaseSaveMessage(resultBody);
                         }
 
+                        console.log(messageResult);
+
                         if (messageResult.failure === 0) {
 
                             this.showSnackBar.successSnackBar(
@@ -270,6 +286,12 @@ export class EmergencyRecordComponent implements OnInit {
                             );
 
                             this.recordForm.markAsUntouched();
+                        }
+                        else{
+                            this.showSnackBar.errorSnackBar(
+                                messageResult.message,
+                                'OK'
+                            );
                         }
                     })
                     .catch(error => {
