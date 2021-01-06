@@ -67,6 +67,8 @@ changeDetection: ChangeDetectionStrategy.OnPush
 
 export class OutstandingCaseBoardComponent implements OnInit {
 
+  searchValue!: string;
+
   autoRefresh = false;
 
   hideMap = true;
@@ -272,7 +274,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
         startWith('')
       )
       .subscribe(value => {
-          this.outstandingCaseService.onSearchChange(this.filterKeysArray,value);
+        this.searchValue = value;
+          this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
       });
   }
 
@@ -452,7 +455,7 @@ filterChipSelected(groupName: string, chip: MatChip) {
     this.filterKeysArray.splice(index,1);
   }
 
-  this.outstandingCaseService.onSearchChange(this.filterKeysArray, '');
+  this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
 
 }
 
