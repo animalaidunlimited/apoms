@@ -9,3 +9,7 @@
 }
 
 
+::ng-deep .cdk-overlay-pane {
+    /* Do you changes here */
+      min-width:250px;
+}
