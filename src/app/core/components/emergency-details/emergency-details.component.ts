@@ -70,18 +70,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
                 ]
             )
         );
-        this.emergencyDetails.addControl(
-            'callDateTime',
-            new FormControl(getCurrentTimeString(), Validators.required),
-        );
-        this.emergencyDetails.addControl(
-            'dispatcher',
-            new FormControl('', Validators.required),
-        );
-        this.emergencyDetails.addControl(
-            'code',
-            new FormControl('', Validators.required),
-        );
+        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
+        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
+        this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
 
         this.caseService
             .getEmergencyCaseById(
