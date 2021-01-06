@@ -1,11 +1,11 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ViewChild, ViewChildren } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup, Validators, FormControl, NgControlStatusGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, startWith, filter } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
@@ -15,7 +15,11 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
-
+import { MatChip, MatChipList } from '@angular/material/chips';
+import { ChipListType } from '../../pipes/chip-list-type';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { AnimalType } from 'src/app/core/models/animal-type';
+import { EmergencyCode } from 'src/app/core/models/emergency-record';
 
 export interface Swimlane{
   label:string;
@@ -24,10 +28,10 @@ export interface Swimlane{
   array:OutstandingCase[];
 }
 
-interface FilterObject {
-  groupIdValue: number;
-  valueId: number;
-  valueName: string;
+export interface FilterKeys {
+  group: string;
+  value: string;
+  selected: boolean;
 }
 
 @Component({
@@ -60,19 +64,22 @@ interface FilterObject {
 ],
 changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class OutstandingCaseBoardComponent implements OnInit {
 
   autoRefresh = false;
 
   hideMap = true;
 
+  removable = true;
+
   loading = true;
 
-  incomingObject!: FilterObject;
+  incomingObject!: FilterKeys;
 
-  filterArray: FilterObject[] = [];
+  filterKeysArray : FilterKeys[] = [];
 
-  showList = false;
+  showList = true;
 
   notificationPermissionGranted = false;
 
@@ -82,9 +89,12 @@ export class OutstandingCaseBoardComponent implements OnInit {
   refreshColour$!:BehaviorSubject<ThemePalette>;
   refreshColour:ThemePalette = 'primary';
 
+  filterBtnColor: ThemePalette = 'accent';
+
   caseFilter = [{
     groupId: 1,
-    groupTitle: 'Action',
+    showTitle: 'Ambulance action',
+    groupTitle: 'ambulanceAction',
     groupValues: [{
       id: 1 , value: 'Rescue'
     },
@@ -94,82 +104,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
   },
   {
     groupId: 2,
-    groupTitle: 'EmergencyCode',
-    groupValues: [{
-      id:-1 , value:'Not Defined'
-    },
-    {
-      id:1 , value:'Red'
-    },
-    {
-      id:2 , value:'Green'
-    },
-    {
-      id:3 , value:'Yellow'
-    },
-  ]
+    groupTitle: 'emergencyCode',
+    showTitle: 'Emergency code',
+    groupValues: []
   },
   {
     groupId: 3,
-    groupTitle: 'EmergencyNumber',
-    groupValues: [{
-      id:1 , value:'8986'
-    },
-    {
-      id:2 , value:'8987'
-    },
-    {
-      id:3 , value:'8988'
-    },
-    {
-      id:4 , value:'8989'
-    },
-    {
-      id:5 , value:'8990'
-    },
-    {
-      id:6 , value:'8991'
-    },
-    {
-      id:7 , value:'8992'
-    },
-    {
-      id:2 , value:'8993'
-    },
-    {
-      id:3 , value:'8994'
-    },
-    {
-      id:4 , value:'8995'
-    },
-    {
-      id:5 , value:'8996'
-    },
-    {
-      id:6 , value:'8997'
-    },
-    {
-      id:7 , value:'8998'
-    },
-    {
-      id:2 , value:'8999'
-    },
-    {
-      id:3 , value:'8985'
-    },
-    {
-      id:4 , value:'8945'
-    },
-    {
-      id:5 , value:'8970'
-    },
-    {
-      id:6 , value:'8941'
-    },
-    {
-      id:7 , value:'8932'
-    }
-  ]
+    showTitle: 'Animal type',
+    groupTitle: 'animalType',
+    groupValues: []
   }];
 
   refreshForm:FormGroup = new FormGroup({});
@@ -184,13 +127,56 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private userOptions: UserOptionsService,
     private printService: PrintTemplateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dropDown: DropdownService
 
     ) { }
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
 
   ngOnInit(): void {
+
+    this.dropDown.getAnimalTypes().subscribe((animalType: AnimalType[])=> {
+
+      animalType.forEach(type=> {
+
+        this.caseFilter.forEach(filterObject=>{
+
+          if(filterObject.groupId === 3) {
+
+            filterObject.groupValues.push({
+              id: type.AnimalTypeId,
+              value: type.AnimalType
+            });
+
+          }
+
+        });
+
+      });
+
+    });
+
+
+    this.dropDown.getEmergencyCodes().subscribe((emergencyCodes: EmergencyCode[])=> {
+      emergencyCodes.forEach(emcode=>{
+
+        this.caseFilter.forEach(filterObject=>{
+
+          if(filterObject.groupId === 2) {
+
+            filterObject.groupValues.push({
+              id: emcode.EmergencyCodeId,
+              value: emcode.EmergencyCode
+            });
+
+          }
+
+        });
+
+      });
+    });
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -207,7 +193,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
       this.changeDetector.detectChanges();
-    });
+    }); 
 
     this.setup();
 
@@ -218,8 +204,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$.subscribe((assignments) => {
-      console.log(assignments);
+    this.outstandingCases$.subscribe(() => {
       this.loading = false;
       this.changeDetector.detectChanges();
     });
@@ -287,7 +272,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
         startWith('')
       )
       .subscribe(value => {
-          this.outstandingCaseService.onSearchChange(value);
+          this.outstandingCaseService.onSearchChange(this.filterKeysArray,value);
       });
   }
 
@@ -448,128 +433,26 @@ getTimer(startDateTime: Date | string) : string {
 
 }
 
-// toggle(value:never) {
-//   if (this.filterArray.includes(value)) {
-//     const index = this.filterArray.indexOf(value);
-//     this.filterArray.splice(index, 1);
-//   }
-//   else {
-//     this.filterArray.push(value);
-//   }
-//   console.log(this.filterArray);
-// }
+filterChipSelected(groupName: string, chip: MatChip) {
 
-// hasOrNot(value:never) {
-//   return this.filterArray.includes(value);
-// }
-
-toggle(groupId:number,id:number,value:string) {
   this.incomingObject = {
-    groupIdValue: groupId,
-    valueId: id,
-    valueName: value
+    group: groupName,
+    value: chip.value.trim(),
+    selected: chip.selected
   };
 
-  const objectExist = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
-  const objectExistWithDifVal = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName !== this.incomingObject.valueName);
+  if(this.incomingObject.selected) {
 
-  if(!objectExist && !objectExistWithDifVal) {
-
-   this.filterArray.push(this.incomingObject);
-
-    this.filterOutstanding(this.filterArray);
-
-    console.log(this.filterArray)
-
+    this.filterKeysArray.push(this.incomingObject);
   }
-  else if(!objectExist && objectExistWithDifVal) {
-    const index =  this.filterArray.findIndex(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName !== this.incomingObject.valueName);
-
-    this.filterArray.splice(index,1);
-
-    this.filterArray.push(this.incomingObject);
-
-    this.filterOutstanding(this.filterArray);
-
-  }
-  else if(objectExist && !objectExistWithDifVal) {
-    const index = this.filterArray.findIndex(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
-
-    this.filterArray.splice(index,1);
-
-    this.filterOutstanding(this.filterArray);
-
+  
+  if(!this.incomingObject.selected) {
+    const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group && 
+    obj.value === this.incomingObject.value);
+    this.filterKeysArray.splice(index,1);
   }
 
-}
-
-hasOrNot(groupId:number, id:number ,value:string) {
-  this.incomingObject = {
-    groupIdValue: groupId,
-    valueId: id,
-    valueName: value
-  };
-  const objectExist = this.filterArray.some(data=> data.groupIdValue === this.incomingObject.groupIdValue && data.valueName === this.incomingObject.valueName);
-  return objectExist;
-}
-
-filterOutstanding(arrayToFilter: FilterObject[]) {
-  const filteredArrayByAction: any[] = [];
-  const filteredArrayByCode: any[] = [];
-  const filteredArrayByEmno: any[] = [];
-
-  this.outstandingCases$.subscribe((assignments)=> {
-
-    arrayToFilter.forEach(filterVal=> {
-      if(filterVal.groupIdValue === 1) {
-        assignments.map((status)=> {
-          status.statusGroups.map((statusNames)=> {
-            const data = statusNames.actions.filter((statusName)=> statusName.ambulanceAction === arrayToFilter[0].valueName);
-            if(data.length>0){
-              filteredArrayByAction.push(data[0]);
-            }
-          });
-        });
-      }
-
-      if(filteredArrayByAction.length === 0 && filteredArrayByEmno.length === 0 && filterVal.groupIdValue === 2) {
-        assignments.map((status)=> {
-          status.statusGroups.map((statusNames)=> {
-            statusNames.actions.map((action)=> {
-              const data = action.ambulanceAssignment.filter((assignment)=>
-              assignment.emergencyCodeId === filterVal.valueId);
-              
-              if(data.length>0) 
-                filteredArrayByCode.push(data[0]);
-              
-            });
-          });
-        });
-      }
-
-      if(filteredArrayByAction.length === 0 && filteredArrayByCode.length === 0 && filterVal.groupIdValue === 3) {
-        assignments.map((status)=> {
-          status.statusGroups.map((statusNames)=> {
-            statusNames.actions.map((action)=> {
-              const data = action.ambulanceAssignment.filter((assignment)=>
-              assignment.emergencyNumber === parseInt(filterVal.valueName, 10));
-              
-              if(data.length>0) 
-                filteredArrayByEmno.push(data[0]);
-              
-            });
-          });
-        });
-      }
-
-      
-    });
-
-  });
-
-  console.log(filteredArrayByAction);
-  console.log(filteredArrayByCode);
-  console.log(filteredArrayByEmno);
+  this.outstandingCaseService.onSearchChange(this.filterKeysArray, '');
 
 }
 
