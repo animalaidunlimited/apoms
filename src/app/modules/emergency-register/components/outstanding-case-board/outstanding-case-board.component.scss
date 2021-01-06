@@ -180,13 +180,29 @@ $standard-width: 180px;
     border: solid .1px lightgray;
 }
 
+.filterChipWrapper {
+    position: fixed;
+    left: 68%;
+}
+
+.filterText {
+    position: fixed;
+    font-weight: bold;
+    display: flex;
+    font-family: sans-serif;
+    color: #a9abad;
+    right: 33%;
+}
+
 
 .refresh-box{
-    padding-right: 40px;
+    // padding-right: 40px;
     max-width: 300px;
-    position: absolute !important;
-    right: 45px;
+    margin-right: 25px;
+    // position: absolute !important;
+    // right: 45px;
 }
+
 
 .mat-spinner {
     position: absolute;
@@ -217,21 +233,21 @@ $standard-width: 180px;
     z-index: 1;
     overflow-y: hidden;
 & .mat-expansion-panel:last-of-type {
-    overflow-y: scroll;
-    max-height: 200px;
+    // overflow-y: scroll;
+    max-height: 29vh;
 }
 }
 
-.filter_Btn {
-    position: relative;
-    left: -25px;
-}
+// .filter_Btn {
+//     position: relative;
+//     right: 10vw;
+// }
 
 // .mat-focus-indicator:focus {
 //     background-color: #607d8b;
 // }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
 
     ::ng-deep {
     .outstandingWrapper {
@@ -247,21 +263,55 @@ $standard-width: 180px;
             display: block;
         }
     } 
-    .refresh-box{
-        top: 68px !important;
-        display: flex !important;
-        flex-direction: row-reverse !important;
-        right: 0 !important;
-        padding-right: 20px !important;
-        
-        > button {
-            margin-left: 10px;
-        }
+
+
+    .filterWrapper{
+        position: absolute !important;
+        width: 20rem !important;
+        right: 0;
+        left: 39px;
+        margin-top: 100px !important;
+        z-index: 1;
+        overflow-y: hidden;
+    & .mat-expansion-panel:last-of-type {
+        overflow-y: scroll;
+        max-height: 200px;
     }
+    }
+
+    .filterText {
+        position: absolute !important;
+        font-weight: bold !important;
+        font-family: sans-serif !important;
+        right: 87vw !important;
+        color: $colour-border !important;
+        top: 26vw;
+    }
+
+    .filterChipWrapper {
+        position: absolute !important;
+        top: 98px !important;
+        left: 0 !important;
+        margin-left: 51px !important;
+        width: 100% !important;
+    }
+    
+    
+//     .refresh-box{
+//         top: 68px !important;
+//         display: flex !important;
+//         flex-direction: row-reverse !important;
+//         right: 0 !important;
+//         padding-right: 20px !important;
+        
+//         > button {
+//             margin-left: 10px;
+//         }
+//     }
 }
 }
 
 .outstandingWrapper {
-    min-height: 500px;
+    min-height: 60vh;
 
 }

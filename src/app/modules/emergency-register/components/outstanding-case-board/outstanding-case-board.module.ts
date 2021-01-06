@@ -7,11 +7,13 @@ import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding
 import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import {MatChipsModule} from '@angular/material/chips';
+import { ChipListType } from '../../pipes/chip-list-type';
 
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,
-         OutstandingCaseMapComponent
+         OutstandingCaseMapComponent,
+         ChipListType
     ],
     imports: [
         CommonModule,
@@ -20,6 +22,9 @@ import {MatChipsModule} from '@angular/material/chips';
         GoogleMapsModule,
         SearchResultCardModule,
         MatChipsModule
+    ],
+    providers:[
+        
     ],
     exports: [OutstandingCaseBoardComponent],
 })
