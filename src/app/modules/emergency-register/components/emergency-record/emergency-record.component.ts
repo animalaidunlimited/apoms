@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -206,6 +206,8 @@ export class EmergencyRecordComponent implements OnInit {
             let messageResult = {
                 failure: 0,
             };
+
+            console.log(emergencyForm);
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
 
