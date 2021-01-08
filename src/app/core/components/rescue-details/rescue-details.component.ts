@@ -121,6 +121,8 @@ export class RescueDetailsComponent implements OnInit {
 
     this.recordForm.valueChanges.subscribe(val => {
 
+      console.log(val);
+
       // The values won't have bubbled up to the parent yet, so wait for one tick
       setTimeout(() =>
 
@@ -148,6 +150,13 @@ updateValidators()
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
+    this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+    this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity();
+
+  }
+  else {
+    this.recordForm.get('emergencyDetails.code')?.clearValidators();
+    this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity();
   }
 
   // if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required

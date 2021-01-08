@@ -42,6 +42,8 @@ export class AuthService extends APIService {
             })) as Response;
             this.token = this.response.token || '';
 
+            console.log(this.response);
+
             if (!this.response.success) {
                 throw new Error('Wrong Credentials!');
             }
