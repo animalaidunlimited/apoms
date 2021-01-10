@@ -1,12 +1,14 @@
 <!-- <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'"> -->
 
 
-
     <mat-form-field class="er-case-search-box">
         <span matPrefix (click)="executeSearch()">
             <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
         </span>
         <input class="er-case-search-box" autocomplete="off" [(ngModel)]="search.searchString" type="text" (keyup.enter)="executeSearch()" matInput>
+        <!--<button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="search.searchString=''">-->
+        <mat-icon style="cursor: pointer;" matSuffix (click)="search.searchString=''">close</mat-icon>
+          <!--</button>-->
         <mat-icon style="cursor: pointer;" matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
     </mat-form-field>
 
