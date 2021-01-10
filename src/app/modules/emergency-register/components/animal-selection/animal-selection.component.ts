@@ -89,6 +89,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges.subscribe(newValue => this.emergencyCaseId = newValue);
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
@@ -355,6 +356,7 @@ export class AnimalSelectionComponent implements OnInit {
 
         // if there are no rows, then we need to add a new one
         if (selectedCount === 0 && animalTypeChip.selected) {
+
             const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
             const position: number = this.patientDataSource.data.length + 1;
