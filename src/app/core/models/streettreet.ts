@@ -69,25 +69,71 @@ export interface StreetTreatSearchResponse {
     IsDeleted: 0|1| null;  
 }
 
+export interface Team {
+    TeamId: number;
+    TeamName: string;
+}
+
+export interface Visit {
+    Date: string;
+    StatusId: number;
+    VisitTypeId: number;
+}
+
+export interface Position {
+    Address: string;
+    Latitude: number;
+    Longitude: number;
+}
+
+export interface Emergency {
+    EmergencyCase: number;
+    EmergencyNumber: number;
+}
+
+export interface AnimalDetails {
+    Priority: string;
+    TagNumber: string;
+    AnimalName?: any;
+    AnimalType: string;
+}
+
 export interface StreetTreatCaseByVisitDateResponse {
+    Team: Team;
+    Visit: Visit[];
+    Position: Position;
+    Emergency: Emergency;
+    AnimalDetails: AnimalDetails;
+    StreetTreatCaseId: number;
+}
+
+export interface ActiveCasesForTeamByDateResponse {
     CaseId: number;
     EmergencyNumber: number;
     TagNumber: string;
     AnimalType: string;
+    AnimalTypeId: number;
     Status: string;
-    AnimalName: string;
+    StatusId: number;
+    AnimalName?: any;
     NextVisit: Date;
-    VisitStatusId: number;
-    VisitTypeId: number;
+    NextVisitStatusId: number;
     PercentComplete: number;
-    VisitList: string;
     Address: string;
     Priority: string;
+    PriorityId: number;
     TeamName: string;
+    TeamId: number;
     Latitude: number;
     Longitude: number;
     ComplainerName: string;
     ComplainerNumber: string;
+    AdminNotes?: any;
+    OperatorNotes?: any;
+    ReleasedDate: Date;
+    ClosedDate?: any;
+    EarlyReleaseFlag?: any;
     MainProblemId: number;
     MainProblem: string;
 }
+
