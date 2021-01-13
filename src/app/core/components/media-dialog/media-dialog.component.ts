@@ -6,6 +6,7 @@ import { Platform } from '@angular/cdk/platform';
 import { of, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { PatientService } from '../../services/patient/patient.service';
+import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 
 interface IncomingData {
   tagNumber: string;
@@ -185,6 +186,17 @@ onSave(): void {
 }
 
 openMobileMediaCaptureDialog(){
+
+  const dialogRef = this.dialog.open(MediaCaptureComponent, {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    panelClass: 'media-capture-dialog',
+    data: {
+        tagNumber: this.data.tagNumber,
+        patientId: this.data.patientId,
+    }
+});
+
 }
 
 
