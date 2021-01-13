@@ -1,19 +1,22 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
-import { StreetTreatCaseByVisitDateResponse } from 'src/app/core/models/streettreet';
+import { ActiveCasesForTeamByDateResponse } from 'src/app/core/models/streettreet';
 import { GoogleMap } from '@angular/google-maps';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 export interface Position {
   lat: number;
   lng: number;
 }
-export interface Marker {
-  position: Position;
-  label: string;
-  options: any;
+export interface mapMarker {
+  marker?:google.maps.Marker;
+  options: google.maps.MarkerOptions;
   streetTreatCaseId?: number;
-}
+  teamId:number;
+} 
+
 @Component({
   selector: 'team-visit-assinger',
   templateUrl: './team-visit-assinger.component.html',
@@ -28,67 +31,74 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     strokeWeight: 0,
     scale: 0.07
   };
-
-  options: google.maps.MapOptions = {
-    maxZoom: 17,
-    minZoom: 8,
-  };
-
   zoom = 11.0;
-  streetTreatCases: any[] =[];
+  streetTreatCasesResponse: any[] =[];
+  teamsDropDown:any[]=[];
   center!:google.maps.LatLngLiteral;
   latlngboundsArray:google.maps.LatLng[] = [];
-  markers: Marker[] = [];
+  markers: mapMarker[] = [];
   highlightStreetTreatCase = -1;
-
+  highlightMarkerStreetTreatCase = -1;
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
-  @ViewChild('googleMap',{read: ElementRef}) googleMap!: ElementRef;
+
   infoWindow = new google.maps.InfoWindow();
+  
+  streetTreatServiceSubs:Subscription = new Subscription();
 
-  /*Get Street Treat Visit List*/
+  teamsgroup!:FormGroup;
 
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
-
-  later = [
-    'Get Things Done'
-  ];
-
+ 
   constructor(
     private streetTreatService: StreetTreatService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private fb: FormBuilder
     ) {}
 
   markerDragEnd(event: google.maps.MouseEvent) {
     const position = event.latLng.toJSON();
     this.center = { lat: position.lat, lng: position.lng };
   }
-
-
-  markerClick(marker:Marker)
+  
+  markerClick(marker:mapMarker)
   {
-    this.highlightStreetTreatCase = this.streetTreatCases
-                                    .findIndex(
-                                      (streetTreatCase:StreetTreatCaseByVisitDateResponse) =>
-                                      streetTreatCase.CaseId === marker.streetTreatCaseId);
+    this.highlightStreetTreatCase = marker.streetTreatCaseId as number;
   }
 
   highLightMarker(streetTreatCase:any){
-    // console.log(streetTreatCase);
+
+    if(streetTreatCase.CaseId){
+      this.markers.forEach((marker)=>{
+        if(marker.streetTreatCaseId == streetTreatCase.CaseId)
+        {
+          marker.marker?.setAnimation(1);
+          // this.highlightMarkerStreetTreatCase  = marker.streetTreatCaseId as number;
+        }
+      });
+      // console.log(this.markers.findIndex((marker) => marker.streetTreatCaseId = streetTreatCase));
+    } 
   }
 
   markerClean(){
     this.highlightStreetTreatCase = -1;
+  /*   this.highlightMarkerStreetTreatCase = -1; */
   }
-
+  entered(event: CdkDragEnter<string[]>) {
+    console.log('Entered', event.item.data);
+  }
+   
+  exited(event: CdkDragExit<string[]>) {
+     console.log('Exited', event.item.data);
+  }
+  
   drop(event: CdkDragDrop<string[]>){
     if(event.previousContainer === event.container){
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      try{
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        this.changeDetector.detectChanges();
+      }
+      catch(error){
+        console.log(error);
+      }
     }
     else {
       transferArrayItem(
@@ -96,54 +106,127 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+        console.log("Previous Container",event.previousContainer);
+        console.log("Current Container",event.container);
+        console.log(event.container.data[event.currentIndex]);
     }
+    console.log('Dropped', event.item.data);
   }
+
   ngOnInit(): void {
 
+    this.teamsgroup = this.fb.group({
+      teams:[''],
+      date:[]
+    });
+    
+    this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
+        this.streetTreatServiceSubs = this.streetTreatService
+        .getActiveStreetTreatCasesWithVisitByDate(new Date())
+        .subscribe(streetTreatCaseByVisitDateResponse => {
+          if(teamIds.length > 0){
+            this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
+          }    
+          else {
+            this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse
+          } 
+          this.initMarkers(this.streetTreatCasesResponse);     
+          this.streetTreatServiceSubs.unsubscribe();
+        });
+    });
+    this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
+      this.streetTreatServiceSubs = 
+        this.streetTreatService
+        .getActiveStreetTreatCasesWithVisitByDate(date)
+        .subscribe(streetTreatCaseByVisitDateResponse => {
+          if(streetTreatCaseByVisitDateResponse)
+          {
+            this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse;
+            this.initMarkers(this.streetTreatCasesResponse);
+          }
+          this.streetTreatServiceSubs.unsubscribe();
+        });
+    })
   }
 
   ngAfterViewInit():void {
     const latlngbounds = new google.maps.LatLngBounds(undefined);
-    this.streetTreatService.getActiveCasesWithVisitByDate(new Date())
-    .subscribe(
-    (streetTreatCaseByVisitDateResponse:StreetTreatCaseByVisitDateResponse[]) =>
-    {
-      streetTreatCaseByVisitDateResponse.forEach((streetTreatResponse) =>
-        {
+    /* this.initStreetTreatCases(new Date()); 
+    console.log(this.streetTreatCases);*/
+    this.streetTreatServiceSubs = 
+    this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+    .subscribe(streetTreatCaseByVisitDateResponse => {
+      this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse;
+      this.teamsDropDown = streetTreatCaseByVisitDateResponse;
+      streetTreatCaseByVisitDateResponse.forEach((streetTreatResponse:any) =>
+      {
+        console.log(streetTreatResponse.StreetTreatCaseVisits);
+        streetTreatResponse.StreetTreatCaseVisits.forEach((StreetTreatCaseVisit:any)=>{
           this.markers.push({
-            position: { lat: streetTreatResponse.Latitude, lng: streetTreatResponse.Longitude },
-            label: '',
-            streetTreatCaseId:streetTreatResponse.CaseId,
-            options: {
+            streetTreatCaseId:StreetTreatCaseVisit.StreetTreatCaseId, 
+            teamId:streetTreatResponse.TeamId, 
+            options:{
+              position: { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude },
               draggable: true,
               icon:{
                 ...this.icon,
-                fillColor: '#58b09c'
+                fillColor: streetTreatResponse.TeamColor
               }
-            },
+            }
           });
-          latlngbounds.extend(new google.maps.LatLng(streetTreatResponse.Latitude, streetTreatResponse.Longitude));
-
-          this.streetTreatCases.push(streetTreatResponse);
-
-        }
-      );
-
-      this.map.fitBounds(latlngbounds);
-      this.map.panToBounds(latlngbounds);
-
-      this.map.zoomChanged.subscribe(() => {
-
-        if(this.map.getZoom() > 14) {
-          console.log('setZoom');
-
-          this.map.zoom = 14;
-
-        }
-
+          latlngbounds.extend(new google.maps.LatLng(StreetTreatCaseVisit.Position.Latitude, StreetTreatCaseVisit.Position.Longitude));
+        });
       });
-
+      this.fitMaps(latlngbounds);
+      this.streetTreatServiceSubs.unsubscribe();
+    });  
+  }
+  initMarkers(streetTreatCases:any){
+    this.markers = [];
+    streetTreatCases.forEach((streetTreatResponse:any) =>
+    {
+      streetTreatResponse.StreetTreatCaseVisits.forEach((StreetTreatCaseVisit:any)=>{
+        this.markers.push({
+          streetTreatCaseId:StreetTreatCaseVisit.StreetTreatCaseId, 
+          teamId:streetTreatResponse.TeamId, 
+          options:{
+            position: { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude },
+            draggable: true,
+            icon:{
+              ...this.icon,
+              fillColor: streetTreatResponse.TeamColor
+            }
+          }
+        });
+      });
+    }); 
+  }
+ /*  initStreetTreatCases(date: Date){
+    this.streetTreatServiceSubs = this.streetTreatService
+    .getActiveStreetTreatCasesWithVisitByDate(date)
+    .subscribe(streetTreatCaseByVisitDateResponse => {
+      this.streetTreatCases = streetTreatCaseByVisitDateResponse;
+      this.streetTreatServiceSubs.unsubscribe();
     });
+  } */
+
+  fitMaps(latlngbounds: google.maps.LatLngBounds){
+    this.map.fitBounds(latlngbounds);
+      this.map.panToBounds(latlngbounds);
+      this.map.zoomChanged.subscribe(() => {
+        if(this.map.getZoom() > 14) {
+          this.map.zoom = 14;
+        }
+      });
   }
 
+  trackByStreetTreatCaseId(index:number, item:any)
+  {
+    return item.StreetTreatCaseId;
+  }
+
+  markersTrack(index:number, item:any)
+  {
+    return item.teamId;
+  }
 }

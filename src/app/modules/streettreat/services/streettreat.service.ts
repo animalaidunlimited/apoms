@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { VisitResponse, StreetTreatForm } from 'src/app/core/models/release';
+import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
+import { ActiveCasesForTeamByDateResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -147,10 +147,11 @@ export class StreetTreatService extends APIService {
     ); 
   }
 
-  public getActiveCasesWithVisitByDate(date: Date){
-    const request = '/?date='+ date;  
+  public getActiveStreetTreatCasesWithVisitByDate(date: Date){
+    const request = '?date='+ date;  
     return this.getObservable(request).pipe(
-      map((response: StreetTreatCaseByVisitDateResponse[]) => {
+      //map((response: StreetTreatCaseByVisitDateResponse[]) => {
+       map((response: any[]) => {
            return response;
        }),
      ); 
@@ -165,4 +166,20 @@ export class StreetTreatService extends APIService {
         console.log(error);
     });
   }
+  public getActiveCasesForTeamByDate(teamId: number,date: Date){
+    const request = `?date=${date}&teamid=${teamId}`;
+    return this.getObservable(request).pipe(
+      map((response:ActiveCasesForTeamByDateResponse)=>{
+        return response;
+      })
+    );
+  }
+  public getTeamByTeamId(teamId: number){
+    const request = `?teamid=${teamId}`;
+    return this.getObservable(request).pipe(
+      map((response:any[])=>{
+        return response;
+      })
+    );
+  }  
 }
