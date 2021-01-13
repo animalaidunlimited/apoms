@@ -60,9 +60,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms') || '';
 
-        this.emergencyDetails = this.recordForm.get(
-            'emergencyDetails',
-        ) as FormGroup;
+        this.emergencyDetails = this.recordForm.get('emergencyDetails') as FormGroup;
+
+        const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
@@ -82,10 +82,26 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             new FormControl(''),
         );
 
+        // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
+        emergencyCaseId?.valueChanges.subscribe(() => {
+
+            const emergencyNumber = this.recordForm.get('emergencyDetails.emergencyNumber');
+
+            emergencyNumber?.clearAsyncValidators();
+            emergencyNumber?.setAsyncValidators([
+                this.emergencyNumberValidator.validate(
+                emergencyCaseId?.value,1)
+            ]);
+
+        });
+
+
+        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
+        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
+        // this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
+
         this.caseService
-            .getEmergencyCaseById(
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
-            )
+            .getEmergencyCaseById(emergencyCaseId?.value)
             .subscribe(result => {
 
                 this.recordForm.patchValue(result);
@@ -100,6 +116,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
                 this.updateEmergencyNumber(val);
             });
+
+
+
     }
 
     ngAfterViewInit(){
