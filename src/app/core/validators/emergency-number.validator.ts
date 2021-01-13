@@ -18,6 +18,7 @@ export class UniqueEmergencyNumberValidator {
             }
 
             return this.caseService.checkEmergencyNumberExists(control.value, emergencyNumber).pipe(map((res:any) => {
+
                         // if emergency number is already taken
                         if (res[0]['@success'] === checkExists) {
                             return { emergencyNumberTaken: true };

@@ -1,6 +1,6 @@
 <mat-card class="emergency-card">
 
-        <mat-card-header class="emergency-card-header">
+        <mat-card-header class="emergency-card-header" (click)="openCase(record)">
           <mat-card-title>{{record.EmergencyNumber}} - {{record.TagNumber}}</mat-card-title>
           <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header>
