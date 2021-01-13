@@ -53,6 +53,20 @@ export class CallerDetailsComponent implements OnInit {
 
         this.callerArray = this.callerDetails.get('callerArray') as FormArray;
 
+
+        this.callerArray.valueChanges.subscribe((callers:Caller[]) => {
+
+            const empty = callers.every(caller => Object.values(caller).every(value => value=== null));
+
+            if(empty && this.callerArray.pristine && callers.length >= 1){
+                // We've reset, so empty the array and repopulate, and make sure we set the primary again
+                this.callerArray.clear();
+                this.callerArray.push(this.getCallerFormGroup());
+                this.callerArray.at(0).get('primaryCaller')?.setValue(true);
+            }
+
+        });
+
         if(this.callerArray.length === 1) {
             this.callerArray.at(0).get('primaryCaller')?.setValue(true);
         }

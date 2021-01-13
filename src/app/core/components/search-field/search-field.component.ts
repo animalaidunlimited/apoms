@@ -1,4 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Platform } from '@angular/cdk/platform';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -173,6 +174,7 @@ export class SearchFieldComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     public callDialog: MatDialog,
+    public platform: Platform,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -205,6 +207,11 @@ executeSearch() {
     } else {
         this.updateSearchArray();
     }
+
+    // If we're on a mobile device, hide the keyboard after searching.
+    if (document.activeElement instanceof HTMLElement && (this.platform.ANDROID || this.platform.IOS)) {
+        document.activeElement.blur();
+      }
 
     const searchArray = this.getSearchArray();
 

@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import {
-    EmergencyResponse,
-    SearchResponse,
-} from 'src/app/core/models/responses';
+import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -45,7 +42,7 @@ export class CaseService extends APIService {
             if (online) {
                 this.online = true;
 
-                this.toaster.successSnackBar('Connection restored', 'OK');
+                // this.toaster.successSnackBar('Connection restored', 'OK');
 
                 await this.postFromLocalStorage(this.storage.getItemArray('POST'))
                     .then(result => {
