@@ -3,6 +3,7 @@ import { CallOutcomeResponse } from './call-outcome';
 
 export interface EmergencyDetails {
     emergencyCaseId: number;
+    guId:string;
     emergencyNumber: string;
     callDateTime: string | Date;
     dispatcher: number;

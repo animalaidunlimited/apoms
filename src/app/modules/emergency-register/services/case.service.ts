@@ -8,7 +8,7 @@ import {
 } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -16,8 +16,20 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
 
 @Injectable({
     providedIn: 'root',
-})
+}) 
 export class CaseService extends APIService {
+
+    emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({
+        emergencyCallerSuccess: [],
+        emergencyCaseId:0,
+        emergencyNumber:0,
+        callerSuccess:[],
+        guId:'',
+        emergencyCaseSuccess:0,
+        patients:[]
+
+    });
+
     constructor(
         http: HttpClient,
         private onlineStatus: OnlineStatusService,
@@ -52,15 +64,15 @@ export class CaseService extends APIService {
 
                         // Only alert if we've inserted new cases.
 
-                        if(result.length > 0){
+                        // if(result.length > 0){
 
-                            const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+                        //     const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
-                            setTimeout(() => {
-                                this.toaster.successSnackBar('Synced updated cases with server', 'OK');
-                            }, insertWaitToShowMessage);
+                        //     setTimeout(() => {
+                        //         this.toaster.successSnackBar('Synced updated cases with server', 'OK');
+                        //     }, insertWaitToShowMessage);
 
-                        }
+                        // }
 
                     })
                     .catch(error => {
@@ -109,11 +121,21 @@ export class CaseService extends APIService {
                 await this.baseInsertCase(JSON.parse(elem.value)).then(
                     (result: EmergencyResponse) => {
 
-                        if (
-                            result.emergencyCaseSuccess === 1 ||
-                            result.emergencyCaseSuccess === 3 ||
-                            result.emergencyCaseSuccess === 2
-                        ) {
+                        // if (
+                        //     result.emergencyCaseSuccess === 1 ||
+                        //     result.emergencyCaseSuccess === 3 ||
+                        //     result.emergencyCaseSuccess === 2
+                        // ) {
+                        //     this.storage.remove(elem.key);
+                        // }
+                        if(result.emergencyCaseSuccess === 1) {
+                            this.getCaseResponseFromLocalStorage(result);
+                            this.storage.remove(elem.key);
+                        }
+                        else if( result.emergencyCaseSuccess === 3 ||
+                                result.emergencyCaseSuccess === 2) 
+                        {
+                            // this.getCaseResponseFromLocalStorage(result);
                             this.storage.remove(elem.key);
                         }
                     }
@@ -208,7 +230,7 @@ export class CaseService extends APIService {
                     this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
                     // The server is offline, so let's save this to the database
                     return await this.saveToLocalDatabase(
-                        'POST',
+                        'POST' + emergencyCase.emergencyForm.emergencyDetails.guId,
                         emergencyCase,
                     );
                 }
@@ -266,10 +288,10 @@ export class CaseService extends APIService {
 
     private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
-        const guid = UUID.UUID();
+        // const guid = UUID.UUID();
 
         try {
-            this.storage.save(key + guid, body);
+            this.storage.save(key , body);
             return Promise.resolve({
                 status: 'saved',
                 message: 'Record successfully saved to offline storage.',
@@ -305,5 +327,17 @@ export class CaseService extends APIService {
     public async updateCaseOutcome(outcomeDetails: EmergencyCase): Promise<EmergencyCase> {
 
         return await this.put(outcomeDetails);
+    }
+
+    public generateUUID() : string{
+        return UUID.UUID();
+    }
+
+    public getCaseResponseFromLocalStorage(result: EmergencyResponse) {
+        this.emergencyResponse.next(result);
+    }
+
+    public getResponseAfterSaveFromLocalStorage() {
+        return this.emergencyResponse;
     }
 }

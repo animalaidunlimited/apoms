@@ -55,8 +55,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         // this.getCurrentTimeStringInSeconds();
 
-        const autoGenEmNo = (this.generateEmergencyNumber());
-
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
@@ -102,10 +100,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
                 this.updateEmergencyNumber(val);
             });
-
-        if(autoGenEmNo) {
-            this.emergencyDetails.get('emergencyNumber')?.setValue(autoGenEmNo);
-        }
     }
 
     ngAfterViewInit(){
@@ -119,35 +113,35 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.loadEmergencyNumber.emit(emergencyNumber);
     }
 
-    generateEmergencyNumber() {
-        // tslint:disable-next-line:radix
-        const value = parseInt(this.getCurrentTimeStringInSeconds());
-        let rand: number;
-        // tslint:disable-next-line:radix
-        rand = Math.round((Math.random() * (10 - 1) + 1));
+    // generateEmergencyNumber() {
+    //     // tslint:disable-next-line:radix
+    //     const value = parseInt(this.getCurrentTimeStringInSeconds());
+    //     let rand: number;
+    //     // tslint:disable-next-line:radix
+    //     rand = Math.round((Math.random() * (10 - 1) + 1));
 
-        const randomNum = Math.round((Math.random() * value * Math.random() * rand));
+    //     const randomNum = Math.round((Math.random() * value * Math.random() * rand));
 
-        console.log(typeof randomNum);
+    //     console.log(typeof randomNum);
 
-        return randomNum;
+    //     return randomNum;
 
-    }
+    // }
 
-    getCurrentTimeStringInSeconds() {
-        let currentTime = new Date();
+    // getCurrentTimeStringInSeconds() {
+    //     let currentTime = new Date();
 
-        const wn = window.navigator as any;
-        let locale = wn.languages ? wn.languages[0] : 'en-GB';
-        locale = locale || wn.language || wn.browserLanguage || wn.userLanguage;
+    //     const wn = window.navigator as any;
+    //     let locale = wn.languages ? wn.languages[0] : 'en-GB';
+    //     locale = locale || wn.language || wn.browserLanguage || wn.userLanguage;
 
-        currentTime = new Date(
-            currentTime.getTime() + currentTime.getTimezoneOffset(),
-        );
+    //     currentTime = new Date(
+    //         currentTime.getTime() + currentTime.getTimezoneOffset(),
+    //     );
 
-        return formatDate(currentTime, 'hhmmSSS', locale);
+    //     return formatDate(currentTime, 'hhmmSSS', locale);
         
-    }
+    // }
 
     setInitialTime() {
         const currentTime = this.recordForm.get(
