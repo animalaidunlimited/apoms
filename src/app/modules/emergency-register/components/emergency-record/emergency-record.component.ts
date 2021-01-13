@@ -33,8 +33,11 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
+    uuId!: string;
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
+
         event.preventDefault();
         this.recordForm.reset();
     }
@@ -65,8 +68,11 @@ export class EmergencyRecordComponent implements OnInit {
     ngOnInit() {
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
+        this.uuId = this.caseService.generateUUID();
+
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
+                guId : [this.uuId],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -75,6 +81,15 @@ export class EmergencyRecordComponent implements OnInit {
                 sameAsNumber: []
             }),
             caseComments: [],
+        });
+
+        this.caseService.getResponseAfterSaveFromLocalStorage().subscribe((response: EmergencyResponse)=> {
+            console.log(response);
+            if(response.guId === this.uuId) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(response.emergencyNumber);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(response.emergencyCaseId);
+                this.getCaseSaveMessage(response);
+            }
         });
 
         if (this.emergencyCaseId) {
@@ -207,8 +222,6 @@ export class EmergencyRecordComponent implements OnInit {
                 failure: 0,
             };
 
-            console.log(emergencyForm);
-
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
 
                 await this.caseService
@@ -222,9 +235,10 @@ export class EmergencyRecordComponent implements OnInit {
                         } else {
                             const resultBody = data as EmergencyResponse;
 
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
-                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+                            console.log(this.recordForm);
 
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
                             messageResult = this.getCaseSaveMessage(resultBody);
 
                         }
