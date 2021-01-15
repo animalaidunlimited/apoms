@@ -12,7 +12,7 @@ export class OnlineStatusService {
     }
 
     get isOnline() {
-        return !!window.navigator.onLine;
+        return !!window.navigator.onLine;   
     }
 
     constructor() {

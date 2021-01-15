@@ -10,22 +10,15 @@ import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-
+import { async } from '@angular/core/testing';
 @Injectable({
     providedIn: 'root',
 }) 
 export class CaseService extends APIService {
 
-    emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({
-        emergencyCallerSuccess: [],
-        emergencyCaseId:0,
-        emergencyNumber:0,
-        callerSuccess:[],
-        guId:'',
-        emergencyCaseSuccess:0,
-        patients:[]
+    emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
-    });
+    offlineEmergencyResponse!: EmergencyResponse;
 
     constructor(
         http: HttpClient,
@@ -45,100 +38,117 @@ export class CaseService extends APIService {
 
     online: boolean;
 
+    triggerController = 0;
+
     saveCaseFail = false;
 
     private async checkStatus(onlineStatus: OnlineStatusService) {
 
-        onlineStatus.connectionChanged.subscribe(async online => {
+        this.triggerController++;
 
-            if (online) {
-                this.online = true;
+        if(this.triggerController === 1) {
+            console.log(onlineStatus);
+            console.log('connection checked');
 
-                // this.toaster.successSnackBar('Connection restored', 'OK');
+            onlineStatus.connectionChanged.subscribe(async online => {
 
-                await this.postFromLocalStorage(this.storage.getItemArray('POST'))
-                    .then(result => {
+                if (online) {
+                    this.online = true;
+                    // this.toaster.successSnackBar('Connection restored', 'OK');
 
-                        // Only alert if we've inserted new cases.
+                    await this.postFromLocalStorage(this.storage.getItemArray('POST'))
+                        .then(result => {
 
-                        // if(result.length > 0){
+                            console.log(result);
 
-                        //     const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+                            // Only alert if we've inserted new cases.
 
-                        //     setTimeout(() => {
-                        //         this.toaster.successSnackBar('Synced updated cases with server', 'OK');
-                        //     }, insertWaitToShowMessage);
+                            if(result.length > 0){
 
-                        // }
+                                const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                                setTimeout(() => {
+                                    this.toaster.successSnackBar('Synced updated cases with server', 'OK');
+                                }, insertWaitToShowMessage);
 
-                await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
-                    .then(result => {
+                            }
 
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
 
-                        if(result.length > 0){
-
-                            const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
-
-
-                        setTimeout(() => {
-                            this.toaster.successSnackBar('Synced updated cases with server', 'OK');
-                        }, insertWaitToShowMessage);
-
-                        }
+                    await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
+                        .then(result => {
 
 
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            } else {
-                this.online = false;
+                            if(result.length > 0){
 
-                // If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
-                // save failed
-                this.saveCaseFail ?
-                    this.saveCaseFail = !this.saveCaseFail
-                :
-                    this.toaster.errorSnackBar('Connection lost', 'OK');
+                                const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
 
 
-            }
-        });
+                            setTimeout(() => {
+                                this.toaster.successSnackBar('Synced updated cases with server', 'OK');
+                            }, insertWaitToShowMessage);
+
+                            }
+
+
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                } else {
+                    this.online = false;
+
+                    // If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
+                    // save failed
+                    this.saveCaseFail ?
+                        this.saveCaseFail = !this.saveCaseFail
+                    :
+                        this.toaster.errorSnackBar('Connection lost', 'OK');
+
+
+                }
+            });
+
+        }
+        
+
     }
 
     private async postFromLocalStorage(postsToSync:any) {
-        const promiseArray = postsToSync.map(
-            async (elem:any) =>
-
+        let promiseArray;
+            // promiseArray = postsToSync.map(
+            //     async (elem:any) =>
+            // await this.baseInsertCase(JSON.parse(elem.value)).then(
+            //     (result: EmergencyResponse) => {
+            //         if (
+            //             result.emergencyCaseSuccess === 1 ||
+            //             result.emergencyCaseSuccess === 3 ||
+            //             result.emergencyCaseSuccess === 2
+            //         ) {
+            //             this.emergencyResponse.next(result);
+            //             this.storage.remove(elem.key);                  
+            //         }
+            //     }
+            // )
+                    
+            // );
+            promiseArray = postsToSync.forEach(async (elem: any)=> {
                 await this.baseInsertCase(JSON.parse(elem.value)).then(
                     (result: EmergencyResponse) => {
-
-                        // if (
-                        //     result.emergencyCaseSuccess === 1 ||
-                        //     result.emergencyCaseSuccess === 3 ||
-                        //     result.emergencyCaseSuccess === 2
-                        // ) {
-                        //     this.storage.remove(elem.key);
-                        // }
-                        if(result.emergencyCaseSuccess === 1) {
-                            this.getCaseResponseFromLocalStorage(result);
-                            this.storage.remove(elem.key);
-                        }
-                        else if( result.emergencyCaseSuccess === 3 ||
-                                result.emergencyCaseSuccess === 2) 
-                        {
-                            // this.getCaseResponseFromLocalStorage(result);
-                            this.storage.remove(elem.key);
+                        if (
+                            result.emergencyCaseSuccess === 1 ||
+                            result.emergencyCaseSuccess === 3 ||
+                            result.emergencyCaseSuccess === 2
+                        ) {
+                            this.emergencyResponse.next(result);
+                            this.storage.remove(elem.key);                  
                         }
                     }
-                )
-        );
-
+                );
+            });
         return await Promise.all(promiseArray).then(result => {
             return result;
         });
@@ -150,9 +160,9 @@ export class CaseService extends APIService {
             async (elem:any) =>
 
                 await this.baseUpdateCase(JSON.parse(elem.value)).then(
-                                (result: EmergencyResponse) => {
+                                (result: any) => {
 
-                                    console.log(result);
+                                    console.log(result); 
 
                                     if (
                                         result.emergencyCaseSuccess === 1 ||
@@ -227,7 +237,7 @@ export class CaseService extends APIService {
                     this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
                     // The server is offline, so let's save this to the database
                     return await this.saveToLocalDatabase(
-                        'POST' + emergencyCase.emergencyForm.emergencyDetails.guId,
+                        'POST',
                         emergencyCase,
                     );
                 }
@@ -330,11 +340,7 @@ export class CaseService extends APIService {
         return UUID.UUID();
     }
 
-    public getCaseResponseFromLocalStorage(result: EmergencyResponse) {
-        this.emergencyResponse.next(result);
-    }
-
-    public getResponseAfterSaveFromLocalStorage() {
-        return this.emergencyResponse;
+    public afterSaveEmergencyResponse() {
+        return this.emergencyResponse.asObservable();
     }
 }

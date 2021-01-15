@@ -8,6 +8,7 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
+import { first } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -70,6 +71,8 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.uuId = this.caseService.generateUUID();
 
+        console.log(this.uuId);
+
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
                 guId : [this.uuId],
@@ -83,12 +86,12 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.getResponseAfterSaveFromLocalStorage().subscribe((response: EmergencyResponse)=> {
-            console.log(response);
-            if(response.guId === this.uuId) {
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(response.emergencyNumber);
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(response.emergencyCaseId);
-                this.getCaseSaveMessage(response);
+
+        this.caseService.emergencyResponse.pipe(first(),).subscribe(data=> {
+            if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+                this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
             }
         });
 
@@ -238,8 +241,6 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
-
-                            console.log(this.recordForm);
                             this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
 
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
