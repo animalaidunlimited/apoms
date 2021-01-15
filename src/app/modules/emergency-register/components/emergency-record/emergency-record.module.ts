@@ -23,7 +23,8 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         MediaDialogComponent,
         MediaCardComponent,
     ],
-    providers: [],
+    providers: [
+    ],
     imports: [
         CommonModule,
         MaterialModule,

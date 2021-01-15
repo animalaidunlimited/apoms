@@ -18,6 +18,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { CaseService } from './modules/emergency-register/services/case.service';
 
 registerLocaleData(localeIt);
 
@@ -61,6 +62,7 @@ export class UIErrorHandler extends ErrorHandler {
     exports: [],
     providers: [
         DatePipe,
+        CaseService,
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         // { provide: LOCALE_ID, useValue: 'it-IT' },
         { provide: ErrorHandler, useClass: UIErrorHandler }

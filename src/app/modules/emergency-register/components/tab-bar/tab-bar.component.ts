@@ -4,6 +4,7 @@ import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
+import { CaseService } from '../../services/case.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -21,6 +22,7 @@ export class TabBarComponent implements OnInit {
 
     constructor(private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
+        private caseService: CaseService,
         private dialog: MatDialog) {}
 
     ngOnInit() {
