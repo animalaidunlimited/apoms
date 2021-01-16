@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
+import { EmergencyResponse, SearchResponse, SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { map } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -11,6 +11,8 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { async } from '@angular/core/testing';
+import { ConnectionService } from 'ng-connection-service';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 @Injectable({
     providedIn: 'root',
 }) 
@@ -23,6 +25,7 @@ export class CaseService extends APIService {
     constructor(
         http: HttpClient,
         private onlineStatus: OnlineStatusService,
+        private connectionService: ConnectionService,
         protected storage: StorageService,
         private userOptions: UserOptionsService,
         private toaster: SnackbarService
@@ -38,45 +41,37 @@ export class CaseService extends APIService {
 
     online: boolean;
 
-    triggerController = 0;
-
     saveCaseFail = false;
 
     private async checkStatus(onlineStatus: OnlineStatusService) {
 
-        this.triggerController++;
+        console.log(getCurrentTimeString());
 
-        if(this.triggerController === 1) {
-            console.log(onlineStatus);
-            console.log('connection checked');
+        onlineStatus.connectionChanged.subscribe(async online => {
 
-            onlineStatus.connectionChanged.subscribe(async online => {
-
-                if (online) {
-                    this.online = true;
-                    // this.toaster.successSnackBar('Connection restored', 'OK');
+            if (online) {
+                this.online = true;
+                // this.toaster.successSnackBar('Connection restored', 'OK');
 
                     await this.postFromLocalStorage(this.storage.getItemArray('POST'))
-                        .then(result => {
+                    .then(result => {
 
-                            console.log(result);
+                        // Only alert if we've inserted new cases.
 
-                            // Only alert if we've inserted new cases.
+                        if(result.length > 0){
 
-                            if(result.length > 0){
+                            const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
-                                const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+                            setTimeout(() => {
+                                this.toaster.successSnackBar('Synced updated cases with server', 'OK');
+                            }, insertWaitToShowMessage);
 
-                                setTimeout(() => {
-                                    this.toaster.successSnackBar('Synced updated cases with server', 'OK');
-                                }, insertWaitToShowMessage);
+                        }
 
-                            }
-
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
 
                     await this.putFromLocalStorage(this.storage.getItemArray('PUT'))
                         .then(result => {
@@ -98,57 +93,71 @@ export class CaseService extends APIService {
                         .catch(error => {
                             console.log(error);
                         });
-                } else {
-                    this.online = false;
 
-                    // If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
-                    // save failed
-                    this.saveCaseFail ?
-                        this.saveCaseFail = !this.saveCaseFail
-                    :
-                        this.toaster.errorSnackBar('Connection lost', 'OK');
+                
+            } else {
+                this.online = false;
+
+                // If the failure was found by a failed save case then don't alert the user, as we'll have aleady told the user the
+                // save failed
+                this.saveCaseFail ?
+                    this.saveCaseFail = !this.saveCaseFail
+                :
+                    this.toaster.errorSnackBar('Connection lost', 'OK');
 
 
-                }
-            });
-
-        }
+            }
+        });
         
 
     }
 
     private async postFromLocalStorage(postsToSync:any) {
         let promiseArray;
-            // promiseArray = postsToSync.map(
-            //     async (elem:any) =>
-            // await this.baseInsertCase(JSON.parse(elem.value)).then(
-            //     (result: EmergencyResponse) => {
-            //         if (
-            //             result.emergencyCaseSuccess === 1 ||
-            //             result.emergencyCaseSuccess === 3 ||
-            //             result.emergencyCaseSuccess === 2
-            //         ) {
-            //             this.emergencyResponse.next(result);
-            //             this.storage.remove(elem.key);                  
-            //         }
-            //     }
-            // )
-                    
-            // );
-            promiseArray = postsToSync.forEach(async (elem: any)=> {
-                await this.baseInsertCase(JSON.parse(elem.value)).then(
-                    (result: EmergencyResponse) => {
+            promiseArray = postsToSync.map(
+                async (elem:any) =>
+            await this.baseInsertCase(JSON.parse(elem.value)).then(
+                (result: any) => {
+                    if(result.success === -1) {
+                        console.log('hello');
+                    }
+                    else {
                         if (
                             result.emergencyCaseSuccess === 1 ||
                             result.emergencyCaseSuccess === 3 ||
                             result.emergencyCaseSuccess === 2
                         ) {
+                            console.log(result);
                             this.emergencyResponse.next(result);
                             this.storage.remove(elem.key);                  
                         }
                     }
-                );
-            });
+                }
+            )
+                    
+            );
+            // promiseArray = postsToSync.forEach(async (elem: any)=> {
+            //     await this.baseInsertCase(JSON.parse(elem.value)).then(
+            //         (result: any) => {
+            //             if(result.success === -1) {
+            //                 console.log('hello');
+            //             }
+            //             else {
+            //                 if (
+            //                     result.emergencyCaseSuccess === 1 ||
+            //                     result.emergencyCaseSuccess === 3 ||
+            //                     result.emergencyCaseSuccess === 2
+            //                 ) {
+    
+            //                     console.log(result);
+            //                     this.emergencyResponse.next(result);
+            //                     this.storage.remove(elem.key);                  
+            //                 }
+            //             }
+                        
+            //         }
+            //     );
+            // });
         return await Promise.all(promiseArray).then(result => {
             return result;
         });
@@ -237,7 +246,7 @@ export class CaseService extends APIService {
                     this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
                     // The server is offline, so let's save this to the database
                     return await this.saveToLocalDatabase(
-                        'POST',
+                        'POST'+ emergencyCase.emergencyForm.emergencyDetails.guId,
                         emergencyCase,
                     );
                 }
