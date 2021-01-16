@@ -9,6 +9,7 @@ import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { first } from 'rxjs/operators';
+import { ConnectionService } from 'ng-connection-service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -59,14 +60,22 @@ export class EmergencyRecordComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
+        private connectionService: ConnectionService,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
-    ) {}
+    ) {
+        this.connectionService.monitor().subscribe(data=> {
+            console.log(data);
+        });
+    }
 
 
 
     ngOnInit() {
+
+
+
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.uuId = this.caseService.generateUUID();
@@ -87,7 +96,9 @@ export class EmergencyRecordComponent implements OnInit {
         });
 
 
-        this.caseService.emergencyResponse.pipe(first(),).subscribe(data=> {
+        this.caseService.emergencyResponse.subscribe(data=> {
+
+            console.log(data);
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);

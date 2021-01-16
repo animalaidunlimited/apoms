@@ -19,6 +19,7 @@ import { ConfirmationDialog } from './core/components/confirm-dialog/confirmatio
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { CaseService } from './modules/emergency-register/services/case.service';
+import {ConnectionServiceModule} from 'ng-connection-service';
 
 registerLocaleData(localeIt);
 
@@ -49,6 +50,7 @@ export class UIErrorHandler extends ErrorHandler {
         AppRoutingModule,
         MatDialogModule,
         NavModule,
+        ConnectionServiceModule,
         HttpClientModule,
         MaterialModule,
         ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
@@ -62,7 +64,6 @@ export class UIErrorHandler extends ErrorHandler {
     exports: [],
     providers: [
         DatePipe,
-        CaseService,
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         // { provide: LOCALE_ID, useValue: 'it-IT' },
         { provide: ErrorHandler, useClass: UIErrorHandler }
