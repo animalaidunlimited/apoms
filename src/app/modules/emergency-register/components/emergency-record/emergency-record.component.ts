@@ -97,12 +97,10 @@ export class EmergencyRecordComponent implements OnInit {
 
 
         this.caseService.emergencyResponse.subscribe(data=> {
-
-            console.log(data);
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
-                this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
+                // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
             }
         });
 
@@ -301,7 +299,9 @@ export class EmergencyRecordComponent implements OnInit {
                             this.recordForm.markAsUntouched();
                         }
                         else{
-                            this.showSnackBar.errorSnackBar(messageResult.message,'OK');
+                            // this.showSnackBar.errorSnackBar(messageResult.message,'OK');
+                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+
                         }
                     })
                     .catch(error => {
