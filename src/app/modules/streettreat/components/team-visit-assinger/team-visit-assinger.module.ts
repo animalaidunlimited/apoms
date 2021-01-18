@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../../material-module';
 import { TeamVisitAssingerComponent } from './team-visit-assinger.component';
 import { GoogleMapsModule } from '@angular/google-maps';
-
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
     declarations: [
@@ -13,7 +13,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
     imports: [
         CommonModule,
         MaterialModule,
-        GoogleMapsModule
+        GoogleMapsModule,
+        NgxChartsModule
         ],
     exports: [TeamVisitAssingerComponent]
 })

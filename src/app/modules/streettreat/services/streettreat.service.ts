@@ -30,6 +30,8 @@ export class StreetTreatService extends APIService {
   response: SearchStreetTreatResponse = {} as SearchStreetTreatResponse;
   redirectUrl = '';
   saveCaseFail = false;
+
+  
   
   /**
    * 
@@ -182,4 +184,24 @@ export class StreetTreatService extends APIService {
       })
     );
   }  
+  public async updateVisitTeamByTeamId(teamVisitData:any){
+    return await this.put(teamVisitData)
+  }
+  public getChartData(){
+    const request = "";
+    return this.getObservable(request).pipe(
+      map((response:any)=>{
+        return response
+      })
+    );
+  }
+  public getActiveStreetTreatCasesWithNoVisits(date:Date){
+    const request = `/novisits?date=${date}`;
+    return this.getObservable(request).pipe(
+      map((response:any)=>{
+        return response
+      })
+    );
+  }
+  
 }

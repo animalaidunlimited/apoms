@@ -1,90 +1,126 @@
+<div>
+    <h4>Cases Without Visit</h4>
+    {{casesWithoutVisits}}
+</div>
+<div>
+    <h4>TotalVisits Today</h4>
+    {{totalVisitToday}}
+</div>
+<div>
+    <h4>Visit Complete Today</h4>
+    {{visitCompleteToday}} ({{(visitCompleteToday/totalVisitToday) * 100 | number: '1.0-0'}} %)
+</div>
+
+<mat-expansion-panel  class="chart_bar_expansion">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="Chart_Bar" #containerRef >
+     
+        <ngx-charts-bar-vertical-stacked
+        [view]="view" 
+        [results]="chartData"
+        [gradient]="gradient"
+        [xAxis]="showXAxis"
+        [animations]="animations"
+        [customColors]="customColors"
+        [barPadding]="8"
+        (select)="onSelect($event)">
+        </ngx-charts-bar-vertical-stacked>
+    </div>
+</mat-expansion-panel>
 <div class="StreetTreat_Container">
-    <div cdkDropListGroup  class="StreetTreat_Container_visit_compression">
+ 
+    <div class="StreetTreat_Container_visit_compression">
         <div class="Team_Compare" [formGroup]="teamsgroup">
-            <div>
-                <mat-form-field appearance="fill" >
+            <div class="Team_Comapre_Visit_btn">
+                <button mat-flat-button color="primary" (click)="noVisits()">No Visits</button>
+            </div>
+            <div class="Team_Compare_date">
+                <mat-form-field appearance="fill">
                     <mat-label>Choose a date</mat-label>
                     <input matInput [matDatepicker]="picker" formControlName="date">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>              
+                </mat-form-field>
             </div>
             <div class="Team_Compare_list">
                 <mat-form-field appearance="fill">
-                    <mat-select placeholder="Team" formControlName="teams" multiple  >
+                    <mat-select placeholder="Team" formControlName="teams" multiple>
                         <mat-option *ngFor="let team of teamsDropDown" [value]="team.TeamId">
                             {{team.TeamName}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>                  
+                </mat-form-field>
             </div>
         </div>
-        <ng-container *ngFor="let streetTreatCase of streetTreatCasesResponse;"> 
-            <div class="drag-drop-container" [id]="streetTreatCase.TeamId">
+        <ng-container cdkDropListGroup>
+            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of streetTreatCasesResponse;" >
                 <div class="StreetTreat_Container_header">
                     <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.TeamName}}</h3>
                     <div class="StreetTreat_Container_header_TeamColor">
                         <svg>
-                        <path 
-                            d="M 12.8 2.65 C 9.05 4.45 5.75 7.95 4.25 11.65 C 3.45 13.5 3.2 16.05 3.25 20.8 C 3.4 24.45 3.05 29.05 2.65 31 L 2.05 35 L 5.4 34.15 C 7.45 33.25 10.7 32.75 15.8 32.4 C 22.65 31.95 23.7 31.7 26.25 30.15 C 37.25 23.5 36.3 7.25 24.65 2.5 C 21.3 1.15 15.8 1.2 12.8 2.65 Z Z" 
-                            [attr.fill]="streetTreatCase.TeamColor"/> 
+                            <path
+                                d="M 12.8 2.65 C 9.05 4.45 5.75 7.95 4.25 11.65 C 3.45 13.5 3.2 16.05 3.25 20.8 C 3.4 24.45 3.05 29.05 2.65 31 L 2.05 35 L 5.4 34.15 C 7.45 33.25 10.7 32.75 15.8 32.4 C 22.65 31.95 23.7 31.7 26.25 30.15 C 37.25 23.5 36.3 7.25 24.65 2.5 C 21.3 1.15 15.8 1.2 12.8 2.65 Z Z"
+                                [attr.fill]="streetTreatCase.TeamColor" />
                         </svg>
                     </div>
                 </div>
-            <div
-                cdkDropList
-                [cdkDropListData]="streetTreatCase"
-                class="example-list"
-                (cdkDropListDropped)="drop($event)" 
-                (cdkDropListEntered)="entered($event)" 
-                (cdkDropListExited)="exited($event)"
-                *ngFor="let streetTreatCase of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
+                <div 
+                    cdkDropList 
+                    cdkDropListOrientation="horizontal" 
+                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits" 
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)" 
+                    *ngFor="let streetTreatCaseDetails of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
                     <div class="example-box" 
-                    cdkDrag
-                    [cdkDragData]="streetTreatCase"
-                    [ngClass]="{'swimlane-hover':(streetTreatCase.StreetTreatCaseId === highlightStreetTreatCase)}">
-                        <div (mouseenter)="highLightMarker(streetTreatCase)" (mouseout)="markerClean()">
+                        cdkDrag 
+                        [cdkDragData]="streetTreatCaseDetails"
+                        [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}">
+                        <div 
+                            (mouseenter)="highLightMarker(streetTreatCaseDetails.StreetTreatCaseId)" 
+                            (mouseout)="markerClean()">
                             <div class="streetreat_visit">
-                                {{streetTreatCase.StreetTreatCaseId}}
-                                {{streetTreatCase.AnimalDetails.TagNumber}}
-                                {{streetTreatCase.AnimalDetails.Priority}}
+                                {{streetTreatCaseDetails.StreetTreatCaseId}}
+                                {{streetTreatCaseDetails.AnimalDetails.TagNumber}}
+                                {{streetTreatCaseDetails.AnimalDetails.Priority}}
                             </div>
                             <div class="timeline">
-                                <div *ngFor="let visit of streetTreatCase.Visits" class="timeline-badge">
-                                    <ul>
-                                        <li>
-                                            <div [ngSwitch]="visit.VisitStatusId">
-                                                <mat-icon *ngSwitchCase="4" class="timeline-badge-complete">done_all</mat-icon>
-                                                <mat-icon *ngSwitchCase="3" class="timeline-badge-missed"></mat-icon>
-                                                <mat-icon *ngSwitchCase="2" class="timeline-badge-progress"></mat-icon>
-                                                <mat-icon *ngSwitchCase="1" class="timeline-badge-todo"></mat-icon>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <ng-container *ngIf="streetTreatCaseDetails.Visits.length > 0">
+                                    <div *ngFor="let visit of streetTreatCaseDetails.Visits" class="timeline-badge">
+                                        <ul>
+                                            <li>
+                                                <div [ngSwitch]="visit.VisitStatusId">
+                                                    <mat-icon *ngSwitchCase="4" class="timeline-badge-complete">done_all</mat-icon>
+                                                    <mat-icon *ngSwitchCase="3" class="timeline-badge-missed"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="2" class="timeline-badge-progress"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="1" class="timeline-badge-todo"></mat-icon>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
-            </div> 
-        </ng-container> 
+            </div>
+        </ng-container>
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
-        <google-map 
-            [zoom]="zoom"
-            height="100%"
-            width="100%"
-        >
-            <map-marker
-                *ngFor="let marker of markers;trackBy:markersTrack"
+        <google-map [zoom]="zoom" height="100%" width="100%">
+            <map-marker 
+                *ngFor="let marker of markers ;trackBy:markersTrack" 
                 [options]="marker.options"
-                (mapDragend)="markerDragEnd($event)"
-                (mapClick)="markerClick(marker)" 
-                (mapMouseover)="markerClick(marker)"
-                (mapMouseout)="markerClean()"
-                >
+                (mapDragend)="markerDragEnd($event)" 
+                (mapClick)="markerClick(marker)"
+                (mapMouseover)="markerClick(marker)" 
+                (mapMouseout)="markerClean()">
             </map-marker>
+
         </google-map>
+
     </div>
 </div>
-
