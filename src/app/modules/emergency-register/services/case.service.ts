@@ -88,8 +88,9 @@ export class CaseService extends APIService {
     }
 
     private async putFromLocalStorage(putsToSync:any) {
+        let promiseArray;
 
-        const promiseArray = putsToSync.map(
+        promiseArray = putsToSync.map(
             async (elem:any) =>
 
                 await this.baseUpdateCase(JSON.parse(elem.value)).then(
@@ -107,6 +108,29 @@ export class CaseService extends APIService {
 
 
         );
+
+        // promiseArray = putsToSync.forEach(async (elem: any)=> {
+        //     await this.baseUpdateCase(JSON.parse(elem.value)).then(
+        //         (result: any) => {
+        //             if(result.success === -1) {
+        //                 console.log('hello');
+        //             }
+        //             else {
+        //                 if (
+        //                     result.emergencyCaseSuccess === 1 ||
+        //                     result.emergencyCaseSuccess === 3 ||
+        //                     result.emergencyCaseSuccess === 2
+        //                 ) {
+
+        //                     console.log(result);
+        //                     this.emergencyResponse.next(result);
+        //                     this.storage.remove(elem.key);                  
+        //                 }
+        //             }
+                    
+        //         }
+        //     );
+        // });
 
         return await Promise.all(promiseArray).then(result => {
             return result;

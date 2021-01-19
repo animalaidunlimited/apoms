@@ -23,6 +23,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @Input() recordForm!: FormGroup;
     @Input() focusEmergencyNumber!: boolean;
+    // @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -52,7 +53,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
     ngOnInit(): void {
-
         // this.getCurrentTimeStringInSeconds();
 
         this.dispatchers$ = this.dropdowns.getDispatchers();

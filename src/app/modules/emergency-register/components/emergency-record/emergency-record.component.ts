@@ -19,7 +19,9 @@ import { ConnectionService } from 'ng-connection-service';
 })
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
+    @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+    // @Output() public loadGuid = new EventEmitter<string>();
 
     loading = false;
 
@@ -35,7 +37,7 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
-    uuId!: string;
+    // uuId!: string;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
@@ -78,13 +80,11 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
-        this.uuId = this.caseService.generateUUID();
-
-        console.log(this.uuId);
+        // this.uuId = this.caseService.generateUUID();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
-                guId : [this.uuId],
+                guId : [this.guId],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -212,6 +212,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         this.loading = true;
 
         if(this.recordForm.pending){
@@ -312,7 +314,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     }
 
-    emergencyNumberUpdated(emergencyNumber: number) {
-        this.loadEmergencyNumber.emit(emergencyNumber);
+    emergencyNumberUpdated(emergencyNumber: any) {
+        const guId = this.recordForm.get('emergencyDetails.guId')?.value;
+        this.loadEmergencyNumber.emit({emergencyNumber , guId});
     }
 }
