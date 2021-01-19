@@ -43,7 +43,7 @@
 <outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
 <div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
-    <div class="drag-drop-container" *ngFor="let lane of outstandingCases$ | async">
+    <div class="drag-drop-container" *ngFor="let lane of outstandingCasesArray">
 
       <h2>{{lane.actionStatusName}}</h2>
 

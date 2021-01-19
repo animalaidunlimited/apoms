@@ -1,6 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Platform } from '@angular/cdk/platform';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, HostListener } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Search, SearchValue } from '../record-search/record-search.component';
@@ -170,6 +170,12 @@ export class SearchFieldComponent implements OnInit {
             inNotIn: true
         }
     ];
+
+    @HostListener('document:keydown.enter', ['$event'])
+    executeSearchByEnter(event: KeyboardEvent) {
+        event.preventDefault();
+        this.executeSearch();
+    }
 
   constructor(
     public rescueDialog: MatDialog,

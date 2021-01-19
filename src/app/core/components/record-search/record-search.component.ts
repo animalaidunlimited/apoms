@@ -46,7 +46,9 @@ export class RecordSearchComponent {
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
         this.searchResults$.subscribe((value)=>{
-            this.searchResultArray = value.sort((date1: any,date2: any)=> { return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();});
+            this.searchResultArray = value.sort((date1: any,date2:any)=> {
+                return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();
+            });
             this.loading = false;
         });
     

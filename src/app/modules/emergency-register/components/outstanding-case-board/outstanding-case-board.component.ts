@@ -25,6 +25,11 @@ export interface Swimlane{
   array:OutstandingCase[];
 }
 
+interface ActionStatus {
+  actionStatus: number;
+  actionStatusName: string;
+}
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'outstanding-case-board',
@@ -63,9 +68,18 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   loading = true;
 
+  actionStatus: ActionStatus[] = [{actionStatus:1 , actionStatusName: 'Recieved'},
+    {actionStatus: 2, actionStatusName: 'Assigned'},
+    {actionStatus: 3, actionStatusName: 'Arrived/Picked'},
+    {actionStatus: 4, actionStatusName: 'Rescued/Released'},
+    {actionStatus: 5, actionStatusName: 'Admitted'}];
+
   notificationPermissionGranted = false;
 
   outstandingCases!:OutstandingCase[];
+
+  outstandingCasesArray!:OutstandingCase[];
+
   outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
@@ -120,6 +134,25 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe((assignments) => {
+
+      this.outstandingCasesArray = assignments;
+
+      this.actionStatus.forEach(status=> {
+        const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
+
+        if(statusExist) {
+          return;
+        }
+        else {
+          this.outstandingCasesArray.push({
+            actionStatus: status.actionStatus,
+            actionStatusName: status.actionStatusName,
+            statusGroups: []
+          });
+        }
+
+        this.outstandingCasesArray.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
+      });
 
         this.loading = false;
         this.changeDetector.detectChanges();

@@ -30,6 +30,12 @@ export class OutstandingCaseService {
 
   initialised = false;
 
+  actionStatus = [{actionStatus: 1 , actionStatusName: 'Received'},
+  {actionStatus: 2 , actionStatusName: 'Assigned'},
+  {actionStatus: 3 , actionStatusName: 'Arrived/Picked'},
+  {actionStatus: 4 , actionStatusName: 'Rescued/Released'},
+  {actionStatus: 5 , actionStatusName: 'Admitted'}];
+
   initialise(){
 
     if(this.initialised){
