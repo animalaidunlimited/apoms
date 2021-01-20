@@ -11,12 +11,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { SurgeriesByDateDialogComponent } from '../../components/surgeries-by-date-dialog/surgeries-by-date-dialog.component';
 import { PatientDetailsDialogComponent } from '../../components/patient-details-dialog/patient-details-dialog.component';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { ReportingService } from '../../services/reporting.service';
+import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
+import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
+import { promise } from 'protractor';
 
 
 interface PatientCountInArea{
     area : string;
     count : number;
 }
+
+
 
 @Component({
     selector: 'app-reporting-page',
@@ -30,7 +36,8 @@ export class ReportingPageComponent implements OnInit {
         private census: CensusService,
         private dialog: MatDialog,
         private printService: PrintTemplateService,
-        private surgeryService: SurgeryService) {}
+        private surgeryService: SurgeryService,
+        private reportingService : ReportingService) {}
 
     censusAreas$! : Observable<CensusArea[]>;
     censusArea! : FormGroup;
@@ -38,7 +45,9 @@ export class ReportingPageComponent implements OnInit {
     patientCountData : PatientCountInArea[] = [{area : '',count : 0}];
     surgeries!: Observable<SurgeryRecord[]>;
     surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    surgeryDetails!: FormGroup;
+    reportingDetails!: FormGroup;
+    emergencyCases!: Promise<EmergencyRecordTable[] | null>;
+    emergencyCaseCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     totalPatientCount = 0;
 
     ngOnInit() {
@@ -49,17 +58,26 @@ export class ReportingPageComponent implements OnInit {
             this.patientCountData = response;
         });
 
-        this.surgeryDetails = this.fb.group({
-            surgeryDate: [, Validators.required]
+        this.reportingDetails = this.fb.group({
+            surgeryDate: [, Validators.required],
+            emergencyCaseDate: []
         });
 
-        this.surgeryDetails.get('surgeryDate')?.valueChanges.subscribe(() => {
+        this.reportingDetails.get('surgeryDate')?.valueChanges.subscribe(() => {
 
-            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.surgeryDetails.get('surgeryDate')?.value);
+            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.reportingDetails.get('surgeryDate')?.value);
             this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
         });
 
-        this.surgeryDetails.get('surgeryDate')?.setValue(getCurrentDateString());
+        this.reportingDetails.get('emergencyCaseDate')?.valueChanges.subscribe(() => {
+            this.emergencyCases =  this.reportingService.getEmergencyCaseByDate(this.reportingDetails.get('emergencyCaseDate')?.value);
+
+            this.emergencyCases.then((cases: any)=> this.emergencyCaseCount.next(cases.length || 0));
+        });
+
+        this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
+
+        this.reportingDetails.get('emergencyCaseDate')?.setValue(getCurrentDateString());
 
     }
 
@@ -89,6 +107,18 @@ export class ReportingPageComponent implements OnInit {
 
         });
 
+    }
+
+    openEmergencyCaseDialog() {
+        this.emergencyCases.then((caseList: EmergencyRecordTable[] | null)=> {
+            this.dialog.open(EmergencyCaseDialogComponent, {
+                width: '90%',
+                maxHeight: 'auto',
+                data: {
+                    emergencyCases: caseList
+                }
+            });
+        });
     }
 
 

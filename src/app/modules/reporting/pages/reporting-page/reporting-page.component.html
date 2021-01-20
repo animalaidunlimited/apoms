@@ -22,9 +22,9 @@
         </fieldset>
     </div>
 
-    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
+    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center" [formGroup]="reportingDetails">
 
-        <fieldset class="form-sub-group" [formGroup]="surgeryDetails">
+        <fieldset class="form-sub-group">
             <p class="legend">Surgery count by date</p>
 
             <mat-form-field >
@@ -34,6 +34,19 @@
             </mat-form-field>
 
                 <p class="link link-large" (click)="openSurgeryDetailsDialog()">{{surgeryCount | async}}</p>
+
+        </fieldset>
+
+        <fieldset class="form-sub-group">
+            <p class="legend">Case count by date</p>
+
+            <mat-form-field >
+                <mat-label>Select date</mat-label>
+                <input matInput type="date" formControlName="emergencyCaseDate" name = "CaseDate"
+                [errorStateMatcher]="errorMatcher" required>
+            </mat-form-field>
+
+                <p class="link link-large" (click)="openEmergencyCaseDialog()">{{emergencyCaseCount | async}}</p>
 
         </fieldset>
 

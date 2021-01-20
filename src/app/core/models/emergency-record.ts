@@ -59,3 +59,16 @@ export interface EmergencyTab {
     EmergencyNumber: number;
 }
 
+
+export interface EmergencyRecordTable {
+    emergencyNumber: number;
+    callDateTime: Date | string;
+    animalType: string;
+    tagNumber : string;
+    location : string;
+    dispatcher: string;
+    staff1: string;
+    staff2: string;
+    callOutcome: string;
+}
+
