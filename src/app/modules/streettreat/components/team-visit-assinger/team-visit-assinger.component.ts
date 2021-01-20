@@ -98,7 +98,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     if(this.containerRef)
     {
       
-      this.view = [this.containerRef.nativeElement.offsetWidth, 400];
+      this.view = [this.containerRef.nativeElement.offsetWidth/1.2, 400];
     }
   }
   constructor(
@@ -109,7 +109,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private datePipe: DatePipe,
     private elementRef:ElementRef
     ) {
-      this.view = [innerWidth / 1.1, 400];
+      this.view = [innerWidth / 1.2, 400];
     }
 
   markerDragEnd(event: google.maps.MouseEvent) {
@@ -142,7 +142,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   
   
   drop(event: CdkDragDrop<string[]>){
-    // console.log(event);
     if(event.previousContainer === event.container){
       try{
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -158,8 +157,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-        /* console.log("Previous Container",event.previousContainer); */
-        
     }
     let TeamId = {...event.container} as any;
     TeamId = parseInt(TeamId.__ngContext__[0].id);
@@ -221,7 +218,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit():void {
-    // this.initStreetTreatCases(new Date());
     this.streetTreatServiceSubs = 
     this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
     .subscribe(streetTreatCaseByVisitDateResponse => {
@@ -271,21 +267,23 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
         ticks.forEach((tick:any) =>{
           tick.addEventListener('click',this.onDateClick.bind(this))
+          /** var button = document.querySelector('button');
+Rx.Observable.fromEvent(button, 'click')
+  .scan(count => count + 1, 0)
+  .subscribe(count => console.log(`Clicked ${count} times`));*/
         });
       },1000);
       
     });
 
     this.streetTreatService.getActiveStreetTreatCasesWithNoVisits(new Date()).subscribe((cases)=>{
-      this.streetTreatCaseByVisitDateResponse = cases;
-      this.streetTreatCasesResponse = cases;
-      this.teamsDropDown  = cases;
-      this.initMarkers(this.streetTreatCasesResponse);
-      this.streetTreatCasesResponse.forEach((streetTreatCase)=>{
-        streetTreatCase.StreetTreatCaseVisits.forEach((streetTreatCaseDetails:any) =>{
-          this.casesWithoutVisits += 1;
+      if(this.streetTreatCasesResponse){
+        this.streetTreatCasesResponse.forEach((streetTreatCase)=>{
+          streetTreatCase.StreetTreatCaseVisits.forEach(() =>{
+            this.casesWithoutVisits += 1;
+          });
         });
-      });
+      }
     });
   }
   
@@ -311,14 +309,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     });
     this.fitMaps(this.latlngbounds);
   }
-  /* initStreetTreatCases(date: Date){
-    this.streetTreatServiceSubs = this.streetTreatService
-    .getActiveStreetTreatCasesWithVisitByDate(date)
-    .subscribe(streetTreatCaseByVisitDateResponse => {
-      this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse;
-      this.streetTreatServiceSubs.unsubscribe();
-    });
-  } */
 
   fitMaps(latlngbounds: google.maps.LatLngBounds){
     this.map.fitBounds(latlngbounds);
@@ -334,7 +324,10 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   {
     return item.StreetTreatCaseId;
   }
-
+  trackByTeamId(index:number, item:any)
+  {
+    return item.TeamId;
+  }
   markersTrack(index:number, item:any)
   {
     return item.teamId;
@@ -356,10 +349,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.teamsgroup.get('teams')?.patchValue([TeamId]);
     },100);
   }
-
-  /* onResize($event:any) {
-    this.view = [$event.target.innerWidth / 1.35, 400];
-  } */
 
   onDateClick($event:any){
     const date = this.datePipe.transform($event.target.innerHTML.trim(),"yyyy-MM-dd");
@@ -402,12 +391,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatCaseByVisitDateResponse = cases;
       this.streetTreatCasesResponse = cases;
       this.teamsDropDown  = cases;
-      this.initMarkers(this.streetTreatCasesResponse);
-      this.streetTreatCasesResponse.forEach((streetTreatCase)=>{
-        streetTreatCase.StreetTreatCaseVisits.forEach((streetTreatCaseDetails:any) =>{
-          this.casesWithoutVisits += 1;
-        });
-      });
+      this.initMarkers(cases);
     });
   }
   

@@ -4,6 +4,7 @@ import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
+import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -21,10 +22,19 @@ export class TabBarComponent implements OnInit {
 
     constructor(private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
-        private dialog: MatDialog) {}
+        private dialog: MatDialog,
+        private navigationService:NavigationService) {}
 
     ngOnInit() {
-
+    
+        this.navigationService.isSearchClicked.subscribe((clicked)=>
+            {
+                if(clicked)
+                {
+                    this.selected.setValue(1)
+                }
+            }
+        );
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
         sharedMediaItem.subscribe((mediaItem:File[])=>{
