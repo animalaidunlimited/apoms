@@ -5,3 +5,9 @@
 .link-large{
   font-size: xx-large;
 }
+@media only screen and (max-width:600px){
+  :host {
+      padding-top:60px;
+      display:block;
+  }
+}
