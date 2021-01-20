@@ -64,6 +64,11 @@ table {
   @keyframes move {
 
   }
-
+  @media only screen and (max-width:600px){
+    :host {
+        padding-top:60px;
+        display:block;
+    }
+}
 
 
