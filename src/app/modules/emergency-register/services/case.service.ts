@@ -21,6 +21,10 @@ export class CaseService extends APIService {
 
     offlineEmergencyResponse!: EmergencyResponse;
 
+    dbSync:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    lsSync:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     constructor(
         http: HttpClient,
         private onlineStatus: OnlineStatusService,
@@ -319,6 +323,8 @@ export class CaseService extends APIService {
                         const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
                         setTimeout(() => {
+                            this.dbSync.next(true);
+                            this.lsSync.next(false);
                             this.toaster.successSnackBar('Synced updated cases with server', 'OK');
                         }, insertWaitToShowMessage);
 
@@ -340,6 +346,8 @@ export class CaseService extends APIService {
 
 
                     setTimeout(() => {
+                        this.dbSync.next(true);
+                        this.lsSync.next(false);
                         this.toaster.successSnackBar('Synced updated cases with server', 'OK');
                     }, insertWaitToShowMessage);
 

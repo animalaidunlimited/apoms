@@ -8,13 +8,18 @@
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
-
-            <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
-
-
+            <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
+              <mat-icon *ngIf="recordForm.valid && !dbSync ">sync_disabled</mat-icon>
+              <mat-icon *ngIf="recordForm.valid && lsSync ">cloud_off</mat-icon>
+              <mat-icon *ngIf="!lsSync  && dbSync " style="color:seagreen">cloud_done</mat-icon>
+            </div>
+            <emergency-details 
+              [recordForm]="recordForm" 
+              [focusEmergencyNumber]="true" 
+              (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
-
+            
           </div>
 
           <div fxLayout="column" fxFlex="0 1 43" fxLayoutGap="5px" fxLayoutAlign="start">
