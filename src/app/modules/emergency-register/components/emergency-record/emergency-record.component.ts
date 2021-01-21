@@ -7,9 +7,8 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatDialog } from '@angular/material/dialog';
-import { first } from 'rxjs/operators';
-import { ConnectionService } from 'ng-connection-service';
+/* import { MatDialog } from '@angular/material/dialog';
+import { first } from 'rxjs/operators'; */
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -62,14 +61,14 @@ export class EmergencyRecordComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private connectionService: ConnectionService,
+       /*  private connectionService: ConnectionService, */
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
     ) {
-        this.connectionService.monitor().subscribe(data=> {
+        /* this.connectionService.monitor().subscribe(data=> {
             console.log(data);
-        });
+        }); */
     }
 
 
@@ -100,6 +99,9 @@ export class EmergencyRecordComponent implements OnInit {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+                //data.emergencySuccess
+                // recordForm.valid
+                //TODO: variable sync true
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
             }
         });
@@ -222,7 +224,7 @@ export class EmergencyRecordComponent implements OnInit {
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-
+                //TODO: variable sync true
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
                 return;
             }

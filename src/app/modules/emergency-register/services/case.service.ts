@@ -11,7 +11,6 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { async } from '@angular/core/testing';
-import { ConnectionService } from 'ng-connection-service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 @Injectable({
     providedIn: 'root',
@@ -25,7 +24,6 @@ export class CaseService extends APIService {
     constructor(
         http: HttpClient,
         private onlineStatus: OnlineStatusService,
-        private connectionService: ConnectionService,
         protected storage: StorageService,
         private userOptions: UserOptionsService,
         private toaster: SnackbarService
