@@ -1,7 +1,9 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { NavigationService } from '../../services/navigation/navigation.service';
 import { Search, SearchValue } from '../record-search/record-search.component';
 
 @Component({
@@ -39,7 +41,7 @@ export class SearchFieldComponent implements OnInit {
   searchFieldForm = new FormControl();
 
     @Output() public searchString = new EventEmitter<string>();
-
+    @ViewChild('searchBox') searchBox!:ElementRef;
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
@@ -173,10 +175,17 @@ export class SearchFieldComponent implements OnInit {
   constructor(
     public rescueDialog: MatDialog,
     public callDialog: MatDialog,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private navigationService: NavigationService
+    ) { }
 
   ngOnInit(): void {
-
+  this.navigationService.isSearchClicked.subscribe((clicked)=> {
+      if(clicked){
+          console.log(clicked)
+            this.searchBox.nativeElement.focus();
+      }
+  });
   this.searchForm = this.formBuilder.group({
     searchRows: this.formBuilder.array([])
   });
