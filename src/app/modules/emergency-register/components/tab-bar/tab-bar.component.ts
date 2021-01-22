@@ -48,10 +48,6 @@ export class TabBarComponent implements OnInit {
         }
     }
 
-    // getEmergencyGuid(guId: any) {
-    //     this.guIdVal.next(guId);
-    // }
-
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
         this.guIdVal = this.caseService.generateUUID();
@@ -62,17 +58,7 @@ export class TabBarComponent implements OnInit {
             icon: 'close',
             GUID: this.guIdVal
         });
-
-        console.log(this.tabs);
         
-        // this.tabs.push({
-        //     id: this.tabs.length,
-        //     value: emergencyNumber.toString(),
-        //     emergencyCaseId,
-        //     icon: 'close',
-        //     GUID: this.guIdVal
-        // });
-
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();
@@ -96,11 +82,8 @@ export class TabBarComponent implements OnInit {
 
     updateEmergencyNumber(emergencyNumberAndGuId: any) {
 
-        console.log(emergencyNumberAndGuId);
-
         this.tabs.forEach(tab=> {
-            
-            console.log(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId);
+        
             if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId) {
                 tab.value = (
                     emergencyNumberAndGuId.emergencyNumber || 'New Case*'
@@ -108,17 +91,6 @@ export class TabBarComponent implements OnInit {
                 this.cdr.detectChanges();
             }
         });
-
-        // if(this.tabs[this.selected.value].value !== 'Board' && this.tabs[this.selected.value].value !== 'Search' && 
-        // this.tabs[this.selected.value].GUID === emergencyNumberAndGuId.guId){
-
-        //     this.tabs[this.selected.value].value = (
-        //         emergencyNumberAndGuId.emergencyNumber || 'New Case*'
-        //     ).toString();
-
-        //     this.cdr.detectChanges();
-        // }
-
 
     }
 

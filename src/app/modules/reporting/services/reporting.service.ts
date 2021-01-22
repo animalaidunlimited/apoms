@@ -18,9 +18,6 @@ export class ReportingService extends APIService{
 
   public async getEmergencyCaseByDate(dateValue: Date | string) : Promise<EmergencyRecordTable[] | null> {
     const request = '?CaseDate=' + dateValue;
-
-    console.log(request);
-
     return await this.get(request);
   }
 }

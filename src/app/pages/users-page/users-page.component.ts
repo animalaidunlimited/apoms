@@ -108,7 +108,7 @@ export class UsersPageComponent implements OnInit {
       firstName : ['',Validators.required],
       surName: ['',Validators.required],
       telephone:[],
-      initials: ['',Validators.required],
+      initials: [''],
       userName:['',Validators.required],
       password: [''],
       colour:[''],
@@ -192,6 +192,7 @@ export class UsersPageComponent implements OnInit {
               this.fail();
           }
         }) :
+        this.loading = false;
         this.snackBar.errorSnackBar('Invalid input fields','Ok');
     }
 
@@ -211,7 +212,7 @@ export class UsersPageComponent implements OnInit {
     }
 
     connectionError() {
-      this.snackBar.errorSnackBar('Connection error, See admin.','Ok');
+      this.snackBar.errorSnackBar('Communication error, See admin.','Ok');
     }
 
     afterSaveActions() {
