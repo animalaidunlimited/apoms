@@ -7,9 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatDialog } from '@angular/material/dialog';
-import { first } from 'rxjs/operators';
-import { ConnectionService } from 'ng-connection-service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -21,7 +18,6 @@ export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
     @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
-    // @Output() public loadGuid = new EventEmitter<string>();
 
     loading = false;
 
@@ -36,8 +32,6 @@ export class EmergencyRecordComponent implements OnInit {
     notificationDurationSeconds = 3;
 
     hasComments!: boolean;
-
-    // uuId!: string;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
@@ -62,14 +56,11 @@ export class EmergencyRecordComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private connectionService: ConnectionService,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
     ) {
-        this.connectionService.monitor().subscribe(data=> {
-            console.log(data);
-        });
+       
     }
 
 
@@ -79,8 +70,6 @@ export class EmergencyRecordComponent implements OnInit {
 
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
-
-        // this.uuId = this.caseService.generateUUID();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
@@ -100,7 +89,6 @@ export class EmergencyRecordComponent implements OnInit {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
-                // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
             }
         });
 
@@ -211,8 +199,6 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     async saveForm() {
-
-        console.log(this.recordForm.value);
 
         this.loading = true;
 
