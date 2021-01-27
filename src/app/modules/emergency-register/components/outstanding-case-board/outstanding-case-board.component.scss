@@ -13,7 +13,7 @@ $standard-width: 180px;
     max-width: 100%;
     min-height: 70vh;   
     min-width: 250px;
-    margin: 0 25px 25px 0;
+    margin: 20px 25px 25px 0;
     display: inline-block;
     vertical-align: top;
 }
@@ -274,6 +274,7 @@ $standard-width: 180px;
         align-items: center;
 
         .drag-drop-container {
+            margin-top: 20px !important;
             min-width: 80% !important;
             width: 80%;
             display: block;
@@ -301,7 +302,7 @@ $standard-width: 180px;
         font-family: sans-serif !important;
         right: 87vw !important;
         color: $colour-border !important;
-        top: 26vw;
+        top: 1vw;
     }
 
     .filterChipWrapper {
