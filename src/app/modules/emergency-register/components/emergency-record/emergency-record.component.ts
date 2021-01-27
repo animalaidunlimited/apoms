@@ -86,7 +86,6 @@ export class EmergencyRecordComponent implements OnInit {
 
 
         this.caseService.emergencyResponse.subscribe(data=> {
-            console.log(data);
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);

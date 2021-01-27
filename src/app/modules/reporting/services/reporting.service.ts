@@ -27,12 +27,10 @@ export class ReportingService extends APIService{
 
       const request = '?searchDate=' + dateValue + '&outcome=' + outcomeId ;
 
-      console.log(request);
-
-    return this.getObservable(request).pipe(
-      map((response:EmergencyRecordTable[]) => {
-        return response;
-      }),
-  );
+      return this.getObservable(request).pipe(
+        map((response:EmergencyRecordTable[]) => {
+          return response;
+        }),
+      );
   }
 }

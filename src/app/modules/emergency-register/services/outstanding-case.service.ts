@@ -1,9 +1,12 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, ComponentFactoryResolver } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { map } from 'rxjs/operators';
+import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
+import { Caller } from 'src/app/core/models/responses';
+import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 @Injectable({
   providedIn: 'root'
@@ -294,9 +297,11 @@ export class OutstandingCaseService {
 
   }
 
-  onSearchChange(searchValue: string): void {
+  onSearchChange(filterKeysArray:FilterKeys[] ,searchValue: string): void {
 
     let haveRun = false;
+
+ 
 
     let outstanding:OutstandingCase[];
 
@@ -320,29 +325,60 @@ export class OutstandingCaseService {
 
               group.ambulanceAssignment.forEach(assignment => {
 
+                const assignment1 = JSON.parse(JSON.stringify(assignment));
+
                 assignment.searchCandidate = false;
+                assignment.filteredCandidate = true;
 
-                // Because we can't use an observable as the source for the board, we need to add a
-                // flag to the records that match our search.
-                if(
-                  Object.keys(assignment)
-                  .reduce((currentTerm: string, key: string) => {
+                let filterSuccess = 0;
+                filterKeysArray.forEach((keyObject)=>{
+                  const key = keyObject.group;
+                  if(assignment1[key]===keyObject.value) {
+                    filterSuccess++;
+                  }
+                  else if(key==='animalType') {
+                    assignment.patients.forEach((patient:ActionPatient)=>{
+                      if(patient[key]===keyObject.value) {
+                        filterSuccess++;
+                      }
+                    });
+                  }
+                });
+                
+                assignment.filteredCandidate = filterSuccess === filterKeysArray.length;
 
-                    return currentTerm + (assignment as {[key: string]: any})[key] + '◬';
-                  }, '').toLowerCase().indexOf(searchValue) > -1
-                  && searchValue !== ''
-                ){
+                const currentValue = this.convertObjectToString(assignment);
+
+                if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
                   assignment.searchCandidate = true;
                 }
-
               });
             });
           });
         });
-
         this.emitOutstandingCases(outstanding);
 
     });
+
+  }
+
+  convertObjectToString(assignment : any){
+
+    let result = '';
+    if(assignment) {
+      result = Object.entries(assignment).reduce((currentValue: string, val: any)=>{
+
+        if(typeof val[1] === 'object') {
+          currentValue += this.convertObjectToString(val[1]);
+        }
+        else if(typeof val[1] !== 'number' || val[0]==='emergencyNumber') {
+          currentValue += currentValue + val[1] + '◬';
+        }
+        return currentValue;
+      },'');
+    }
+
+    return result;
 
   }
 

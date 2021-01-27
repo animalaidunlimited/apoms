@@ -19,7 +19,7 @@ Add Surgery Record {{data.tagNumber}}
 
 
 <div mat-dialog-actions>
-    <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="surgeryDetails.saveSurgery()" [disabled]="invalidSurgeryForm">Save</button>
-    <button mat-raised-button color="primary" (click)="surgeryDetails.resetForm()">Reset</button>
+    <button mat-raised-button color="white" (click)="surgeryDetails.resetForm()">Reset</button>
+    <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
 </div>

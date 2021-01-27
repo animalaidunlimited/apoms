@@ -2,10 +2,49 @@
 
 $main-font-color: black;
 
+$my-app-secondary: (
+    50 : #f2f4f5,
+    100 : #dee4e7,
+    200 : #c8d2d7,
+    300 : #b1bfc6,
+    400 : #a1b2ba,
+    500 : #90a4ae,
+    600 : #889ca7,
+    700 : #7d929d,
+    800 : #738994,
+    900 : #617884,
+    A100 : #f6fcff,
+    A200 : #c3eaff,
+    A400 : #90d8ff,
+    A700 : #76cfff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
+
 $my-app-primary: mat-palette($mat-blue-grey);
-$my-app-accent:  mat-palette($mat-blue-grey);
+// $my-app-primary: mat-palette($my-app-primary);
+$my-app-accent:  mat-palette($my-app-secondary);
 $my-app-warn:    mat-palette($mat-red);
 
+
+
 $primaryColor: map-get($my-app-primary, 500);
+$secondaryColor: map-get($my-app-secondary, 500);
 
 
