@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
 import { TeamDetails } from 'src/app/core/models/team';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -164,7 +164,7 @@ export class UsersPageComponent implements OnInit {
         userDetailsForm.get('password').setValue('');
       }
 
-      userDetailsForm.valid ?
+      if(userDetailsForm.valid) {
         this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
           this.loading = false;
 
@@ -191,9 +191,12 @@ export class UsersPageComponent implements OnInit {
 
               this.fail();
           }
-        }) :
+        });
+      }
+      else {
         this.loading = false;
         this.snackBar.errorSnackBar('Invalid input fields','Ok');
+      }
     }
 
     insertSuccess () {
