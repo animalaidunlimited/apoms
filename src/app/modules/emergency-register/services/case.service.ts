@@ -47,7 +47,7 @@ export class CaseService extends APIService {
                 (elem:any) =>
              this.baseInsertCase(JSON.parse(elem.value)).then(
                 (result: any) => {
-                    console.log(result);
+
                     if (
                         result.emergencyCaseSuccess === 1
                     ) {
@@ -66,8 +66,6 @@ export class CaseService extends APIService {
             );
 
         return await Promise.all(promiseArray).then(result => {
-            console.log(result);
-
             return result;
         });
     }
@@ -87,7 +85,6 @@ export class CaseService extends APIService {
                                         result.emergencyCaseSuccess === 3 ||
                                         result.emergencyCaseSuccess === 2
                                     ) {
-                                        console.log('result');
                                         this.emergencyResponse.next(result);
                                         this.storage.remove(elem.key);
                                     }
@@ -99,7 +96,6 @@ export class CaseService extends APIService {
 
 
         return await Promise.all(promiseArray).then(result => {
-            console.log(result);
             return result;
         });
     }
@@ -212,8 +208,6 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
-        console.log(searchString);
-
         return this.getObservable(request).pipe(
             map((response: SearchResponse[]) => {
                 return response;
@@ -223,7 +217,6 @@ export class CaseService extends APIService {
 
     private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
-        // const guid = UUID.UUID();
 
         try {
             this.storage.save(key , body);

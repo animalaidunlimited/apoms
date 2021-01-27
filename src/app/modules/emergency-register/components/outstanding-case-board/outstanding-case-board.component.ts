@@ -1,12 +1,12 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ViewChild, ViewChildren } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, NgControlStatusGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, startWith, filter } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
@@ -17,6 +17,10 @@ import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-rel
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 
+import { MatChip, MatChipList } from '@angular/material/chips';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { AnimalType } from 'src/app/core/models/animal-type';
+import { EmergencyCode } from 'src/app/core/models/emergency-record';
 
 export interface Swimlane{
   label:string;
@@ -28,6 +32,11 @@ export interface Swimlane{
 interface ActionStatus {
   actionStatus: number;
   actionStatusName: string;
+}
+export interface FilterKeys {
+  group: string;
+  value: string;
+  selected: boolean;
 }
 
 @Component({
@@ -60,11 +69,16 @@ interface ActionStatus {
 ],
 changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class OutstandingCaseBoardComponent implements OnInit {
+
+  searchValue!: string;
 
   autoRefresh = false;
 
   hideMap = true;
+
+  removable = true;
 
   loading = true;
 
@@ -73,6 +87,11 @@ export class OutstandingCaseBoardComponent implements OnInit {
     {actionStatus: 3, actionStatusName: 'Arrived/Picked'},
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
+  incomingObject!: FilterKeys;
+
+  filterKeysArray : FilterKeys[] = [];
+
+  showList = true;
 
   notificationPermissionGranted = false;
 
@@ -84,6 +103,32 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
   refreshColour:ThemePalette = 'primary';
+
+  filterBtnColor: ThemePalette = 'accent';
+
+  caseFilter = [{
+    groupId: 1,
+    showTitle: 'Ambulance action',
+    groupTitle: 'ambulanceAction',
+    groupValues: [{
+      id: 1 , value: 'Rescue'
+    },
+    {
+      id: 2 , value: 'Release' 
+    }]
+  },
+  {
+    groupId: 2,
+    groupTitle: 'emergencyCode',
+    showTitle: 'Emergency code',
+    groupValues: []
+  },
+  {
+    groupId: 3,
+    showTitle: 'Animal type',
+    groupTitle: 'animalType',
+    groupValues: []
+  }];
 
   refreshForm:FormGroup = new FormGroup({});
   searchForm:FormGroup = new FormGroup({});
@@ -97,15 +142,56 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private userOptions: UserOptionsService,
     private printService: PrintTemplateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dropDown: DropdownService
 
     ) { }
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
 
   ngOnInit(): void {
 
+    this.dropDown.getAnimalTypes().subscribe((animalType: AnimalType[])=> {
 
+      animalType.forEach(type=> {
+
+        this.caseFilter.forEach(filterObject=>{
+
+          if(filterObject.groupId === 3) {
+
+            filterObject.groupValues.push({
+              id: type.AnimalTypeId,
+              value: type.AnimalType
+            });
+
+          }
+
+        });
+
+      });
+
+    });
+
+
+    this.dropDown.getEmergencyCodes().subscribe((emergencyCodes: EmergencyCode[])=> {
+      emergencyCodes.forEach(emcode=>{
+
+        this.caseFilter.forEach(filterObject=>{
+
+          if(filterObject.groupId === 2) {
+
+            filterObject.groupValues.push({
+              id: emcode.EmergencyCodeId,
+              value: emcode.EmergencyCode
+            });
+
+          }
+
+        });
+
+      });
+    });
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -122,7 +208,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
       this.changeDetector.detectChanges();
-    });
+    }); 
 
     this.setup();
 
@@ -186,6 +272,10 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCaseService.toggleAutoRefresh();
   }
 
+  changeDetection(value: Event) {
+    console.log(value);
+  }
+
 
   setup(){
 
@@ -228,7 +318,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
         startWith('')
       )
       .subscribe(value => {
-          this.outstandingCaseService.onSearchChange(value);
+        this.searchValue = value;
+          this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
       });
   }
 
@@ -275,6 +366,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       }
     }
   }
+
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
 
@@ -385,6 +477,29 @@ getTimer(startDateTime: Date | string) : string {
   }
 
   return elapsedTime;
+
+}
+
+filterChipSelected(groupName: string, chip: MatChip) {
+
+  this.incomingObject = {
+    group: groupName,
+    value: chip.value.trim(),
+    selected: chip.selected
+  };
+
+  if(this.incomingObject.selected) {
+
+    this.filterKeysArray.push(this.incomingObject);
+  }
+  
+  if(!this.incomingObject.selected) {
+    const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group && 
+    obj.value === this.incomingObject.value);
+    this.filterKeysArray.splice(index,1);
+  }
+
+  this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
 
 }
 

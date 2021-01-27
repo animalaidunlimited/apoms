@@ -141,7 +141,7 @@ export class ReportingPageComponent implements OnInit {
         });
 
         this.reportingDetails.valueChanges.subscribe((val)=> {
-            console.log(val);
+
             this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(val.surgeryDate);
             this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
 
