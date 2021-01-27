@@ -27,7 +27,6 @@ constructor(
         super(http);
 
      angularFireMessaging.onMessage((payload) => {
-        console.log(payload);
         this.distributeMessage(payload);
      });
 
