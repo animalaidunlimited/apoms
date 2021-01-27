@@ -44,24 +44,30 @@ export class CaseService extends APIService {
     private async postFromLocalStorage(postsToSync:any) {
         let promiseArray;
             promiseArray = postsToSync.map(
-                async (elem:any) =>
-            await this.baseInsertCase(JSON.parse(elem.value)).then(
+                (elem:any) =>
+             this.baseInsertCase(JSON.parse(elem.value)).then(
                 (result: any) => {
+                    console.log(result);
                     if (
-                        result.emergencyCaseSuccess === 1 ||
-                        result.emergencyCaseSuccess === 3 ||
-                        result.emergencyCaseSuccess === 2
+                        result.emergencyCaseSuccess === 1
                     ) {
                         this.emergencyResponse.next(result);
                         this.storage.remove(elem.key);                  
                     }
                     
+                    if(result.emergencyCaseSuccess === 3 ||
+                            result.emergencyCaseSuccess === 2) {
+                                this.storage.remove(elem.key);
+                    }
+                    return result;
                 }
             )
                     
             );
 
         return await Promise.all(promiseArray).then(result => {
+            console.log(result);
+
             return result;
         });
     }
@@ -70,26 +76,30 @@ export class CaseService extends APIService {
         let promiseArray;
 
         promiseArray = putsToSync.map(
-            async (elem:any) =>
+            (elem:any) =>
 
-                await this.baseUpdateCase(JSON.parse(elem.value)).then(
+                this.baseUpdateCase(JSON.parse(elem.value)).then(
                                 (result: any) => {
+
 
                                     if (
                                         result.emergencyCaseSuccess === 1 ||
                                         result.emergencyCaseSuccess === 3 ||
                                         result.emergencyCaseSuccess === 2
                                     ) {
+                                        console.log('result');
                                         this.emergencyResponse.next(result);
                                         this.storage.remove(elem.key);
                                     }
+                                    return result;
                                 })
 
-
+                              
         );
 
 
         return await Promise.all(promiseArray).then(result => {
+            console.log(result);
             return result;
         });
     }
@@ -202,6 +212,8 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
+        console.log(searchString);
+
         return this.getObservable(request).pipe(
             map((response: SearchResponse[]) => {
                 return response;
@@ -310,6 +322,6 @@ export class CaseService extends APIService {
 
             }
            
-        });
+        }).unsubscribe();
     }
 }

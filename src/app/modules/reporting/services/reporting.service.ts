@@ -16,8 +16,23 @@ export class ReportingService extends APIService{
     super(http);
   }
 
-  public async getEmergencyCaseByDate(dateValue: Date | string) : Promise<EmergencyRecordTable[] | null> {
-    const request = '?CaseDate=' + dateValue;
-    return await this.get(request);
+  public getEmergencyCaseByDateAndOutcomeOrST(dateValue: Date | string, streetTreat:boolean, admission: boolean) : Observable<EmergencyRecordTable[]> {
+
+    let outcomeId: number;
+      outcomeId = streetTreat ? 
+      18 :
+      admission ? 
+      1 :
+      0;
+
+      const request = '?searchDate=' + dateValue + '&outcome=' + outcomeId ;
+
+      console.log(request);
+
+    return this.getObservable(request).pipe(
+      map((response:EmergencyRecordTable[]) => {
+        return response;
+      }),
+  );
   }
 }
