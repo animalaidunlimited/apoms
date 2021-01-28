@@ -7,18 +7,8 @@ import {
     AbstractControl,
     FormArray,
 } from '@angular/forms';
-import { Observable, of } from 'rxjs';
 import { Callers, Caller } from '../../models/responses';
-import {
-    startWith,
-    debounceTime,
-    switchMap,
-    map,
-    catchError,
-    tap,
-} from 'rxjs/operators';
 import { CallerDetailsService } from './caller-details.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { SelectionModel } from '@angular/cdk/collections';
 
@@ -55,9 +45,7 @@ export class CallerDetailsComponent implements OnInit {
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
-                callerArray: this.fb.array([
-                    this.getCallerFormGroup()
-                ])
+                callerArray: this.fb.array([this.getCallerFormGroup()])
             })
         );
 
@@ -65,14 +53,25 @@ export class CallerDetailsComponent implements OnInit {
 
         this.callerArray = this.callerDetails.get('callerArray') as FormArray;
 
+
+        this.callerArray.valueChanges.subscribe((callers:Caller[]) => {
+
+            const empty = callers.every(caller => Object.values(caller).every(value => value=== null));
+
+            if(empty && this.callerArray.pristine && callers.length >= 1){
+                // We've reset, so empty the array and repopulate, and make sure we set the primary again
+                this.callerArray.clear();
+                this.callerArray.push(this.getCallerFormGroup());
+                this.callerArray.at(0).get('primaryCaller')?.setValue(true);
+            }
+
+        });
+
         if(this.callerArray.length === 1) {
             this.callerArray.at(0).get('primaryCaller')?.setValue(true);
         }
 
-        this.callerService
-            .getCallerByEmergencyCaseId(
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
-            )
+        this.callerService.getCallerByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
             .subscribe((caller: Callers) => {
                 for(let i=0 ; i< caller.length - 1 ; i++) {
                     this.callerArray.push(this.getCallerFormGroup());
@@ -83,7 +82,7 @@ export class CallerDetailsComponent implements OnInit {
 
 
     getCallerFormGroup(): FormGroup {
-        return this.fb.group({ 
+        return this.fb.group({
             callerId: [],
             callerName: ['', Validators.required],
             callerNumber: [
@@ -138,7 +137,7 @@ export class CallerDetailsComponent implements OnInit {
         if(!trueValueCount) {
             this.callerArray.at(0).get('primaryCaller')?.setValue(true);
 
-        } 
+        }
     }
 
 }

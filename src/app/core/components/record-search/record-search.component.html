@@ -6,9 +6,9 @@
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngIf="searchResults$ | async as searchResults;">
 
-        <div *ngIf="searchResults.length === 0;">No results</div>
+        <div *ngIf="searchResultArray.length === 0;">No results</div>
 
-        <div *ngFor="let record of searchResults">
+        <div *ngFor="let record of searchResultArray">
 
             <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
 

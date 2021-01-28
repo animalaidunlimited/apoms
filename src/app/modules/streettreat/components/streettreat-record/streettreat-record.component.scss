@@ -68,7 +68,38 @@
         @include border(#4f776d);
     }
 }
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 1201px) {
+    
+    :host ::ng-deep {
+        .add-visits-fab-btn{
+            width:99.4% !important;
+        }
+        .vistisWrapper{
+            width: unset !important;
+        }
+        .visit_row_data {
+            > div:first-child{
+                .mat-form-field {
+                    &:first-child {
+                        width: 9.5rem !important;
+                    }
+                    &:nth-child(2){
+                        min-width:20rem !important;
+                    }
+                    &:nth-child(3) {
+                        width: unset !important;
+                        min-width: unset !important;
+                    } 
+                    &:last-of-type {
+                        min-width: 20rem !important;
+                    } 
+                }
+            }
+        }
+    }
+
+}
+@media only screen and (min-width: 600px ){
     :host {
         display: grid;
         grid-template-columns: repeat(3,1fr);
@@ -87,8 +118,8 @@
         }
         .visit-calendar-wrapper {
             position: absolute;
-            right: 0;
-            margin-top: -23px;
+            left: 5rem;
+            margin-top: 12rem;
         }
         .visit_row_data {
             mat-form-field {

@@ -6,10 +6,12 @@ import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-err
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
+import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
+import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -21,6 +23,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @Input() recordForm!: FormGroup;
     @Input() focusEmergencyNumber!: boolean;
+    // @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -50,26 +53,22 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
     ngOnInit(): void {
+        // this.getCurrentTimeStringInSeconds();
+
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
         this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms') || '';
 
-        this.emergencyDetails = this.recordForm.get(
-            'emergencyDetails',
-        ) as FormGroup;
+        this.emergencyDetails = this.recordForm.get('emergencyDetails') as FormGroup;
+
+        const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
-            new FormControl(
-                '',
-                [Validators.required],
-                [
-                    this.emergencyNumberValidator.validate(
-                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1)
-                ]
-            )
+            new FormControl()
         );
+
         this.emergencyDetails.addControl(
             'callDateTime',
             new FormControl(getCurrentTimeString(), Validators.required),
@@ -80,13 +79,29 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         );
         this.emergencyDetails.addControl(
             'code',
-            new FormControl('', Validators.required),
+            new FormControl(''),
         );
 
+        // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
+        emergencyCaseId?.valueChanges.subscribe(() => {
+
+            const emergencyNumber = this.recordForm.get('emergencyDetails.emergencyNumber');
+
+            emergencyNumber?.clearAsyncValidators();
+            emergencyNumber?.setAsyncValidators([
+                this.emergencyNumberValidator.validate(
+                emergencyCaseId?.value,1)
+            ]);
+
+        });
+
+
+        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
+        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
+        // this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
+
         this.caseService
-            .getEmergencyCaseById(
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
-            )
+            .getEmergencyCaseById(emergencyCaseId?.value)
             .subscribe(result => {
 
                 this.recordForm.patchValue(result);
@@ -101,6 +116,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
                 this.updateEmergencyNumber(val);
             });
+
+
+
     }
 
     ngAfterViewInit(){
@@ -113,6 +131,36 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     updateEmergencyNumber(emergencyNumber: number) {
         this.loadEmergencyNumber.emit(emergencyNumber);
     }
+
+    // generateEmergencyNumber() {
+    //     // tslint:disable-next-line:radix
+    //     const value = parseInt(this.getCurrentTimeStringInSeconds());
+    //     let rand: number;
+    //     // tslint:disable-next-line:radix
+    //     rand = Math.round((Math.random() * (10 - 1) + 1));
+
+    //     const randomNum = Math.round((Math.random() * value * Math.random() * rand));
+
+    //     console.log(typeof randomNum);
+
+    //     return randomNum;
+
+    // }
+
+    // getCurrentTimeStringInSeconds() {
+    //     let currentTime = new Date();
+
+    //     const wn = window.navigator as any;
+    //     let locale = wn.languages ? wn.languages[0] : 'en-GB';
+    //     locale = locale || wn.language || wn.browserLanguage || wn.userLanguage;
+
+    //     currentTime = new Date(
+    //         currentTime.getTime() + currentTime.getTimezoneOffset(),
+    //     );
+
+    //     return formatDate(currentTime, 'hhmmSSS', locale);
+        
+    // }
 
     setInitialTime() {
         const currentTime = this.recordForm.get(

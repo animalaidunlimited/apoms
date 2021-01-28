@@ -231,3 +231,9 @@ ngx-charts-bar-vertical-stacked{
 .StreetTreat_Container_visit_compression{
   margin-left:10px;
 }
+@media only screen and (min-width: 600px) {
+  .StreetTreat_Container_visit_compression{
+    margin-left: 10px;
+    min-width: 33rem;
+  }
+}

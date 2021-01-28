@@ -1,6 +1,6 @@
 <mat-card class="emergency-card">
 
-        <mat-card-header class="emergency-card-header">
+        <mat-card-header class="emergency-card-header" (click)="openCase(record)">
           <mat-card-title>{{record.EmergencyNumber}} - {{record.TagNumber}}</mat-card-title>
           <mat-card-subtitle></mat-card-subtitle>
         </mat-card-header>
@@ -28,23 +28,23 @@
 
         <div fxLayout="column" fxLayoutAlign="space-around start" >
 
-            
+
 
             <div *ngFor="let callerDetails of callerObject">
 
                 <div fxLayout="row" fxLayoutAlign="start end">
 
                     <div class="name">{{callerDetails.callerName}}</div>
-    
+
                         <div class="telephone-dash-container">
                             <svg height="11" width="25">
                             <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
                             Sorry, your browser does not support inline SVG.
                             </svg>
                         </div>
-    
+
                     <div class="telephone">{{callerDetails.callerNumber}}</div>
-  
+
                 </div>
 
             </div>
@@ -71,7 +71,7 @@
                 <mat-icon>local_hospital</mat-icon>
             </button>
 
-            <button mat-icon-button color="primary" aria-label="Release details"
+            <button *ngIf="record.CallOutcomeId===1" mat-icon-button color="primary" aria-label="Release details"
             (click)="openReleaseDialog(record.EmergencyCaseId, record.TagNumber, record.PatientId)">
             <mat-icon>airport_shuttle</mat-icon>
             </button>

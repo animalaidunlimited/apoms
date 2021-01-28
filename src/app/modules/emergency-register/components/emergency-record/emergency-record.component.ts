@@ -7,8 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -18,7 +16,9 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
+    @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+    // @Output() public loadGuid = new EventEmitter<string>();
 
     loading = false;
 
@@ -34,8 +34,15 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
+    dbSync:boolean = false;
+
+    lsSync:boolean = false;
+
+    // uuId!: string;
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
+
         event.preventDefault();
         this.recordForm.reset();
     }
@@ -48,27 +55,37 @@ export class EmergencyRecordComponent implements OnInit {
 
     @HostListener('window:beforeunload', ['$event'])
     checkCanReload($event:BeforeUnloadEvent) {
-
         $event.preventDefault();
 
-        return !this.recordForm.dirty;
+
+        return !this.recordForm.touched;
     }
 
     constructor(
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService,
-        private dialog: MatDialog
+        private showSnackBar: SnackbarService
     ) {}
 
 
 
     ngOnInit() {
+
+
+        this.caseService.dbSync.subscribe((value:boolean) => 
+            this.dbSync = value
+        );
+        this.caseService.lsSync.subscribe((value:boolean) => 
+            this.lsSync = value
+        );
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
+
+        // this.uuId = this.caseService.generateUUID();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
+                guId : [this.guId],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -77,6 +94,16 @@ export class EmergencyRecordComponent implements OnInit {
                 sameAsNumber: []
             }),
             caseComments: [],
+        });
+
+
+        this.caseService.emergencyResponse.subscribe(data=> {
+            if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+                this.caseService.dbSync.next(true);
+                // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
+            }
         });
 
         if (this.emergencyCaseId) {
@@ -95,6 +122,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
+
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -105,7 +133,9 @@ export class EmergencyRecordComponent implements OnInit {
             result.message = 'Success';
         } else if (resultBody.emergencyCaseSuccess === 2) {
             result.message = 'Error adding the record: Duplicate record\n';
-            result.failure++;
+            result.failure = -1;
+
+            return result;
         }
 
         // Check the caller succeeded
@@ -184,6 +214,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         this.loading = true;
 
         if(this.recordForm.pending){
@@ -192,7 +224,7 @@ export class EmergencyRecordComponent implements OnInit {
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-
+                this.caseService.dbSync.next(true);
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
                 return;
             }
@@ -207,10 +239,11 @@ export class EmergencyRecordComponent implements OnInit {
 
             let messageResult = {
                 failure: 0,
+                message: ''
             };
 
             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
-                
+
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
@@ -221,25 +254,28 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
-
                             this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
                             messageResult = this.getCaseSaveMessage(resultBody);
 
-                        } 
+                        }
 
                         if (messageResult.failure === 0) {
-
-                            this.showSnackBar.successSnackBar(
-                                'Case inserted successfully',
-                                'OK',
-                            );
-                        } else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar(
-                                'Case saved offline',
-                                'OK',
-                            );
+                            this.caseService.dbSync.next(true);
+                            this.caseService.lsSync.next(false);
+                            this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                        }
+                        else if (messageResult.failure === -1) {
+                            this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+                        }
+                        else if (messageResult.failure === 1) {
+                            this.caseService.lsSync.next(true);
+                            this.caseService.dbSync.next(true);
+                            this.showSnackBar.errorSnackBar('Case saved offline','OK');
                         }
                     })
                     .catch(error => {
@@ -253,7 +289,7 @@ export class EmergencyRecordComponent implements OnInit {
                         if(data) {
                             this.loading = false;
                         }
-                        
+
                         if (data.status === 'saved') {
 
                             messageResult.failure = 1;
@@ -266,12 +302,14 @@ export class EmergencyRecordComponent implements OnInit {
 
                         if (messageResult.failure === 0) {
 
-                            this.showSnackBar.successSnackBar(
-                                'Case updated successfully',
-                                'OK',
-                            );
+                            this.showSnackBar.successSnackBar('Case updated successfully','OK',);
 
                             this.recordForm.markAsUntouched();
+                        }
+                        else{
+                            // this.showSnackBar.errorSnackBar(messageResult.message,'OK');
+                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+
                         }
                     })
                     .catch(error => {
@@ -282,7 +320,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     }
 
-    emergencyNumberUpdated(emergencyNumber: number) {
-        this.loadEmergencyNumber.emit(emergencyNumber);
+    emergencyNumberUpdated(emergencyNumber: any) {
+        const guId = this.recordForm.get('emergencyDetails.guId')?.value;
+        this.loadEmergencyNumber.emit({emergencyNumber , guId});
     }
 }

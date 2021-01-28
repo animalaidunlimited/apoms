@@ -214,12 +214,13 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
 
-        !failure ?
+        failure ?
+            this.showSnackBar.errorSnackBar('Error updating release details','OK')
+          :
           (
             this.showSnackBar.successSnackBar('Release details save successfully','OK'),
             this.dialogRef.close(releaseForm.value)
-          )
-          : this.showSnackBar.errorSnackBar('Error updating release details','OK');
+          );
 
     });
 

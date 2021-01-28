@@ -31,6 +31,8 @@ export class SnackbarService{
 
     this.zone.run(() => {
 
+      console.log(message);
+
       this.snackBar.open(message , action , {
         duration: this.notificationDurationSeconds * 1000,
         panelClass:'notif-error'

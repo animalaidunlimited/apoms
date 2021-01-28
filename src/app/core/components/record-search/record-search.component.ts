@@ -31,6 +31,8 @@ export class RecordSearchComponent {
 
     loading = false;
 
+    searchResultArray!: SearchResponse[];
+
     searchResults$!:Observable<SearchResponse[]>;
  
     constructor(
@@ -45,7 +47,10 @@ export class RecordSearchComponent {
         this.loading = true;
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
-        this.searchResults$.subscribe(()=>{
+        this.searchResults$.subscribe((value)=>{
+            this.searchResultArray = value.sort((date1: any,date2:any)=> {
+                return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();
+            });
             this.loading = false;
         });
     

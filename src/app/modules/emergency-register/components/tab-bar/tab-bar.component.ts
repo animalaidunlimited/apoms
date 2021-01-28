@@ -5,6 +5,7 @@ import { EmergencyRegisterTabBarService } from '../../services/emergency-registe
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
+import { CaseService } from '../../services/case.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -14,16 +15,18 @@ import { NavigationService } from 'src/app/core/services/navigation/navigation.s
 })
 export class TabBarComponent implements OnInit {
     selected = new FormControl(0);
+    guIdVal!: string;
 
     tabs = [
-        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' },
-        { id: 1, value: 'Search', emergencyCaseId: 0, icon: '' },
+        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' , GUID: ''},
+        { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: '' },
     ];
 
     constructor(private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
-        private navigationService:NavigationService) {}
+        private navigationService:NavigationService,
+        private caseService: CaseService) {}
 
     ngOnInit() {
     
@@ -54,14 +57,17 @@ export class TabBarComponent implements OnInit {
         }
     }
 
+
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
+
+        this.guIdVal = this.caseService.generateUUID();
         this.tabs.push({
             id: this.tabs.length,
             value: emergencyNumber.toString(),
             emergencyCaseId,
             icon: 'close',
+            GUID: this.guIdVal
         });
-
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();
@@ -83,19 +89,24 @@ export class TabBarComponent implements OnInit {
               );
     }
 
-    updateEmergencyNumber(emergencyNumber: number) {
+    updateEmergencyNumber(emergencyNumberAndGuId: any) {
 
-        if(this.tabs[this.selected.value].value !== 'Board' && this.tabs[this.selected.value].value !== 'Search'){
+        console.log(emergencyNumberAndGuId);
 
-            this.tabs[this.selected.value].value = (
-                emergencyNumber || 'New Case*'
-            ).toString();
-
-            this.cdr.detectChanges();
-        }
-
+        this.tabs.forEach(tab=> {
+            
+            console.log(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId);
+            if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId) {
+                tab.value = (
+                    emergencyNumberAndGuId.emergencyNumber || 'New Case*'
+                ).toString();
+                this.cdr.detectChanges();
+            }
+        });
 
     }
+
+
 
     openSearchMediaDialog(mediaVal:File[]){
 

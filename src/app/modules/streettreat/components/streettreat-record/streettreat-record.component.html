@@ -53,19 +53,20 @@
              <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
 
       </div>
-      <app-patient-visit-details [dateSelected]="dateSelected" (newDateSelected)="dateSelectedEventHandler($event)" [recordForm]="recordForm" ></app-patient-visit-details>
-        <div class="visit-calendar-wrapper">
-            <button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
-            <div class="visit_calendar" [hidden]="loadCalendarComponent">
-                <mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" ></mat-calendar>
-            </div>
+      <div class="visit-calendar-wrapper">
+        <button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
+        <div class="visit_calendar" [hidden]="loadCalendarComponent">
+            <mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" ></mat-calendar>
         </div>
+    </div>
+    <app-patient-visit-details [dateSelected]="dateSelected" (newDateSelected)="dateSelectedEventHandler($event)" [recordForm]="recordForm" ></app-patient-visit-details>
+        
 </fieldset>
 
 <caller-details [recordForm]="recordForm"></caller-details>
 <location-details [recordForm]="recordForm"></location-details>
 
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
-    <button mat-raised-button color="primary" (click)="saveForm()">Save</button>
+    <button mat-raised-button color="primary" [disabled]="recordForm.invalid" (click)="saveForm()">Save</button>
     <button mat-raised-button color="primary" >Reset</button>
 </div>

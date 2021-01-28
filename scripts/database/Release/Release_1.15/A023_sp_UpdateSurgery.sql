@@ -27,7 +27,7 @@ SELECT COUNT(1) INTO vSurgeryCount FROM AAU.Surgery WHERE SurgeryId = prm_Surger
 
 IF vSurgeryCount = 1 THEN
 
-UPDATE AAU.surgery
+UPDATE AAU.Surgery
 		SET	
             SurgeryDate	= prm_SurgeryDate,
             SurgeonId	= prm_SurgeonId,

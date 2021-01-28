@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId;!!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT)
+CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT, IN prm_PatientId INT)
 BEGIN
 
 
@@ -22,6 +22,7 @@ Purpose: To retrieve outstanding rescues and releases for display on board.
  SELECT PatientId
  FROM AAU.Patient
  WHERE EmergencyCaseId = prm_EmergencyCaseId
+ AND (PatientId = prm_PatientId OR prm_PatientId IS NULL)
  ),
  PatientsCTE AS
  (
@@ -89,9 +90,10 @@ JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId,
             JSON_OBJECT("ambulanceArrivalTime", ec.AmbulanceArrivalTime),
             JSON_OBJECT("rescueTime", ec.RescueTime),
             JSON_OBJECT("releaseId", rd.ReleaseDetailsId),
-            JSON_OBJECT("pickupDate", rd.PickupDate),
-            JSON_OBJECT("releaseBeginDate", rd.BeginDate),
-            JSON_OBJECT("releaseEndDate", rd.EndDate),
+            JSON_OBJECT("requestedDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("pickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
+			JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
             JSON_OBJECT("releaseTypeId", rd.ReleaseTypeId),
             JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release')),
 			JSON_OBJECT("emergencyCaseId", ec.EmergencyCaseId),
