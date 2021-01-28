@@ -38,7 +38,7 @@ export class StreetTreatTabBarComponent implements OnInit {
 }
 
   addTab(streetTreatResult:SearchStreetTreatResponse) {
-   this.tabs.splice(this.tabs.length, 0, {
+    this.tabs.splice(this.tabs.length, 0, {
         id: this.tabs.length,
         value: streetTreatResult.TagNumber,
         streetTreatCaseId:streetTreatResult.StreetTreatCaseId,
@@ -61,8 +61,8 @@ export class StreetTreatTabBarComponent implements OnInit {
     }
   }
 
-  public openCase(result: SearchStreetTreatResponse) {
-    const tabExists = this.tabs.find(card =>card.streetTreatCaseId === result.StreetTreatCaseId,);
+  public openCase(result: any) {
+    const tabExists = this.tabs.find(card =>card.streetTreatCaseId === result.StreetTreatCaseId);
     tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result);
   }
 }

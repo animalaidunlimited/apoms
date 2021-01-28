@@ -91,20 +91,50 @@ export interface Emergency {
     EmergencyNumber: number;
 }
 
+export interface Visit {
+    VisitDate: string;
+    VisitStatus: string;
+    VisitTypeId: number;
+    VisitStatusId: number;
+}
+
+export interface Position {
+    Address: string;
+    Latitude: number;
+    Longitude: number;
+}
+
 export interface AnimalDetails {
+    Problem: string;
     Priority: string;
     TagNumber: string;
-    AnimalName?: any;
+    AnimalName?: string;
     AnimalType: string;
+    MainProblem: string;
+}
+
+export interface StreetTreatCaseVisit {
+    Visits: Visit[];
+    Position: Position;
+    AnimalDetails: AnimalDetails;
+    StreetTreatCaseId: number;
+    StreetTreatCaseStatus: string;
+    StreetTreatCasePriority: string;
+    StreetTreatCaseStatusId: number;
+    StreetTreatCasePriorityId: number;
+}
+
+export interface StreetTreatCases {
+    TeamId: number;
+    TeamName: string;
+    TeamColor: string;
+    StreetTreatCaseVisits: StreetTreatCaseVisit[];
 }
 
 export interface StreetTreatCaseByVisitDateResponse {
-    Team: Team;
-    Visit: Visit[];
-    Position: Position;
-    Emergency: Emergency;
-    AnimalDetails: AnimalDetails;
-    StreetTreatCaseId: number;
+    Cases: StreetTreatCases[] | null;
+    TotalCases: number;
+    UrgentCases: number;
 }
 
 export interface ActiveCasesForTeamByDateResponse {
@@ -137,3 +167,27 @@ export interface ActiveCasesForTeamByDateResponse {
     MainProblem: string;
 }
 
+export interface Series {
+    name: string;
+    value: number;
+}
+
+export interface ChartData {
+    name: string;
+    series: Series[] | never[];
+}
+
+export interface TeamColor {
+    name: string;
+    value: string;
+}
+
+export interface chartSelectObject extends TeamColor {
+    label: string;
+    series: string;
+}
+
+export interface ChartResponse {
+    chartData: ChartData[];
+    teamColors: TeamColor[];
+}

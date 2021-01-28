@@ -186,26 +186,26 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   initReleaseDetailsForm(){
-	if(this.data.patientId) {
+    if(this.data.patientId) {
 
-		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+      this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
 
-      if(formVal?.success === -1){
-        this.showSnackBar.errorSnackBar('Error updating release details status','OK');
-        return;
-      }
+        if(formVal?.success === -1){
+          this.showSnackBar.errorSnackBar('Error updating release details status','OK');
+          return;
+        }
 
-			if(formVal) {
-				this.recordForm.patchValue(formVal);
-				if(this.recordForm.get('releaseType')?.value===3) {
-					this.specificStaffTrue();
-				}
-				if((this.recordForm.get('releaseType')?.value===4)){
-					this.streetTreatReleaseTrue();
-				}
-			}
-		});
-	}
+        if(formVal) {
+          this.recordForm.patchValue(formVal);
+            if(this.recordForm.get('releaseType')?.value===3) {
+              this.specificStaffTrue();
+            }
+            if((this.recordForm.get('releaseType')?.value===4)){
+              this.streetTreatReleaseTrue();
+            }
+          }
+      });
+    }
   }
 
   onReleaseSubmit(releaseForm:any) {
