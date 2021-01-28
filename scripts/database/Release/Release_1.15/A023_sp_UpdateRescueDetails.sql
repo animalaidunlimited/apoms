@@ -38,7 +38,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-IF vEmNoExists = 1 AND prm_UpdateTime > vUpdateTime THEN
+IF vEmNoExists = 1 AND prm_UpdateTime >= vUpdateTime THEN
 
 START TRANSACTION;
 
@@ -55,7 +55,7 @@ COMMIT;
 
     SELECT 1 INTO vSuccess;
     
-	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, null);
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails',CONCAT('Update ', prm_UpdateTime, ' ', vUpdateTime), NOW());    

@@ -99,7 +99,7 @@ ELSE
 	SELECT 5 INTO prm_Success; -- Other error   
 END IF;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId);
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL);
 
 END$$
 DELIMITER ;

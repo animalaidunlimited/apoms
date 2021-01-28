@@ -1,6 +1,7 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
-import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, HostListener } from '@angular/core';
+import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../services/navigation/navigation.service';
@@ -69,9 +70,9 @@ export class SearchFieldComponent implements OnInit {
         {
             id: 2,
             inputType: 'date',
-            searchValue: 'date',
+            searchValue: 'calldate',
             databaseField: 'CAST(search.CallDateTime AS DATE)',
-            name: 'Date',
+            name: 'Call Date',
             inNotIn: false
         },
         {
@@ -86,7 +87,7 @@ export class SearchFieldComponent implements OnInit {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
-            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
             // 'WHERE c.Name =',
@@ -98,7 +99,7 @@ export class SearchFieldComponent implements OnInit {
             id: 5,
             inputType: 'text',
             searchValue: 'cnumber',
-            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' + 
+            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
             // 'WHERE c.Number =',
@@ -169,15 +170,21 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
             name: 'Thanked',
             inNotIn: true
-        },
+        }
     ];
+
+    @HostListener('document:keydown.enter', ['$event'])
+    executeSearchByEnter(event: KeyboardEvent) {
+        event.preventDefault();
+        this.executeSearch();
+    }
 
   constructor(
     public rescueDialog: MatDialog,
     public callDialog: MatDialog,
     private formBuilder: FormBuilder,
-    private navigationService: NavigationService
-    ) { }
+    private navigationService: NavigationService,
+    public platform: Platform) { }
 
   ngOnInit(): void {
   this.navigationService.isSearchClicked.subscribe((clicked)=> {
@@ -215,7 +222,13 @@ executeSearch() {
         this.updateSearchArray();
     }
 
+    // If we're on a mobile device, hide the keyboard after searching.
+    if (document.activeElement instanceof HTMLElement && (this.platform.ANDROID || this.platform.IOS)) {
+        document.activeElement.blur();
+      }
+
     const searchArray = this.getSearchArray();
+
 
     const searchQuery = searchArray
         .map(item => {

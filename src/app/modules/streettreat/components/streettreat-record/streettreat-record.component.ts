@@ -133,6 +133,7 @@ export class StreetTreatRecordComponent implements OnInit {
         console.log(casePriority);
         this.recordForm.controls['EndDate'].setValidators([Validators.required]);
         this.recordForm.controls['EndDate'].updateValueAndValidity();
+        this.recordForm.controls['EndDate'].markAsTouched();
       }
       else{
         this.recordForm.controls['EndDate'].clearValidators();

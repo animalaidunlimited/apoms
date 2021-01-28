@@ -4,7 +4,7 @@ import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
-import { getCurrentDateString } from '../../helpers/utils';
+import { getCurrentTimeString } from '../../helpers/utils';
 import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
@@ -41,7 +41,7 @@ export class AssignReleaseComponent implements OnInit {
     this.recordForm = this.fb.group({
       releaseId: [],
       emergencyCaseId:[],
-      releaseType: [],
+      releaseType: [{value: null, disabled: true}],
       Releaser1: [],
       Releaser2: [],
       releaseBeginDate: [],
@@ -62,7 +62,7 @@ export class AssignReleaseComponent implements OnInit {
         const target = this.recordForm.get((event.target as HTMLInputElement).name);
 
         if(target){
-            target.setValue(getCurrentDateString());
+            target.setValue(getCurrentTimeString());
         }
 
     }
@@ -70,7 +70,8 @@ export class AssignReleaseComponent implements OnInit {
 
   saveReleaseDetails() {
 
-    this.releaseDetails.saveRelease(this.recordForm.value).then((response: any)=>{
+
+    this.releaseDetails.saveRelease(this.recordForm.getRawValue()).then((response: any)=>{
 
       if(response?.success === -1){
         this.showSnackBar.errorSnackBar('Error updating patient status','OK');

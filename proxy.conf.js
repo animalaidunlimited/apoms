@@ -20,7 +20,8 @@ const PROXY_CONFIG = [
             "/Teams",
             "/UserAdmin",
             "/ReleaseDetails",
-            "/StreetTreat"
+            "/StreetTreat",
+            "/Reporting"
         ],
         target: "http://localhost:8080/",
         changeOrigin: "true",

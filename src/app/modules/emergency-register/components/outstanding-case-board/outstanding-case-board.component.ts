@@ -15,6 +15,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 
 
 export interface Swimlane{
@@ -22,6 +23,11 @@ export interface Swimlane{
   state:number;
   name:string;
   array:OutstandingCase[];
+}
+
+interface ActionStatus {
+  actionStatus: number;
+  actionStatusName: string;
 }
 
 @Component({
@@ -62,9 +68,18 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   loading = true;
 
+  actionStatus: ActionStatus[] = [{actionStatus:1 , actionStatusName: 'Recieved'},
+    {actionStatus: 2, actionStatusName: 'Assigned'},
+    {actionStatus: 3, actionStatusName: 'Arrived/Picked'},
+    {actionStatus: 4, actionStatusName: 'Rescued/Released'},
+    {actionStatus: 5, actionStatusName: 'Admitted'}];
+
   notificationPermissionGranted = false;
 
   outstandingCases!:OutstandingCase[];
+
+  outstandingCasesArray!:OutstandingCase[];
+
   outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
@@ -120,12 +135,24 @@ export class OutstandingCaseBoardComponent implements OnInit {
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$.subscribe((assignments) => {
 
-      assignments.map((assignment)=>{
+      this.outstandingCasesArray = assignments;
 
+      this.actionStatus.forEach(status=> {
+        const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
+
+        if(statusExist) {
+          return;
+        }
+        else {
+          this.outstandingCasesArray.push({
+            actionStatus: status.actionStatus,
+            actionStatusName: status.actionStatusName,
+            statusGroups: []
+          });
+        }
+
+        this.outstandingCasesArray.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
       });
-
-
-
 
         this.loading = false;
         this.changeDetector.detectChanges();
@@ -134,15 +161,26 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCaseService.initialise();
   }
 
-    openSearchMediaDialog(){
+  openMediaDialog(patientId: number, tagNumber: string | null): void{
+    const dialogRef = this.dialog.open(MediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+            tagNumber,
+            patientId,
+        }
+    });
 
-      this.dialog.open(AddSearchMediaDialogComponent, {
-      minWidth: '50%',
-      data: {
-          mediaVal: []
-      }
-  });
   }
+
+  // openSearchMediaDialog(){
+
+  //    this.dialog.open(AddSearchMediaDialogComponent, {
+  //    minWidth: '50%',
+  //    data: {
+  //        mediaVal: []
+  //    }
+  // });
+  // }
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
