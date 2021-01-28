@@ -1,7 +1,7 @@
 export enum TreatmentPriority{
     Urgent = 1,
     High = 2,
-    Normal = 3,
+    Medium = 3,
     Low = 4
 }
 

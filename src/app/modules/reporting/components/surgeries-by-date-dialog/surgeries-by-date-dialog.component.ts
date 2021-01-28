@@ -10,6 +10,7 @@ interface DialogData{
 }
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'surgeries-by-date-dialog',
   templateUrl: './surgeries-by-date-dialog.component.html',
   styleUrls: ['./surgeries-by-date-dialog.component.scss']

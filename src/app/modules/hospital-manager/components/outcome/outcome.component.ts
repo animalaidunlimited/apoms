@@ -60,7 +60,7 @@ export class OutcomeComponent implements OnInit {
                 antibiotics3: [],
             }),
             isoReason: this.fb.group({
-                isoReason: [],
+                isoReasonId: [],
             }),
         });
 

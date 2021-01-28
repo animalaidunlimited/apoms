@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 declare const window: any;
 
 @Injectable({ providedIn: 'root' })
 export class OnlineStatusService {
-    private internalConnectionChanged = new Subject<boolean>();
+    private internalConnectionChanged = new BehaviorSubject<boolean>(true);
 
     get connectionChanged() {
-        return this.internalConnectionChanged.asObservable();
+        return this.internalConnectionChanged;
     }
 
     get isOnline() {
-        return !!window.navigator.onLine;
+        console.log('welcome');
+        return !!window.navigator.onLine;   
     }
 
     constructor() {

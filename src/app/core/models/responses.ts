@@ -5,6 +5,8 @@ export interface EmergencyResponse {
    emergencyCallerSuccess: [];
     callerSuccess: [];
     emergencyCaseId: number;
+    emergencyNumber: number;
+    guId: string;
     emergencyCaseSuccess: number;
     patients: PatientResponse[];
 }
