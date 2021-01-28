@@ -76,20 +76,21 @@ export class PatientDetailsDialogComponent implements OnInit {
     this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
 
       response ?
-      response = response.map(patient => {
+          response = response.map(patient => {
 
-        const patientObject = JSON.parse(JSON.stringify(patient));
+            const patientObject = JSON.parse(JSON.stringify(patient));
 
-        patient['ABC status'] = ABCStatus[patientObject['ABC status']];
-        patient['Release status'] = ReleaseStatus[patientObject['Release status']];
-        // tslint:disable-next-line:no-string-literal
-        patient['Temperament'] = Temperament[patientObject['Temperament']];
-        patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
+            patient['ABC status'] = ABCStatus[patientObject['ABC status']];
+            patient['Release status'] = ReleaseStatus[patientObject['Release status']];
+            // tslint:disable-next-line:no-string-literal
+            patient['Temperament'] = Temperament[patientObject['Temperament']];
+            patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
 
-        return patient;
+            return patient;
 
-      }) :
-      response = [];
+          })
+        :
+          response = [];
 
       this.patientRecords = new MatTableDataSource(response);
       this.patientRecords.sort = this.sort;

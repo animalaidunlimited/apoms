@@ -2,34 +2,21 @@
 
 
 <form [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
-  
+
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
+
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
-
-            <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true" (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
-
-              <mat-expansion-panel [expanded]="hasComments">
-
-                <mat-expansion-panel-header>
-
-                  <mat-panel-title>
-                    <p class="legend">Comments</p>
-                  </mat-panel-title>
-
-                  <mat-panel-description>
-                    <p>Add Comment</p>
-                  </mat-panel-description>
-
-                </mat-expansion-panel-header>
-
-                <mat-form-field style="width: 90%;">
-                  <mat-label>Comments</mat-label>
-                  <textarea matInput  formControlName="caseComments"></textarea>
-                </mat-form-field>
-
-              </mat-expansion-panel>
+            <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
+              <mat-icon *ngIf="recordForm.valid && !dbSync ">sync_disabled</mat-icon>
+              <mat-icon *ngIf="recordForm.valid && lsSync ">cloud_off</mat-icon>
+              <mat-icon *ngIf="!lsSync  && dbSync " style="color:seagreen">cloud_done</mat-icon>
+            </div>
+            <emergency-details 
+              [recordForm]="recordForm" 
+              [focusEmergencyNumber]="true" 
+              (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
             
@@ -52,6 +39,27 @@
 
               </fieldset>
 
+              <mat-expansion-panel [expanded]="hasComments">
+
+                <mat-expansion-panel-header>
+
+                  <mat-panel-title>
+                    <p class="legend">Comments</p>
+                  </mat-panel-title>
+
+                  <mat-panel-description>
+                    <p>Add Comment</p>
+                  </mat-panel-description>
+
+                </mat-expansion-panel-header>
+
+                <mat-form-field class="mat-wrapper">
+                  <mat-label>Comments</mat-label>
+                  <textarea matInput  formControlName="caseComments"></textarea>
+                </mat-form-field>
+
+              </mat-expansion-panel>
+
 
                 <fieldset class="form-sub-group">
 
@@ -64,7 +72,7 @@
                 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                   <button mat-raised-button color="primary" tabindex="16" type="submit" [disabled]="recordForm.invalid">Save</button>
 
-                  <button mat-raised-button color="primary" tabindex="17" type="reset">Reset</button>
+                  <button mat-raised-button color="secondary" tabindex="17" type="reset">Reset</button>
                 </div>
 
           </div>

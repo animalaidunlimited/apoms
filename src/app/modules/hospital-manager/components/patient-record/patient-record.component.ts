@@ -27,7 +27,7 @@ export class PatientRecordComponent implements OnInit {
 
     hideMenu = false;
 
-    profileUrl: SafeUrl = '';
+    profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
     loading = false;
 
@@ -112,6 +112,8 @@ export class PatientRecordComponent implements OnInit {
     saveForm() {
 
         this.loading = true;
+
+        console.log(this.recordForm.value);
 
         this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
             this.loading = false;

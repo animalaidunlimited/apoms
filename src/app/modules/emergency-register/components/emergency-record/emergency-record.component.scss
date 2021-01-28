@@ -37,3 +37,20 @@ $standard-width: 183px;
     z-index: 5000;
     margin: auto;
 }
+
+.mat-expansion-panel{
+    margin-top: 10px;
+}
+
+.mat-wrapper {
+    width:95%;
+}
+
+
+.emergencySyncIcon .mat-icon {
+    font-size: 2.5rem;
+    position: absolute !important;
+    right: 5% !important;
+    top: 4rem !important;
+    color: #f44336;
+}

@@ -71,7 +71,7 @@
 
     <mat-form-field>
         <mat-label>Isolation reason</mat-label>
-        <mat-select formControlName="isoReason" [errorStateMatcher]="errorMatcher">
+        <mat-select formControlName="isoReasonId" [errorStateMatcher]="errorMatcher">
             <mat-option *ngFor="let isoReason of isoReasons" [value]="isoReason.id">
                 {{isoReason.isoReason}}
             </mat-option>

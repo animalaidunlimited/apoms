@@ -8,4 +8,6 @@
     margin-left: 5px;
 }
 
-
+::ng-deep .cdk-overlay-pane{
+    min-width: 250px;
+}

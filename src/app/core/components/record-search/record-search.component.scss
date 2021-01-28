@@ -15,7 +15,7 @@ $standard-height: 48px;
 
 .mat-spinner {
     position: fixed;
-    top: 80px;
+    top: 180px;
     left: 40%;
     width: 100px !important;
     height: 100px !important;
@@ -27,9 +27,10 @@ $standard-height: 48px;
   }
 
 
-/* @media  only screen and (min-width:1024px){
-	::ng-deep .emergency-card {
-		max-width: 240px !important;
-	}
+@media  only screen and (max-width:640px){
+	.search-results{
+        padding: 20px;
+        margin-left: 16%
+    }
 }
- */
+

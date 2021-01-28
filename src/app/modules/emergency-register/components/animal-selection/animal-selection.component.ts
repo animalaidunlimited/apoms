@@ -89,6 +89,7 @@ export class AnimalSelectionComponent implements OnInit {
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges.subscribe(newValue => this.emergencyCaseId = newValue);
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
@@ -342,29 +343,20 @@ export class AnimalSelectionComponent implements OnInit {
             // There is only 1 row selected, so we can update the animal for that row
             let animalTypeObject;
 
-            animalTypeObject = this.getAnimalFromObservable(
-                animalTypeChip.value,
-            );
+            animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
 
             const currentPatient = this.getcurrentPatient();
 
-            currentPatient.get('animalType')?.setValue(
-                    animalTypeChip.selected
-                        ? animalTypeObject?.AnimalType
-                        : null,
-                );
+            currentPatient.get('animalType')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalType : null );
 
-            currentPatient.get('animalTypeId')?.setValue(
-                    animalTypeChip.selected
-                        ? animalTypeObject?.AnimalTypeId
-                        : null,
-                );
+            currentPatient.get('animalTypeId')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalTypeId : null);
 
             currentPatient.get('updated')?.setValue(true);
         }
 
         // if there are no rows, then we need to add a new one
         if (selectedCount === 0 && animalTypeChip.selected) {
+
             const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
             const position: number = this.patientDataSource.data.length + 1;
