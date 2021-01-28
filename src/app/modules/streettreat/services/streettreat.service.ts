@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { ActiveCasesForTeamByDateResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
+import { ActiveCasesForTeamByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -152,8 +151,7 @@ export class StreetTreatService extends APIService {
   public getActiveStreetTreatCasesWithVisitByDate(date: Date){
     const request = '?date='+ date;  
     return this.getObservable(request).pipe(
-      //map((response: StreetTreatCaseByVisitDateResponse[]) => {
-       map((response: any[]) => {
+      map((response: StreetTreatCaseByVisitDateResponse) => {
            return response;
        }),
      ); 
@@ -176,21 +174,14 @@ export class StreetTreatService extends APIService {
       })
     );
   }
-  public getTeamByTeamId(teamId: number){
-    const request = `?teamid=${teamId}`;
-    return this.getObservable(request).pipe(
-      map((response:any[])=>{
-        return response;
-      })
-    );
-  }  
+  
   public async updateVisitTeamByTeamId(teamVisitData:any){
     return await this.put(teamVisitData)
   }
   public getChartData(){
     const request = "";
     return this.getObservable(request).pipe(
-      map((response:any)=>{
+      map((response:ChartResponse)=>{
         return response
       })
     );
@@ -199,7 +190,15 @@ export class StreetTreatService extends APIService {
     const request = `/novisits?date=${date}`;
     return this.getObservable(request).pipe(
       map((response:any)=>{
-        return response
+        return response;
+      })
+    );
+  }
+  public getStreetTreatWithVisitDetailsByPatientId(patientId:number){
+    const request = `?patientId=${patientId}`;
+    return this.getObservable(request).pipe(
+      map((response:any)=>{
+        return response.streetTreatForm;
       })
     );
   }

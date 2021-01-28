@@ -1,22 +1,30 @@
-<div fxLayout>
+<div fxLayout fxLayoutAlign="space-around center" class="info_tiles">
+    <div>
+        <h4>Total Cases</h4>
+        {{totalCases}}
+    </div>
     <div>
         <h4>Cases Without Visit</h4>
         {{casesWithoutVisits}}
     </div>
     <div>
-        <h4>TotalVisits Today</h4>
+        <h4>Total Visits Today</h4>
         {{totalVisitToday}}
     </div>
     <div>
         <h4>Visit Complete Today</h4>
         {{visitCompleteToday}} ({{(visitCompleteToday/totalVisitToday) * 100 | number: '1.0-0'}} %)
     </div>
+    <div>
+        <h4>Urgent Cases</h4>
+        {{urgentCases}} 
+    </div>
 </div>
 
-<mat-expansion-panel  class="chart_bar_expansion">
+<mat-expansion-panel  class="chart_bar_expansion" [expanded]="chartExpanded">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            
+            <mat-icon style="font-size: 1.9rem;"> bar_chart</mat-icon>
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="Chart_Bar" #containerRef >
@@ -26,9 +34,11 @@
         [results]="chartData"
         [gradient]="gradient"
         [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
         [animations]="animations"
         [customColors]="customColors"
         [barPadding]="8"
+        [legend]="showLegend"
         (select)="onSelect($event)">
         </ngx-charts-bar-vertical-stacked>
     </div>
@@ -42,10 +52,7 @@
             </div>
             <div class="Team_Compare_date">
                 <mat-form-field appearance="fill">
-                    <mat-label>Choose a date</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="date">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                   <input matInput type="date"  formControlName="date">
                 </mat-form-field>
             </div>
             <div class="Team_Compare_list">
@@ -58,14 +65,14 @@
                 </mat-form-field>
             </div>
         </div>
-        <ng-container *ngIf="streetTreatCasesResponse" cdkDropListGroup>
+        <ng-container *ngIf="streetTreatCasesResponse; else noResult" cdkDropListGroup>
             <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of streetTreatCasesResponse; trackBy:trackByTeamId" >
                 <div class="StreetTreat_Container_header">
                     <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.TeamName}}</h3>
                     <div class="StreetTreat_Container_header_TeamColor">
                         <svg>
                             <path
-                                d="M 12.8 2.65 C 9.05 4.45 5.75 7.95 4.25 11.65 C 3.45 13.5 3.2 16.05 3.25 20.8 C 3.4 24.45 3.05 29.05 2.65 31 L 2.05 35 L 5.4 34.15 C 7.45 33.25 10.7 32.75 15.8 32.4 C 22.65 31.95 23.7 31.7 26.25 30.15 C 37.25 23.5 36.3 7.25 24.65 2.5 C 21.3 1.15 15.8 1.2 12.8 2.65 Z Z"
+                                d="M 10.3 2.2 C 7.3 3.6 4.7 6.5 3.4 9.5 C 2.8 11 2.6 13 2.6 16.8 C 2.8 19.8 2.4 23.5 2.2 25.1 L 1.6 28.4 L 4.4 27.6 C 6 26.9 8.6 26.6 12.8 26.3 C 18.4 25.9 19.2 25.7 21.2 24.4 C 30.2 19.1 29.4 5.9 20 2.1 C 17.3 0.9 12.8 1 10.3 2.2 Z Z"
                                 [attr.fill]="streetTreatCase.TeamColor" />
                         </svg>
                     </div>
@@ -77,17 +84,24 @@
                     class="example-list"
                     (cdkDropListDropped)="drop($event)" 
                     *ngFor="let streetTreatCaseDetails of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
-                    <div class="example-box" 
-                        cdkDrag 
+                    <mat-expansion-panel class="streetTreatPanel" cdkDrag 
                         [cdkDragData]="streetTreatCaseDetails"
-                        [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}">
-                        <div 
-                            (mouseenter)="highLightMarker(streetTreatCaseDetails.StreetTreatCaseId)" 
-                            (mouseout)="markerClean()">
-                            <div class="streetreat_visit">
-                                {{streetTreatCaseDetails.StreetTreatCaseId}}
-                                {{streetTreatCaseDetails.AnimalDetails.TagNumber}}
-                                {{streetTreatCaseDetails.AnimalDetails.Priority}}
+                        [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}"
+                        hideToggle
+                        >
+                        <mat-expansion-panel-header
+                            [ngClass]="{'border-red' : streetTreatCaseDetails.StreetTreatCasePriorityId == 4,
+                  'border-green' : streetTreatCaseDetails.StreetTreatCasePriorityId == 1,
+                  'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
+                }"
+                            >
+                            <div class="card_wrapper">
+                                <div class="streetreat_visit" >
+                                    {{streetTreatCaseDetails.AnimalDetails.TagNumber}} ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
+                                </div>
+                                <div fxFlex="25">
+                                    <mat-icon aria-label="Edit record" (click)="openCase(streetTreatCaseDetails)">create</mat-icon>
+                                </div>
                             </div>
                             <div class="timeline">
                                 <ng-container *ngIf="streetTreatCaseDetails.Visits.length > 0">
@@ -105,11 +119,17 @@
                                     </div>
                                 </ng-container>
                             </div>
-                        </div>
-                    </div>
+                        </mat-expansion-panel-header>
+                            <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
+                                <div>{{streetTreatCaseDetails.AnimalDetails.Problem}}</div>
+                                <div>{{streetTreatCaseDetails.AnimalDetails.Priority}}</div>
+                                <div>{{streetTreatCaseDetails.AnimalDetails.MainProblem}}</div>
+                            </div>
+                    </mat-expansion-panel>
                 </div>
             </div>
         </ng-container>
+        <ng-template #noResult> No Visits Today</ng-template>
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
         <google-map [zoom]="zoom" height="100%" width="100%">
@@ -119,7 +139,8 @@
                 (mapDragend)="markerDragEnd($event)" 
                 (mapClick)="markerClick(marker)"
                 (mapMouseover)="markerClick(marker)" 
-                (mapMouseout)="markerClean()">
+                (mapMouseout)="markerClean()"
+                >
             </map-marker>
 
         </google-map>

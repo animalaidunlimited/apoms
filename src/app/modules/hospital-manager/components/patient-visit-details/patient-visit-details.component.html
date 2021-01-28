@@ -1,8 +1,8 @@
 
-<h5 mat-dialog-title>Add StreetTreat visits</h5>
 <form [formGroup]="streatTreatForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 		<mat-form-field appearance="fill">
+			<mat-label>Case priority</mat-label>
 			<mat-select placeholder="Case priority" formControlName="casePriority">
 				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
@@ -28,6 +28,7 @@
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom" >
 		<mat-form-field appearance="fill"  style="flex-grow: 2;">
+			<mat-label>Admin Notes</mat-label>
 			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
@@ -38,6 +39,7 @@
 		</mat-form-field>
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
+		<h5 mat-dialog-title>Visits</h5>
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
 				<div [formGroupName]="visitIndex" >

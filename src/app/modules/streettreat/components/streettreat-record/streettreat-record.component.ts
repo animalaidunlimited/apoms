@@ -12,6 +12,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { DatePipe } from '@angular/common';
 
 interface visitCalender{
   status:number,
@@ -45,7 +46,8 @@ export class StreetTreatRecordComponent implements OnInit {
     private dropdown: DropdownService,
     private patientService: PatientService,
     private changeDetector: ChangeDetectorRef,
-    private showSnackBar: SnackbarService
+    private showSnackBar: SnackbarService,
+    private datePipe: DatePipe,
   ) { }
 
   public get emergencyCaseId() {
@@ -68,6 +70,11 @@ export class StreetTreatRecordComponent implements OnInit {
       NextVisit: ['', Validators.required],
       PercentComplete: ['', Validators.required],
       AnimalTypeId: ['', Validators.required],
+      AnimalName:[''],
+      BeginDate:[{value: '', disabled: true}, Validators.required],
+      EndDate:[],
+      EarlyReleaseFlag:[],
+      IsIsolation:[],
       PriorityId: ['', Validators.required],
       emergencyDetails: this.fb.group({
         emergencyCaseId: [this.emergencyCaseId, Validators.required]
@@ -103,7 +110,7 @@ export class StreetTreatRecordComponent implements OnInit {
       this.treatmentPrioritySubscription?.unsubscribe();
     });
 
-    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res: StreetTreatSearchResponse) => {
+    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res) => {
       this.recordForm.patchValue(res);
       this.streetTreatServiceSubscription?.unsubscribe();
     });
@@ -120,7 +127,19 @@ export class StreetTreatRecordComponent implements OnInit {
       });
       this.streetTreatServiceSubscription?.unsubscribe();
     });
-
+    setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
+      if(casePriority > 3)
+      {
+        console.log(casePriority);
+        this.recordForm.controls['EndDate'].setValidators([Validators.required]);
+        this.recordForm.controls['EndDate'].updateValueAndValidity();
+      }
+      else{
+        this.recordForm.controls['EndDate'].clearValidators();
+        this.recordForm.controls['EndDate'].updateValueAndValidity();
+      }
+    }),100);
+    
   }
   dateSelectedEventHandler($event:any){
     

@@ -13,6 +13,7 @@ import { Priority } from 'src/app/core/models/priority';
 import { EventEmitter } from '@angular/core';
 import { ReleaseResponse, VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
+import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 
 
 @Component({
@@ -101,6 +102,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private releaseService: ReleaseService,
+		private streetTreatService:StreetTreatService
 	
 	) {}
 
@@ -111,8 +113,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		if(!this.recordForm) this.recordForm = new FormGroup({});
-		
+		if(!this.recordForm) this.recordForm = new FormGroup({})
 		this.recordForm.addControl(
 			'streatTreatForm',
 			this.fb.group({
@@ -211,9 +212,6 @@ export class PatientVisitDetailsComponent implements OnInit {
 		}
 		return visitArray;
 	}
-	ngAfterViewInit(){
-		
-	}
 
 	keyPressNumbers(event: any) {
 		const charCode = event.which ? event.which : event.keyCode;
@@ -226,7 +224,7 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	addVisits(event: Event) {
-		console.log(this.streatTreatForm.controls.visits);
+		
 		if (this.streatTreatForm.controls.visits.valid) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
@@ -237,33 +235,30 @@ export class PatientVisitDetailsComponent implements OnInit {
 	}
 
 	initStreetTreatForm(){
-		this.releaseService.getReleaseDetails(this.patientId).subscribe((res:ReleaseResponse) =>{
-			
-			if(res?.streetTreatForm){
-				if(res.streetTreatForm.visits.length )
+		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
+			if(response.visits.length)
+			{
+				this.showEmptyVisit = false;
+				for(let i = 0; i<response.visits.length-1;i++)
 				{
-					this.showEmptyVisit = false;
-					for(let i = 0; i<res.streetTreatForm.visits.length-1;i++)
-					{
-						if(res.streetTreatForm.visits[i].visit_date){
-							this.showVisitDate = true;
-							this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
-						}
-						else{
-							this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
-						}
-						this.visitsArray.push(this.getVisitFormGroup());
+					if(response.visits[i].visit_date){
+						this.showVisitDate = true;
+						this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 					}
-					this.prevVisits = res.streetTreatForm.visits.map(prevVisits => {
-						if(prevVisits.visit_date) 
-							return prevVisits.visit_date.toString();
-						else
-							return '';
-					});
+					else{
+						this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+					}
+					this.visitsArray.push(this.getVisitFormGroup());
 				}
-				this.streatTreatForm.patchValue(res.streetTreatForm);
-				this.changeDetectorRef.detectChanges();
 			}
+			this.prevVisits = response.visits.map((prevVisits:any) => {
+				if(prevVisits.visit_date) 
+					return prevVisits.visit_date.toString();
+				else
+					return '';
+			});
+			this.streatTreatForm.patchValue(response);
+			this.changeDetectorRef.detectChanges();
 		});
 	}
 }
