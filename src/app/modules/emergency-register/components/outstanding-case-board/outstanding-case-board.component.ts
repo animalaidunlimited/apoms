@@ -154,28 +154,34 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
   @ViewChildren('filterChips') filterChips!: MatChipList[];
-  @ViewChild('buttonDiv') buttonDiv!: ElementRef;
   @ViewChild('filterDiv') filterDiv!: ElementRef;
+  @ViewChild('chipsDiv') chipsDiv!: ElementRef;
+
 
   ngOnInit(): void {
 
     this.renderer.listen('window', 'click',(e:Event)=>{
 
       if(this.filterDiv.nativeElement.contains(e.target)) {
-        if(this.clickCount === 0) {
+        if(this.clickCount === 0) {          
           this.hideList.next(false);
-          this.clickCount ++;
+          this.clickCount = 1;          
         }
-        else if(this.clickCount === 1) {
+        else if(this.chipsDiv.nativeElement.contains(e.target)) {
+          this.hideList.next(false);
+        }
+        else {
           this.hideList.next(true);
-          this.clickCount --;
+          this.clickCount = 0;
         }
         
       }
-      else if(!this.filterDiv.nativeElement.contains(e.target)) {
+      else if(!this.filterDiv.nativeElement.contains(e.target)) {        
         this.hideList.next(true);
+        this.clickCount = 0;
+
       }
-      else {
+      else{
         this.hideList.next(false);
       }
      });
@@ -300,9 +306,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.outstandingCaseService.toggleAutoRefresh();
   }
 
-  changeDetection(value: Event) {
-    console.log(value);
-  }
+  // changeDetection(value: Event) {
+  //   console.log(value);
+  // }
 
 
   setup(){
@@ -530,11 +536,6 @@ filterChipSelected(groupName: string, chip: MatChip) {
   this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
 
 }
-
-showFilter() {
-  this.hideList.next(!this.hideList);
-}
-
 
 
 }
