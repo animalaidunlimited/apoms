@@ -189,7 +189,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
     if(this.data.patientId) {
 
       this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
-
         if(formVal?.success === -1){
           this.showSnackBar.errorSnackBar('Error updating release details status','OK');
           return;
@@ -209,11 +208,9 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   onReleaseSubmit(releaseForm:any) {
-
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-
+    
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
-
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')
           :

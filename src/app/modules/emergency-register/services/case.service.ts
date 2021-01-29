@@ -307,7 +307,7 @@ export class CaseService extends APIService {
 
     public getConnection() {
 
-        console.log(this.storage.getItemArray('POST'));
+     
 
         this.onlineStatus.connectionChanged.subscribe(async online=>{
 

@@ -113,8 +113,6 @@ export class PatientRecordComponent implements OnInit {
 
         this.loading = true;
 
-        console.log(this.recordForm.value);
-
         this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
             this.loading = false;
             result.success === 1 ?

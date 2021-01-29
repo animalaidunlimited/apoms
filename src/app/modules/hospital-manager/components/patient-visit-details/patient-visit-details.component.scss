@@ -100,3 +100,12 @@
         margin-right: 0px !important;
     }
 }
+@media only screen and (min-width: 1000px) {
+    .visit_row_data > div {
+        min-width: 58rem;
+    }
+    .add-visits-fab-btn {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+}
