@@ -250,14 +250,28 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   
   initMarkers(streetTreatCases:StreetTreatCases[] | null | undefined){
     this.markers = [];
+    let position:google.maps.LatLng | google.maps.LatLngLiteral;
     streetTreatCases?.forEach((streetTreatResponse) =>
     {
       streetTreatResponse.StreetTreatCaseVisits.forEach((StreetTreatCaseVisit)=>{
+        /* if(StreetTreatCaseVisit.Position.Latitude == null && StreetTreatCaseVisit.Position.Longitude == null)
+        {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'address': StreetTreatCaseVisit.Position.Address},(results, status) => {
+            if( status == google.maps.GeocoderStatus.OK ) {
+              position = results[0].geometry.location ;
+            }
+          });
+        }
+        else
+        { */
+          position = { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude };
+        /* } */
         this.markers.push({
           streetTreatCaseId:StreetTreatCaseVisit.StreetTreatCaseId, 
           teamId:streetTreatResponse.TeamId, 
           options:{
-            position: { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude },
+            position: position,
             draggable: true,
             icon:{
               ...this.icon,

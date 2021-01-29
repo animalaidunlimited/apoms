@@ -214,7 +214,6 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
-        console.log(this.recordForm.value);
 
         this.loading = true;
 

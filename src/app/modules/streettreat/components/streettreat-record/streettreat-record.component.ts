@@ -10,9 +10,9 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 interface visitCalender{
   status:number,
@@ -21,8 +21,7 @@ interface visitCalender{
 @Component({
   selector: 'app-streettreat-record',
   templateUrl: './streettreat-record.component.html',
-  styleUrls: ['./streettreat-record.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./streettreat-record.component.scss']
 })
 export class StreetTreatRecordComponent implements OnInit {
 
@@ -39,6 +38,7 @@ export class StreetTreatRecordComponent implements OnInit {
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
   loadCalendarComponent:boolean = true;
+  
 
   constructor(
     private fb: FormBuilder,
@@ -130,7 +130,6 @@ export class StreetTreatRecordComponent implements OnInit {
     setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {
-        console.log(casePriority);
         this.recordForm.controls['EndDate'].setValidators([Validators.required]);
         this.recordForm.controls['EndDate'].updateValueAndValidity();
         this.recordForm.controls['EndDate'].markAsTouched();
@@ -152,7 +151,6 @@ export class StreetTreatRecordComponent implements OnInit {
     this.loadCalendarComponent = !this.loadCalendarComponent;
   }
   
-
   onSelect(selectedDate:Date)
   {
   

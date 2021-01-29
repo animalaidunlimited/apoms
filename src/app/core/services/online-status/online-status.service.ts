@@ -12,7 +12,6 @@ export class OnlineStatusService {
     }
 
     get isOnline() {
-        console.log('welcome');
         return !!window.navigator.onLine;   
     }
 

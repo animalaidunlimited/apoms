@@ -21,12 +21,11 @@ export class HospitalManagerPageComponent implements OnInit {
 
             if(params){
 
-            const searchTerm = `search.TagNumber=${route.snapshot.params.tagNumber}`;
+                const searchTerm = `search.TagNumber=${route.snapshot.params.tagNumber}`;
 
-            this.caseService.searchCases(searchTerm).subscribe(result => {
-                console.log(result);
-                this.tabBar.addTab(result);
-            });
+                this.caseService.searchCases(searchTerm).subscribe(result => {
+                    this.tabBar.addTab(result);
+                });
 
             }
 
