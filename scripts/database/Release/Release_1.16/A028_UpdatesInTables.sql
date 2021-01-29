@@ -13,14 +13,14 @@ SET EmergencyCodeId = NULL
 WHERE EmergencyCodeId = -1;
 
 -- SET EMERGENCYCODEID TO BE NULL 
-ALTER TABLE `aau`.`emergencycase` 
+ALTER TABLE AAU.EmergencyCase 
 DROP FOREIGN KEY `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeId`;
-ALTER TABLE `aau`.`emergencycase` 
+ALTER TABLE AAU.EmergencyCase 
 CHANGE COLUMN `EmergencyCodeId` `EmergencyCodeId` INT NULL ;
-ALTER TABLE `aau`.`emergencycase` 
+ALTER TABLE AAU.EmergencyCase 
 ADD CONSTRAINT `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeId`
   FOREIGN KEY (`EmergencyCodeId`)
-  REFERENCES `aau`.`emergencycode` (`EmergencyCodeId`);
+  REFERENCES AAU.EmergencyCode (`EmergencyCodeId`);
   
 -- Now we don't need the not defined as emergency code.
 DELETE FROM AAU.EmergencyCode 

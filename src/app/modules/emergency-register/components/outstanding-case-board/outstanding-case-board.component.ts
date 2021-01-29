@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ViewChild, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -91,7 +91,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   filterKeysArray : FilterKeys[] = [];
 
-  showList = true;
+  clickCount = 0;
+
+  hideList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   notificationPermissionGranted = false;
 
@@ -143,14 +145,40 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private userOptions: UserOptionsService,
     private printService: PrintTemplateService,
     private dialog: MatDialog,
-    private dropDown: DropdownService
+    private dropDown: DropdownService,
+    private renderer: Renderer2
 
-    ) { }
+    ) { 
+      
+    }
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
   @ViewChildren('filterChips') filterChips!: MatChipList[];
+  @ViewChild('buttonDiv') buttonDiv!: ElementRef;
+  @ViewChild('filterDiv') filterDiv!: ElementRef;
 
   ngOnInit(): void {
+
+    this.renderer.listen('window', 'click',(e:Event)=>{
+
+      if(this.filterDiv.nativeElement.contains(e.target)) {
+        if(this.clickCount === 0) {
+          this.hideList.next(false);
+          this.clickCount ++;
+        }
+        else if(this.clickCount === 1) {
+          this.hideList.next(true);
+          this.clickCount --;
+        }
+        
+      }
+      else if(!this.filterDiv.nativeElement.contains(e.target)) {
+        this.hideList.next(true);
+      }
+      else {
+        this.hideList.next(false);
+      }
+     });
 
     this.dropDown.getAnimalTypes().subscribe((animalType: AnimalType[])=> {
 
@@ -502,5 +530,11 @@ filterChipSelected(groupName: string, chip: MatChip) {
   this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
 
 }
+
+showFilter() {
+  this.hideList.next(!this.hideList);
+}
+
+
 
 }
