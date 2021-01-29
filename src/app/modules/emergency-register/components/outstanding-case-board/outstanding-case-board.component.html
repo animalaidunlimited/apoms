@@ -37,17 +37,19 @@
 
   </div>
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box">
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box" #filterDiv>
 
-    <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="showList = !showList">
-      <mat-icon>filter_alt</mat-icon>
-    </button>
-
+    <div #buttonDiv>
+      <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="showFilter()">
+        <mat-icon>filter_alt</mat-icon>
+      </button>  
+    </div>
+    
     <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 
-    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()">
+    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()" >
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -56,7 +58,7 @@
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
 
-   <div class="filterWrapper" [hidden]= "showList" style="position: relative;">
+   <div class="filterWrapper" [hidden]= "hideList | async" style="position: relative;" >
     <mat-expansion-panel [expanded]="true" *ngFor="let options of caseFilter" hideToggle>
       <mat-expansion-panel-header> 
         <mat-panel-title>
