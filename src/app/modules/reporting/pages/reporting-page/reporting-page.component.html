@@ -1,6 +1,10 @@
 <fieldset class="form-sub-group">
     <legend class="legend">AAU Reporting</legend>
 
+    <button class="refreshButton" mat-mini-fab (click)="initialiseReporting()">
+        <mat-icon>refresh</mat-icon>
+    </button>
+
     <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
         <fieldset class="form-sub-group">
             <div *ngFor = "let data of patientCountData">
@@ -11,20 +15,27 @@
         </fieldset>
     </div>
 
-    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
+    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center" [formGroup]="reportingDetails">
+
         <fieldset class="form-sub-group">
-            <p class="legend">Animal count in each area</p>
-                <div *ngFor = "let value of patientCountData">
-                    <div *ngIf="value.area != 'Total'">
-                    <p (click)="getPatientDetailsByArea(value.area)" class="link">{{value.area}} : {{value.count}}</p>
-                    </div>
-                </div>
+            <p class="legend">Case count by date</p>
+
+            <div fxLayout="row" fxLayoutGap="10px">
+                <mat-slide-toggle [checked]="isStreetTreatChecked | async" (change)="streetTreatChecked($event)" formControlName="streetTreat">StreetTreat</mat-slide-toggle>
+                <mat-slide-toggle [checked]="isAdmissionChecked | async" (change)="admissionChecked($event)" formControlName="admission">Admission</mat-slide-toggle>
+            </div>
+
+            <mat-form-field style="margin-top: 20px; margin-left: 10px;">
+                <mat-label>Select date</mat-label>
+                <input matInput type="date" formControlName="emergencyCaseDate" name = "CaseDate"
+                [errorStateMatcher]="errorMatcher" required>
+            </mat-form-field>
+
+                <p class="link link-large" (click)="openEmergencyCaseDialog()">{{emergencyCaseCount | async}}</p>
+
         </fieldset>
-    </div>
 
-    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
-
-        <fieldset class="form-sub-group" [formGroup]="surgeryDetails">
+        <fieldset class="form-sub-group">
             <p class="legend">Surgery count by date</p>
 
             <mat-form-field >
@@ -39,5 +50,18 @@
 
 
     </div>
+
+    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
+        <fieldset class="form-sub-group">
+            <p class="legend">Animal count in each area</p>
+                <div *ngFor = "let value of patientCountData">
+                    <div *ngIf="value.area != 'Total'">
+                    <p (click)="getPatientDetailsByArea(value.area)" class="link">{{value.area}} : {{value.count}}</p>
+                    </div>
+                </div>
+        </fieldset>
+    </div>
+
+    
 
 </fieldset>

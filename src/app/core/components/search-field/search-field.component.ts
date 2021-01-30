@@ -1,6 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Platform } from '@angular/cdk/platform';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, HostListener } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Search, SearchValue } from '../record-search/record-search.component';
@@ -88,7 +88,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Name =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
             name: 'Caller name',
             inNotIn: true
@@ -100,7 +99,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Number =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
             name: 'Caller no.',
             inNotIn: true
@@ -170,6 +168,12 @@ export class SearchFieldComponent implements OnInit {
             inNotIn: true
         }
     ];
+
+    @HostListener('document:keydown.enter', ['$event'])
+    executeSearchByEnter(event: KeyboardEvent) {
+        event.preventDefault();
+        this.executeSearch();
+    }
 
   constructor(
     public rescueDialog: MatDialog,

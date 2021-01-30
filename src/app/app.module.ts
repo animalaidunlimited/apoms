@@ -18,6 +18,8 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { CaseService } from './modules/emergency-register/services/case.service';
+import {ConnectionServiceModule} from 'ng-connection-service';
 
 registerLocaleData(localeIt);
 
@@ -48,6 +50,7 @@ export class UIErrorHandler extends ErrorHandler {
         AppRoutingModule,
         MatDialogModule,
         NavModule,
+        ConnectionServiceModule,
         HttpClientModule,
         MaterialModule,
         ServiceWorkerModule.register('apoms-sw.js', { enabled: environment.production }),
