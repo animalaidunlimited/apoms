@@ -11,7 +11,46 @@
     releaseType: number;
     Releaser1: number;
     Releaser2: number;
-    releaseBeginDate: string | Date;
-    releaseEndDate: string | Date;
-    pickupDate: string | Date;
+    releaseBeginDate: Date | string;
+    releaseEndDate: Date | string;
+    pickupDate: Date | string;
+  }
+
+  export interface ReleaseResponse {
+    Releaser1?: any;
+    Releaser2?: any;
+    patientId: number;
+    releaseId: number;
+    releaseType: number;
+    releaseEndDate?: any;
+    complainerNotes: string;
+    streetTreatForm: StreetTreatForm;
+    releaseBeginDate?: any;
+    complainerInformed: number;
+    releaseRequestForm: ReleaseRequestForm;
+  }
+  
+  interface ReleaseRequestForm {
+    requestedDate: string;
+    requestedUser: string;
+  }
+  
+  export interface StreetTreatForm {
+    teamId: number;
+    visits: VisitResponse[];
+    patientId: number;
+    adminNotes: string;
+    mainProblem: number;
+    casePriority: number;
+    streetTreatCaseId: number;
+    streetTreatCaseStatus: number;
+  }
+  
+  export interface VisitResponse {
+    visitId: number;
+    visit_day: number;
+    visit_type: number;
+    visit_status: number;
+    visit_comments?: string;
+    visit_date?: Date;
   }

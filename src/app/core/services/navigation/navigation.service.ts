@@ -21,6 +21,7 @@ export class NavigationService {
     private navigationStack: Array<Array<string>> = [];
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
+    public isSearchClicked: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(private navRouteService: NavRouteService) {
         this.navigationItems = navRouteService.getNavRoutes();

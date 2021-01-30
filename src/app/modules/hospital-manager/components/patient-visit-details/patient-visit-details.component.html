@@ -1,8 +1,8 @@
 
-<h5 mat-dialog-title>Add StreetTreat visits</h5>
-<form [formGroup]="visitForm" >
+<form [formGroup]="streatTreatForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 		<mat-form-field appearance="fill">
+			<mat-label>Case priority</mat-label>
 			<mat-select placeholder="Case priority" formControlName="casePriority">
 				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
@@ -28,6 +28,7 @@
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom" >
 		<mat-form-field appearance="fill"  style="flex-grow: 2;">
+			<mat-label>Admin Notes</mat-label>
 			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
 		</mat-form-field>
 		<mat-form-field appearance="fill">
@@ -37,16 +38,25 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper"
-		formArrayName="visits">
+	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
+		<h5 mat-dialog-title>Visits</h5>
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
-			<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
-				<div [formGroupName]="visitIndex">
-					<mat-form-field appearance="fill">
+			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
+				<div [formGroupName]="visitIndex" >
+					<mat-form-field appearance="fill" *ngIf="!showVisitDate">
 						<mat-label>Day</mat-label>
 						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day"
 							value="0" formControlName="visit_day"  />
 							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
+								Day should be unique
+							</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="fill" *ngIf="showVisitDate" class="visit-date">
+						<mat-label>Date</mat-label>
+						<input matInput  type="date" min="0" placeholder="Date"
+							value="0" formControlName="visit_date"  />
+							<mat-error *ngIf="item.get('visit_date')?.hasError('uniqueBy')">
 								Day should be unique
 							</mat-error>
 					</mat-form-field>
@@ -85,5 +95,4 @@
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>
-
 </form>

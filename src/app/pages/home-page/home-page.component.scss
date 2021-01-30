@@ -4,3 +4,11 @@
     height: auto;
     text-align: center;
 }
+
+@media only screen and (max-width: 600px){
+    .link-image {
+        min-width: calc(100%/1.3);
+        max-width: calc(100%/3);
+        margin: 5px;
+    }
+}

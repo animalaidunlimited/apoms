@@ -1,0 +1,159 @@
+.legend {
+    font-size: large;
+    color: #a9abad;
+    font-weight: bold;
+    font-family: sans-serif;
+    text-align: center;
+}
+.streettreat_record_form {
+    background: white;
+    border-radius: 6px;
+    border: 2px solid #a9abad;
+}
+@media only screen and (max-width: 600px) {
+    .st_form .mat-form-field {
+        width: 100%;
+    }
+    .calendar-toggle {
+        width: 100%;
+        margin-bottom: -10px !important;
+    }
+}
+@mixin border($bg-color) {
+    border-radius: 50%;
+    & .mat-calendar-body-cell-content {
+        border: 5px solid white !important;
+        border: 3px solid $bg-color !important;
+        background-color: $bg-color !important;
+        box-shadow: inset 0px 0px 0px 3px rgb(255, 255, 255);
+        box-sizing: border-box;
+    }
+}
+
+::ng-deep {
+    &.selected-date {
+        @include border(#607d8b);
+    }
+    &.complete {
+        @include border(#58b09c);
+    }
+    &.complete-animal-died {
+        @include border(#202030);
+    }
+    &.complete-animal-not-found {
+        @include border(#4f6d7a);
+    }
+    &.complete-early-release {
+        @include border(#386150);
+    }
+    &.in-progress {
+        @include border(#caf7e2);
+    }
+    &.missed {
+        @include border(#e94f37);
+    }
+    &.readmission {
+        @include border(#ef7e6c);
+    }
+    &.to-do {
+        @include border(#a9bec7);
+    }
+    &.complete-auto-closed {
+        @include border(#304047);
+    }
+    &.complete-complainer-not-reachable {
+        @include border(#a18fad);
+    }
+    &.admission-to-aau {
+        @include border(#4f776d);
+    }
+}
+@media only screen and (min-width: 600px) {
+    :host {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        padding:10px;
+        grid-column-gap: 8px;
+        grid-auto-rows: min-content;
+    }
+    
+    :host ::ng-deep {
+        .streettreat_record_form{
+            grid-area: 1/1/ 4/3;
+            position: relative;
+        }
+        .form-sub-group {
+            grid-area: 4/1/4/3;
+        }
+        .visit-calendar-wrapper {
+            position: absolute;
+            right: 0;
+            margin-top: -23px;
+        }
+        .visit_row_data {
+            mat-form-field {
+               
+                &:first-child {
+                    min-width: 14% !important;
+                    width: 14% !important;
+                }
+                &:nth-child(3) {
+                    min-width: 16% !important;
+                    width: 16% !important;
+                }
+                
+            }
+            > div:first-child {
+                display: block !important;
+                box-shadow: none !important;
+                padding: 0px 0 0 4px !important;
+                margin-bottom: 15px !important;
+            }
+            .mat-fab-wrapper {
+                position: unset !important;
+                display: inline-block;
+                margin-left: 10px;
+            }
+        }
+        .add-visits-fab-btn {
+            position: unset ;
+            display: flex !important;
+            flex-direction: row-reverse;
+            width: 93%;
+        }
+        .vistisWrapper > div {
+            margin-right: 0px !important;
+        }
+    }
+
+    .calendar-toggle {
+        width: 45px !important;
+        min-width: 45px;
+        padding: 0;
+    }
+  
+    .visit_calendar {
+        width: 320px;
+        background: white;
+        border-radius: 25px;
+        position: absolute;
+        box-shadow: 0 7px 30px -10px rgba(126, 138, 145, 0.5);
+        left: 70px;
+        z-index: 1;
+        top: -350px;
+        & ::ng-deep .mat-calendar-header {
+            padding: 1px 8px 0px 8px;
+            background: #607d8b ;
+            color: white;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+        }
+    }
+}
+
+:host ::ng-deep .visit_row_data {
+    position: unset !important;
+}
+
+
+
