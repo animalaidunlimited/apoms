@@ -11,10 +11,9 @@ export class OnlineStatusService {
         return this.internalConnectionChanged;
     }
 
-    get isOnline() {
-        console.log('welcome');
-        return !!window.navigator.onLine;   
-    }
+    // get isOnline() {
+    //     return !!window.navigator.onLine;   
+    // }
 
     constructor() {
         window.addEventListener('online', () => this.updateOnlineStatus());

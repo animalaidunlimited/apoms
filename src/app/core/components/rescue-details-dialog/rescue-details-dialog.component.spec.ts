@@ -67,13 +67,6 @@
          callOutcome: ['']
        })
      });
-
-    // component.data = {
-    //   emergencyCaseId,
-    //   emergencyNumber,
-    //   recordForm
-    // }
-
      dialog = TestBed.get(MatDialog);
 
      fixture.detectChanges();

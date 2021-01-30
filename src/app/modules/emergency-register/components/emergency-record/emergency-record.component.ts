@@ -18,7 +18,6 @@ export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
     @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
-    // @Output() public loadGuid = new EventEmitter<string>();
 
     loading = false;
 
@@ -34,11 +33,10 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
+
     dbSync:boolean = false;
 
     lsSync:boolean = false;
-
-    // uuId!: string;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
@@ -68,8 +66,6 @@ export class EmergencyRecordComponent implements OnInit {
         private showSnackBar: SnackbarService
     ) {}
 
-
-
     ngOnInit() {
 
 
@@ -80,8 +76,6 @@ export class EmergencyRecordComponent implements OnInit {
             this.lsSync = value
         );
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
-
-        // this.uuId = this.caseService.generateUUID();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
@@ -101,8 +95,10 @@ export class EmergencyRecordComponent implements OnInit {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+
                 this.caseService.dbSync.next(true);
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
+
             }
         });
 
@@ -213,8 +209,6 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     async saveForm() {
-
-        console.log(this.recordForm.value);
 
         this.loading = true;
 

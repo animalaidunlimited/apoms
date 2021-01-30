@@ -14,15 +14,14 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
-import { promise } from 'protractor';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 interface PatientCountInArea{
     area : string;
     count : number;
 }
-
-
 
 @Component({
     selector: 'app-reporting-page',
@@ -46,38 +45,21 @@ export class ReportingPageComponent implements OnInit {
     surgeries!: Observable<SurgeryRecord[]>;
     surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     reportingDetails!: FormGroup;
-    emergencyCases!: Promise<EmergencyRecordTable[] | null>;
+    emergencyCases!: Observable<EmergencyRecordTable[] | null>;
     emergencyCaseCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     totalPatientCount = 0;
+    isAdmissionChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     ngOnInit() {
 
         this.printService.initialisePrintTemplates();
 
-        this.census.getCensusPatientCount().then(response => {
-            this.patientCountData = response;
-        });
+       this.initialiseReporting();
 
-        this.reportingDetails = this.fb.group({
-            surgeryDate: [, Validators.required],
-            emergencyCaseDate: []
-        });
+       
 
-        this.reportingDetails.get('surgeryDate')?.valueChanges.subscribe(() => {
-
-            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(this.reportingDetails.get('surgeryDate')?.value);
-            this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
-        });
-
-        this.reportingDetails.get('emergencyCaseDate')?.valueChanges.subscribe(() => {
-            this.emergencyCases =  this.reportingService.getEmergencyCaseByDate(this.reportingDetails.get('emergencyCaseDate')?.value);
-
-            this.emergencyCases.then((cases: any)=> this.emergencyCaseCount.next(cases.length || 0));
-        });
-
-        this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
-
-        this.reportingDetails.get('emergencyCaseDate')?.setValue(getCurrentDateString());
+        
 
     }
 
@@ -110,7 +92,7 @@ export class ReportingPageComponent implements OnInit {
     }
 
     openEmergencyCaseDialog() {
-        this.emergencyCases.then((caseList: EmergencyRecordTable[] | null)=> {
+        this.emergencyCases.subscribe((caseList: EmergencyRecordTable[] | null)=> {
             this.dialog.open(EmergencyCaseDialogComponent, {
                 width: '90%',
                 maxHeight: 'auto',
@@ -119,6 +101,64 @@ export class ReportingPageComponent implements OnInit {
                 }
             });
         });
+    }
+
+
+    streetTreatChecked(streetTreatBoolean : MatSlideToggleChange) {
+        if(streetTreatBoolean.checked) {
+           this.isAdmissionChecked.next(false);
+           this.reportingDetails.get('admission')?.setValue(false);
+        }
+        else{
+            this.isStreetTreatChecked.next(false);
+            this.reportingDetails.get('streetTreat')?.setValue(false);
+        }
+        
+    }
+
+    admissionChecked(admissionBoolean : MatSlideToggleChange) {
+        if(admissionBoolean.checked) {
+           this.isStreetTreatChecked.next(false);
+           this.reportingDetails.get('streetTreat')?.setValue(false);
+        }
+        else{
+            this.isAdmissionChecked.next(false);
+            this.reportingDetails.get('admission')?.setValue(false);
+        }
+        
+    }
+
+    initialiseReporting() {
+
+        this.reportingDetails = this.fb.group({
+            surgeryDate: [, Validators.required],
+            emergencyCaseDate: [],
+            streetTreat: [],
+            admission: []
+        });
+        this.census.getCensusPatientCount().then(response => {
+            this.patientCountData = response;
+        });
+
+        this.reportingDetails.valueChanges.subscribe((val)=> {
+
+            this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(val.surgeryDate);
+            this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
+
+            if(val.emergencyCaseDate) {
+                this.emergencyCases =  this.reportingService.getEmergencyCaseByDateAndOutcomeOrST(val.emergencyCaseDate, val.streetTreat, val.admission);
+                this.emergencyCases.subscribe((cases: any)=> {
+                    if(cases) {
+                        this.emergencyCaseCount.next(cases.length || 0);
+                    }
+                });
+            }
+        });
+
+        
+        this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
+
+        this.reportingDetails.get('emergencyCaseDate')?.setValue(getCurrentDateString());
     }
 
 
