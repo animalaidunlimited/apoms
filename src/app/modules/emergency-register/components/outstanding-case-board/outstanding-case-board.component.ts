@@ -93,7 +93,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   clickCount = 0;
 
-  hideList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  hideList = true;
 
   notificationPermissionGranted = false;
 
@@ -162,29 +162,13 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.renderer.listen('window', 'click',(e:Event)=>{
 
-      if(this.filterDiv.nativeElement.contains(e.target)) {
-        if(this.clickCount === 0) {          
-          this.hideList.next(false);
-          this.clickCount = 1;          
-        }
-        else if(this.chipsDiv.nativeElement.contains(e.target)) {
-          this.hideList.next(false);
-        }
-        else {
-          this.hideList.next(true);
-          this.clickCount = 0;
-        }
-        
-      }
-      else if(!this.filterDiv.nativeElement.contains(e.target)) {        
-        this.hideList.next(true);
-        this.clickCount = 0;
-
-      }
-      else{
-        this.hideList.next(false);
-      }
-     });
+      // The below logic made the filter list disappear when click outside it. 
+      if(!this.filterDiv.nativeElement.contains(e.target)) {
+        this.hideList= true;
+        this.changeDetector.detectChanges();
+      } 
+      
+      });
 
     this.dropDown.getAnimalTypes().subscribe((animalType: AnimalType[])=> {
 
