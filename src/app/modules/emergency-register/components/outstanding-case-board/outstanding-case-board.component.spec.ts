@@ -17,8 +17,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { RouterTestingModule } from '@angular/router/testing';
-
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'rescue-details',
     template: '<p>Mock Rescue Details Component</p>',
 })

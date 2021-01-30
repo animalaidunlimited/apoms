@@ -90,7 +90,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Name =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
             name: 'Caller name',
             inNotIn: true
@@ -102,7 +101,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Number =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
             name: 'Caller no.',
             inNotIn: true

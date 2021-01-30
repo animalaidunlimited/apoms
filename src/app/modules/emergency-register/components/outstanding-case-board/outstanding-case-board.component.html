@@ -17,18 +17,39 @@
     </button>
 
   </mat-form-field>
-
   </form>
 
+  <div class="filterChipWrapper" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="center">
+
+    <p *ngIf="filterKeysArray.length > 0" class="filterText">Filter:</p>
+
+    <mat-chip-list #filteredChipList aria-label="Filter selection">
+      <div *ngFor="let selectedChips of filterChips">
+        <mat-chip [removable]="removable"
+          (removed)="selected.toggleSelected()"
+          selected
+          *ngFor="let selected of (selectedChips.selected | chipListType)">
+          {{selected.value}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+      </div>
+    </mat-chip-list>
+
+  </div>
+
+  <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box" #filterDiv>
 
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="refresh-box">
+    <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
+      <mat-icon>filter_alt</mat-icon>
+    </button>  
 
+    
     <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 
-    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()">
+    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()" >
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -36,7 +57,27 @@
     matTooltip="To enable auto refresh, please enable notifications in your browser."
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
+
+   <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
+    <mat-expansion-panel [expanded]="true" *ngFor="let options of caseFilter" hideToggle>
+      <mat-expansion-panel-header> 
+        <mat-panel-title>
+          {{options.showTitle}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+    <mat-chip-list #filterChips>
+      <mat-chip #filterChip="matChip"
+      (click)="filterChip.toggleSelected()"
+      (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
+      *ngFor="let option of options.groupValues">
+        {{option.value}}
+      </mat-chip>
+    </mat-chip-list>
+    </mat-expansion-panel>
+   
   </div>
+</div>
 
 </div>
 
@@ -69,7 +110,7 @@
             style="background-color: transparent;"
             (cdkDropListDropped)="drop($event)">
             <div *ngFor="let outstandingCase of actionGroup.ambulanceAssignment;" cdkDrag>
-            <div *ngIf="outstandingCase.ambulanceAction==='Rescue'">
+            <div *ngIf="outstandingCase.ambulanceAction==='Rescue' && outstandingCase.filteredCandidate">
 
             <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
               <mat-expansion-panel-header
@@ -146,7 +187,7 @@
 
             </div>
 
-            <div *ngIf="outstandingCase.ambulanceAction==='Release'">
+            <div *ngIf="outstandingCase.ambulanceAction==='Release' && outstandingCase.filteredCandidate">
 
               <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true"
 
@@ -225,7 +266,7 @@
               </div>
             </div>
             </div>
-        </div>
+      </div>
       </div>
       </div>
   </div>

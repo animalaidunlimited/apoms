@@ -6,6 +6,7 @@
 
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="patientStatusForm" (click)="patient.onSave()">Save</button>
+
+  <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
 </div>

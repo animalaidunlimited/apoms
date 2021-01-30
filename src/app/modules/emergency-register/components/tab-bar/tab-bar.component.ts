@@ -57,7 +57,6 @@ export class TabBarComponent implements OnInit {
         }
     }
 
-
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
         this.guIdVal = this.caseService.generateUUID();
@@ -68,6 +67,7 @@ export class TabBarComponent implements OnInit {
             icon: 'close',
             GUID: this.guIdVal
         });
+
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();
@@ -91,11 +91,8 @@ export class TabBarComponent implements OnInit {
 
     updateEmergencyNumber(emergencyNumberAndGuId: any) {
 
-        console.log(emergencyNumberAndGuId);
-
         this.tabs.forEach(tab=> {
-            
-            console.log(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId);
+        
             if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId) {
                 tab.value = (
                     emergencyNumberAndGuId.emergencyNumber || 'New Case*'
