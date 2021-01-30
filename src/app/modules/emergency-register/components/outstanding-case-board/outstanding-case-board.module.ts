@@ -6,18 +6,25 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
+import {MatChipsModule} from '@angular/material/chips';
+import { ChipListType } from '../../pipes/chip-list-type';
 
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,
-         OutstandingCaseMapComponent
+         OutstandingCaseMapComponent,
+         ChipListType
     ],
     imports: [
         CommonModule,
         MaterialModule,
         FlexLayoutModule,
         GoogleMapsModule,
-        SearchResultCardModule
+        SearchResultCardModule,
+        MatChipsModule
+    ],
+    providers:[
+        
     ],
     exports: [OutstandingCaseBoardComponent],
 })

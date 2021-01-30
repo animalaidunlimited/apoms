@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -7,7 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -17,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId!: number;
+    @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
     loading = false;
@@ -35,6 +35,7 @@ export class EmergencyRecordComponent implements OnInit {
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
+
         event.preventDefault();
         this.recordForm.reset();
     }
@@ -58,15 +59,21 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
-    ) {}
+    ) {
+       
+    }
 
 
 
     ngOnInit() {
+
+
+
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
+                guId : [this.guId],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -75,6 +82,14 @@ export class EmergencyRecordComponent implements OnInit {
                 sameAsNumber: []
             }),
             caseComments: [],
+        });
+
+
+        this.caseService.emergencyResponse.subscribe(data=> {
+            if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+            }
         });
 
         if (this.emergencyCaseId) {
@@ -223,11 +238,12 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
-
                             this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
 
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
                             messageResult = this.getCaseSaveMessage(resultBody);
 
                         }
@@ -271,7 +287,9 @@ export class EmergencyRecordComponent implements OnInit {
                             this.recordForm.markAsUntouched();
                         }
                         else{
-                            this.showSnackBar.errorSnackBar(messageResult.message,'OK');
+                            // this.showSnackBar.errorSnackBar(messageResult.message,'OK');
+                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+
                         }
                     })
                     .catch(error => {
@@ -282,7 +300,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     }
 
-    emergencyNumberUpdated(emergencyNumber: number) {
-        this.loadEmergencyNumber.emit(emergencyNumber);
+    emergencyNumberUpdated(emergencyNumber: any) {
+        const guId = this.recordForm.get('emergencyDetails.guId')?.value;
+        this.loadEmergencyNumber.emit({emergencyNumber , guId});
     }
 }
