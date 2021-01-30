@@ -4,8 +4,8 @@ import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
+import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
 import { CaseService } from '../../services/case.service';
-import { Subject } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -24,11 +24,20 @@ export class TabBarComponent implements OnInit {
 
     constructor(private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
-        private caseService: CaseService,
-        private dialog: MatDialog) {}
+        private dialog: MatDialog,
+        private navigationService:NavigationService,
+        private caseService: CaseService) {}
 
     ngOnInit() {
-
+    
+        this.navigationService.isSearchClicked.subscribe((clicked)=>
+            {
+                if(clicked)
+                {
+                    this.selected.setValue(1)
+                }
+            }
+        );
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
         sharedMediaItem.subscribe((mediaItem:File[])=>{
@@ -58,7 +67,7 @@ export class TabBarComponent implements OnInit {
             icon: 'close',
             GUID: this.guIdVal
         });
-        
+
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();

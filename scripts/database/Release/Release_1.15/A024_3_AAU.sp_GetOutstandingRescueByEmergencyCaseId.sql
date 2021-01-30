@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId;!!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT, IN prm_PatientId INT)

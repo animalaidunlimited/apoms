@@ -6,6 +6,9 @@
         <mat-icon>arrow_back</mat-icon>
     </a>
     <div fxFlex="100%">{{activePage?.title}}</div>
+    <button mat-icon-button *ngIf="mobile" (click)="onSetSearchFocus()">
+        <mat-icon>search</mat-icon>
+    </button>
     <button mat-icon-button (click)="onLogout()">
         <mat-icon>logout</mat-icon>
     </button>

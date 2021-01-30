@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -33,6 +33,11 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
+
+    dbSync:boolean = false;
+
+    lsSync:boolean = false;
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
 
@@ -59,16 +64,17 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
-    ) {
-       
-    }
-
-
+    ) {}
 
     ngOnInit() {
 
 
-
+        this.caseService.dbSync.subscribe((value:boolean) => 
+            this.dbSync = value
+        );
+        this.caseService.lsSync.subscribe((value:boolean) => 
+            this.lsSync = value
+        );
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.recordForm = this.fb.group({
@@ -89,6 +95,10 @@ export class EmergencyRecordComponent implements OnInit {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+
+                this.caseService.dbSync.next(true);
+                // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
+
             }
         });
 
@@ -208,7 +218,7 @@ export class EmergencyRecordComponent implements OnInit {
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-
+                this.caseService.dbSync.next(true);
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
                 return;
             }
@@ -249,12 +259,16 @@ export class EmergencyRecordComponent implements OnInit {
                         }
 
                         if (messageResult.failure === 0) {
+                            this.caseService.dbSync.next(true);
+                            this.caseService.lsSync.next(false);
                             this.showSnackBar.successSnackBar('Case inserted successfully','OK');
                         }
                         else if (messageResult.failure === -1) {
                             this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
                         }
                         else if (messageResult.failure === 1) {
+                            this.caseService.lsSync.next(true);
+                            this.caseService.dbSync.next(true);
                             this.showSnackBar.errorSnackBar('Case saved offline','OK');
                         }
                     })
