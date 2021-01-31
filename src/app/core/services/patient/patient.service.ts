@@ -104,8 +104,6 @@ export class PatientService extends APIService {
 
     public async updatePatientDetails(patientDetails: any) {
 
-        console.log(patientDetails);
-
         return await this.put(patientDetails)
             .then(data => {
                 return data;

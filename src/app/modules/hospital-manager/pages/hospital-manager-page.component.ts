@@ -23,9 +23,9 @@ export class HospitalManagerPageComponent implements OnInit {
 
                 const searchTerm = `search.TagNumber=${route.snapshot.params.tagNumber}`;
 
-                this.caseService.searchCases(searchTerm).subscribe(result => {
-                    this.tabBar.addTab(result);
-                });
+            this.caseService.searchCases(searchTerm).subscribe(result => {
+                this.tabBar.addTab(result);
+            });
 
             }
 

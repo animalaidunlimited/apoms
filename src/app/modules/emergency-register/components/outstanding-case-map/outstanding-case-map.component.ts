@@ -61,7 +61,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     ]};
 
     this.outstandingCases.outstandingCases$.subscribe(cases => {
-  
+
       if(cases.length > 0){
         this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
       }
@@ -120,7 +120,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   }
 
   hasLargeAninmal(patients:ActionPatient[]) : boolean{
-    
+
     return patients.some(patient => patient.largeAnimal);
 
   }
