@@ -67,7 +67,7 @@ export class StreetTreatRecordComponent implements OnInit {
     this.recordForm = this.fb.group({
       EmergencyNumber: ['', Validators.required],
       TagNumber: ['', Validators.required],
-      NextVisit: ['', Validators.required],
+      NextVisit: [''],
       PercentComplete: ['', Validators.required],
       AnimalTypeId: ['', Validators.required],
       AnimalName:[''],

@@ -17,26 +17,31 @@
     .visit_row_data{
         position: relative;
         & > div:first-child {
-            display: grid ;
-            grid-template-areas: "date status type d_btn" 
-                                 "admin admin admin d_btn";
+            display: grid !important;
+            grid-template-areas: "date status type" 
+                                 "admin admin admin" 
+                                 "notes notes notes";
             grid-column-gap: 10px;
-            box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+
+            box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255) !important;
             margin-bottom: 25px;
             border-radius: 25px;
-            padding: 15px 15px 15px 15px;
+            padding: 15px 15px 45px 15px !important;
             & .mat-form-field{
                 max-height: 65px;
-                &:first-child {
+                &.date {
                     grid-area: date;
                 }
-                &:last-of-type{
+                &.notes{
+                    grid-area: notes;
+                    margin-top: 40px;
+                }
+                &.admin{
                     grid-area:admin;
                 }
             }
         }
         & .mat-fab-wrapper{
-            grid-area: d_btn;
             top: -15px;
             position: absolute;
             right: -15px;
@@ -99,13 +104,14 @@
     .vistisWrapper div {
         margin-right: 0px !important;
     }
+    .visit_row_data > div{
+        max-width:43rem !important;
+    }
 }
 @media only screen and (min-width: 1000px) {
-    .visit_row_data > div {
-        min-width: 58rem;
-    }
     .add-visits-fab-btn {
-        display: flex;
+        display:flex !important;
         flex-direction: row-reverse;
+        margin:0 0 30px 0;
     }
 }
