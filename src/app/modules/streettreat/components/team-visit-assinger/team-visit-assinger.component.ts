@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
 import { ChartData, chartSelectObject, StreetTreatCases, StreetTreatCaseVisit, TeamColor } from 'src/app/core/models/streettreet';
@@ -88,7 +88,8 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
-    private elementRef:ElementRef
+    private elementRef:ElementRef,
+    private renderer:Renderer2
     ) {
       this.view = [innerWidth / 1.2, 400];
     }
@@ -187,7 +188,8 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     this.streetTreatServiceSubs = 
     this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
     .subscribe((streetTreatCaseByVisitDateResponse) => {
-      this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
+      console.log(streetTreatCaseByVisitDateResponse);
+    this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
       this.totalCases = streetTreatCaseByVisitDateResponse.TotalCases;
       this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
       this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;

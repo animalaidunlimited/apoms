@@ -49,3 +49,8 @@ Thumbs.db
 /src/index.prod.html
 /src/index.html
 settings.json
+
+# Index Files
+index.html
+index.prod.html
+
