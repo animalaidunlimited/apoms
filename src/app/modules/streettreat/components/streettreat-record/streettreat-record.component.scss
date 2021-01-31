@@ -68,6 +68,16 @@
         @include border(#4f776d);
     }
 }
+@media only screen and (min-width: 1441px) {
+    :host ::ng-deep {
+        .visit_row_data {
+            > div:first-child{
+                min-width: 64rem;
+                max-width: 64rem;
+            }
+        }
+    }
+}
 @media only screen and (min-width: 1201px) {
     
     :host ::ng-deep {
@@ -80,9 +90,6 @@
         .visit_row_data {
             > div:first-child{
                 .mat-form-field {
-                    &:first-child {
-                        width: 9.5rem !important;
-                    }
                     &:nth-child(2){
                         min-width:20rem !important;
                     }
@@ -100,34 +107,17 @@
 
 }
 @media only screen and (min-width: 600px ){
-    :host {
-        display: grid;
-        grid-template-columns: repeat(3,1fr);
-        padding:10px;
-        grid-column-gap: 8px;
-        grid-auto-rows: min-content;
-    }
-    
     :host ::ng-deep {
-        .streettreat_record_form{
-            grid-area: 1/1/ 4/3;
-            position: relative;
-        }
-        .form-sub-group {
-            grid-area: 4/1/4/3;
-        }
+
         .visit-calendar-wrapper {
             position: absolute;
             left: 5rem;
             margin-top: 12rem;
         }
         .visit_row_data {
+           position: relative !important;
             mat-form-field {
                
-                &:first-child {
-                    min-width: 14% !important;
-                    width: 14% !important;
-                }
                 &:nth-child(3) {
                     min-width: 16% !important;
                     width: 16% !important;
@@ -138,12 +128,10 @@
                 display: block !important;
                 box-shadow: none !important;
                 padding: 0px 0 0 4px !important;
-                margin-bottom: 15px !important;
             }
-            .mat-fab-wrapper {
-                position: unset !important;
-                display: inline-block;
-                margin-left: 10px;
+            & .mat-fab-wrapper{
+                top: -1.4rem !important;
+                right: 0.5rem !important;
             }
         }
         .add-visits-fab-btn {
@@ -180,10 +168,6 @@
             border-top-right-radius: 25px;
         }
     }
-}
-
-:host ::ng-deep .visit_row_data {
-    position: unset !important;
 }
 
 

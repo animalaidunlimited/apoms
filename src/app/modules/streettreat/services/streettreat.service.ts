@@ -158,7 +158,6 @@ export class StreetTreatService extends APIService {
   }
 
   public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) {
-    console.log(streetTreatCaseForm);
     return await this.post(streetTreatCaseForm)
     .then(data => {
         return data;
