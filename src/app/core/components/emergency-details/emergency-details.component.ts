@@ -23,7 +23,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @Input() recordForm!: FormGroup;
     @Input() focusEmergencyNumber!: boolean;
-    // @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -53,7 +52,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
     ngOnInit(): void {
-        // this.getCurrentTimeStringInSeconds();
 
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
@@ -131,36 +129,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     updateEmergencyNumber(emergencyNumber: number) {
         this.loadEmergencyNumber.emit(emergencyNumber);
     }
-
-    // generateEmergencyNumber() {
-    //     // tslint:disable-next-line:radix
-    //     const value = parseInt(this.getCurrentTimeStringInSeconds());
-    //     let rand: number;
-    //     // tslint:disable-next-line:radix
-    //     rand = Math.round((Math.random() * (10 - 1) + 1));
-
-    //     const randomNum = Math.round((Math.random() * value * Math.random() * rand));
-
-    //     console.log(typeof randomNum);
-
-    //     return randomNum;
-
-    // }
-
-    // getCurrentTimeStringInSeconds() {
-    //     let currentTime = new Date();
-
-    //     const wn = window.navigator as any;
-    //     let locale = wn.languages ? wn.languages[0] : 'en-GB';
-    //     locale = locale || wn.language || wn.browserLanguage || wn.userLanguage;
-
-    //     currentTime = new Date(
-    //         currentTime.getTime() + currentTime.getTimezoneOffset(),
-    //     );
-
-    //     return formatDate(currentTime, 'hhmmSSS', locale);
-        
-    // }
 
     setInitialTime() {
         const currentTime = this.recordForm.get(

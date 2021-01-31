@@ -1,9 +1,19 @@
+$colour-border: #a9abad;
+$primary-font-colour: #626262;
+$standard-width: 180px;
+
+.outstandingWrapper {
+    min-height: 60vh;
+
+}
+
 .drag-drop-container {
     text-align: center;
     width: 18%;
     max-width: 100%;
+    min-height: 70vh;   
     min-width: 250px;
-    margin: 0 25px 25px 0;
+    margin: 20px 25px 25px 0;
     display: inline-block;
     vertical-align: top;
 }
@@ -188,11 +198,27 @@
     border: solid .1px lightgray;
 }
 
+.filterChipWrapper {
+    position: relative;
+    left: 23%;
+}
+
+.filterText {
+    font-weight: bold;
+    font-family: sans-serif;
+    color: #a9abad;
+    margin-top: 24px;
+}
+
 
 .refresh-box{
-  padding-right: 40px;
-  max-width: 300px;
+    // padding-right: 40px;
+    max-width: 300px;
+    margin-right: 25px;
+    // position: absolute !important;
+    // right: 45px;
 }
+
 
 .mat-spinner {
     position: absolute;
@@ -212,5 +238,81 @@
 }
 .mat-release-panel.mat-expanded {
     border-radius: 20px !important;
+}
+
+
+.filterWrapper{
+    position: absolute !important;
+    width: 25rem;
+    right: 0;
+    top: 60px;
+    z-index: 1;
+    overflow-y: hidden;
+& .mat-expansion-panel:last-of-type {
+    // overflow-y: scroll;
+    max-height: 40vh;
+}
+}
+
+// .filter_Btn {
+//     position: relative;
+//     right: 10vw;
+// }
+
+// .mat-focus-indicator:focus {
+//     background-color: #607d8b;
+// }
+
+@media (max-width: 600px) {
+
+    ::ng-deep {
+    .outstandingWrapper {
+        margin-top: 6%;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .drag-drop-container {
+            margin-top: 20px !important;
+            min-width: 80% !important;
+            width: 80%;
+            display: block;
+        }
+    } 
+
+
+    .filterWrapper{
+        position: absolute !important;
+        width: 20rem !important;
+        right: 0;
+        left: 39px;
+        margin-top: 100px !important;
+        z-index: 1;
+        overflow-y: hidden;
+    & .mat-expansion-panel:last-of-type {
+        overflow-y: scroll;
+        max-height: 200px;
+    }
+    }
+
+    .filterText {
+        position: absolute !important;
+        font-weight: bold !important;
+        font-family: sans-serif !important;
+        right: 87vw !important;
+        color: $colour-border !important;
+        top: 1vw;
+    }
+
+    .filterChipWrapper {
+        position: absolute !important;
+        top: 98px !important;
+        left: 0 !important;
+        margin-left: 51px !important;
+        width: 100% !important;
+    }
+    
+}
 }
 

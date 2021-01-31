@@ -46,44 +46,27 @@ export class CaseService extends APIService {
     private async postFromLocalStorage(postsToSync:any) {
         let promiseArray;
             promiseArray = postsToSync.map(
-                async (elem:any) =>
-            await this.baseInsertCase(JSON.parse(elem.value)).then(
+                (elem:any) =>
+             this.baseInsertCase(JSON.parse(elem.value)).then(
                 (result: any) => {
+
                     if (
-                        result.emergencyCaseSuccess === 1 ||
-                        result.emergencyCaseSuccess === 3 ||
-                        result.emergencyCaseSuccess === 2
+                        result.emergencyCaseSuccess === 1
                     ) {
                         this.emergencyResponse.next(result);
                         this.storage.remove(elem.key);                  
                     }
                     
+                    if(result.emergencyCaseSuccess === 3 ||
+                            result.emergencyCaseSuccess === 2) {
+                                this.storage.remove(elem.key);
+                    }
+                    return result;
                 }
             )
                     
             );
-            // promiseArray = postsToSync.forEach(async (elem: any)=> {
-            //     await this.baseInsertCase(JSON.parse(elem.value)).then(
-            //         (result: any) => {
-            //             if(result.success === -1) {
-            //                 console.log('hello');
-            //             }
-            //             else {
-            //                 if (
-            //                     result.emergencyCaseSuccess === 1 ||
-            //                     result.emergencyCaseSuccess === 3 ||
-            //                     result.emergencyCaseSuccess === 2
-            //                 ) {
-    
-            //                     console.log(result);
-            //                     this.emergencyResponse.next(result);
-            //                     this.storage.remove(elem.key);                  
-            //                 }
-            //             }
-                        
-            //         }
-            //     );
-            // });
+
         return await Promise.all(promiseArray).then(result => {
             return result;
         });
@@ -93,10 +76,11 @@ export class CaseService extends APIService {
         let promiseArray;
 
         promiseArray = putsToSync.map(
-            async (elem:any) =>
+            (elem:any) =>
 
-                await this.baseUpdateCase(JSON.parse(elem.value)).then(
+                this.baseUpdateCase(JSON.parse(elem.value)).then(
                                 (result: any) => {
+
 
                                     if (
                                         result.emergencyCaseSuccess === 1 ||
@@ -106,33 +90,12 @@ export class CaseService extends APIService {
                                         this.emergencyResponse.next(result);
                                         this.storage.remove(elem.key);
                                     }
+                                    return result;
                                 })
 
-
+                              
         );
 
-        // promiseArray = putsToSync.forEach(async (elem: any)=> {
-        //     await this.baseUpdateCase(JSON.parse(elem.value)).then(
-        //         (result: any) => {
-        //             if(result.success === -1) {
-        //                 console.log('hello');
-        //             }
-        //             else {
-        //                 if (
-        //                     result.emergencyCaseSuccess === 1 ||
-        //                     result.emergencyCaseSuccess === 3 ||
-        //                     result.emergencyCaseSuccess === 2
-        //                 ) {
-
-        //                     console.log(result);
-        //                     this.emergencyResponse.next(result);
-        //                     this.storage.remove(elem.key);                  
-        //                 }
-        //             }
-                    
-        //         }
-        //     );
-        // });
 
         return await Promise.all(promiseArray).then(result => {
             return result;
@@ -256,7 +219,6 @@ export class CaseService extends APIService {
 
     private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
-        // const guid = UUID.UUID();
 
         try {
             this.storage.save(key , body);
@@ -306,8 +268,6 @@ export class CaseService extends APIService {
     }
 
     public getConnection() {
-
-     
 
         this.onlineStatus.connectionChanged.subscribe(async online=>{
 
@@ -361,6 +321,6 @@ export class CaseService extends APIService {
 
             }
            
-        });
+        }).unsubscribe();
     }
 }

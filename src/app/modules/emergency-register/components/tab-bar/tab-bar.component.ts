@@ -57,7 +57,6 @@ export class TabBarComponent implements OnInit {
         }
     }
 
-
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
         this.guIdVal = this.caseService.generateUUID();
@@ -91,11 +90,8 @@ export class TabBarComponent implements OnInit {
 
     updateEmergencyNumber(emergencyNumberAndGuId: any) {
 
-
-
         this.tabs.forEach(tab=> {
-            
-         
+        
             if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId) {
                 tab.value = (
                     emergencyNumberAndGuId.emergencyNumber || 'New Case*'
