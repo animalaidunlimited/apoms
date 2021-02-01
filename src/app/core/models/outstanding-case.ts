@@ -38,7 +38,7 @@ export interface OutstandingAssignment {
     callerDetails: CallerDetails[];
     callOutcomeId: number;
     latLngLiteral: google.maps.LatLngLiteral;
-    releaseTypeId: number;
+    releaseType: string;
     releaseEndDate: string | Date;
     ambulanceAction: string;
     emergencyCaseId: number;
