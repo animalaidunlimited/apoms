@@ -1,5 +1,8 @@
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveUnassignedCasesWithVisitForTeamByDate !!
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetActiveUnassignedCasesWithVisitForTeamByDate`(IN prm_VisitDate DATE)
+
+CREATE PROCEDURE AAU.sp_GetActiveUnassignedCasesWithVisitForTeamByDate(IN prm_VisitDate DATE)
 BEGIN
 
 	SELECT

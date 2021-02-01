@@ -1,23 +1,8 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    ViewChild,
-    Output,
-    EventEmitter,
-    ChangeDetectorRef,
-    AfterViewInit,
-} from '@angular/core';
+import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import {
-    FormGroup,
-    Validators,
-    FormBuilder,
-    AbstractControl,
-} from '@angular/forms';
+import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-
 import { LocationDetailsService } from './location-details.service';
 
 export interface Position {

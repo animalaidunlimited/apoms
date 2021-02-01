@@ -1,7 +1,10 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits !!
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits(IN prm_VisitDate DATE)
+
+-- CALL AAU.sp_GetActiveStreetTreatCasesWithNoVisits();
+
+CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits()
 BEGIN
 
 /*
@@ -17,7 +20,7 @@ WITH casesCTE AS
 		SELECT 
 			v.StreetTreatCaseid 
 		FROM AAU.visit v 
-		WHERE v.statusid < 3 AND v.date > prm_VisitDate
+		WHERE v.statusid < 3 AND v.date > CURDATE()
     )
 ),
 visitsCTE AS
@@ -27,7 +30,7 @@ visitsCTE AS
         stc.PatientId,
 		t.TeamId,
 		t.TeamName,
-        t.TeamColor,
+        t.Teamcolour,
         stc.PriorityId AS CasePriorityId,
         stc.StatusId AS CaseStatusId,
         ec.Latitude,
@@ -39,21 +42,17 @@ visitsCTE AS
         pr.Priority,
         stc.MainProblemId,
         pb.Problem,
-        (
-			SELECT Priority FROM AAU.Priority WHERE PriorityId = stc.PriorityId
-        ) AS CasePriority,
-        (
-			SELECT Status FROM AAU.Status WHERE StatusId = stc.StatusId
-        ) AS CaseStatus,
+        pr.Priority AS CasePriority,
+        s.Status AS CaseStatus,
         at.AnimalType
-	FROM 
-    AAU.StreetTreatCase stc 
+	FROM AAU.StreetTreatCase stc 
 	INNER JOIN AAU.Team t ON t.TeamId = stc.TeamId
-    LEFT JOIN AAU.Patient p ON p.PatientId = stc.PatientId
-    LEFT JOIN AAU.Emergencycase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-    LEFT JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
-    LEFT JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
-    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId 
+    INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
+    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId     
+    INNER JOIN AAU.Emergencycase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
+    INNER JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
+    INNER JOIN AAU.Status s ON s.StatusId = stc.StatusId    
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
 ),
 CaseCTE AS
@@ -61,7 +60,7 @@ CaseCTE AS
 SELECT
 rawData.TeamId,
 rawData.TeamName,
-rawData.TeamColor,
+rawData.Teamcolour,
 rawData.StreetTreatCaseId,
 rawData.CasePriorityId,
 rawData.CasePriority,
@@ -78,7 +77,7 @@ JSON_ARRAY() AS StreetTreatCases,
       JSON_OBJECT(
           'TagNumber', rawData.TagNumber, 
           'AnimalName', rawData.Description,
-           "AnimalType", rawData.AnimalType,
+          'AnimalType', rawData.AnimalType,
           'Priority', rawData.Priority
       ) AS AnimalDetails
 FROM visitsCTE rawData
@@ -91,7 +90,7 @@ JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("TeamId", cases.TeamId),
 JSON_OBJECT("TeamName", cases.TeamName),
-JSON_OBJECT("TeamColor", cases.TeamColor),
+JSON_OBJECT("TeamColour", cases.Teamcolour),
 JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
 )) AS Result
 FROM
@@ -99,7 +98,7 @@ FROM
 SELECT
 caseVisits.TeamId,
 caseVisits.TeamName,
-caseVisits.TeamColor,
+caseVisits.Teamcolour,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),
