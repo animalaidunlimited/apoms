@@ -23,11 +23,6 @@ export class AssignReleaseComponent implements OnInit {
 
   @Input() formData!: ReleaseDetails;
   @Output() public saveSuccessResponse = new EventEmitter<number>();
-  releaseTypes:Release[] = [
-  {id:1, type: 'Normal release'},
-  {id:2, type:'Normal + Complainer special instructions'},
-  {id:3, type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'}];
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
@@ -41,14 +36,13 @@ export class AssignReleaseComponent implements OnInit {
     this.recordForm = this.fb.group({
       releaseId: [],
       emergencyCaseId:[],
-      releaseType: [{value: null, disabled: true}],
+      releaseType: [{value: '', disabled: true}],
       Releaser1: [],
       Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
       pickupDate: [],
     });
-
     this.recordForm.patchValue(this.formData);
 
   }
