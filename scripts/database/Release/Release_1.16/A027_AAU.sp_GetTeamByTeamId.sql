@@ -1,4 +1,7 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetTeamByTeamId`(IN prm_TeamId INT)
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetTeamByTeamId !!
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetTeamByTeamId(IN prm_TeamId INT)
 BEGIN
 /*
 Created By: Jim Mackenzie

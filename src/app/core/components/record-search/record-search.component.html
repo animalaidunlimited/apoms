@@ -2,15 +2,21 @@
 
 <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-<div class="search-results">
+<div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngIf="searchResults$ | async as searchResults;">
+    <div *ngIf="(searchResults$ | async) as searchResults;">
 
-        <div *ngIf="searchResultArray.length === 0;">No results</div>
+        <div *ngIf="searchResultArray?.length !== 0;" class="result-count">{{searchResultArray?.length}} results</div>
 
-        <div *ngFor="let record of searchResultArray">
+        <div *ngIf="searchResultArray?.length === 0;" class="result-count">No results</div>
 
-            <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
+        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign.gt-sm="start" fxLayoutAlign.lt-md="center" class="search-results">
+
+            <div *ngFor="let record of searchResultArray">
+
+                <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="record"></search-result-card>
+
+            </div>
 
         </div>
 

@@ -1,4 +1,8 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetActiveStreetTreatCasesWithVisitByDate`(IN prm_VisitDate DATE)
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithVisitByDate !!
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithVisitByDate (IN prm_VisitDate DATE)
 BEGIN
 SELECT JSON_ARRAYAGG(Result) AS Result
 FROM (

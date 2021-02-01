@@ -7,6 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -33,10 +34,7 @@ export class EmergencyRecordComponent implements OnInit {
 
     hasComments!: boolean;
 
-
-    dbSync:boolean = false;
-
-    lsSync:boolean = false;
+    syncedToLocalStorage = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetForm(event: KeyboardEvent) {
@@ -68,13 +66,6 @@ export class EmergencyRecordComponent implements OnInit {
 
     ngOnInit() {
 
-
-        this.caseService.dbSync.subscribe((value:boolean) => 
-            this.dbSync = value
-        );
-        this.caseService.lsSync.subscribe((value:boolean) => 
-            this.lsSync = value
-        );
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
         this.recordForm = this.fb.group({
@@ -96,7 +87,6 @@ export class EmergencyRecordComponent implements OnInit {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
 
-                this.caseService.dbSync.next(true);
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
 
             }
@@ -161,7 +151,6 @@ export class EmergencyRecordComponent implements OnInit {
             });
 
         // Check all of the patients and their problems succeeded
-
         // If then don't succeed, build and show an error message
         resultBody.patients.forEach((patient: PatientResponse) => {
             if (patient.success === 1) {
@@ -218,7 +207,6 @@ export class EmergencyRecordComponent implements OnInit {
             this.recordForm.updateValueAndValidity();
 
             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-                this.caseService.dbSync.next(true);
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
                 return;
             }
@@ -259,17 +247,17 @@ export class EmergencyRecordComponent implements OnInit {
                         }
 
                         if (messageResult.failure === 0) {
-                            this.caseService.dbSync.next(true);
-                            this.caseService.lsSync.next(false);
                             this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                            this.syncedToLocalStorage = false;
+                            this.recordForm.markAsPristine();
                         }
                         else if (messageResult.failure === -1) {
                             this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
                         }
                         else if (messageResult.failure === 1) {
-                            this.caseService.lsSync.next(true);
-                            this.caseService.dbSync.next(true);
                             this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                            this.syncedToLocalStorage = true;
+                            this.recordForm.markAsPristine();
                         }
                     })
                     .catch(error => {
@@ -296,14 +284,17 @@ export class EmergencyRecordComponent implements OnInit {
 
                         if (messageResult.failure === 0) {
 
-                            this.showSnackBar.successSnackBar('Case updated successfully','OK',);
-
-                            this.recordForm.markAsUntouched();
+                            this.showSnackBar.successSnackBar('Case updated successfully','OK');
+                            this.syncedToLocalStorage = false;
+                            this.recordForm.markAsPristine();
+                        }
+                        else if (messageResult.failure === 1){
+                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                            this.syncedToLocalStorage = true;
+                            this.recordForm.markAsPristine();
                         }
                         else{
-                            // this.showSnackBar.errorSnackBar(messageResult.message,'OK');
-                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
-
+                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
                         }
                     })
                     .catch(error => {
