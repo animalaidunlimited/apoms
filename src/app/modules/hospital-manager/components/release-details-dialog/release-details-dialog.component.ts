@@ -10,7 +10,6 @@ import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { Event } from '@angular/router';
 
 export interface DialogData {
   emergencyCaseId: number;
@@ -61,16 +60,9 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   isStreetTreatRelease!: boolean;
   isCommented = false;
 
-  @ViewChild('toggleElement') ref!: ElementRef;
-
   recordForm: FormGroup = new FormGroup({});
 
   releaseManagers: ReleaseManager[] = [];
-
-  // releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
-  // {id:2 , type:'Normal + Complainer special instructions'},
-  // {id:3 , type:'Specific staff for release'},
-  // {id:4, type:'StreetTreat release'}];
 
   username = '';
 
