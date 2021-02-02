@@ -3,11 +3,12 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
-import { ChartData, chartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColor } from 'src/app/core/models/streettreet';
+import { ChartData, ChartResponse, chartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColor } from 'src/app/core/models/streettreet';
 import { DomSanitizer } from '@angular/platform-browser';
+import { switchMap } from 'rxjs/operators';
 
 export interface Position {
   lat: number;
@@ -29,6 +30,7 @@ export interface MapMarker {
 export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   @Output() 
   public openStreetTreatCase = new EventEmitter<number>();
+
   icon = {
     path: 'M261-46C201-17 148 39 124 98 111 128 107 169 108 245 110 303 105 377 98 408L89 472 142 458C175 444 227 436 309 430 418 423 435 419 476 394 652 288 637 28 450-48 397-70 309-69 261-46ZZ',
     fillColor: '#FF0000',
@@ -47,6 +49,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   highlightStreetTreatCase = -1;
   highlightMarkerStreetTreatCase = -1;
   latlngbounds = new google.maps.LatLngBounds(undefined);
+  autoRefresh$ = new BehaviorSubject<boolean>(true);
 
   @ViewChild(GoogleMap, { static: false }) 
   map!: GoogleMap;
@@ -126,6 +129,18 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           this.streetTreatServiceSubs.unsubscribe(); 
         });
     });
+    this.autoRefresh$.pipe(switchMap( _ => 
+      forkJoin(
+        this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(this.searchDate),
+        this.streetTreatService.getChartData()
+      )
+    )).subscribe(([streetTreatCaseByVisitDateResponse,chartResponse]) => {
+      this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+      this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
+      this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
+      this.initChartData(chartResponse);
+
+    });
   }
   
   ngAfterViewInit():void {
@@ -144,32 +159,37 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatServiceSubs.unsubscribe();
     });  
     this.streetTreatService.getChartData().subscribe((data) => {
-      const charts = data.chartData;
-      this.chartExpanded = data.chartData.length > 0 ? true : false;
-      const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
-      const endDate = new Date(new Date().setDate(new Date().getDate() + 14));
-      const datesRange = this.getDatesBetween(startDate, endDate);
-
-      datesRange.forEach((dateObj)=>{
-        
-        if(charts.filter(chart => chart.name === dateObj.name).length > 0)
-        {
-          dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
-        } 
-      });
-      this.chartData = datesRange;
-      setTimeout(()=>{
-        const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
-        ticks.forEach((tick:any) =>{
-          // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
-          tick.addEventListener('click',this.onDateClick.bind(this));
-   
-        });
-      },1000);
-      this.customColors = data.teamColors;
-
-      
+      this.initChartData(data);
     });
+  }
+
+  private initChartData(data: ChartResponse) {
+    const charts = data.chartData;
+    this.chartExpanded = data.chartData.length > 0 ? true : false;
+    const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
+    const endDate = new Date(new Date().setDate(new Date().getDate() + 14));
+    const datesRange = this.getDatesBetween(startDate, endDate);
+
+    datesRange.forEach((dateObj) => {
+
+      if (charts.filter(chart => chart.name === dateObj.name).length > 0) {
+        dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
+      }
+    });
+    this.chartData = datesRange;
+    setTimeout(() => {
+      const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
+      ticks.forEach((tick: any) => {
+        // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
+        tick.addEventListener('click', this.onDateClick.bind(this));
+
+      });
+    }, 1000);
+    this.customColors = data.teamColors;
+  }
+
+  refreshRescues(){
+    this.autoRefresh$.next(true);
   }
 
   markerDragEnd(event: google.maps.MouseEvent) {

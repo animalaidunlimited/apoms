@@ -64,6 +64,10 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+            <!-- *ngIf="!autoRefresh" -->
+            <button style="margin:7px 0 7px 10px"  mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()" >
+                <mat-icon>refresh</mat-icon>
+              </button>
         </div>
         <ng-container *ngIf="streetTreatCasesResponse; else noResult" cdkDropListGroup>
             <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of streetTreatCasesResponse; trackBy:trackByTeamId" >

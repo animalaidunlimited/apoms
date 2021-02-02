@@ -61,15 +61,13 @@ export class OutstandingCaseService {
   }
 
   refreshRescues(){
-
     this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
       if(outstandingCases)
       {
         this.populateOutstandingCases(outstandingCases.outstandingActions);
       }
-      });
-
-      return false;
+    });
+    return false;
 
   }
 
