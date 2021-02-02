@@ -65,8 +65,8 @@
                 </mat-form-field>
             </div>
         </div>
-        <ng-container *ngIf="streetTreatCasesResponse; else noResult" cdkDropListGroup>
-            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of streetTreatCasesResponse; trackBy:trackByTeamId" >
+        <ng-container *ngIf="filteredStreetTreatCases; else noResult" cdkDropListGroup>
+            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByTeamId" >
                 <div class="StreetTreat_Container_header">
                     <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.TeamName}}</h3>
                     <div class="StreetTreat_Container_header_TeamColour">
