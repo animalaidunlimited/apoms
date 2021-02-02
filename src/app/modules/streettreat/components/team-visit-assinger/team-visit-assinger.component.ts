@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild, SecurityContext } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
 import { ChartData, chartSelectObject, StreetTreatCases, StreetTreatCaseVisit, TeamColor } from 'src/app/core/models/streettreet';
+import { DomSanitizer } from '@angular/platform-browser';
 
 export interface Position {
   lat: number;
@@ -89,7 +90,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,
-    private renderer:Renderer2
+    private _sanitizer: DomSanitizer
     ) {
       this.view = [innerWidth / 1.2, 400];
     }
@@ -256,19 +257,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     streetTreatCases?.forEach((streetTreatResponse) =>
     {
       streetTreatResponse.StreetTreatCaseVisits.forEach((StreetTreatCaseVisit)=>{
-        /* if(StreetTreatCaseVisit.Position.Latitude == null && StreetTreatCaseVisit.Position.Longitude == null)
-        {
-          const geocoder = new google.maps.Geocoder();
-          geocoder.geocode({'address': StreetTreatCaseVisit.Position.Address},(results, status) => {
-            if( status == google.maps.GeocoderStatus.OK ) {
-              position = results[0].geometry.location ;
-            }
-          });
-        }
-        else
-        { */
-          position = { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude };
-        /* } */
+        position = { lat: StreetTreatCaseVisit.Position.Latitude, lng: StreetTreatCaseVisit.Position.Longitude };
         this.markers.push({
           streetTreatCaseId:StreetTreatCaseVisit.StreetTreatCaseId, 
           teamId:streetTreatResponse.TeamId, 
@@ -330,6 +319,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
 
   onDateClick($event:any){
+    // console.log(this._sanitizer.sanitize(1,$event));
     let date = $event.target?.innerHTML.trim().split("/");
     date = new Date(new Date().getFullYear(), +date[1] - 1 , +date[0]);
     date = this.datePipe.transform(date,"yyyy-MM-dd");
