@@ -237,3 +237,22 @@ ngx-charts-bar-vertical-stacked{
     min-width: 33rem;
   }
 }
+
+
+@media only screen and (min-width: 1440px) {
+  .streetTreatPanel .mat-expansion-panel-header {
+    padding: 6px 6px 15px 6px;
+  }
+  
+  .card_wrapper{
+    margin-top:0;
+  }
+
+  .streetTreatPanel .mat-expansion-panel-header{
+      padding: 7px 5px 5px 5px;
+  }
+  
+  .timeline {
+      margin-top: 5px;
+  }
+}

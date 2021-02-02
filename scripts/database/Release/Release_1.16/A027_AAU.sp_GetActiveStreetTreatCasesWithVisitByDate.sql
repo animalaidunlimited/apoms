@@ -2,7 +2,6 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithVisitByDate !!
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithVisitByDate(IN prm_VisitDate DATE)
-BEGIN
 
 WITH casesCTE AS
 (
@@ -17,7 +16,7 @@ visitsCTE AS
         stc.PatientId,
 		t.TeamId,
 		t.TeamName,
-        t.TeamColor,
+        t.Teamcolour,
 		v.Date,
 		v.VisitTypeId,
 		v.StatusId AS VisitStatusId,
@@ -58,7 +57,7 @@ CaseCTE AS
 SELECT
 rawData.TeamId,
 rawData.TeamName,
-rawData.TeamColor,
+rawData.Teamcolour,
 rawData.StreetTreatCaseId,
 rawData.CasePriorityId,
 rawData.CasePriority,
@@ -91,19 +90,15 @@ GROUP BY rawData.StreetTreatCaseId, rawData.TeamId, rawData.TeamName
 )
 
 SELECT
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("TotalCases",(SELECT COUNT(*) FROM AAU.StreetTreatCase)),
-JSON_OBJECT("UrgentCases",(SELECT COUNT(*) FROM AAU.StreetTreatCase WHERE PriorityId = 4 )),
 JSON_OBJECT("Cases",
 JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("TeamId", cases.TeamId),
 		JSON_OBJECT("TeamName", cases.TeamName),
-		JSON_OBJECT("TeamColor", cases.TeamColor),
+		JSON_OBJECT("TeamColor", cases.Teamcolour),
 		JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
 	)
 ) 
-)
 )
 AS Result
 FROM
@@ -111,7 +106,7 @@ FROM
 SELECT
 caseVisits.TeamId,
 caseVisits.TeamName,
-caseVisits.TeamColor,
+caseVisits.Teamcolour,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),
@@ -126,5 +121,6 @@ JSON_OBJECT("AnimalDetails",caseVisits.AnimalDetails)
 FROM CaseCTE caseVisits
 GROUP BY caseVisits.TeamId,caseVisits.TeamName
 ) AS cases;
+
 END$$
 DELIMITER ;
