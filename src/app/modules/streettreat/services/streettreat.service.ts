@@ -100,8 +100,8 @@ export class StreetTreatService extends APIService {
       })
     );
   }
-  public getActiveStreetTreatCasesWithNoVisits(date:Date){
-    const request = `/novisits?date=${date}`;
+  public getActiveStreetTreatCasesWithNoVisits(){
+    const request = `/novisits`;
     return this.getObservable(request).pipe(
       map((response:any)=>{
         return response;
@@ -113,6 +113,14 @@ export class StreetTreatService extends APIService {
     return this.getObservable(request).pipe(
       map((response:any)=>{
         return response.streetTreatForm;
+      })
+    );
+  }
+  getScoreCards(){
+    const request = "/scorecards";
+    return this.getObservable(request).pipe(
+      map((scoreCards)=>{
+        return scoreCards;
       })
     );
   }

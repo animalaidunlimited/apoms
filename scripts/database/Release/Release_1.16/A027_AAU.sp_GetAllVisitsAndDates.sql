@@ -18,11 +18,11 @@ WITH chart AS (
 	FROM AAU.Visit v
 	LEFT JOIN AAU.StreetTreatCase st ON st.StreetTreatCaseId= v.StreetTreatCaseId 
 	LEFT JOIN AAU.Team t ON t.TeamId = st.TeamId
-	WHERE v.StatusId < 4 AND v.IsDeleted = 0 AND v.Date BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW()) + INTERVAL 14 DAY
+	WHERE v.StatusId < 5 AND v.IsDeleted = 0 AND v.Date BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW()) + INTERVAL 14 DAY
     GROUP BY v.Date,t.TeamName
 ),
 teamColors AS (
-	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.TeamColor)) AS teamColors  FROM AAU.team t 
+	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.Teamcolour)) AS teamColors  FROM AAU.team t 
 ),
 chartData AS (
 	SELECT 

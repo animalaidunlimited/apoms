@@ -1,23 +1,23 @@
-<div fxLayout fxLayoutAlign="space-around center" class="info_tiles">
+<div fxLayout fxLayoutAlign="space-around center" class="info_tiles" *ngIf="scoreCards$ | async as scoreCards ">
     <div>
         <h4>Total Cases</h4>
-        {{totalCases}}
+        {{scoreCards.TotalActiveCases}}
     </div>
     <div>
         <h4>Cases Without Visit</h4>
-        {{casesWithoutVisits}}
+        {{scoreCards.NoVisits}}
     </div>
     <div>
         <h4>Total Visits Today</h4>
-        {{totalVisitToday}}
+        {{scoreCards.VisitsToday}}
     </div>
     <div>
         <h4>Visit Complete Today</h4>
-        {{visitCompleteToday}} ({{(visitCompleteToday/totalVisitToday) * 100 | number: '1.0-0'}} %)
+        {{scoreCards.CompleteVisitsToday}} ({{(scoreCards.CompleteVisitsToday/scoreCards.TotalActiveCases) * 100 | number: '1.0-0'}} %)
     </div>
     <div>
         <h4>Urgent Cases</h4>
-        {{urgentCases}} 
+        {{scoreCards.TotalUrgentCases}}
     </div>
 </div>
 
@@ -91,9 +91,9 @@
                         >
                         <mat-expansion-panel-header
                             [ngClass]="{'border-red' : streetTreatCaseDetails.StreetTreatCasePriorityId == 4,
-                  'border-green' : streetTreatCaseDetails.StreetTreatCasePriorityId == 1,
-                  'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
-                }"
+                                        'border-green' : streetTreatCaseDetails.StreetTreatCasePriorityId == 1,
+                                        'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
+                                        }"
                             >
                             <div class="card_wrapper">
                                 <div class="streetreat_visit" >
