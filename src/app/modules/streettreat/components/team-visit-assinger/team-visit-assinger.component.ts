@@ -40,7 +40,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   };
 
   zoom = 11.0;
-  streetTreatCasesResponse !: StreetTreatCases[] | null | undefined;
+  filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
   streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
   teamsDropDown:StreetTreatCases[] | null=[];
   center!:google.maps.LatLngLiteral;
@@ -106,39 +106,33 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
 
           if(teamIds.length > 0){
-            this.streetTreatCasesResponse = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
+            this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
           }
           else {
-            this.streetTreatCasesResponse = this.streetTreatCaseByVisitDateResponse;
+            this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse;
           }
 
-          this.initMarkers(this.streetTreatCasesResponse);
+          this.initMarkers(this.filteredStreetTreatCases);
 
       });
 
       this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
-
-        if(!date) return;
 
         this.searchDate = new Date(date);
 
         this.streetTreatServiceSubs = this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
             .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-              console.log(streetTreatCaseByVisitDateResponse);
-
                 if(!streetTreatCaseByVisitDateResponse) return;
 
                 this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
-                this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
+                this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
                 this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-
-                console.log(this.streetTreatCasesResponse);
 
                 if(streetTreatCaseByVisitDateResponse.Cases)
                 {
                   this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-                  this.initMarkers(this.streetTreatCasesResponse);
+                  this.initMarkers(this.filteredStreetTreatCases);
                 }
                 else{
                   this.markers = [];
@@ -157,19 +151,13 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatServiceSubs =  this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          console.log(streetTreatCaseByVisitDateResponse);
-
           if(!streetTreatCaseByVisitDateResponse) return;
-
-
 
           this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
           this.totalCases = streetTreatCaseByVisitDateResponse.TotalCases;
           this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
+          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
           this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-
-
 
           if(streetTreatCaseByVisitDateResponse.Cases)
           {
@@ -199,11 +187,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       this.streetTreatService.getChartData().subscribe((data) => {
 
-        console.log(data.chartData);
-
         data.chartData.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
-
-        console.log(data.chartData);
 
         const charts = data.chartData;
 
@@ -230,8 +214,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           });
         },1000);
 
-        console.log(data);
-
         this.customColors = data.teamColours;
 
 
@@ -239,9 +221,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
 
-        if(this.streetTreatCasesResponse){
+        if(this.filteredStreetTreatCases){
 
-          this.streetTreatCasesResponse.forEach((streetTreatCase)=>{
+          this.filteredStreetTreatCases.forEach((streetTreatCase)=>{
 
             streetTreatCase.StreetTreatCaseVisits.forEach(() =>{
               this.casesWithoutVisits += 1;
@@ -294,16 +276,30 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       if(visitTeamUpdateResponse[0].success === 1){
 
-        this.streetTreatServiceSubs = this.streetTreatService
-        .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
-        .subscribe((streetTreatCaseByVisitDateResponse) => {
+        if(this.teamsgroup.get('date')?.value === ''){
 
-          this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
-          this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.initMarkers(this.streetTreatCasesResponse);
-          this.streetTreatServiceSubs.unsubscribe();
+          this.noVisits();
 
-        });
+        }
+        else {
+
+          this.streetTreatServiceSubs = this.streetTreatService
+          .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+          .subscribe((streetTreatCaseByVisitDateResponse) => {
+
+            streetTreatCaseByVisitDateResponse.Cases?.forEach(team =>
+                team.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));
+
+            this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
+            this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
+            this.initMarkers(this.filteredStreetTreatCases);
+            this.streetTreatServiceSubs.unsubscribe();
+
+          });
+
+        }
+
+
       }
       else {
         this.showSnackBar.errorSnackBar('Error updating streettreat case team status','OK');
@@ -368,7 +364,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   onSelect($event:ChartSelectObject){
 
-    if(this.streetTreatCasesResponse)
+    if(this.filteredStreetTreatCases)
     {
       this.teamsgroup.get('teams')?.patchValue([]);
     }
@@ -418,17 +414,15 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   noVisits(){
 
     this.casesWithoutVisits = 0;
-    this.teamsgroup.get('date')?.patchValue('');
+    this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
 
     this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
 
-
-      console.log(cases);
-
       this.streetTreatCaseByVisitDateResponse = cases;
-      this.streetTreatCasesResponse = cases;
+      this.filteredStreetTreatCases = cases;
       this.teamsDropDown  = cases;
       this.initMarkers(cases);
+
     });
   }
 
