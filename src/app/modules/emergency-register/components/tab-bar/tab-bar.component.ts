@@ -34,7 +34,7 @@ export class TabBarComponent implements OnInit {
             {
                 if(clicked)
                 {
-                    this.selected.setValue(1)
+                    this.selected.setValue(1);
                 }
             }
         );

@@ -28,9 +28,9 @@
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="Chart_Bar" #containerRef >
-     
+
         <ngx-charts-bar-vertical-stacked
-        [view]="view" 
+        [view]="view"
         [results]="chartData"
         [gradient]="gradient"
         [xAxis]="showXAxis"
@@ -44,7 +44,7 @@
     </div>
 </mat-expansion-panel>
 <div class="StreetTreat_Container">
- 
+
     <div class="StreetTreat_Container_visit_compression">
         <div class="Team_Compare" [formGroup]="teamsgroup">
             <div class="Team_Comapre_Visit_btn">
@@ -69,36 +69,37 @@
                 <mat-icon>refresh</mat-icon>
               </button>
         </div>
-        <ng-container *ngIf="streetTreatCasesResponse; else noResult" cdkDropListGroup>
-            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of streetTreatCasesResponse; trackBy:trackByTeamId" >
+        <ng-container *ngIf="filteredStreetTreatCases; else noResult" cdkDropListGroup>
+            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByTeamId" >
                 <div class="StreetTreat_Container_header">
                     <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.TeamName}}</h3>
-                    <div class="StreetTreat_Container_header_TeamColor">
+                    <div class="StreetTreat_Container_header_TeamColour">
                         <svg>
                             <path
                                 d="M 10.3 2.2 C 7.3 3.6 4.7 6.5 3.4 9.5 C 2.8 11 2.6 13 2.6 16.8 C 2.8 19.8 2.4 23.5 2.2 25.1 L 1.6 28.4 L 4.4 27.6 C 6 26.9 8.6 26.6 12.8 26.3 C 18.4 25.9 19.2 25.7 21.2 24.4 C 30.2 19.1 29.4 5.9 20 2.1 C 17.3 0.9 12.8 1 10.3 2.2 Z Z"
-                                [attr.fill]="streetTreatCase.TeamColor" />
+                                [attr.fill]="streetTreatCase.TeamColour" />
                         </svg>
                     </div>
                 </div>
-                <div 
-                    cdkDropList 
-                    cdkDropListOrientation="horizontal" 
-                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits" 
+                <div
+                    cdkDropList
+                    cdkDropListOrientation="horizontal"
+                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits"
                     class="example-list"
-                    (cdkDropListDropped)="drop($event)" 
+                    (cdkDropListDropped)="drop($event)"
                     *ngFor="let streetTreatCaseDetails of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
-                    <mat-expansion-panel class="streetTreatPanel" cdkDrag 
+
+                    <mat-expansion-panel class="streetTreatPanel" cdkDrag
                         [cdkDragData]="streetTreatCaseDetails"
                         [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}"
-                        hideToggle
-                        >
+                        hideToggle>
+
                         <mat-expansion-panel-header
                             [ngClass]="{'border-red' : streetTreatCaseDetails.StreetTreatCasePriorityId == 4,
-                                        'border-green' : streetTreatCaseDetails.StreetTreatCasePriorityId == 1,
+                                        'border-green' : (streetTreatCaseDetails.StreetTreatCasePriorityId == 1 || streetTreatCaseDetails.StreetTreatCasePriorityId == 2),
                                         'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
-                                        }"
-                            >
+                                        }">
+
                             <div class="card_wrapper">
                                 <div class="streetreat_visit" >
                                     {{streetTreatCaseDetails.AnimalDetails.TagNumber}} ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
@@ -113,10 +114,10 @@
                                         <ul>
                                             <li>
                                                 <div [ngSwitch]="visit.VisitStatusId">
-                                                    <mat-icon *ngSwitchCase="4" class="timeline-badge-complete">done_all</mat-icon>
-                                                    <mat-icon *ngSwitchCase="3" class="timeline-badge-missed"></mat-icon>
-                                                    <mat-icon *ngSwitchCase="2" class="timeline-badge-progress"></mat-icon>
-                                                    <mat-icon *ngSwitchCase="1" class="timeline-badge-todo"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="4" matTooltip="Complete" class="timeline-badge-complete">done_all</mat-icon>
+                                                    <mat-icon *ngSwitchCase="3" matTooltip="Missed" class="timeline-badge-missed"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="2" matTooltip="In progress" class="timeline-badge-progress"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="1" matTooltip="To do" class="timeline-badge-todo"></mat-icon>
                                                 </div>
                                             </li>
                                         </ul>
@@ -136,14 +137,14 @@
         <ng-template #noResult> No Visits Today</ng-template>
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
-        <google-map [zoom]="zoom" height="100%" width="100%">
-            <map-marker 
-                *ngFor="let marker of markers ;trackBy:markersTrack" 
+        <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
+            <map-marker
+                *ngFor="let marker of markers ;trackBy:markersTrack"
                 [options]="marker.options"
-                (mapDragend)="markerDragEnd($event)" 
+                (mapDragend)="markerDragEnd($event)"
                 (mapClick)="markerClick(marker)"
-                (mapMouseover)="markerClick(marker)" 
-                (mapMouseout)="markerClean()"       
+                (mapMouseover)="markerClick(marker)"
+                (mapMouseout)="markerClean()"
                 >
             </map-marker>
 

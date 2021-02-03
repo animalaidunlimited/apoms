@@ -1,11 +1,12 @@
 import  { CallerDetails, CallOutcome, LocationDetails, RescueDetails} from './emergency-record';
 import {Patient} from './patients';
+
 export interface StreetTreatTab {
     id: number;
     value: string | undefined;
     streetTreatCaseId: number;
     icon?: string | undefined;
-    emergencyCaseId?: string | number | undefined; 
+    emergencyCaseId?: string | number | undefined;
     patientId?: number | undefined;
     patientStatus?: string;
     currentLocation?:string;
@@ -30,6 +31,7 @@ export interface StreetTreatForm {
 export interface StreetTreatCase {
     streetTreatForm: StreetTreatForm;
 }
+
 export interface StreetTreatSearchResponse {
     CaseId: number;
     EmergencyNumber: number;
@@ -57,16 +59,16 @@ export interface StreetTreatSearchResponse {
   }
 
   export interface StreetTreatSearchVisitsResponse{
-    VisitId:number; 
-    StreetTreatCaseId:number; 
-    VisitTypeId:number; 
-    VisitType:string; 
-    Date:Date; 
-    StatusId:number; 
-    Status:number; 
-    AdminNotes:string; 
-    OperatorNotes:string; 
-    IsDeleted: 0|1| null;  
+    VisitId:number;
+    StreetTreatCaseId:number;
+    VisitTypeId:number;
+    VisitType:string;
+    Date:Date;
+    StatusId:number;
+    Status:number;
+    AdminNotes:string;
+    OperatorNotes:string;
+    IsDeleted: 0|1| null;
 }
 
 export interface Team {
@@ -127,7 +129,7 @@ export interface StreetTreatCaseVisit {
 export interface StreetTreatCases {
     TeamId: number;
     TeamName: string;
-    TeamColor: string;
+    TeamColour: string;
     StreetTreatCaseVisits: StreetTreatCaseVisit[];
 }
 
@@ -177,19 +179,19 @@ export interface ChartData {
     series: Series[] | never[];
 }
 
-export interface TeamColor {
+export interface TeamColour {
     name: string;
     value: string;
 }
 
-export interface chartSelectObject extends TeamColor {
+export interface ChartSelectObject extends TeamColour {
     label: string;
     series: string;
 }
 
 export interface ChartResponse {
     chartData: ChartData[];
-    teamColors: TeamColor[];
+    teamColours: TeamColour[];
 }
 
 export interface StreetTreatScoreCard {

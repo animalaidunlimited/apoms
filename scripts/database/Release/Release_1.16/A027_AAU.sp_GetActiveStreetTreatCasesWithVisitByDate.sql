@@ -1,6 +1,7 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithVisitByDate !!
 DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithVisitByDate(IN prm_VisitDate DATE)
 
 WITH casesCTE AS
@@ -16,7 +17,7 @@ visitsCTE AS
         stc.PatientId,
 		t.TeamId,
 		t.TeamName,
-        t.Teamcolour,
+        t.TeamColour,
 		v.Date,
 		v.VisitTypeId,
 		v.StatusId AS VisitStatusId,
@@ -106,7 +107,7 @@ FROM
 SELECT
 caseVisits.TeamId,
 caseVisits.TeamName,
-caseVisits.Teamcolour,
+caseVisits.TeamColour,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),
@@ -119,7 +120,7 @@ JSON_OBJECT("Position",caseVisits.Position),
 JSON_OBJECT("AnimalDetails",caseVisits.AnimalDetails)
 )) AS StreetTreatCases
 FROM CaseCTE caseVisits
-GROUP BY caseVisits.TeamId,caseVisits.TeamName
+GROUP BY caseVisits.TeamId, caseVisits.TeamName
 ) AS cases;
 
 END$$
