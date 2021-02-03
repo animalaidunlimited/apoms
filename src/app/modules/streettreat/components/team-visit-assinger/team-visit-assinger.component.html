@@ -136,14 +136,14 @@
         <ng-template #noResult> No Visits Today</ng-template>
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
-        <google-map [zoom]="zoom" height="100%" width="100%">
+        <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
             <map-marker 
                 *ngFor="let marker of markers ;trackBy:markersTrack" 
                 [options]="marker.options"
                 (mapDragend)="markerDragEnd($event)" 
                 (mapClick)="markerClick(marker)"
                 (mapMouseover)="markerClick(marker)" 
-                (mapMouseout)="markerClean()"
+                (mapMouseout)="markerClean()"       
                 >
             </map-marker>
 

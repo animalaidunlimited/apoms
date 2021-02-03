@@ -3,12 +3,12 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, chartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColor } from 'src/app/core/models/streettreet';
 import { DomSanitizer } from '@angular/platform-browser';
-import { switchMap } from 'rxjs/operators';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 
 export interface Position {
   lat: number;
@@ -49,7 +49,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   highlightStreetTreatCase = -1;
   highlightMarkerStreetTreatCase = -1;
   latlngbounds = new google.maps.LatLngBounds(undefined);
-  autoRefresh$ = new BehaviorSubject<boolean>(true);
 
   @ViewChild(GoogleMap, { static: false }) 
   map!: GoogleMap;
@@ -89,6 +88,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,
+    private userOptions: UserOptionsService,
     private _sanitizer: DomSanitizer
     ) {
       this.view = [innerWidth / 1.2, 400];
@@ -129,35 +129,27 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           this.streetTreatServiceSubs.unsubscribe(); 
         });
     });
-    this.autoRefresh$.pipe(switchMap( _ => 
-      forkJoin(
-        this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(this.searchDate),
-        this.streetTreatService.getChartData()
-      )
-    )).subscribe(([streetTreatCaseByVisitDateResponse,chartResponse]) => {
-      this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-      this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-      this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-      this.initChartData(chartResponse);
-
-    });
   }
   
   ngAfterViewInit():void {
+    this.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
     this.scoreCards$ = this.streetTreatService.getScoreCards();
-    this.streetTreatServiceSubs = 
-    this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
-    .subscribe((streetTreatCaseByVisitDateResponse) => {
-      this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-      this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-      this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-      if(streetTreatCaseByVisitDateResponse.Cases)
-      {
-        const todayDate = this.datePipe.transform(new Date(),'yyyy-MM-dd');
-        this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
-      }
-      this.streetTreatServiceSubs.unsubscribe();
-    });  
+    this.initSwimlane();
+  }
+
+  private initSwimlane() {
+    this.streetTreatServiceSubs =
+      this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+        .subscribe((streetTreatCaseByVisitDateResponse) => {
+          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+          this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
+          this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
+          if (streetTreatCaseByVisitDateResponse.Cases) {
+            const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
+          }
+          this.streetTreatServiceSubs.unsubscribe();
+        });
     this.streetTreatService.getChartData().subscribe((data) => {
       this.initChartData(data);
     });
@@ -189,7 +181,12 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
 
   refreshRescues(){
-    this.autoRefresh$.next(true);
+    if(this.teamsgroup.get('date')?.value === ''){
+      this.noVisits();
+    }
+    else{
+      this.initSwimlane();
+    }
   }
 
   markerDragEnd(event: google.maps.MouseEvent) {
