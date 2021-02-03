@@ -43,7 +43,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
   streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
   teamsDropDown:StreetTreatCases[] | null=[];
-  center!:google.maps.LatLngLiteral;
   latlngboundsArray:google.maps.LatLng[] = [];
   markers: MapMarker[] = [];
   highlightStreetTreatCase = -1;
@@ -63,9 +62,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   chartData!: ChartData[];
   scoreCards$!: Observable<StreetTreatScoreCard>;
   infoWindow = new google.maps.InfoWindow();
-  
+  center:google.maps.LatLngLiteral = this.userOptions.getCoordinates();
   view:[number,number] = [700,400];
-  customColors:TeamColour[] = [];
+  customColours:TeamColour[] = [];
  
   searchDate = new Date();
 
@@ -130,9 +129,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit():void {
-    this.scoreCards$ = this.streetTreatService.getScoreCards();
-    this.map.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
-    this.changeDetector.detectChanges();
+    this.scoreCards$ = this.streetTreatService.getScoreCards(); 
     this.initSwimlane();
   }
 
@@ -176,7 +173,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       });
     }, 1000);
-    this.customColors = data.teamColours;
+    this.customColours = data.teamColours;
   }
 
   refreshRescues(){
@@ -232,9 +229,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       if(visitTeamUpdateResponse[0].success === 1){
 
         if(this.teamsgroup.get('date')?.value === ''){
-
           this.noVisits();
-
         }
         else {
 

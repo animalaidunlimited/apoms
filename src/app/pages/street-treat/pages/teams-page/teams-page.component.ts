@@ -33,6 +33,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
             TeamId: 0,
             TeamName: '',
             IsDeleted: '0',
+            TeamColour: '#000000',
             Capacity: 0,
         };
         this.dataSource = new MatTableDataSource([emptyTeam]);
@@ -41,12 +42,14 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     displayedColumns: string[] = [
         'TeamName',
         'Capacity',
+        'TeamColour'
     ];
 
     teamDetails = this.fb.group({
         TeamId: [],
         TeamName: ['', Validators.required],
         Capacity: [, Validators.required],
+        TeamColour: ['#000000',Validators.required],
         IsDeleted: [],
     });
 
