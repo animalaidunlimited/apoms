@@ -165,7 +165,8 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         
         if(this.recordForm.get('Releaser1')?.value) {
 					this.specificStaffTrue();
-				}
+        }
+        //Todo: check for form value
 				if(this.recordForm.get('visitForm.streetTreatCaseId')?.value){
 					this.streetTreatReleaseTrue();
         }
@@ -179,11 +180,9 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   onReleaseSubmit(releaseForm:any) {
-
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-
+    
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
-
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')
           :

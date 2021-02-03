@@ -1,7 +1,7 @@
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatWithVisitDetailsByPatientId !!
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId (IN prm_PatientId INT)
+CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
 BEGIN
 SELECT
 	JSON_OBJECT( 
@@ -22,7 +22,8 @@ SELECT
 								"visit_status",v.StatusId,
 								"visit_type",v.VisitTypeId,
 								"visit_comments",v.AdminNotes,
-                                "visit_date",v.Date
+                                "visit_date",v.Date,
+                                "operator_notes",v.OperatorNotes
 						 )
 					)
 				)

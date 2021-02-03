@@ -193,3 +193,16 @@ export interface ChartResponse {
     chartData: ChartData[];
     teamColours: TeamColour[];
 }
+
+export interface StreetTreatScoreCard {
+    TotalActiveCases: number;
+    CasesWithVisitToday: number;
+    VisitsToday: number;
+    TotalPlannedVisits: number;
+    OutstandingVisitsToday: number;
+    CompleteVisitsToday: number;
+    TotalUrgentCases: number;
+    OutstandingUrgentVisitsToday: number;
+    CompletedUrgentVisitsToday: number;
+    NoVisits: number;
+}

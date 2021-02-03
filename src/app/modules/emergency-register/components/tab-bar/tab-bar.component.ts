@@ -34,7 +34,7 @@ export class TabBarComponent implements OnInit {
             {
                 if(clicked)
                 {
-                    this.selected.setValue(1)
+                    this.selected.setValue(1);
                 }
             }
         );
@@ -67,7 +67,6 @@ export class TabBarComponent implements OnInit {
             icon: 'close',
             GUID: this.guIdVal
         });
-
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
         this.cdr.detectChanges();

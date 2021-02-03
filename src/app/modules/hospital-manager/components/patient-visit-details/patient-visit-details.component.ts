@@ -80,9 +80,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 	treatmentPrioritySubscription: Subscription | undefined;
 	visitType$: VisitType[] = [];
 	treatmentPriority$: Priority[]= [];
-	showVisitDate: boolean = true;
+	showVisitDate: boolean = false;
 	prevVisits: string[] = [];
-	showEmptyVisit: boolean = false;
+
 	@Input() recordForm!: FormGroup;
 	private _dateSelected!: string[];
 
@@ -196,8 +196,9 @@ export class PatientVisitDetailsComponent implements OnInit {
 			visit_status: [1, Validators.required],
 			visit_type: [1, Validators.required],
 			visit_comments: [],
-			visit_day:[],
-			visit_date:[date],
+			operator_notes: [],
+			visit_day: [],
+			visit_date: [date],
 		});
 	
 		if(this.castedVisitArray.length > 0)
@@ -236,12 +237,12 @@ export class PatientVisitDetailsComponent implements OnInit {
 
 	initStreetTreatForm(){
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
+			
 			if(response.visits.length)
 			{
-				this.showEmptyVisit = false;
-				for(let i = 0; i<response.visits.length-1;i++)
+				response.visits.forEach((visit:any,index:number) =>
 				{
-					if(response.visits[i].visit_date){
+					if(visit.visit_date){
 						this.showVisitDate = true;
 						this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 					}
@@ -249,7 +250,8 @@ export class PatientVisitDetailsComponent implements OnInit {
 						this.recordForm.controls['streatTreatForm'].get("visits")?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 					}
 					this.visitsArray.push(this.getVisitFormGroup());
-				}
+				});
+				this.visitsArray.removeAt(this.visitsArray.value.length - 1);
 			}
 			this.prevVisits = response.visits.map((prevVisits:any) => {
 				if(prevVisits.visit_date) 
