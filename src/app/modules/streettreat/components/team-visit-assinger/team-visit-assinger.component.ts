@@ -132,8 +132,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit():void {
-    this.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
     this.scoreCards$ = this.streetTreatService.getScoreCards();
+    this.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
+    this.changeDetector.detectChanges();
     this.initSwimlane();
   }
 
