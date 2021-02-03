@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
+import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
 import { HospitalManagerTabBarService } from '../../services/hospital-manager-tab-bar.service';
 
 
@@ -12,7 +13,8 @@ import { HospitalManagerTabBarService } from '../../services/hospital-manager-ta
 })
 export class HospitalManagerTabBarComponent implements OnInit {
 
-    constructor(private tabBarService: HospitalManagerTabBarService){
+    constructor(private tabBarService: HospitalManagerTabBarService,
+        private navigationService: NavigationService){
 
     }
 
@@ -21,6 +23,14 @@ export class HospitalManagerTabBarComponent implements OnInit {
     selected = new FormControl(0);
 
     ngOnInit() {
+        this.navigationService.isSearchClicked.subscribe((clicked)=>
+            {
+                if(clicked)
+                {
+                    this.selected.setValue(0);
+                }
+            }
+        );
         this.addEmptyTab('Search');
 
         // Watch for any new tabs being opened from other areas of the application.

@@ -6,10 +6,12 @@ import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-err
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
+import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
+import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -50,6 +52,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
     ngOnInit(): void {
+
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
@@ -61,14 +64,20 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
-            new FormControl(
-                '',
-                [Validators.required],
-                [
-                    this.emergencyNumberValidator.validate(
-                    emergencyCaseId?.value,1)
-                ]
-            )
+            new FormControl()
+        );
+
+        this.emergencyDetails.addControl(
+            'callDateTime',
+            new FormControl(getCurrentTimeString(), Validators.required),
+        );
+        this.emergencyDetails.addControl(
+            'dispatcher',
+            new FormControl('', Validators.required),
+        );
+        this.emergencyDetails.addControl(
+            'code',
+            new FormControl(''),
         );
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
@@ -87,7 +96,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
-        this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
+        // this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
 
         this.caseService
             .getEmergencyCaseById(emergencyCaseId?.value)

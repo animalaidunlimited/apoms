@@ -3,6 +3,7 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subscription } from 'rxjs';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 export interface SearchValue {
     id: number;
@@ -30,27 +31,32 @@ export class RecordSearchComponent {
 
     loading = false;
 
-    searchResults$!:Observable<SearchResponse[]>;
+    searchResultArray!: SearchResponse[];
 
+    searchResults$!:Observable<SearchResponse[]>;
+ 
     constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
         private caseService: CaseService,
+        private showSnackBar: SnackbarService
     ) {}
 
     onSearchQuery(searchQuery:string){
         this.loading = true;
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
-        this.searchResults$.subscribe(()=>{
+        this.searchResults$.subscribe((value)=>{
+            this.searchResultArray = value.sort((date1: any,date2:any)=> {
+                return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();
+            });
             this.loading = false;
         });
     
     }
 
     openCase(searchResult: SearchResponse) {
-
         this.openEmergencyCase.emit(searchResult);
     }
 }

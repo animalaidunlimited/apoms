@@ -1,0 +1,233 @@
+.example-container {
+    width: 400px;
+    max-width: 100%;
+    margin: 0 25px 25px 0;
+    display: inline-block;
+    vertical-align: top;
+  }
+  .example-list {
+    min-height: 60px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+    margin-left: 10px;
+  }
+
+  .streetTreatPanel {
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: move;
+    background: white;
+    font-size: 14px;
+    margin-bottom: 10px;
+    border: solid 0.1px lightgray;
+    box-shadow: none;
+    .mat-expansion-panel-header {
+        padding: 10px 6px 19px 6px;
+    }
+  }
+  ::ng-deep .streetTreatPanel .mat-expansion-panel-header .mat-content {
+    flex-direction: column !important;
+    place-items: flex-start;
+  }
+  .Team_Compare{
+    grid-column: 1 / -1;
+    display: flex;
+  }
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .example-list.cdk-drop-list-dragging .streetTreatPanel:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+ .StreetTreat_Container{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap:10px;
+    .drag-drop-container
+    {
+        text-align: center;
+        vertical-align: top;
+    }
+    &_header{
+        display:flex;
+        font-size: 13px;
+        justify-content: space-around;
+        align-items: center;
+        &_Title{
+          display: inline-block;
+          margin-left: 15px;
+        }
+        &_TeamColour{
+          width:40px;
+          height:40px;
+        }
+    }
+    &_visit_compression
+    {
+        display:grid;
+        grid-template-columns: repeat(3,1fr);
+        grid-column-gap:10px;
+        grid-auto-rows: min-content;
+    }
+    &_map{
+      height:calc(100vh - 123px);
+    }
+ }
+ .example-additional-selection {
+  opacity: 0.75;
+  font-size: 0.75em;
+}
+
+ .timeline {
+  display: flex;
+  margin-top:10px;
+  ul {
+    padding: 0;
+    padding-right: 10px;
+    margin: 0;
+    li{
+      .timeline-badge{
+        &-complete{
+          background-color: #58b09c;
+        }
+        &-missed{
+          background-color: #e94f37;
+        }
+        &-progress{
+          background-color: #caf7e2;
+        }
+        &-todo{
+          background-color: #a9bec7;
+        }
+      }
+      list-style: none;
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      .mat-icon{
+        display: inline-flex;
+        place-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: white;
+        font-weight: bolder;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.swimlane-hover{
+  box-shadow: 3px 6px 5px -2px rgba(0, 0, 0, 0.2);
+  margin-top: -2px;
+  margin-left: -2px;
+  margin-bottom: 12px;
+}
+
+ngx-charts-bar-vertical-stacked{
+  display:inline-block;
+}
+
+::ng-deep g.tick:hover {
+  cursor: pointer;
+}
+::ng-deep g.tick:hover text{
+  margin-top:-1px;
+  margin-left:-1px;
+}
+::ng-deep .ngx-charts g.tick text {
+  font-weight: 500;
+}
+
+::ng-deep .ngx-charts g:focus {
+  border-bottom: 2px solid blue;
+}
+.mat-expansion-panel.chart_bar_expansion {
+  margin: 10px 10px 25px 10px;
+}
+::ng-deep .Team_Compare_date {
+  & .mat-form-field-appearance-fill .mat-form-field-flex {
+    padding: 0em 0.1em 0 0.75em;
+    & .mat-form-field-empty.mat-form-field-label{
+      padding-top: .0em;
+    }
+    & .mat-focus-indicator.mat-icon-button.mat-button-base{
+      padding-top: .6em;
+    }
+  }
+}
+::ng-deep .Team_Compare_list{
+  & .mat-form-field-appearance-fill .mat-form-field-flex {
+    padding: 0em 0.1em 0em 0.75em;
+    & .mat-form-field-empty.mat-form-field-label{
+      padding-top: .0em;
+    }
+    & .mat-focus-indicator.mat-icon-button.mat-button-base{
+      padding-top: .6em;
+    }
+  }
+}
+::ng-deep .Team_Comapre_Visit_btn{
+  margin: 0.2rem 0.2rem 0.2rem 0rem;
+  & button {
+    padding: 0.36rem;
+}
+}
+
+::ng-deep .chart-legend .legend-labels {
+  background: rgb(250, 250, 250) !important;
+  .legend-label{color: #000 !important;}
+  span {
+    font-size: 0.9rem !important;
+  }
+}
+.StreetTreat_Container .mat-expansion-panel-header.mat-expanded {
+  background-color: lightsteelblue !important;
+  //padding: 9px 6px 0px 6px !important;
+  margin-bottom: 10px;
+}
+.streetreat_visit{
+  align-self: center;
+  min-width:100%;
+}
+
+.border-red {
+  border-right: 8px solid red;
+}
+
+.border-green {
+  border-right: 8px solid green;
+}
+
+.border-yellow {
+  border-right: 8px solid gold;
+}
+
+.info_tiles div{
+  text-align: center;
+  padding: 1rem 1.5rem;
+  border-radius: 6%;
+  box-shadow: 5px 5px 25px #bebebe, -5px -5px 25px #fff;
+  margin: 1rem 0 0.5rem 0;
+}
+.card_wrapper {
+  margin-top: 15px;
+}
+.StreetTreat_Container_visit_compression{
+  margin-left:10px;
+}

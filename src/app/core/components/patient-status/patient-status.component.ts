@@ -71,8 +71,7 @@ export class PatientStatusComponent implements OnInit {
             });
 
         this.currentTime = getCurrentTimeString();
-
-
+        
     }
 
     onSave() {

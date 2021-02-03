@@ -1,8 +1,10 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
+
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, HostListener } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { NavigationService } from '../../services/navigation/navigation.service';
 import { Search, SearchValue } from '../record-search/record-search.component';
 
 @Component({
@@ -40,7 +42,7 @@ export class SearchFieldComponent implements OnInit {
   searchFieldForm = new FormControl();
 
     @Output() public searchString = new EventEmitter<string>();
-
+    @ViewChild('searchBox') searchBox!:ElementRef;
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
@@ -88,7 +90,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Name =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
             name: 'Caller name',
             inNotIn: true
@@ -100,7 +101,6 @@ export class SearchFieldComponent implements OnInit {
             databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
             'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
             'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            // 'WHERE c.Number =',
             'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
             name: 'Caller no.',
             inNotIn: true
@@ -171,14 +171,26 @@ export class SearchFieldComponent implements OnInit {
         }
     ];
 
+    @HostListener('document:keydown.enter', ['$event'])
+    executeSearchByEnter(event: KeyboardEvent) {
+        event.preventDefault();
+        this.executeSearch();
+    }
+
   constructor(
     public rescueDialog: MatDialog,
     public callDialog: MatDialog,
-    public platform: Platform,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private navigationService: NavigationService,
+    public platform: Platform) { }
 
   ngOnInit(): void {
-
+  this.navigationService.isSearchClicked.subscribe((clicked)=> {
+      if(clicked && this.searchBox){
+          console.log(clicked);
+            this.searchBox.nativeElement.focus();
+      }
+  });
   this.searchForm = this.formBuilder.group({
     searchRows: this.formBuilder.array([])
   });
