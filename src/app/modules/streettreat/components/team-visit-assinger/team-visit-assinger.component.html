@@ -1,23 +1,23 @@
-<div fxLayout fxLayoutAlign="space-around center" class="info_tiles">
+<div fxLayout fxLayoutAlign="space-around center" class="info_tiles" *ngIf="scoreCards$ | async as scoreCards ">
     <div>
         <h4>Total Cases</h4>
-        {{totalCases}}
+        {{scoreCards.TotalActiveCases}}
     </div>
     <div>
         <h4>Cases Without Visit</h4>
-        {{casesWithoutVisits}}
+        {{scoreCards.NoVisits}}
     </div>
     <div>
         <h4>Total Visits Today</h4>
-        {{totalVisitToday}}
+        {{scoreCards.VisitsToday}}
     </div>
     <div>
         <h4>Visit Complete Today</h4>
-        {{visitCompleteToday}} ({{(visitCompleteToday/totalVisitToday) * 100 | number: '1.0-0'}} %)
+        {{scoreCards.CompleteVisitsToday}} ({{(scoreCards.CompleteVisitsToday/scoreCards.TotalActiveCases) * 100 | number: '1.0-0'}} %)
     </div>
     <div>
         <h4>Urgent Cases</h4>
-        {{urgentCases}}
+        {{scoreCards.TotalUrgentCases}}
     </div>
 </div>
 
@@ -64,6 +64,10 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+            <!-- *ngIf="!autoRefresh" -->
+            <button style="margin:7px 0 7px 10px"  mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()" >
+                <mat-icon>refresh</mat-icon>
+              </button>
         </div>
         <ng-container *ngIf="filteredStreetTreatCases; else noResult" cdkDropListGroup>
             <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByTeamId" >

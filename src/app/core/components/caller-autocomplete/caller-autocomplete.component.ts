@@ -81,8 +81,7 @@ updateValidators() {
 
   setCallerDetails($event: MatAutocompleteSelectedEvent) {
     const caller = $event.option.value;
-
-    // this.callerForm.get('callerId')?.setValue(caller.CallerId);
+    this.callerForm.get('callerId')?.setValue(caller.CallerId);
     this.callerForm.get('callerNumber')?.setValue(caller.Number);
     this.callerForm.get('callerName')?.setValue(caller.Name);
     this.callerForm.get('callerAlternativeNumber')?.setValue(caller.AlternativeNumber);
