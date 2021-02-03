@@ -190,6 +190,14 @@ export class ReleaseDetailsDialogComponent implements OnInit {
             this.showSnackBar.successSnackBar('Release details save successfully','OK'),
             this.dialogRef.close(releaseForm.value)
           );
+        const alreadySaved = results.some((result:SuccessOnlyResponse) => result.success === 2);
+        alreadySaved ?
+          (
+            this.showSnackBar.successSnackBar('Release details has been already saved','OK'),
+            this.dialogRef.close(releaseForm.value)
+          ) 
+          :
+          this.showSnackBar.errorSnackBar('Error updating release details','OK');
 
     });
 

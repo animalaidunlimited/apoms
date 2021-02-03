@@ -173,6 +173,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       });
     }, 1000);
+    console.log(data);
     this.customColours = data.teamColours;
   }
 
