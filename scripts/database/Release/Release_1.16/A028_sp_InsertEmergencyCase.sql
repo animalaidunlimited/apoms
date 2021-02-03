@@ -21,7 +21,6 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
-                                    IN prm_UpdateTime DATETIME),
                                     IN prm_UpdateTime DATETIME)
 BEGIN
 

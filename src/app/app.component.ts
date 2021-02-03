@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
-import { PromptUpdateService } from './core/services/update/update-service.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
-import { CaseService } from './modules/emergency-register/services/case.service';
 
 @Component({
     selector: 'app-root',

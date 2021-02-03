@@ -26,11 +26,12 @@ $standard-height: 48px;
     margin: auto;
   }
 
+.search-results{
+    padding: 20px;
+}
 
-@media  only screen and (max-width:640px){
-	.search-results{
-        padding: 20px;
-        margin-left: 16%
-    }
+.result-count{
+    margin-left: 25px;
+    margin-bottom: 10px;
 }
 

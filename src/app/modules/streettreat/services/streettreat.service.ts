@@ -21,20 +21,20 @@ export class StreetTreatService extends APIService {
   redirectUrl = '';
   saveCaseFail = false;
 
-  
-  
+
+
   /**
-   * 
-   * @param searchString | string Query for 
-   * @return streettreat case which are released 
+   *
+   * @param searchString | string Query for
+   * @return streettreat case which are released
    */
   public searchCases(searchString: string) {
-    const request = '/SearchStreetTreatCases/?' + searchString
+    const request = '/SearchStreetTreatCases/?' + searchString;
     return this.getObservable(request).pipe(
      map((response: SearchStreetTreatResponse[]) => {
           return response;
       }),
-    ); 
+    );
   }
   public async baseInsertCase(streetTreatCase: StreetTreatCase): Promise<any> {
     // Insert the new emergency record
@@ -52,23 +52,23 @@ export class StreetTreatService extends APIService {
       }),
     );
   }
-  
+
   public getVisitDatesByStreetTreatCaseId(streetTreatCaseId: number) {
     const request = '/SearchVisits/?streetTreatCaseId=' + streetTreatCaseId;
     return this.getObservable(request).pipe(
      map((response: StreetTreatSearchVisitsResponse[]) => {
           return response;
       }),
-    ); 
+    );
   }
 
   public getActiveStreetTreatCasesWithVisitByDate(date: Date){
-    const request = '?date='+ date;  
+    const request = '?date='+ date;
     return this.getObservable(request).pipe(
       map((response: StreetTreatCaseByVisitDateResponse) => {
            return response;
        }),
-     ); 
+     );
   }
 
   public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) {
@@ -88,20 +88,24 @@ export class StreetTreatService extends APIService {
       })
     );
   }
-  
+
   public async updateVisitTeamByTeamId(teamVisitData:any){
-    return await this.put(teamVisitData)
+    return await this.put(teamVisitData);
   }
+
   public getChartData(){
-    const request = "";
+    const request = '';
     return this.getObservable(request).pipe(
       map((response:ChartResponse)=>{
-        return response
+        return response;
       })
     );
   }
+
+
   public getActiveStreetTreatCasesWithNoVisits(){
-    const request = `/novisits`;
+    const request = '/novisits';
+
     return this.getObservable(request).pipe(
       map((response:any)=>{
         return response;
@@ -117,7 +121,7 @@ export class StreetTreatService extends APIService {
     );
   }
   getScoreCards(){
-    const request = "/scorecards";
+    const request = '/scorecards';
     return this.getObservable(request).pipe(
       map((scoreCards)=>{
         return scoreCards;

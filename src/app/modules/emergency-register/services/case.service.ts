@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { EmergencyResponse, SearchResponse, SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { map } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -10,20 +10,14 @@ import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-import { async } from '@angular/core/testing';
-import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 @Injectable({
     providedIn: 'root',
-}) 
+})
 export class CaseService extends APIService {
 
     emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
     offlineEmergencyResponse!: EmergencyResponse;
-
-    dbSync:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-    lsSync:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(
         http: HttpClient,
@@ -54,9 +48,9 @@ export class CaseService extends APIService {
                         result.emergencyCaseSuccess === 1
                     ) {
                         this.emergencyResponse.next(result);
-                        this.storage.remove(elem.key);                  
+                        this.storage.remove(elem.key);
                     }
-                    
+
                     if(result.emergencyCaseSuccess === 3 ||
                             result.emergencyCaseSuccess === 2) {
                                 this.storage.remove(elem.key);
@@ -64,7 +58,7 @@ export class CaseService extends APIService {
                     return result;
                 }
             )
-                    
+
             );
 
         return await Promise.all(promiseArray).then(result => {
@@ -124,7 +118,7 @@ export class CaseService extends APIService {
                 if(this.saveCaseFail) {
                     this.toaster.errorSnackBar('hello', 'OK');
                     this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
-    
+
                 }
                 // The server is offline, so let's save this to the database
                 return await this.saveToLocalDatabase('PUT'+ emergencyCase.emergencyForm.emergencyDetails.guId, emergencyCase);
@@ -283,8 +277,6 @@ export class CaseService extends APIService {
                         const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
 
                         setTimeout(() => {
-                            this.dbSync.next(true);
-                            this.lsSync.next(false);
                             this.toaster.successSnackBar('Synced updated cases with server', 'OK');
                         }, insertWaitToShowMessage);
 
@@ -306,8 +298,6 @@ export class CaseService extends APIService {
 
 
                     setTimeout(() => {
-                        this.dbSync.next(true);
-                        this.lsSync.next(false);
                         this.toaster.successSnackBar('Synced updated cases with server', 'OK');
                     }, insertWaitToShowMessage);
 
@@ -320,7 +310,7 @@ export class CaseService extends APIService {
                 });
 
             }
-           
+
         }).unsubscribe();
     }
 }
