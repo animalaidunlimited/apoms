@@ -132,8 +132,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit():void {
-    this.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
     this.scoreCards$ = this.streetTreatService.getScoreCards();
+    this.map.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
+    this.changeDetector.detectChanges();
     this.initSwimlane();
   }
 
@@ -191,7 +192,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   markerDragEnd(event: google.maps.MouseEvent) {
     const position = event.latLng.toJSON();
-    this.center = { lat: position.lat, lng: position.lng };
+   // this.center = { lat: position.lat, lng: position.lng };
   }
   
   markerClick(marker:MapMarker)
