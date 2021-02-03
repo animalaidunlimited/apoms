@@ -6,8 +6,6 @@
                 <mat-label>Driver</mat-label>
                     <mat-select tabindex="11" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
                     <mat-option>N/A</mat-option>
-
-                        <!-- <mat-select formControl="rescuer1" [errorStateMatcher]="errorMatcher"></mat-select> -->
                         <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
                         {{rescuer.FirstName}}
                     </mat-option>
@@ -18,8 +16,6 @@
                     <mat-label>Worker</mat-label>
                         <mat-select tabindex="12" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
                             <mat-option>N/A</mat-option>
-
-                            <!-- <mat-select formControl="rescuer2" [errorStateMatcher]="errorMatcher"></mat-select> -->
                             <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
                             {{rescuer.FirstName}}
                         </mat-option>
@@ -38,7 +34,6 @@
             placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
 
                 <mat-error *ngIf="ambulanceArrivalTime.hasError('ambulanceArrivalBeforeCallDatetime')">
-                <!-- <mat-error> -->
                 Ambulance arrival before call!
                 </mat-error>
 

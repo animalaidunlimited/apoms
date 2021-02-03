@@ -27,9 +27,9 @@ table {
     background-color: gray;
 }
 
-.invalid-row {
+/* .invalid-row {
     background-color: #fadce0;
-}
+} */
 
 .duplicate {
     color: red;
@@ -41,4 +41,19 @@ table {
 
 .mat-chip {
     font-weight: unset !important;
+}
+.invalid-row 
+{
+    .invalid-cell{
+        position:relative;
+    }
+    .invalid-cell::before {
+        content: " ";
+        display: inline-block;
+        border-bottom: 1.7px solid red;
+        margin-bottom: 12px;
+        position: absolute;
+        top: 40px;
+        width: 75%;
+    }
 }

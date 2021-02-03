@@ -5,6 +5,8 @@ export interface EmergencyResponse {
    emergencyCallerSuccess: [];
     callerSuccess: [];
     emergencyCaseId: number;
+    emergencyNumber: number;
+    guId: string;
     emergencyCaseSuccess: number;
     patients: PatientResponse[];
 }
@@ -102,6 +104,31 @@ export interface SearchResponse {
     Latitude: number;
     Longitude: number;
     CurrentLocation: string | undefined;
+}
+export interface SearchStreetTreatResponse {
+    AnimalType: string;
+    AnimalTypeId: number;
+    CallDateTime: number;
+    CallOutcome: string | undefined;
+    CallOutcomeId: number | undefined;
+    CallerId: number;
+    CurrentLocation: string | undefined;
+    EmergencyCaseId: number;
+    EmergencyNumber: number;
+    StreetTreatCaseId:number;
+    Latitude: number;
+    Location: string;
+    Longitude: number;
+    MediaCount: number;
+    Name: string;
+    Number: string;
+    PatientId: number;
+    NextVisit: string;
+    TagNumber: string;
+    UserName: string;
+    sameAsNumber: string | undefined;
+    streetTreatCaseSuccess? : number;
+    ReleaseStatus: "Pending" | "Released";
 }
 
 export interface PatientStatus {

@@ -43,6 +43,7 @@ export interface OutstandingAssignment {
     ambulanceAction: string;
     emergencyCaseId: number;
     emergencyCodeId: number;
+    emergencyCode: string;
     emergencyNumber: number;
     releaseBeginDate: string | Date;
     ambulanceArrivalTime: string | Date;
@@ -52,10 +53,9 @@ export interface OutstandingAssignment {
     staff2Abbreviation: string;
     staff1Colour: string;
     staff2Colour: string;
-
-
     moved?: boolean;
     searchCandidate?: boolean;
+    filteredCandidate?: boolean;
 }
 
 export interface CallerDetails {

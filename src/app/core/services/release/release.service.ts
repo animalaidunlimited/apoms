@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ReleaseDetails } from '../../models/release';
+import { ReleaseDetails, ReleaseResponse } from '../../models/release';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class ReleaseService extends APIService {
 
     const request:string = '?PatientId=' + patientId;
     return this.getObservable(request).pipe(
-      map((res: any)=> {
+      map((res: ReleaseResponse)=> {
         return res;
       })
     );

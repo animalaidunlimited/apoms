@@ -61,7 +61,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   isCommented = false;
 
   recordForm: FormGroup = new FormGroup({});
-
   releaseManagers: ReleaseManager[] = [];
 
   username = '';
@@ -149,6 +148,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   initReleaseDetailsForm(){
+
 	if(this.data.patientId) {
 
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
@@ -175,6 +175,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 			}
 		});
 	}
+
   }
 
   onReleaseSubmit(releaseForm:any) {

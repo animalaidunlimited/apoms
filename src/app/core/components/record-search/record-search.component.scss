@@ -26,10 +26,12 @@ $standard-height: 48px;
     margin: auto;
   }
 
-
-/* @media  only screen and (min-width:1024px){
-	::ng-deep .emergency-card {
-		max-width: 240px !important;
-	}
+.search-results{
+    padding: 20px;
 }
- */
+
+.result-count{
+    margin-left: 25px;
+    margin-bottom: 10px;
+}
+

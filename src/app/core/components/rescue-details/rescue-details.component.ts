@@ -11,6 +11,7 @@ import { User } from '../../models/user';
 
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'rescue-details',
   templateUrl: './rescue-details.component.html',
   styleUrls: ['./rescue-details.component.scss']
@@ -148,6 +149,13 @@ updateValidators()
   {
     this.rescuer2Id.setValidators([Validators.required]);
     this.rescuer1Id.setValidators([Validators.required]);
+    this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+    this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({emitEvent: false });
+
+  }
+  else {
+    this.recordForm.get('emergencyDetails.code')?.clearValidators();
+    this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({emitEvent: false });
   }
 
   // if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required

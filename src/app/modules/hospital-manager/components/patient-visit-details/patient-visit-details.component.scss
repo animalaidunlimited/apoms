@@ -1,37 +1,53 @@
 @media only screen and (min-width: 600px) {
-    .mat-fab-wrapper {
-        display: inline-block;
-    }
+  
     .vistisWrapper{
         display: inline-block !important;
         width: 94%;
+        & > div{
+            margin-right:35px;
+        }
+        & > div:last-child .mat-fab-wrapper {
+            margin-right: -26px;
+        }
     }
+
     #cdk-overlay-1{
         max-width:67vw;
     }
     .visit_row_data{
         position: relative;
+        & > div:first-child {
+            display: grid ;
+            grid-template-areas: "date status type d_btn" 
+                                 "admin admin admin d_btn";
+            grid-column-gap: 10px;
+            box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+            margin-bottom: 25px;
+            border-radius: 25px;
+            padding: 15px 15px 15px 15px;
+            & .mat-form-field{
+                max-height: 65px;
+                &:first-child {
+                    grid-area: date;
+                }
+                &:last-of-type{
+                    grid-area:admin;
+                }
+            }
+        }
+        & .mat-fab-wrapper{
+            grid-area: d_btn;
+            top: -15px;
+            position: absolute;
+            right: -15px;
+            border-radius: 50%;
+        }
     }
-    .visit_row_data .mat-fab-wrapper {
-		position: absolute;
-		margin-left: 20px;
-		margin-top: 22px;
-	}
 	.add-visits-fab-btn{
 		display: inline-block;
-	}
-	.visit_row_data mat-form-field {
-		width: calc(100%/5 );
-		min-width: 140px;
-		max-width: 160px;
-	}
-	.visit_row_data mat-form-field:nth-child(2) {
-		width: 35% !important;
-		max-width: unset !important;
-	}
-	.visit_row_data mat-form-field:first-child {
-		min-width: unset !important;
-		width: 10% !important;
+        position: relative;
+        bottom: -25px;
+        right: -5px;
 	}
 	.patientVisitFrom mat-form-field {
 		flex-basis: 0;
@@ -82,5 +98,10 @@
     }
     .mat-fab-wrapper {
         width: 100%;
+    }
+}
+@media only screen and (max-width:768x){
+    .vistisWrapper div {
+        margin-right: 0px !important;
     }
 }
