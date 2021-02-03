@@ -8,7 +8,7 @@
   export interface ReleaseDetails {
     releaseId: number;
     emergencyCaseId: number;
-    releaseType: number;
+    releaseType: string;
     Releaser1: number;
     Releaser2: number;
     releaseBeginDate: Date | string;
