@@ -9,29 +9,21 @@ Created By: Ankit Singh
 Created On: 28/01/2021
 Purpose: Used to return all visit in a month Chart.
 */
-
-
-
-
-WITH DateCTE AS (
-SELECT (DATE(NOW()) - INTERVAL 8 DAY) + INTERVAL (ROW_NUMBER() OVER (ORDER BY TABLE_NAME)) DAY AS `Date`
-FROM INFORMATION_SCHEMA.COLUMNS
-LIMIT 21
-), chart AS (
+WITH chart AS (
 	SELECT 
-		d.Date,
+		v.Date,
         JSON_OBJECT(
-		"name", IFNULL(t.TeamName,"Admin"),
+		"name",t.TeamName,
 		"value",count(t.TeamName)
         ) AS series
-	FROM DateCTE d
-    LEFT JOIN AAU.Visit v ON v.Date = d.Date AND  v.StatusId < 4 AND v.IsDeleted = 0
+	FROM AAU.Visit v
 	LEFT JOIN AAU.StreetTreatCase st ON st.StreetTreatCaseId= v.StreetTreatCaseId 
 	LEFT JOIN AAU.Team t ON t.TeamId = st.TeamId
-    GROUP BY v.Date, t.TeamName
+	WHERE v.StatusId < 5 AND v.IsDeleted = 0 AND v.Date BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW()) + INTERVAL 14 DAY
+    GROUP BY v.Date,t.TeamName
 ),
-teamcolours AS (
-	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.Teamcolour)) AS teamcolours  FROM AAU.team t 
+teamColors AS (
+	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.Teamcolour)) AS teamColors  FROM AAU.team t 
 ),
 chartData AS (
 	SELECT 
@@ -43,9 +35,9 @@ chartData AS (
 )
 SELECT 
 	JSON_MERGE_PRESERVE(
-	JSON_OBJECT("teamColours",teamcolours.teamcolours),
+	JSON_OBJECT("teamColours",teamColors.teamColors),
     JSON_OBJECT("chartData",JSON_ARRAYAGG(chartData.chartData))
     ) AS Result
-FROM teamcolours,chartData GROUP BY teamcolours.teamcolours;
+FROM teamColors,chartData GROUP BY teamColors.teamColors;
 END$$
 DELIMITER ;

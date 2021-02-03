@@ -46,16 +46,6 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Street Treat' },
-        icon: '',
-        group: '',
-        path: 'street-treat',
-        loadChildren: () =>
-            import(
-                './modules/streettreat/streettreat-page.module')
-                .then(m => m.StreetTreatPageModule),
-    },
-    {
         data: { title: 'Census' },
         icon: 'none',
         group: '',
@@ -64,38 +54,17 @@ export const navRoutes: NavRoute[] = [
             import('./modules/census/census-page.module')
             .then(m => m.CensusPageModule),
     },
-    
-
-    /*{
+    {
         data: { title: 'Case List' },
         icon: '',
         group: 'Street Treat',
-        path: 'case-list',
+        path: 'street-treat',
         loadChildren: () =>
             import(
-                './pages/street-treat/pages/case-list-page/case-list-page.module')
-                .then(m => m.CaseListPageModule),
+                './modules/streettreat/streettreat-page.module')
+                .then(m => m.StreetTreatPageModule),
     },
-    {
-        data: { title: 'Add Case' },
-        icon: 'none',
-        group: 'Street Treat',
-        path: 'add-case',
-        loadChildren: () =>
-            import(
-                './pages/street-treat/pages/add-case-page/add-case-page.module')
-                .then(m => m.AddCasePageModule),
-    },
-    {
-        data: { title: 'Team Schedule' },
-        icon: 'none',
-        group: 'Street Treat',
-        path: 'team-schedule',
-        loadChildren: () =>
-            import(
-                './pages/street-treat/pages/team-schedule-page/team-schedule-page.module')
-                .then(m => m.TeamSchedulePageModule),
-    },
+    
     {
         data: { title: 'Teams' },
         icon: 'none',
@@ -104,7 +73,7 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import('./pages/street-treat/pages/teams-page/teams-page.module')
             .then(m => m.TeamsPageModule),
-    },*/
+    },
     {
         data: { title: 'Reporting' },
         icon: 'none',

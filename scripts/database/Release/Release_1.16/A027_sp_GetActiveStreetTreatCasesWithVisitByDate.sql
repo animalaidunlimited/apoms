@@ -3,7 +3,6 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithVisitByDate !!
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithVisitByDate(IN prm_VisitDate DATE)
-BEGIN
 
 WITH casesCTE AS
 (
@@ -66,39 +65,43 @@ rawData.CasePriority,
 rawData.CaseStatusId,
 rawData.CaseStatus,
 JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("VisitDate", rawData.Date),
-JSON_OBJECT("VisitStatusId", rawData.VisitStatusId),
-JSON_OBJECT("VisitTypeId", rawData.VisitTypeId),
-JSON_OBJECT("VisitStatus",rawData.VisitStatus)
-)) AS StreetTreatCases,
+	JSON_MERGE_PRESERVE(
+		JSON_OBJECT("VisitDate", rawData.Date),
+		JSON_OBJECT("VisitStatusId", rawData.VisitStatusId),
+		JSON_OBJECT("VisitTypeId", rawData.VisitTypeId),
+		JSON_OBJECT("VisitStatus",rawData.VisitStatus)
+	)
+) AS StreetTreatCases,
 
-        JSON_OBJECT(
-          'Latitude', rawData.Latitude, 
-          'Longitude',rawData.Longitude, 
-          'Address', rawData.Location
-        
-      )AS Position,
-      JSON_OBJECT(
-          'TagNumber', rawData.TagNumber, 
-          'AnimalName', rawData.Description,
-		  'AnimalType', rawData.AnimalType,
-          'Priority', rawData.Priority
-      ) AS AnimalDetails
+JSON_OBJECT(
+  'Latitude', rawData.Latitude, 
+  'Longitude',rawData.Longitude, 
+  'Address', rawData.Location
+
+)AS Position,
+JSON_OBJECT(
+  'TagNumber', rawData.TagNumber, 
+  'AnimalName', rawData.Description,
+   "AnimalType", rawData.AnimalType,
+  'Priority', rawData.Priority
+) AS AnimalDetails
 FROM visitsCTE rawData
 WHERE RNum <= 5
 GROUP BY rawData.StreetTreatCaseId, rawData.TeamId, rawData.TeamName
 )
 
 SELECT
-JSON_OBJECT("Cases", 
+JSON_OBJECT("Cases",
 JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("TeamId", cases.TeamId),
-JSON_OBJECT("TeamName", cases.TeamName),
-JSON_OBJECT("TeamColour", cases.Teamcolour),
-JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
-))) AS Result
+	JSON_MERGE_PRESERVE(
+		JSON_OBJECT("TeamId", cases.TeamId),
+		JSON_OBJECT("TeamName", cases.TeamName),
+		JSON_OBJECT("TeamColor", cases.Teamcolour),
+		JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
+	)
+) 
+)
+AS Result
 FROM
 (
 SELECT
@@ -119,5 +122,6 @@ JSON_OBJECT("AnimalDetails",caseVisits.AnimalDetails)
 FROM CaseCTE caseVisits
 GROUP BY caseVisits.TeamId, caseVisits.TeamName
 ) AS cases;
+
 END$$
 DELIMITER ;

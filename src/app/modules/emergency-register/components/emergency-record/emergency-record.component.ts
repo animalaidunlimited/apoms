@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -7,7 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -61,7 +61,8 @@ export class EmergencyRecordComponent implements OnInit {
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
@@ -81,21 +82,18 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-
         this.caseService.emergencyResponse.subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
-
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
 
             }
         });
-
+     
         if (this.emergencyCaseId) {
             this.initialiseForm();
         }
-
     }
 
     initialiseForm() : void {
@@ -137,6 +135,7 @@ export class EmergencyRecordComponent implements OnInit {
             result.failure++;
         }
         });
+        console.log(resultBody);
 
         resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
             if (emergencyCallerResult.Success === 1) {
@@ -200,7 +199,6 @@ export class EmergencyRecordComponent implements OnInit {
     async saveForm() {
 
         this.loading = true;
-
         if(this.recordForm.pending){
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
