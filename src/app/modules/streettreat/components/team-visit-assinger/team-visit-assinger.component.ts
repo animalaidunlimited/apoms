@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild, SecurityContext } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
@@ -65,7 +65,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   center:google.maps.LatLngLiteral = this.userOptions.getCoordinates();
   view:[number,number] = [700,400];
   customColours:TeamColour[] = [];
- 
+
   searchDate = new Date();
 
   streetTreatServiceSubs:Subscription = new Subscription();
@@ -96,25 +96,31 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       teams:[''],
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
-    
+
     this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
+
         if(teamIds.length > 0){
           this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
-        }    
+        }
         else {
           this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse;
-        } 
-        this.initMarkers(this.filteredStreetTreatCases); 
+        }
+
+        this.initMarkers(this.filteredStreetTreatCases);
+
     });
 
     this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
       this.searchDate = new Date(date);
-      this.streetTreatServiceSubs = 
+
+      this.streetTreatServiceSubs =
         this.streetTreatService
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
         .subscribe((streetTreatCaseByVisitDateResponse) => {
+
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
           this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+
           if(streetTreatCaseByVisitDateResponse.Cases)
           {
             this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
@@ -123,13 +129,15 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           else{
             this.markers = [];
           }
-          this.streetTreatServiceSubs.unsubscribe(); 
+
+          this.streetTreatServiceSubs.unsubscribe();
+
         });
     });
   }
-  
+
   ngAfterViewInit():void {
-    this.scoreCards$ = this.streetTreatService.getScoreCards(); 
+    this.scoreCards$ = this.streetTreatService.getScoreCards();
     this.initSwimlane();
   }
 
@@ -137,21 +145,25 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     this.streetTreatServiceSubs =
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
+
           this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
           this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
           if (streetTreatCaseByVisitDateResponse.Cases) {
+
             const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
             this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
           }
           this.streetTreatServiceSubs.unsubscribe();
         });
+
     this.streetTreatService.getChartData().subscribe((data) => {
       this.initChartData(data);
     });
   }
 
   private initChartData(data: ChartResponse) {
+
     const charts = data.chartData;
     this.chartExpanded = data.chartData.length > 0 ? true : false;
     const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
@@ -164,7 +176,12 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
       }
     });
+
+    datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
+
     this.chartData = datesRange;
+
+
     setTimeout(() => {
       const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
       ticks.forEach((tick: any) => {
@@ -173,6 +190,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       });
     }, 1000);
+
     this.customColours = data.teamColours;
   }
 
@@ -241,6 +259,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
                 team.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));
 
             this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
+
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
             this.initMarkers(this.filteredStreetTreatCases);
             this.streetTreatServiceSubs.unsubscribe();
@@ -262,7 +281,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     streetTreatCases?.forEach((streetTreatResponse) =>
     {
       streetTreatResponse.StreetTreatCaseVisits.forEach((visitResponse)=>{
+
         this.markers.push({
+
           streetTreatCaseId:visitResponse.StreetTreatCaseId,
           teamId:streetTreatResponse.TeamId,
           options:{

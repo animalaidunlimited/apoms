@@ -22,10 +22,10 @@
             <mat-label>Request time</mat-label>
             <input matInput formControlName="requestedDate" type="date" name="RequestedDate">
         </mat-form-field>
- 
+
     </div>
 
-    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px"> 
+    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px">
         <mat-slide-toggle [checked]="isCommented" (change)="valueChages($event,2)" class="mat-slider">Complainer special instruction</mat-slide-toggle>
 
         <mat-form-field appearance="fill" class="select">
@@ -35,7 +35,7 @@
     </div>
 
 
-    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px"> 
+    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px">
 
         <mat-slide-toggle [checked]="specificStaff" class="toggleDiv" (change)="valueChages($event,3)" class="mat-slider">Specific staff</mat-slide-toggle>
 
@@ -62,15 +62,15 @@
             </div>
         </div>
     </div>
-    
+
     <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px">
 
         <mat-slide-toggle [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
 
-        <div [@openCloseDiv]= isStreetTreatRelease [@visibilityDiv]= isStreetTreatRelease>
+        <div [@openCloseDiv]="isStreetTreatRelease" [@visibilityDiv]="isStreetTreatRelease">
             <app-patient-visit-details [hidden]="!isStreetTreatRelease" [recordForm]="recordForm"></app-patient-visit-details>
         </div>
-        
+
     </div>
 
     <div class="disable">
