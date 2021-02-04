@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface CensusTable {
     areaId: number;
@@ -80,5 +82,12 @@ export class CensusService extends APIService {
         const request = '?Area=' + area;
         return this.get(request);
     }
+
+    public async getCensusErrorRecords(): Promise<any>{
+        const request = '?CensusErrors=true';
+
+        return this.get(request);
+    }
+
 
 }

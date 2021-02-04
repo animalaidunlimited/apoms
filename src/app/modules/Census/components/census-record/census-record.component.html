@@ -1,11 +1,16 @@
 <fieldset class="form-group">
     <legend class="legend">Census Details</legend>
+    
     <form [formGroup] = "censusDate">
+        <div fxLayout="row" fxLayoutAlign="start end">
             <mat-form-field >
                 <mat-label>Census Date</mat-label>
                 <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
+
+            <button (click)="showErrorLog()" class="censusErrorRecordButton" mat-raised-button color="primary">Census error log</button>
+        </div>
     </form>
 
     <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
