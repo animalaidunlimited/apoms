@@ -166,7 +166,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         if(this.recordForm.get('Releaser1')?.value) {
 					this.specificStaffTrue();
         }
-        //Todo: check for form value
+        // Todo: check for form value
 				if(this.recordForm.get('visitForm.streetTreatCaseId')?.value){
 					this.streetTreatReleaseTrue();
         }
@@ -181,6 +181,15 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
+
+      const alreadySaved = results.some((result:SuccessOnlyResponse) => result.success === 2);
+        alreadySaved ?
+          (
+            this.showSnackBar.successSnackBar('Release details has been already saved','OK'),
+            this.dialogRef.close(releaseForm.value)
+          ) 
+          :
+          this.showSnackBar.errorSnackBar('Error updating release details','OK');
     
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?
@@ -190,14 +199,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
             this.showSnackBar.successSnackBar('Release details save successfully','OK'),
             this.dialogRef.close(releaseForm.value)
           );
-        const alreadySaved = results.some((result:SuccessOnlyResponse) => result.success === 2);
-        alreadySaved ?
-          (
-            this.showSnackBar.successSnackBar('Release details has been already saved','OK'),
-            this.dialogRef.close(releaseForm.value)
-          ) 
-          :
-          this.showSnackBar.errorSnackBar('Error updating release details','OK');
 
     });
 
