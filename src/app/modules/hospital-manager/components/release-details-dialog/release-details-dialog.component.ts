@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User, ReleaseManager } from 'src/app/core/models/user';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { MatSelectChange } from '@angular/material/select';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
@@ -153,8 +152,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
 		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
 
-      console.log(formVal);
-
       if(formVal?.success === -1){
         this.showSnackBar.errorSnackBar('Error fetching release details status','OK');
         return;
@@ -162,14 +159,11 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
 			if(formVal) {
         this.recordForm.patchValue(formVal);
-        
+
         if(this.recordForm.get('Releaser1')?.value) {
 					this.specificStaffTrue();
         }
-        //Todo: check for form value
-				if(this.recordForm.get('visitForm.streetTreatCaseId')?.value){
-					this.streetTreatReleaseTrue();
-        }
+
         if((this.recordForm.get('complainerNotes')?.value)){
 					this.isCommented = true;
 				}
@@ -181,7 +175,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-    
+
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')
@@ -228,7 +222,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       }
 
     }
-    
+
   }
 
 }
