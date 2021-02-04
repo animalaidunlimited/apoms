@@ -41,6 +41,9 @@ export class CensusRecordComponent implements OnInit {
 
   visible = true;
 
+  // TODO: Create a type for this.
+  censusErrorRecords!: any;
+
   constructor(
       private fb: FormBuilder,
       private census: CensusService,
@@ -277,6 +280,12 @@ export class CensusRecordComponent implements OnInit {
               });
           }
       });
+  }
+
+  showErrorLog() {
+    this.census.getCensusErrorRecords().then(val=> {
+        console.log(val);
+    });
   }
 
 
