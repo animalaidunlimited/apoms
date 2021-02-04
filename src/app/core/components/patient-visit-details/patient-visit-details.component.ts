@@ -88,6 +88,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	@Output() newDateSelected = new EventEmitter<string[]>();
 
+	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
+
 	@Input() set dateSelected(value:string[]){
 		this._dateSelected = value;
 	}
@@ -255,9 +257,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	initStreetTreatForm(){
 
-		console.log('running');
-
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
+
+			if(response){
+				
+				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
+			}
 
 			if(response.visits.length)
 			{

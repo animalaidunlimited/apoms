@@ -163,7 +163,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         if(this.recordForm.get('Releaser1')?.value) {
 					this.specificStaffTrue();
         }
-
         if((this.recordForm.get('complainerNotes')?.value)){
 					this.isCommented = true;
 				}
@@ -173,9 +172,25 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   }
 
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+    if(streetTreatCaseId)
+    {
+      this.streetTreatReleaseTrue();
+    }
+  }
+
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
 
+      const alreadySaved = results.some((result:SuccessOnlyResponse) => result.success === 2);
+        alreadySaved ?
+          (
+            this.showSnackBar.successSnackBar('Release details has been already saved','OK'),
+            this.dialogRef.close(releaseForm.value)
+          ) 
+          :
+          this.showSnackBar.errorSnackBar('Error updating release details','OK');
+    
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')

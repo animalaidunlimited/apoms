@@ -44,7 +44,12 @@
     </ng-container>
     <ng-container matColumnDef="TeamColour">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Team colour </th>
-      <td mat-cell *matCellDef="let element"> {{element.TeamColour}} </td>
+      <td mat-cell *matCellDef="let element"> 
+        <svg width="125" height="25">
+          <rect width="125" height="25"
+            [attr.fill]="element.TeamColour" />
+        </svg> </td>
+      
     </ng-container>
   
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
