@@ -187,7 +187,6 @@ export class SearchFieldComponent implements OnInit {
   ngOnInit(): void {
   this.navigationService.isSearchClicked.subscribe((clicked)=> {
       if(clicked && this.searchBox){
-          console.log(clicked);
             this.searchBox.nativeElement.focus();
       }
   });

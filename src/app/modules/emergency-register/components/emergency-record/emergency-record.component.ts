@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -16,9 +16,10 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
     styleUrls: ['./emergency-record.component.scss'],
 })
 export class EmergencyRecordComponent implements OnInit {
-    @Input() emergencyCaseId!: number;
+    @Input() emergencyCaseId: number | undefined;
     @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+
 
     loading = false;
 
@@ -61,8 +62,7 @@ export class EmergencyRecordComponent implements OnInit {
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService,
-        private cdr: ChangeDetectorRef
+        private showSnackBar: SnackbarService
     ) {}
 
     ngOnInit() {
@@ -90,14 +90,19 @@ export class EmergencyRecordComponent implements OnInit {
 
             }
         });
-     
+
         if (this.emergencyCaseId) {
             this.initialiseForm();
         }
     }
 
     initialiseForm() : void {
-       this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
+
+        if(!this.emergencyCaseId){
+            return;
+        }
+
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
 
             this.recordForm.patchValue(result);
 
@@ -135,7 +140,6 @@ export class EmergencyRecordComponent implements OnInit {
             result.failure++;
         }
         });
-        console.log(resultBody);
 
         resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
             if (emergencyCallerResult.Success === 1) {
@@ -234,11 +238,12 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
 
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.emergencyCaseId = resultBody.emergencyCaseId;
+
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
                             this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
                             messageResult = this.getCaseSaveMessage(resultBody);
 

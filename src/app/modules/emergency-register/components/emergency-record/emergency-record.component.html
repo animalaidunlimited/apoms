@@ -6,9 +6,9 @@
 
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
             <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
-              <mat-icon *ngIf="recordForm.dirty">sync_disabled</mat-icon>
-              <mat-icon *ngIf="!recordForm.dirty && syncedToLocalStorage">cloud_off</mat-icon>
-              <mat-icon *ngIf="!recordForm.dirty && !syncedToLocalStorage" style="color:seagreen">cloud_done</mat-icon>
+              <mat-icon *ngIf="recordForm.dirty || !emergencyCaseId" matTooltip="Changes not saved">sync_disabled</mat-icon>
+              <mat-icon *ngIf="!recordForm.dirty && syncedToLocalStorage" matTooltip="Changes saved locally">cloud_off</mat-icon>
+              <mat-icon *ngIf="!recordForm.dirty && !syncedToLocalStorage && emergencyCaseId" style="color:seagreen" matTooltip="Changes saved to server">cloud_done</mat-icon>
             </div>
             <emergency-details
               [recordForm]="recordForm"
