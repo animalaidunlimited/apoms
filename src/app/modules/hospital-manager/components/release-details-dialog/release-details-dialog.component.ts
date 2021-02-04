@@ -172,6 +172,13 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   }
 
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+    if(streetTreatCaseId)
+    {
+      this.streetTreatReleaseTrue();
+    }
+  }
+
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
 
