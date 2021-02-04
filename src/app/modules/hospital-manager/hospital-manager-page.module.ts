@@ -32,7 +32,7 @@ import { UpdateCensusDialogComponent } from './components/update-census-dialog/u
 import { MediaCaptureComponent } from 'src/app/core/components/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
-import { PatientVisitDetailsModule} from './components/patient-visit-details/patient-visit-details.module';
+import { PatientVisitDetailsModule} from '../../core/components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
 import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
 
