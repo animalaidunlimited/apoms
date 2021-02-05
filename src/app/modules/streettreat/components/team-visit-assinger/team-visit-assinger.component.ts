@@ -46,7 +46,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   latlngboundsArray:google.maps.LatLng[] = [];
   markers: MapMarker[] = [];
   highlightStreetTreatCase = -1;
-  highlightMarkerStreetTreatCase = -1;
   latlngbounds = new google.maps.LatLngBounds(undefined);
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
@@ -117,16 +116,15 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         this.streetTreatService
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
         .subscribe((streetTreatCaseByVisitDateResponse) => {
-
-          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
-          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-
-          if(streetTreatCaseByVisitDateResponse.Cases)
+          if(streetTreatCaseByVisitDateResponse)
           {
+            this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
+            this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
             this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
             this.initMarkers(this.filteredStreetTreatCases);
           }
           else{
+            this.filteredStreetTreatCases = null;
             this.markers = [];
           }
 
@@ -183,13 +181,12 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
 
     setTimeout(() => {
-      const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
-      ticks.forEach((tick: any) => {
-        // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
-        tick.addEventListener('click', this.onDateClick.bind(this));
-
+      this.elementRef.nativeElement.querySelectorAll('g.tick').forEach((chartDate: any) => {
+      // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
+        chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
     }, 1000);
+    
     this.customColours = data.teamColours;
   }
 
@@ -202,11 +199,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  markerDragEnd(event: google.maps.MouseEvent) {
-    const position = event.latLng.toJSON();
-   // this.center = { lat: position.lat, lng: position.lng };
-  }
   markerClick(marker:MapMarker)
   {
     this.highlightStreetTreatCase = marker.streetTreatCaseId as number;
@@ -344,14 +336,17 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(()=>{
-      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0].TeamId;
-      this.teamsgroup.get('teams')?.patchValue([TeamId]);
+      if(this.streetTreatCaseByVisitDateResponse)
+      {
+        const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0]?.TeamId;
+        this.teamsgroup.get('teams')?.patchValue([TeamId]);
+      }
     },100);
   }
 
   onDateClick($event:any){
 
-    let date = $event.target?.innerHTML.trim().split('/');
+    let date = $event.firstChild.innerHTML.trim().split('/');
 
     date = new Date(new Date().getFullYear(), +date[1] - 1 , +date[0]);
 
