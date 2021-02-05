@@ -11,7 +11,9 @@ CREATE  PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
 									IN prm_AdminComments TEXT,
 									IN prm_OperatorNotes TEXT,
                                     IN prm_ClosedDate DATE,
-                                    IN prm_EarlyReleaseFlag BOOLEAN
+                                    IN prm_EarlyReleaseFlag BOOLEAN,
+                                    IN prm_IsIsolation BOOLEAN,
+                                    IN prm_AnimalDescription TEXT
 )
 BEGIN
 /*
@@ -25,7 +27,7 @@ DECLARE vSuccess INT;
 DECLARE vStreetTreatCaseId INT;
 SET vCaseNoExists = 0;
 
-SELECT COUNT(1), StreetTreatCaseId INTO vCaseNoExists, vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId GROUP BY PatientId;
+SELECT COUNT(1) INTO vCaseNoExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId GROUP BY PatientId;
 
 IF vCaseNoExists = 0 THEN
 
@@ -57,7 +59,7 @@ IF vCaseNoExists = 0 THEN
     SELECT LAST_INSERT_ID() INTO vStreetTreatCaseId;
     
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'Case','Insert', NOW());
+	VALUES (NULL,vStreetTreatCaseId,'StreetTreatCase','Insert', NOW());
     
 ELSEIF vCaseNoExists > 0 THEN
 
@@ -73,8 +75,17 @@ ELSEIF vCaseNoExists > 0 THEN
 		EarlyReleaseFlag	= prm_EarlyReleaseFlag
 	WHERE
 		PatientId = prm_PatientId;
+	
+    UPDATE AAU.Patient
+    SET
+		Description = prm_AnimalDescription
+	WHERE
+		PatientId = prm_PatientId;
+        
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (NULL,vStreetTreatCaseId,'StreetTreatCase, Patient','Update', NOW());
 	SELECT 2 INTO vSuccess;
-
+    SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId =prm_PatientId;
 ELSE
 	SELECT 3 INTO vSuccess;
 END IF;
