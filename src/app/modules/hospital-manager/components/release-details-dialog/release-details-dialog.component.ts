@@ -104,6 +104,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      isStreetTreat: [false]
     });
 
     this.initReleaseDetailsForm();
@@ -173,6 +174,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+
     if(streetTreatCaseId)
     {
       this.streetTreatReleaseTrue();
@@ -181,15 +183,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-
-      const alreadySaved = results.some((result:SuccessOnlyResponse) => result.success === 2);
-        alreadySaved ?
-          (
-            this.showSnackBar.successSnackBar('Release details has been already saved','OK'),
-            this.dialogRef.close(releaseForm.value)
-          ) 
-          :
-          this.showSnackBar.errorSnackBar('Error updating release details','OK');
     
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?

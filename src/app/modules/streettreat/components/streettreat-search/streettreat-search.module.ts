@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
 import { StreetTreatSearchComponent } from './streettreat-search.component';
-import { MaterialModule } from 'src/app/material-module'
+import { MaterialModule } from 'src/app/material-module';
+import { SearchFieldModule } from 'src/app/core/components/search-field/search-field.module';
 
 
 @NgModule({
@@ -12,7 +11,8 @@ import { MaterialModule } from 'src/app/material-module'
         ],
     imports: [
         CommonModule,
-        MaterialModule
+        MaterialModule,
+        SearchFieldModule,
     ],
     exports: [
       StreetTreatSearchComponent
