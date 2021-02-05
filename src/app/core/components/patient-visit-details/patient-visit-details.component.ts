@@ -168,6 +168,17 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.newDateSelected.emit(this.castedVisitArray);
 		});
 
+
+		this.recordForm.valueChanges.subscribe(val=> {
+			if(val.isStreetTreat) {
+				this.streetTreatSetValidators();
+			}
+			
+			if(!val.isStreetTreat) {
+				this.clearValidators();
+			}
+		});
+
 	}
 
 	public get castedVisitArray(){
@@ -292,5 +303,60 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.streatTreatForm.patchValue(response);
 			this.changeDetectorRef.detectChanges();
 		});
+	}
+
+	streetTreatSetValidators() {
+		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
+
+		this.streatTreatForm.get('teamId')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('teamId')?.updateValueAndValidity({emitEvent: false });
+
+		this.streatTreatForm.get('mainProblem')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({emitEvent: false });
+
+		this.streatTreatForm.get('adminNotes')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({emitEvent: false });
+
+		this.visitsArray.get('visit_status')?.setValidators([Validators.required]);
+		this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false});
+
+		this.visitsArray.get('visit_type')?.setValidators([Validators.required]);
+		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false});
+
+	}
+
+	clearValidators() {
+
+		this.streatTreatForm.get('casePriority')?.clearValidators();
+		this.streatTreatForm.get('teamId')?.clearValidators();
+		this.streatTreatForm.get('mainProblem')?.clearValidators();
+		this.streatTreatForm.get('adminNotes')?.clearValidators();
+		this.visitsArray.get('visit_status')?.clearValidators();
+		this.visitsArray.get('visit_type')?.clearValidators();
+
+		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
+		this.streatTreatForm.get('teamId')?.updateValueAndValidity({emitEvent: false });
+		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({emitEvent: false });
+		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({emitEvent: false });
+		this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false });
+		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false });
+		// this.streatTreatForm.get('casePriority')?.clearValidators();
+		// this.recordForm.get('streetTreatForm.casePriority')?.updateValueAndValidity({emitEvent: false });
+
+		// this.recordForm.get('streetTreatForm.teamId')?.clearValidators();
+		// this.recordForm.get('streetTreatForm.teamId')?.updateValueAndValidity({emitEvent: false });
+
+		// this.recordForm.get('streetTreatForm.mainProblem')?.clearValidators();
+		// this.recordForm.get('streetTreatForm.mainProblem')?.updateValueAndValidity({emitEvent: false });
+
+		// this.recordForm.get('streetTreatForm.adminNotes')?.clearValidators();
+		// this.recordForm.get('streetTreatForm.adminNotes')?.updateValueAndValidity({emitEvent: false });
+
+		// this.visitsArray.get('visit_status')?.clearValidators();
+		// this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false});
+
+		// this.visitsArray.get('visit_type')?.clearValidators();
+		// this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false});
 	}
 }
