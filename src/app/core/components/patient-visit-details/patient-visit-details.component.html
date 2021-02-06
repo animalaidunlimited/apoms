@@ -1,7 +1,6 @@
 
 <form [formGroup]="streatTreatForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
-
 		<mat-form-field appearance="fill">
 			<mat-label>Case priority</mat-label>
 			<mat-select placeholder="Case priority" formControlName="casePriority">
@@ -15,7 +14,7 @@
 			<mat-label>Team</mat-label>
 			<mat-select formControlName='teamId'>
 				<mat-option *ngFor="let name of teamListData" [value]="name.TeamId">
-					{{name.TeamName}}
+					{{name.TeamName}} 
 					</mat-option>
 			</mat-select>
 		</mat-form-field>
@@ -34,7 +33,7 @@
 
 		<mat-form-field appearance="fill"  style="flex-grow: 2;">
 			<mat-label>Admin Notes</mat-label>
-			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput required>
+			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput>
 		</mat-form-field>
 
 		<mat-form-field appearance="fill">
