@@ -45,7 +45,7 @@
 
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
-		<div fxlayout>
+		<div fxLayout="row wrap" fxLayoutGap="10px">
 			<h5 mat-dialog-title>Visits</h5>
 			<div class="visit-calendar-wrapper">
 				<button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
