@@ -129,7 +129,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	) {}
 
-	private subscriptions: { [key: string]: Subscription } = {};
 
 	public get patientId(){
 		return this.recordForm.get('patientId')?.value;
@@ -137,7 +136,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	ngOnInit(): void {
 
-		console.log(this.isStreetTreatTrue);
 
 		if(!this.recordForm) this.recordForm = new FormGroup({});
 
@@ -396,20 +394,23 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 	onSelect(selectedDate:Date)
 	{
-	
+		
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
+		
 		const index = this.dateSelected.findIndex(x => x === date);
 		if (index < 0) {
-		this.dateSelected = [...this.dateSelected, date];
+			this.dateSelected = [...this.dateSelected, date];
 		}
 		else {
-		this.dateSelected.splice(index, 1);
-		this.dateSelected = this.dateSelected.slice();
+			this.dateSelected.splice(index, 1);
+			this.dateSelected = this.dateSelected.slice();
 		}
 		this.changeDetectorRef.detectChanges();
 		this.calendar.updateTodaysDate(); 
 	} 
+
 	dateClass() {
+		
 		return (date: Date): MatCalendarCellCssClasses  => {
 		let calenderCSS = '';
 		for(const visit of this.visitDates){
@@ -459,6 +460,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		  calenderCSS = 'selected-date';
 		  }
 		}
+		console.log(calenderCSS);
 		return  calenderCSS ? calenderCSS : '';
 		};
 	  }
