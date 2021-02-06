@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { StreetTreatTab } from 'src/app/core/models/streettreet';
+
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { Priority } from '../../../../core/models/priority';
@@ -10,6 +11,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
+
 
 
 @Component({
@@ -31,7 +33,6 @@ export class StreetTreatRecordComponent implements OnInit {
   profileUrl: SafeUrl = '';
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
-  
 
   constructor(
     private fb: FormBuilder,
@@ -53,7 +54,7 @@ export class StreetTreatRecordComponent implements OnInit {
   public get streetTreatFrom(){
     return this.recordForm.value;
   }
-  
+
   ngOnInit(): void {
     this.recordForm = this.fb.group({
       EmergencyNumber: ['', Validators.required],
@@ -79,6 +80,7 @@ export class StreetTreatRecordComponent implements OnInit {
       ),
       patientId:[this.patientId,Validators.required],
     });
+
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
 
     if (this.mediaData) {
@@ -119,10 +121,12 @@ export class StreetTreatRecordComponent implements OnInit {
         this.recordForm.get('EndDate')?.updateValueAndValidity();
       }
     }),100);
-    
+
   }
 
+
   saveForm(){
+
     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
 
       response.success === 1
@@ -135,6 +139,7 @@ export class StreetTreatRecordComponent implements OnInit {
       }
 
     });
- 
+
   }
+
 }

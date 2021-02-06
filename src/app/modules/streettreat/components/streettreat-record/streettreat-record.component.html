@@ -1,30 +1,30 @@
 <div gdColumns="2fr 1fr" gdGap="8px"  [style.padding]="'10px'">
     <div>
         <fieldset [formGroup]="recordForm" class="form-sub-group" autocomplete="off" class="streettreat_record_form">
-        
+
               <legend class="legend">StreetTreat Details</legend>
-          
+
               <div fxLayout.gt-sm="row wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" class="st_form">
                     <mat-form-field appearance="fill" >
                         <mat-label>Emergency Number</mat-label>
                         <input tabindex="1" formControlName="EmergencyNumber" type="text" placeholder="Name"  matInput>
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill" >
                         <mat-label>Tag Number</mat-label>
                         <input tabindex="2" formControlName="TagNumber" type="" placeholder="Tag Number" matInput>
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill" >
                         <mat-label>Next Visit</mat-label>
                         <input tabindex="3" formControlName="NextVisit" type="date" placeholder="Next Visit" matInput>
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill" >
                         <mat-label>% Complete</mat-label>
                         <input tabindex="4" formControlName="PercentComplete" type="text" placeholder="% Complete" matInput>
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill">
                         <mat-label>Animal type</mat-label>
                         <mat-select  formControlName="AnimalTypeId" >
@@ -33,28 +33,30 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill">
                         <mat-label>Animal Description</mat-label>
                         <input formControlName="AnimalName" type="text" placeholder="Animal Description" matInput />
                     </mat-form-field>
-        
+
                     <mat-form-field appearance="fill">
                         <mat-label>Begin Date</mat-label>
                         <input matInput type="date"  placeholder="Begin Date" formControlName="BeginDate">
                      </mat-form-field>
-        
+
                      <mat-form-field appearance="fill">
                         <mat-label>End Date</mat-label>
                         <input matInput type="date"  placeholder="End Date" formControlName="EndDate">
                      </mat-form-field>
-        
+
                      <mat-checkbox formControlName="EarlyReleaseFlag">Early Release Flag</mat-checkbox>
                      <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
-        
+
               </div>
+
             <app-patient-visit-details [dateSelected]="dateSelected" [recordForm]="recordForm" ></app-patient-visit-details>
                 
+
         </fieldset>
         <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
             <button mat-raised-button color="primary" [disabled]="recordForm.invalid" (click)="saveForm()">Save</button>
@@ -62,7 +64,7 @@
         </div>
     </div>
     <div>
-    <animal-header [recordForm]="recordForm" [profileUrl]="profileUrl"></animal-header> 
+    <animal-header [recordForm]="recordForm" [profileUrl]="profileUrl"></animal-header>
     <caller-details [recordForm]="recordForm"></caller-details>
     <location-details [recordForm]="recordForm"></location-details>
     </div>
