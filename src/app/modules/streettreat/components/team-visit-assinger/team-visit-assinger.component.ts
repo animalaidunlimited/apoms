@@ -118,12 +118,12 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
-          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
+          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse?.Cases;
 
-          if(streetTreatCaseByVisitDateResponse.Cases)
+          if(streetTreatCaseByVisitDateResponse?.Cases)
           {
-            this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
+            this.teamsDropDown = streetTreatCaseByVisitDateResponse?.Cases;
             this.initMarkers(this.filteredStreetTreatCases);
           }
           else{
@@ -344,7 +344,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(()=>{
-      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0].TeamId;
+      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0]?.TeamId;
       this.teamsgroup.get('teams')?.patchValue([TeamId]);
     },100);
   }
