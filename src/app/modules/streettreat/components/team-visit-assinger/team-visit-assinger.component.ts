@@ -144,11 +144,11 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
-          this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-          if (streetTreatCaseByVisitDateResponse.Cases) {
-
+          
+          if (streetTreatCaseByVisitDateResponse?.Cases) {
+            this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+            this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
+            this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
             const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
             this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
           }
