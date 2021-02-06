@@ -4,8 +4,6 @@
   
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
 
-          {{syncedToLocalStorage}}
-
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
             <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
               <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)" matTooltip="Changes not saved">sync_disabled</mat-icon>
