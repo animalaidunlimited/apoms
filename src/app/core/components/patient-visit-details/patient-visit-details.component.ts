@@ -84,6 +84,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	prevVisits: string[] = [];
 
 	@Input() recordForm!: FormGroup;
+	@Input() isStreetTreatTrue!: boolean;
+
+
 	private _dateSelected!: string[];
 
 	@Output() newDateSelected = new EventEmitter<string[]>();
@@ -116,13 +119,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	ngOnInit(): void {
 
+		console.log(this.isStreetTreatTrue);
+
 		if(!this.recordForm) this.recordForm = new FormGroup({});
 
 		this.recordForm.addControl(
 			'streatTreatForm',
 			this.fb.group({
 				streetTreatCaseId:[],
-				patientId: [this.patientId,Validators.required],
+				patientId: [this.patientId],
 				casePriority: [, Validators.required],
 				teamId: [, Validators.required],
 				mainProblem: [, Validators.required],
@@ -168,18 +173,13 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.newDateSelected.emit(this.castedVisitArray);
 		});
 
-
-		this.recordForm.valueChanges.subscribe(val=> {
-			if(val.isStreetTreat) {
-				this.streetTreatSetValidators();
-			}
-			
-			if(!val.isStreetTreat) {
-				this.clearValidators();
-			}
-		});
+		if(!this.isStreetTreatTrue) {
+			this.clearValidators();
+		}
 
 	}
+
+
 
 	public get castedVisitArray(){
 		const castedVisitsArray:string[] = [];
@@ -215,6 +215,13 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		if(this.dateSelected){
 			this.addCalenderVisit(this.dateSelected);
 		}
+
+	 	if(this.streatTreatForm) {
+			this.isStreetTreatTrue ?
+			this.streetTreatSetValidators() :
+			this.clearValidators();
+		}
+		
 	}
 
 	getVisitFormGroup(date?: string ): FormGroup {
@@ -327,10 +334,18 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	clearValidators() {
+		this.streatTreatForm.reset();
+		this.streatTreatForm.get('PatientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.clearValidators();
 		this.streatTreatForm.get('teamId')?.clearValidators();
 		this.streatTreatForm.get('mainProblem')?.clearValidators();
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
+		
+		// tslint:disable-next-line:prefer-for-of
+		for(let i=0; i< this.visitsArray?.controls.length; i++) {
+			this.visitsArray.removeAt(i);
+		}
+
 		this.visitsArray.get('visit_status')?.clearValidators();
 		this.visitsArray.get('visit_type')?.clearValidators();
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
@@ -339,5 +354,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false });
+		
 	}
 }
