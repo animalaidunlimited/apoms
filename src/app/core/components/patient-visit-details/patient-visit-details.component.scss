@@ -1,5 +1,74 @@
+@mixin border($bg-color) {
+    border-radius: 50%;
+    & .mat-calendar-body-cell-content {
+        border: 5px solid white !important;
+        border: 3px solid $bg-color !important;
+        background-color: $bg-color !important;
+        box-shadow: inset 0px 0px 0px 3px rgb(255, 255, 255);
+        box-sizing: border-box;
+    }
+}
 @media only screen and (min-width: 600px) {
   
+    .visit-calendar-wrapper {
+        position: absolute;
+        left: 5rem;
+        margin-top: 12rem;
+
+        .visit_calendar {
+            width: 320px;
+            background: white;
+            border-radius: 25px;
+            position: absolute;
+            box-shadow: 0 7px 30px -10px rgba(126, 138, 145, 0.5);
+            left: 70px;
+            z-index: 1;
+            top: -350px;
+            & ::ng-deep .mat-calendar-header {
+                padding: 1px 8px 0px 8px;
+                background: #607d8b ;
+                color: white;
+                border-top-left-radius: 25px;
+                border-top-right-radius: 25px;
+            }
+            &.selected-date {
+                @include border(#607d8b);
+            }
+            &.complete {
+                @include border(#58b09c);
+            }
+            &.complete-animal-died {
+                @include border(#202030);
+            }
+            &.complete-animal-not-found {
+                @include border(#4f6d7a);
+            }
+            &.complete-early-release {
+                @include border(#386150);
+            }
+            &.in-progress {
+                @include border(#caf7e2);
+            }
+            &.missed {
+                @include border(#e94f37);
+            }
+            &.readmission {
+                @include border(#ef7e6c);
+            }
+            &.to-do {
+                @include border(#a9bec7);
+            }
+            &.complete-auto-closed {
+                @include border(#304047);
+            }
+            &.complete-complainer-not-reachable {
+                @include border(#a18fad);
+            }
+            &.admission-to-aau {
+                @include border(#4f776d);
+            }
+        }
+    }
     .vistisWrapper{
         display: inline-block !important;
         width: 94%;
@@ -55,6 +124,10 @@
 	}
 }
 @media only screen and (max-width: 600px) {
+    .calendar-toggle {
+        width: 100%;
+        margin-bottom: -10px !important;
+    }
     button.mat-mini-fab {
         box-sizing: border-box;
         position: relative;
