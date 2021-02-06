@@ -1,8 +1,8 @@
 
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
-import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
@@ -14,8 +14,13 @@ import { EventEmitter } from '@angular/core';
 import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
+import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
+import { StreetTreatSearchVisitsResponse } from 'src/app/core/models/streettreet';
 
-
+interface VisitCalender{
+	status:number;
+	date:Date;
+}
 @Component({
 	selector: 'app-patient-visit-details',
 	templateUrl: './patient-visit-details.component.html',
@@ -69,30 +74,52 @@ import { StreetTreatService } from 'src/app/modules/streettreat/services/streett
 export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	streatTreatForm!: FormGroup;
+
 	visitsArray!: FormArray;
+
 	teamSubscription: Subscription | undefined;
+
 	teamListData: TeamDetails[] = [];
+
 	problemsSubscription: Subscription | undefined;
+
 	problems$: StreetTreatMainProblem[] = [];
+
 	statusSubscription: Subscription | undefined;
+
 	status$: Status[] = [];
+
 	visitTypeSubscription: Subscription | undefined;
+
 	treatmentPrioritySubscription: Subscription | undefined;
+
 	visitType$: VisitType[] = [];
+
 	treatmentPriority$: Priority[]= [];
+
 	showVisitDate = false;
+
 	prevVisits: string[] = [];
 
-	@Input() recordForm!: FormGroup;
-	@Input() isStreetTreatTrue!: boolean;
+	visitDates: VisitCalender[] = [];
 
-	@Output() newDateSelected = new EventEmitter<string[]>();
+
+	loadCalendarComponent = true;
+
+	streetTreatServiceSubscription: Subscription | undefined;
+
+	@Input() recordForm!: FormGroup;
+
+	@Input() isStreetTreatTrue!: boolean;
 
 	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
 
-	@Input() dateSelected!: string[];
+	@Input() dateSelected!: string[] ;
 
 	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
+
+
+	@ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
 
 	constructor(
 
@@ -160,20 +187,29 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.treatmentPriority$ = treatmentPriority;
 			this.treatmentPrioritySubscription?.unsubscribe();
 		});
-
-		this.initStreetTreatForm();
-
-		this.visitsArray.valueChanges.subscribe(()=>{
-			this.newDateSelected.emit(this.castedVisitArray);
-		});
-
+		this.initStreetTreatForm()
 		if(!this.isStreetTreatTrue) {
 			this.clearValidators();
 		}
 
 	}
 
+	ngOnChanges(changes: SimpleChanges) {
+		if(this.dateSelected){
+			this.addCalenderVisit(this.dateSelected);
+		}
 
+		 if(this.streatTreatForm) { 
+			if(this.isStreetTreatTrue){
+				this.initStreetTreatForm();
+				this.streetTreatSetValidators();
+			}else
+			{
+				this.clearValidators();
+			}
+		} 
+		
+	}
 
 	public get castedVisitArray(){
 		const castedVisitsArray:string[] = [];
@@ -204,17 +240,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		}
 
 	}
-
-	ngOnChanges(changes: SimpleChanges) {
-		if(this.dateSelected){
-			this.addCalenderVisit(this.dateSelected);
-		}
-
-	 	if(this.streatTreatForm) {
-			this.isStreetTreatTrue ?
-			this.streetTreatSetValidators() :
-			this.clearValidators();
-		}
+	
+	dateSelectedEventHandler($event:any){
+    
+		this.dateSelected = [...$event];
+	
+		if(this.calendar) {
+		  this.calendar.updateTodaysDate(); 
+		} 
 
 	}
 
@@ -244,6 +277,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			// }
 		}
 		return visitArray;
+	}
+
+	loadCalendar(){
+		this.loadCalendarComponent = !this.loadCalendarComponent;
 	}
 
 	keyPressNumbers(event: any) {
@@ -287,11 +324,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					else{
 						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 					}
-
+				
 					this.visitsArray.push(this.getVisitFormGroup());
 				});
 
-				// this.visitsArray.removeAt(this.visitsArray.value.length - 1);
 			}
 
 			this.prevVisits = response.visits.map((prevVisits:any) => {
@@ -299,6 +335,19 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					return prevVisits.visit_date.toString();
 				else
 					return '';
+			});
+
+			this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(response.streetTreatCaseId)
+			.subscribe((visitResponse:StreetTreatSearchVisitsResponse[])=>{
+			visitResponse.map((visitResponseVal)=> {
+				this.visitDates.push(
+				{
+					status: visitResponseVal.StatusId,
+					date:visitResponseVal.Date
+				}
+				);
+			});
+			this.streetTreatServiceSubscription?.unsubscribe();
 			});
 
 			this.streatTreatForm.patchValue(response);
@@ -350,4 +399,72 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false });
 
 	}
+	onSelect(selectedDate:Date)
+	{
+	
+		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
+		const index = this.dateSelected.findIndex(x => x === date);
+		if (index < 0) {
+		this.dateSelected = [...this.dateSelected, date];
+		}
+		else {
+		this.dateSelected.splice(index, 1);
+		this.dateSelected = this.dateSelected.slice();
+		}
+		this.changeDetectorRef.detectChanges();
+		this.calendar.updateTodaysDate(); 
+	} 
+	dateClass() {
+		return (date: Date): MatCalendarCellCssClasses  => {
+		let calenderCSS = '';
+		for(const visit of this.visitDates){
+		  const d = new Date(visit.date);
+		  if(
+			new Date(d).toDateString() === new Date(date).toDateString() 
+		  )
+		  {
+			  if(visit.status === 1)
+			  {
+				calenderCSS ='to-do';
+			  }
+			  else if(visit.status === 2) {
+				calenderCSS ='in-progress';
+			  }
+			  else if(visit.status === 3) {
+				calenderCSS ='missed';
+			  }
+			  else if(visit.status === 4){
+				calenderCSS ='complete';
+			  }
+			  else if(visit.status === 5){
+				calenderCSS ='complete-early-release';
+			  }
+			  else if(visit.status === 6){
+				calenderCSS ='complete-animal-died';
+			  }
+			  else if(visit.status === 7){
+				calenderCSS ='complete-animal-not-found';
+			  }
+			  else if(visit.status === 8){
+				calenderCSS ='readmission';
+			  }
+		  }
+		}
+		if(this.dateSelected.length > 0)
+		{        
+		  
+		  const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
+		  .some(
+			currentCalenderSelectedDate => 
+			  new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
+			  !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
+		  );
+		  if(highlightDate)
+		  { 
+		  calenderCSS = 'selected-date';
+		  }
+		}
+		return  calenderCSS ? calenderCSS : '';
+		};
+	  }
 }
