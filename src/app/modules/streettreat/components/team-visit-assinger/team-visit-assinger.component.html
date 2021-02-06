@@ -141,7 +141,6 @@
             <map-marker
                 *ngFor="let marker of markers ;trackBy:markersTrack"
                 [options]="marker.options"
-                (mapDragend)="markerDragEnd($event)"
                 (mapClick)="markerClick(marker)"
                 (mapMouseover)="markerClick(marker)"
                 (mapMouseout)="markerClean()"
