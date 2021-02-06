@@ -1,14 +1,12 @@
 
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
-import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { ReleaseService } from 'src/app/core/services/release/release.service';
-import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
 import { Priority } from 'src/app/core/models/priority';
 import { EventEmitter } from '@angular/core';
 import { VisitResponse } from 'src/app/core/models/release';
@@ -16,6 +14,8 @@ import { trigger, style, transition, animate, keyframes, query, stagger } from '
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { StreetTreatSearchVisitsResponse } from 'src/app/core/models/streettreet';
+import { UniqueValidators } from './unique-validators';
+import { Observable } from 'rxjs';
 
 interface VisitCalender{
 	status:number;
@@ -77,25 +77,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	visitsArray!: FormArray;
 
-	teamSubscription: Subscription | undefined;
+	teamListData$!: Observable<TeamDetails[]>;
 
-	teamListData: TeamDetails[] = [];
+	problems$!: Observable<StreetTreatMainProblem[] >;
 
-	problemsSubscription: Subscription | undefined;
+	status$!: Observable<Status[]>;
 
-	problems$: StreetTreatMainProblem[] = [];
+	visitType$!: Observable<VisitType[]>;
 
-	statusSubscription: Subscription | undefined;
-
-	status$: Status[] = [];
-
-	visitTypeSubscription: Subscription | undefined;
-
-	treatmentPrioritySubscription: Subscription | undefined;
-
-	visitType$: VisitType[] = [];
-
-	treatmentPriority$: Priority[]= [];
+	treatmentPriority$!: Observable<Priority[]>;
 
 	showVisitDate = false;
 
@@ -130,15 +120,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	) {}
 
-	private subscriptions: { [key: string]: Subscription } = {};
-
 	public get patientId(){
 		return this.recordForm.get('patientId')?.value;
 	}
 
 	ngOnInit(): void {
-
-		console.log(this.isStreetTreatTrue);
 
 		if(!this.recordForm) this.recordForm = new FormGroup({});
 
@@ -152,42 +138,21 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				mainProblem: [, Validators.required],
 				adminNotes: [,Validators.required],
 				streetTreatCaseStatus:[],
-				visits: this.fb.array(
-								[
-									// this.getVisitFormGroup()
-								]
-							),
+				visits: this.fb.array([])
 			})
 		);
 		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
 
 		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
 
-		this.teamSubscription = this.dropdown.getAllTeams().subscribe(team => {
-			this.teamListData = team;
-			this.teamSubscription?.unsubscribe();
-		});
+		this.teamListData$ = this.dropdown.getAllTeams();
+		this.problems$ = this.dropdown.getStreetTreatMainProblems();
+		this.status$ = this.dropdown.getStatus();
+		this.visitType$ = this.dropdown.getVisitType();
+		this.treatmentPriority$ = this.dropdown.getPriority();
 
-		this.problemsSubscription = this.dropdown.getStreetTreatMainProblems().subscribe(problems => {
-			this.problems$ = problems;
-			this.problemsSubscription?.unsubscribe();
-		});
+		this.initStreetTreatForm();
 
-		this.statusSubscription = this.dropdown.getStatus().subscribe(status => {
-			this.status$ = status;
-			this.statusSubscription?.unsubscribe();
-		});
-
-		this.visitTypeSubscription = this.dropdown.getVisitType().subscribe(visitTypes => {
-			this.visitType$ = visitTypes;
-			this.visitTypeSubscription?.unsubscribe();
-		});
-
-		this.treatmentPrioritySubscription = this.dropdown.getPriority().subscribe(treatmentPriority => {
-			this.treatmentPriority$ = treatmentPriority;
-			this.treatmentPrioritySubscription?.unsubscribe();
-		});
-		this.initStreetTreatForm()
 		if(!this.isStreetTreatTrue) {
 			this.clearValidators();
 		}
@@ -195,11 +160,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
+
 		if(this.dateSelected){
 			this.addCalenderVisit(this.dateSelected);
 		}
 
-		 if(this.streatTreatForm) { 
+		 if(this.streatTreatForm) {
 			if(this.isStreetTreatTrue){
 				this.initStreetTreatForm();
 				this.streetTreatSetValidators();
@@ -207,8 +173,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			{
 				this.clearValidators();
 			}
-		} 
-		
+		}
+
 	}
 
 	public get castedVisitArray(){
@@ -240,14 +206,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		}
 
 	}
-	
+
 	dateSelectedEventHandler($event:any){
-    
+
 		this.dateSelected = [...$event];
-	
+
 		if(this.calendar) {
-		  this.calendar.updateTodaysDate(); 
-		} 
+		  this.calendar.updateTodaysDate();
+		}
 
 	}
 
@@ -315,7 +281,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 			if(response.visits.length)
 			{
-				response.visits.forEach((visit:any,index:number) =>
+				response.visits.forEach((visit:any) =>
 				{
 					if(visit.visit_date){
 						this.showVisitDate = true;
@@ -324,9 +290,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					else{
 						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 					}
-				
+
 					this.visitsArray.push(this.getVisitFormGroup());
 				});
+
+				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 
 			}
 
@@ -339,18 +307,21 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 			this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(response.streetTreatCaseId)
 			.subscribe((visitResponse:StreetTreatSearchVisitsResponse[])=>{
+
 			visitResponse.map((visitResponseVal)=> {
-				this.visitDates.push(
-				{
-					status: visitResponseVal.StatusId,
-					date:visitResponseVal.Date
-				}
+					this.visitDates.push(
+					{
+						status: visitResponseVal.StatusId,
+						date:visitResponseVal.Date
+					}
 				);
 			});
+
 			this.streetTreatServiceSubscription?.unsubscribe();
 			});
 
 			this.streatTreatForm.patchValue(response);
+			this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 			this.changeDetectorRef.detectChanges();
 		});
 	}
@@ -401,7 +372,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 	onSelect(selectedDate:Date)
 	{
-	
+
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
 		const index = this.dateSelected.findIndex(x => x === date);
 		if (index < 0) {
@@ -412,15 +383,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.dateSelected = this.dateSelected.slice();
 		}
 		this.changeDetectorRef.detectChanges();
-		this.calendar.updateTodaysDate(); 
-	} 
+		this.calendar.updateTodaysDate();
+	}
 	dateClass() {
 		return (date: Date): MatCalendarCellCssClasses  => {
 		let calenderCSS = '';
 		for(const visit of this.visitDates){
 		  const d = new Date(visit.date);
 		  if(
-			new Date(d).toDateString() === new Date(date).toDateString() 
+			new Date(d).toDateString() === new Date(date).toDateString()
 		  )
 		  {
 			  if(visit.status === 1)
@@ -451,16 +422,16 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		  }
 		}
 		if(this.dateSelected.length > 0)
-		{        
-		  
+		{
+
 		  const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
 		  .some(
-			currentCalenderSelectedDate => 
+			currentCalenderSelectedDate =>
 			  new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
 			  !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
 		  );
 		  if(highlightDate)
-		  { 
+		  {
 		  calenderCSS = 'selected-date';
 		  }
 		}
