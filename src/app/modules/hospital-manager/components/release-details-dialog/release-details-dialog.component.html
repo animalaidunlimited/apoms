@@ -65,10 +65,10 @@
 
     <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px">
 
-        <mat-slide-toggle [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
+        <mat-slide-toggle formControlName="isStreetTreat" [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
 
         <div [@openCloseDiv]="isStreetTreatRelease" [@visibilityDiv]="isStreetTreatRelease">
-            <app-patient-visit-details [hidden]="!isStreetTreatRelease" [recordForm]="recordForm"></app-patient-visit-details>
+            <app-patient-visit-details [hidden]="!isStreetTreatRelease" (streetTreatCaseIdEmit)="streetTreatCaseIdEventHandler($event)" [recordForm]="recordForm"></app-patient-visit-details>
         </div>
 
     </div>

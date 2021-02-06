@@ -104,6 +104,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      isStreetTreat: [false]
     });
 
     this.initReleaseDetailsForm();
@@ -163,7 +164,6 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         if(this.recordForm.get('Releaser1')?.value) {
 					this.specificStaffTrue();
         }
-
         if((this.recordForm.get('complainerNotes')?.value)){
 					this.isCommented = true;
 				}
@@ -173,9 +173,17 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   }
 
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+
+    if(streetTreatCaseId)
+    {
+      this.streetTreatReleaseTrue();
+    }
+  }
+
   onReleaseSubmit(releaseForm:any) {
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-
+    
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')
