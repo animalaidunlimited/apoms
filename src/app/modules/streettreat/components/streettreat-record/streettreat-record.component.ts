@@ -14,9 +14,9 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { DatePipe } from '@angular/common';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
-interface visitCalender{
-  status:number,
-  date:Date
+interface VisitCalender{
+  status:number;
+  date:Date;
 }
 @Component({
   selector: 'app-streettreat-record',
@@ -33,11 +33,11 @@ export class StreetTreatRecordComponent implements OnInit {
   treatmentPrioritySubscription: Subscription | undefined;
   treatmentPriority$: Priority[] = [];
   streetTreatServiceSubscription: Subscription | undefined;
-  visitDates: visitCalender[] = [];
+  visitDates: VisitCalender[] = [];
   profileUrl: SafeUrl = '';
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
-  loadCalendarComponent:boolean = true;
+  loadCalendarComponent = true;
   
 
   constructor(
@@ -117,11 +117,11 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(this.inputStreetTreatCase.streetTreatCaseId)
     .subscribe((visitResponse:StreetTreatSearchVisitsResponse[])=>{
-      visitResponse.map((visitResponse)=> {
+      visitResponse.map((visitResponseVal)=> {
         this.visitDates.push(
         {
-          status: visitResponse.StatusId,
-          date:visitResponse.Date
+          status: visitResponseVal.StatusId,
+          date:visitResponseVal.Date
         }
         );
       });
@@ -130,13 +130,13 @@ export class StreetTreatRecordComponent implements OnInit {
     setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {
-        this.recordForm.controls['EndDate'].setValidators([Validators.required]);
-        this.recordForm.controls['EndDate'].updateValueAndValidity();
-        this.recordForm.controls['EndDate'].markAsTouched();
+        this.recordForm.get('EndDate')?.setValidators([Validators.required]);
+        this.recordForm.get('EndDate')?.updateValueAndValidity();
+        this.recordForm.get('EndDate')?.markAsTouched();
       }
       else{
-        this.recordForm.controls['EndDate'].clearValidators();
-        this.recordForm.controls['EndDate'].updateValueAndValidity();
+        this.recordForm.get('EndDate')?.clearValidators();
+        this.recordForm.get('EndDate')?.updateValueAndValidity();
       }
     }),100);
     
@@ -144,8 +144,10 @@ export class StreetTreatRecordComponent implements OnInit {
   dateSelectedEventHandler($event:any){
     
     this.dateSelected = [...$event];
-    this.calendar && 
-    this.calendar.updateTodaysDate(); 
+
+    if(this.calendar) {
+      this.calendar.updateTodaysDate(); 
+    } 
   }
   loadCalendar(){
     this.loadCalendarComponent = !this.loadCalendarComponent;
@@ -155,7 +157,7 @@ export class StreetTreatRecordComponent implements OnInit {
   {
   
     const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
-    const index = this.dateSelected.findIndex(x => x == date);
+    const index = this.dateSelected.findIndex(x => x === date);
     if (index < 0) {
       this.dateSelected = [...this.dateSelected, date];
     }
@@ -186,35 +188,35 @@ export class StreetTreatRecordComponent implements OnInit {
   dateClass() {
     return (date: Date): MatCalendarCellCssClasses  => {
     let calenderCSS = '';
-    for(let visit of this.visitDates){
+    for(const visit of this.visitDates){
       const d = new Date(visit.date);
       if(
         new Date(d).toDateString() === new Date(date).toDateString() 
       )
       {
-          if(visit.status == 1)
+          if(visit.status === 1)
           {
-            calenderCSS ='to-do'
+            calenderCSS ='to-do';
           }
-          else if(visit.status == 2) {
+          else if(visit.status === 2) {
             calenderCSS ='in-progress';
           }
-          else if(visit.status == 3) {
+          else if(visit.status === 3) {
             calenderCSS ='missed';
           }
-          else if(visit.status == 4){
+          else if(visit.status === 4){
             calenderCSS ='complete';
           }
-          else if(visit.status == 5){
+          else if(visit.status === 5){
             calenderCSS ='complete-early-release';
           }
-          else if(visit.status == 6){
+          else if(visit.status === 6){
             calenderCSS ='complete-animal-died';
           }
-          else if(visit.status == 7){
+          else if(visit.status === 7){
             calenderCSS ='complete-animal-not-found';
           }
-          else if(visit.status == 8){
+          else if(visit.status === 8){
             calenderCSS ='readmission';
           }
       }
@@ -225,9 +227,9 @@ export class StreetTreatRecordComponent implements OnInit {
       .some(
         currentCalenderSelectedDate => 
           new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
-          !this.visitDates.find(x=> new Date(x.date).toDateString() == new Date(date).toDateString())
+          !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
       );
-      highlightDate ? calenderCSS = 'selected-date' : '';
+      calenderCSS = highlightDate ?  'selected-date' : '';
     }
     return  calenderCSS ? calenderCSS : '';
     };

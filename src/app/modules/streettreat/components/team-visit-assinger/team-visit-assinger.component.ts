@@ -190,7 +190,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       });
     }, 1000);
-
     this.customColours = data.teamColours;
   }
 
@@ -393,6 +392,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   }
 
   openCase(streetTreatCase:any){
+
     /* :SearchStreetTreatResponse  */
     const result:any = {
       StreetTreatCaseId:streetTreatCase.StreetTreatCaseId,

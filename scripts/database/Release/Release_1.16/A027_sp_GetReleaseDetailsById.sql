@@ -22,7 +22,6 @@ SELECT
 				"requestedUser",u.UserName, 
 				"requestedDate",DATE_FORMAT(rd.RequestedDate, "%Y-%m-%d")
 			), 
-		"releaseType",rd.ReleaseTypeId, 
 		"complainerNotes",rd.ComplainerNotes,
 		"complainerInformed",rd.ComplainerInformed,
 		"Releaser1",rd.Releaser1Id, 
