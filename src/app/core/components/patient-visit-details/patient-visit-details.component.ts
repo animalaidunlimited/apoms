@@ -11,7 +11,7 @@ import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
 import { Priority } from 'src/app/core/models/priority';
 import { EventEmitter } from '@angular/core';
-import { ReleaseResponse, VisitResponse } from 'src/app/core/models/release';
+import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 
@@ -348,7 +348,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		this.visitsArray.get('visit_status')?.clearValidators();
 		this.visitsArray.get('visit_type')?.clearValidators();
-
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('teamId')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({emitEvent: false });

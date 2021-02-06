@@ -221,15 +221,20 @@ export class StreetTreatRecordComponent implements OnInit {
           }
       }
     }
-    if(this.dateSelected)
+    if(this.dateSelected.length > 0)
     {        
+      
+
       const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
       .some(
         currentCalenderSelectedDate => 
           new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
           !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
       );
-      calenderCSS = highlightDate ?  'selected-date' : '';
+      if(highlightDate)
+      { 
+      calenderCSS = 'selected-date';
+      }
     }
     return  calenderCSS ? calenderCSS : '';
     };
