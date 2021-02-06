@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, Output, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { StreetTreatTab } from 'src/app/core/models/streettreet';
 
@@ -24,12 +24,10 @@ export class StreetTreatRecordComponent implements OnInit {
   @Input() inputStreetTreatCase!: StreetTreatTab;
 
   recordForm!: FormGroup;
-  animalTypesSubscription: Subscription | undefined;
-  animalTypes$: AnimalType[] = [];
-  treatmentPrioritySubscription: Subscription | undefined;
+  animalTypes$!: Observable<AnimalType[]>;
   streetTreatServiceSubscription: Subscription | undefined;
-  treatmentPriority$: Priority[] = [];
-  
+
+
   profileUrl: SafeUrl = '';
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
@@ -93,22 +91,14 @@ export class StreetTreatRecordComponent implements OnInit {
       });
     }
 
-    this.animalTypesSubscription = this.dropdown.getAnimalTypes().subscribe(animalTypes => {
-      this.animalTypes$ = animalTypes;
-      this.animalTypesSubscription?.unsubscribe();
-    });
-
-    this.treatmentPrioritySubscription = this.dropdown.getPriority().subscribe(treatmentPriority => {
-      this.treatmentPriority$ = treatmentPriority;
-      this.treatmentPrioritySubscription?.unsubscribe();
-    });
+    this.animalTypes$ = this.dropdown.getAnimalTypes();
 
     this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res) => {
       this.recordForm.patchValue(res);
       this.streetTreatServiceSubscription?.unsubscribe();
     });
 
-    
+
     setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {

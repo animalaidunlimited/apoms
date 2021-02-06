@@ -28,7 +28,7 @@
                     <mat-form-field appearance="fill">
                         <mat-label>Animal type</mat-label>
                         <mat-select  formControlName="AnimalTypeId" >
-                            <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
+                            <mat-option *ngFor="let type of (animalTypes$ | async)" [value]="type.AnimalTypeId">
                                 {{type.AnimalType}}
                             </mat-option>
                         </mat-select>
@@ -55,7 +55,7 @@
               </div>
 
             <app-patient-visit-details [dateSelected]="dateSelected" [recordForm]="recordForm" ></app-patient-visit-details>
-                
+
 
         </fieldset>
         <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
