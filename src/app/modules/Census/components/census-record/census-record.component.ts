@@ -41,6 +41,8 @@ export class CensusRecordComponent implements OnInit {
 
   visible = true;
 
+  showCensusErrorLog = false;
+
   // TODO: Create a type for this.
   censusErrorRecords!: any;
 
@@ -51,51 +53,55 @@ export class CensusRecordComponent implements OnInit {
       private cdref : ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+    ngOnInit() {
 
-    this.censusDate = this.fb.group({
-        CensusDate: [this.getCurrentDate()],
-    });
+        this.censusDate = this.fb.group({
+            CensusDate: [this.getCurrentDate()],
+        });
 
+        if(this.censusUpdateDate){
+                this.censusDate.patchValue({CensusDate : this.censusUpdateDate});
+                this.loadCensusData(this.censusDate.get('CensusDate')?.value);
+        }
+        else{
+            this.loadCensusData(this.censusDate.get('CensusDate')?.value);
+        }
 
-  if(this.censusUpdateDate){
-        this.censusDate.patchValue({CensusDate : this.censusUpdateDate});
-        this.loadCensusData(this.censusDate.get('CensusDate')?.value);
-  }
-  else{
-    this.loadCensusData(this.censusDate.get('CensusDate')?.value);
-  }
+        this.censusArea = [
+            {
+                areaId: undefined,
+                areaName: '',
+                sortArea: undefined,
+                actions: [
+                    {
+                        actionId: undefined,
+                        actionName: '',
+                        sortAction: undefined,
+                        patients: [
+                            {
+                                patientId: undefined,
+                                tagNumber: '',
+                                colour: '',
+                                errorCode: undefined,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
 
-      this.censusArea = [
-          {
-              areaId: undefined,
-              areaName: '',
-              sortArea: undefined,
-              actions: [
-                  {
-                      actionId: undefined,
-                      actionName: '',
-                      sortAction: undefined,
-                      patients: [
-                          {
-                              patientId: undefined,
-                              tagNumber: '',
-                              colour: '',
-                              errorCode: undefined,
-                          },
-                      ],
-                  },
-              ],
-          },
-      ];
+        /* Detects the change in date and Brings back the censusdata on that perticular date*/
+        this.censusDate.valueChanges.subscribe(changes => {
+            this.date = changes.CensusDate.toString();
 
-      /* Detects the change in date and Brings back the censusdata on that perticular date*/
-      this.censusDate.valueChanges.subscribe(changes => {
-          this.date = changes.CensusDate.toString();
+            this.loadCensusData(this.date);
+        });
 
-          this.loadCensusData(this.date);
-      });
-  }
+        this.census.getCensusErrorRecords().then(errorRecords=> {
+            this.censusErrorRecords = errorRecords;
+            console.log(this.censusErrorRecords);
+        });
+    }
 
   loadCensusData(censusDate: Date) {
       this.census.getCensusData(censusDate).then(censusData => {
@@ -280,12 +286,6 @@ export class CensusRecordComponent implements OnInit {
               });
           }
       });
-  }
-
-  showErrorLog() {
-    this.census.getCensusErrorRecords().then(val=> {
-        console.log(val);
-    });
   }
 
 

@@ -9,13 +9,35 @@
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
 
-            <button (click)="showErrorLog()" class="censusErrorRecordButton" mat-raised-button color="primary">Census error log</button>
+            <button (click)="showCensusErrorLog = !showCensusErrorLog" class="censusErrorRecordButton" mat-raised-button color="primary">Census error log</button>
         </div>
     </form>
 
+    <div *ngIf="showCensusErrorLog" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center">
+        <div class="errorPanelContainer" *ngFor="let errorLog of censusErrorRecords">
+            <mat-expansion-panel [expanded]='true'>
+                <mat-expansion-panel-header>
+    
+                  <mat-panel-title>
+                      <h4>{{errorLog.TagNumber}}</h4>
+                  </mat-panel-title>
+    
+                  <mat-panel-description>
+                    <p>{{errorLog.CurrentArea}}</p>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+    
+                <h3 class="backGround">{{errorLog.errorType}}</h3>
+    
+              </mat-expansion-panel>
+        </div>
+    </div>
+
+   
+
     <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-    <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center">
+    <div *ngIf="!showCensusErrorLog" fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center">
 
         <fieldset class="form-sub-group" *ngFor= "let area of censusArea">
 
