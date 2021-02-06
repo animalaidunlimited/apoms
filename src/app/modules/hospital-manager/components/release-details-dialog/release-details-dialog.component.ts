@@ -103,11 +103,14 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       complainerNotes: [''],
       complainerInformed:[],
       Releaser1: [],
-      Releaser2: [],
-      isStreetTreat: [false]
+      Releaser2: []
     });
 
     this.initReleaseDetailsForm();
+
+    setTimeout(()=> {
+      console.log(this.recordForm);
+    },10000)
 
   }
 
