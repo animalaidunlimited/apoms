@@ -255,8 +255,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	initStreetTreatForm(){
 
-		console.log('running');
-
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 
 			if(response.visits.length)
