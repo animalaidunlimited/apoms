@@ -33,3 +33,40 @@ body {
     right: 2rem;
 }
 
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
+{
+  background-color: lightsteelblue !important;
+ 
+}
+
+
+.errorPanelContainer {
+    width: 60rem;
+}
+
+.errorPanel {
+    position: absolute;
+    width:25vw
+}
+
+
+@media (max-width: 680px){
+   
+    .errorPanelContainer {
+        width: 20rem !important;
+    }
+    
+}
+
+::ng-deep .mat-expansion-panel-body {
+    background-color:#f6d0d0 !important;
+}
+
+// .mat-expansion-panel-content > .mat-expansion-panel-body {
+//     background-color: red !important;
+// }
+
