@@ -16,7 +16,6 @@
     }
 }
 
-
 @media only screen and (min-width: 1441px) {
     :host ::ng-deep {
         .visit_row_data {
@@ -27,8 +26,9 @@
         }
     }
 }
+
 @media only screen and (min-width: 1201px) {
-    
+
     :host ::ng-deep {
         .add-visits-fab-btn{
             width:99.4% !important;
@@ -45,10 +45,10 @@
                     &:nth-child(3) {
                         width: unset !important;
                         min-width: unset !important;
-                    } 
+                    }
                     &:last-of-type {
                         min-width: 20rem !important;
-                    } 
+                    }
                 }
             }
         }
@@ -60,12 +60,12 @@
         .visit_row_data {
            position: relative !important;
             mat-form-field {
-               
+
                 &:nth-child(3) {
                     min-width: 16% !important;
                     width: 16% !important;
                 }
-                
+
             }
             > div:first-child {
                 display: block !important;
@@ -93,8 +93,7 @@
         min-width: 45px;
         padding: 0;
     }
-  
-    
+
 }
 
 

@@ -1,10 +1,9 @@
-
 <form [formGroup]="streatTreatForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 		<mat-form-field appearance="fill">
 			<mat-label>Case priority</mat-label>
 			<mat-select placeholder="Case priority" formControlName="casePriority">
-				<mat-option *ngFor="let treatmentPriority of treatmentPriority$" [value]="treatmentPriority.PriorityId">
+				<mat-option *ngFor="let treatmentPriority of (treatmentPriority$ | async)" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
 				</mat-option>
 			</mat-select>
@@ -13,8 +12,8 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Team</mat-label>
 			<mat-select formControlName='teamId'>
-				<mat-option *ngFor="let name of teamListData" [value]="name.TeamId">
-					{{name.TeamName}} 
+				<mat-option *ngFor="let name of (teamListData$ | async)" [value]="name.TeamId">
+					{{name.TeamName}}
 					</mat-option>
 			</mat-select>
 		</mat-form-field>
@@ -22,7 +21,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Main problem</mat-label>
 			<mat-select  formControlName="mainProblem">
-				<mat-option *ngFor="let problem of problems$" [value]="problem.MainProblemId">
+				<mat-option *ngFor="let problem of (problems$ | async)" [value]="problem.MainProblemId">
 					{{ problem.MainProblem}}
 				</mat-option>
 			</mat-select>
@@ -39,7 +38,7 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Case Status</mat-label>
 			<mat-select placeholder="Select" formControlName="streetTreatCaseStatus">
-				<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
 			</mat-select>
 		</mat-form-field>
 
@@ -47,13 +46,15 @@
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
 		<div fxLayout="row wrap" fxLayoutGap="10px">
 			<h5 mat-dialog-title>Visits</h5>
+
 			<div class="visit-calendar-wrapper">
 				<button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
 				<div class="visit_calendar" [hidden]="loadCalendarComponent">
-					<mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" ></mat-calendar>
+					<mat-calendar [dateClass]="dateClass()" (selectedChange)="onSelect($event)" ></mat-calendar>
 				</div>
 			</div>
 		</div>
+
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 
 			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
@@ -81,7 +82,7 @@
 					<mat-form-field appearance="fill" class="status">
 						<mat-label>Visit status</mat-label>
 						<mat-select placeholder="Select" formControlName="visit_status">
-							<mat-option *ngFor="let status of status$" [value]="status.StatusId">{{ status.Status}}</mat-option>
+							<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
 						</mat-select>
 					</mat-form-field>
 
@@ -89,9 +90,9 @@
 						<mat-label>Visit type</mat-label>
 
 						<mat-select placeholder="Select" formControlName="visit_type">
-							<mat-option  *ngFor="let visitTypes of visitType$" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
+							<mat-option  *ngFor="let visitTypes of (visitType$ | async)" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
 						</mat-select>
-						
+
 					</mat-form-field>
 					<mat-form-field appearance="fill" class="admin">
 						<textarea matInput placeholder="Admin Comments" cdkAutosizeMinRows="3" cdkTextareaAutosize
