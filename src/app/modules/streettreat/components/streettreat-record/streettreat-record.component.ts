@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, Input, Output, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { StreetTreatSearchResponse, StreetTreatSearchVisitsResponse, StreetTreatTab } from 'src/app/core/models/streettreet';
+import { StreetTreatSearchVisitsResponse, StreetTreatTab } from 'src/app/core/models/streettreet';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { Priority } from '../../../../core/models/priority';
@@ -12,7 +12,6 @@ import { SafeUrl } from '@angular/platform-browser';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 
 interface VisitCalender{
   status:number;
@@ -38,7 +37,7 @@ export class StreetTreatRecordComponent implements OnInit {
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
   loadCalendarComponent = true;
-  
+
 
   constructor(
     private fb: FormBuilder,
@@ -62,7 +61,9 @@ export class StreetTreatRecordComponent implements OnInit {
     return this.recordForm.value;
   }
   @ViewChild(MatCalendar)
+
   calendar!: MatCalendar<Date>;
+
   ngOnInit(): void {
     this.recordForm = this.fb.group({
       EmergencyNumber: ['', Validators.required],
@@ -88,6 +89,7 @@ export class StreetTreatRecordComponent implements OnInit {
       ),
       patientId:[this.patientId,Validators.required],
     });
+
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
 
     if (this.mediaData) {
@@ -139,25 +141,30 @@ export class StreetTreatRecordComponent implements OnInit {
         this.recordForm.get('EndDate')?.updateValueAndValidity();
       }
     }),100);
-    
+
   }
+
   dateSelectedEventHandler($event:any){
-    
+
     this.dateSelected = [...$event];
 
     if(this.calendar) {
-      this.calendar.updateTodaysDate(); 
-    } 
+      this.calendar.updateTodaysDate();
+    }
   }
+
   loadCalendar(){
     this.loadCalendarComponent = !this.loadCalendarComponent;
   }
-  
+
   onSelect(selectedDate:Date)
   {
-  
+
+    console.log('164');
+
     const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
     const index = this.dateSelected.findIndex(x => x === date);
+
     if (index < 0) {
       this.dateSelected = [...this.dateSelected, date];
     }
@@ -165,11 +172,13 @@ export class StreetTreatRecordComponent implements OnInit {
       this.dateSelected.splice(index, 1);
       this.dateSelected = this.dateSelected.slice();
     }
+
+    this.calendar.updateTodaysDate();
     this.changeDetector.detectChanges();
-    this.calendar.updateTodaysDate(); 
-  } 
+  }
 
   saveForm(){
+
     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
 
       response.success === 1
@@ -182,61 +191,60 @@ export class StreetTreatRecordComponent implements OnInit {
       }
 
     });
- 
+
   }
 
   dateClass() {
-    return (date: Date): MatCalendarCellCssClasses  => {
+    return (date: Date): MatCalendarCellCssClasses => {
     let calenderCSS = '';
     for(const visit of this.visitDates){
-      const d = new Date(visit.date);
-      if(
-        new Date(d).toDateString() === new Date(date).toDateString() 
-      )
-      {
-          if(visit.status === 1)
-          {
-            calenderCSS ='to-do';
-          }
-          else if(visit.status === 2) {
-            calenderCSS ='in-progress';
-          }
-          else if(visit.status === 3) {
-            calenderCSS ='missed';
-          }
-          else if(visit.status === 4){
-            calenderCSS ='complete';
-          }
-          else if(visit.status === 5){
-            calenderCSS ='complete-early-release';
-          }
-          else if(visit.status === 6){
-            calenderCSS ='complete-animal-died';
-          }
-          else if(visit.status === 7){
-            calenderCSS ='complete-animal-not-found';
-          }
-          else if(visit.status === 8){
-            calenderCSS ='readmission';
-          }
-      }
+    const d = new Date(visit.date);
+    if(
+    new Date(d).toDateString() === new Date(date).toDateString()
+    )
+    {
+    if(visit.status === 1)
+    {
+    calenderCSS ='to-do';
     }
-    if(this.dateSelected.length > 0)
-    {        
-      
+    else if(visit.status === 2) {
+    calenderCSS ='in-progress';
+    }
+    else if(visit.status === 3) {
+    calenderCSS ='missed';
+    }
+    else if(visit.status === 4){
+    calenderCSS ='complete';
+    }
+    else if(visit.status === 5){
+    calenderCSS ='complete-early-release';
+    }
+    else if(visit.status === 6){
+    calenderCSS ='complete-animal-died';
+    }
+    else if(visit.status === 7){
+    calenderCSS ='complete-animal-not-found';
+    }
+    else if(visit.status === 8){
+    calenderCSS ='readmission';
+    }
+    }
+    }
+
+    if(this.dateSelected.length)
+    {
 
       const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
       .some(
-        currentCalenderSelectedDate => 
-          new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
-          !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
+      currentCalenderSelectedDate =>
+      new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
+      !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
       );
-      if(highlightDate)
-      { 
-      calenderCSS = 'selected-date';
-      }
+
+      calenderCSS = highlightDate ?  'selected-date' : '';
+
     }
-    return  calenderCSS ? calenderCSS : '';
+    return calenderCSS ? calenderCSS : '';
     };
-  }
+    }
 }
