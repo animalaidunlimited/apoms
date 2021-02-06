@@ -84,8 +84,15 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.caseService.emergencyResponse.subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+
+                this.emergencyCaseId = data.emergencyCaseId;
+
                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
+
+
+                this.syncedToLocalStorage = false;
+                this.recordForm.markAsPristine();
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
 
             }
