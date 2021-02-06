@@ -86,27 +86,19 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	@Input() recordForm!: FormGroup;
 	@Input() isStreetTreatTrue!: boolean;
 
-
-	private _dateSelected!: string[];
-
 	@Output() newDateSelected = new EventEmitter<string[]>();
 
 	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
 
-	@Input() set dateSelected(value:string[]){
-		this._dateSelected = value;
-	}
-	get dateSelected(): string[] {
-		return this._dateSelected;
-	}
+	@Input() dateSelected!: string[];
 
 	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
+
 	constructor(
 
 		private fb: FormBuilder,
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
-		private releaseService: ReleaseService,
 		private streetTreatService:StreetTreatService
 
 	) {}
@@ -134,7 +126,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				adminNotes: [,Validators.required],
 				streetTreatCaseStatus:[],
 				visits: this.fb.array(
-								[this.getVisitFormGroup()]
+								[
+									// this.getVisitFormGroup()
+								]
 							),
 			})
 		);
@@ -221,7 +215,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.streetTreatSetValidators() :
 			this.clearValidators();
 		}
-		
+
 	}
 
 	getVisitFormGroup(date?: string ): FormGroup {
@@ -278,7 +272,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 
 			if(response){
-				
+
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 			}
 
@@ -297,7 +291,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					this.visitsArray.push(this.getVisitFormGroup());
 				});
 
-				this.visitsArray.removeAt(this.visitsArray.value.length - 1);
+				// this.visitsArray.removeAt(this.visitsArray.value.length - 1);
 			}
 
 			this.prevVisits = response.visits.map((prevVisits:any) => {
@@ -340,7 +334,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streatTreatForm.get('teamId')?.clearValidators();
 		this.streatTreatForm.get('mainProblem')?.clearValidators();
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
-		
+
 		// tslint:disable-next-line:prefer-for-of
 		for(let i=0; i< this.visitsArray?.controls.length; i++) {
 			this.visitsArray.removeAt(i);
@@ -354,6 +348,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false });
-		
+
 	}
 }
