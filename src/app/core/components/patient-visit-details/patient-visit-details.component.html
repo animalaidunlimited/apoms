@@ -45,8 +45,15 @@
 
 	</div>
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
-		<h5 mat-dialog-title>Visits</h5>
-
+		<div fxlayout>
+			<h5 mat-dialog-title>Visits</h5>
+			<div class="visit-calendar-wrapper">
+				<button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
+				<div class="visit_calendar" [hidden]="loadCalendarComponent">
+					<mat-calendar [dateClass]="dateClass()"  (selectedChange)="onSelect($event)" ></mat-calendar>
+				</div>
+			</div>
+		</div>
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 
 			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data">
