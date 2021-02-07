@@ -18,7 +18,7 @@
             box-shadow: 0 7px 30px -10px rgba(126, 138, 145, 0.5);
             position: absolute;
             z-index: 1;
-            top: 100px;
+            top: 35px;
             & ::ng-deep {
                 .mat-calendar-header {
                     padding: 1px 8px 0px 8px;
@@ -66,6 +66,10 @@
                     }
                 }
             }
+        }
+        button {
+            max-width: 2rem;
+            margin-top: 1.9rem !important;
         }
     }
     .vistisWrapper{

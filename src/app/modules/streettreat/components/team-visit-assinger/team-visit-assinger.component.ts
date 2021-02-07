@@ -20,6 +20,13 @@ export interface MapMarker {
   teamId:number;
 }
 
+interface StreetTreatTabResult {
+  StreetTreatCaseId:number;
+  TagNumber:string;
+  PatientId:number;  
+  EmergencyCaseId:number;
+}
+
 
 @Component({
   selector: 'app-team-visit-assinger',
@@ -28,7 +35,7 @@ export interface MapMarker {
 })
 export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
-  @Output() public openStreetTreatCase = new EventEmitter<number>();
+  @Output() public openStreetTreatCase = new EventEmitter<StreetTreatTabResult>();
 
   icon = {
     path: 'M261-46C201-17 148 39 124 98 111 128 107 169 108 245 110 303 105 377 98 408L89 472 142 458C175 444 227 436 309 430 418 423 435 419 476 394 652 288 637 28 450-48 397-70 309-69 261-46ZZ',
@@ -327,7 +334,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     if(this.filteredStreetTreatCases)
     {
-      this.teamsgroup.get('teams')?.patchValue([]);
+      this.teamsgroup.get('teams')?.patchValue([],{ emitEvent: false });
     }
 
     const dateString = $event.series.split('/');
@@ -372,7 +379,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     return dates;
   }
 
-  noVisits(){
+  noVisits($event?:Event){
+    $event?.preventDefault();
+    $event?.stopPropagation();
     this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
 
     this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
@@ -385,10 +394,10 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openCase(streetTreatCase:any){
-
-    /* :SearchStreetTreatResponse  */
-    const result:any = {
+  openCase(streetTreatCase:StreetTreatCaseVisit,$event:Event){
+    $event.preventDefault();
+    $event.stopPropagation();
+    const result:StreetTreatTabResult = {
       StreetTreatCaseId:streetTreatCase.StreetTreatCaseId,
       TagNumber:streetTreatCase.AnimalDetails.TagNumber,
       PatientId:streetTreatCase.AnimalDetails.PatientId,

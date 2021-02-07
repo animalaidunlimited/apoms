@@ -48,7 +48,7 @@
     <div class="StreetTreat_Container_visit_compression">
         <div class="Team_Compare" [formGroup]="teamsgroup">
             <div class="Team_Comapre_Visit_btn">
-                <button mat-flat-button color="primary" (click)="noVisits()">No Visits</button>
+                <button mat-flat-button color="primary" (click)="noVisits($event)">No Visits</button>
             </div>
             <div class="Team_Compare_date">
                 <mat-form-field appearance="fill">
@@ -105,7 +105,7 @@
                                     {{streetTreatCaseDetails.AnimalDetails.TagNumber}} ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
                                 </div>
                                 <div fxFlex="25">
-                                    <mat-icon aria-label="Edit record" (click)="openCase(streetTreatCaseDetails)">create</mat-icon>
+                                    <mat-icon aria-label="Edit record" (click)="openCase(streetTreatCaseDetails,$event);">create</mat-icon>
                                 </div>
                             </div>
                             <div class="timeline">

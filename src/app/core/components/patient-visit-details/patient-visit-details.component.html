@@ -48,7 +48,7 @@
 			<h5 mat-dialog-title>Visits</h5>
 
 			<div class="visit-calendar-wrapper">
-				<button mat-raised-button (click)="loadCalendar()" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
+				<button mat-raised-button (click)="loadCalendar($event)" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
 				<div class="visit_calendar" [hidden]="loadCalendarComponent">
 					<mat-calendar [dateClass]="dateClass()" (selectedChange)="onSelect($event)" ></mat-calendar>
 				</div>
@@ -106,7 +106,7 @@
 
 					<div class="mat-fab-wrapper">
 						<button mat-mini-fab color="warn" aria-label="Delete this Visit"
-							(click)="deleteVisits(visitIndex)" >
+							(click)="deleteVisits(visitIndex,$event)" >
 							<mat-icon>delete_outline</mat-icon>
 						</button>
 					</div>
