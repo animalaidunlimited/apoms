@@ -43,13 +43,13 @@
 		</mat-form-field>
 
 	</div>
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="vistisWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
-		<div fxLayout="row wrap" fxLayoutGap="10px">
-			<h5 mat-dialog-title>Visits</h5>
+	<div class="visitsWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
+		<div fxLayout="row wrap" fxLayoutGap="10px" class="visitsWrapper-header">
+			<h5 mat-dialog-title class="visit-header">Visits</h5>
 
 			<div class="visit-calendar-wrapper">
 				<button mat-raised-button (click)="loadCalendar($event)" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
-				<div class="visit_calendar" [hidden]="loadCalendarComponent">
+				<div class="visit_calendar" [hidden]="loadCalendarComponent" >
 					<mat-calendar [dateClass]="dateClass()" (selectedChange)="onSelect($event)" ></mat-calendar>
 				</div>
 			</div>
