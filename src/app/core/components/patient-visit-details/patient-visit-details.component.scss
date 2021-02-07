@@ -9,8 +9,8 @@
     }
 }
 @media only screen and (min-width: 600px) {
-  
     .visit-calendar-wrapper {
+        position:relative;
         .visit_calendar {
             width: 320px;
             background: white;
@@ -18,8 +18,7 @@
             box-shadow: 0 7px 30px -10px rgba(126, 138, 145, 0.5);
             position: absolute;
             z-index: 1;
-            top: 35px;
-            & ::ng-deep {
+            ::ng-deep {
                 .mat-calendar-header {
                     padding: 1px 8px 0px 8px;
                     background: #607d8b ;
@@ -67,60 +66,65 @@
                 }
             }
         }
-        button {
+        .calendar-toggle {
             max-width: 2rem;
-            margin-top: 1.9rem !important;
+            margin: 0px !important;
         }
     }
-    .vistisWrapper{
-        display: inline-block !important;
-        width: 94%;
-        & > div{
-            margin-right:35px;
+    .visitsWrapper{
+        flex-flow: column wrap;
+        place-content: flex-start;
+        align-items: st;
+        display: flex;
+        &-header{
+            margin-bottom:10px;
         }
-        & > div:last-child .mat-fab-wrapper {
-            margin-right: -26px;
+        .visit-header{
+            margin:0;
+        }
+        .visit_row_data{
+            > div:first-child {
+                position: relative;
+                display: grid;
+                grid-template-areas: "date status type" 
+                                     "admin admin admin" 
+                                     "notes notes notes";
+                grid-column-gap: 10px;
+    
+                box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+                margin-bottom: 25px;
+                border-radius: 25px;
+                padding: 15px 15px 45px 15px;
+                grid-template-columns: 1fr 2fr 1.74fr;
+                .mat-form-field{
+                    max-height: 65px;
+                    &.date {
+                        grid-area: date;
+                    }
+                    &.notes{
+                        grid-area: notes;
+                        margin-top: 40px;
+                    }
+                    &.admin{
+                        grid-area:admin;
+                    }
+                }
+            }
+            .mat-fab-wrapper{
+                top: -1.2rem;
+                position: absolute;
+                right: 0.4rem;
+                border-radius: 50%;
+                max-width: 1rem;
+                min-width: 1rem;
+            }
         }
     }
 
     #cdk-overlay-1{
         max-width:67vw;
     }
-    .visit_row_data{
-        position: relative;
-        & > div:first-child {
-            display: grid !important;
-            grid-template-areas: "date status type" 
-                                 "admin admin admin" 
-                                 "notes notes notes";
-            grid-column-gap: 10px;
-
-            box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255) !important;
-            margin-bottom: 25px;
-            border-radius: 25px;
-            padding: 15px 15px 45px 15px !important;
-            & .mat-form-field{
-                max-height: 65px;
-                &.date {
-                    grid-area: date;
-                }
-                &.notes{
-                    grid-area: notes;
-                    margin-top: 40px;
-                }
-                &.admin{
-                    grid-area:admin;
-                }
-            }
-        }
-        & .mat-fab-wrapper{
-            top: -15px;
-            position: absolute;
-            right: -15px;
-            border-radius: 50%;
-        }
-    }
-	
+    
 	.patientVisitFrom mat-form-field {
 		flex-basis: 0;
 		flex-grow: 1;
@@ -169,7 +173,7 @@
         width: 100%;
         margin-right: 0 !important;
     }
-    .vistisWrapper {
+    .visitsWrapper {
         margin-bottom: 20px;
     }
     .mat-fab-wrapper {
@@ -177,7 +181,7 @@
     }
 }
 @media only screen and (max-width:768x){
-    .vistisWrapper div {
+    .visitsWrapper div {
         margin-right: 0px !important;
     }
     .visit_row_data > div{

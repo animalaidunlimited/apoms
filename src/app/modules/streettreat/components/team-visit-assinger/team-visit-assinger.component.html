@@ -1,4 +1,10 @@
-<div fxLayout fxLayoutAlign="space-around center" class="info_tiles" *ngIf="scoreCards$ | async as scoreCards ">
+<div 
+    fxLayout.gt-md="row wrap" 
+    fxLayout.lt-md="column wrap" 
+    fxLayoutAlign.gt-md="space-around center" 
+    fxLayoutAlign.lt-md="stretch" 
+    class="info_tiles" 
+    *ngIf="scoreCards$ | async as scoreCards ">
     <div>
         <h4>Total Cases</h4>
         {{scoreCards.TotalActiveCases}}
@@ -46,7 +52,13 @@
 <div class="StreetTreat_Container">
 
     <div class="StreetTreat_Container_visit_compression">
-        <div class="Team_Compare" [formGroup]="teamsgroup">
+        <div 
+        class="Team_Compare" 
+        fxFlayout.gt-md="row wrap"
+        fxLayout.lt-md="column wrap"
+        fxLayoutAlign.lt-md="stretch" 
+        [formGroup]="teamsgroup"
+        >
             <div class="Team_Comapre_Visit_btn">
                 <button mat-flat-button color="primary" (click)="noVisits($event)">No Visits</button>
             </div>

@@ -368,7 +368,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	dateClass() {
 		return (date: Date): MatCalendarCellCssClasses  => {
 			let calenderCSS = '';
-			if(this.visitDates.length > 0){
+			if(this.visitDates?.length > 0){
 				for(const visit of this.visitDates){
 					const d = new Date(visit.date);
 					if(new Date(d).toDateString() === new Date(date).toDateString()){
@@ -401,7 +401,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					}
 				}
 			}
-			if(this.dateSelected.length > 0)
+			if(this.dateSelected?.length > 0)
 			{
 				const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
 				.some(
