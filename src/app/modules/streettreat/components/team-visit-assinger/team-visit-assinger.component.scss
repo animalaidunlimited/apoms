@@ -54,9 +54,6 @@
   }
 
  .StreetTreat_Container{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-column-gap:10px;
     .drag-drop-container
     {
         text-align: center;
@@ -78,8 +75,6 @@
     }
     &_visit_compression
     {
-        display:grid;
-        grid-template-columns: repeat(3,1fr);
         grid-column-gap:10px;
         grid-auto-rows: min-content;
     }
@@ -245,6 +240,13 @@ ngx-charts-bar-vertical-stacked{
   }
   .streetreat_visit{
     min-width: unset;
+  }
+  .Chart_Bar{
+    overflow:scroll;
+    scroll-behavior: smooth;
+  }
+  .StreetTreat_Container_visit_compression{
+    margin-left:5px;
   }
 }
 
