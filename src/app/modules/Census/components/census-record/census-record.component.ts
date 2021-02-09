@@ -43,6 +43,8 @@ export class CensusRecordComponent implements OnInit {
 
   showCensusErrorLog = false;
 
+  showErrorLogBtn = false;
+
   // TODO: Create a type for this.
   censusErrorRecords!: any;
 
@@ -97,9 +99,19 @@ export class CensusRecordComponent implements OnInit {
             this.loadCensusData(this.date);
         });
 
+        this.loadCensusErrorRecords();
+    }
+
+    loadCensusErrorRecords() {
         this.census.getCensusErrorRecords().then(errorRecords=> {
-            this.censusErrorRecords = errorRecords;
-            console.log(this.censusErrorRecords);
+            if(errorRecords.length) {
+                this.censusErrorRecords = errorRecords;
+                this.showErrorLogBtn = true;
+            }
+            else {
+                this.showErrorLogBtn = false;
+            }
+            
         });
     }
 
@@ -169,6 +181,7 @@ export class CensusRecordComponent implements OnInit {
 
                                         if(response){
                                             this.loading = false;
+                                            this.loadCensusErrorRecords();
                                             action.patients.push({
                                                 patientId: response[0].vPatientId,
                                                 tagNumber: tag.toUpperCase(),
@@ -253,6 +266,8 @@ export class CensusRecordComponent implements OnInit {
                       ).then(response=>{
                           if(response){
                               this.loading = false;
+
+                              this.loadCensusErrorRecords();
 
                               this.censusArea.forEach(censusAreas=>
                                 {

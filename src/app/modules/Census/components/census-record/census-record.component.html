@@ -1,5 +1,6 @@
 <fieldset class="form-group">
-    <legend class="legend">Census Details</legend>
+    <legend *ngIf="!showCensusErrorLog" class="legend">Census Details</legend>
+    <legend *ngIf="showCensusErrorLog" class="legend">Census Error Log</legend>
     
     <form [formGroup] = "censusDate">
         <div fxLayout="row" fxLayoutAlign="start end">
@@ -9,25 +10,34 @@
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
 
-            <button (click)="showCensusErrorLog = !showCensusErrorLog" class="censusErrorRecordButton" mat-raised-button color="primary">Census error log</button>
+            <button *ngIf="showErrorLogBtn" (click)="showCensusErrorLog = !showCensusErrorLog" class="censusErrorRecordButton" mat-raised-button color="primary">Census error log</button>
         </div>
     </form>
 
-    <div *ngIf="showCensusErrorLog" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center">
+    <div *ngIf="showCensusErrorLog" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center">
         <div class="errorPanelContainer" *ngFor="let errorLog of censusErrorRecords">
-            <mat-expansion-panel [expanded]='true'>
+            <mat-expansion-panel class="expansionPanel" [expanded]='true'>
                 <mat-expansion-panel-header>
     
-                  <mat-panel-title>
-                      <h4>{{errorLog.TagNumber}}</h4>
+                  <mat-panel-title> 
+                    <h4><b>TagNumber:- </b>{{errorLog.TagNumber}}</h4>
                   </mat-panel-title>
     
                   <mat-panel-description>
-                    <p>{{errorLog.CurrentArea}}</p>
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-    
-                <h3 class="backGround">{{errorLog.errorType}}</h3>
+
+                <div fxLayout="column" fxLayoutGap="3px" fxLayoutAlign="start">
+                    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start">
+                        <p><b>CallTime:-</b> {{errorLog.CallDateTime}}</p>
+                        <p><b>AdmissionTime:-</b> {{errorLog.AdmissionTime}}</p>
+                    </div>
+                    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start">
+                        <p><b>CallerName:-</b> {{errorLog.CallerName}}</p>
+                        <p><b>CallerNumber:-</b> {{errorLog.Number}}</p>
+                    </div>
+                    <p><b>Log:-</b> {{errorLog.ErrorLog}}</p>
+                </div>
     
               </mat-expansion-panel>
         </div>
