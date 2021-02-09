@@ -1,4 +1,10 @@
-<div fxLayout fxLayoutAlign="space-around center" class="info_tiles" *ngIf="scoreCards$ | async as scoreCards ">
+<div 
+    fxLayout.gt-md="row wrap" 
+    fxLayout.lt-md="column wrap" 
+    fxLayoutAlign.gt-md="space-around center"
+    fxLayoutAlign.lt-md="stretch" 
+    class="info_tiles" 
+    *ngIf="scoreCards$ | async as scoreCards ">
     <div>
         <h4>Total Cases</h4>
         {{scoreCards.TotalActiveCases}}
@@ -13,7 +19,8 @@
     </div>
     <div>
         <h4>Visit Complete Today</h4>
-        {{scoreCards.CompleteVisitsToday}} ({{(scoreCards.CompleteVisitsToday/scoreCards.TotalActiveCases) * 100 | number: '1.0-0'}} %)
+        {{scoreCards.CompleteVisitsToday}} ({{(scoreCards.CompleteVisitsToday/scoreCards.TotalActiveCases) * 100 |
+        number: '1.0-0'}} %)
     </div>
     <div>
         <h4>Urgent Cases</h4>
@@ -21,38 +28,49 @@
     </div>
 </div>
 
-<mat-expansion-panel  class="chart_bar_expansion" [expanded]="chartExpanded">
+<mat-expansion-panel class="chart_bar_expansion" [expanded]="chartExpanded">
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon style="font-size: 1.9rem;"> bar_chart</mat-icon>
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="Chart_Bar" #containerRef >
+    <div class="Chart_Bar" >
 
-        <ngx-charts-bar-vertical-stacked
-        [view]="view"
-        [results]="chartData"
-        [gradient]="gradient"
-        [xAxis]="showXAxis"
-        [yAxis]="showYAxis"
-        [animations]="animations"
-        [customColors]="customColours"
-        [barPadding]="8"
-        [legend]="showLegend"
-        (select)="onSelect($event)">
+        <ngx-charts-bar-vertical-stacked 
+            [view]="view" 
+            [results]="chartData" 
+            [gradient]="gradient" 
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis" 
+            [animations]="animations" 
+            [customColors]="customColours" 
+            [barPadding]="8"
+            [legend]="showLegend" 
+            (select)="onSelect($event)">
         </ngx-charts-bar-vertical-stacked>
     </div>
 </mat-expansion-panel>
-<div class="StreetTreat_Container">
+<div 
+    class="StreetTreat_Container" 
+    gdColumns.gt-md="repeat(2, 1fr)" 
+    gdGap.gt-md="10"
+    fxLayout.lt-md="column">
 
-    <div class="StreetTreat_Container_visit_compression">
-        <div class="Team_Compare" [formGroup]="teamsgroup">
-            <div class="Team_Comapre_Visit_btn">
-                <button mat-flat-button color="primary" (click)="noVisits()">No Visits</button>
+    <div 
+        class="StreetTreat_Container_visit_compression"
+        gdColumns.gt-md="repeat(3, 1fr)"
+        gdColumns.xs="repeat(2, 1fr)" 
+        >
+        <div class="Team_Compare" 
+            fxLayout="row wrap" 
+            fxLayoutAlign.lt-md="end"
+            [formGroup]="teamsgroup">
+            <div class="Team_Comapre_Visit_btn" fxFlexOrder.lt-md="3">
+                <button mat-flat-button color="primary" (click)="noVisits($event)">No Visits</button>
             </div>
             <div class="Team_Compare_date">
                 <mat-form-field appearance="fill">
-                   <input matInput type="date"  formControlName="date">
+                    <input matInput type="date" formControlName="date">
                 </mat-form-field>
             </div>
             <div class="Team_Compare_list">
@@ -65,12 +83,13 @@
                 </mat-form-field>
             </div>
             <!-- *ngIf="!autoRefresh" -->
-            <button style="margin:7px 0 7px 10px"  mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()" >
+            <button style="margin:7px 0 7px 10px" mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()" fxFlexOrder.lt-md="4">
                 <mat-icon>refresh</mat-icon>
-              </button>
+            </button>
         </div>
         <ng-container *ngIf="filteredStreetTreatCases; else noResult" cdkDropListGroup>
-            <div class="drag-drop-container" [id]="streetTreatCase.TeamId" *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByTeamId" >
+            <div class="drag-drop-container" [id]="streetTreatCase.TeamId"
+                *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByTeamId">
                 <div class="StreetTreat_Container_header">
                     <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.TeamName}}</h3>
                     <div class="StreetTreat_Container_header_TeamColour">
@@ -81,31 +100,28 @@
                         </svg>
                     </div>
                 </div>
-                <div
-                    cdkDropList
-                    cdkDropListOrientation="horizontal"
-                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits"
-                    class="example-list"
+                <div cdkDropList cdkDropListOrientation="horizontal"
+                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits" class="example-list"
                     (cdkDropListDropped)="drop($event)"
                     *ngFor="let streetTreatCaseDetails of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
 
-                    <mat-expansion-panel class="streetTreatPanel" cdkDrag
-                        [cdkDragData]="streetTreatCaseDetails"
+                    <mat-expansion-panel class="streetTreatPanel" cdkDrag [cdkDragData]="streetTreatCaseDetails"
                         [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}"
                         hideToggle>
 
-                        <mat-expansion-panel-header
-                            [ngClass]="{'border-red' : streetTreatCaseDetails.StreetTreatCasePriorityId == 4,
+                        <mat-expansion-panel-header [ngClass]="{'border-red' : streetTreatCaseDetails.StreetTreatCasePriorityId == 4,
                                         'border-green' : (streetTreatCaseDetails.StreetTreatCasePriorityId == 1 || streetTreatCaseDetails.StreetTreatCasePriorityId == 2),
                                         'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
                                         }">
 
                             <div class="card_wrapper">
-                                <div class="streetreat_visit" >
-                                    {{streetTreatCaseDetails.AnimalDetails.TagNumber}} ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
+                                <div class="streetreat_visit">
+                                    {{streetTreatCaseDetails.AnimalDetails.TagNumber}}
+                                    ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
                                 </div>
                                 <div fxFlex="25">
-                                    <mat-icon aria-label="Edit record" (click)="openCase(streetTreatCaseDetails)">create</mat-icon>
+                                    <mat-icon aria-label="Edit record"
+                                        (click)="openCase(streetTreatCaseDetails,$event);">create</mat-icon>
                                 </div>
                             </div>
                             <div class="timeline">
@@ -114,10 +130,14 @@
                                         <ul>
                                             <li>
                                                 <div [ngSwitch]="visit.VisitStatusId">
-                                                    <mat-icon *ngSwitchCase="4" matTooltip="Complete" class="timeline-badge-complete">done_all</mat-icon>
-                                                    <mat-icon *ngSwitchCase="3" matTooltip="Missed" class="timeline-badge-missed"></mat-icon>
-                                                    <mat-icon *ngSwitchCase="2" matTooltip="In progress" class="timeline-badge-progress"></mat-icon>
-                                                    <mat-icon *ngSwitchCase="1" matTooltip="To do" class="timeline-badge-todo"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="4" matTooltip="Complete"
+                                                        class="timeline-badge-complete">done_all</mat-icon>
+                                                    <mat-icon *ngSwitchCase="3" matTooltip="Missed"
+                                                        class="timeline-badge-missed"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="2" matTooltip="In progress"
+                                                        class="timeline-badge-progress"></mat-icon>
+                                                    <mat-icon *ngSwitchCase="1" matTooltip="To do"
+                                                        class="timeline-badge-todo"></mat-icon>
                                                 </div>
                                             </li>
                                         </ul>
@@ -125,11 +145,11 @@
                                 </ng-container>
                             </div>
                         </mat-expansion-panel-header>
-                            <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
-                                <div>{{streetTreatCaseDetails.AnimalDetails.Problem}}</div>
-                                <div>{{streetTreatCaseDetails.AnimalDetails.Priority}}</div>
-                                <div>{{streetTreatCaseDetails.AnimalDetails.MainProblem}}</div>
-                            </div>
+                        <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
+                            <div>{{streetTreatCaseDetails.AnimalDetails.Problem}}</div>
+                            <div>{{streetTreatCaseDetails.AnimalDetails.Priority}}</div>
+                            <div>{{streetTreatCaseDetails.AnimalDetails.MainProblem}}</div>
+                        </div>
                     </mat-expansion-panel>
                 </div>
             </div>
@@ -138,13 +158,8 @@
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
         <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
-            <map-marker
-                *ngFor="let marker of markers ;trackBy:markersTrack"
-                [options]="marker.options"
-                (mapClick)="markerClick(marker)"
-                (mapMouseover)="markerClick(marker)"
-                (mapMouseout)="markerClean()"
-                >
+            <map-marker *ngFor="let marker of markers ;trackBy:markersTrack" [options]="marker.options"
+                (mapClick)="markerClick(marker)" (mapMouseover)="markerClick(marker)" (mapMouseout)="markerClean()">
             </map-marker>
 
         </google-map>
