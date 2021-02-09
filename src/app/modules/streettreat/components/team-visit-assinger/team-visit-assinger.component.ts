@@ -125,15 +125,11 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         this.streetTreatServiceSubs = this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
             .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-              console.log(streetTreatCaseByVisitDateResponse);
-
                 if(!streetTreatCaseByVisitDateResponse) return;
 
                 this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
                 this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
                 this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-
-                console.log(this.streetTreatCasesResponse);
 
                 if(streetTreatCaseByVisitDateResponse.Cases)
                 {
@@ -156,8 +152,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       this.streetTreatServiceSubs =  this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
-
-          console.log(streetTreatCaseByVisitDateResponse);
 
           if(!streetTreatCaseByVisitDateResponse) return;
 
@@ -199,11 +193,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       this.streetTreatService.getChartData().subscribe((data) => {
 
-        console.log(data.chartData);
-
         data.chartData.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
-
-        console.log(data.chartData);
 
         const charts = data.chartData;
 
@@ -229,8 +219,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
             tick.addEventListener('click',this.onDateClick.bind(this));
           });
         },1000);
-
-        console.log(data);
 
         this.customColors = data.teamColours;
 
