@@ -3,7 +3,6 @@ import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
 import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -96,8 +95,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	loadCalendarComponent = true;
 
-	streetTreatServiceSubscription: Subscription | undefined;
-
 	@Input() recordForm!: FormGroup;
 
 	@Input() isStreetTreatTrue!: boolean;
@@ -124,7 +121,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		return this.recordForm.get('patientId')?.value;
 	}
 
-	ngOnInit(): void {
+	ngOnInit(){
 
 		if(!this.recordForm) this.recordForm = new FormGroup({});
 
@@ -159,11 +156,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
-
-		if(this.dateSelected){
-			this.addCalenderVisit(this.dateSelected);
-		}
+	ngOnChanges() {
 
 		 if(this.streatTreatForm) {
 			if(this.isStreetTreatTrue){
@@ -207,16 +200,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	}
 
-	dateSelectedEventHandler($event:any){
-
-		this.dateSelected = [...$event];
-
-		if(this.calendar) {
-		  this.calendar.updateTodaysDate();
-		}
-
-	}
-
 	getVisitFormGroup(date?: string ): FormGroup {
 		const visitArray = this.fb.group({
 			visitId:[],
@@ -231,21 +214,21 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		if(this.castedVisitArray.length > 0)
 		{
 
-			visitArray.get('visit_date')?.setValidators(Validators.required);
+			if(this.prevVisits.length > 0)
+			{
+				visitArray.get('visit_date')?.setValidators(Validators.required);
+			}
+			else{
+				visitArray.get('visit_day')?.setValidators(Validators.required);
+			}
 
-
-			// if(this.prevVisits.length > 0)
-			// {
-				// visitArray.get('visit_date')?.setValidators(Validators.required);
-			// }
-			// else{
-			// visitArray.get('visit_date')?.setValidators(Validators.required);
-			// }
 		}
 		return visitArray;
 	}
 
-	loadCalendar(){
+	loadCalendar($event:Event){
+		$event.preventDefault();
+		$event.stopPropagation();
 		this.loadCalendarComponent = !this.loadCalendarComponent;
 	}
 
@@ -259,14 +242,17 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		}
 	}
 
-	addVisits(event: Event) {
-
+	addVisits($event: Event) {
+		$event.preventDefault();
+		$event.stopPropagation();
 		if (this.streatTreatForm.controls.visits.valid) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
 	}
 
-	deleteVisits(index: number) {
+	deleteVisits(index: number,$event:Event) {
+		$event.preventDefault();
+		$event.stopPropagation();
 		this.visitsArray.removeAt(index);
 	}
 
@@ -275,7 +261,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 
 			if(response){
-
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 			}
 
@@ -286,15 +271,24 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					if(visit.visit_date){
 						this.showVisitDate = true;
 						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
+						this.visitDates.push(
+						{
+							status: visit.visit_status,
+							date:visit.visit_date
+						});
 					}
 					else{
 						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 					}
-
 					this.visitsArray.push(this.getVisitFormGroup());
 				});
 
 				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
+
+				if(this.visitDates?.length > 0){
+					this.dateClass();
+					this.calendar.updateTodaysDate();
+				}
 
 			}
 
@@ -304,22 +298,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				else
 					return '';
 			});
-
-			this.streetTreatServiceSubscription = this.streetTreatService.getVisitDatesByStreetTreatCaseId(response.streetTreatCaseId)
-			.subscribe((visitResponse:StreetTreatSearchVisitsResponse[])=>{
-
-			visitResponse.map((visitResponseVal)=> {
-					this.visitDates.push(
-					{
-						status: visitResponseVal.StatusId,
-						date:visitResponseVal.Date
-					}
-				);
-			});
-
-			this.streetTreatServiceSubscription?.unsubscribe();
-			});
-
 			this.streatTreatForm.patchValue(response);
 			this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 			this.changeDetectorRef.detectChanges();
@@ -377,67 +355,66 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		const index = this.dateSelected.findIndex(x => x === date);
 		if (index < 0) {
 			this.dateSelected = [...this.dateSelected, date];
+			this.addCalenderVisit(this.dateSelected);
 		}
 		else {
 			this.dateSelected.splice(index, 1);
 			this.dateSelected = this.dateSelected.slice();
+			this.addCalenderVisit(this.dateSelected);
 		}
 		this.changeDetectorRef.detectChanges();
 		this.calendar.updateTodaysDate();
 	}
 	dateClass() {
-		
 		return (date: Date): MatCalendarCellCssClasses  => {
-		let calenderCSS = '';
-		for(const visit of this.visitDates){
-		  const d = new Date(visit.date);
-		  if(
-			new Date(d).toDateString() === new Date(date).toDateString()
-		  )
-		  {
-			  if(visit.status === 1)
-			  {
-				calenderCSS ='to-do';
-			  }
-			  else if(visit.status === 2) {
-				calenderCSS ='in-progress';
-			  }
-			  else if(visit.status === 3) {
-				calenderCSS ='missed';
-			  }
-			  else if(visit.status === 4){
-				calenderCSS ='complete';
-			  }
-			  else if(visit.status === 5){
-				calenderCSS ='complete-early-release';
-			  }
-			  else if(visit.status === 6){
-				calenderCSS ='complete-animal-died';
-			  }
-			  else if(visit.status === 7){
-				calenderCSS ='complete-animal-not-found';
-			  }
-			  else if(visit.status === 8){
-				calenderCSS ='readmission';
-			  }
-		  }
-		}
-		if(this.dateSelected.length > 0)
-		{
+			let calenderCSS = '';
+			if(this.visitDates?.length > 0){
+				for(const visit of this.visitDates){
+					const d = new Date(visit.date);
+					if(new Date(d).toDateString() === new Date(date).toDateString()){
 
-		  const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
-		  .some(
-			currentCalenderSelectedDate =>
-			  new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
-			  !this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
-		  );
-		  if(highlightDate)
-		  {
-		  calenderCSS = 'selected-date';
-		  }
-		}
-		console.log(calenderCSS);
-		return  calenderCSS ? calenderCSS : '';
-		};
+						if(visit.status === 1)
+						{
+							calenderCSS ='to-do';
+						}
+						else if(visit.status === 2) {
+							calenderCSS ='in-progress';
+						}
+						else if(visit.status === 3) {
+							calenderCSS ='missed';
+						}
+						else if(visit.status === 4){
+							calenderCSS ='complete';
+						}
+						else if(visit.status === 5){
+							calenderCSS ='complete-early-release';
+						}
+						else if(visit.status === 6){
+							calenderCSS ='complete-animal-died';
+						}
+						else if(visit.status === 7){
+							calenderCSS ='complete-animal-not-found';
+						}
+						else if(visit.status === 8){
+							calenderCSS ='readmission';
+						}
+					}
+				}
+			}
+			if(this.dateSelected?.length > 0)
+			{
+				const highlightDate = this.dateSelected.map(calenderSelectedDate => new Date(calenderSelectedDate))
+				.some(
+					currentCalenderSelectedDate =>
+					new Date(currentCalenderSelectedDate).toDateString() === new Date(date).toDateString() &&
+					!this.visitDates.find(x=> new Date(x.date).toDateString() === new Date(date).toDateString())
+				);
+				if(highlightDate)
+				{
+					calenderCSS = 'selected-date';
+				}
+			}
+			return  calenderCSS ? calenderCSS : '';
+		};	
 	  }
 }

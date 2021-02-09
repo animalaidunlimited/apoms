@@ -113,6 +113,8 @@ export interface AnimalDetails {
     AnimalName?: string;
     AnimalType: string;
     MainProblem: string;
+    PatientId: number;
+    EmergencyCaseId: number;
 }
 
 export interface StreetTreatCaseVisit {

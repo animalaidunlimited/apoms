@@ -32,7 +32,6 @@
   }
   .Team_Compare{
     grid-column: 1 / -1;
-    display: flex;
   }
   .cdk-drag-preview {
     box-sizing: border-box;
@@ -55,9 +54,6 @@
   }
 
  .StreetTreat_Container{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-column-gap:10px;
     .drag-drop-container
     {
         text-align: center;
@@ -79,8 +75,6 @@
     }
     &_visit_compression
     {
-        display:grid;
-        grid-template-columns: repeat(3,1fr);
         grid-column-gap:10px;
         grid-auto-rows: min-content;
     }
@@ -235,6 +229,24 @@ ngx-charts-bar-vertical-stacked{
   .StreetTreat_Container_visit_compression{
     margin-left: 10px;
     min-width: 33rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .info_tiles div{
+    padding: 1rem 0;
+    border-radius: 2.5%;
+    margin: 1rem;
+    margin-bottom:0;
+  }
+  .streetreat_visit{
+    min-width: unset;
+  }
+  .Chart_Bar{
+    overflow:scroll;
+    scroll-behavior: smooth;
+  }
+  .StreetTreat_Container_visit_compression{
+    margin-left:5px;
   }
 }
 
