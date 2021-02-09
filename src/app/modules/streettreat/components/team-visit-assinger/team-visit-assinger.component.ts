@@ -8,6 +8,8 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import {MediaObserver} from '@angular/flex-layout';
+
 
 export interface Position {
   lat: number;
@@ -57,7 +59,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
 
-  @ViewChild('containerRef',{ static: false }) containerRef!: ElementRef;
 
   showXAxis = true;
   showYAxis = true;
@@ -78,12 +79,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   teamsgroup!:FormGroup;
 
-  @HostListener('window:resize') onResize() {
-    if(this.containerRef)
-    {
-      this.view = [this.containerRef.nativeElement.offsetWidth/1.2, 400];
-    }
-  }
+  
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -92,12 +88,25 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,
-    private userOptions:UserOptionsService
+    private userOptions:UserOptionsService,
+    private mediaObserver: MediaObserver
     ) {
-      this.view = [innerWidth / 1.2, 400];
+      if(innerWidth > 786)
+      {
+        this.view = [innerWidth / 1.1, 400];
+      }
+      else{
+        this.view = [innerWidth * 2, 400];
+      }
     }
+   
   ngOnInit(): void {
-
+    this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
+      mediaQuerys.forEach((mediaQuery) =>
+      {
+        
+      });
+    });
     this.teamsgroup = this.fb.group({
       teams:[''],
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
