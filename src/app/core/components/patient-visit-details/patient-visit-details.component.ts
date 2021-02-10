@@ -148,12 +148,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.visitType$ = this.dropdown.getVisitType();
 		this.treatmentPriority$ = this.dropdown.getPriority();
 
+		setTimeout(()=> {
+			if(!this.isStreetTreatTrue) {
+				this.clearValidators();
+			}
+		},1);
+		
+
 		this.initStreetTreatForm();
-
-		if(!this.isStreetTreatTrue) {
-			this.clearValidators();
-		}
-
 	}
 
 	ngOnChanges() {
@@ -305,6 +307,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	streetTreatSetValidators() {
+		this.visitsArray.push(this.getVisitFormGroup());
+		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
 
@@ -328,6 +332,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	clearValidators() {
 		this.streatTreatForm.reset();
 		this.streatTreatForm.get('PatientId')?.setValue(this.patientId);
+
 		this.streatTreatForm.get('casePriority')?.clearValidators();
 		this.streatTreatForm.get('teamId')?.clearValidators();
 		this.streatTreatForm.get('mainProblem')?.clearValidators();

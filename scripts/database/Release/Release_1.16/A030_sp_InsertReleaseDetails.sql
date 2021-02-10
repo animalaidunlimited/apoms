@@ -2,6 +2,9 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails !!
 
+
+DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_InsertReleaseDetails(IN prm_UserName NVARCHAR(45),
 												IN prm_PatientId INT,
 												IN prm_ComplainerNotes NVARCHAR(450),
