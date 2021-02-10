@@ -181,6 +181,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   onReleaseSubmit(releaseForm:any) {
+
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
     
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
