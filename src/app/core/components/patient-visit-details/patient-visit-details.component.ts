@@ -307,7 +307,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	streetTreatSetValidators() {
-		this.visitsArray.push(this.getVisitFormGroup());
+		if(this.visitsArray.length === 0) {
+			this.visitsArray.push(this.getVisitFormGroup());
+		}
+		
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });

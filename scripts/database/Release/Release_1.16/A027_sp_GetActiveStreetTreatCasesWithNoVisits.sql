@@ -2,15 +2,14 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits !!
 DELIMITER $$
 
--- CALL AAU.sp_GetActiveStreetTreatCasesWithNoVisits();
 
 CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits()
 BEGIN
 
 /*
 Created By: Ankit Singh
-Created On: 17/01/2021
-Purpose: Used to return active cases for the StreetTreat screen
+Created On: 10/02/2021
+Purpose: Used to return active cases for the StreetTreat screen Changed Problem with MainProblem
 */
 WITH casesCTE AS
 (
@@ -41,7 +40,7 @@ visitsCTE AS
         stc.PriorityId,
         pr.Priority,
         stc.MainProblemId,
-        pb.Problem,
+        mp.MainProblem,
         pr.Priority AS CasePriority,
         s.Status AS CaseStatus,
         at.AnimalType
@@ -51,7 +50,7 @@ visitsCTE AS
     INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId     
     INNER JOIN AAU.Emergencycase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
-    INNER JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
+    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = stc.MainProblemId
     INNER JOIN AAU.Status s ON s.StatusId = stc.StatusId    
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
 ),
