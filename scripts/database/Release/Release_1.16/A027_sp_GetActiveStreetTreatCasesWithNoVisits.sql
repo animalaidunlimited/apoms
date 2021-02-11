@@ -16,9 +16,9 @@ WITH casesCTE AS
 	SELECT st.StreetTreatCaseId
 	FROM AAU.StreetTreatCase st
 	WHERE st.StreetTreatCaseid NOT IN (
-		SELECT 
-			v.StreetTreatCaseid 
-		FROM AAU.visit v 
+		SELECT
+			v.StreetTreatCaseid
+		FROM AAU.visit v
 		WHERE v.statusid < 3 AND v.date > CURDATE()
     )
 ),
@@ -29,7 +29,7 @@ visitsCTE AS
         stc.PatientId,
 		t.TeamId,
 		t.TeamName,
-        t.Teamcolour,
+        t.TeamColour,
         stc.PriorityId AS CasePriorityId,
         stc.StatusId AS CaseStatusId,
         ec.Latitude,
@@ -44,14 +44,14 @@ visitsCTE AS
         pr.Priority AS CasePriority,
         s.Status AS CaseStatus,
         at.AnimalType
-	FROM AAU.StreetTreatCase stc 
+	FROM AAU.StreetTreatCase stc
 	INNER JOIN AAU.Team t ON t.TeamId = stc.TeamId
     INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
-    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId     
-    INNER JOIN AAU.Emergencycase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+    INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = stc.MainProblemId
-    INNER JOIN AAU.Status s ON s.StatusId = stc.StatusId    
+    INNER JOIN AAU.Status s ON s.StatusId = stc.StatusId
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
 ),
 CaseCTE AS
@@ -59,7 +59,7 @@ CaseCTE AS
 SELECT
 rawData.TeamId,
 rawData.TeamName,
-rawData.Teamcolour,
+rawData.TeamColour,
 rawData.StreetTreatCaseId,
 rawData.CasePriorityId,
 rawData.CasePriority,
@@ -68,13 +68,13 @@ rawData.CaseStatus,
 JSON_ARRAY() AS StreetTreatCases,
 
         JSON_OBJECT(
-          'Latitude', rawData.Latitude, 
-          'Longitude',rawData.Longitude, 
+          'Latitude', rawData.Latitude,
+          'Longitude',rawData.Longitude,
           'Address', rawData.Location
-        
+
       )AS Position,
       JSON_OBJECT(
-          'TagNumber', rawData.TagNumber, 
+          'TagNumber', rawData.TagNumber,
           'AnimalName', rawData.Description,
           'AnimalType', rawData.AnimalType,
           'Priority', rawData.Priority
@@ -89,7 +89,7 @@ JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("TeamId", cases.TeamId),
 JSON_OBJECT("TeamName", cases.TeamName),
-JSON_OBJECT("TeamColour", cases.Teamcolour),
+JSON_OBJECT("TeamColour", cases.TeamColour),
 JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
 )) AS Result
 FROM
@@ -97,7 +97,7 @@ FROM
 SELECT
 caseVisits.TeamId,
 caseVisits.TeamName,
-caseVisits.Teamcolour,
+caseVisits.TeamColour,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),

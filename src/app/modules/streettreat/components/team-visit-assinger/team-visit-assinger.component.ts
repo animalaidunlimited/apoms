@@ -25,7 +25,7 @@ export interface MapMarker {
 interface StreetTreatTabResult {
   StreetTreatCaseId:number;
   TagNumber:string;
-  PatientId:number;  
+  PatientId:number;
   EmergencyCaseId:number;
 }
 
@@ -79,7 +79,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   teamsgroup!:FormGroup;
 
-  
+
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -99,12 +99,12 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         this.view = [innerWidth * 2, 400];
       }
     }
-   
+
   ngOnInit(): void {
     this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
       mediaQuerys.forEach((mediaQuery) =>
       {
-        
+
       });
     });
     this.teamsgroup = this.fb.group({
@@ -162,7 +162,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          
+
           if (streetTreatCaseByVisitDateResponse?.Cases) {
             this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
@@ -204,7 +204,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
     }, 1000);
-    
+
     this.customColours = data.teamColours;
   }
 

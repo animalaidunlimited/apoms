@@ -19,7 +19,7 @@ visitsCTE AS
         stc.PatientId,
 		t.TeamId,
 		t.TeamName,
-        t.Teamcolour,
+        t.TeamColour,
 		v.Date,
 		v.VisitTypeId,
 		v.StatusId AS VisitStatusId,
@@ -48,11 +48,11 @@ visitsCTE AS
 	INNER JOIN AAU.StreetTreatCase stc ON stc.StreetTreatCaseId = v.StreetTreatCaseId
 	INNER JOIN AAU.Team t ON t.TeamId = stc.TeamId
     LEFT JOIN AAU.Patient p ON p.PatientId = stc.PatientId
-    LEFT JOIN AAU.Emergencycase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     LEFT JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
     LEFT JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
     LEFT JOIN AAU.Status s ON s.StatusId = v.StatusId
-    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId 
+    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
 	AND v.Date <= prm_VisitDate
 ),
@@ -61,7 +61,7 @@ CaseCTE AS
 SELECT
 rawData.TeamId,
 rawData.TeamName,
-rawData.Teamcolour,
+rawData.TeamColour,
 rawData.StreetTreatCaseId,
 rawData.CasePriorityId,
 rawData.CasePriority,
@@ -77,13 +77,13 @@ JSON_ARRAYAGG(
 ) AS StreetTreatCases,
 
 JSON_OBJECT(
-  'Latitude', rawData.Latitude, 
-  'Longitude',rawData.Longitude, 
+  'Latitude', rawData.Latitude,
+  'Longitude',rawData.Longitude,
   'Address', rawData.Location
 
 )AS Position,
 JSON_OBJECT(
-  'TagNumber', rawData.TagNumber, 
+  'TagNumber', rawData.TagNumber,
   'AnimalName', rawData.Description,
    "AnimalType", rawData.AnimalType,
   'Priority', rawData.Priority,
@@ -101,10 +101,10 @@ JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("TeamId", cases.TeamId),
 		JSON_OBJECT("TeamName", cases.TeamName),
-		JSON_OBJECT("TeamColor", cases.Teamcolour),
+		JSON_OBJECT("TeamColour", cases.TeamColour),
 		JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
 	)
-) 
+)
 )
 AS Result
 FROM
@@ -112,7 +112,7 @@ FROM
 SELECT
 caseVisits.TeamId,
 caseVisits.TeamName,
-caseVisits.Teamcolour,
+caseVisits.TeamColour,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),
