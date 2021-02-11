@@ -23,6 +23,9 @@
                         <mat-label>% Complete</mat-label>
                         <input tabindex="4" formControlName="PercentComplete" type="text" placeholder="% Complete" matInput>
                     </mat-form-field>
+                </div>
+
+                <div fxLayout.gt-sm="row wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" class="st_form">
 
                     <mat-form-field appearance="fill">
                         <mat-label>Animal type</mat-label>
@@ -33,10 +36,14 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="fill" fxFlex="41.5%">
                         <mat-label>Animal Description</mat-label>
                         <input formControlName="AnimalName" type="text" placeholder="Animal Description" matInput />
                     </mat-form-field>
+
+                </div>
+
+                <div fxLayout.gt-sm="row wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" class="st_form">
 
                     <mat-form-field appearance="fill">
                         <mat-label>Begin Date</mat-label>
@@ -48,8 +55,11 @@
                         <input matInput type="date"  placeholder="End Date" formControlName="EndDate">
                      </mat-form-field>
 
-                     <mat-checkbox formControlName="EarlyReleaseFlag">Early Release Flag</mat-checkbox>
-                     <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
+                     <div fxLayout="column"  class="st_form">
+
+                        <mat-checkbox formControlName="EarlyReleaseFlag">Early Release Flag</mat-checkbox>
+                        <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
+                    </div>
 
               </div>
 

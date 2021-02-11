@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, Output, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -6,7 +6,6 @@ import { StreetTreatTab } from 'src/app/core/models/streettreet';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
-import { Priority } from '../../../../core/models/priority';
 import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -28,7 +27,7 @@ export class StreetTreatRecordComponent implements OnInit {
   streetTreatServiceSubscription: Subscription | undefined;
 
 
-  profileUrl: SafeUrl = '';
+  profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
   dateSelected: string[]=[];
   mediaData!: BehaviorSubject<MediaItem[]>;
 
