@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCaseById !!
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetEmergencyCaseById`( IN prm_EmergencyCaseId INT)
+CREATE PROCEDURE AAU.sp_GetEmergencyCaseById( IN prm_EmergencyCaseId INT)
 BEGIN
 
 /*
