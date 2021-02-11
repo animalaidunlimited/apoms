@@ -1,7 +1,7 @@
 
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
-import { Component, OnInit, ChangeDetectorRef, Input, Output, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
@@ -12,7 +12,6 @@ import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-import { StreetTreatSearchVisitsResponse } from 'src/app/core/models/streettreet';
 import { UniqueValidators } from './unique-validators';
 import { Observable } from 'rxjs';
 
@@ -134,7 +133,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				teamId: [, Validators.required],
 				mainProblem: [, Validators.required],
 				adminNotes: [,Validators.required],
-				streetTreatCaseStatus:[],
+				streetTreatCaseStatus:[,Validators.required],
 				visits: this.fb.array([])
 			})
 		);
@@ -153,7 +152,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				this.clearValidators();
 			}
 		},1);
-		
+
 
 		this.initStreetTreatForm();
 	}
@@ -209,7 +208,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			visit_type: [1, Validators.required],
 			visit_comments: [],
 			operator_notes: [],
-			visit_day: [],
+			visit_day: [0],
 			visit_date: [date],
 		});
 
@@ -310,7 +309,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		if(this.visitsArray.length === 0) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
-		
+
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
@@ -359,7 +358,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	onSelect(selectedDate:Date)
 	{
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0,10);
-		
+
 		const index = this.dateSelected.findIndex(x => x === date);
 		if (index < 0) {
 			this.dateSelected = [...this.dateSelected, date];
@@ -423,6 +422,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				}
 			}
 			return  calenderCSS ? calenderCSS : '';
-		};	
+		};
 	  }
 }

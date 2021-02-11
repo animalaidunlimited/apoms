@@ -31,12 +31,12 @@
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom" >
 
 		<mat-form-field appearance="fill"  style="flex-grow: 2;">
-			<mat-label>Admin Notes</mat-label>
-			<input type='text' placeholder='Admin Notes' formControlName='adminNotes' matInput>
+			<mat-label>Admin notes</mat-label>
+			<input type='text' formControlName='adminNotes' matInput>
 		</mat-form-field>
 
 		<mat-form-field appearance="fill">
-			<mat-label>Case Status</mat-label>
+			<mat-label>Case status</mat-label>
 			<mat-select placeholder="Select" formControlName="streetTreatCaseStatus">
 				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
 			</mat-select>
@@ -95,12 +95,14 @@
 
 					</mat-form-field>
 					<mat-form-field appearance="fill" class="admin">
-						<textarea matInput placeholder="Admin Comments" cdkAutosizeMinRows="3" cdkTextareaAutosize
+						<mat-label>Admin notes</mat-label>
+						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
 							cdkAutosizeMaxRows="5" formControlName="visit_comments"></textarea>
 					</mat-form-field>
 
 					<mat-form-field appearance="fill" class="notes">
-						<textarea matInput placeholder="Operator Notes" cdkAutosizeMinRows="3" cdkTextareaAutosize
+						<mat-label>Operator notes</mat-label>
+						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
 							cdkAutosizeMaxRows="5" formControlName="operator_notes"></textarea>
 					</mat-form-field>
 
