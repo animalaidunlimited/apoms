@@ -104,8 +104,7 @@ PatientsCTE AS
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescuesReleases)
-    GROUP BY p.EmergencyCaseId,
-    rd.ReleaseDetailsId
+    GROUP BY p.EmergencyCaseId
 ),
 ReleaseRescueCTE AS
 (
@@ -128,7 +127,9 @@ SELECT AAU.fn_GetRescueStatus(
             IF(rd.ReleaseDetailsId IS NULL,'Rescue','Release') AS AmbulanceAction,
             rd.ReleaseDetailsId,
             rd.RequestedDate,
-            CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release")) AS releaseType,
+            rd.ComplainerNotes,
+            rd.Releaser1Id,
+            std.StreetTreatCaseId,
             rd.PickupDate,
             rd.BeginDate,
             rd.EndDate,
@@ -170,7 +171,7 @@ SELECT
     JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),    
 	JSON_OBJECT("releaseId", r.ReleaseDetailsId),
     JSON_OBJECT("requestedDate", DATE_FORMAT(r.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releaseType", r.releaseType),
+	JSON_OBJECT("releaseType", CONCAT(IF(r.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(r.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(r.Releaser1Id IS NULL,""," + Specific staff"), IF(r.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
 	JSON_OBJECT("pickupDate", DATE_FORMAT(r.PickupDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseBeginDate", DATE_FORMAT(r.BeginDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseEndDate", DATE_FORMAT(r.EndDate, "%Y-%m-%dT%H:%i:%s")),
