@@ -1,9 +1,9 @@
-<div 
-    fxLayout.gt-md="row wrap" 
-    fxLayout.lt-md="column wrap" 
+<div
+    fxLayout.gt-md="row wrap"
+    fxLayout.lt-md="column wrap"
     fxLayoutAlign.gt-md="space-around center"
-    fxLayoutAlign.lt-md="stretch" 
-    class="info_tiles" 
+    fxLayoutAlign.lt-md="stretch"
+    class="info_tiles"
     *ngIf="scoreCards$ | async as scoreCards ">
     <div>
         <h4>Total Cases</h4>
@@ -36,33 +36,33 @@
     </mat-expansion-panel-header>
     <div class="Chart_Bar" >
 
-        <ngx-charts-bar-vertical-stacked 
-            [view]="view" 
-            [results]="chartData" 
-            [gradient]="gradient" 
+        <ngx-charts-bar-vertical-stacked
+            [view]="view"
+            [results]="chartData"
+            [gradient]="gradient"
             [xAxis]="showXAxis"
-            [yAxis]="showYAxis" 
-            [animations]="animations" 
-            [customColors]="customColours" 
+            [yAxis]="showYAxis"
+            [animations]="animations"
+            [customColors]="customColours"
             [barPadding]="8"
-            [legend]="showLegend" 
+            [legend]="showLegend"
             (select)="onSelect($event)">
         </ngx-charts-bar-vertical-stacked>
     </div>
 </mat-expansion-panel>
-<div 
-    class="StreetTreat_Container" 
-    gdColumns.gt-md="repeat(2, 1fr)" 
+<div
+    class="StreetTreat_Container"
+    gdColumns.gt-md="repeat(2, 1fr)"
     gdGap.gt-md="10"
     fxLayout.lt-md="column">
 
-    <div 
+    <div
         class="StreetTreat_Container_visit_compression"
         gdColumns.gt-md="repeat(3, 1fr)"
-        gdColumns.xs="repeat(2, 1fr)" 
+        gdColumns.xs="repeat(2, 1fr)"
         >
-        <div class="Team_Compare" 
-            fxLayout="row wrap" 
+        <div class="Team_Compare"
+            fxLayout="row wrap"
             fxLayoutAlign.lt-md="end"
             [formGroup]="teamsgroup">
             <div class="Team_Comapre_Visit_btn" fxFlexOrder.lt-md="3">
@@ -158,7 +158,7 @@
     </div>
     <div fxFlex class="StreetTreat_Container_map" #googleMap>
         <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
-            <map-marker *ngFor="let marker of markers ;trackBy:markersTrack" [options]="marker.options"
+            <map-marker *ngFor="let marker of markers ; trackBy:markersTrack" [options]="marker.options"
                 (mapClick)="markerClick(marker)" (mapMouseover)="markerClick(marker)" (mapMouseout)="markerClean()">
             </map-marker>
 

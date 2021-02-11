@@ -25,7 +25,7 @@ WITH chart AS (
     GROUP BY v.Date,t.TeamName
 ),
 teamColours AS (
-	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.TeamColour)) AS teamColours FROM AAU.team t 
+	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.TeamColour)) AS teamColours FROM AAU.Team t 
 ),
 chartData AS (
 	SELECT 
