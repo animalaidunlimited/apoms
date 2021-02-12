@@ -14,6 +14,8 @@ import { StreetTreatService } from 'src/app/modules/streettreat/services/streett
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { UniqueValidators } from './unique-validators';
 import { Observable } from 'rxjs';
+import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface VisitCalender{
 	status:number;
@@ -91,6 +93,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	visitDates: VisitCalender[] = [];
 
+	streetTreatCase!: any;
+
 
 	loadCalendarComponent = true;
 
@@ -112,7 +116,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		private fb: FormBuilder,
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
-		private streetTreatService:StreetTreatService
+		private streetTreatService:StreetTreatService,
+		private dialog : MatDialog
 
 	) {}
 
@@ -163,9 +168,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			if(this.isStreetTreatTrue){
 				this.initStreetTreatForm();
 				this.streetTreatSetValidators();
-			}else
+			}
+			else if(!this.isStreetTreatTrue)
 			{
-				this.clearValidators();
+				if(this.streetTreatCase) {
+					this.deleteDialog();
+				}
+				else {
+					this.clearValidators();
+				}
 			}
 		}
 
@@ -263,6 +274,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 
 			if(response){
+				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 			}
 
@@ -282,7 +294,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					else{
 						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 					}
-					this.visitsArray.push(this.getVisitFormGroup());
+					// this.visitsArray.push(this.getVisitFormGroup());
 				});
 
 				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
@@ -306,10 +318,34 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		});
 	}
 
+	deleteDialog() {
+		const message = 'If you save this record, the StreetTreat case and its visits will be deleted,'+ '\n' 
+		+' Are you sure you want to continue?';
+
+		const dialogRef = this.dialog.open(ConfirmationDialog,{
+			data:{
+			  message,
+			  buttonText: {
+				ok: 'Yes',
+				cancel: 'Cancel'
+			  }
+			}
+		  });
+	  
+		  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+			if (confirmed) {
+				this.clearValidators();
+			}
+			else {
+				this.streetTreatCaseIdEmit.emit(this.streetTreatCase.streetTreatCaseId);
+			}
+		  });
+	}
+
 	streetTreatSetValidators() {
-		/*if(this.visitsArray.length === 0) {
-			this.visitsArray.push(this.getVisitFormGroup());
-		}*/
+		if(this.visitsArray.length === 0) {
+		 	this.visitsArray.push(this.getVisitFormGroup());
+		}
 
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
