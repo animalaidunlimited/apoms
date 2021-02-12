@@ -166,7 +166,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		 if(this.streatTreatForm) {
 			if(this.isStreetTreatTrue){
-				this.initStreetTreatForm();
 				this.streetTreatSetValidators();
 			}
 			else if(!this.isStreetTreatTrue)
@@ -261,41 +260,43 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		if (this.streatTreatForm.controls.visits.valid) {
 			this.visitsArray.push(this.getVisitFormGroup());
 		}
+		this.changeDetectorRef.detectChanges();
+
 	}
 
 	deleteVisits(index: number,$event:Event) {
 		$event.preventDefault();
 		$event.stopPropagation();
 		this.visitsArray.removeAt(index);
+		this.changeDetectorRef.detectChanges();
+
 	}
 
 	initStreetTreatForm(){
 
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 
-			if(response){
+			if(response.streetTreatCaseId) {
+
+				if(response.visits.length > 0) {
+					response.visits.forEach((visit:any)=> {
+						if(visit.visit_date) {
+							this.showVisitDate = true;
+							this.visitDates.push(
+							{
+								status: visit.visit_status,
+								date:visit.visit_date
+							});
+							
+						}
+					
+						this.visitsArray.push(this.getVisitFormGroup());
+
+					});
+				}
+
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
-			}
-
-			if(response.visits.length > 0)
-			{
-				response.visits.forEach((visit:any) =>
-				{
-					if(visit.visit_date){
-						this.showVisitDate = true;
-						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
-						this.visitDates.push(
-						{
-							status: visit.visit_status,
-							date:visit.visit_date
-						});
-					}
-					else{
-						this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
-					}
-					// this.visitsArray.push(this.getVisitFormGroup());
-				});
 
 				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 
@@ -304,17 +305,18 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					this.calendar.updateTodaysDate();
 				}
 
+				this.prevVisits = response.visits.map((prevVisits:any) => {
+					if(prevVisits.visit_date)
+						return prevVisits.visit_date.toString();
+					else
+						return '';
+				});
+				this.streatTreatForm.patchValue(response);
+				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
+				this.changeDetectorRef.detectChanges();
+
 			}
 
-			this.prevVisits = response.visits.map((prevVisits:any) => {
-				if(prevVisits.visit_date)
-					return prevVisits.visit_date.toString();
-				else
-					return '';
-			});
-			this.streatTreatForm.patchValue(response);
-			this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
-			this.changeDetectorRef.detectChanges();
 		});
 	}
 
@@ -366,6 +368,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.visitsArray.get('visit_type')?.setValidators([Validators.required]);
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false});
 
+		this.changeDetectorRef.detectChanges();
+
 	}
 
 	clearValidators() {
@@ -376,6 +380,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.streatTreatForm.get('teamId')?.clearValidators();
 		this.streatTreatForm.get('mainProblem')?.clearValidators();
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
+		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
 
 		// tslint:disable-next-line:prefer-for-of
 		for(let i=0; i< this.visitsArray?.controls.length; i++) {
@@ -384,12 +389,16 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		this.visitsArray.get('visit_status')?.clearValidators();
 		this.visitsArray.get('visit_type')?.clearValidators();
+
+		this.streatTreatForm.get('streetTreatCaseStatus')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('teamId')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({emitEvent: false });
 		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_status')?.updateValueAndValidity({emitEvent: false });
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({emitEvent: false });
+
+		this.changeDetectorRef.detectChanges();
 
 	}
 	onSelect(selectedDate:Date)
