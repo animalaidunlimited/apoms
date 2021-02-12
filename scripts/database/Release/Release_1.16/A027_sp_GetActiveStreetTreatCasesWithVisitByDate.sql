@@ -35,24 +35,20 @@ visitsCTE AS
         stc.MainProblemId,
         ec.EmergencyCaseId,
         pb.Problem,
-        (
-			SELECT Priority FROM AAU.Priority WHERE PriorityId = stc.PriorityId
-        ) AS CasePriority,
-        (
-			SELECT Status FROM AAU.Status WHERE StatusId = stc.StatusId
-        ) AS CaseStatus,
+        pr.Priority AS CasePriority,
+        s.Status AS CaseStatus,
         at.AnimalType,
         s.Status AS VisitStatus,
 	ROW_NUMBER() OVER (PARTITION BY stc.StreetTreatCaseId ORDER BY v.Date DESC) AS RNum
 	FROM AAU.Visit v
 	INNER JOIN AAU.StreetTreatCase stc ON stc.StreetTreatCaseId = v.StreetTreatCaseId
 	INNER JOIN AAU.Team t ON t.TeamId = stc.TeamId
-    LEFT JOIN AAU.Patient p ON p.PatientId = stc.PatientId
-    LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-    LEFT JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
-    LEFT JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
-    LEFT JOIN AAU.Status s ON s.StatusId = v.StatusId
-    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+	INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
+	INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+	INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
+	INNER JOIN AAU.Problem pb ON pb.ProblemId = stc.MainProblemId
+	INNER JOIN AAU.Status s ON s.StatusId = v.StatusId
+	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
 	AND v.Date <= prm_VisitDate
 ),

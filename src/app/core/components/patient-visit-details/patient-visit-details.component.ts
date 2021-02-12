@@ -187,6 +187,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		if(insertDate){
 			this.visitsArray.push(this.getVisitFormGroup(insertDate));
+
 		}
 
 
@@ -265,7 +266,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 			}
 
-			if(response.visits.length)
+			if(response.visits.length > 0)
 			{
 				response.visits.forEach((visit:any) =>
 				{
@@ -306,9 +307,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	streetTreatSetValidators() {
-		if(this.visitsArray.length === 0) {
+		/*if(this.visitsArray.length === 0) {
 			this.visitsArray.push(this.getVisitFormGroup());
-		}
+		}*/
 
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
