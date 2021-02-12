@@ -14,12 +14,12 @@ ADD CONSTRAINT `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeId`
 
 
 -- To make EmergencyCodeId to be null first update the values where EmergencyCodeId is -1
-UPDATE AAU.EmergencyCase SET EmergencyCodeId = NULL WHERE EmergencyCodeId = -1;
+UPDATE AAU.EmergencyCase SET EmergencyCodeId = NULL WHERE EmergencyCodeId = 4;
 
 
   
 -- Now we don't need the not defined as emergency code.
-DELETE FROM AAU.EmergencyCode WHERE EmergencyCodeId = -1;
+DELETE FROM AAU.EmergencyCode WHERE EmergencyCodeId = 4;
 
 
 
