@@ -222,9 +222,12 @@ export class ReleaseDetailsDialogComponent implements OnInit {
       case 4 : {
         if(toggle.checked) {
           this.streetTreatReleaseTrue();
+          this.changeDetector.detectChanges();
         }
         else {
           this.streetTreatReleaseFalse();
+          this.changeDetector.detectChanges();
+
         }
         break;
       }
