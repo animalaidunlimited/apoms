@@ -31,7 +31,6 @@
     "fullTemplateTypeCheck": true,
   	"strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true,
-    "enableIvy":false
+    "strictTemplates": true
   }
 }
