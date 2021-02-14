@@ -2,7 +2,7 @@
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
 import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -199,9 +199,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		if(insertDate){
 			this.visitsArray.push(this.getVisitFormGroup(insertDate));
-
 		}
-
 
 		const difference = this.castedVisitArray.filter(x => ![...this.prevVisits, ...dateSelected].includes(x) && x !== 'null')[0];
 
@@ -273,7 +271,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	initStreetTreatForm(){
-		
+		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
 			if(response.streetTreatCaseId) {
 				if(response.visits.length > 0) {
@@ -281,6 +279,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 						if(visit.visit_date) {
 							this.showVisitDate = true;
 							// Set Validators Visit Date Unique When Date are finialized
+							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
 							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 							this.visitDates.push(
 							{
@@ -290,10 +289,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 						}
 						this.visitsArray.push(this.getVisitFormGroup());
 					});
-				}
-				else{
-					// Set Validators Visit Day Unique When Day 0, 1 is fetch
-					this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 				}
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
@@ -315,16 +310,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 				this.changeDetectorRef.detectChanges();
 			}
-			else{
-				// Set Validators Visit Day Unique When Day 0, 1 is fetch
-				this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
-			}
 		});
 	}
 
 	deleteDialog() {
-		const message = 'If you save this record, the StreetTreat case and its visits will be deleted,'+ '\n' 
-		+' Are you sure you want to continue?';
+		const message = `If you save this record, the StreetTreat case and its visits will be deleted,
+		                Are you sure you want to continue?`;
 
 		const dialogRef = this.dialog.open(ConfirmationDialog,{
 			data:{
@@ -349,6 +340,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	streetTreatSetValidators() {
 		if(this.visitsArray.length === 0) {
 		 	this.visitsArray.push(this.getVisitFormGroup());
+			 this.recordForm.get('streatTreatForm.visits')?.clearValidators();
 			this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
 

@@ -5,7 +5,7 @@ import { of, Observable, BehaviorSubject } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Callers, Caller } from '../../models/responses';
 import { CallerDetailsService } from '../caller-details/caller-details.service';
-
+import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 @Component({
   selector: 'app-caller-autocomplete',
   templateUrl: './caller-autocomplete.component.html',
@@ -17,8 +17,10 @@ export class CallerAutocompleteComponent implements OnInit {
   @Input() callerForm!: any;
   callerNumber!: AbstractControl | null;
   callerAutoComplete$!: Observable<any> | undefined;
+  errorMatcher = new CrossFieldErrorMatcher();
   @Output() isPrimary: EventEmitter<number> = new EventEmitter();
   @Output() callerDeleted: EventEmitter<number> = new EventEmitter();
+
 
   constructor(private callerService: CallerDetailsService) { }
 
