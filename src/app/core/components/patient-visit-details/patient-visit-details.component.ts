@@ -2,7 +2,7 @@
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
 import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ValidationErrors } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -16,6 +16,7 @@ import { UniqueValidators } from './unique-validators';
 import { Observable } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 
 interface VisitCalender{
 	status:number;
@@ -74,6 +75,8 @@ interface VisitCalender{
 export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	streatTreatForm!: FormGroup;
+
+	errorMatcher = new CrossFieldErrorMatcher();
 
 	visitsArray!: FormArray;
 
@@ -225,7 +228,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 		if(this.castedVisitArray.length > 0)
 		{
-
 			if(this.prevVisits.length > 0)
 			{
 				visitArray.get('visit_date')?.setValidators(Validators.required);
@@ -233,7 +235,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			else{
 				visitArray.get('visit_day')?.setValidators(Validators.required);
 			}
-
 		}
 		return visitArray;
 	}
@@ -254,12 +255,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		}
 	}
 
-	addVisits($event: Event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-		if (this.streatTreatForm.controls.visits.valid) {
-			this.visitsArray.push(this.getVisitFormGroup());
-		}
+	addVisits($event?: Event) {
+		$event?.preventDefault();
+		$event?.stopPropagation();
+		this.visitsArray.push(this.getVisitFormGroup());
+		this.visitsArray.updateValueAndValidity();
 		this.changeDetectorRef.detectChanges();
 
 	}
@@ -268,33 +268,34 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		$event.preventDefault();
 		$event.stopPropagation();
 		this.visitsArray.removeAt(index);
+		this.visitsArray.updateValueAndValidity();
 		this.changeDetectorRef.detectChanges();
 
 	}
 
 	initStreetTreatForm(){
-
+		
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response)=>{
-
 			if(response.streetTreatCaseId) {
-
 				if(response.visits.length > 0) {
 					response.visits.forEach((visit:any)=> {
 						if(visit.visit_date) {
 							this.showVisitDate = true;
+							// Set Validators Visit Date Unique When Date are finialized
+							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 							this.visitDates.push(
 							{
 								status: visit.visit_status,
 								date:visit.visit_date
 							});
-							
 						}
-					
 						this.visitsArray.push(this.getVisitFormGroup());
-
 					});
 				}
-
+				else{
+					// Set Validators Visit Day Unique When Day 0, 1 is fetch
+					this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+				}
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 
@@ -314,9 +315,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 				this.streatTreatForm.patchValue(response);
 				this.visitsArray.controls.sort((a,b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 				this.changeDetectorRef.detectChanges();
-
 			}
-
+			else{
+				// Set Validators Visit Day Unique When Day 0, 1 is fetch
+				this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+			}
 		});
 	}
 
@@ -347,6 +350,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	streetTreatSetValidators() {
 		if(this.visitsArray.length === 0) {
 		 	this.visitsArray.push(this.getVisitFormGroup());
+			this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
 
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
@@ -470,4 +474,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			return  calenderCSS ? calenderCSS : '';
 		};
 	  }
+
+	 
 }
