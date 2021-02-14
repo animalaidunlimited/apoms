@@ -161,7 +161,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			}
 		},1);
 
-
 		this.initStreetTreatForm();
 	}
 
