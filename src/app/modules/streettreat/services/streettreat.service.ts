@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
@@ -112,10 +113,10 @@ export class StreetTreatService extends APIService {
       })
     );
   }
-  public getStreetTreatWithVisitDetailsByPatientId(patientId:number){
+  public getStreetTreatWithVisitDetailsByPatientId(patientId:number):Observable<StreetTreatForm>{
     const request = `?patientId=${patientId}`;
     return this.getObservable(request).pipe(
-      map((response:any)=>{
+      map((response)=>{
         return response.streetTreatForm;
       })
     );

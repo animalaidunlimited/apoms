@@ -18,7 +18,7 @@ DROP PROCEDURE `?`;
 
 UPDATE AAU.EmergencyCase
 SET EmergencyCodeId = NULL
-WHERE EmergencyCodeId = -1;
+WHERE EmergencyCodeId = 4;
 
 -- SET EMERGENCYCODEID TO BE NULL 
 ALTER TABLE AAU.EmergencyCase 
@@ -32,7 +32,7 @@ ADD CONSTRAINT `FK_EmergencyCaseEmergencyCodeId_EmergencyCodeEmergencyCodeId`
   
 -- Now we don't need the not defined as emergency code.
 DELETE FROM AAU.EmergencyCode 
-WHERE EmergencyCodeId = -1;
+WHERE EmergencyCodeId = 4;
 
 
 

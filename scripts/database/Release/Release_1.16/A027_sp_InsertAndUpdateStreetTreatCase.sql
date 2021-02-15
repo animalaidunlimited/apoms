@@ -2,15 +2,17 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase !!
 
+
 DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
 									IN prm_PatientId INT,
 									IN prm_PriorityId INT,
 									IN prm_StatusId INT,
 									IN prm_TeamId INT,
                                     IN prm_MainProblemId INT,
-									IN prm_AdminComments TEXT,
-									IN prm_OperatorNotes TEXT,
+									IN prm_AdminComments VARCHAR(256),
+									IN prm_OperatorNotes VARCHAR(256),
                                     IN prm_ClosedDate DATE,
                                     IN prm_EarlyReleaseFlag BOOLEAN,
                                     IN prm_AnimalDescription VARCHAR(256)
@@ -27,7 +29,9 @@ DECLARE vSuccess INT;
 DECLARE vStreetTreatCaseId INT;
 SET vCaseNoExists = 0;
 
-SELECT COUNT(1), StreetTreatCaseId INTO vCaseNoExists, vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId GROUP BY PatientId;
+SELECT COUNT(1), StreetTreatCaseId INTO vCaseNoExists, vStreetTreatCaseId 
+FROM AAU.StreetTreatCase 
+WHERE PatientId = prm_PatientId GROUP BY PatientId;
 
 IF vCaseNoExists = 0 THEN
 
@@ -58,7 +62,7 @@ IF vCaseNoExists = 0 THEN
 	SELECT 1 INTO vSuccess;
     SELECT LAST_INSERT_ID() INTO vStreetTreatCaseId;
     
-    UPDATE AAU.Patient SET Description = prm_AnimalDescription WHERE PatientId = prm_PatientId;
+    UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
     
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,vStreetTreatCaseId,'Case','Insert', NOW());
@@ -78,7 +82,7 @@ ELSEIF vCaseNoExists > 0 THEN
 	WHERE
 		PatientId = prm_PatientId;
         
-	UPDATE AAU.Patient SET Description = prm_AnimalDescription WHERE PatientId = prm_PatientId;
+	UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
         
 	SELECT 2 INTO vSuccess;
 
