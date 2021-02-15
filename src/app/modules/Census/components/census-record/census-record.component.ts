@@ -8,6 +8,7 @@ import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -52,7 +53,8 @@ export class CensusRecordComponent implements OnInit {
       private fb: FormBuilder,
       private census: CensusService,
       private snackBar: SnackbarService,
-      private cdref : ChangeDetectorRef
+      private cdref : ChangeDetectorRef,
+      private router: Router,
   ) {}
 
     ngOnInit() {
@@ -104,6 +106,7 @@ export class CensusRecordComponent implements OnInit {
 
     loadCensusErrorRecords() {
         this.census.getCensusErrorRecords().then(errorRecords=> {
+            console.log(errorRecords);
             if(errorRecords.length) {
                 this.censusErrorRecords = errorRecords;
                 this.showErrorLogBtn = true;
@@ -302,6 +305,22 @@ export class CensusRecordComponent implements OnInit {
           }
       });
   }
+
+tagNumberClicked(value:string){
+
+    console.log(value);
+
+    this.openHospitalManagerRecord(value);
+
+
+}
+
+openHospitalManagerRecord(tagNumber: string){
+
+    this.router.navigate(['/nav/hospital-manager', {tagNumber}], { replaceUrl: true });
+
+}
+
 
 
 

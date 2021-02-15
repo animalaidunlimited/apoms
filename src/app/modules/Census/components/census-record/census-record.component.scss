@@ -43,29 +43,59 @@ body {
  
 }
 
-
-.errorPanelContainer {
+.errorLogContainer {
     width: 50rem;
+    border: 1px solid;
+    border-color: silver;
+    border-radius: 20px;
+    margin-left: 30%;
+    margin-bottom: 10px;
+    box-shadow: 2px 2px;
+    background-color: #ffcccc;
 }
 
-.errorPanel {
-  
-    position: absolute;
-    width:25vw
+
+.recordDetailsContainer1 {
+    margin-left: 10px;
+    width: 15rem;
+}
+
+.recordDetailsContainer2 {
+    width: 15rem;
+}
+
+.errorDivContainer {
+    width: auto;
 }
 
 
-@media (max-width: 800px){
-   
-    .errorPanelContainer {
-        width: 20rem !important;
+@media (max-width: 600px){
+    .errorLogContainer {
+        width:auto;
+        margin-left: 0;
+        box-shadow: 2px 2px;
+        background-color: #ffcccc;
+
     }
     
+    
+    .recordDetailsContainer1 {
+        width:auto;
+      
+    }
+    
+    .recordDetailsContainer2 {
+        width:auto;
+       
+    }
+    
+    .errorDivContainer {
+        width:auto;
+       
+    }
 }
 
-::ng-deep .expansionPanel .mat-expansion-panel-body {
-    background-color:#f6d0d0 !important;
-}
+
 
 // .mat-expansion-panel-content > .mat-expansion-panel-body {
 //     background-color: red !important;

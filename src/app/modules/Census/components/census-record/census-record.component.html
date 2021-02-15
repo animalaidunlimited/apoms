@@ -4,7 +4,7 @@
     
     <form [formGroup] = "censusDate">
         <div fxLayout="row" fxLayoutAlign="start end">
-            <mat-form-field >
+            <mat-form-field>
                 <mat-label>Census Date</mat-label>
                 <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
                 (focus)="setInitialTime($event)" cdkFocusInitial >
@@ -14,13 +14,41 @@
         </div>
     </form>
 
-    <div *ngIf="showCensusErrorLog" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center">
+    <div class="errorDivContainer" *ngIf="showCensusErrorLog">
+
+        <div class="errorLogContainer" *ngFor="let errorLog of censusErrorRecords" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center">
+
+            <h4><b>TagNumber:- </b><b class="link" (click)="tagNumberClicked(errorLog.TagNumber)">{{errorLog.TagNumber}}</b></h4>
+
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center">
+                <div class="recordDetailsContainer1" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
+                    <p><b>Call Time:-</b> {{errorLog.CallDateTime}}</p>
+                    <p><b>Caller Name:-</b> {{errorLog.CallerName}}</p>
+                    <p><b>Patient Status:-</b> {{errorLog.PatientStatus}}</p>
+                </div>
+    
+                <div class="recordDetailsContainer2" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
+                    <p><b>Admission Time:-</b> {{errorLog.AdmissionTime}}</p>
+    
+                    <p><b>Caller Number:-</b> {{errorLog.Number}}</p>
+    
+                    <p><b>PatientStatus Date:-</b> {{errorLog.PatientStatusDate}}</p>
+                </div>
+            </div>
+
+            <p><b>Log:-</b> {{errorLog.ErrorLog}}</p>
+
+        </div>
+
+    </div>
+
+    <!-- <div *ngIf="showCensusErrorLog" fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center">
         <div class="errorPanelContainer" *ngFor="let errorLog of censusErrorRecords">
             <mat-expansion-panel class="expansionPanel" [expanded]='true'>
                 <mat-expansion-panel-header>
     
                   <mat-panel-title> 
-                    <h4><b>TagNumber:- </b>{{errorLog.TagNumber}}</h4>
+                    <h4><b>TagNumber:- </b><b class="link" (click)="tagNumberClicked(errorLog.TagNumber)">{{errorLog.TagNumber}}</b></h4>
                   </mat-panel-title>
     
                   <mat-panel-description>
@@ -41,7 +69,7 @@
     
               </mat-expansion-panel>
         </div>
-    </div>
+    </div> -->
 
    
 
