@@ -93,7 +93,6 @@ export class StreetTreatRecordComponent implements OnInit {
     this.animalTypes$ = this.dropdown.getAnimalTypes();
 
     this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res) => {
-      console.log(res);
       this.recordForm.patchValue(res);
       this.streetTreatServiceSubscription?.unsubscribe();
     });
