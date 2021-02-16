@@ -7,6 +7,8 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LogsComponent } from 'src/app/core/components/logs/logs.component';
 
 
 @Component({
@@ -51,7 +53,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     @HostListener('window:beforeunload', ['$event'])
-    checkCanReload($event:BeforeUnloadEvent) {
+    checkCanReload($event: BeforeUnloadEvent) {
         $event.preventDefault();
 
 
@@ -63,8 +65,8 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
-        private changeDetector : ChangeDetectorRef
-    ) {}
+        public dialog: MatDialog,
+    ) { }
 
     ngOnInit() {
 
@@ -72,7 +74,7 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
-                guId : [this.guId],
+                guId: [this.guId],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -83,8 +85,8 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.subscribe(data=> {
-            if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+        this.caseService.emergencyResponse.subscribe(data => {
+            if (data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
 
@@ -104,9 +106,9 @@ export class EmergencyRecordComponent implements OnInit {
         }
     }
 
-    initialiseForm() : void {
+    initialiseForm(): void {
 
-        if(!this.emergencyCaseId){
+        if (!this.emergencyCaseId) {
             return;
         }
 
@@ -137,19 +139,19 @@ export class EmergencyRecordComponent implements OnInit {
 
         // Check the caller succeeded
 
-        resultBody.callerSuccess.forEach((callerResult: any)=>{
-        if (callerResult.callerSuccess === 1) {
-            result.message += '';
-        } else if (callerResult.callerSuccess === 2) {
-            result.message += 'Error adding the caller: Duplicate record \n';
-            result.failure++;
-        } else {
-            result.message += 'Other error - See admin\n';
-            result.failure++;
-        }
+        resultBody.callerSuccess.forEach((callerResult: any) => {
+            if (callerResult.callerSuccess === 1) {
+                result.message += '';
+            } else if (callerResult.callerSuccess === 2) {
+                result.message += 'Error adding the caller: Duplicate record \n';
+                result.failure++;
+            } else {
+                result.message += 'Other error - See admin\n';
+                result.failure++;
+            }
         });
 
-        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
+        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any) => {
             if (emergencyCallerResult.Success === 1) {
                 result.message += '';
             } else if (emergencyCallerResult.Success === 2) {
@@ -159,7 +161,7 @@ export class EmergencyRecordComponent implements OnInit {
                 result.message += 'Other error - See admin\n';
                 result.failure++;
             }
-            });
+        });
 
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
@@ -211,13 +213,13 @@ export class EmergencyRecordComponent implements OnInit {
     async saveForm() {
 
         this.loading = true;
-        if(this.recordForm.pending){
+        if (this.recordForm.pending) {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
-            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
+            if (this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true });
                 return;
             }
         }
@@ -239,7 +241,7 @@ export class EmergencyRecordComponent implements OnInit {
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-                        if(data) {
+                        if (data) {
                             this.loading = false;
                         }
                         if (data.status === 'saved') {
@@ -258,15 +260,15 @@ export class EmergencyRecordComponent implements OnInit {
                         }
 
                         if (messageResult.failure === 0) {
-                            this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                            this.showSnackBar.successSnackBar('Case inserted successfully', 'OK');
                             this.syncedToLocalStorage = false;
                             this.recordForm.markAsPristine();
                         }
                         else if (messageResult.failure === -1) {
-                            this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+                            this.showSnackBar.successSnackBar('Duplicate case, please reload case', 'OK');
                         }
                         else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                            this.showSnackBar.errorSnackBar('Case saved offline', 'OK');
                             this.syncedToLocalStorage = true;
                             this.recordForm.markAsPristine();
                         }
@@ -279,7 +281,7 @@ export class EmergencyRecordComponent implements OnInit {
                     .updateCase(emergencyForm)
                     .then(data => {
 
-                        if(data) {
+                        if (data) {
                             this.loading = false;
                         }
 
@@ -295,17 +297,17 @@ export class EmergencyRecordComponent implements OnInit {
 
                         if (messageResult.failure === 0) {
 
-                            this.showSnackBar.successSnackBar('Case updated successfully','OK');
+                            this.showSnackBar.successSnackBar('Case updated successfully', 'OK');
                             this.syncedToLocalStorage = false;
                             this.recordForm.markAsPristine();
                         }
-                        else if (messageResult.failure === 1){
-                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                        else if (messageResult.failure === 1) {
+                            this.showSnackBar.errorSnackBar('Case updated offline.', 'OK');
                             this.syncedToLocalStorage = true;
                             this.recordForm.markAsPristine();
                         }
-                        else{
-                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
+                        else {
+                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.', 'OK');
                         }
                     })
                     .catch(error => {
@@ -318,6 +320,22 @@ export class EmergencyRecordComponent implements OnInit {
 
     emergencyNumberUpdated(emergencyNumber: any) {
         const guId = this.recordForm.get('emergencyDetails.guId')?.value;
-        this.loadEmergencyNumber.emit({emergencyNumber , guId});
+        this.loadEmergencyNumber.emit({ emergencyNumber, guId });
+    }
+
+
+
+    openLogsDialog(emergencyCaseId: any) {
+
+        const dialogRef = this.dialog.open(LogsComponent, {
+            maxHeight: '100vh',
+            maxWidth: '100vw',
+            panelClass: 'full-width-dialog',
+            data: {
+                emergencyCaseId
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(() => { }).unsubscribe();
     }
 }
