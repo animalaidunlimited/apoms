@@ -1,11 +1,11 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ABCStatus, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
+import { ABCStatus, Age, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
@@ -45,7 +45,6 @@ export class PatientDetailsDialogComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private printService: PrintTemplateService,
-    private treatmentService: TreatmentService,
     private census: CensusService ) {
 
     this.columnsExcludingIndex = this.displayedColumns.pipe(map(columns => columns.filter(column => column !== 'index' && column !== 'complete')));
@@ -56,6 +55,7 @@ export class PatientDetailsDialogComponent implements OnInit {
     PatientId: 0,
     'Tag number': '',
     Species: '',
+    Age: '',
     'Caller name' : '',
     Number : 0,
     'Call date' : '',
@@ -85,6 +85,8 @@ export class PatientDetailsDialogComponent implements OnInit {
             // tslint:disable-next-line:no-string-literal
             patient['Temperament'] = Temperament[patientObject['Temperament']];
             patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
+            // tslint:disable-next-line:no-string-literal
+            patient['Age'] = Age[patientObject['Age']];
 
             return patient;
 
@@ -93,11 +95,48 @@ export class PatientDetailsDialogComponent implements OnInit {
           response = [];
 
       this.patientRecords = new MatTableDataSource(response);
+
+      this.patientRecords.sortingDataAccessor = (item: ReportPatientRecord, columnHeader:string) => {
+
+      switch(columnHeader){
+        case 'Treatment priority' :
+          return this.getTreatmentPriority((item['Treatment priority'] + '').toString());
+        default :
+
+        const newObj = JSON.parse(JSON.stringify(item));
+
+        return newObj[columnHeader];
+      }
+
+     };
+
+
       this.patientRecords.sort = this.sort;
+
 
     });
 
 
+  }
+  getTreatmentPriority(treatmentPriority:string) : string {
+
+
+
+    let val = 0;
+
+    switch(treatmentPriority){
+      case 'High' :
+        val = 3;
+        break;
+      case 'Medium' :
+        val = 2;
+        break;
+      case 'Low' :
+        val = 1;
+        break;
+    }
+
+    return val.toString();
   }
 
 
@@ -135,7 +174,7 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   treatmentLayout(){
 
-    this.displayedColumns.next(['index','Tag number','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
+    this.displayedColumns.next(['index','Tag number','Age','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
 
   }
 

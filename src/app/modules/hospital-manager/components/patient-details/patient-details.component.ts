@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
-import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -21,8 +21,7 @@ export class PatientDetailsComponent implements OnInit {
 
     constructor(
         private dropdown: DropdownService,
-		private patientService: PatientService,
-        private fb: FormBuilder,
+		private patientService: PatientService
     ) {}
 
     ngOnInit() {
@@ -34,38 +33,15 @@ export class PatientDetailsComponent implements OnInit {
             'patientDetails',
         ) as FormGroup;
 
-        patientDetails.addControl(
-            'animalTypeId',
-            new FormControl(initialNumber, Validators.required),
-        );
-        patientDetails.addControl(
-            'mainProblems',
-            new FormControl('', Validators.required),
-        );
-        patientDetails.addControl(
-            'description',
-            new FormControl('', Validators.required),
-        );
-        patientDetails.addControl(
-            'sex',
-            new FormControl(initialNumber, Validators.required),
-        );
-        patientDetails.addControl(
-            'treatmentPriority',
-            new FormControl(initialNumber, Validators.required),
-        );
-        patientDetails.addControl(
-            'abcStatus',
-            new FormControl(initialNumber, Validators.required),
-        );
-        patientDetails.addControl(
-            'releaseStatus',
-            new FormControl(initialNumber, Validators.required),
-        );
-        patientDetails.addControl(
-            'temperament',
-            new FormControl(initialNumber, Validators.required),
-        );
+        patientDetails.addControl('animalTypeId',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('mainProblems',new FormControl('', Validators.required));
+        patientDetails.addControl('description',new FormControl('', Validators.required));
+        patientDetails.addControl('sex',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('treatmentPriority',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('abcStatus',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('releaseStatus',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('temperament',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('age',new FormControl(initialNumber, Validators.required));
 
         this.maxDate = getCurrentTimeString();
 
