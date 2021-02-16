@@ -330,9 +330,9 @@ export class EmergencyRecordComponent implements OnInit {
         const dialogRef = this.dialog.open(LogsComponent, {
             maxHeight: '100vh',
             maxWidth: '100vw',
-            panelClass: 'full-width-dialog',
             data: {
-                emergencyCaseId
+                emergencyCaseId,
+                patientFormArray: (this.recordForm.get('patients') as FormArray).controls
             }
         });
 

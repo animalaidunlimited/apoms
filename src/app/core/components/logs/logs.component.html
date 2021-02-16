@@ -1,26 +1,28 @@
-<div class="mat-elevation-z8">\
-    <!--  -->
-    <table mat-table [dataSource]="dataSource" matSort 
-    class = "sortTableCursor">
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort class="logger_table">
 
         <ng-container matColumnDef="userName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>User name </th>
-            <td mat-cell *matCellDef="let row"> {{row.userName}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.UserName}} </td>
         </ng-container>
 
         <ng-container matColumnDef="changeTable">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Change </th>
-            <td mat-cell *matCellDef="let row"> {{row.changeTable}}  </td>
+            <td mat-cell *matCellDef="let row"> {{row.ChangeTable}}  </td>
         </ng-container>
 
         <ng-container matColumnDef="loggedAction">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-            <td mat-cell *matCellDef="let row">{{row.loggedAction}}  </td>
+            <td mat-cell *matCellDef="let row">{{row.LoggedAction}}  </td>
         </ng-container>
 
-        <ng-container matColumnDef="DateTime">
+        <ng-container matColumnDef="Date">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-            <td mat-cell *matCellDef="let row"> {{row.DateTime}}  </td>
+            <td mat-cell *matCellDef="let row"> {{row.Date | date: 'dd/MM/yyyy'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Time">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+            <td mat-cell *matCellDef="let row"> {{row.Time}}  </td>
         </ng-container>
         <!-- (click)="selectRow(row)" -->
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
