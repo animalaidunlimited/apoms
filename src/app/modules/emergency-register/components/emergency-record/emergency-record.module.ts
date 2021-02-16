@@ -13,7 +13,7 @@ import { EmergencyDetailsModule } from 'src/app/core/components/emergency-detail
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { MediaCardComponent } from 'src/app/core/components/media-card/media-card.component';
-
+import { PatientVisitDetailsModule} from 'src/app/core/components/patient-visit-details/patient-visit-details.module';
 
 @NgModule({
     declarations: [
@@ -33,6 +33,7 @@ import { MediaCardComponent } from 'src/app/core/components/media-card/media-car
         RescueDetailsModule,
         EmergencyDetailsModule,
         EmergencyCaseOutcomeModule,
+        PatientVisitDetailsModule,
     ],
     exports: [EmergencyRecordComponent],
 })
