@@ -29,6 +29,7 @@ export interface ReportPatientRecord {
     'PatientId': number;
     'Tag number': string;
     'Species': string;
+    'Age': number | string;
     'Caller name' : string;
     'Number' : number;
     'Call date' : string;
@@ -44,4 +45,15 @@ export interface CensusPrintContent{
     area: string;
     displayColumns: string[];
     printList: ReportPatientRecord[];
+}
+
+export interface PatientCountInArea{
+    area : string;
+    lowPriority: number;
+    normalPriority: number;
+    highPriority: number;
+    urgentPriority: number;
+    infants: number;
+    adults: number;
+    count : number;
 }

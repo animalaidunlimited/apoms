@@ -19,7 +19,7 @@ export class HospitalManagerPageComponent implements OnInit {
 
         route.params.subscribe(params => {
 
-            if(params){
+            if(route.snapshot.params.tagNumber){
 
                 const searchTerm = `search.TagNumber=${route.snapshot.params.tagNumber}`;
 
