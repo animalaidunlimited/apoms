@@ -7,8 +7,6 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatDialog } from '@angular/material/dialog';
-import { LogsComponent } from 'src/app/core/components/logs/logs.component';
 
 
 @Component({
@@ -65,7 +63,7 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
-        public dialog: MatDialog,
+        
     ) { }
 
     ngOnInit() {
@@ -322,20 +320,5 @@ export class EmergencyRecordComponent implements OnInit {
         const guId = this.recordForm.get('emergencyDetails.guId')?.value;
         this.loadEmergencyNumber.emit({ emergencyNumber, guId });
     }
-
-
-
-    openLogsDialog(emergencyCaseId: any) {
-
-        const dialogRef = this.dialog.open(LogsComponent, {
-            maxHeight: '100vh',
-            maxWidth: '100vw',
-            data: {
-                emergencyCaseId,
-                patientFormArray: (this.recordForm.get('patients') as FormArray).controls
-            }
-        });
-
-        dialogRef.afterClosed().subscribe(() => { }).unsubscribe();
-    }
+   
 }
