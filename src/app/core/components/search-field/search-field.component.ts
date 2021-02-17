@@ -171,12 +171,6 @@ export class SearchFieldComponent implements OnInit {
         }
     ];
 
-    @HostListener('document:keydown.enter', ['$event'])
-    executeSearchByEnter(event: KeyboardEvent) {
-        event.preventDefault();
-        this.executeSearch();
-    }
-
   constructor(
     public rescueDialog: MatDialog,
     public callDialog: MatDialog,
@@ -185,11 +179,13 @@ export class SearchFieldComponent implements OnInit {
     public platform: Platform) { }
 
   ngOnInit(): void {
+      
   this.navigationService.isSearchClicked.subscribe((clicked)=> {
       if(clicked && this.searchBox){
             this.searchBox.nativeElement.focus();
       }
   });
+
   this.searchForm = this.formBuilder.group({
     searchRows: this.formBuilder.array([])
   });
@@ -212,6 +208,7 @@ displayFn(user?: SearchValue): string | undefined {
 }
 
 executeSearch() {
+
     if (this.searchShowing) {
         this.searchShowing = !this.searchShowing;
         this.search.searchString = this.getSearchString();

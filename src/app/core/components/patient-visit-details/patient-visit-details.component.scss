@@ -1,0 +1,196 @@
+@mixin border($bg-color) {
+    border-radius: 50%;
+    & .mat-calendar-body-cell-content {
+        border: 5px solid white !important;
+        border: 3px solid $bg-color !important;
+        background-color: $bg-color !important;
+        box-shadow: inset 0px 0px 0px 3px rgb(255, 255, 255);
+        box-sizing: border-box;
+    }
+}
+@media only screen and (min-width: 600px) {
+    .visit-calendar-wrapper {
+        position:relative;
+        .visit_calendar {
+            width: 320px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 7px 30px -10px rgba(126, 138, 145, 0.5);
+            position: absolute;
+            z-index: 1;
+            ::ng-deep {
+                .mat-calendar-header {
+                    padding: 1px 8px 0px 8px;
+                    background: #607d8b ;
+                    color: white;
+                    border-top-left-radius: 25px;
+                    border-top-right-radius: 25px;
+                }
+                .mat-calendar-body-cell{
+                    &.selected-date {
+                        @include border(#607d8b);
+                    }
+                    &.complete {
+                        @include border(#58b09c);
+                    }
+                    &.complete-animal-died {
+                        @include border(#202030);
+                    }
+                    &.complete-animal-not-found {
+                        @include border(#4f6d7a);
+                    }
+                    &.complete-early-release {
+                        @include border(#386150);
+                    }
+                    &.in-progress {
+                        @include border(#caf7e2);
+                    }
+                    &.missed {
+                        @include border(#e94f37);
+                    }
+                    &.readmission {
+                        @include border(#ef7e6c);
+                    }
+                    &.to-do {
+                        @include border(#a9bec7);
+                    }
+                    &.complete-auto-closed {
+                        @include border(#304047);
+                    }
+                    &.complete-complainer-not-reachable {
+                        @include border(#a18fad);
+                    }
+                    &.admission-to-aau {
+                        @include border(#4f776d);
+                    }
+                }
+            }
+        }
+        .calendar-toggle {
+            max-width: 2rem;
+            margin: 0px !important;
+        }
+    }
+    .visitsWrapper{
+        flex-flow: column wrap;
+        place-content: flex-start;
+        display: flex;
+        &-header{
+            margin-bottom: 2rem;
+        }
+        .visit-header{
+            margin:0;
+        }
+        .visit_row_data{
+            > div:first-child {
+                position: relative;
+                display: grid;
+                grid-template-areas: "date status type"
+                                     "admin admin admin"
+                                     "notes notes notes";
+                grid-column-gap: 10px;
+
+                box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+                margin-bottom: 25px;
+                border-radius: 25px;
+                padding: 15px 15px 45px 15px;
+                grid-template-columns: 1fr 2fr 1.74fr;
+                .mat-form-field{
+                    max-height: 65px;
+                    &.date {
+                        grid-area: date;
+                    }
+                    &.notes{
+                        grid-area: notes;
+                        margin-top: 40px;
+                    }
+                    &.admin{
+                        grid-area:admin;
+                    }
+                }
+            }
+            .mat-fab-wrapper{
+                top: -1.2rem !important;
+                position: absolute;
+                right: 0.4rem !important;
+                border-radius: 50%;
+                max-width: 1rem;
+                min-width: 1rem;
+            }
+        }
+    }
+
+    #cdk-overlay-1{
+        max-width:67vw;
+    }
+
+	.patientVisitFrom mat-form-field {
+		flex-basis: 0;
+		flex-grow: 1;
+	}
+}
+@media only screen and (max-width: 600px) {
+    .calendar-toggle {
+        width: 100%;
+        margin-bottom: -10px !important;
+    }
+    button.mat-mini-fab {
+        box-sizing: border-box;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        outline: none;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: none;
+        vertical-align: baseline;
+        text-align: center;
+        margin: 0;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        min-width: 64px;
+        line-height: 36px;
+        padding: 0 16px;
+        border-radius: 4px;
+        overflow: visible;
+        transform: translate3d(0, 0, 0);
+        transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1),
+            box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+    }
+    .mat-form-field {
+        margin: 0 !important;
+        width: 100%;
+    }
+    .mat-raised-button {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+    .visitsWrapper {
+        margin-bottom: 20px;
+    }
+    .mat-fab-wrapper {
+        width: 100%;
+    }
+}
+@media only screen and (max-width:768x){
+    .visitsWrapper div {
+        margin-right: 0px !important;
+    }
+    .visit_row_data > div{
+        max-width:43rem !important;
+    }
+}
+@media only screen and (min-width: 1000px) {
+    .add-visits-fab-btn {
+        display:flex !important;
+        flex-direction: row-reverse;
+        margin:0 0 30px 0;
+    }
+}

@@ -11,12 +11,53 @@
     margin-top: 20px;
 }
 
-@media only screen and (min-width:600px) 
+@media only screen and (min-width: 600px)
 {
-    .visit_row_data > div:first-child {
-        display: flex !important;
-        box-shadow: none !important;
-        height: unset !important;
+    .releaseTypeDiv {
+        margin: auto;
+        margin-top: -17px;
+    }
+
+    .disable {
+        pointer-events: none;
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 1440px)
+{
+    :host ::ng-deep .visit_row_data 
+    {
+        > div:first-child
+        {
+            width:100%;
+            min-width: 45rem;
+            max-width: 45rem;
+        }
+        .mat-fab-wrapper{
+            top: -1.2rem !important;
+            right: -4rem !important;
+            display: inline-block;
+            position: absolute;
+        }
+    }
+} 
+
+@media only screen and (min-width: 1441px)
+{
+    :host ::ng-deep .visit_row_data 
+    {
+        > div:first-child
+        {
+            width:100%;
+            min-width: 61rem;
+            max-width: 61rem;
+        }
+        .mat-fab-wrapper{
+            top: -1.2rem !important;
+            right: -4rem !important;
+            display: inline-block;
+            position: absolute;
+        }
     }
 } 
 /**

@@ -4,7 +4,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { map } from 'rxjs/operators';
+import { debounceTime, map, share } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -204,10 +204,13 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
-        return this.getObservable(request).pipe(
+        return this.getObservable(request)
+        .pipe(
+            debounceTime(1500),
             map((response: SearchResponse[]) => {
                 return response;
             }),
+            share()
         );
     }
 

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -7,7 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -16,9 +16,10 @@ import { BehaviorSubject, Subscription } from 'rxjs';
     styleUrls: ['./emergency-record.component.scss'],
 })
 export class EmergencyRecordComponent implements OnInit {
-    @Input() emergencyCaseId!: number;
+    @Input() emergencyCaseId: number | undefined;
     @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+
 
     loading = false;
 
@@ -61,7 +62,8 @@ export class EmergencyRecordComponent implements OnInit {
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
+        private changeDetector : ChangeDetectorRef
     ) {}
 
     ngOnInit() {
@@ -81,12 +83,17 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-
         this.caseService.emergencyResponse.subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(data.emergencyCaseId);
 
+                this.emergencyCaseId = data.emergencyCaseId;
+
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
+                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
+
+
+                this.syncedToLocalStorage = false;
+                this.recordForm.markAsPristine();
                 // this.showSnackBar.successSnackBar('Offline case saved to Database, EmNo is : ' + data.emergencyNumber , 'Ok');
 
             }
@@ -95,11 +102,15 @@ export class EmergencyRecordComponent implements OnInit {
         if (this.emergencyCaseId) {
             this.initialiseForm();
         }
-
     }
 
     initialiseForm() : void {
-       this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
+
+        if(!this.emergencyCaseId){
+            return;
+        }
+
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
 
             this.recordForm.patchValue(result);
 
@@ -200,7 +211,6 @@ export class EmergencyRecordComponent implements OnInit {
     async saveForm() {
 
         this.loading = true;
-
         if(this.recordForm.pending){
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
@@ -236,11 +246,12 @@ export class EmergencyRecordComponent implements OnInit {
                             messageResult.failure = 1;
                         } else {
                             const resultBody = data as EmergencyResponse;
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
 
                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(resultBody.emergencyCaseId);
+                            this.emergencyCaseId = resultBody.emergencyCaseId;
+
+                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
                             this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
                             messageResult = this.getCaseSaveMessage(resultBody);
 

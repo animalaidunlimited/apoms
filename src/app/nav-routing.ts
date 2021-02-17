@@ -46,16 +46,6 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Street Treat' },
-        icon: '',
-        group: '',
-        path: 'street-treat',
-        loadChildren: () =>
-            import(
-                './modules/streettreat/streettreat-page.module')
-                .then(m => m.StreetTreatPageModule),
-    },
-    {
         data: { title: 'Census' },
         icon: 'none',
         group: '',
@@ -63,6 +53,26 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import('./modules/census/census-page.module')
             .then(m => m.CensusPageModule),
+    },
+    {
+        data: { title: 'Case List' },
+        icon: '',
+        group: 'Street Treat',
+        path: 'street-treat',
+        loadChildren: () =>
+            import(
+                './modules/streettreat/streettreat-page.module')
+                .then(m => m.StreetTreatPageModule),
+    },
+    
+    {
+        data: { title: 'Teams' },
+        icon: 'none',
+        group: 'Street Treat',
+        path: 'teams',
+        loadChildren: () =>
+            import('./pages/street-treat/pages/teams-page/teams-page.module')
+            .then(m => m.TeamsPageModule),
     },
     {
         data: { title: 'Reporting' },

@@ -1,5 +1,8 @@
 <div mat-dialog-content>
-		{{message}}
+	<p *ngFor="let subVal of vals">
+		{{subVal}}
+		<br/>
+	</p>
 </div>
 <div mat-dialog-actions fxLayoutAlign="center">
 	<button mat-button (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>

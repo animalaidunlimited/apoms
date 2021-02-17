@@ -1,5 +1,11 @@
-.link{
+.counts{
   text-align: center;
+  padding-bottom: 15px;
+}
+
+.area {
+  text-align: left;
+  padding-bottom: 15px;
 }
 
 .link-large{
@@ -13,7 +19,20 @@
   }
 }
 
+@media only screen and (min-width:600px){
+  .area {
+    width: 250px;
+  }
+}
+
+
+
 .refreshButton {
   position: absolute;
   right: 2%;
+}
+
+.count-heading{
+  color: #a9abad;
+  padding-bottom: 15px;
 }

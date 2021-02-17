@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User, ReleaseManager } from 'src/app/core/models/user';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { MatSelectChange } from '@angular/material/select';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
@@ -58,14 +57,10 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   releasers$!:Observable<User[]>;
   specificStaff!: boolean;
   isStreetTreatRelease!: boolean;
+  isCommented = false;
 
   recordForm: FormGroup = new FormGroup({});
   releaseManagers: ReleaseManager[] = [];
-
-  releaseTypes:Release[] = [{id:1 , type: 'Normal release'},
-  {id:2 , type:'Normal + Complainer special instructions'},
-  {id:3 , type:'Specific staff for release'},
-  {id:4, type:'StreetTreat release'}];
 
   username = '';
 
@@ -96,9 +91,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     // Record Form
     this.recordForm = this.fb.group({
-
       releaseId: [],
-
       emergencyDetails : this.fb.group({
         emergencyCaseId: this.data.emergencyCaseId
       }),
@@ -106,47 +99,15 @@ export class ReleaseDetailsDialogComponent implements OnInit {
         requestedUser: [this.username, Validators.required],
         requestedDate: [(new Date()).toISOString().substring(0,10), Validators.required]
       }),
-
       patientId: this.data.patientId,
-      releaseType: [,Validators.required],
       complainerNotes: [''],
       complainerInformed:[],
       Releaser1: [],
-      Releaser2: [],
+      Releaser2: []
     });
 
     this.initReleaseDetailsForm();
 
-  }
-
-  valueChanged(releaseType: MatSelectChange) {
-    switch(releaseType.value) {
-      case 2 : {
-        this.setRequired('complainerNotes');
-        this.streetTreatReleaseFalse();
-        this.specificStaffFalse();
-        break;
-      }
-      case 3 : {
-
-        this.specificStaffTrue();
-        this.streetTreatReleaseFalse();
-        this.setNotRequired('complainerNotes');
-        break;
-      }
-      case 4 : {
-        this.streetTreatReleaseTrue();
-        this.setNotRequired('complainerNotes');
-        this.specificStaffFalse();
-        break;
-	  }
-      default : {
-        this.setNotRequired('complainerNotes');
-        this.streetTreatReleaseFalse();
-        this.specificStaffFalse();
-        break;
-      }
-    }
   }
 
   setRequired(name: string) {
@@ -186,34 +147,44 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   initReleaseDetailsForm(){
-    if(this.data.patientId) {
 
-      this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+	if(this.data.patientId) {
 
-        if(formVal?.success === -1){
-          this.showSnackBar.errorSnackBar('Error updating release details status','OK');
-          return;
+		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+
+      if(formVal?.success === -1){
+        this.showSnackBar.errorSnackBar('Error fetching release details status','OK');
+        return;
+      }
+
+			if(formVal) {
+        this.recordForm.patchValue(formVal);
+
+        if(this.recordForm.get('Releaser1')?.value) {
+					this.specificStaffTrue();
         }
+        if((this.recordForm.get('complainerNotes')?.value)){
+					this.isCommented = true;
+				}
+			}
+		});
+	}
 
-        if(formVal) {
-          this.recordForm.patchValue(formVal);
-            if(this.recordForm.get('releaseType')?.value===3) {
-              this.specificStaffTrue();
-            }
-            if((this.recordForm.get('releaseType')?.value===4)){
-              this.streetTreatReleaseTrue();
-            }
-          }
-      });
+  }
+
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+
+    if(streetTreatCaseId)
+    {
+      this.streetTreatReleaseTrue();
     }
   }
 
   onReleaseSubmit(releaseForm:any) {
 
     this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-
+    
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
-
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')
           :
@@ -223,6 +194,45 @@ export class ReleaseDetailsDialogComponent implements OnInit {
           );
 
     });
+
+  }
+
+  valueChages(toggle: any , position: number) {
+    switch(position) {
+      case 2 : {
+        if(toggle.checked) {
+          this.setRequired('complainerNotes');
+          this.recordForm.controls.complainerNotes.updateValueAndValidity();
+        }
+        else {
+          this.setNotRequired('complainerNotes');
+          this.recordForm.controls.complainerNotes.updateValueAndValidity();
+        }
+        break;
+      }
+      case 3 : {
+        if(toggle.checked) {
+          this.specificStaffTrue();
+        }
+        else {
+          this.specificStaffFalse();
+        }
+        break;
+      }
+      case 4 : {
+        if(toggle.checked) {
+          this.streetTreatReleaseTrue();
+          this.changeDetector.detectChanges();
+        }
+        else {
+          this.streetTreatReleaseFalse();
+          this.changeDetector.detectChanges();
+
+        }
+        break;
+      }
+
+    }
 
   }
 
