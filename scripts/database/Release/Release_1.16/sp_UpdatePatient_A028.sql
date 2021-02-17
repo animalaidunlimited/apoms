@@ -51,11 +51,12 @@ IF vPatientExists = 0 THEN
 			Position		= prm_Position,
 			AnimalTypeId	= prm_AnimalTypeId,
 			TagNumber		= prm_TagNumber,
-            IsDeleted		= prm_IsDeleted,
-            DeletedDate		= CASE
-								WHEN prm_IsDeleted = FALSE THEN NULL
-                                WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
-							  END
+			IsDeleted		= prm_IsDeleted,
+			DeletedDate		= CASE
+			WHEN prm_IsDeleted = FALSE THEN NULL
+			WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
+			END,
+			UpdateTime			= NOW()
 								
 	WHERE PatientId = prm_PatientId;
     
@@ -69,7 +70,7 @@ IF vPatientExists = 0 THEN
          SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;  
          
 			IF vStreetTreatCaseExists = 1 THEN
-				UPDATE AAU.Patient SET TagNumber = NULL WHERE PatientId = prm_PatientId;
+				UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = now() WHERE PatientId = prm_PatientId;
                 
                 DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId 
                 AND StreetTreatCaseId NOT IN (
@@ -100,7 +101,7 @@ IF vPatientExists = 0 THEN
         -- Check if we're updating the tag number and then push that change through to Street Treat        
         IF prm_TagNumber <> vExistingTagNumber AND vStreetTreatCaseExists = 1 THEN
         
-        UPDATE AAU.Patient SET TagNumber = prm_TagNumber WHERE TagNumber = vExistingTagNumber;
+        UPDATE AAU.Patient SET TagNumber = prm_TagNumber, UpdateTime = now() WHERE TagNumber = vExistingTagNumber;
         
 		INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 		VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update tag - new tag: ' + prm_TagNumber, NOW());
@@ -116,7 +117,7 @@ IF vPatientExists = 0 THEN
 			INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 			VALUES (vOrganisationId, prm_Username, vCaseId,'Case','Insert - Via ER', NOW());
             
-            UPDATE AAU.Patient SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
+            UPDATE AAU.Patient SET TagNumber = prm_TagNumber, UpdateTime = now() WHERE PatientId = prm_PatientId;
             
             SELECT prm_TagNumber INTO prm_OutTagNumber;
 			
