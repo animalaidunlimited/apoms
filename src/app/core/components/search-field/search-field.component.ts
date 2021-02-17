@@ -259,6 +259,7 @@ executeSearch() {
 
      this.searchString.emit(searchQuery);
 }
+
 toggleSearchBox() {
 
     if (this.searchShowing) {
@@ -301,6 +302,20 @@ updateSearchArray() {
 
 }
 
+isDate(dateStr:string){
+    let splitChar = '';
+    if(dateStr.indexOf('-') > -1)
+    {
+        splitChar = '-';
+    }
+    else{
+        splitChar = '/';
+    }
+    const dateParts = dateStr.split(splitChar);
+    const year = dateParts.filter(datePart => datePart.length === 4)[0];
+    return new Date(`${year}-${dateParts[1]}-${dateParts[0]}`).getMonth()+1;
+}
+
 getSearchArray() {
 
     // Filter out any empty values and then create a regex string which uses
@@ -315,24 +330,31 @@ getSearchArray() {
 
 
     const delimiter = new RegExp(regex);
+
     let firstChar;
-    let toSplit = '';
-    if(this.search.searchString.toLowerCase().charAt(0) !== '%'){
-        firstChar = this.search.searchString.toLowerCase().charAt(0);
-    }
-    else{
-        firstChar = this.search.searchString.toLowerCase().charAt(1);
+    let toSplit = '' + this.search.searchString;
+
+    firstChar = this.search.searchString.toLowerCase().charAt(this.search.searchString.startsWith('%') ? 0 : 1);
+    if(!this.search.searchString.startsWith('%') && !this.search.searchString.endsWith('%') && this.search.searchString.indexOf('%') < 0)
+    {
+        this.search.searchString = '%' + this.search.searchString+ '%';
     }
     if(this.search.searchString.toLowerCase().search(delimiter) !== 0)
     {
-        if( firstChar <='9' && firstChar >='0') {
+        if(this.search.searchString.split('%').join('').length === 10 && (this.search.searchString.indexOf('/') > -1 || this.search.searchString.indexOf('-') > -1 ))
+        {
+            if(this.isDate(this.search.searchString)){
+                toSplit = 'calldate:' + this.search.searchString;
+            }
+        }
+        else if( firstChar <='9' && firstChar >='0' && !isNaN(parseInt(this.search.searchString,10))) {
             toSplit = 'emno:' + this.search.searchString;
         }
         else{
             toSplit = 'tagno:' + this.search.searchString;
         }
     }
-    return toSplit.split(delimiter);
+    return toSplit.split(delimiter);   
 }
 
 getSearchString() {
