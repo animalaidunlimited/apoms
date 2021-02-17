@@ -16,9 +16,8 @@
             <mat-label>Treatment priority</mat-label>
             <mat-select  formControlName="treatmentPriority" aria-labelledby="treatmentPriority-label">
                 <mat-option>N/A</mat-option>
-                <mat-option [value]="1">Urgent</mat-option>
                 <mat-option [value]="2">High</mat-option>
-                <mat-option [value]="3">Normal</mat-option>
+                <mat-option [value]="3">Medium</mat-option>
                 <mat-option [value]="4">Low</mat-option>
             </mat-select>
         </mat-form-field>
@@ -72,6 +71,21 @@
                     <mat-option [value]="1">Female</mat-option>
                     <mat-option [value]="2">Male</mat-option>
                 </mat-select>
+        </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row flex" fxLayoutGap="20px" formGroupName="patientDetails" fxLayoutAlign="space-around center">
+
+        <mat-form-field>
+            <mat-label>Age</mat-label>
+            <mat-select  formControlName="age" aria-labelledby="age-label">
+                <mat-option>N/A</mat-option>
+                <mat-option [value]="1">Infant</mat-option>
+                <mat-option [value]="2">Young</mat-option>
+                <mat-option [value]="3">Adult</mat-option>
+                <mat-option [value]="4">Old</mat-option>
+            </mat-select>
         </mat-form-field>
 
     </div>

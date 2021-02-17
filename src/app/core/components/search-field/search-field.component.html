@@ -6,6 +6,7 @@
             <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
         </span>
         <input #searchBox class="er-case-search-box" autocomplete="off" [(ngModel)]="search.searchString" type="text" (keyup.enter)="executeSearch()" matInput>
+        <mat-icon style="cursor: pointer;" matSuffix (click)="search.searchString=''">close</mat-icon>
         <mat-icon style="cursor: pointer;" matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
     </mat-form-field>
 
