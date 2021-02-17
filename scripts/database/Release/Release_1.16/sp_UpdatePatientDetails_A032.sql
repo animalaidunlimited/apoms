@@ -47,7 +47,8 @@ START TRANSACTION;
 				ABCStatus			= prm_ABCStatus,
 				ReleaseStatus		= prm_ReleaseStatus,
 				Temperament			= prm_Temperament,
-                Age					= prm_Age
+				UpdateTime			= NOW(),
+				Age					= prm_Age
 	WHERE PatientId = prm_PatientId;
    
 COMMIT;         
