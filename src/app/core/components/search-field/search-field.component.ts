@@ -179,7 +179,7 @@ export class SearchFieldComponent implements OnInit {
     public platform: Platform) { }
 
   ngOnInit(): void {
-      
+
   this.navigationService.isSearchClicked.subscribe((clicked)=> {
       if(clicked && this.searchBox){
             this.searchBox.nativeElement.focus();
@@ -314,10 +314,20 @@ getSearchArray() {
 
     const delimiter = new RegExp(regex);
 
-    const toSplit =
-        (this.search.searchString.toLowerCase().search(delimiter) !== 0
-            ? 'tagno:'
-            : '') + this.search.searchString;
+    let firstChar;
+    let toSplit = '' + this.search.searchString;
+
+    firstChar = this.search.searchString.toLowerCase().charAt(this.search.searchString.startsWith('%') ? 0 : 1);
+
+    if(this.search.searchString.toLowerCase().search(delimiter) !== 0)
+    {
+        if( firstChar >='0' && firstChar <='9' && !isNaN(parseInt(this.search.searchString,10))) {
+            toSplit = 'emno:' + this.search.searchString;
+        }
+        else{
+            toSplit = 'tagno:' + this.search.searchString;
+        }
+    }
 
     return toSplit.split(delimiter);
 }
