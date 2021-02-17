@@ -450,7 +450,9 @@ openCase(caseSearchResult:OutstandingAssignment)
 refreshRescues(){
 
   this.loading = true;
+
   this.outstandingCaseService.refreshRescues();
+  
 }
 
 printEmergencyCard(emergencyCaseId: number){

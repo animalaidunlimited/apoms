@@ -3,11 +3,13 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
-import { ChartData, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, TeamColour } from 'src/app/core/models/streettreet';
+import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import {MediaObserver} from '@angular/flex-layout';
+
 
 export interface Position {
   lat: number;
@@ -20,15 +22,22 @@ export interface MapMarker {
   teamId:number;
 }
 
+interface StreetTreatTabResult {
+  StreetTreatCaseId:number;
+  TagNumber:string;
+  PatientId:number;
+  EmergencyCaseId:number;
+}
+
 
 @Component({
-  selector: 'team-visit-assinger',
+  selector: 'app-team-visit-assinger',
   templateUrl: './team-visit-assinger.component.html',
   styleUrls: ['./team-visit-assinger.component.scss']
 })
 export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
-  @Output() public openStreetTreatCase = new EventEmitter<number>();
+  @Output() public openStreetTreatCase = new EventEmitter<StreetTreatTabResult>();
 
   icon = {
     path: 'M261-46C201-17 148 39 124 98 111 128 107 169 108 245 110 303 105 377 98 408L89 472 142 458C175 444 227 436 309 430 418 423 435 419 476 394 652 288 637 28 450-48 397-70 309-69 261-46ZZ',
@@ -40,36 +49,29 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   };
 
   zoom = 11.0;
-  streetTreatCasesResponse !: StreetTreatCases[] | null | undefined;
+  filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
   streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
   teamsDropDown:StreetTreatCases[] | null=[];
-  center!:google.maps.LatLngLiteral;
   latlngboundsArray:google.maps.LatLng[] = [];
   markers: MapMarker[] = [];
   highlightStreetTreatCase = -1;
-  highlightMarkerStreetTreatCase = -1;
   latlngbounds = new google.maps.LatLngBounds(undefined);
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
 
-  @ViewChild('containerRef',{ static: false }) containerRef!: ElementRef;
 
   showXAxis = true;
   showYAxis = true;
   gradient = false;
   showLegend = true;
-  animations = true;
-  chartExpanded  = false;
-  casesWithoutVisits = 0;
-  totalVisitToday = 0;
-  visitCompleteToday = 0;
-  urgentCases = 0;
-  totalCases = 0;
+  animations= true;
+  chartExpanded = false;
   chartData!: ChartData[];
+  scoreCards$!: Observable<StreetTreatScoreCard>;
   infoWindow = new google.maps.InfoWindow();
-
+  center:google.maps.LatLngLiteral = this.userOptions.getCoordinates();
   view:[number,number] = [700,400];
-  customColors:TeamColour[] = [];
+  customColours:TeamColour[] = [];
 
   searchDate = new Date();
 
@@ -77,12 +79,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   teamsgroup!:FormGroup;
 
-  @HostListener('window:resize') onResize() {
-    if(this.containerRef)
-    {
-      this.view = [this.containerRef.nativeElement.offsetWidth/1.2, 400];
-    }
-  }
+
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -91,158 +88,135 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,
-    private userOptions:UserOptionsService
+    private userOptions:UserOptionsService,
+    private mediaObserver: MediaObserver
     ) {
-      this.view = [innerWidth / 1.2, 400];
+      if(innerWidth > 786)
+      {
+        this.view = [innerWidth / 1.1, 400];
+      }
+      else{
+        this.view = [innerWidth * 2, 400];
+      }
     }
 
-    ngOnInit(): void {
-
-      this.teamsgroup = this.fb.group({
-        teams:[''],
-        date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
-      });
-
-      this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
-
-          if(teamIds.length > 0){
-            this.streetTreatCasesResponse = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
-          }
-          else {
-            this.streetTreatCasesResponse = this.streetTreatCaseByVisitDateResponse;
-          }
-
-          this.initMarkers(this.streetTreatCasesResponse);
+  ngOnInit(): void {
+    this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
+      mediaQuerys.forEach((mediaQuery) =>
+      {
 
       });
+    });
+    this.teamsgroup = this.fb.group({
+      teams:[''],
+      date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
+    });
 
-      this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
 
-        if(!date) return;
+    this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
 
-        this.searchDate = new Date(date);
+        if(teamIds.length > 0){
+          this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
+        }
+        else {
+          this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse;
+        }
 
-        this.streetTreatServiceSubs = this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
-            .subscribe((streetTreatCaseByVisitDateResponse) => {
+        this.initMarkers(this.filteredStreetTreatCases);
 
-                if(!streetTreatCaseByVisitDateResponse) return;
+    });
 
-                this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
-                this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-                this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+    this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
+      this.searchDate = new Date(date);
 
-                if(streetTreatCaseByVisitDateResponse.Cases)
-                {
-                  this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-                  this.initMarkers(this.streetTreatCasesResponse);
-                }
-                else{
-                  this.markers = [];
-                }
-                this.streetTreatServiceSubs.unsubscribe();
-
-              });
-          });
-    }
-
-    ngAfterViewInit():void {
-
-      this.center = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
-      this.changeDetector.detectChanges();
-
-      this.streetTreatServiceSubs =  this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+      this.streetTreatServiceSubs =
+        this.streetTreatService
+        .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          if(!streetTreatCaseByVisitDateResponse) return;
+          this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
+          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse?.Cases;
 
 
-
-          this.urgentCases = streetTreatCaseByVisitDateResponse.UrgentCases;
-          this.totalCases = streetTreatCaseByVisitDateResponse.TotalCases;
-          this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
-
-
-
-          if(streetTreatCaseByVisitDateResponse.Cases)
+          if(streetTreatCaseByVisitDateResponse?.Cases)
           {
-            const todayDate = this.datePipe.transform(new Date(),'yyyy-MM-dd');
+            this.teamsDropDown = streetTreatCaseByVisitDateResponse?.Cases;
+            this.initMarkers(this.filteredStreetTreatCases);
+          }
+          else{
+            this.filteredStreetTreatCases = null;
+            this.markers = [];
+          }
 
+          this.streetTreatServiceSubs.unsubscribe();
+
+        });
+    });
+  }
+
+  ngAfterViewInit():void {
+    this.scoreCards$ = this.streetTreatService.getScoreCards();
+    this.initSwimlane();
+  }
+
+  private initSwimlane() {
+    this.streetTreatServiceSubs =
+      this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+        .subscribe((streetTreatCaseByVisitDateResponse) => {
+
+
+          if (streetTreatCaseByVisitDateResponse?.Cases) {
+            this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
+            this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
+            this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
+            const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
             this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
-
-            streetTreatCaseByVisitDateResponse.Cases.forEach((streetTreatCase)=>{
-
-              streetTreatCase.StreetTreatCaseVisits.forEach((streetTreatCaseDetails)=>{
-
-                streetTreatCaseDetails.Visits.forEach((visit)=>{
-
-                  if(visit.VisitStatus === 'Complete'){
-                    this.visitCompleteToday += 1;
-                  }
-                  if(todayDate === visit.VisitDate){
-                    this.totalVisitToday += 1;
-                  }
-
-                });
-              });
-            });
           }
           this.streetTreatServiceSubs.unsubscribe();
         });
 
-      this.streetTreatService.getChartData().subscribe((data) => {
+    this.streetTreatService.getChartData().subscribe((data) => {
+      this.initChartData(data);
+    });
+  }
 
-        data.chartData.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
+  private initChartData(data: ChartResponse) {
 
-        const charts = data.chartData;
+    const charts = data.chartData;
+    this.chartExpanded = data.chartData.length > 0 ? true : false;
+    const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
+    const endDate = new Date(new Date().setDate(new Date().getDate() + 14));
+    const datesRange = this.getDatesBetween(startDate, endDate);
 
-        this.chartExpanded = data.chartData.length > 0 ? true : false;
-        const startDate = new Date(new Date().setDate(new Date().getDate() - 7));
-        const endDate = new Date(new Date().setDate(new Date().getDate() + 14));
-        const datesRange = this.getDatesBetween(startDate, endDate);
+    datesRange.forEach((dateObj) => {
 
-        datesRange.forEach((dateObj)=>{
-
-          if(charts.filter(chart => chart.name === dateObj.name).length > 0)
-          {
-            dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
-          }
-        });
-
-        this.chartData = datesRange;
-
-        setTimeout(()=>{
-          const ticks = this.elementRef.nativeElement.querySelectorAll('g.tick');
-          ticks.forEach((tick:any) => {
-
-            tick.addEventListener('click',this.onDateClick.bind(this));
-          });
-        },1000);
-
-        this.customColors = data.teamColours;
+      if (charts.filter(chart => chart.name === dateObj.name).length > 0) {
+        dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
+      }
+    });
 
 
+    datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
+
+    this.chartData = datesRange;
+
+    setTimeout(() => {
+      this.elementRef.nativeElement.querySelectorAll('g.tick').forEach((chartDate: any) => {
+      // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
+        chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
+    }, 1000);
 
-      this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
+    this.customColours = data.teamColours;
+  }
 
-        if(this.streetTreatCasesResponse){
-
-          this.streetTreatCasesResponse.forEach((streetTreatCase)=>{
-
-            streetTreatCase.StreetTreatCaseVisits.forEach(() =>{
-              this.casesWithoutVisits += 1;
-            });
-          });
-        }
-
-      });
+  refreshRescues(){
+    if(this.teamsgroup.get('date')?.value === ''){
+      this.noVisits();
     }
-
-  markerDragEnd(event: google.maps.MouseEvent) {
-    const position = event.latLng.toJSON();
-    this.center = { lat: position.lat, lng: position.lng };
+    else{
+      this.initSwimlane();
+    }
   }
 
   markerClick(marker:MapMarker)
@@ -252,6 +226,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   markerClean(){
     this.highlightStreetTreatCase = -1;
   }
+
 
   drop(event: CdkDragDrop<StreetTreatCaseVisit[], any>){
 
@@ -282,16 +257,26 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
       if(visitTeamUpdateResponse[0].success === 1){
 
-        this.streetTreatServiceSubs = this.streetTreatService
-        .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
-        .subscribe((streetTreatCaseByVisitDateResponse) => {
+        if(this.teamsgroup.get('date')?.value === ''){
+          this.noVisits();
+        }
+        else {
 
-          this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
-          this.streetTreatCasesResponse = streetTreatCaseByVisitDateResponse.Cases;
-          this.initMarkers(this.streetTreatCasesResponse);
-          this.streetTreatServiceSubs.unsubscribe();
+          this.streetTreatServiceSubs = this.streetTreatService
+          .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+          .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-        });
+            streetTreatCaseByVisitDateResponse.Cases?.forEach(team =>
+                team.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));
+
+            this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
+
+            this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
+            this.initMarkers(this.filteredStreetTreatCases);
+            this.streetTreatServiceSubs.unsubscribe();
+
+          });
+        }
       }
       else {
         this.showSnackBar.errorSnackBar('Error updating streettreat case team status','OK');
@@ -307,7 +292,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     streetTreatCases?.forEach((streetTreatResponse) =>
     {
       streetTreatResponse.StreetTreatCaseVisits.forEach((visitResponse)=>{
+
         this.markers.push({
+
           streetTreatCaseId:visitResponse.StreetTreatCaseId,
           teamId:streetTreatResponse.TeamId,
           options:{
@@ -356,9 +343,9 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   onSelect($event:ChartSelectObject){
 
-    if(this.streetTreatCasesResponse)
+    if(this.filteredStreetTreatCases)
     {
-      this.teamsgroup.get('teams')?.patchValue([]);
+      this.teamsgroup.get('teams')?.patchValue([],{ emitEvent: false });
     }
 
     const dateString = $event.series.split('/');
@@ -369,14 +356,14 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(()=>{
-      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0].TeamId;
+      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0]?.TeamId;
       this.teamsgroup.get('teams')?.patchValue([TeamId]);
     },100);
   }
 
   onDateClick($event:any){
 
-    let date = $event.target?.innerHTML.trim().split('/');
+    let date = $event.firstChild.innerHTML.trim().split('/');
 
     date = new Date(new Date().getFullYear(), +date[1] - 1 , +date[0]);
 
@@ -403,26 +390,25 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     return dates;
   }
 
-  noVisits(){
-
-    this.casesWithoutVisits = 0;
-    this.teamsgroup.get('date')?.patchValue('');
+  noVisits($event?:Event){
+    $event?.preventDefault();
+    $event?.stopPropagation();
+    this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
 
     this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
 
-
-      console.log(cases);
-
       this.streetTreatCaseByVisitDateResponse = cases;
-      this.streetTreatCasesResponse = cases;
+      this.filteredStreetTreatCases = cases;
       this.teamsDropDown  = cases;
       this.initMarkers(cases);
+
     });
   }
 
-  openCase(streetTreatCase:any){
-    /* :SearchStreetTreatResponse  */
-    const result:any = {
+  openCase(streetTreatCase:StreetTreatCaseVisit,$event:Event){
+    $event.preventDefault();
+    $event.stopPropagation();
+    const result:StreetTreatTabResult = {
       StreetTreatCaseId:streetTreatCase.StreetTreatCaseId,
       TagNumber:streetTreatCase.AnimalDetails.TagNumber,
       PatientId:streetTreatCase.AnimalDetails.PatientId,

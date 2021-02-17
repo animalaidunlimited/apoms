@@ -11,7 +11,7 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 import { SearchFieldModule } from 'src/app/core/components/search-field/search-field.module';
 import { SearchStreetTreetResultCardComponent } from './components/search-streettreet-result-card/search-streettreet-result-card.component';
 import { StreetTreatRecordComponent } from './components/streettreat-record/streettreat-record.component';
-import { PatientVisitDetailsModule } from '../hospital-manager/components/patient-visit-details/patient-visit-details.module';
+import { PatientVisitDetailsModule } from '../../core/components/patient-visit-details/patient-visit-details.module';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
 import { AnimalHeaderModule } from '../hospital-manager/components/animal-header/animal-header.module';
@@ -21,10 +21,10 @@ import { TeamVisitAssingerModule } from './components/team-visit-assinger/team-v
 
 @NgModule({
   declarations: [
-    StreetTreatPageComponent, 
-    StreetTreatTabBarComponent, 
-    StreetTreatSearchComponent, 
-    SearchStreetTreetResultCardComponent, 
+    StreetTreatPageComponent,
+    StreetTreatTabBarComponent,
+    StreetTreatSearchComponent,
+    SearchStreetTreetResultCardComponent,
     StreetTreatRecordComponent,
   ],
   imports: [

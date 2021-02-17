@@ -71,7 +71,10 @@ IF vPatientExists = 0 THEN
 			IF vStreetTreatCaseExists = 1 THEN
 				UPDATE AAU.Patient SET TagNumber = NULL WHERE PatientId = prm_PatientId;
                 
-                DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
+                DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId 
+                AND StreetTreatCaseId NOT IN (
+					SELECT StreetTreatCaseId FROM AAU.Visit
+                );
 			
             END IF;
             

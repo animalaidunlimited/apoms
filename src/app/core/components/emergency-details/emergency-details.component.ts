@@ -6,12 +6,11 @@ import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-err
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
-import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
-import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -33,6 +32,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     emergencyCodes$!: Observable<EmergencyCode[]>;
     callDateTime: string | Date = getCurrentTimeString();
     minimumDate = '';
+
+    hasEmergencyCaseId: number | undefined = undefined;
 
     emergencyDetails!: FormGroup;
 

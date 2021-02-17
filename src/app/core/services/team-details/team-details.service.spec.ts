@@ -5,7 +5,7 @@ import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TeamsPageComponent } from 'src/app/modules/street-treat/pages/teams-page/teams-page.component';
+import { TeamsPageComponent } from 'src/app/modules/streettreat/pages/teams-page/teams-page.component';
 import { SnackbarService } from '../snackbar/snackbar.service';
 
 import { TeamDetailsService } from './team-details.service';
