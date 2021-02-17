@@ -299,7 +299,7 @@ export class OutstandingCaseService {
 
     let haveRun = false;
 
- 
+
 
     let outstanding:OutstandingCase[];
 
@@ -342,8 +342,8 @@ export class OutstandingCaseService {
                     });
                   }
                 });
-                
-                assignment.filteredCandidate = filterSuccess === filterKeysArray.length;
+
+                assignment.filteredCandidate = filterSuccess === new Set(filterKeysArray.map(current=> current.group)).size;
 
                 const currentValue = this.convertObjectToString(assignment);
 

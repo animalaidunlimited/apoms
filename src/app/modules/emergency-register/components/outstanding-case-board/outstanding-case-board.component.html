@@ -42,9 +42,9 @@
 
     <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
       <mat-icon>filter_alt</mat-icon>
-    </button>  
+    </button>
 
-    
+
     <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
@@ -60,13 +60,13 @@
 
    <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
     <mat-expansion-panel [expanded]="true" *ngFor="let options of caseFilter" hideToggle>
-      <mat-expansion-panel-header> 
+      <mat-expansion-panel-header>
         <mat-panel-title>
           {{options.showTitle}}
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-    <mat-chip-list #filterChips>
+    <mat-chip-list #filterChips multiple>
       <mat-chip #filterChip="matChip"
       (click)="filterChip.toggleSelected()"
       (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
@@ -75,7 +75,7 @@
       </mat-chip>
     </mat-chip-list>
     </mat-expansion-panel>
-   
+
   </div>
 </div>
 
