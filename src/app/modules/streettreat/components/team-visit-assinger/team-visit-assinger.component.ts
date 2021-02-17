@@ -112,6 +112,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
 
+
     this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
 
         if(teamIds.length > 0){
@@ -135,6 +136,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
           this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse?.Cases;
+
 
           if(streetTreatCaseByVisitDateResponse?.Cases)
           {
@@ -193,10 +195,10 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       }
     });
 
+
     datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
 
     this.chartData = datesRange;
-
 
     setTimeout(() => {
       this.elementRef.nativeElement.querySelectorAll('g.tick').forEach((chartDate: any) => {
