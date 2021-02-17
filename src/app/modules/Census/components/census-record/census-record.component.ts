@@ -106,7 +106,6 @@ export class CensusRecordComponent implements OnInit {
 
     loadCensusErrorRecords() {
         this.census.getCensusErrorRecords().then(errorRecords=> {
-            console.log(errorRecords);
             if(errorRecords.length) {
                 this.censusErrorRecords = errorRecords;
                 this.showErrorLogBtn = true;
@@ -307,8 +306,6 @@ export class CensusRecordComponent implements OnInit {
   }
 
 tagNumberClicked(value:string){
-
-    console.log(value);
 
     this.openHospitalManagerRecord(value);
 
