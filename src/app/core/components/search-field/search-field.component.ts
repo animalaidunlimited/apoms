@@ -259,7 +259,6 @@ executeSearch() {
 
      this.searchString.emit(searchQuery);
 }
-
 toggleSearchBox() {
 
     if (this.searchShowing) {
@@ -316,12 +315,23 @@ getSearchArray() {
 
 
     const delimiter = new RegExp(regex);
-
-    const toSplit =
-        (this.search.searchString.toLowerCase().search(delimiter) !== 0
-            ? 'tagno:'
-            : '') + this.search.searchString;
-
+    let firstChar;
+    let toSplit = '';
+    if(this.search.searchString.toLowerCase().charAt(0) !== '%'){
+        firstChar = this.search.searchString.toLowerCase().charAt(0);
+    }
+    else{
+        firstChar = this.search.searchString.toLowerCase().charAt(1);
+    }
+    if(this.search.searchString.toLowerCase().search(delimiter) !== 0)
+    {
+        if( firstChar <='9' && firstChar >='0') {
+            toSplit = 'emno:' + this.search.searchString;
+        }
+        else{
+            toSplit = 'tagno:' + this.search.searchString;
+        }
+    }
     return toSplit.split(delimiter);
 }
 

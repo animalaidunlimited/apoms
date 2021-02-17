@@ -1,5 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    HostListener,
+    AfterViewInit,
+} from '@angular/core';
+import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
@@ -10,7 +20,8 @@ import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
-
+import { MatDialog } from '@angular/material/dialog';
+import { LogsComponent } from '../logs/logs.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -19,14 +30,15 @@ import { User } from '../../models/user';
     styleUrls: ['./emergency-details.component.scss'],
 })
 export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
-
     @Input() recordForm!: FormGroup;
     @Input() focusEmergencyNumber!: boolean;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
-    @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
+    @ViewChild('emergencyNumber', { read: ElementRef, static: true })
+    emergencyNumberField!: ElementRef;
+    @ViewChild('callDateTimeField', { read: ElementRef, static: true })
+    callDateTimeField!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -43,9 +55,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         private datePipe: DatePipe,
         private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
-    ) {
-
-    }
+        public dialog: MatDialog,
+    ) {}
 
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
@@ -53,20 +64,24 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
     ngOnInit(): void {
-
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
-        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms') || '';
+        this.minimumDate =
+            this.datePipe.transform(
+                this.userOptions.getMinimumDate(),
+                'yyyy-MM-ddThh:mm:ss.ms',
+            ) || '';
 
-        this.emergencyDetails = this.recordForm.get('emergencyDetails') as FormGroup;
+        this.emergencyDetails = this.recordForm.get(
+            'emergencyDetails',
+        ) as FormGroup;
 
-        const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
-
-        this.emergencyDetails.addControl(
-            'emergencyNumber',
-            new FormControl()
+        const emergencyCaseId = this.recordForm.get(
+            'emergencyDetails.emergencyCaseId',
         );
+
+        this.emergencyDetails.addControl('emergencyNumber', new FormControl());
 
         this.emergencyDetails.addControl(
             'callDateTime',
@@ -76,54 +91,56 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             'dispatcher',
             new FormControl('', Validators.required),
         );
-        this.emergencyDetails.addControl(
-            'code',
-            new FormControl(''),
-        );
+        this.emergencyDetails.addControl('code', new FormControl(''));
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
         emergencyCaseId?.valueChanges.subscribe(() => {
-
-            const emergencyNumber = this.recordForm.get('emergencyDetails.emergencyNumber');
+            const emergencyNumber = this.recordForm.get(
+                'emergencyDetails.emergencyNumber',
+            );
 
             emergencyNumber?.clearAsyncValidators();
             emergencyNumber?.setAsyncValidators([
                 this.emergencyNumberValidator.validate(
-                emergencyCaseId?.value,1)
+                    emergencyCaseId?.value,
+                    1,
+                ),
             ]);
-
         });
 
-
-        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
-        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
+        this.emergencyDetails.addControl(
+            'callDateTime',
+            new FormControl(getCurrentTimeString(), Validators.required),
+        );
+        this.emergencyDetails.addControl(
+            'dispatcher',
+            new FormControl('', Validators.required),
+        );
         // this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
 
         this.caseService
             .getEmergencyCaseById(emergencyCaseId?.value)
             .subscribe(result => {
-
                 this.recordForm.patchValue(result);
-
             });
 
         this.recordForm
-            .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
-                if(!val && this.focusEmergencyNumber){
+            .get('emergencyDetails.emergencyNumber')
+            ?.valueChanges.subscribe(val => {
+                if (!val && this.focusEmergencyNumber) {
                     this.emergencyNumberField.nativeElement.focus();
                 }
 
                 this.updateEmergencyNumber(val);
             });
-
-
-
     }
 
-    ngAfterViewInit(){
-
-        if(this.focusEmergencyNumber) {
-        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
+    ngAfterViewInit() {
+        if (this.focusEmergencyNumber) {
+            setTimeout(
+                () => this.emergencyNumberField.nativeElement.focus(),
+                0,
+            );
         }
     }
 
@@ -141,28 +158,42 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         }
     }
 
-    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
-
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {
         return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
     }
 
-    selectEmergencyCode($event:any){
-
+    selectEmergencyCode($event: any) {
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
-        this.emergencyCodes$.subscribe((codes:EmergencyCode[]) => {
-
-            const selectedCode = codes.find((code:EmergencyCode) => {
-
-                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
-
+        this.emergencyCodes$.subscribe((codes: EmergencyCode[]) => {
+            const selectedCode = codes.find((code: EmergencyCode) => {
+                return (
+                    code.EmergencyCode.substr(0, 1).toLowerCase() ===
+                    $event.key.toLowerCase()
+                );
             });
 
-            if(selectedCode){
-                this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
+            if (selectedCode) {
+                this.recordForm
+                    .get('emergencyDetails.code')
+                    ?.setValue(selectedCode);
             }
         });
-
     }
 
+    openLogsDialog(emergencyCaseId: any,emergencyNumber:any) {
+        const dialogRef = this.dialog.open(LogsComponent, {
+            maxHeight: '100vh',
+            maxWidth: '100vw',
+            data: {
+                emergencyCaseId,
+                emergencyNumber,
+                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
+            },
+        });
 
+        dialogRef
+            .afterClosed()
+            .subscribe(() => {})
+            .unsubscribe();
+    }
 }
