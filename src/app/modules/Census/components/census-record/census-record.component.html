@@ -4,13 +4,16 @@
     
     <form [formGroup] = "censusDate">
         <div fxLayout="row" fxLayoutAlign="start end">
+            
             <mat-form-field>
                 <mat-label>Census Date</mat-label>
                 <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
-
-            <button *ngIf="showErrorLogBtn" (click)="showCensusErrorLog = !showCensusErrorLog" class="censusErrorRecordButton" mat-raised-button>Census errors</button>
+            
+            <button mat-mini-fab matTooltip="Census errors" *ngIf="showErrorLogBtn" (click)="showCensusErrorLog = !showCensusErrorLog" color="warn" class="censusErrorRecordButton">
+                <mat-icon>priority_high</mat-icon>
+            </button>
         </div>
     </form>
 
