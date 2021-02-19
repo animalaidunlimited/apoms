@@ -40,3 +40,11 @@
     color: gold;
     cursor: default
 }
+
+// To disable the Emergency number field by css.
+.disable {
+    pointer-events: none;
+    background: silver;
+    border: 1px solid grey;
+    border-radius: 7px;
+}
