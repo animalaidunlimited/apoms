@@ -4,8 +4,8 @@
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-    <mat-form-field>
-            <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" appearance="outline" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
+    <mat-form-field class="disable">
+            <input tabindex="-1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
             <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
                 The emergency number already exists.
