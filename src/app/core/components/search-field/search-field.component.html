@@ -21,70 +21,53 @@
     class="search-form"
     [formGroup]="searchForm"
 >
-    <div
-        formArrayName="searchRows"
-        *ngFor="let item of searchRows?.controls; let i = index"
-    >
+    <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index">
         <div [formGroupName]="i">
-            <div
-                fxLayout="row"
-                fxLayoutGap="20px"
-                fxLayoutAlign="space-between center"
-            >
-                <div fxFlex="5">
-                    <mat-icon
-                        style="cursor: pointer; margin-left:15px;"
-                        (click)="removeRow(i)"
-                    >
-                        remove_circle_outline</mat-icon
-                    >
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
+                <div fxFlex="7" fxFlexOrder="1">
+                    <button class="delete-search-row" style="cursor: pointer; margin-right:15px; " mat-mini-fab color="warn" aria-label="Delete this Visit" (click)="removeRow(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 </div>
 
-                <div
-                    fxLayout="row"
-                    fxLayout.xs="column"
-                    fxLayoutGap="20px"
-                    fxLayoutGap.xs="0px"
-                    fxLayoutAlign="center center"
-                    fxFlex
-                >
-                    <div fxFlex>
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px" fxLayoutGap.xs="0px" fxLayoutAlign="center center" fxFlex>
+                    <div fxFlex class="searchbox-field">
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
-                            <mat-select formControlName="searchField">
-                                <mat-option
-                                    *ngFor="let option of options"
-                                    #id{{i}}
-                                    [value]="option.id"
-                                >
+                            <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)">
+                                <mat-option *ngFor="let option of options" #id{{i}} [value]="option.id" >
                                     {{ option.name }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div fxFlex>
-                        <mat-form-field>
-                            <input
-                                formControlName="searchTerm"
-                                autocomplete="off"
-                                matInput
-                            />
-                        </mat-form-field>
+                    <div fxFlex class="searchbox-term">
+
+                            <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'"> 
+                                <mat-label>Options </mat-label>
+                                <mat-select formControlName="searchTerm" >
+                                    <mat-option  *ngFor="let optionDropdown of (switchDropDownObserver(item.get('inputType')?.value) | async)" [value]="optionDropdown.value" >
+                                        {{ optionDropdown.value }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field *ngIf="item.get('inputType')?.value !== 'dropdown'"> 
+                                <input formControlName="searchTerm" autocomplete="off" matInput  type="{{item.get('inputType')?.value}}" />
+                            </mat-form-field> 
+                        
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <mat-icon class="add-search-row" (click)="addRow()"
-        >add_circle_outline</mat-icon
-    >
-
-    <button
-        mat-raised-button
-        class="er-search-button"
-        (click)="executeSearch()"
-    >
+    <div fxLayout="row-reverse">
+        <button mat-mini-fab color="accent" aria-label="Add this Visit" class="add-search-row" (click)="addRow()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <button mat-raised-button class="er-search-button" (click)="executeSearch()">
         Search
     </button>
 </div>
