@@ -58,7 +58,7 @@ DECLARE prmVisitDate DATE;
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -103,8 +103,15 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits !!
 DELIMITER $$
 
 
-CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits()
+CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits( IN prm_Username VARCHAR(45))
 BEGIN
+
+DECLARE vOrganisationId INT;
+
+SELECT o.OrganisationId INTO vOrganisationId
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
 
 /*
 Created By: Ankit Singh
@@ -115,10 +122,11 @@ WITH casesCTE AS
 (
 	SELECT st.StreetTreatCaseId
 	FROM AAU.StreetTreatCase st
-	WHERE st.StreetTreatCaseid NOT IN (
+	WHERE OrganisationId = vOrganisationId
+    AND st.StreetTreatCaseid NOT IN (
 		SELECT
 			v.StreetTreatCaseid
-		FROM AAU.visit v
+		FROM AAU.Visit v
 		WHERE v.statusid < 3 AND v.date > CURDATE()
     )
 ),
@@ -305,7 +313,14 @@ JSON_OBJECT(
 ) AS AnimalDetails
 FROM visitsCTE rawData
 WHERE RNum <= 5
-GROUP BY rawData.StreetTreatCaseId, rawData.TeamId, rawData.TeamName
+GROUP BY rawData.TeamId,
+rawData.TeamName,
+rawData.TeamColour,
+rawData.StreetTreatCaseId,
+rawData.CasePriorityId,
+rawData.CasePriority,
+rawData.CaseStatusId,
+rawData.CaseStatus
 )
 
 SELECT
@@ -338,7 +353,9 @@ JSON_OBJECT("Position",caseVisits.Position),
 JSON_OBJECT("AnimalDetails",caseVisits.AnimalDetails)
 )) AS StreetTreatCases
 FROM CaseCTE caseVisits
-GROUP BY caseVisits.TeamId,caseVisits.TeamName
+GROUP BY caseVisits.TeamId,
+caseVisits.TeamName,
+caseVisits.TeamColour
 ) AS cases;
 END $$
 
@@ -347,7 +364,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetAllTeams !!
 
 DELIMITER $$
-CREATE PROCEDURE  AAU.sp_GetAllTeams()
+CREATE PROCEDURE  AAU.sp_GetAllTeams( IN prm_Username VARCHAR(45))
 BEGIN
 /*
 Created By: Jim Mackenzie
@@ -359,10 +376,15 @@ Modifeid On: 03/02/2021
 Purpose: Used to return a list of the teams with colour
 */
 
+DECLARE vOrganisationId INT;
+
+SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE UserName = prm_Username LIMIT 1;
+
 SELECT t.TeamId, t.TeamName, t.Capacity, t.TeamColour, COUNT(u.UserId) AS Members, t.IsDeleted
 FROM AAU.Team t
 LEFT OUTER JOIN AAU.User u ON u.TeamId = t.TeamId
 WHERE t.IsDeleted != 1
+AND t.OrganisationId = vOrganisationId
 GROUP BY t.TeamId, t.TeamName, t.Capacity, t.IsDeleted, t.TeamColour;
 
 END$$
@@ -371,15 +393,18 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetAllVisitsAndDates !!
 DELIMITER $$
 
--- CALL AAU.sp_GetAllVisitsAndDates()
-
-CREATE PROCEDURE AAU.sp_GetAllVisitsAndDates()
+CREATE PROCEDURE AAU.sp_GetAllVisitsAndDates( IN prm_Username VARCHAR(45))
 BEGIN
 /*
 Created By: Ankit Singh
 Created On: 28/01/2021
 Purpose: Used to return all visit in a month Chart.
 */
+
+DECLARE vOrganisationId INT;
+
+SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE UserName = prm_Username LIMIT 1;
+
 WITH chart AS (
 	SELECT 
 		v.Date,
@@ -391,10 +416,11 @@ WITH chart AS (
 	LEFT JOIN AAU.StreetTreatCase st ON st.StreetTreatCaseId= v.StreetTreatCaseId 
 	LEFT JOIN AAU.Team t ON t.TeamId = st.TeamId
 	WHERE v.IsDeleted = 0 AND v.Date BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW()) + INTERVAL 14 DAY
+    AND stc.OrganisationId = vOrganisationId
     GROUP BY v.Date,t.TeamName
 ),
 teamColours AS (
-	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.TeamColour)) AS teamColours FROM AAU.Team t 
+	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",t.TeamName,"value", t.TeamColour)) AS teamColours FROM AAU.Team t WHERE t.OrganisationId = vOrganisationId
 ),
 chartData AS (
 	SELECT 
@@ -413,10 +439,9 @@ SELECT
 FROM teamColours, chartData GROUP BY teamColours.teamColours;
 
 END$$
-DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetCensusErrorRecords
+DROP PROCEDURE IF EXISTS AAU.sp_GetCensusErrorRecords !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetCensusErrorRecords(IN prm_UserName VARCHAR(45))
@@ -645,7 +670,7 @@ INNER JOIN AAU.User u ON u.UserId = ec.DispatcherId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
 LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = ec.CallOutcomeId
-INNER JOIN AAU.patientproblem pp ON pp.PatientId = p.PatientId
+INNER JOIN AAU.PatientProblem pp ON pp.PatientId = p.PatientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 WHERE CAST(ec.CallDateTime AS DATE) = prm_Date
 AND ec.OrganisationId = vOrganisationId
@@ -829,7 +854,7 @@ JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId,
 				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
 				))) AS `ambulanceAssignment`
 FROM PatientsCTE p
-INNER JOIN AAU.EmergencyCase ec ON ec.EmergencycaseId = p.EmergencycaseId
+INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN (
 	SELECT ecr.EmergencyCaseId,
 	JSON_ARRAYAGG(
@@ -839,11 +864,11 @@ INNER JOIN (
 	JSON_OBJECT('callerNumber', c.Number)
 	)) AS callerDetails
 	FROM AAU.Caller c
-	INNER JOIN AAU.Emergencycaller ecr ON ecr.CallerId = c.CallerId
+	INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
     WHERE ecr.IsDeleted = 0
     AND ecr.EmergencyCaseId = prm_EmergencyCaseId
 	GROUP BY ecr.EmergencyCaseId
-) ca ON ca.EmergencycaseId = ec.EmergencyCaseId
+) ca ON ca.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
@@ -886,8 +911,6 @@ SELECT u.OrganisationId INTO vOrganisationId
 FROM AAU.User u
 WHERE UserName = prm_Username LIMIT 1;
 
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-
 WITH RescuesReleases AS
 (
 SELECT PatientId
@@ -921,7 +944,7 @@ SELECT ecr.EmergencyCaseId,
 	JSON_OBJECT('callerNumber', c.Number)
 	)) AS callerDetails
 	FROM AAU.Caller c
-	INNER JOIN AAU.Emergencycaller ecr ON ecr.CallerId = c.CallerId
+	INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
     WHERE ecr.IsDeleted = 0
     AND ecr.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds)
 	GROUP BY ecr.EmergencyCaseId
@@ -1250,7 +1273,8 @@ WHERE COALESCE(LatestArea.Area, AAU.fn_GetAreaForAnimalType(vOrganisationId, p.A
 
 
 
-END $$DELIMITER !!
+END $$
+DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetReleaseDetailsById !!
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetReleaseDetailsById(IN prm_PatientId INT)
@@ -1291,7 +1315,8 @@ AS Result
 		rd.PatientId =  prm_PatientId
 	GROUP BY rd.ReleaseDetailsId;
 END$$
-DELIMITER ;DELIMITER !!
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetScoreCard!!
 
@@ -1550,7 +1575,9 @@ LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = c.CaseId
 WHERE (t.TeamId = prm_TeamId OR prm_TeamId IS NULL)
 GROUP BY 	t.TeamId,
 			t.TeamName;
-ENDDELIMITER !!
+END
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase !!
 
@@ -1861,7 +1888,7 @@ SELECT 3 INTO vSuccess;
 
 END IF;
 
-SELECT EmergencycaseId INTO vEmergencyCaseId FROM AAU.Patient WHERE PatientId = prm_PatientId;
+SELECT EmergencyCaseId INTO vEmergencyCaseId FROM AAU.Patient WHERE PatientId = prm_PatientId;
 
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, prm_PatientId);
 
