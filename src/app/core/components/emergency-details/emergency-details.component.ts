@@ -65,7 +65,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
-            new FormControl()
+            new FormControl('',Validators.required)
         );
 
         this.emergencyDetails.addControl(
