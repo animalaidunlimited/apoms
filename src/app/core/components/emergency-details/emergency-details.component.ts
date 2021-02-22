@@ -25,7 +25,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
+    // @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
     @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
@@ -65,7 +65,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
-            new FormControl()
+            new FormControl('',Validators.required)
         );
 
         this.emergencyDetails.addControl(
@@ -110,7 +110,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
-                    this.emergencyNumberField.nativeElement.focus();
+                    this.callDateTimeField.nativeElement.focus();
                 }
 
                 this.updateEmergencyNumber(val);
@@ -123,7 +123,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(){
 
         if(this.focusEmergencyNumber) {
-        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
+        setTimeout(() => this.callDateTimeField.nativeElement.focus(), 0);
         }
     }
 
