@@ -21,7 +21,7 @@ import { User } from '../../models/user';
 export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @Input() recordForm!: FormGroup;
-    @Input() focusCallDateTimeVal!: boolean;
+    @Input() focusEmergencyNumber!: boolean;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -109,7 +109,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges.subscribe(val => {
-                if(!val && this.focusCallDateTimeVal){
+                if(!val && this.focusEmergencyNumber){
                     this.callDateTimeField.nativeElement.focus();
                 }
 
@@ -122,7 +122,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(){
 
-        if(this.focusCallDateTimeVal) {
+        if(this.focusEmergencyNumber) {
         setTimeout(() => this.callDateTimeField.nativeElement.focus(), 0);
         }
     }
