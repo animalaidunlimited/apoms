@@ -128,7 +128,7 @@ export interface SearchStreetTreatResponse {
     UserName: string;
     sameAsNumber: string | undefined;
     streetTreatCaseSuccess? : number;
-    ReleaseStatus: "Pending" | "Released";
+    ReleaseStatus: 'Pending' | 'Released';
 }
 
 export interface PatientStatus {

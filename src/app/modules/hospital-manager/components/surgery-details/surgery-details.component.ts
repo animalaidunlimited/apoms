@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { SurgeryRecordDialogComponent } from '../surgery-record-dialog/surgery-record-dialog.component';
+import { take } from 'rxjs/operators';
 
 
 const ELEMENT_DATA: SurgeryRecord[] = [];
@@ -52,7 +53,7 @@ export class SurgeryDetailsComponent implements OnInit {
 
                 this.surgeryRecords = response ? response : [];
                 this.surgeryRecords.sort((s1, s2) => (new Date(s2.date) as any) - (new Date(s1.date) as any));
-                
+
             });
     }
 
@@ -71,7 +72,7 @@ export class SurgeryDetailsComponent implements OnInit {
             },
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
 
             if(result){
 

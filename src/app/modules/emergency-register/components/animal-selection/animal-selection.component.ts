@@ -16,6 +16,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -97,10 +98,12 @@ export class AnimalSelectionComponent implements OnInit {
 
         this.dropdown
             .getAnimalTypes()
+            .pipe(take(1))
             .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
 
         this.dropdown
             .getProblems()
+            .pipe(take(1))
             .subscribe(problems => (this.problems$ = problems));
 
         this.exclusions = this.dropdown.getExclusions();
@@ -180,7 +183,7 @@ export class AnimalSelectionComponent implements OnInit {
 
     loadPatientArray(emergencyCaseId: number) {
 
-        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).pipe(take(1)).subscribe((patients: Patients) => {
 
 
                     this.patientArray = this.recordForm.get('patients') as FormArray;

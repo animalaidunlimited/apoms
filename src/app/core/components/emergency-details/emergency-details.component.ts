@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -82,7 +83,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         );
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
-        emergencyCaseId?.valueChanges.subscribe(() => {
+        emergencyCaseId?.valueChanges.pipe(take(1)).subscribe(() => {
 
             const emergencyNumber = this.recordForm.get('emergencyDetails.emergencyNumber');
 
@@ -101,6 +102,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.caseService
             .getEmergencyCaseById(emergencyCaseId?.value)
+            .pipe(take(1))
             .subscribe(result => {
 
                 this.recordForm.patchValue(result);
@@ -149,7 +151,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     selectEmergencyCode($event:any){
 
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
-        this.emergencyCodes$.subscribe((codes:EmergencyCode[]) => {
+        this.emergencyCodes$.pipe(take(1)).subscribe((codes:EmergencyCode[]) => {
 
             const selectedCode = codes.find((code:EmergencyCode) => {
 

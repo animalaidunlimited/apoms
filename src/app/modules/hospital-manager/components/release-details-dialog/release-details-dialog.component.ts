@@ -9,6 +9,7 @@ import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { take } from 'rxjs/operators';
 
 export interface DialogData {
   emergencyCaseId: number;
@@ -81,7 +82,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
     this.username = this.userService.getUserName();
 
-    this.dropdown.getReleaseManagers().subscribe(managers => {
+    this.dropdown.getReleaseManagers().pipe(take(1)).subscribe(managers => {
       this.releaseManagers = managers;
       this.releaseManagers.unshift({FirstName: this.username});
     });
@@ -150,7 +151,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
 	if(this.data.patientId) {
 
-		this.releaseService.getReleaseDetails(this.data.patientId).subscribe((formVal:any)=> {
+		this.releaseService.getReleaseDetails(this.data.patientId).pipe(take(1)).subscribe((formVal:any)=> {
 
       if(formVal?.success === -1){
         this.showSnackBar.errorSnackBar('Error fetching release details status','OK');
@@ -182,8 +183,8 @@ export class ReleaseDetailsDialogComponent implements OnInit {
 
   onReleaseSubmit(releaseForm:any) {
 
-    this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[])=>{
-    
+    this.releaseService.saveRelease(releaseForm.value).then((results:SuccessOnlyResponse[]) => {
+
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
         failure ?
             this.showSnackBar.errorSnackBar('Error updating release details','OK')

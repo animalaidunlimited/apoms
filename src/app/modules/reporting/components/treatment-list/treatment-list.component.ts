@@ -1,30 +1,28 @@
-import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ABCStatus, Age, ReleaseStatus, Temperament, TreatmentPriority } from 'src/app/core/enums/patient-details';
 import { CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 import { map } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
-import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
 import { Router } from '@angular/router';
 
-interface DialogData{
-areaName : string;
-}
+//interface DialogData{
+//areaName : string;
+//}
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'patient-details-dialog',
-  templateUrl: './patient-details-dialog.component.html',
-  styleUrls: ['./patient-details-dialog.component.scss']
+  selector: 'app-treatment-list',
+  templateUrl: './treatment-list.component.html',
+  styleUrls: ['./treatment-list.component.scss']
 })
 
 
-export class PatientDetailsDialogComponent implements OnInit {
+export class TreatmentListComponent implements OnInit {
 
   displayedColumns: BehaviorSubject<string[]>
           = new BehaviorSubject<string[]>(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
@@ -39,9 +37,11 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
+  @Input() areaName!: string;
+
   constructor(
-    public dialogRef: MatDialogRef<PatientDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    // public dialogRef: MatDialogRef<TreatmentListComponent>,
+    // @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog,
     private router: Router,
     private printService: PrintTemplateService,
@@ -73,7 +73,7 @@ export class PatientDetailsDialogComponent implements OnInit {
   ngOnInit() {
 
 
-    this.census.getPatientDetailsByArea(this.data.areaName).then((response: ReportPatientRecord[]) => {
+    this.census.getPatientDetailsByArea(this.areaName).then((response: ReportPatientRecord[]) => {
 
       response ?
           response = response.map(patient => {
@@ -142,14 +142,14 @@ export class PatientDetailsDialogComponent implements OnInit {
 
   print(){
 
-     this.dialogRef.close();
+    // this.dialogRef.close();
 
      this.displayedColumns.subscribe(printColumns => {
 
       this.patientRecords.connect().subscribe(sortedData => {
 
         const printContent: CensusPrintContent = {
-          area: this.data.areaName,
+          area: this.areaName,
           displayColumns: printColumns,
           printList: sortedData
          };
@@ -166,11 +166,11 @@ export class PatientDetailsDialogComponent implements OnInit {
   }
 
 
-  onCancel(){
+  //onCancel(){
 
-    this.dialogRef.close();
+  //  this.dialogRef.close();
 
-  }
+  //}
 
   treatmentLayout(){
 
@@ -208,6 +208,8 @@ export class PatientDetailsDialogComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
 
         if (result) {
+
+          console.log(result);
 
         }
     });

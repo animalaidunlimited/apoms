@@ -4,6 +4,7 @@ import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms
 import { Location, LocationResponse } from '../../models/responses';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { LocationDetailsService } from './location-details.service';
+import { take } from 'rxjs/operators';
 
 export interface Position {
     lat: number;
@@ -60,9 +61,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
         this.locationDetails = this.recordForm.get('locationDetails') as FormGroup;
 
         this.locationService
-            .getLocationByEmergencyCaseId(
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
-            )
+            .getLocationByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+            .pipe(take(1))
             .subscribe((location: LocationResponse) => {
                 this.recordForm.patchValue(location);
 

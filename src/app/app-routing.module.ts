@@ -1,10 +1,5 @@
 import { NgModule } from '@angular/core';
-import {
-    Routes,
-    RouterModule,
-    PreloadAllModules,
-    RouteReuseStrategy,
-} from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules, RouteReuseStrategy } from '@angular/router';
 import { navRoutes, sideNavPath } from './nav-routing';
 import { NavComponent } from './core/components/nav/nav.component';
 import { AuthGuard } from './auth/auth.guard';

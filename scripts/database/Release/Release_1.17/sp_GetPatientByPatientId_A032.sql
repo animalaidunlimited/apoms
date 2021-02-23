@@ -42,7 +42,8 @@ JSON_MERGE_PRESERVE(
     JSON_OBJECT("abcStatus", p.ABCStatus),
     JSON_OBJECT("releaseStatus", p.ReleaseStatus),
     JSON_OBJECT("age", p.Age),
-    JSON_OBJECT("temperament", p.Temperament)
+    JSON_OBJECT("temperament", p.Temperament),
+    JSON_OBJECT("knownAsName", p.KnownAsName)
     
 ) AS Result   
     
