@@ -8,6 +8,7 @@ import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { take } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -45,7 +46,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     if(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value){
 
-      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value).subscribe(result =>
+      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value).pipe(take(1)).subscribe(result =>
 
         this.recordForm.patchValue(result)
 
@@ -55,7 +56,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
-    this.callOutcomes$.subscribe(callOutcome => {
+    this.callOutcomes$.pipe(take(1)).subscribe(callOutcome => {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;
 

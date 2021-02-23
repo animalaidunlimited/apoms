@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
+import { take } from 'rxjs/operators';
 
 interface VisitCalender {
 	status: number;
@@ -324,7 +325,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			}
 		});
 
-		dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+		dialogRef.afterClosed().pipe(take(1)).subscribe((confirmed: boolean) => {
 			if (confirmed) {
 				this.clearValidators();
 			}

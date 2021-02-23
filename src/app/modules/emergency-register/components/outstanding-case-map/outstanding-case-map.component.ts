@@ -6,6 +6,7 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -97,7 +98,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
     searchQuery += emergencyNumbers + ') ';
 
-    this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
+    this.caseSubscription = this.caseService.searchCases(searchQuery).pipe(take(1)).subscribe(result => {
 
       this.infoContent.next(result);
       this.infoWindow.open(marker);

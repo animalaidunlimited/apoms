@@ -168,6 +168,14 @@ export class SearchFieldComponent implements OnInit {
             databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
             name: 'Thanked',
             inNotIn: true
+        },
+        {
+            id: 15,
+            inputType: 'text',
+            searchValue: 'aka',
+            databaseField: 'search.KnownAsName',
+            name: 'Known as',
+            inNotIn: false
         }
     ];
 
@@ -179,7 +187,7 @@ export class SearchFieldComponent implements OnInit {
     public platform: Platform) { }
 
   ngOnInit(): void {
-      
+
   this.navigationService.isSearchClicked.subscribe((clicked)=> {
       if(clicked && this.searchBox){
             this.searchBox.nativeElement.focus();

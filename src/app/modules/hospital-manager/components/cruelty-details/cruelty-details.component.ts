@@ -5,6 +5,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'cruelty-details',
@@ -61,7 +62,7 @@ export class CrueltyDetailsComponent implements OnInit {
 
         this.crueltyDetails = this.crueltyForm.get('crueltyDetails') as FormGroup;
 
-        this.patientService.getCrueltyForm(this.patientId).subscribe(crueltyData => {
+        this.patientService.getCrueltyForm(this.patientId).pipe(take(1)).subscribe(crueltyData => {
 
             this.crueltyDetails.patchValue(crueltyData);
 

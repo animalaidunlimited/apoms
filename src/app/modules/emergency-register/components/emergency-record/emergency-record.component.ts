@@ -7,6 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -83,7 +84,7 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.subscribe(data=> {
+        this.caseService.emergencyResponse.pipe(take(1)).subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
@@ -110,7 +111,7 @@ export class EmergencyRecordComponent implements OnInit {
             return;
         }
 
-        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId).pipe(take(1)).subscribe(result => {
 
             this.recordForm.patchValue(result);
 

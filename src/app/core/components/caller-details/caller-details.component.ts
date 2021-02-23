@@ -1,16 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import {
-    FormGroup,
-    Validators,
-    FormBuilder,
-    AbstractControl,
-    FormArray,
-} from '@angular/forms';
+import { FormGroup,Validators,FormBuilder,AbstractControl,FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
 import { CallerDetailsService } from './caller-details.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { take } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -41,7 +36,7 @@ export class CallerDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        
+
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
@@ -72,6 +67,7 @@ export class CallerDetailsComponent implements OnInit {
         }
 
         this.callerService.getCallerByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+            .pipe(take(1))
             .subscribe((caller: Callers) => {
                 for(let i=0 ; i< caller.length - 1 ; i++) {
                     this.callerArray.push(this.getCallerFormGroup());

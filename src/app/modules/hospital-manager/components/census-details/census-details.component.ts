@@ -3,6 +3,7 @@ import { CensusService } from 'src/app/core/services/census/census.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { UpdateCensusDialogComponent } from '../update-census-dialog/update-census-dialog.component';
+import { take } from 'rxjs/operators';
 
 
 export interface CensusRecord {
@@ -60,6 +61,7 @@ export class CensusDetailsComponent implements OnInit {
     }
 
     updateCensusDialog(element: CensusRecord): void {
+
         const dialogRef = this.dialog.open(UpdateCensusDialogComponent, {
             width:'80%',
             height:'auto',
@@ -68,7 +70,7 @@ export class CensusDetailsComponent implements OnInit {
             },
         });
 
-        dialogRef.componentInstance.addCensusRecord.subscribe((value:CensusRecord)=>{
+        dialogRef.componentInstance.addCensusRecord.pipe(take(1)).subscribe((value:CensusRecord)=>{
            if(value.action === 'Moved Out'){
                const lastDate : any = this.censusRecords[this.censusRecords.length-1].date;
                const date1:any = new Date(lastDate);
@@ -86,7 +88,7 @@ export class CensusDetailsComponent implements OnInit {
 
         });
 
-        dialogRef.componentInstance.removeCensusRecord.subscribe((value:CensusRecord)=>{
+        dialogRef.componentInstance.removeCensusRecord.pipe(take(1)).subscribe((value:CensusRecord)=>{
             this.censusRecords.forEach(record=>{
                 if(record.area === value.area && record.action === value.action
                     && record.date === value.date){

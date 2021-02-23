@@ -6,7 +6,7 @@ import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-det
 import { FormBuilder, FormGroup, Validators, FormControl, NgControlStatusGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, startWith, filter } from 'rxjs/operators';
+import { debounceTime, startWith, filter, take } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
@@ -116,7 +116,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
       id: 1 , value: 'Rescue'
     },
     {
-      id: 2 , value: 'Release' 
+      id: 2 , value: 'Release'
     }]
   },
   {
@@ -148,8 +148,8 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private dropDown: DropdownService,
     private renderer: Renderer2
 
-    ) { 
-      
+    ) {
+
     }
 
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
@@ -162,15 +162,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
     this.renderer.listen('window', 'click',(e:Event)=>{
 
-      // The below logic made the filter list disappear when click outside it. 
+      // The below logic made the filter list disappear when click outside it.
       if(!this.filterDiv.nativeElement.contains(e.target)) {
         this.hideList= true;
         this.changeDetector.detectChanges();
-      } 
-      
+      }
+
       });
 
-    this.dropDown.getAnimalTypes().subscribe((animalType: AnimalType[])=> {
+    this.dropDown.getAnimalTypes().pipe(take(1)).subscribe((animalType: AnimalType[])=> {
 
       animalType.forEach(type=> {
 
@@ -192,7 +192,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
 
-    this.dropDown.getEmergencyCodes().subscribe((emergencyCodes: EmergencyCode[])=> {
+    this.dropDown.getEmergencyCodes().pipe(take(1)).subscribe((emergencyCodes: EmergencyCode[])=> {
       emergencyCodes.forEach(emcode=>{
 
         this.caseFilter.forEach(filterObject=>{
@@ -226,7 +226,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.refreshColour$.subscribe(colour => {
       this.refreshColour = colour;
       this.changeDetector.detectChanges();
-    }); 
+    });
 
     this.setup();
 
@@ -363,7 +363,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
           event.previousIndex,
           event.currentIndex);
 
-        this.openRescueEdit(event.container.data[event.currentIndex]).subscribe((result:UpdatedRescue) =>
+        this.openRescueEdit(event.container.data[event.currentIndex]).pipe(take(1)).subscribe((result:UpdatedRescue) =>
           {
 
             if(result?.success !== 1){
@@ -402,7 +402,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     // the refresh button to show we've made a change.
     const afterClosed = rescueDialog.afterClosed();
 
-    afterClosed.subscribe(result => {
+    afterClosed.pipe(take(1)).subscribe(result => {
 
       if(result?.success === 1 && !this.autoRefresh){
         this.refreshColour$.next('warn');
@@ -452,7 +452,7 @@ refreshRescues(){
   this.loading = true;
 
   this.outstandingCaseService.refreshRescues();
-  
+
 }
 
 printEmergencyCard(emergencyCaseId: number){
@@ -512,9 +512,9 @@ filterChipSelected(groupName: string, chip: MatChip) {
 
     this.filterKeysArray.push(this.incomingObject);
   }
-  
+
   if(!this.incomingObject.selected) {
-    const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group && 
+    const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group &&
     obj.value === this.incomingObject.value);
     this.filterKeysArray.splice(index,1);
   }
