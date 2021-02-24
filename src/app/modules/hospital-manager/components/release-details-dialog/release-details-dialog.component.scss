@@ -5,6 +5,7 @@
 .mat-slider {
     font-family: sans-serif;
     margin-top: 30px;
+    max-width: fit-content;
 }
 
 .div {
@@ -89,11 +90,15 @@
             grid-column-gap: 10px;
             margin-right: 5px;
 
-            & .mat-form-field:nth-child(2) {
+            .mat-form-field:nth-child(2) {
                 grid-column: auto / span 2;
             }
-            & .mat-form-field:last-of-type {
+            .mat-form-field:last-of-type {
                 grid-column: auto / span 3;
+            }
+            .mat-form-field {
+                margin: 0 !important;
+                width: 100%;
             }
         }
         & .visit_row_data > div{
@@ -101,7 +106,6 @@
             & .mat-form-field{
                 &:first-child {
                     grid-area: day;
-                    margin-left: 8% !important;
                 }
                 &:nth-child(2) {
                     grid-area: status;
@@ -118,13 +122,12 @@
 
             & .mat-fab-wrapper{
                 grid-area:d_btn;
-                
+
             }
 
             &:first-child {
                 display: grid;
-                grid-template-columns: repeat(2, calc(100vw/2.255));
-                grid-template-rows: repeat(4, 1fr);
+                grid-template-columns: repeat(2, calc(100vw/2.37));
                 grid-template-areas:
                     "day type"
                     "status status"
@@ -133,12 +136,11 @@
                     "d_btn d_btn";
                 grid-column-gap: 10px;
                 border-radius: 20px;
-                box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
-                padding-top: 20px;
-                margin-bottom: 20px;
+                box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
+                margin-bottom: 1.5rem;
+                padding: 1rem;
                 & .mat-form-field {
-                    max-width: 92% !important;
-                    margin-left: 4% !important;
+/*                     max-width: 92% !important; */
                     &:nth-child(3){
                         margin-left: -2% !important;
                     }

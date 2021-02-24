@@ -164,10 +164,6 @@
             box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
     }
-    .mat-form-field {
-        margin: 0 !important;
-        width: 100%;
-    }
     .mat-raised-button {
         width: 100%;
         margin-right: 0 !important;
@@ -176,8 +172,7 @@
         margin-bottom: 20px;
     }
     .mat-fab-wrapper {
-        width: 95%;
-        margin: 0 auto 25px auto !important;
+        width: 100%;
     }
 }
 @media only screen and (max-width:768x){
