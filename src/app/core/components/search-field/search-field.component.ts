@@ -399,7 +399,7 @@ export class SearchFieldComponent implements OnInit {
 
             if (searchString.length < 8) {
 
-                if ((parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0) && isNaN(parseInt(this.search.searchString, 10))) {
+                if (parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0 && /^\d+$/.test(searchString)) {
 
                     toSplit = 'emno:' + this.search.searchString;
 
@@ -416,7 +416,7 @@ export class SearchFieldComponent implements OnInit {
 
                     toSplit = 'calldate:' + this.search.searchString;
 
-                } else if (!isNaN(parseInt(searchString, 10))) {
+                } else if (/^\d+$/.test(searchString)) {
 
                     toSplit = 'cnumber:' + this.search.searchString;
 
