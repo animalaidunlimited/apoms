@@ -45,7 +45,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit(): void {
-    
+
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.

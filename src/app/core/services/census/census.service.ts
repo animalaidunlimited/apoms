@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PatientCountInArea } from '../../models/census-details';
+
 
 interface CensusTable {
     areaId: number;
@@ -71,7 +75,7 @@ export class CensusService extends APIService {
         return this.get(request);
     }
 
-    public async getCensusPatientCount(): Promise<any>{
+    public async getCensusPatientCount(): Promise<PatientCountInArea[] | null>{
         const request = '?CountPatient';
         return this.get(request);
     }
@@ -80,5 +84,12 @@ export class CensusService extends APIService {
         const request = '?Area=' + area;
         return this.get(request);
     }
+
+    public async getCensusErrorRecords(): Promise<any>{
+        const request = '?CensusErrors=true';
+
+        return this.get(request);
+    }
+
 
 }

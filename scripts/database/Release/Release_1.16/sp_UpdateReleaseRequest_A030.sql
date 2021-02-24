@@ -42,7 +42,8 @@ UPDATE AAU.ReleaseDetails
                     Releaser1Id = prm_Releaser1Id,
                     Releaser2Id = prm_Releaser2Id,
                     RequestedUser = vUserId,
-                    RequestedDate = prm_RequestedDate
+                    RequestedDate = prm_RequestedDate,
+                    UpdateTime			= NOW(),
 WHERE ReleaseDetailsId = prm_ReleaseId;
 
 SELECT 1 INTO vUpdateSuccess;

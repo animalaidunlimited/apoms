@@ -2,7 +2,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { SnackbarService } from '../snackbar/snackbar.service';
 
 export abstract class APIService<T = any> {
     abstract endpoint: string;
@@ -15,7 +14,6 @@ export abstract class APIService<T = any> {
         try {
             response = await this.http
                 .get<G>(`${this.url}/${this.endpoint}` + request)
-
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('GET', error);
@@ -32,9 +30,7 @@ export abstract class APIService<T = any> {
         return timer(200).pipe(
             switchMap(() => {
                 // Check if username is available
-                return this.http.get(
-                    `${this.url}/${this.endpoint}/${subEndpoint}?${request}`,
-                );
+                return this.http.get(`${this.url}/${this.endpoint}/${subEndpoint}?${request}`);
             }),
         );
     }
@@ -97,9 +93,9 @@ export abstract class APIService<T = any> {
         } catch (error) {
             response = this.errorHandler('POST', error);
         }
-        
+
         return response;
-        
+
     }
 
     public errorHandler(

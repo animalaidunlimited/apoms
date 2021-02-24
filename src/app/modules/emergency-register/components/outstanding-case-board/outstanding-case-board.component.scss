@@ -11,7 +11,7 @@ $standard-width: 180px;
     text-align: center;
     width: 18%;
     max-width: 100%;
-    min-height: 70vh;   
+    min-height: 70vh;
     min-width: 250px;
     margin: 20px 25px 25px 0;
     display: inline-block;
@@ -199,8 +199,8 @@ $standard-width: 180px;
 }
 
 .filterChipWrapper {
-    position: relative;
-    left: 23%;
+    position: absolute;
+    right: 16rem;
 }
 
 .filterText {
@@ -212,13 +212,9 @@ $standard-width: 180px;
 
 
 .refresh-box{
-    // padding-right: 40px;
     max-width: 300px;
     margin-right: 25px;
-    // position: absolute !important;
-    // right: 45px;
 }
-
 
 .mat-spinner {
     position: absolute;
@@ -263,7 +259,7 @@ $standard-width: 180px;
 //     background-color: #607d8b;
 // }
 
-@media (max-width: 600px) {
+@media (max-width: 812px) {
 
     ::ng-deep {
     .outstandingWrapper {
@@ -279,7 +275,7 @@ $standard-width: 180px;
             width: 80%;
             display: block;
         }
-    } 
+    }
 
 
     .filterWrapper{
@@ -312,7 +308,7 @@ $standard-width: 180px;
         margin-left: 51px !important;
         width: 100% !important;
     }
-    
+
 }
 }
 
