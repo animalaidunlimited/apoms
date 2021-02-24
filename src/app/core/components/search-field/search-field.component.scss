@@ -101,9 +101,10 @@ $standard-height: 48px;
 	margin: 0 auto;
 	.searchRows {
 		margin: 10px;
-		border: solid 1px lightgrey;
-		border-radius: 0.5rem;
-		position: relative;
+        border-radius: 0.5rem;
+        position: relative;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 15%), -6px -6px 16px 0 white;
+        margin-top: 1.5rem;
 		> div{
 			padding: 0.5rem;
 		}

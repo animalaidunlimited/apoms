@@ -1,7 +1,6 @@
-import { filter, map } from 'rxjs/operators';
+import {  map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, HostListener } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
@@ -20,9 +19,6 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
     selector: 'app-search-field',
     templateUrl: './search-field.component.html',
     styleUrls: ['./search-field.component.scss'],
-    providers: [
-        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
-    ],
     animations: [
         trigger('expandSearchForm', [
             state(
@@ -403,7 +399,7 @@ export class SearchFieldComponent implements OnInit {
 
             if (searchString.length < 8) {
 
-                if ((parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0) && !isNaN(parseInt(this.search.searchString, 10))) {
+                if ((parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0) && isNaN(parseInt(this.search.searchString, 10))) {
 
                     toSplit = 'emno:' + this.search.searchString;
 
