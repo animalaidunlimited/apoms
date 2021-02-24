@@ -176,7 +176,8 @@
         margin-bottom: 20px;
     }
     .mat-fab-wrapper {
-        width: 100%;
+        width: 95%;
+        margin: 0 auto 25px auto !important;
     }
 }
 @media only screen and (max-width:768x){

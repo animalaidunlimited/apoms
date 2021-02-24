@@ -85,8 +85,9 @@
 
         & .patientVisitFrom:first-of-type {
             display: grid !important;
-            grid-template-columns: repeat(3, calc(100vw/3.8));
+            grid-template-columns: repeat(3, 1fr);
             grid-column-gap: 10px;
+            margin-right: 5px;
 
             & .mat-form-field:nth-child(2) {
                 grid-column: auto / span 2;
@@ -117,23 +118,24 @@
 
             & .mat-fab-wrapper{
                 grid-area:d_btn;
+                
             }
 
             &:first-child {
                 display: grid;
-                grid-template-columns: repeat(2, calc(100vw/2.4));
+                grid-template-columns: repeat(2, calc(100vw/2.255));
                 grid-template-rows: repeat(4, 1fr);
-                grid-template-areas: 
-                "day type"
-                "status status"
-                "comments comments"
-                "d_btn d_btn";
+                grid-template-areas:
+                    "day type"
+                    "status status"
+                    "comments comments"
+                    "admin admin"
+                    "d_btn d_btn";
                 grid-column-gap: 10px;
                 border-radius: 20px;
                 box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
                 padding-top: 20px;
                 margin-bottom: 20px;
-                max-height: 350px !important;
                 & .mat-form-field {
                     max-width: 92% !important;
                     margin-left: 4% !important;
