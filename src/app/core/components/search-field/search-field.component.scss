@@ -54,6 +54,11 @@ $standard-height: 48px;
         font-size: 1rem;
     }
 }
+.searchbox-field, .searchbox-term {
+    .mat-form-field {
+        width: 100%;
+    }
+}
 
 @media only screen and (min-width:768px){
     .searchbox-field {
@@ -68,4 +73,39 @@ $standard-height: 48px;
             width: 100%;
         } 
     }
+}
+@media only screen and (max-width:768px){
+    .searchbox-field {
+        width:100%
+    }
+    .searchbox-term{
+        width: 100%;
+    }
+    
+    .delete-search{
+        position: absolute;
+        top: -0.5rem;
+        right: -0.2rem;
+        &-row{
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-right: 0px !important;
+        }
+    } 
+    .add-search-row{
+        margin-bottom: 25px;
+        margin-right: 0.5rem;
+    }
+}
+.search-form{
+	margin: 0 auto;
+	.searchRows {
+		margin: 10px;
+		border: solid 1px lightgrey;
+		border-radius: 0.5rem;
+		position: relative;
+		> div{
+			padding: 0.5rem;
+		}
+	}
 }

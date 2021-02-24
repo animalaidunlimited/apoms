@@ -21,20 +21,20 @@
     class="search-form"
     [formGroup]="searchForm"
 >
-    <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index">
+    <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index" class="searchRows">
         <div [formGroupName]="i">
             <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
-                <div fxFlex="7" fxFlexOrder="1">
+                <div fxFlex="7" fxFlexOrder="1" class="delete-search">
                     <button class="delete-search-row" style="cursor: pointer; margin-right:15px; " mat-mini-fab color="warn" aria-label="Delete this Visit" (click)="removeRow(i)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
 
-                <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px" fxLayoutGap.xs="0px" fxLayoutAlign="center center" fxFlex>
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-md="20px" fxLayoutAlign="center center" fxFlex class="searchbox">
                     <div fxFlex class="searchbox-field">
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
-                            <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)">
+                            <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)" [errorStateMatcher]="errorMatcher">
                                 <mat-option *ngFor="let option of options" #id{{i}} [value]="option.id" >
                                     {{ option.name }}
                                 </mat-option>
@@ -45,15 +45,15 @@
 
                             <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'"> 
                                 <mat-label>Options </mat-label>
-                                <mat-select formControlName="searchTerm" >
-                                    <mat-option  *ngFor="let optionDropdown of (switchDropDownObserver(item.get('inputType')?.value) | async)" [value]="optionDropdown.value" >
+                                <mat-select formControlName="searchTerm"  [errorStateMatcher]="errorMatcher">
+                                    <mat-option  *ngFor="let optionDropdown of (item.get('dropdownObservable')?.value | async)" [value]="optionDropdown.value" >
                                         {{ optionDropdown.value }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
 
                             <mat-form-field *ngIf="item.get('inputType')?.value !== 'dropdown'"> 
-                                <input formControlName="searchTerm" autocomplete="off" matInput  type="{{item.get('inputType')?.value}}" />
+                                <input formControlName="searchTerm" autocomplete="off" matInput  type="{{item.get('inputType')?.value}}" [errorStateMatcher]="errorMatcher" />
                             </mat-form-field> 
                         
 
@@ -67,7 +67,7 @@
             <mat-icon>add</mat-icon>
         </button>
     </div>
-    <button mat-raised-button class="er-search-button" (click)="executeSearch()">
+    <button [disabled]="searchForm.invalid" mat-raised-button class="er-search-button" (click)="executeSearch()">
         Search
     </button>
 </div>
