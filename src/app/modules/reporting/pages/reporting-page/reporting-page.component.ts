@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CensusArea } from 'src/app/core/models/census-details';
+import { CensusArea, PatientCountInArea } from 'src/app/core/models/census-details';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CensusService } from 'src/app/core/services/census/census.service';
@@ -15,13 +15,7 @@ import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
-
-interface PatientCountInArea{
-    area : string;
-    count : number;
-}
 
 @Component({
     selector: 'app-reporting-page',
@@ -41,7 +35,7 @@ export class ReportingPageComponent implements OnInit {
     censusAreas$! : Observable<CensusArea[]>;
     censusArea! : FormGroup;
     errorMatcher = new CrossFieldErrorMatcher();
-    patientCountData : PatientCountInArea[] = [{area : '',count : 0}];
+    patientCountData : PatientCountInArea[] | null = null;
     surgeries!: Observable<SurgeryRecord[]>;
     surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     reportingDetails!: FormGroup;
@@ -54,12 +48,7 @@ export class ReportingPageComponent implements OnInit {
     ngOnInit() {
 
         this.printService.initialisePrintTemplates();
-
-       this.initialiseReporting();
-
-       
-
-        
+        this.initialiseReporting();
 
     }
 
@@ -75,7 +64,7 @@ export class ReportingPageComponent implements OnInit {
       });
 
     }
-
+    
     openSurgeryDetailsDialog(){
 
         this.surgeries.subscribe(surgeryList => {
@@ -113,7 +102,7 @@ export class ReportingPageComponent implements OnInit {
             this.isStreetTreatChecked.next(false);
             this.reportingDetails.get('streetTreat')?.setValue(false);
         }
-        
+
     }
 
     admissionChecked(admissionBoolean : MatSlideToggleChange) {
@@ -125,7 +114,7 @@ export class ReportingPageComponent implements OnInit {
             this.isAdmissionChecked.next(false);
             this.reportingDetails.get('admission')?.setValue(false);
         }
-        
+
     }
 
     initialiseReporting() {
@@ -136,7 +125,13 @@ export class ReportingPageComponent implements OnInit {
             streetTreat: [],
             admission: []
         });
+
         this.census.getCensusPatientCount().then(response => {
+
+            if(response){
+                response.sort((a,b) => a.area < b.area ? -1 : 1);
+            }
+
             this.patientCountData = response;
         });
 
@@ -155,7 +150,7 @@ export class ReportingPageComponent implements OnInit {
             }
         });
 
-        
+
         this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
 
         this.reportingDetails.get('emergencyCaseDate')?.setValue(getCurrentDateString());
