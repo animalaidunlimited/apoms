@@ -1,4 +1,4 @@
-import { last, map, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MAT_DATE_LOCALE } from '@angular/material/core'
@@ -14,54 +14,57 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { ProblemDropdownResponse } from '../../models/responses';
 import { AnimalType } from '../../models/animal-type';
 import { CallOutcomeResponse } from '../../models/call-outcome';
+import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 
 @Component({
-  selector: 'app-search-field',
-  templateUrl: './search-field.component.html',
-  styleUrls: ['./search-field.component.scss'],
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
-  ],
-  animations: [
-    trigger('expandSearchForm', [
-        state(
-            'void',
-            style({
-                display: 'none',
-                height: '0px',
-            }),
-        ),
-        state(
-            'open',
-            style({
-                width: '97%',
-            }),
-        ),
-        state(
-            'closed',
-            style({
-                display: 'none',
-                height: '0px',
-            }),
-        ),
-        transition('open <=> closed', [animate('.2s')]),
-    ]),
-]
+    selector: 'app-search-field',
+    templateUrl: './search-field.component.html',
+    styleUrls: ['./search-field.component.scss'],
+    providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    ],
+    animations: [
+        trigger('expandSearchForm', [
+            state(
+                'void',
+                style({
+                    display: 'none',
+                    height: '0px',
+                }),
+            ),
+            state(
+                'open',
+                style({
+                    width: '97%',
+                }),
+            ),
+            state(
+                'closed',
+                style({
+                    display: 'none',
+                    height: '0px',
+                }),
+            ),
+            transition('open <=> closed', [animate('.2s')]),
+        ]),
+    ]
 })
 export class SearchFieldComponent implements OnInit {
 
-  searchFieldForm = new FormControl();
+    searchFieldForm = new FormControl();
 
     @Output() public searchString = new EventEmitter<string>();
-    @ViewChild('searchBox') searchBox!:ElementRef;
+    @ViewChild('searchBox') searchBox!: ElementRef;
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
 
+    errorMatcher = new CrossFieldErrorMatcher();
+
     searchShowing = false;
-    optionDropdown$!:Observable<any>;
-    // optionDropdown$:Observable<ProblemDropdownResponse[] | CallOutcomeResponse[] | AnimalType[] | {}> = of({});
-    optionDropDowns:any[] = [];
+
+    optionDropdown$: Observable<ProblemDropdownResponse[] | CallOutcomeResponse[] | AnimalType[] | {}> = of({});
+    optionDropDowns: any[] = [];
     search = new Search();
 
     options: SearchValue[] = [
@@ -102,9 +105,9 @@ export class SearchFieldComponent implements OnInit {
             inputType: 'text',
             searchValue: 'cname',
             databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
-            'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
-            'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
+                'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
+                'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
+                'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
             name: 'Caller name',
             inNotIn: true
         },
@@ -112,10 +115,10 @@ export class SearchFieldComponent implements OnInit {
             id: 5,
             inputType: 'number',
             searchValue: 'cnumber',
-            databaseField:  'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
-            'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
-            'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
-            'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
+            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
+                'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
+                'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
+                'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
             name: 'Caller no.',
             inNotIn: true
         },
@@ -131,7 +134,8 @@ export class SearchFieldComponent implements OnInit {
             id: 8,
             inputType: 'dropdown',
             searchValue: 'species',
-            databaseField: 'search.AnimalType',
+            databaseField: 'search.AnimalTypeId',
+            dropdownName: 'animaltype',
             name: 'Animal type',
             inNotIn: false
         },
@@ -139,7 +143,8 @@ export class SearchFieldComponent implements OnInit {
             id: 9,
             inputType: 'dropdown',
             searchValue: 'problem',
-            databaseField: 'search.Problem',
+            databaseField: 'search.ProblemId',
+            dropdownName: 'problem',
             name: 'Problem',
             inNotIn: false
         },
@@ -147,8 +152,9 @@ export class SearchFieldComponent implements OnInit {
             id: 10,
             inputType: 'dropdown',
             searchValue: 'outcome',
-            databaseField: 'search.CallOutcome',
-            name: 'CallOutcome',
+            databaseField: 'search.CallOutcomeId',
+            dropdownName: 'calloutcome',
+            name: 'Call outcome',
             inNotIn: false
         },
         {
@@ -191,19 +197,19 @@ export class SearchFieldComponent implements OnInit {
         this.executeSearch();
     }
 
-  constructor(
-    public rescueDialog: MatDialog,
-    public callDialog: MatDialog,
-    private formBuilder: FormBuilder,
-    private navigationService: NavigationService,
-    public platform: Platform,
-    private datepipe: DatePipe,
-    private dropdowns: DropdownService) { }
+    constructor(
+        public rescueDialog: MatDialog,
+        public callDialog: MatDialog,
+        private formBuilder: FormBuilder,
+        private navigationService: NavigationService,
+        public platform: Platform,
+        private datepipe: DatePipe,
+        private dropdowns: DropdownService) { }
 
     ngOnInit(): void {
-        this.navigationService.isSearchClicked.subscribe((clicked)=> {
-            if(clicked && this.searchBox){
-                    this.searchBox.nativeElement.focus();
+        this.navigationService.isSearchClicked.subscribe((clicked) => {
+            if (clicked && this.searchBox) {
+                this.searchBox.nativeElement.focus();
             }
         });
         this.searchForm = this.formBuilder.group({
@@ -216,11 +222,12 @@ export class SearchFieldComponent implements OnInit {
 
     }
 
-    createItem(field: any, term: any, type: string | undefined): FormGroup {
+    createItem(field: any, term: any, type: string | undefined, observable: Observable<any>): FormGroup {
         return this.formBuilder.group({
             searchField: [field, Validators.required],
             searchTerm: [term, Validators.required],
-            inputType: [type]
+            inputType: [type],
+            dropdownObservable: [observable]
         });
     }
 
@@ -242,24 +249,27 @@ export class SearchFieldComponent implements OnInit {
         }
 
         const searchArray = this.getSearchArray();
-
-
-        const searchQuery = searchArray
-            .map(item => {
+        if (searchArray.length === 1) {
+            if (searchArray[0].split(':')[1] === '' && this.search.searchString === '') {
+                return;
+            }
+        }
+        const searchQuerys = searchArray
+            .map(async item => {
                 const splitItem = item.split(':');
 
                 const option = this.options.find(
                     optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
                 );
 
+
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
-                if(option?.inNotIn){
-
+                if (option?.inNotIn) {
 
                     option.databaseField = option.databaseField?.replace(' NOT IN (', ' IN (');
 
-                    if(encodeURIComponent(splitItem[1].trim()).toLowerCase() === 'no'){
+                    if (encodeURIComponent(splitItem[1].trim()).toLowerCase() === 'no') {
 
                         option.databaseField = option.databaseField?.replace(' IN (', ' NOT IN (');
                     }
@@ -267,14 +277,34 @@ export class SearchFieldComponent implements OnInit {
                     return option.databaseField + encodeURIComponent(splitItem[1].trim());
 
                 }
-                else{
+                else if (option?.dropdownName) {
+                    return await this.observableFactory(option?.dropdownName).pipe(
+                        map((dropdowns: any) =>
+                            dropdowns.map((dropdown: any) =>
+                            ({
+                                id: Object.values(dropdown)[0],
+                                value: Object.values(dropdown)[1]
+                            })
+                            )),
+                        // tslint:disable-next-line: max-line-length
+                        map(dropdowns => dropdowns.filter((dropdown: any) => decodeURIComponent(dropdown.value).toLowerCase() === decodeURIComponent(splitItem[1].trim()).toLowerCase())[0]),
+                        map(dropdown => dropdown ? dropdown.id : undefined)
+                    ).toPromise().then((id) => {
+                        return option?.databaseField + '=' + id;
+                    });
+                }
+                else {
 
                     return option?.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
+
                 }
-            })
-            .join('&');
-        this.searchString.emit(searchQuery);
+            });
+        Promise.all(searchQuerys).then((searchQuery) => {
+            this.searchString.emit(searchQuery.join('&'));
+        });
     }
+
+
 
     toggleSearchBox() {
 
@@ -303,6 +333,7 @@ export class SearchFieldComponent implements OnInit {
         this.searchRows.clear();
 
         // Rebuild the search array form the search field
+
         searchArray.forEach(item => {
 
             const splitItem = item.split(':');
@@ -311,35 +342,38 @@ export class SearchFieldComponent implements OnInit {
                 optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
             );
 
-            let searchTerm:string | null = splitItem[1].trim();
-            if(this.isDate(searchTerm) && option?.inputType === 'date'){
+            let searchTerm: string | null = splitItem[1].trim();
+            if (this.isDate(searchTerm) && option?.inputType === 'date') {
                 searchTerm = this.datepipe.transform(this.isDate(searchTerm), 'yyyy-MM-dd');
             }
+
+            const dropdownType = option?.dropdownName;
             this.searchRows.push(
-                this.createItem(option?.id, searchTerm, option?.inputType),
+                this.createItem(option?.id, searchTerm, option?.inputType, this.observableFactoryPiped(dropdownType)),
             );
-
         });
-
-
     }
 
-    isDate(dateStr:string){
-        if(dateStr === '' || dateStr.toString().length < 9 || dateStr.toString().length > 11 || dateStr.indexOf('-') < -1 || dateStr.indexOf('/') < -1){
+
+    isDate(dateStr: string) {
+        if (dateStr === '' || dateStr.toString().length < 9 || dateStr.toString().length > 11 || dateStr.indexOf('-') < -1 || dateStr.indexOf('/') < -1) {
             return 0;
         }
         const splitChar = (dateStr.indexOf('-') > -1) ? '-' : '/';
         const dateParts = dateStr.split(splitChar);
-        if(dateParts.length < 2){
+
+        if (dateParts.length < 2) {
             return 0;
         }
         const year = dateParts.filter(datePart => datePart.length === 4)[0];
         let newDate;
+
         newDate = new Date(`${year}-${dateParts[1]}-${dateParts[0]}`);
-        if(newDate.toString() === 'Invalid Date'){
+        if (newDate.toString() === 'Invalid Date') {
             newDate = new Date(`${year}-${dateParts[1]}-${dateParts[2]}`);
         }
-        return newDate.getMonth()+1 ? newDate : 0;
+        
+        return newDate.getMonth() + 1 ? newDate : 0;
     }
 
     getSearchArray() {
@@ -357,51 +391,48 @@ export class SearchFieldComponent implements OnInit {
 
         const delimiter = new RegExp(regex);
 
-        let firstChar;       
-
-        let toSplit = this.search.searchString;
+        let firstChar;
 
         firstChar = this.search.searchString.toLowerCase().charAt(0);
         const searchString = this.search.searchString;
         const searchTerm = this.search.searchString.split(':')[this.search.searchString.split(':').length - 1];
-        if(this.isDate(searchTerm)){
-            const date = this.datepipe.transform(new Date(this.isDate(searchTerm)),'dd/MM/yyyy');
-            this.search.searchString = this.search.searchString.slice(0,this.search.searchString.indexOf(':') + 1) + date;
-        }
-        if(searchString.toLowerCase().search(delimiter) !== 0)
-        {
-            if(searchString.length < 8){ 
 
-                if( (parseInt(firstChar,10) <= 9 && parseInt(firstChar,10) >= 0) && !isNaN(parseInt(this.search.searchString,10))){ 
+        let toSplit = this.search.searchString;
 
-                    toSplit = 'emno:' + this.search.searchString ;
+        if (searchString.toLowerCase().search(delimiter) !== 0) {
+
+            if (searchString.length < 8) {
+
+                if ((parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0) && !isNaN(parseInt(this.search.searchString, 10))) {
+
+                    toSplit = 'emno:' + this.search.searchString;
 
                 }
-                else if((searchString.trim().split(' ').length - 1) === 0)
-                {
-       
-                    toSplit = 'tagno:' + this.search.searchString ;
+                else if ((searchString.trim().split(' ').length - 1) === 0) {
+
+                    toSplit = 'tagno:' + this.search.searchString;
 
                 }
 
             }
-            else if( searchString.length > 8 && searchString.length < 11){
-                if(searchString.indexOf('/') > -1 || searchString.indexOf('-') > -1 && this.isDate(searchString)){
+            else if (searchString.length > 8 && searchString.length < 11) {
+                if (searchString.indexOf('/') > -1 || searchString.indexOf('-') > -1 && this.isDate(searchString)) {
 
-                    toSplit = 'calldate:' + this.search.searchString ;
+                    toSplit = 'calldate:' + this.search.searchString;
 
-                }else if(!isNaN(parseInt(searchString,10))){
-                   
+                } else if (!isNaN(parseInt(searchString, 10))) {
+
                     toSplit = 'cnumber:' + this.search.searchString;
+
                 }
             }
-            else{
+            else {
 
-                toSplit = 'location:' + this.search.searchString ;
+                toSplit = 'location:' + this.search.searchString;
 
             }
         }
-        return toSplit.split(delimiter);   
+        return toSplit.split(delimiter);
     }
 
     getSearchString() {
@@ -412,13 +443,14 @@ export class SearchFieldComponent implements OnInit {
         const searchText = searchArray.controls
             .map(item => {
                 const option = this.options.find(currentOption => currentOption.id === item.value.searchField);
-                if(this.isDate(item.value.searchTerm))
-                {
-                    const date = this.datepipe.transform(new Date(item.value.searchTerm),'dd/MM/yyyy');
+                if (item.value.searchTerm instanceof Object) {
+                    return option?.searchValue + ':' + item.value.searchTerm.value;
+                }
+                if (this.isDate(item.value.searchTerm)) {
+                    const date = this.datepipe.transform(new Date(item.value.searchTerm), 'dd/MM/yyyy');
                     return option?.searchValue + ':' + date;
                 }
-                
-                    return option?.searchValue + ':' + item.value.searchTerm;
+                return option?.searchValue + ':' + item.value.searchTerm;
 
             })
             .join(' ');
@@ -428,76 +460,47 @@ export class SearchFieldComponent implements OnInit {
     }
 
     addRow() {
-        this.searchRows.push(this.createItem('', '' , ''));
+
+        this.searchRows.push(this.createItem('', '', '', of()));
     }
 
-    removeRow(i:any) {
+    removeRow(i: any) {
+
         this.searchRows.removeAt(i);
     }
 
-    optionSelection($event:MatSelectChange, item:AbstractControl){
-        const optionsIndex = this.options.findIndex(option => option.id === $event.value);
-        if(optionsIndex !== 0){
-            const inputType = this.options[optionsIndex].inputType;
-            item.get('inputType')?.setValue(inputType);
-        }
-        /* if(item.get('inputType')?.value === 'dropdown'){
-           // const dropdownType = this.options[optionsIndex].databaseField?.split('.')[1].toLowerCase();
+    optionSelection($event: MatSelectChange, item: AbstractControl) {
 
-           
-           // this.switchDropDownObserver(dropdownType);
-            /* this.optionDropdown$.pipe(
-                switchMap((_) =>
-                    // tslint:disable-next-line: max-line-length
-                    dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() : dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes()
-                ),
-                map((dropdowns:any)=> 
-                    dropdowns.map((dropdown:any) => 
-                        ({ 
-                            id : Object.values(dropdown)[0], 
-                            value : Object.values(dropdown)[1]
-                        }) 
-                    )
-                ),
-                // shareReplay(1) 
-            ).subscribe((dropdownOptions)=>{
-                this.optionDropDowns = dropdownOptions;
-            }); 
-           
-        } */
+        const optionsIndex = this.options.findIndex(option => option.id === $event.value);
+
+        if (optionsIndex !== 0) {
+
+            const inputType = this.options[optionsIndex].inputType;
+
+            item.get('inputType')?.setValue(inputType);
+
+            item.get('dropdownObservable')?.setValue(this.observableFactoryPiped(this.options[optionsIndex].dropdownName));
+
+        }
+
     }
-    switchDropDownObserver(dropdownType:string | undefined){
-        /* this.switchDropDown(dropdownType).pipe(
-            map((dropdowns:any)=>  
-                dropdowns.map((dropdown:any) => 
-                ({ 
-                    id : Object.values(dropdown)[0], 
-                    value : Object.values(dropdown)[1]
-                }) 
-            ))
-        ).subscribe((value) => console.log(value)); */
-        return this.switchDropDown(dropdownType).pipe(
-            map((dropdowns:any)=>  
-                dropdowns.map((dropdown:any) => 
-                ({ 
-                    id : Object.values(dropdown)[0], 
-                    value : Object.values(dropdown)[1]
-                }) 
-            ))
+
+    observableFactoryPiped(dropdownType: string | undefined) {
+        return this.observableFactory(dropdownType).pipe(
+            map((dropdowns: any) =>
+                dropdowns.map((dropdown: any) =>
+                ({
+                    id: Object.values(dropdown)[0],
+                    value: Object.values(dropdown)[1]
+                })
+                ))
         );
-        /* this.switchDropDown(dropdownType); */
-       // return ;
-        /* return this.switchDropDown(dropdownType).pipe(
-            map((dropdowns:any)=>  
-                dropdowns.map((dropdown:any) => 
-                ({ 
-                    id : Object.values(dropdown)[0], 
-                    value : Object.values(dropdown)[1]
-                }) 
-            ))
-       ); */
     }
-    switchDropDown(dropdownType:string | undefined):Observable<any>{
-        return dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() : dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes();
+
+    observableFactory(dropdownType: string | undefined) {
+        if (dropdownType) {
+            return dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() : dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes();
+        }
+        return of();
     }
 }
