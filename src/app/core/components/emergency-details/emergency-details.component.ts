@@ -65,7 +65,14 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         this.emergencyDetails.addControl(
             'emergencyNumber',
-            new FormControl('',Validators.required)
+            new FormControl(
+                '',
+                [Validators.required],
+                [
+                    this.emergencyNumberValidator.validate(
+                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1)
+                ]
+            )
         );
 
         this.emergencyDetails.addControl(
@@ -78,7 +85,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         );
         this.emergencyDetails.addControl(
             'code',
-            new FormControl(''),
+            new FormControl({EmergencyCodeId: null, EmergencyCode: null}),
         );
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
