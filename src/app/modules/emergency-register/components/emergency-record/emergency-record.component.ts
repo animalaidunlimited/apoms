@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -7,7 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -18,9 +18,8 @@ import { take } from 'rxjs/operators';
 })
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number | undefined;
-    @Input() guId!: string;
+    @Input() guId!: BehaviorSubject<string>;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
-    @Output() public currentGUID = new EventEmitter<any>();
 
 
     loading = false;
@@ -84,7 +83,7 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.pipe(take(1)).subscribe(data=> {
+        this.caseService.emergencyResponse.subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
@@ -123,10 +122,16 @@ export class EmergencyRecordComponent implements OnInit {
     resetForm() {
 
         this.recordForm.reset();
-        const guIdVal = this.caseService.generateUUID();
 
-        this.currentGUID.emit(guIdVal);
-        this.recordForm.get('emergencyDetails.guId')?.setValue(guIdVal);
+        this.guId.next(this.caseService.generateUUID());
+
+        this.loadEmergencyNumber.emit({emergencyNumber : 'New Case*' , GUID: this.guId.value});
+
+        this.recordForm.get('emergencyDetails.guId')?.setValue(this.guId.value);
+        this.recordForm.get('emergencyDetails.code')?.setValue({
+            EmergencyCodeId: null,
+            EmergencyCode: null
+        });
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
@@ -328,7 +333,7 @@ export class EmergencyRecordComponent implements OnInit {
     }
 
     emergencyNumberUpdated(emergencyNumber: any) {
-        const guId = this.recordForm.get('emergencyDetails.guId')?.value;
-        this.loadEmergencyNumber.emit({emergencyNumber , guId});
+
+        this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
 }

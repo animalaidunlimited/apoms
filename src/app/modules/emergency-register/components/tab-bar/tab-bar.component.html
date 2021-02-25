@@ -9,7 +9,7 @@
                 </ng-template>
                 <outstanding-case-board *ngIf="index == 0" (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
                 <record-search *ngIf="index == 1" (openEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
-                <emergency-record *ngIf="index > 1" [guId]= "guIdVal" [emergencyCaseId]="tab.emergencyCaseId" 
+                <emergency-record *ngIf="index > 1" [guId]= "tab.GUID" [emergencyCaseId]="tab.emergencyCaseId"
                 (loadEmergencyNumber)="updateEmergencyNumber($event)"
                  class="tab-icon">
                 </emergency-record>
@@ -19,7 +19,7 @@
         <!-- TODO: Fix the positioning of the icon to the middle of the tab. It's off to the right at the moment -->
         <mat-tab disabled>
         <ng-template mat-tab-label>
-                <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addTab(0,'New Call*')">
+                <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addTab(0,'New Case*')">
                 <mat-icon >add_circle</mat-icon>
                 </button>
         </ng-template>
