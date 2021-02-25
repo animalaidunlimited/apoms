@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
@@ -13,6 +13,7 @@ import { CaseService } from '../../services/case.service';
     templateUrl: './tab-bar.component.html',
     styleUrls: ['./tab-bar.component.scss'],
 })
+
 export class TabBarComponent implements OnInit {
     selected = new FormControl(0);
     guIdVal!: string;
@@ -29,7 +30,7 @@ export class TabBarComponent implements OnInit {
         private caseService: CaseService) {}
 
     ngOnInit() {
-    
+
         this.navigationService.isSearchClicked.subscribe((clicked)=>
             {
                 if(clicked)
@@ -91,7 +92,7 @@ export class TabBarComponent implements OnInit {
     updateEmergencyNumber(emergencyNumberAndGuId: any) {
 
         this.tabs.forEach(tab=> {
-        
+
             if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID === emergencyNumberAndGuId.guId) {
                 tab.value = (
                     emergencyNumberAndGuId.emergencyNumber || 'New Case*'
