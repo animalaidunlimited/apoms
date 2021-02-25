@@ -7,6 +7,7 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number | undefined;
     @Input() guId!: string;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+    @Output() public currentGUID = new EventEmitter<any>();
 
 
     loading = false;
@@ -38,10 +40,10 @@ export class EmergencyRecordComponent implements OnInit {
     syncedToLocalStorage = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
-    resetForm(event: KeyboardEvent) {
+    resetFormEvent(event: KeyboardEvent) {
 
         event.preventDefault();
-        this.recordForm.reset();
+        this.resetForm();
     }
 
     @HostListener('document:keydown.control.s', ['$event'])
@@ -52,8 +54,8 @@ export class EmergencyRecordComponent implements OnInit {
 
     @HostListener('window:beforeunload', ['$event'])
     checkCanReload($event:BeforeUnloadEvent) {
-        $event.preventDefault();
 
+        $event.preventDefault();
 
         return !this.recordForm.touched;
     }
@@ -62,8 +64,7 @@ export class EmergencyRecordComponent implements OnInit {
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService,
-        private changeDetector : ChangeDetectorRef
+        private showSnackBar: SnackbarService
     ) {}
 
     ngOnInit() {
@@ -83,12 +84,13 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.subscribe(data=> {
+        this.caseService.emergencyResponse.pipe(take(1)).subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
 
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
+                // TODO: Put this back in when we add auto increment of Emergency Number
+                // this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(data.emergencyNumber);
                 this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
 
 
@@ -116,6 +118,15 @@ export class EmergencyRecordComponent implements OnInit {
 
             this.hasComments = this.recordForm.get('caseComments')?.value ? true : false;
         });
+    }
+
+    resetForm() {
+
+        this.recordForm.reset();
+        const guIdVal = this.caseService.generateUUID();
+
+        this.currentGUID.emit(guIdVal);
+        this.recordForm.get('emergencyDetails.guId')?.setValue(guIdVal);
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
