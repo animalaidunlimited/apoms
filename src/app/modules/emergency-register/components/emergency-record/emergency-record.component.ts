@@ -8,6 +8,7 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -61,6 +62,7 @@ export class EmergencyRecordComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
+        private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService
@@ -72,7 +74,7 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
-                guId : [this.guId],
+                guId : [this.guId.value],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -132,6 +134,8 @@ export class EmergencyRecordComponent implements OnInit {
             EmergencyCodeId: null,
             EmergencyCode: null
         });
+
+        this.changeDetectorRef.detectChanges();
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {

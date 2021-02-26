@@ -25,8 +25,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    // @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
+    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
     @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
+    @ViewChild('dispatcherFiled',{ read: ElementRef, static:true }) dispatcherFiled!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -51,6 +52,12 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     focusCallDateTime(event: KeyboardEvent) {
         event.preventDefault();
         this.callDateTimeField.nativeElement.focus();
+    }
+
+    @HostListener('document:keydown.control.shift.d', ['$event'])
+    focusDispatcher(event: KeyboardEvent) {
+        event.preventDefault();
+        this.dispatcherFiled.nativeElement.focus();
     }
     ngOnInit(): void {
 
@@ -130,7 +137,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(){
 
         if(this.focusEmergencyNumber) {
-        setTimeout(() => this.callDateTimeField.nativeElement.focus(), 0);
+        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
         }
     }
 
