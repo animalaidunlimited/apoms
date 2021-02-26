@@ -8,6 +8,7 @@ import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { HostListener } from '@angular/core';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -20,6 +21,8 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
+  @ViewChild('callOutcomeField',{ read: ElementRef, static:true }) callOutcomeField!: ElementRef;
+
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -38,6 +41,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
   ) { }
+
+  @HostListener('document:keydown.control.shift.o', ['$event'])
+    focusCallOutcomeField(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callOutcomeField.nativeElement.focus();
+    }
 
   ngOnInit(): void {
 
