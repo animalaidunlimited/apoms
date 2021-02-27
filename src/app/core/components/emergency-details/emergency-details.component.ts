@@ -35,10 +35,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    @ViewChild('emergencyNumber', { read: ElementRef, static: true })
-    emergencyNumberField!: ElementRef;
-    @ViewChild('callDateTimeField', { read: ElementRef, static: true })
-    callDateTimeField!: ElementRef;
+    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
+    @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
+    @ViewChild('dispatcherFiled',{ read: ElementRef, static:true }) dispatcherFiled!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -63,6 +62,12 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         event.preventDefault();
         this.callDateTimeField.nativeElement.focus();
     }
+
+    @HostListener('document:keydown.control.shift.d', ['$event'])
+    focusDispatcher(event: KeyboardEvent) {
+        event.preventDefault();
+        this.dispatcherFiled.nativeElement.focus();
+    }
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
@@ -77,8 +82,18 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             'emergencyDetails',
         ) as FormGroup;
 
-        const emergencyCaseId = this.recordForm.get(
-            'emergencyDetails.emergencyCaseId',
+        const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
+
+        this.emergencyDetails.addControl(
+            'emergencyNumber',
+            new FormControl(
+                '',
+                [Validators.required],
+                [
+                    this.emergencyNumberValidator.validate(
+                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1)
+                ]
+            )
         );
 
         this.emergencyDetails.addControl('emergencyNumber', new FormControl());
@@ -91,7 +106,10 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             'dispatcher',
             new FormControl('', Validators.required),
         );
-        this.emergencyDetails.addControl('code', new FormControl(''));
+        this.emergencyDetails.addControl(
+            'code',
+            new FormControl({EmergencyCodeId: null, EmergencyCode: null}),
+        );
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
         emergencyCaseId?.valueChanges.subscribe(() => {
@@ -135,12 +153,10 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
             });
     }
 
-    ngAfterViewInit() {
-        if (this.focusEmergencyNumber) {
-            setTimeout(
-                () => this.emergencyNumberField.nativeElement.focus(),
-                0,
-            );
+    ngAfterViewInit(){
+
+        if(this.focusEmergencyNumber) {
+        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
         }
     }
 
