@@ -8,6 +8,7 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { BehaviorSubject } from 'rxjs';
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],
 })
+
 export class EmergencyRecordComponent implements OnInit {
     @Input() emergencyCaseId: number | undefined;
     @Input() guId!: BehaviorSubject<string>;
@@ -72,7 +74,7 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({
-                guId : [this.guId],
+                guId : [this.guId.value],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
@@ -111,7 +113,7 @@ export class EmergencyRecordComponent implements OnInit {
             return;
         }
 
-        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId).pipe(take(1)).subscribe(result => {
 
             this.recordForm.patchValue(result);
 

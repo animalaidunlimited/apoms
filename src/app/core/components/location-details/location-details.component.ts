@@ -1,4 +1,4 @@
-import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit } from '@angular/core';
+import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit, HostListener } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
@@ -24,8 +24,10 @@ export interface Marker {
 export class LocationDetailsComponent implements OnInit, AfterViewInit {
     @Input() recordForm!: FormGroup;
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
+
     @ViewChild('addressSearch') addresstext: any;
     @ViewChild('googlemap') googlemap: any;
+
 
     errorMatcher = new CrossFieldErrorMatcher();
     center!: google.maps.LatLngLiteral;
@@ -46,6 +48,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
     location$!: Location;
 
     markers: Marker[] = [];
+
+    @HostListener('document:keydown.control.l', ['$event'])
+    focusLocation(event: KeyboardEvent) {
+        event.preventDefault();
+        this.addresstext.nativeElement.focus();
+    }
 
     ngOnInit() {
         this.recordForm.addControl(
