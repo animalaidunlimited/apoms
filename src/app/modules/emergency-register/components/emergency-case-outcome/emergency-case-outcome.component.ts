@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
@@ -20,6 +20,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
+  @ViewChild('callOutcomeField',{ read: ElementRef, static:false }) callOutcomeField!: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -38,6 +39,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
   ) { }
+
+  @HostListener('document:keydown.control.o', ['$event'])
+  focusCallOutcome(event: KeyboardEvent) {
+      event.preventDefault();
+      this.callOutcomeField.nativeElement.focus();
+  }
 
   ngOnInit(): void {
 

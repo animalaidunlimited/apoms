@@ -23,6 +23,7 @@ export class RescueDetailsComponent implements OnInit {
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('rescueTimeField' ,{ read: ElementRef, static:true }) rescueTimeField!: ElementRef;
+  @ViewChild('ambulanceArrivalTimeField' ,{ read: ElementRef, static:true }) ambulanceArrivalTimeField!: ElementRef;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -51,6 +52,12 @@ export class RescueDetailsComponent implements OnInit {
     rescueTimeFocus(event: KeyboardEvent) {
     event.preventDefault();
     this.rescueTimeField.nativeElement.focus();
+    }
+
+    @HostListener('document:keydown.control.shift.a', ['$event'])
+    ambulanceArrivalTimeFocus(event: KeyboardEvent) {
+    event.preventDefault();
+    this.ambulanceArrivalTimeField.nativeElement.focus();
     }
 
   constructor(private dropdowns: DropdownService,
