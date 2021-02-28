@@ -20,7 +20,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
+
   @ViewChild('callOutcomeField',{ read: ElementRef, static:false }) callOutcomeField!: ElementRef;
+
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -39,6 +41,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
   ) { }
+
 
   @HostListener('document:keydown.control.o', ['$event'])
   focusCallOutcome(event: KeyboardEvent) {

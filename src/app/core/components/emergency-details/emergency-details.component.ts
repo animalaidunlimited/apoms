@@ -25,7 +25,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
     errorMatcher = new CrossFieldErrorMatcher();
 
-    // @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
+    @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
     @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
     @ViewChild('dispatcher',{ read: ElementRef, static:true }) dispatcher!: ElementRef;
 
@@ -139,7 +139,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(){
 
         if(this.focusEmergencyNumber) {
-        setTimeout(() => this.callDateTimeField.nativeElement.focus(), 0);
+        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
         }
     }
 
