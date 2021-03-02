@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
@@ -6,7 +6,8 @@ import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -14,9 +15,12 @@ import { of } from 'rxjs';
     templateUrl: './animal-header.component.html',
     styleUrls: ['./animal-header.component.scss'],
 })
-export class AnimalHeaderComponent implements OnInit {
-    @Input() recordForm!: FormGroup;
 
+export class AnimalHeaderComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
+    @Input() recordForm!: FormGroup;
     @Input() profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
     selection!: SelectionModel<FormGroup>;
@@ -58,6 +62,11 @@ export class AnimalHeaderComponent implements OnInit {
         };
     }
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     openMediaDialog(): void{
 
         const dialogRef = this.dialog.open(MediaDialogComponent, {
@@ -69,7 +78,9 @@ export class AnimalHeaderComponent implements OnInit {
         });
 
         // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-        dialogRef.afterClosed().subscribe(updatedMedia => {
+        dialogRef.afterClosed()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(updatedMedia => {
 
             if(updatedMedia){
                 if(updatedMedia.isPrimary === true){

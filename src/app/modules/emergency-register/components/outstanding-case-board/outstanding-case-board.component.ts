@@ -1,12 +1,12 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, NgZone, ChangeDetectionStrategy, ViewChild, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ViewChildren, ElementRef, Renderer2, OnDestroy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup, Validators, FormControl, NgControlStatusGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, startWith, filter, take } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
@@ -70,70 +70,74 @@ export interface FilterKeys {
 changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class OutstandingCaseBoardComponent implements OnInit {
+export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
-  searchValue!: string;
+  private ngUnsubscribe = new Subject();
 
-  autoRefresh = false;
-
-  hideMap = true;
-
-  removable = true;
-
-  loading = true;
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
+  @ViewChild('filterDiv') filterDiv!: ElementRef;
+  @ViewChild('chipsDiv') chipsDiv!: ElementRef;
 
   actionStatus: ActionStatus[] = [{actionStatus:1 , actionStatusName: 'Recieved'},
     {actionStatus: 2, actionStatusName: 'Assigned'},
     {actionStatus: 3, actionStatusName: 'Arrived/Picked'},
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
-  incomingObject!: FilterKeys;
 
+    autoRefresh = false;
+
+    caseFilter = [{
+      groupId: 1,
+      showTitle: 'Ambulance action',
+      groupTitle: 'ambulanceAction',
+      groupValues: [{
+        id: 1 , value: 'Rescue'
+      },
+      {
+        id: 2 , value: 'Release'
+      }]
+    },
+    {
+      groupId: 2,
+      groupTitle: 'emergencyCode',
+      showTitle: 'Emergency code',
+      groupValues: []
+    },
+    {
+      groupId: 3,
+      showTitle: 'Animal type',
+      groupTitle: 'animalType',
+      groupValues: []
+    }];
+
+    clickCount = 0;
+
+  filterBtnColor: ThemePalette = 'accent';
   filterKeysArray : FilterKeys[] = [];
 
-  clickCount = 0;
-
   hideList = true;
+  hideMap = true;
+
+  incomingObject!: FilterKeys;
+
+  loading = true;
 
   notificationPermissionGranted = false;
 
-  outstandingCases!:OutstandingCase[];
-
-  outstandingCasesArray!:OutstandingCase[];
-
-  outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
-
-  refreshColour$!:BehaviorSubject<ThemePalette>;
   refreshColour:ThemePalette = 'primary';
-
-  filterBtnColor: ThemePalette = 'accent';
-
-  caseFilter = [{
-    groupId: 1,
-    showTitle: 'Ambulance action',
-    groupTitle: 'ambulanceAction',
-    groupValues: [{
-      id: 1 , value: 'Rescue'
-    },
-    {
-      id: 2 , value: 'Release'
-    }]
-  },
-  {
-    groupId: 2,
-    groupTitle: 'emergencyCode',
-    showTitle: 'Emergency code',
-    groupValues: []
-  },
-  {
-    groupId: 3,
-    showTitle: 'Animal type',
-    groupTitle: 'animalType',
-    groupValues: []
-  }];
+  refreshColour$!:BehaviorSubject<ThemePalette>;
 
   refreshForm:FormGroup = new FormGroup({});
+  removable = true;
+
+  outstandingCases!:OutstandingCase[];
+  outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
+  outstandingCasesArray!:OutstandingCase[];
+
   searchForm:FormGroup = new FormGroup({});
+  searchValue!: string;
+
 
   constructor(
     public rescueDialog: MatDialog,
@@ -147,16 +151,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
     private dialog: MatDialog,
     private dropDown: DropdownService,
     private renderer: Renderer2
-
-    ) {
-
-    }
-
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
-  @ViewChildren('filterChips') filterChips!: MatChipList[];
-  @ViewChild('filterDiv') filterDiv!: ElementRef;
-  @ViewChild('chipsDiv') chipsDiv!: ElementRef;
-
+    ) {}
 
   ngOnInit(): void {
 
@@ -170,7 +165,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
       });
 
-    this.dropDown.getAnimalTypes().pipe(take(1)).subscribe((animalType: AnimalType[])=> {
+    this.dropDown.getAnimalTypes()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((animalType: AnimalType[])=> {
 
       animalType.forEach(type=> {
 
@@ -192,7 +189,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
 
-    this.dropDown.getEmergencyCodes().pipe(take(1)).subscribe((emergencyCodes: EmergencyCode[])=> {
+    this.dropDown.getEmergencyCodes()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((emergencyCodes: EmergencyCode[])=> {
       emergencyCodes.forEach(emcode=>{
 
         this.caseFilter.forEach(filterObject=>{
@@ -223,7 +222,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.initialiseBoard();
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
 
-    this.refreshColour$.subscribe(colour => {
+    this.refreshColour$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(colour => {
       this.refreshColour = colour;
       this.changeDetector.detectChanges();
     });
@@ -232,12 +233,19 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+  }
+
   initialiseBoard() {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
 
     // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$.subscribe((assignments) => {
+    this.outstandingCases$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((assignments) => {
 
       this.outstandingCasesArray = assignments;
 
@@ -266,7 +274,7 @@ export class OutstandingCaseBoardComponent implements OnInit {
   }
 
   openMediaDialog(patientId: number, tagNumber: string | null): void{
-    const dialogRef = this.dialog.open(MediaDialogComponent, {
+    this.dialog.open(MediaDialogComponent, {
         minWidth: '50%',
         data: {
             tagNumber,
@@ -276,15 +284,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
 
   }
 
-  // openSearchMediaDialog(){
+   openSearchMediaDialog(){
 
-  //    this.dialog.open(AddSearchMediaDialogComponent, {
-  //    minWidth: '50%',
-  //    data: {
-  //        mediaVal: []
-  //    }
-  // });
-  // }
+      this.dialog.open(AddSearchMediaDialogComponent, {
+      minWidth: '50%',
+      data: {
+          mediaVal: []
+      }
+   });
+   }
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
@@ -298,11 +306,15 @@ export class OutstandingCaseBoardComponent implements OnInit {
   setup(){
 
     // Find out whether we have permission to receive notifications or not
-    this.messagingService.getPermissionGranted().subscribe((permissionGranted) => {
+    this.messagingService.getPermissionGranted()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((permissionGranted) => {
 
       this.notificationPermissionGranted = !!permissionGranted;
 
-      this.outstandingCaseService.getAutoRefresh().subscribe(value => {
+      this.outstandingCaseService.getAutoRefresh()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(value => {
 
         this.autoRefresh = value;
 
@@ -314,7 +326,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     });
 
     // If we receive focus then make sure we tidy up as needed.
-    this.outstandingCaseService.haveReceivedFocus.subscribe((focusReceived) => {
+    this.outstandingCaseService.haveReceivedFocus
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((focusReceived) => {
 
       if(focusReceived && !this.autoRefresh){
         this.refreshColour$.next('warn');
@@ -333,8 +347,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     this.searchForm.get('searchTerm')?.valueChanges
       .pipe(
         debounceTime(250),
-        startWith('')
-      )
+        startWith(''),
+        takeUntil(this.ngUnsubscribe)
+        )
       .subscribe(value => {
         this.searchValue = value;
           this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
@@ -363,7 +378,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
           event.previousIndex,
           event.currentIndex);
 
-        this.openRescueEdit(event.container.data[event.currentIndex]).pipe(take(1)).subscribe((result:UpdatedRescue) =>
+        this.openRescueEdit(event.container.data[event.currentIndex])
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((result:UpdatedRescue) =>
           {
 
             if(result?.success !== 1){
@@ -402,7 +419,9 @@ export class OutstandingCaseBoardComponent implements OnInit {
     // the refresh button to show we've made a change.
     const afterClosed = rescueDialog.afterClosed();
 
-    afterClosed.pipe(take(1)).subscribe(result => {
+    afterClosed
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(result => {
 
       if(result?.success === 1 && !this.autoRefresh){
         this.refreshColour$.next('warn');

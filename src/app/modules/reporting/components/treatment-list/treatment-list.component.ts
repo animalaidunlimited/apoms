@@ -94,13 +94,31 @@ export class TreatmentListComponent implements OnInit {
         :
           response = [];
 
+      response.sort((a,b) => {
+
+        let sortResult = 0;
+
+        if(this.getTreatmentPriority(a['Treatment priority'].toString()) === this.getTreatmentPriority(b['Treatment priority'].toString())){
+
+          sortResult = a['Tag number'] < b['Tag number'] ? -1 : 1;
+        }
+        else {
+
+          sortResult = this.getTreatmentPriority(a['Treatment priority'].toString()) < this.getTreatmentPriority(b['Treatment priority'].toString()) ?
+          1 : -1;
+
+        }
+
+        return sortResult;
+      });
+
       this.patientRecords = new MatTableDataSource(response);
 
       this.patientRecords.sortingDataAccessor = (item: ReportPatientRecord, columnHeader:string) => {
 
       switch(columnHeader){
         case 'Treatment priority' :
-          return this.getTreatmentPriority((item['Treatment priority'] + '').toString());
+          return this.getTreatmentPriority((item['Treatment priority'] + '').toString()).toString();
         default :
 
         const newObj = JSON.parse(JSON.stringify(item));
@@ -118,25 +136,19 @@ export class TreatmentListComponent implements OnInit {
 
 
   }
-  getTreatmentPriority(treatmentPriority:string) : string {
-
-
-
-    let val = 0;
+  getTreatmentPriority(treatmentPriority:string) : number {
 
     switch(treatmentPriority){
       case 'High' :
-        val = 3;
-        break;
+        return 3;
       case 'Medium' :
-        val = 2;
-        break;
+        return 2;
       case 'Low' :
-        val = 1;
-        break;
+        return 1;
+      default :
+        return 0;
     }
 
-    return val.toString();
   }
 
 
@@ -175,6 +187,7 @@ export class TreatmentListComponent implements OnInit {
   treatmentLayout(){
 
     this.displayedColumns.next(['index','Tag number','Age','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
+
 
   }
 

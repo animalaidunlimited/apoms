@@ -28,7 +28,7 @@
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
         <mat-form-field>
-            <input tabindex="15" formControlName="ambulanceArrivalTime" type="datetime-local"
+            <input tabindex="15" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"
             name="ambulanceArrivalTime" [min]="currentCallDateTime" [max]="currentRescueTime"
             (focus)="setInitialTime($event)" (blur)="updateTimes()"
             placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>

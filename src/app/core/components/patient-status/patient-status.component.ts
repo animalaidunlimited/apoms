@@ -19,12 +19,14 @@ import { take } from 'rxjs/operators';
     styleUrls: ['./patient-status.component.scss'],
 })
 export class PatientStatusComponent implements OnInit {
+
     @Input() patientId!: number;
     @Input() formInvalid!: boolean;
 
-    createdDate = '';
     currentTime = '';
+    createdDate = '';
     errorMatcher = new CrossFieldErrorMatcher();
+
     notificationDurationSeconds = 3;
     patientStates$!:Observable<PatientStatusResponse[]>;
     patientStatusForm!:FormGroup;
@@ -76,6 +78,7 @@ export class PatientStatusComponent implements OnInit {
     }
 
     onSave() {
+
         this.patientService
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {

@@ -36,7 +36,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.EmergencyRegisterPageModule),
     },
     {
-        data: { title: 'Hospital Manager' },
+        data: { title: 'Hospital Manager', permissionId: 4 },
         icon: 'none',
         group: '',
         path: 'hospital-manager',
@@ -64,7 +64,7 @@ export const navRoutes: NavRoute[] = [
                 './modules/streettreat/streettreat-page.module')
                 .then(m => m.StreetTreatPageModule),
     },
-    
+
     {
         data: { title: 'Teams' },
         icon: 'none',

@@ -10,7 +10,7 @@
       <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
 
 
-        <table mat-table matSort matSortActive="Treatment priority" matSortDirection="desc" [dataSource]="patientRecords" class="mat-elevation-z8 table">
+        <table mat-table matSort [dataSource]="patientRecords" class="mat-elevation-z8 table">
 
         <!-- Index Column -->
         <ng-container matColumnDef="index">

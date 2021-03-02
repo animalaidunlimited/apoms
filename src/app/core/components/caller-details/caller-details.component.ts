@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import { FormGroup,Validators,FormBuilder,AbstractControl,FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
 import { CallerDetailsService } from './caller-details.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { SelectionModel } from '@angular/cdk/collections';
-import { take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -13,21 +14,21 @@ import { take } from 'rxjs/operators';
     templateUrl: './caller-details.component.html',
     styleUrls: ['./caller-details.component.scss'],
 })
-export class CallerDetailsComponent implements OnInit {
+export class CallerDetailsComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() recordForm!: FormGroup;
 
-    errorMatcher = new CrossFieldErrorMatcher();
-
+    caller$!: Caller;
+    callerDetails!:FormGroup;
     callerArray!: FormArray;
-
-    selection = new SelectionModel<any>(false, []);
-
     public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
 
-    callerDetails!:FormGroup;
-
     callerNumber!:AbstractControl|null;
-    caller$!: Caller;
+
+    errorMatcher = new CrossFieldErrorMatcher();
+    selection = new SelectionModel<any>(false, []);
 
     constructor(
         private callerService: CallerDetailsService,
@@ -49,7 +50,9 @@ export class CallerDetailsComponent implements OnInit {
         this.callerArray = this.callerDetails.get('callerArray') as FormArray;
 
 
-        this.callerArray.valueChanges.subscribe((callers:Caller[]) => {
+        this.callerArray.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((callers:Caller[]) => {
 
             const empty = callers.every(caller => Object.values(caller).every(value => value=== null));
 
@@ -67,13 +70,18 @@ export class CallerDetailsComponent implements OnInit {
         }
 
         this.callerService.getCallerByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
-            .pipe(take(1))
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((caller: Callers) => {
                 for(let i=0 ; i< caller.length - 1 ; i++) {
                     this.callerArray.push(this.getCallerFormGroup());
                 }
                 this.callerArray.patchValue(caller);
             });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
 

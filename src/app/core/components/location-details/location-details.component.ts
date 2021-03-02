@@ -1,10 +1,11 @@
-import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit } from '@angular/core';
+import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { LocationDetailsService } from './location-details.service';
-import { take } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface Position {
     lat: number;
@@ -22,11 +23,16 @@ export interface Marker {
     templateUrl: './location-details.component.html',
     styleUrls: ['./location-details.component.scss'],
 })
-export class LocationDetailsComponent implements OnInit, AfterViewInit {
+export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() recordForm!: FormGroup;
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
+
     @ViewChild('addressSearch') addresstext: any;
     @ViewChild('googlemap') googlemap: any;
+
 
     errorMatcher = new CrossFieldErrorMatcher();
     center!: google.maps.LatLngLiteral;
@@ -48,6 +54,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
 
     markers: Marker[] = [];
 
+    @HostListener('document:keydown.control.l', ['$event'])
+    focusLocation(event: KeyboardEvent) {
+        event.preventDefault();
+        this.addresstext.nativeElement.focus();
+    }
+
     ngOnInit() {
         this.recordForm.addControl(
             'locationDetails',
@@ -62,7 +74,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
 
         this.locationService
             .getLocationByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
-            .pipe(take(1))
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((location: LocationResponse) => {
                 this.recordForm.patchValue(location);
 
@@ -105,6 +117,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.getPlaceAutocomplete();
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     getPlaceAutocomplete() {
