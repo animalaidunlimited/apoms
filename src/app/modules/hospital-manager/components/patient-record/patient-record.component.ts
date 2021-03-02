@@ -1,3 +1,4 @@
+import { LogsData } from './../../../../core/models/logs-data';
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -32,6 +33,7 @@ export class PatientRecordComponent implements OnInit {
     loading = false;
 
     mediaData!: BehaviorSubject<MediaItem[]>;
+    logsData!:LogsData; 
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
@@ -94,8 +96,13 @@ export class PatientRecordComponent implements OnInit {
 
         });
     }
-
-
+        this.logsData = {
+            emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
+            emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,
+            patientId: this.recordForm.value.patientDetails.patientId
+        };
+        
+ 
     }
 
     tabChanged(event: MatTabChangeEvent) {
