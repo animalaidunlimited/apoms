@@ -49,7 +49,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
-        this.saveForm();
+
+        if(this.recordForm.valid){
+            this.saveForm();
+        }
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -148,6 +151,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
+
+        console.log(resultBody);
 
         const result = {
             message: 'Other error - See admin\n',
@@ -307,6 +312,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 await this.caseService
                     .updateCase(emergencyForm)
                     .then(data => {
+
+                        console.log(data);
 
                         if(data) {
                             this.loading = false;

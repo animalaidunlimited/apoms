@@ -47,14 +47,11 @@ START TRANSACTION;
 				TreatmentPriority	= prm_TreatmentPriority,
 				ABCStatus			= prm_ABCStatus,
 				ReleaseStatus		= prm_ReleaseStatus,
-				Temperament			= prm_Temperament,
-<<<<<<< HEAD:scripts/database/Release/Release_1.17/sp_UpdatePatientDetails_A032.sql
-				Age					= prm_Age,
+				Temperament			= prm_Temperament,		
+				Age					= prm_Age,		
 				KnownAsName = prm_KnownAsName
-=======
-				UpdateTime			= NOW(),
-				Age					= prm_Age
->>>>>>> d4dd222b72db8391092cd9b2522b33e03d79d3ba:scripts/database/Release/Release_1.16/sp_UpdatePatientDetails_A032.sql
+				UpdateTime			= NOW()
+				
 	WHERE PatientId = prm_PatientId;
    
 COMMIT;         
