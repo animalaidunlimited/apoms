@@ -1,11 +1,12 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { Search, SearchValue } from '../record-search/record-search.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-field',
@@ -37,18 +38,22 @@ import { Search, SearchValue } from '../record-search/record-search.component';
     ]),
 ]
 })
-export class SearchFieldComponent implements OnInit {
+export class SearchFieldComponent implements OnInit, OnDestroy {
 
-  searchFieldForm = new FormControl();
+    private ngUnsubscribe = new Subject();
 
     @Output() public searchString = new EventEmitter<string>();
     @ViewChild('searchBox') searchBox!:ElementRef;
+
+    search = new Search();
+
+    searchFieldForm = new FormControl();
+
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
     searchShowing = false;
 
-    search = new Search();
 
     options: SearchValue[] = [
         {
@@ -180,7 +185,9 @@ export class SearchFieldComponent implements OnInit {
 
   ngOnInit(): void {
 
-  this.navigationService.isSearchClicked.subscribe((clicked)=> {
+  this.navigationService.isSearchClicked
+  .pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((clicked)=> {
       if(clicked && this.searchBox){
             this.searchBox.nativeElement.focus();
       }
@@ -194,6 +201,11 @@ export class SearchFieldComponent implements OnInit {
 
   this.searchRows = this.searchForm.get('searchRows') as FormArray;
 
+  }
+
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
   }
 
   createItem(field: any, term: any): FormGroup {

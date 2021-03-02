@@ -1,12 +1,13 @@
-import { Component, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MediaPasteService } from '../../services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Subject } from 'rxjs';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { PatientService } from '../../services/patient/patient.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
+import { takeUntil } from 'rxjs/operators';
 
 interface IncomingData {
   tagNumber: string;
@@ -21,17 +22,19 @@ interface IncomingData {
   styleUrls: ['./media-dialog.component.scss']
 })
 
-export class MediaDialogComponent implements OnInit {
+export class MediaDialogComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   isPrimaryChanged : BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   mediaItems: MediaItem [] = [];
 
-  uploading = 0;
-
   newItem! : MediaItem;
 
   primaryMedia! : MediaItem;
+
+  uploading = 0;
 
 
   @HostListener('window:paste', ['$event']) handleWindowPaste( $event:any ){
@@ -48,7 +51,9 @@ export class MediaDialogComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.patientService.getPatientMediaItemsByPatientId(this.data.patientId).subscribe(mediaItems => {
+    this.patientService.getPatientMediaItemsByPatientId(this.data.patientId)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(mediaItems => {
 
         if(mediaItems){
 
@@ -93,6 +98,11 @@ export class MediaDialogComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+  }
+
 
 public handlePaste(event: ClipboardEvent) : void {
 
@@ -112,7 +122,9 @@ public handlePaste(event: ClipboardEvent) : void {
 upload(file: File, patientId: number) : MediaItemReturnObject {
 
   const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
-    mediaItem.mediaItemId.subscribe(result => {
+    mediaItem.mediaItemId
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(result => {
       if(result){
         this.uploading--;
       }

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -16,6 +16,8 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -23,18 +25,10 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
-export class AnimalSelectionComponent implements OnInit {
+export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
-    constructor(
-        private dialog: MatDialog,
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
-        private printService: PrintTemplateService,
-        private userOptions: UserOptionsService,
-        private mediaPaster: MediaPasteService
-    ) {}
+    private ngUnsubscribe = new Subject();
+
 
     @Input() recordForm!: FormGroup;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -83,24 +77,39 @@ export class AnimalSelectionComponent implements OnInit {
             this.updateTag(this.getcurrentPatient());
         }
     }
+    constructor(
+        private dialog: MatDialog,
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private dropdown: DropdownService,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private mediaPaster: MediaPasteService
+    ) {}
+
     ngOnInit() {
 
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
-        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges.subscribe(newValue => this.emergencyCaseId = newValue);
+        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(newValue => this.emergencyCaseId = newValue);
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
-            ? this.loadPatientArray(this.emergencyCaseId)
+        ? this.loadPatientArray(this.emergencyCaseId)
             : this.initPatientArray();
 
         this.dropdown
             .getAnimalTypes()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
 
         this.dropdown
             .getProblems()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(problems => (this.problems$ = problems));
 
         this.exclusions = this.dropdown.getExclusions();
@@ -108,8 +117,15 @@ export class AnimalSelectionComponent implements OnInit {
         this.subscribeToChanges();
     }
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     subscribeToChanges() {
-        this.recordForm.get('patients')?.valueChanges.subscribe(items => {
+        this.recordForm.get('patients')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(items => {
 
             if (items.length > 0) {
                 if (items[0].patientId == null && items[0].position == null) {
@@ -180,7 +196,9 @@ export class AnimalSelectionComponent implements OnInit {
 
     loadPatientArray(emergencyCaseId: number) {
 
-        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((patients: Patients) => {
 
 
                     this.patientArray = this.recordForm.get('patients') as FormArray;
@@ -654,7 +672,9 @@ export class AnimalSelectionComponent implements OnInit {
             },
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(result => {
 
             if (result) {
                 const resultCurrentPatient = this.getcurrentPatient();
