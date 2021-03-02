@@ -6,7 +6,7 @@ import { APIService } from '../http/api.service';
   providedIn: 'root'
 })
 export class LogsService extends APIService{
-  endpoint = 'Logger';
+  endpoint = 'Logs';
   constructor(http: HttpClient) { 
     super(http);
   }
