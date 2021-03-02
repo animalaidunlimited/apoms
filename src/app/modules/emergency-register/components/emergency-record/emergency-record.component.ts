@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -7,7 +7,8 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 
 
@@ -17,27 +18,26 @@ import { ChangeDetectorRef } from '@angular/core';
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],
 })
-export class EmergencyRecordComponent implements OnInit {
+
+export class EmergencyRecordComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() emergencyCaseId: number | undefined;
     @Input() guId!: BehaviorSubject<string>;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
-
-    loading = false;
-
-    recordForm: FormGroup = new FormGroup({});
-
-    windowWidth = window.innerWidth;
-
+    currentTime = '';
     errorMatcher = new CrossFieldErrorMatcher();
 
-    currentTime = '';
+    hasComments!: boolean;
+    loading = false;
 
     notificationDurationSeconds = 3;
-
-    hasComments!: boolean;
-
+    recordForm: FormGroup = new FormGroup({});
     syncedToLocalStorage = false;
+
+    windowWidth = window.innerWidth;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
@@ -85,8 +85,10 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.subscribe(data => {
-            if (data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
+        this.caseService.emergencyResponse
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(data=> {
+            if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
 
@@ -107,13 +109,20 @@ export class EmergencyRecordComponent implements OnInit {
         }
     }
 
-    initialiseForm(): void {
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
+    initialiseForm() : void {
 
         if (!this.emergencyCaseId) {
             return;
         }
 
-        this.caseService.getEmergencyCaseById(this.emergencyCaseId).subscribe(result => {
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(result => {
 
             this.recordForm.patchValue(result);
 

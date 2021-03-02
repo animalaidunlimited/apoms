@@ -10,6 +10,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { PatientStatusResponse } from '../../models/responses';
 import { Observable } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -18,16 +19,20 @@ import { PatientService } from '../../services/patient/patient.service';
     styleUrls: ['./patient-status.component.scss'],
 })
 export class PatientStatusComponent implements OnInit {
-    errorMatcher = new CrossFieldErrorMatcher();
-    patientStates$!:Observable<PatientStatusResponse[]>;
+    
     @Input() patientId!: number;
 
-    patientStatusForm!:FormGroup;
     currentTime = '';
-    tagNumber:string | undefined;
     createdDate = '';
+    errorMatcher = new CrossFieldErrorMatcher();
 
     notificationDurationSeconds = 3;
+
+    patientStates$!:Observable<PatientStatusResponse[]>;
+    patientStatusForm!:FormGroup;
+
+    tagNumber:string | undefined;
+
 
     constructor(
         private dropdowns: DropdownService,
@@ -64,6 +69,7 @@ export class PatientStatusComponent implements OnInit {
             .getPatientByPatientId(
                 this.patientStatusForm.get('patientId')?.value,
             )
+            .pipe(take(1))
             .subscribe((patient: Patient) => {
                 this.patientStatusForm.patchValue(patient);
                 this.tagNumber = this.patientStatusForm.get('tagNumber')?.value;
@@ -71,10 +77,11 @@ export class PatientStatusComponent implements OnInit {
             });
 
         this.currentTime = getCurrentTimeString();
-        
+
     }
 
     onSave() {
+
         this.patientService
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {
