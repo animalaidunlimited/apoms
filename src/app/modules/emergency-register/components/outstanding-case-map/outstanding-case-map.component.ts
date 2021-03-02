@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, RescuerGroup, } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -15,26 +16,26 @@ import { CaseService } from '../../services/case.service';
 })
 export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
+  private ngUnsubscribe = new Subject();
+
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  caseSubscription: Subscription = new Subscription();
+  ambulanceLocations$!:Observable<any>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
-  zoom = 13;
-
-  infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
-
-  rescues:any = [];
-
-  options : google.maps.MapOptions = {};
-
-  ambulanceLocations$!:Observable<any>;
-  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 
   iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
+  infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
+  options : google.maps.MapOptions = {};
+
+  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
+
+  rescues:any = [];
+
+  zoom = 13;
 
   constructor(
     private userOptions: UserOptionsService,
@@ -60,7 +61,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       }
     ]};
 
-    this.outstandingCases.outstandingCases$.subscribe(cases => {
+    this.outstandingCases.outstandingCases$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(cases => {
 
       if(cases.length > 0){
         this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
@@ -72,7 +75,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
 
-    this.caseSubscription.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
 
   }
 
@@ -97,7 +101,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
     searchQuery += emergencyNumbers + ') ';
 
-    this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
+    this.caseService.searchCases(searchQuery)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(result => {
 
       this.infoContent.next(result);
       this.infoWindow.open(marker);
@@ -110,7 +116,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'search.EmergencyNumber=' + rescue.emergencyNumber;
 
-    this.caseSubscription = this.caseService.searchCases(searchQuery).subscribe(result => {
+    this.caseService.searchCases(searchQuery)
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(result => {
 
       this.infoContent.next(result);
       this.infoWindow.open(marker);

@@ -5,9 +5,10 @@ import { MediaItem } from '../../models/media';
 import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
 import { getCurrentTimeString } from '../../helpers/utils';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -18,6 +19,8 @@ import { getCurrentTimeString } from '../../helpers/utils';
 })
 export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
+  private ngUnsubscribe = new Subject();
+
   @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
   @Input() isPrimaryChanged!: BehaviorSubject<number>;
@@ -27,12 +30,12 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer!: ElementRef;
 
   addOnBlur = true;
-  removable = true;
-  selectable = true;
-  visible = true;
   mediaForm:FormGroup = new FormGroup({});
-  tags:FormArray = new FormArray([]);
   mediaSourceURL = '';
+  selectable = true;
+  removable = true;
+  tags:FormArray = new FormArray([]);
+  visible = true;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -43,6 +46,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnInit(): void {
 
     this.mediaItem.isPrimary = Boolean(this.mediaItem.isPrimary);
+    
     this.mediaForm = this.fb.group({
       mediaItemId: this.mediaItem.mediaItemId,
       patientMediaItemId: this.mediaItem.patientMediaItemId,
@@ -64,11 +68,15 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       this.mediaForm.markAsTouched();
     }
 
-    this.isPrimaryChanged.subscribe(changedPrimaryMediaItemId=>{
+    this.isPrimaryChanged
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(changedPrimaryMediaItemId=>{
 
       const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
 
-      mediaItemId$.subscribe(itemId=>{
+      mediaItemId$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(itemId=>{
         if(itemId !== changedPrimaryMediaItemId && changedPrimaryMediaItemId !== 0){
 
           const isPrimaryControl =  this.mediaForm.get('isPrimary') as AbstractControl;
@@ -86,7 +94,9 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
     });
 
-    this.mediaForm.get('isPrimary')?.valueChanges.subscribe(changedPrimary=>{
+    this.mediaForm.get('isPrimary')?.valueChanges
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(changedPrimary=>{
       if(changedPrimary){
 
         setTimeout(()=>{
@@ -97,7 +107,9 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       }
 
       const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
-      mediaItemId$.subscribe(mediaId=>{
+      mediaItemId$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(mediaId=>{
           this.isPrimaryChanged.next(mediaId);
 
       });
@@ -146,7 +158,9 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
     if(this.mediaForm.touched){
 
-      this.mediaItem.mediaItemId.subscribe((itemId) => {
+      this.mediaItem.mediaItemId
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((itemId) => {
 
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
         this.mediaForm.get('updated')?.setValue(true);
@@ -157,6 +171,9 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       });
 
     }
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
 
   }
 
@@ -205,7 +222,9 @@ deleteMediaItem(){
     }
   });
 
-  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+  dialogRef.afterClosed()
+  .pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((confirmed: boolean) => {
     if (confirmed) {
       this.itemDeleted.emit(this.mediaForm.value);
       this.mediaForm.get('deleted')?.setValue(true);

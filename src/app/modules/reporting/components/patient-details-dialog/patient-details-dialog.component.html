@@ -8,7 +8,7 @@
       <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
 
 
-        <table mat-table matSort matSortActive="Treatment priority" matSortDirection="desc" [dataSource]="patientRecords" class="mat-elevation-z8 table">
+        <table mat-table matSort [dataSource]="patientRecords" class="mat-elevation-z8 table">
 
         <!-- Index Column -->
         <ng-container matColumnDef="index">

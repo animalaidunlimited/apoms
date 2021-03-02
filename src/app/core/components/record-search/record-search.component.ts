@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
-import { Observable, Subscription } from 'rxjs';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface SearchValue {
     id: number;
@@ -26,7 +26,9 @@ export class Search {
     styleUrls: ['./record-search.component.scss']
 })
 
-export class RecordSearchComponent {
+export class RecordSearchComponent implements OnDestroy {
+
+    private ngUnsubscribe = new Subject();
 
     @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
@@ -43,12 +45,19 @@ export class RecordSearchComponent {
         private caseService: CaseService
     ) {}
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     onSearchQuery(searchQuery:string){
         this.loading = true;
 
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
-        this.searchResults$.subscribe((value)=>{
+        this.searchResults$
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((value)=>{
 
             this.searchResultArray = value.sort((date1: any,date2:any)=> {
                 return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();

@@ -1,18 +1,17 @@
 import {  map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { Search, SearchValue } from '../record-search/record-search.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { MatSelectChange } from '@angular/material/select/select';
+import { MatSelectChange } from '@angular/material/select';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { ProblemDropdownResponse } from '../../models/responses';
-import { AnimalType } from '../../models/animal-type';
-import { CallOutcomeResponse } from '../../models/call-outcome';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 
 @Component({
@@ -45,12 +44,17 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
         ]),
     ]
 })
-export class SearchFieldComponent implements OnInit {
+export class SearchFieldComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
+    @Output() public searchString = new EventEmitter<string>();
+    @ViewChild('searchBox') searchBox!:ElementRef;
+
+    search = new Search();
 
     searchFieldForm = new FormControl();
 
-    @Output() public searchString = new EventEmitter<string>();
-    @ViewChild('searchBox') searchBox!: ElementRef;
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
@@ -59,9 +63,6 @@ export class SearchFieldComponent implements OnInit {
 
     searchShowing = false;
 
-    optionDropdown$: Observable<ProblemDropdownResponse[] | CallOutcomeResponse[] | AnimalType[] | {}> = of({});
-    optionDropDowns: any[] = [];
-    search = new Search();
 
     options: SearchValue[] = [
         {
@@ -212,12 +213,21 @@ export class SearchFieldComponent implements OnInit {
             searchRows: this.formBuilder.array([])
         });
 
-        this.searchShowing = false;
+  this.navigationService.isSearchClicked
+  .pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((clicked)=> {
+      if(clicked && this.searchBox){
+            this.searchBox.nativeElement.focus();
+      }
+  });
 
         this.searchRows = this.searchForm.get('searchRows') as FormArray;
 
     }
-
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
     createItem(field: any, term: any, type: string | undefined, observable: Observable<any>): FormGroup {
         return this.formBuilder.group({
             searchField: [field, Validators.required],

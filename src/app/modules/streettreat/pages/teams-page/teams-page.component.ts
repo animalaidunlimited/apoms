@@ -7,9 +7,7 @@ import { TeamDetails } from 'src/app/core/models/team';
 import { ViewChild } from '@angular/core';
 import { TeamDetailsService } from 'src/app/core/services/team-details/team-details.service';
 import { Subscription } from 'rxjs';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { filter } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 @Component({
@@ -36,6 +34,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
             TeamName: '',
             IsDeleted: '0',
             Capacity: 0,
+            TeamColour: ''
         };
         this.dataSource = new MatTableDataSource([emptyTeam]);
     }

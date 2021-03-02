@@ -1,14 +1,4 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    Output,
-    EventEmitter,
-    ViewChild,
-    ElementRef,
-    HostListener,
-    AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../helpers/utils';
@@ -18,10 +8,12 @@ import { UniqueEmergencyNumberValidator } from '../../validators/emergency-numbe
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { DatePipe } from '@angular/common';
 import { EmergencyCode } from '../../models/emergency-record';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
+import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { LogsComponent } from '../logs/logs.component';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -29,7 +21,10 @@ import { LogsComponent } from '../logs/logs.component';
     templateUrl: './emergency-details.component.html',
     styleUrls: ['./emergency-details.component.scss'],
 })
-export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
+export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() recordForm!: FormGroup;
     @Input() focusEmergencyNumber!: boolean;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
@@ -37,7 +32,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     @ViewChild('emergencyNumber',{ read: ElementRef, static:true }) emergencyNumberField!: ElementRef;
     @ViewChild('callDateTimeField',{ read: ElementRef, static:true }) callDateTimeField!: ElementRef;
-    @ViewChild('dispatcherFiled',{ read: ElementRef, static:true }) dispatcherFiled!: ElementRef;
+    @ViewChild('dispatcher',{ read: ElementRef, static:true }) dispatcher!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -63,11 +58,13 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         this.callDateTimeField.nativeElement.focus();
     }
 
-    @HostListener('document:keydown.control.shift.d', ['$event'])
-    focusDispatcher(event: KeyboardEvent) {
+    @HostListener('document:keydown.control.d', ['$event'])
+    focusCallDispatcher(event: KeyboardEvent) {
         event.preventDefault();
-        this.dispatcherFiled.nativeElement.focus();
+        this.dispatcher.nativeElement.focus();
     }
+
+
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
@@ -84,73 +81,40 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
         const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
 
-        this.emergencyDetails.addControl(
-            'emergencyNumber',
-            new FormControl(
-                '',
-                [Validators.required],
-                [
-                    this.emergencyNumberValidator.validate(
-                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,1)
-                ]
-            )
-        );
-
-        this.emergencyDetails.addControl('emergencyNumber', new FormControl());
-
-        this.emergencyDetails.addControl(
-            'callDateTime',
-            new FormControl(getCurrentTimeString(), Validators.required),
-        );
-        this.emergencyDetails.addControl(
-            'dispatcher',
-            new FormControl('', Validators.required),
-        );
-        this.emergencyDetails.addControl(
-            'code',
-            new FormControl({EmergencyCodeId: null, EmergencyCode: null}),
-        );
+        this.addFormControls();
 
         // When the case is saved the emergencyCaseId will change, so we'll need to validate again.
-        emergencyCaseId?.valueChanges.subscribe(() => {
-            const emergencyNumber = this.recordForm.get(
-                'emergencyDetails.emergencyNumber',
-            );
+        emergencyCaseId?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+
+            const emergencyNumber = this.recordForm.get('emergencyDetails.emergencyNumber');
 
             emergencyNumber?.clearAsyncValidators();
-            emergencyNumber?.setAsyncValidators([
-                this.emergencyNumberValidator.validate(
-                    emergencyCaseId?.value,
-                    1,
-                ),
-            ]);
-        });
+            emergencyNumber?.setAsyncValidators([this.emergencyNumberValidator.validate(emergencyCaseId?.value,1)]);
 
-        this.emergencyDetails.addControl(
-            'callDateTime',
-            new FormControl(getCurrentTimeString(), Validators.required),
-        );
-        this.emergencyDetails.addControl(
-            'dispatcher',
-            new FormControl('', Validators.required),
-        );
-        // this.emergencyDetails.addControl('code',new FormControl('', Validators.required));
+        });
 
         this.caseService
             .getEmergencyCaseById(emergencyCaseId?.value)
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(result => {
                 this.recordForm.patchValue(result);
             });
 
         this.recordForm
-            .get('emergencyDetails.emergencyNumber')
-            ?.valueChanges.subscribe(val => {
-                if (!val && this.focusEmergencyNumber) {
-                    this.emergencyNumberField.nativeElement.focus();
+            .get('emergencyDetails.emergencyNumber')?.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(val => {
+                if(!val && this.focusEmergencyNumber){
+                    this.callDateTimeField.nativeElement.focus();
                 }
 
                 this.updateEmergencyNumber(val);
             });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     ngAfterViewInit(){
@@ -158,6 +122,22 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
         if(this.focusEmergencyNumber) {
         setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
         }
+    }
+
+    private addFormControls() {
+        this.emergencyDetails.addControl('emergencyNumber',
+            new FormControl(
+                '',
+                [Validators.required],
+                [this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value, 1)]
+            )
+        );
+
+        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
+        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
+        this.emergencyDetails.addControl('code',new FormControl({ EmergencyCodeId: null, EmergencyCode: null }));
+        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
+        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
@@ -180,12 +160,12 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit {
 
     selectEmergencyCode($event: any) {
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
-        this.emergencyCodes$.subscribe((codes: EmergencyCode[]) => {
-            const selectedCode = codes.find((code: EmergencyCode) => {
-                return (
-                    code.EmergencyCode.substr(0, 1).toLowerCase() ===
-                    $event.key.toLowerCase()
-                );
+        this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+            const selectedCode = codes.find((code:EmergencyCode) => {
+
+                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
+
             });
 
             if (selectedCode) {
