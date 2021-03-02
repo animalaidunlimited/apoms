@@ -23,7 +23,8 @@
     border: solid 0.1px lightgray;
     box-shadow: none;
     .mat-expansion-panel-header {
-        padding: 10px 6px 19px 6px;
+        padding: 0;
+        height: unset;
     }
   }
   ::ng-deep .streetTreatPanel .mat-expansion-panel-header .mat-content {
@@ -89,7 +90,8 @@
 
  .timeline {
   display: flex;
-  margin-top:10px;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
   ul {
     padding: 0;
     padding-right: 10px;
@@ -192,7 +194,6 @@ ngx-charts-bar-vertical-stacked{
 }
 .StreetTreat_Container .mat-expansion-panel-header.mat-expanded {
   background-color: lightsteelblue !important;
-  //padding: 9px 6px 0px 6px !important;
   margin-bottom: 10px;
 }
 .streetreat_visit{
@@ -219,9 +220,7 @@ ngx-charts-bar-vertical-stacked{
   box-shadow: 5px 5px 25px #bebebe, -5px -5px 25px #fff;
   margin: 1rem 0 0.5rem 0;
 }
-.card_wrapper {
-  margin-top: 15px;
-}
+
 .StreetTreat_Container_visit_compression{
   margin-left:10px;
 }
@@ -252,10 +251,7 @@ ngx-charts-bar-vertical-stacked{
 
 
 @media only screen and (min-width: 1440px) {
-  .streetTreatPanel .mat-expansion-panel-header {
-    padding: 6px 6px 15px 6px;
-  }
-  
+   
   .card_wrapper{
     margin-top:0;
   }
