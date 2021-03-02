@@ -23,7 +23,7 @@
 >
     <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index" class="searchRows">
         <div [formGroupName]="i">
-            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxFlex="7" fxFlexOrder="1" class="delete-search">
                     <button class="delete-search-row" style="cursor: pointer; margin-right:15px; " mat-mini-fab color="warn" aria-label="Delete this Visit" (click)="removeRow(i)">
                         <mat-icon>delete</mat-icon>
