@@ -5,7 +5,7 @@ import { APIService } from '../http/api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LoggerService extends APIService{
+export class LogsService extends APIService{
   endpoint = 'Logger';
   constructor(http: HttpClient) { 
     super(http);

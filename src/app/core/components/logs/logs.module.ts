@@ -16,4 +16,4 @@ import { MaterialModule } from 'src/app/material-module';
     LogsComponent
   ]
 })
-export class PatientVisitDetailsModule { }
+export class LogsModule { }

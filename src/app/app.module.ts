@@ -39,7 +39,7 @@ export class UIErrorHandler extends ErrorHandler {
 
 @NgModule({
 
-    declarations: [AppComponent, ConfirmationDialog, LogsComponent],
+    declarations: [AppComponent, ConfirmationDialog],
 
     imports: [
         BrowserModule,
