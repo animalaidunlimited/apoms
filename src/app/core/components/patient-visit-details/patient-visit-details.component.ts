@@ -1,7 +1,7 @@
 
 import { VisitType } from '../../models/visit-type';
 import { TeamDetails } from '../../models/team';
-import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
@@ -13,16 +13,17 @@ import { trigger, style, transition, animate, keyframes, query, stagger } from '
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { UniqueValidators } from './unique-validators';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 interface VisitCalender {
 	status: number;
 	date: Date;
 }
+
 @Component({
 	selector: 'app-patient-visit-details',
 	templateUrl: './patient-visit-details.component.html',
@@ -73,45 +74,33 @@ interface VisitCalender {
 		])
 	]
 })
-export class PatientVisitDetailsComponent implements OnInit, OnChanges {
+export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestroy {
 
-	streatTreatForm!: FormGroup;
+    private ngUnsubscribe = new Subject();
 
 	errorMatcher = new CrossFieldErrorMatcher();
-
-	visitsArray!: FormArray;
-
-	teamListData$!: Observable<TeamDetails[]>;
-
-	problems$!: Observable<StreetTreatMainProblem[]>;
-
-	status$!: Observable<Status[]>;
-
-	visitType$!: Observable<VisitType[]>;
-
-	treatmentPriority$!: Observable<Priority[]>;
-
-	showVisitDate = false;
-
-	prevVisits: string[] = [];
-
-	visitDates: VisitCalender[] = [];
-
-	streetTreatCase!: any;
-
-
 	loadCalendarComponent = true;
 
-	@Input() recordForm!: FormGroup;
+	prevVisits: string[] = [];
+	problems$!: Observable<StreetTreatMainProblem[]>;
 
-	@Input() isStreetTreatTrue!: boolean;
+	showVisitDate = false;
+	status$!: Observable<Status[]>;
+	streetTreatCase!: any;
+	streatTreatForm!: FormGroup;
+	teamListData$!: Observable<TeamDetails[]>;
+	treatmentPriority$!: Observable<Priority[]>;
 
-	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
+	visitsArray!: FormArray;
+	visitDates: VisitCalender[] = [];
+	visitType$!: Observable<VisitType[]>;
 
 	@Input() dateSelected!: string[];
+	@Input() isStreetTreatTrue!: boolean;
+	@Input() recordForm!: FormGroup;
 
 	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
-
+	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
 
 	@ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
 
@@ -183,6 +172,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 
 	}
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
 
 	public get castedVisitArray() {
 		const castedVisitsArray: string[] = [];
@@ -251,29 +245,41 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 	}
 
 	addVisits($event?: Event) {
-		$event?.preventDefault();
-		$event?.stopPropagation();
-		this.visitsArray.push(this.getVisitFormGroup());
-		this.visitsArray.updateValueAndValidity();
-		this.changeDetectorRef.detectChanges();
 
+		this.preventPropogation($event);
+		this.visitsArray.push(this.getVisitFormGroup());
+		this.updateValidityAndDetectChanges();
 	}
 
 	deleteVisits(index: number, $event: Event) {
-		$event.preventDefault();
-		$event.stopPropagation();
+
+		this.preventPropogation($event);
 		this.visitsArray.removeAt(index);
+		this.updateValidityAndDetectChanges();
+	}
+
+	private preventPropogation($event: Event | undefined) {
+		$event?.preventDefault();
+		$event?.stopPropagation();
+	}
+
+	private updateValidityAndDetectChanges() {
 		this.visitsArray.updateValueAndValidity();
 		this.changeDetectorRef.detectChanges();
-
 	}
 
 	initStreetTreatForm() {
+
 		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
-		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId).subscribe((response) => {
+
+		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
+		.pipe(takeUntil(this.ngUnsubscribe))
+		.subscribe((response) => {
+
 			if (response.streetTreatCaseId) {
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: any) => {
+
 						if (visit.visit_date) {
 							this.showVisitDate = true;
 							// Set Validators Visit Date Unique When Date are finialized
@@ -298,14 +304,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 					this.calendar.updateTodaysDate();
 				}
 
-				this.prevVisits = response.visits.map((prevVisits: any) => {
-					if (prevVisits.visit_date)
-						return prevVisits.visit_date.toString();
-					else
-						return '';
-				});
+				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
+
 				this.streatTreatForm.patchValue(response);
+
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
+
 				this.changeDetectorRef.detectChanges();
 			}
 		});
@@ -325,7 +329,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			}
 		});
 
-		dialogRef.afterClosed().pipe(take(1)).subscribe((confirmed: boolean) => {
+		dialogRef.afterClosed()
+		.pipe(takeUntil(this.ngUnsubscribe))
+		.subscribe((confirmed: boolean) => {
 			if (confirmed) {
 				this.clearValidators();
 			}
@@ -394,7 +400,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 		this.changeDetectorRef.detectChanges();
 
 	}
+
 	onSelect(selectedDate: Date) {
+
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
 
 		const index = this.dateSelected.findIndex(x => x === date);
@@ -407,10 +415,13 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges {
 			this.dateSelected = this.dateSelected.slice();
 			this.addCalenderVisit(this.dateSelected);
 		}
+
 		this.changeDetectorRef.detectChanges();
 		this.calendar.updateTodaysDate();
 	}
+
 	dateClass() {
+
 		return (date: Date): MatCalendarCellCssClasses => {
 			let calenderCSS = '';
 
