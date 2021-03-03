@@ -31,7 +31,7 @@ interface StreetTreatRole {
          style({
           backgroundColor: '',
           width: '200px',
-          height: '80px',
+          height: '100%',
           visibility: 'visible'
         })),
         transition('true => false', [animate('250ms 750ms')]),
