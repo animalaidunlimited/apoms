@@ -4,7 +4,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
@@ -16,8 +16,9 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -43,6 +44,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     emergencyCaseId: number | undefined;
     exclusions: Exclusions[] = [] as Exclusions[];
 
+    filteredProblems!: Observable<any[]>;
+
+    selectedProblems:any[] = [];
+
     patientArrayDisplayedColumns: string[] = [
         'select',
         'animalType',
@@ -56,6 +61,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     patientArray:FormArray  = new FormArray([]);
 
     form = new FormGroup({});
+    problemInput = new FormControl();
     patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
 
     problems$: ProblemDropdownResponse[] = [];
@@ -85,9 +91,9 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         private dropdown: DropdownService,
         private printService: PrintTemplateService,
         private userOptions: UserOptionsService,
-        private mediaPaster: MediaPasteService
     ) {}
-
+    
+    
     ngOnInit() {
 
         this.recordForm.addControl('patients', this.fb.array([]));
@@ -115,8 +121,20 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.exclusions = this.dropdown.getExclusions();
 
         this.subscribeToChanges();
+        this.filteredProblems = 
+        this.problemInput.valueChanges.pipe(
+            startWith(''),
+            map(value => typeof value === 'string' ? value : value.name),
+            switchMap(problem => this.filter(problem))
+        );
     }
-
+    filter(filterValue: string) {
+       
+        return this.dropdown.getProblems().pipe(
+            map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue.toLowerCase()) === 0)),
+            map(problems => problems.map(problem => ({...problem, selected: false})))
+        );
+    }
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
@@ -739,7 +757,32 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.problemChips.chips.first.focus();
         }
     }
-    displayFn(problem: ProblemDropdownResponse): string {
-        return problem && problem.Problem ? problem.Problem : '';
+
+    toggleSelection(problem: any) {
+        problem.selected = !problem.selected;
+        if(problem.selected) {
+          this.selectedProblems.push(problem);
+        } else {
+          const i = this.selectedProblems.findIndex(value => value.problem === problem.problem);
+          this.selectedProblems.splice(i, 1);
+        }
+    
+        this.problemInput.setValue(this.selectedProblems);
+      }
+
+    displayFn(value: any ): string  {
+    let displayValue= '';
+    if (Array.isArray(value)) {
+        value.forEach((problem, index) => {
+        if (index === 0) {
+            displayValue = problem.Problem;
+        } else {
+            displayValue += ', ' + problem.Problem;
+        }
+        });
+    } else {
+        displayValue = value;
+    }
+    return displayValue;
     }
 }
