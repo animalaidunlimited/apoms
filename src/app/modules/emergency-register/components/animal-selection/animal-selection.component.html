@@ -105,13 +105,15 @@
     <div>
 
             <label class="label">Main problem(s)</label>
-            <input type="text" matInput [matAutocomplete]="auto">
+            <input type="text" matInput [formControl]="problemInput" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let problem of problems$" [value]="problem.Problem">
-                  {{problem.Problem}}
+                <mat-option *ngFor="let problem of (filteredProblems | async) " [value]="problem">
+                    <mat-checkbox [checked]="problem.selected" (change)="toggleSelection(problem)" (click)="$event.stopPropagation()">
+                        {{problem.Problem}}
+                    </mat-checkbox>
                 </mat-option>
-              </mat-autocomplete>
-            <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
+            </mat-autocomplete>
+           <!--  <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
                     tabindex="8"
                     (click)="problemChip.toggleSelected()"
@@ -121,7 +123,7 @@
                     (selectionChange)="problemChipSelected(problemChip);"
                     #problemChip="matChip"
                     *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>
-            </mat-chip-list>
+            </mat-chip-list> -->
 
     </div>
       </fieldset>
