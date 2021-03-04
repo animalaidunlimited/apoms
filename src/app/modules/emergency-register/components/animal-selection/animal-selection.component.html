@@ -105,7 +105,12 @@
     <div>
 
             <label class="label">Main problem(s)</label>
-
+            <input type="text" matInput [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let problem of problems$" [value]="problem.Problem">
+                  {{problem.Problem}}
+                </mat-option>
+              </mat-autocomplete>
             <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
                     tabindex="8"

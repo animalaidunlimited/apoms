@@ -739,5 +739,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.problemChips.chips.first.focus();
         }
     }
-
+    displayFn(problem: ProblemDropdownResponse): string {
+        return problem && problem.Problem ? problem.Problem : '';
+    }
 }
