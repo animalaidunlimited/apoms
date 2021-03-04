@@ -107,12 +107,19 @@
             <label class="label">Main problem(s)</label>
             <input type="text" matInput [formControl]="problemInput" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let problem of (filteredProblems | async) " [value]="problem">
+                <mat-option *ngFor="let problem of (filteredProblems | async) " [value]="filteredProblems">
                     <mat-checkbox [checked]="problem.selected" (change)="toggleSelection(problem)" (click)="$event.stopPropagation()">
                         {{problem.Problem}}
                     </mat-checkbox>
                 </mat-option>
             </mat-autocomplete>
+            <label>Selected Users:</label>
+            <mat-list dense fxLayout="row">
+                <mat-list-item *ngIf="selectedProblems?.length === 0">(None)</mat-list-item>
+                <mat-list-item *ngFor="let problem of selectedProblems">
+                    {{ problem.Problem }}
+                </mat-list-item>
+            </mat-list>
            <!--  <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
                     tabindex="8"
