@@ -36,6 +36,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
 
+    @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
+
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[] = [] as AnimalType[];
 
@@ -44,7 +46,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     exclusions: Exclusions[] = [] as Exclusions[];
 
     patientArrayDisplayedColumns: string[] = [
-        'select',
+        /* 'select', */
         'animalType',
         'mainProblem',
         'tagNo',
@@ -65,6 +67,13 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     validRow =true;
 
     emergencyCardHTML = '';
+
+    @HostListener('document:keydown.control.p', ['$event'])
+    addPatientTable(event: KeyboardEvent) {
+        event.preventDefault();
+        this.addPatientRow();
+    }
+
 
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
@@ -251,7 +260,9 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     toggleRow(row:FormGroup) {
-
+        if(this.selection.isSelected(row)){
+            row
+        }
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
             // We only ever want to have one item selected at once, but WE want to control when the change happens and how.
@@ -280,14 +291,14 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
 
     /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: FormGroup): string {
+/*     checkboxLabel(row?: FormGroup): string {
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${
             this.selection.isSelected(row) ? 'deselect' : 'select'
         } row ${row.get('position')?.value + 1}`;
-    }
+    } */
 
     clearChips() {
         this.currentPatientChip = '';
@@ -393,6 +404,16 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.patientTable.renderRows();
     }
 
+    addPatientRow(){
+        if(this.patientArray.valid){
+            const patient = this.getEmptyPatient();
+            this.patientArray.push(patient);
+            this.resetTableDataSource();
+            const selected = this.patientDataSource.data[this.patientArray.length - 1];
+            this.selection.select(selected);
+            this.subscribeToChanges();
+        }
+    }
     setSelected(position: number) {
 
         // Set the new row to be selected
@@ -739,5 +760,4 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.problemChips.chips.first.focus();
         }
     }
-
 }
