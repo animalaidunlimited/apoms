@@ -141,15 +141,14 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     filter(filterValue:any) {
+        console.log(filterValue);
         if(filterValue === null){
-          /*   this.dropdown.getProblems().pipe(
-                map(problems => problems.filter(problem => !this.selectedProblems.includes(problem.Problem)) )
-            ).subscribe(value => console.log(value)); */
             return this.dropdown.getProblems().pipe(
                 map(problems => problems.filter(problem => !this.selectedProblems.includes(problem.Problem)) )
             );
         }
         const searchTerm = typeof filterValue === 'string' ? filterValue : filterValue.Problem;
+        // console.log(searchTerm);
         return this.dropdown.getProblems().pipe(
             map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0))
         );
@@ -777,48 +776,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.problemChips.chips.first.focus();
         }
     }
-    add(event: MatChipInputEvent): void {
-        const input = event.input;
-        const value = event.value;
     
-        // Add our fruit
-        if ((value || '').trim()) {
-          this.selectedProblems.push(value.trim());
-        }
-    
-        // Reset the input value
-        if (input) {
-          input.value = '';
-        }
-    
-        this.problemInput.setValue(null);
-      }
-      remove(problem: string): void {
-        const index = this.selectedProblems.indexOf(problem);
-    
-        if (index >= 0) {
-          this.selectedProblems.splice(index, 1);
-        }
-      }
-      selected(event: MatAutocompleteSelectedEvent): void {
-
-        if (
-            !this.currentPatientChip &&
-            !(this.animalTypeChips.selected instanceof MatChip)
-        ) {
-
-            // TODO replace this with a better dialog.
-            alert('Please select an animal');
-            return;
-        }
-        else {
-        this.selectedProblems.push(event.option.viewValue);
-        this.poblemAuto.nativeElement.value = '';
-        this.problemInput.setValue(null);
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        currentPatient.get('problemsString')?.setValue(this.selectedProblems.toString());
-        this.patientTable.renderRows(); }
-      }
+      
       checkSpecies(){
         if (
             !this.currentPatientChip &&
@@ -829,5 +788,31 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             alert('Please select an animal');
             this.poblemAuto.nativeElement.blur();
         }
+      }
+      optionClicked(problem: ProblemDropdownResponse){
+        const value = problem.Problem;
+    
+        // Add our fruit
+        if ((value || '').trim()) {
+          this.selectedProblems.push(value.trim());
+        }
+        console.log(this.selectedProblems);
+        this.problemInput.setValue(null);
+      }
+      displayFn(problems:any): string {
+          console.log(problems);
+        let displayValue= '';
+        if (Array.isArray(problems)) {
+            problems.forEach((problem, index) => {
+            if (index === 0) {
+              displayValue = problem.Problem;
+            } else {
+              displayValue += ', ' + problem.Problem;
+            }
+          });
+        } else {
+          displayValue = problems;
+        }
+        return displayValue;
       }
 }

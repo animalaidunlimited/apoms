@@ -103,33 +103,25 @@
     </div>
 
     <div>
-        <mat-form-field class="problem-chip-list">
             <label class="label">Main problem(s)</label>        
-                <mat-chip-list #chipList>
-                  <mat-chip
-                    *ngFor="let problem of selectedProblems"
-                    [selectable]="selectable"
-                    [removable]="removable"
-                    (removed)="remove(problem)">
-                    {{problem}}
-                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                  </mat-chip>
                   <input
+                    type="text"
+                    matInput
                     tabindex="8"
                     #poblemAuto
                     (focus)="checkSpecies()"
                     [formControl]="problemInput"
-                    [matAutocomplete]="auto"
-                    [matChipInputFor]="chipList"
-                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="add($event)">
-                </mat-chip-list>
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                  <mat-option *ngFor="let problem of (filteredProblems | async)" [value]="problem">
-                    {{problem.Problem}}
+                    [matAutocomplete]="auto">
+                <mat-autocomplete  #auto="matAutocomplete" [displayWith]="displayFn">
+                  <mat-option *ngFor="let problem of (filteredProblems | async)" [value]="filteredProblems">
+                    <div (click)="optionClicked(problem)">
+                      <!--   [checked]="user.selected" (change)="toggleSelection(problem)" -->
+                        <mat-checkbox  (click)="$event.stopPropagation()">
+                            {{ problem.Problem }} 
+                        </mat-checkbox>
+                    </div>
                   </mat-option>
                 </mat-autocomplete>
             
-            </mat-form-field>
     </div>
       </fieldset>
