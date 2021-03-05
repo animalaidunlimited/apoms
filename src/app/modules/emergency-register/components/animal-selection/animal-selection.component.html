@@ -111,12 +111,13 @@
                     #poblemAuto
                     (focus)="checkSpecies()"
                     [formControl]="problemInput"
+                    (keydown.space)="setOptionFocus($event)"
                     [matAutocomplete]="auto">
                 <mat-autocomplete  #auto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option *ngFor="let problem of (filteredProblems | async)" [value]="filteredProblems">
-                    <div (click)="optionClicked(problem)">
+                  <mat-option #problemsAutoOptions *ngFor="let problem of (filteredProblems | async)" [value]="filteredProblems"  (keydown.space)="toggleSelection($event,problem.Problem)">
+                    <div (click)="optionClicked(problem.Problem)">
                       <!--   [checked]="user.selected" (change)="toggleSelection(problem)" -->
-                        <mat-checkbox  (click)="$event.stopPropagation()">
+                        <mat-checkbox [checked]="checkProblemSelected(problem.Problem)" (change)="toggleSelection($event,problem.Problem)" (click)="$event.stopPropagation()">
                             {{ problem.Problem }} 
                         </mat-checkbox>
                     </div>
