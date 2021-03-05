@@ -17,7 +17,7 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -35,7 +35,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips!: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
-
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
@@ -72,6 +71,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         this.addPatientRow();
+        this.clearChips();
+        this.animalTypeChips.chips.first.focus();
     }
 
 
@@ -113,13 +114,20 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
         this.dropdown
             .getAnimalTypes()
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(
+                
+                map((animalTypes:AnimalType[]) => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0))),
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
 
         this.dropdown
             .getProblems()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(problems => (this.problems$ = problems));
+            .pipe(
+                takeUntil(this.ngUnsubscribe),
+                map((problems:ProblemDropdownResponse[]) => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
+            )
+            .subscribe(problems => this.problems$ = problems);
 
         this.exclusions = this.dropdown.getExclusions();
 
