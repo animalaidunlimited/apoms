@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, HostListener, ViewChildren, QueryList, ElementRef, ContentChildren } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
@@ -7,6 +7,7 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -20,6 +21,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
 
     @Input() recordForm!: FormGroup;
 
+    @ViewChildren(CallerAutocompleteComponent) callerAutoComplete!: QueryList<CallerAutocompleteComponent>;
     caller$!: Caller;
     callerDetails!:FormGroup;
     callerArray!: FormArray;
@@ -30,6 +32,11 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     errorMatcher = new CrossFieldErrorMatcher();
     selection = new SelectionModel<any>(false, []);
 
+    @HostListener('document:keydown.alt.shift.n', ['$event'])
+    setFocusNumber(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+    }
     constructor(
         private callerService: CallerDetailsService,
         private fb: FormBuilder,

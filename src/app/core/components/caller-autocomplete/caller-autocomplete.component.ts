@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Validators, AbstractControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap, map, catchError, takeUntil } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
@@ -21,6 +21,7 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
   @Output() isPrimary: EventEmitter<number> = new EventEmitter();
   @Output() callerDeleted: EventEmitter<number> = new EventEmitter();
 
+  @ViewChild('callerNumberRef') callerNumberRef!: ElementRef;
   callerNumber!: AbstractControl | null;
   callerAutoComplete$!: Observable<any> | undefined;
   errorMatcher = new CrossFieldErrorMatcher();
@@ -104,5 +105,7 @@ updateValidators() {
   checkBox(callerIndex: number) {
     this.isPrimary.emit(callerIndex);
   }
-
+  setNumberFocus(){
+    this.callerNumberRef.nativeElement.foucs();
+  }
 }
