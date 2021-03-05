@@ -42,6 +42,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
     
 
+    @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
+
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[] = [] as AnimalType[];
 
@@ -133,25 +135,34 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.exclusions = this.dropdown.getExclusions();
 
         this.subscribeToChanges();
+        this.problemInput.valueChanges.subscribe(options => {
+            if(options !== null && typeof options === 'object'){
+                options.subscribe((value:any) => console.log(value));
+            }
+            });
+        
         this.filteredProblems = 
         this.problemInput.valueChanges.pipe(
             startWith(''),
             switchMap(problem => this.filter(problem))
+            /* switchMap(problem => 
+                iif(()=> problem !== null && typeof problem === 'object', of(), this.filter(problem))
+            ) */
         );
     }
 
     filter(filterValue:any) {
-        console.log(filterValue);
-        if(filterValue === null){
+        if(typeof filterValue === 'string' || filterValue?.Problem){
+            const searchTerm = typeof filterValue === 'string' ? filterValue : filterValue.Problem;
+
             return this.dropdown.getProblems().pipe(
-                map(problems => problems.filter(problem => !this.selectedProblems.includes(problem.Problem)) )
+                map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0))
             );
+        }else{
+                return this.dropdown.getProblems().pipe(
+                    map(problems => problems.filter(problem => !this.selectedProblems.includes(problem.Problem)) )
+                );
         }
-        const searchTerm = typeof filterValue === 'string' ? filterValue : filterValue.Problem;
-        // console.log(searchTerm);
-        return this.dropdown.getProblems().pipe(
-            map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0))
-        );
     }
 
     ngOnDestroy() {
@@ -789,18 +800,27 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.poblemAuto.nativeElement.blur();
         }
       }
-      optionClicked(problem: ProblemDropdownResponse){
-        const value = problem.Problem;
-    
+
+
+
+      optionClicked(problem: string){
+        const value = problem;
         // Add our fruit
         if ((value || '').trim()) {
           this.selectedProblems.push(value.trim());
+          this.selectedProblems = [ ...new Set(this.selectedProblems)];
         }
-        console.log(this.selectedProblems);
+
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const problemString = this.selectedProblems.toString();
+        
+        currentPatient.get('problemsString')?.setValue(problemString);
         this.problemInput.setValue(null);
       }
+
+
       displayFn(problems:any): string {
-          console.log(problems);
+          // console.log(problems);
         let displayValue= '';
         if (Array.isArray(problems)) {
             problems.forEach((problem, index) => {
@@ -815,4 +835,29 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
         return displayValue;
       }
+
+    toggleSelection($event:any,problem:string){
+        console.log($event);
+        const value = problem;
+        // Add our fruit
+        if ((value || '').trim()) {
+          this.selectedProblems.push(value.trim());
+          this.selectedProblems = [ ...new Set(this.selectedProblems)];
+        }
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const problemString = this.selectedProblems.toString();
+        currentPatient.get('problemsString')?.setValue(problemString);
+    }
+    checkProblemSelected(problem:string){
+        if(this.selectedProblems.includes(problem)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    setOptionFocus($event:KeyboardEvent){
+        console.log($event);
+        this.problemsAutoOptions.nativeElement.focus();
+    }
 }
