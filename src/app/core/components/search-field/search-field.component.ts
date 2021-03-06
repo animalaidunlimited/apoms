@@ -140,13 +140,36 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             searchValue: 'outcome',
             databaseField: 'search.CallOutcome',
             name: 'Result',
-            inNotIn: false
+            inNotIn: true
         },
         {
             id: 11,
             inputType: 'text',
             searchValue: 'cloc',
-            databaseField: 'search.CurrentLocation',
+            databaseField: 'search.EmergencyCaseId IN ' +
+            '( ' +
+            '    SELECT EmergencyCaseId ' +
+            '    FROM ( ' +
+            '    SELECT EmergencyCaseId ' +
+            '    FROM ( ' +
+            '        SELECT ' +
+            '            p.EmergencyCaseId, ' +
+            '            ca.Area, ' +
+            '            ROW_NUMBER() OVER ( PARTITION BY c.PatientId ORDER BY c.CensusDate DESC, cac.SortAction DESC) RNum ' +
+            '        FROM AAU.Census c ' +
+            '        INNER JOIN AAU.CensusArea ca ON ca.AreaId ~~ c.AreaId AND c.ActionId <> 2 ' +
+            '        INNER JOIN AAU.CensusAction cac ON cac.ActionId ~~ c.ActionId ' +
+            '        INNER JOIN AAU.Patient p ON p.PatientId ~~ c.PatientId AND p.PatientStatusId ~~ 1 ' +
+            '    ) LatestArea ' +
+            '    WHERE LatestArea.RNum ~~ 1 ' +
+            '    UNION ' +
+            '    SELECT EmergencyCaseId, AAU.fn_GetAreaForAnimalType(p.OrganisationId, p.AnimalTypeId) ' +
+            '    FROM AAU.Patient p ' +
+            '    WHERE p.PatientStatusId ~~ 1 ' +
+            '    ) area ' +
+            '    WHERE  ' +
+            ') '
+            ,
             name: 'Current location',
             inNotIn: false
         },
