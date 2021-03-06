@@ -115,7 +115,6 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
   saveForm(){
-
     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
 
       response.success === 1
