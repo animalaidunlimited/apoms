@@ -12,6 +12,7 @@ import { sideNavPath } from '../nav-routing';
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavGuard implements CanActivateChild {
     private previousUrl = '';
 
@@ -34,9 +35,10 @@ export class NavGuard implements CanActivateChild {
 
             if (parentPath === sideNavPath) {
                 this.navigationService.selectNavigationItemByPath(
-                    childRoute.url.map(url => url.path).join('/'),
+                    childRoute.url.map(url => url.path).join('/')
                 );
             }
+            
             const noQueryParamsSateUrl = state.url
                 .split('?')[0]
                 .split('/')
@@ -44,6 +46,7 @@ export class NavGuard implements CanActivateChild {
                     return urlSegment !== sideNavPath;
                 })
                 .join('/');
+
             while (
                 this.previousUrl.indexOf(noQueryParamsSateUrl) === 0 &&
                 noQueryParamsSateUrl.length <
@@ -51,7 +54,9 @@ export class NavGuard implements CanActivateChild {
             ) {
                 this.navigationService.popFromStack();
             }
+
             this.previousUrl = noQueryParamsSateUrl;
+
             this.navigationService.setActivePage(
                 childRoute.data.title,
                 childRoute.url.map(url => url.path),
