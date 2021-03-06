@@ -5,11 +5,11 @@ import { NavRoute, NavRouteService } from '../../../nav-routing';
 export class Page {
     title: string;
     isChild: boolean;
-    // userHasPermission: boolean;
-    constructor(title:string, isChild:boolean) {
+    userHasPermission: boolean;
+    constructor(title:string, isChild:boolean,userHasPermission:boolean) {
         this.title = title;
         this.isChild = isChild;
-        // this.userHasPermission = userHasPermission;
+        this.userHasPermission = userHasPermission;
     }
 }
 
@@ -19,7 +19,7 @@ export class Page {
 export class NavigationService {
     private readonly navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
-    private activePage: Page = new Page('', false);
+    private activePage: Page = new Page('', false,false);
     private navigationStack: Array<Array<string>> = [];
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
@@ -119,14 +119,12 @@ export class NavigationService {
         title: string,
         url: string[],
         isChild: boolean = false,
-        // userHasPermission: boolean = true
+        userHasPermission: boolean = true
     ) {
 
-        // console.log(userHasPermission);
-
-        if (url.length > 0) {
+        if (url.length > 0 && userHasPermission) {
             isChild ? this.pushToStack(url) : this.resetStack(url);
         }
-        this.activePage = new Page(title, isChild);
+        this.activePage = new Page(title, isChild, userHasPermission);
     }
 }

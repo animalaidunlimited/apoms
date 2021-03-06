@@ -184,7 +184,42 @@ export class UsersPageComponent implements OnInit {
             permissionType: 'Write'
           }]
         }
+        ,{
+          groupNameId: 4,
+          groupName: 'Census',
+          permissions: [{
+            permissionId: 7,
+            permissionType: 'Read'
+          }, {
+            permissionId : 8,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 5,
+          groupName: 'Reporting',
+          permissions: [{
+            permissionId: 9,
+            permissionType: 'Read'
+          }, {
+            permissionId : 10,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 6,
+          groupName: 'Admin',
+          permissions: [{
+            permissionId: 11,
+            permissionType: 'Read'
+          }, {
+            permissionId : 12,
+            permissionType: 'Write'
+          }]
+        }
       ];
+
+      this.userDetails.get('per')
 
       this.dropdown.getAllTeams().subscribe(team=>{
         this.teamNames = team;
@@ -209,7 +244,7 @@ export class UsersPageComponent implements OnInit {
 
     permissionChanges(permission: MatOptionSelectionChange) {
 
-      let permissions = this.userDetails.get('permission');
+      let permissions = this.userDetails.get('permissionArray');
 
       if(permission.isUserInput && permission.source.selected) {
           let arrayval = permissions?.value?.filter((val: number)=> 
