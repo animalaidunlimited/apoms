@@ -135,19 +135,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.exclusions = this.dropdown.getExclusions();
 
         this.subscribeToChanges();
-        this.problemInput.valueChanges.subscribe(options => {
-            if(options !== null && typeof options === 'object'){
-                options.subscribe((value:any) => console.log(value));
-            }
-            });
         
         this.filteredProblems = 
         this.problemInput.valueChanges.pipe(
             startWith(''),
             switchMap(problem => this.filter(problem))
-            /* switchMap(problem => 
-                iif(()=> problem !== null && typeof problem === 'object', of(), this.filter(problem))
-            ) */
         );
     }
 
@@ -160,8 +152,12 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             );
         }else{
                 return this.dropdown.getProblems().pipe(
-                    map(problems => problems.filter(problem => !this.selectedProblems.includes(problem.Problem)) )
-                );
+                    map(problems => {
+                        const problemsArray = ['Leg Problem'];
+                        console.log(problems.filter((problem:any) => !problemsArray.includes(problem.Problem) ));
+                        
+                        return problems;
+                    }));
         }
     }
 
@@ -437,7 +433,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.setSelected(position);
         }
 
-        this.hideIrrelevantChips(animalTypeChip);
+    /*     this.hideIrrelevantChips(animalTypeChip); */
         this.patientTable.renderRows();
     }
 
@@ -596,14 +592,14 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
         currentExclusions[0]?.exclusionList.forEach((exclusion:any) => {
 
-            this.problemChips.chips.forEach(chip => {
+            /* this.problemChips.chips.forEach(chip => {
 
                 if (chip.value === exclusion) {
                     chip.disabled = true;
                     chip.selectable = false;
                     chip.selected = false;
                 }
-            });
+            }); */
         });
     }
 
@@ -789,7 +785,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
     
       
-      checkSpecies(){
+    checkSpecies(){
         if (
             !this.currentPatientChip &&
             !(this.animalTypeChips.selected instanceof MatChip)
@@ -799,65 +795,32 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             alert('Please select an animal');
             this.poblemAuto.nativeElement.blur();
         }
-      }
+    }
 
-
-
-      optionClicked(problem: string){
-        const value = problem;
-        // Add our fruit
-        if ((value || '').trim()) {
-          this.selectedProblems.push(value.trim());
-          this.selectedProblems = [ ...new Set(this.selectedProblems)];
-        }
-
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        const problemString = this.selectedProblems.toString();
-        
-        currentPatient.get('problemsString')?.setValue(problemString);
+    selected(event: MatAutocompleteSelectedEvent): void{
+        this.poblemAuto.nativeElement.value = '';
         this.problemInput.setValue(null);
-      }
 
-
-      displayFn(problems:any): string {
-          // console.log(problems);
-        let displayValue= '';
-        if (Array.isArray(problems)) {
-            problems.forEach((problem, index) => {
-            if (index === 0) {
-              displayValue = problem.Problem;
-            } else {
-              displayValue += ', ' + problem.Problem;
-            }
-          });
-        } else {
-          displayValue = problems;
-        }
-        return displayValue;
-      }
-
-    toggleSelection($event:any,problem:string){
-        console.log($event);
-        const value = problem;
-        // Add our fruit
-        if ((value || '').trim()) {
-          this.selectedProblems.push(value.trim());
-          this.selectedProblems = [ ...new Set(this.selectedProblems)];
-        }
         const currentPatient = this.getcurrentPatient() as FormGroup;
-        const problemString = this.selectedProblems.toString();
-        currentPatient.get('problemsString')?.setValue(problemString);
-    }
-    checkProblemSelected(problem:string){
-        if(this.selectedProblems.includes(problem)){
-            return true;
-        }else{
-            return false;
+        const selectedProblems =  currentPatient.get('problemsString')?.value;
+ 
+        if(selectedProblems === '')
+        {
+            currentPatient.get('problemsString')?.setValue(event.option.viewValue);
         }
+        else{
+            currentPatient.get('problemsString')?.setValue(`${selectedProblems},${event.option.viewValue}`);
+        }
+     
+        this.patientTable.renderRows();
     }
+    remove(removeProblem:string){
+        
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const selectedProblems =  currentPatient.get('problemsString')?.value;
+        if(selectedProblems !== ''){
+            currentPatient.get('problemsString')?.setValue(selectedProblems.split(',').filter((problems:string) => problems.trim() !== removeProblem.trim()).join(','));
+        }
 
-    setOptionFocus($event:KeyboardEvent){
-        console.log($event);
-        this.problemsAutoOptions.nativeElement.focus();
     }
 }
