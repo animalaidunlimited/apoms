@@ -12,7 +12,7 @@ export const sideNavPath = 'nav';
 
 export const navRoutes: NavRoute[] = [
     {
-        data: { title: 'Home' },
+        data: { title: 'Home' , userHasPermission: false},
         icon: 'home',
         path: 'home',
         loadChildren: () =>
@@ -129,6 +129,9 @@ export class NavRouteService {
     navRoutes: NavRoute[];
 
     constructor(router: Router) {
+
+        console.log('navRoute.service constructor');
+
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
