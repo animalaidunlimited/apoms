@@ -1,7 +1,7 @@
 <div [formGroup] = "callerForm">
 
     <mat-form-field >
-    <input tabindex="3" formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
+    <input tabindex="3" #callerNumberRef formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="setCallerDetails($event)">
             <mat-option *ngFor="let caller of callerAutoComplete$ | async;" [value]="caller">
 

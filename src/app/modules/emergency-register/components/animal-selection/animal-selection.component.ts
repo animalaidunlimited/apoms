@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestro
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { MatChip, MatChipInputEvent, MatChipList } from '@angular/material/chips';
+import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
@@ -17,7 +17,7 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 
@@ -37,6 +37,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     @ViewChild('animalTypeChips', { static: true }) animalTypeChips!: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
+    @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
     @ViewChild('poblemAuto') poblemAuto!: ElementRef<HTMLInputElement>;
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
@@ -47,11 +48,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[] = [] as AnimalType[];
 
-    visible = true;
+   
     selectable = true;
     removable = true;
     showMainProblemError = true;
-    separatorKeysCodes: number[] = [ENTER, COMMA];
     problemInput = new FormControl();
 
     currentPatientChip: string | undefined;
@@ -65,7 +65,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     selectedProblems:string[] = [];
 
     patientArrayDisplayedColumns: string[] = [
-        'select',
+        /* 'select', */
         'animalType',
         'mainProblem',
         'tagNo',
@@ -87,6 +87,15 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     validRow =true;
 
     emergencyCardHTML = '';
+
+    @HostListener('document:keydown.control.p', ['$event'])
+    addPatientTable(event: KeyboardEvent) {
+        event.preventDefault();
+        this.addPatientRow();
+        this.clearChips();
+        this.animalTypeChips.chips.first.focus();
+    }
+
 
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
@@ -125,13 +134,20 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
         this.dropdown
             .getAnimalTypes()
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(
+                
+                map((animalTypes:AnimalType[]) => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0))),
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
 
         this.dropdown
             .getProblems()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(problems => (this.problems$ = problems));
+            .pipe(
+                takeUntil(this.ngUnsubscribe),
+                map((problems:ProblemDropdownResponse[]) => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
+            )
+            .subscribe(problems => this.problems$ = problems);
 
         this.exclusions = this.dropdown.getExclusions();
 
@@ -305,7 +321,9 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     toggleRow(row:FormGroup) {
-
+        if(this.selection.isSelected(row)){
+            row
+        }
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
             // We only ever want to have one item selected at once, but WE want to control when the change happens and how.
@@ -334,14 +352,14 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
 
     /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: FormGroup): string {
+/*     checkboxLabel(row?: FormGroup): string {
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${
             this.selection.isSelected(row) ? 'deselect' : 'select'
         } row ${row.get('position')?.value + 1}`;
-    }
+    } */
 
     clearChips() {
         this.currentPatientChip = '';
@@ -447,6 +465,16 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.patientTable.renderRows();
     }
 
+    addPatientRow(){
+        if(this.patientArray.valid){
+            const patient = this.getEmptyPatient();
+            this.patientArray.push(patient);
+            this.resetTableDataSource();
+            const selected = this.patientDataSource.data[this.patientArray.length - 1];
+            this.selection.select(selected);
+            this.subscribeToChanges();
+        }
+    }
     setSelected(position: number) {
 
         // Set the new row to be selected
@@ -805,13 +833,13 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.poblemAuto.nativeElement.blur();
             alert('Please select an animal');
         }
-        const currentPatient = this.getcurrentPatient() as FormGroup;
+       /*  const currentPatient = this.getcurrentPatient() as FormGroup;
         const selectedProblems =  currentPatient.get('problemsString')?.value;
         if(selectedProblems === ''){
             this.showMainProblemError = true;
         }else{
             this.showMainProblemError = false;
-        }
+        } */
     }
 
     selected(event: MatAutocompleteSelectedEvent): void{
@@ -841,13 +869,21 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     }
 
-    changeFocusToProblemsSelection(){
+    changeFocusToProblemsSelection($event:Event){
+        $event.stopPropagation();
         this.poblemAuto.nativeElement.focus();
-        this.showMainProblemError = false;
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const selectedAnimals = currentPatient.get('animalType')?.value;
+        if(selectedAnimals !=='' ){
+            this.showMainProblemError = false;
+        }
     }
 
     setMainProblemError(){
-
-        this.showMainProblemError = true;
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const selectedProblems =  currentPatient.get('problemsString')?.value;
+        if(selectedProblems === '' ){
+            this.showMainProblemError = true;
+        }
     }
 }

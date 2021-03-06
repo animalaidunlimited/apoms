@@ -27,9 +27,6 @@ table {
     background-color: gray;
 }
 
-/* .invalid-row {
-    background-color: #fadce0;
-} */
 
 .duplicate {
     color: red;
@@ -57,6 +54,13 @@ table {
         width: 75%;
     }
 }
-.problem-chip-list {
-    width: 100%;
+
+.patientSelected{
+    background-color: lightsteelblue;
+}
+.form-sub-group .mat-table {
+    .mat-standard-chip {
+        margin: 0px;
+        padding: 0 0.5rem;
+    }
 }
