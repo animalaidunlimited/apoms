@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { UserActionService } from './core/services/user-details/user-action.service';
 import { AuthService } from './auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -49,7 +50,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Census' ,permissionId:[], userHasPermission: false},
+        data: { title: 'Census' ,permissionId:[7,8], userHasPermission: false},
         icon: 'none',
         group: '',
         path: 'census',
@@ -78,7 +79,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.TeamsPageModule),
     },
     {
-        data: { title: 'Reporting' ,permissionId:[], userHasPermission: false},
+        data: { title: 'Reporting' ,permissionId:[9,10], userHasPermission: false},
         icon: 'none',
         group: '',
         path: 'reporting',
@@ -96,7 +97,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule),
     },
     {
-        data: { title: 'User Admin' ,permissionId:[], userHasPermission: false},
+        data: { title: 'User Admin' ,permissionId:[11,12], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'users',
@@ -105,7 +106,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule),
     },
     {
-        data: { title: 'Organisations' ,permissionId:[], userHasPermission: false},
+        data: { title: 'Organisations' ,permissionId:[11,12], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'organisations',
@@ -114,7 +115,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule),
     },
     {
-        data: { title: 'Print templates' ,permissionId:[], userHasPermission: false},
+        data: { title: 'Print templates' ,permissionId:[11,12], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',
@@ -137,7 +138,7 @@ export class NavRouteService {
 
 
 
-    constructor(router: Router, private userService: UserActionService) {
+    constructor(router: Router, private permissionService: EvaluatePermissionService) {
 
         
 
@@ -152,25 +153,22 @@ export class NavRouteService {
             throw new Error ('No routes detected');
         }
 
-        this.userService.getUserPermissions().then(PermissionArray=> {
 
-            console.log(PermissionArray);
+        this.navRoute.children?.forEach(routeVal=> {
 
-            this.userPermissions = PermissionArray;
-
-            this.navRoute.children?.forEach(routeVal=> {
-
-                console.log(this.permissionTrueOrFalse(routeVal.data?.permissionId));
-               
-                if(routeVal.data && this.permissionTrueOrFalse(routeVal.data?.permissionId)) {
+            this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
+                if(val && routeVal.data) {
                     routeVal.data.userHasPermission = true;
                 }
-                
+
+                this.navRoutes.next(this.newMethod() || []);
             })
             
-            this.navRoutes.next(this.newMethod() || []);
+        })
+        
+        
 
-        }) 
+
 
         
     }
@@ -204,23 +202,7 @@ export class NavRouteService {
     public getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
-
-    public getPermission() {
-
-    }
     
 
-    public permissionTrueOrFalse(componentPermissionArray: number[]){
-
-        if(componentPermissionArray?.length) {
-            return this.userPermissions?.some(permissionId => componentPermissionArray.includes(permissionId)); 
-
-        }
-        else if (!componentPermissionArray?.length) {
-            return true;
-        }
-        else {
-            return false;   
-        }
-    }
+    
 }
