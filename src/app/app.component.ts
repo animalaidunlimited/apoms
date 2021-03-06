@@ -21,6 +21,8 @@ export class AppComponent implements OnInit{
         private printService: PrintTemplateService
     ) {
 
+        console.log('I was called');
+
         this.isPrinting = this.printService.getIsPrinting();
 
     }
