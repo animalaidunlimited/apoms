@@ -27,6 +27,7 @@
             <mat-form-field>
                 <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
             </mat-form-field>
+
             <mat-form-field>
                 <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'password' matInput>
                 <mat-icon matSuffix style="cursor: pointer;" (click)="hide=!hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -36,7 +37,6 @@
                 <mat-label>Pick color</mat-label>
                 <input type="color" formControlName='colour' matInput>
             </mat-form-field>
-
             
         </div>
 
@@ -49,24 +49,24 @@
 
         <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown>
             
-                <div class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
-                    <mat-form-field appearance="fill">
-                        <mat-label>-Team-</mat-label>
-                        <mat-select  formControlName= 'teamId'>
-                            <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
-                            {{name.TeamName}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill" >
-                        <mat-label>-StreetTreat role-</mat-label>
-                        <mat-select formControlName='roleId' >
-                            <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
-                                {{role.roleName}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+            <div class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
+                <mat-form-field appearance="fill">
+                    <mat-label>-Team-</mat-label>
+                    <mat-select  formControlName= 'teamId'>
+                        <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
+                        {{name.TeamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" >
+                    <mat-label>-StreetTreat role-</mat-label>
+                    <mat-select formControlName='roleId' >
+                        <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
+                            {{role.roleName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             
         </div>
 
@@ -81,6 +81,17 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>User permissions</mat-label>
+                <mat-select multiple formControlName = "permissionArray">
+                  <mat-optgroup *ngFor="let group of permissionGroupObject" [label]="group.groupName">
+                    <mat-option *ngFor="let permission of group.permissions" [value]="permission.permissionId" (onSelectionChange)="permissionChanges($event)">
+                      {{permission.permissionType}}
+                    </mat-option>
+                  </mat-optgroup>
+                </mat-select>
+              </mat-form-field>
         </div>
 
         <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="column" fxLayoutAlign='start center'>

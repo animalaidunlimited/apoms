@@ -1,5 +1,8 @@
 import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { UserActionService } from './core/services/user-details/user-action.service';
+import { AuthService } from './auth/auth.service';
+import { BehaviorSubject } from 'rxjs';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -12,7 +15,7 @@ export const sideNavPath = 'nav';
 
 export const navRoutes: NavRoute[] = [
     {
-        data: { title: 'Home' },
+        data: { title: 'Home', permissionId:[], userHasPermission: false},
         icon: 'home',
         path: 'home',
         loadChildren: () =>
@@ -26,7 +29,7 @@ export const navRoutes: NavRoute[] = [
         pathMatch: 'full',
     },
     {
-        data: { title: 'Emergency Register' },
+        data: { title: 'Emergency Register', permissionId:[1,2], userHasPermission: false },
         icon: 'none',
         group: '',
         path: 'emergency-register',
@@ -36,7 +39,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.EmergencyRegisterPageModule),
     },
     {
-        data: { title: 'Hospital Manager' },
+        data: { title: 'Hospital Manager', permissionId:[3,4], userHasPermission: false},
         icon: 'none',
         group: '',
         path: 'hospital-manager',
@@ -46,7 +49,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Census' },
+        data: { title: 'Census' ,permissionId:[], userHasPermission: false},
         icon: 'none',
         group: '',
         path: 'census',
@@ -55,7 +58,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.CensusPageModule),
     },
     {
-        data: { title: 'Case List' },
+        data: { title: 'Case List', permissionId:[5,6], userHasPermission: false},
         icon: '',
         group: 'Street Treat',
         path: 'street-treat',
@@ -66,7 +69,7 @@ export const navRoutes: NavRoute[] = [
     },
     
     {
-        data: { title: 'Teams' },
+        data: { title: 'Teams', permissionId:[5,6], userHasPermission: false},
         icon: 'none',
         group: 'Street Treat',
         path: 'teams',
@@ -75,7 +78,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.TeamsPageModule),
     },
     {
-        data: { title: 'Reporting' },
+        data: { title: 'Reporting' ,permissionId:[], userHasPermission: false},
         icon: 'none',
         group: '',
         path: 'reporting',
@@ -84,7 +87,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.ReportingPageModule),
     },
     {
-        data: { title: 'Settings' },
+        data: { title: 'Settings' ,permissionId:[], userHasPermission: false},
         icon: 'settings_applications',
         group: 'Settings',
         path: 'settings',
@@ -93,7 +96,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule),
     },
     {
-        data: { title: 'User Admin' },
+        data: { title: 'User Admin' ,permissionId:[], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'users',
@@ -102,7 +105,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule),
     },
     {
-        data: { title: 'Organisations' },
+        data: { title: 'Organisations' ,permissionId:[], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'organisations',
@@ -111,7 +114,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule),
     },
     {
-        data: { title: 'Print templates' },
+        data: { title: 'Print templates' ,permissionId:[], userHasPermission: false},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',
@@ -126,13 +129,22 @@ export const navRoutes: NavRoute[] = [
 })
 export class NavRouteService {
     navRoute!: Route;
-    navRoutes: NavRoute[];
+    navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
+    // navRoutes!: NavRoute[];
+    userPermissionArray!: number[];
+    permission!: boolean;
+    userPermissions!: number[]
 
-    constructor(router: Router) {
+
+
+    constructor(router: Router, private userService: UserActionService) {
+
+        
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
         if(routes){
+
             this.navRoute = routes;
         }
 
@@ -140,7 +152,31 @@ export class NavRouteService {
             throw new Error ('No routes detected');
         }
 
-        this.navRoutes = this.navRoute.children.filter(route => route.data && route.data.title)
+        this.userService.getUserPermissions().then(PermissionArray=> {
+
+            console.log(PermissionArray);
+
+            this.userPermissions = PermissionArray;
+
+            this.navRoute.children?.forEach(routeVal=> {
+
+                console.log(this.permissionTrueOrFalse(routeVal.data?.permissionId));
+               
+                if(routeVal.data && this.permissionTrueOrFalse(routeVal.data?.permissionId)) {
+                    routeVal.data.userHasPermission = true;
+                }
+                
+            })
+            
+            this.navRoutes.next(this.newMethod() || []);
+
+        }) 
+
+        
+    }
+
+    private newMethod() {
+        return this.navRoute.children?.filter(route => route.data && route.data.title && route.data.userHasPermission)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
                 if (route.group) {
                     const group: NavRoute | undefined = groupedList.find(navRoute => {
@@ -165,7 +201,26 @@ export class NavRouteService {
             }, []);
     }
 
-    public getNavRoutes(): NavRoute[] {
+    public getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
+    }
+
+    public getPermission() {
+
+    }
+    
+
+    public permissionTrueOrFalse(componentPermissionArray: number[]){
+
+        if(componentPermissionArray?.length) {
+            return this.userPermissions?.some(permissionId => componentPermissionArray.includes(permissionId)); 
+
+        }
+        else if (!componentPermissionArray?.length) {
+            return true;
+        }
+        else {
+            return false;   
+        }
     }
 }

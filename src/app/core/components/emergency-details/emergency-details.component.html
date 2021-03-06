@@ -4,7 +4,7 @@
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-    <mat-form-field>
+        <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
             <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
@@ -17,21 +17,21 @@
 
         </mat-form-field>
 
-    <mat-form-field>
-            <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
-            (focus)="setInitialTime()"
-            [min]="minimumDate"
-            [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
-    </mat-form-field>
+        <mat-form-field>
+                <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
+                (focus)="setInitialTime()"
+                [min]="minimumDate"
+                [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+        </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Dispatcher</mat-label>
-        <mat-select tabindex="10" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
-                {{dispatcher.FirstName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field >
+        <mat-form-field>
+            <mat-label>Dispatcher</mat-label>
+            <mat-select tabindex="10" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
+                    {{dispatcher.FirstName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field >
 
         <mat-form-field>
             <mat-label>Code</mat-label>
@@ -57,8 +57,8 @@
 
                 </mat-option>
             </mat-select>
-            </mat-form-field>
+        </mat-form-field>
 
     </div>
 
-  </fieldset>
+</fieldset>

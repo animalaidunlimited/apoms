@@ -15,7 +15,8 @@ import { sideNavPath } from '../nav-routing';
 export class NavGuard implements CanActivateChild {
     private previousUrl = '';
 
-    constructor(private navigationService: NavigationService) {}
+    constructor(private navigationService: NavigationService,
+        ) {}
 
     canActivateChild(
         childRoute: ActivatedRouteSnapshot,
@@ -56,6 +57,7 @@ export class NavGuard implements CanActivateChild {
                 childRoute.data.title,
                 childRoute.url.map(url => url.path),
                 childRoute.data.isChild,
+                // childRoute.data.userHasPermission
             );
 
 

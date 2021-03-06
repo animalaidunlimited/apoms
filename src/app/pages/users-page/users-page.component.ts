@@ -8,13 +8,31 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { state, style, transition, animate, trigger } from '@angular/animations';
+import { state, style, transition, animate, trigger, group } from '@angular/animations';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 
 interface StreetTreatRole {
   roleId: number;
   roleName: string;
 }
+
+interface PermissionObject {
+  groupId : number;
+  groupValue: number;
+}
+
+interface UserPermissions {
+  groupNameId: number;
+  groupName: string;
+  permissions: Permissions[];
+}
+
+interface Permissions {
+  permissionId : number;
+  permissionType: string
+}
+
 
 @Component({
     selector: 'app-users-page',
@@ -46,8 +64,13 @@ interface StreetTreatRole {
 
     ]
 })
+
 export class UsersPageComponent implements OnInit {
     loading = false;
+
+    permissionByGroupArray: PermissionObject[] = [];
+
+    permissionGroupObject!: UserPermissions[];
 
     teamNames!: TeamDetails[];
 
@@ -115,7 +138,8 @@ export class UsersPageComponent implements OnInit {
       isStreetTreatUser:[],
       teamId:[],
       roleId:[],
-      jobTitleId:[]
+      jobTitleId:[],
+      permissionArray:[]
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -125,13 +149,50 @@ export class UsersPageComponent implements OnInit {
     }];
 
     ngOnInit() {
-        this.dropdown.getAllTeams().subscribe(team=>{
-          this.teamNames = team;
-        });
-        this.dropdown.getUserJobType().subscribe(jobType=>{
-          this.jobTypes = jobType;
-        });
-        this.getrefreshTableData();
+
+      this.permissionGroupObject = [
+        {
+          groupNameId:1,
+          groupName: 'Emergency register',
+          permissions: [{
+            permissionId: 1,
+            permissionType: 'Read'
+          }, {
+            permissionId : 2,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 2,
+          groupName: 'Hospital Manager',
+          permissions: [{
+            permissionId: 3,
+            permissionType: 'Read'
+          }, {
+            permissionId : 4,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 3,
+          groupName: 'StreetTreat',
+          permissions: [{
+            permissionId: 5,
+            permissionType: 'Read'
+          }, {
+            permissionId : 6,
+            permissionType: 'Write'
+          }]
+        }
+      ];
+
+      this.dropdown.getAllTeams().subscribe(team=>{
+        this.teamNames = team;
+      });
+      this.dropdown.getUserJobType().subscribe(jobType=>{
+        this.jobTypes = jobType;
+      });
+      this.getrefreshTableData();
 
     }
 
@@ -142,19 +203,33 @@ export class UsersPageComponent implements OnInit {
         this.initialiseTable(this.userList);   
       });
 
+
       
     }
 
+    permissionChanges(permission: MatOptionSelectionChange) {
+
+      let permissions = this.userDetails.get('permission');
+
+      if(permission.isUserInput && permission.source.selected) {
+          let arrayval = permissions?.value?.filter((val: number)=> 
+          val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
+        );
+        permissions?.setValue(arrayval,{emitEvent:false});
+      }
+
+    }
+
+
     initialiseTable(userTableData:UserDetails[]) {
       this.dataSource = new MatTableDataSource(userTableData);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
-
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
 
     Submit(userDetailsForm: any) {
 
+      console.log(userDetailsForm.value);
       this.loading = true;
 
       if(userDetailsForm.get('password').value !== ''){
