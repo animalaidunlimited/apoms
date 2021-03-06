@@ -50,6 +50,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     visible = true;
     selectable = true;
     removable = true;
+    showMainProblemError = true;
     separatorKeysCodes: number[] = [ENTER, COMMA];
     problemInput = new FormControl();
 
@@ -139,7 +140,22 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.filteredProblems = 
         this.problemInput.valueChanges.pipe(
             startWith(''),
-            switchMap(problem => this.filter(problem))
+            switchMap(problem => this.filter(problem)),
+            map(problems => {
+                const currentPatient = this.getcurrentPatient() as FormGroup;
+                const selectedProblems =  currentPatient.get('problemsString')?.value;
+                if(selectedProblems !== ''){
+
+                    const problemsArray = selectedProblems.split(',').map((problemOption:string) => problemOption.trim());
+                    const filteredProblemsArray = problems.filter((problem:any) => !problemsArray.includes(problem.Problem.trim()));
+                    return filteredProblemsArray;
+
+                }else{
+
+                    return problems;
+
+                }
+            })
         );
     }
 
@@ -151,13 +167,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
                 map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0))
             );
         }else{
-                return this.dropdown.getProblems().pipe(
-                    map(problems => {
-                        const problemsArray = ['Leg Problem'];
-                        console.log(problems.filter((problem:any) => !problemsArray.includes(problem.Problem) ));
-                        
-                        return problems;
-                    }));
+                return this.dropdown.getProblems();
         }
     }
 
@@ -792,8 +802,15 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         ) {
 
             // TODO replace this with a better dialog.
-            alert('Please select an animal');
             this.poblemAuto.nativeElement.blur();
+            alert('Please select an animal');
+        }
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+        const selectedProblems =  currentPatient.get('problemsString')?.value;
+        if(selectedProblems === ''){
+            this.showMainProblemError = true;
+        }else{
+            this.showMainProblemError = false;
         }
     }
 
@@ -822,5 +839,15 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             currentPatient.get('problemsString')?.setValue(selectedProblems.split(',').filter((problems:string) => problems.trim() !== removeProblem.trim()).join(','));
         }
 
+    }
+
+    changeFocusToProblemsSelection(){
+        this.poblemAuto.nativeElement.focus();
+        this.showMainProblemError = false;
+    }
+
+    setMainProblemError(){
+
+        this.showMainProblemError = true;
     }
 }
