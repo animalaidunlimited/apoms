@@ -28,8 +28,40 @@
 
             <ng-container matColumnDef="mainProblem">
                     <th mat-header-cell *matHeaderCellDef> Main problem(s) </th>
-                    <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"
-                    [class.invalid-cell]="row.invalid && row.get('problemsString')?.value == ''"  > {{row.get("problemsString")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('problemsString')?.value == ''">  Main problem(s)</p></td>
+                    <td mat-cell *matCellDef="let row" 
+                    [class.invalid-cell]="row.invalid && row.get('problemsString')?.value == ''"  >
+                    <!-- (click)="toggleRow(row)" -->
+                    
+                    <mat-chip-list #chipList>
+                      <mat-chip
+                        *ngFor="let problem of selectedProblems"
+                        [selectable]="selectable"
+                        [removable]="removable"
+                        (removed)="remove(problem)">
+                        {{problem}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                      </mat-chip>
+                      <input
+                        tabindex="8"
+                        #poblemAuto
+                        (focus)="checkSpecies()"
+                        [formControl]="problemInput"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        (matChipInputTokenEnd)="add($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                      <mat-option *ngFor="let problem of (filteredProblems | async)" [value]="problem">
+                        {{problem.Problem}}
+                      </mat-option>
+                    </mat-autocomplete>
+                    
+                    <!-- {{row.get("problemsString")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('problemsString')?.value == ''">  Main problem(s)</p> -->
+                  
+                  
+                  
+                  </td>
             </ng-container>
 
             <ng-container matColumnDef="tagNo">
@@ -100,29 +132,5 @@
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
         </mat-chip-list>
 
-    </div>
-
-    <div>
-            <label class="label">Main problem(s)</label>        
-                  <input
-                    type="text"
-                    matInput
-                    tabindex="8"
-                    #poblemAuto
-                    (focus)="checkSpecies()"
-                    [formControl]="problemInput"
-                    (keydown.space)="setOptionFocus($event)"
-                    [matAutocomplete]="auto">
-                <mat-autocomplete  #auto="matAutocomplete" [displayWith]="displayFn">
-                  <mat-option #problemsAutoOptions *ngFor="let problem of (filteredProblems | async)" [value]="filteredProblems"  (keydown.space)="toggleSelection($event,problem.Problem)">
-                    <div (click)="optionClicked(problem.Problem)">
-                      <!--   [checked]="user.selected" (change)="toggleSelection(problem)" -->
-                        <mat-checkbox [checked]="checkProblemSelected(problem.Problem)" (change)="toggleSelection($event,problem.Problem)" (click)="$event.stopPropagation()">
-                            {{ problem.Problem }} 
-                        </mat-checkbox>
-                    </div>
-                  </mat-option>
-                </mat-autocomplete>
-            
     </div>
       </fieldset>
