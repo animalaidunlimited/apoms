@@ -77,7 +77,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 1,
             inputType: 'number',
             searchValue: 'emno',
-            databaseField: 'search.EmergencyNumber',
+            databaseField: 'ec.EmergencyNumber',
             name: 'Em. no.',
             inNotIn: false
         },
@@ -85,7 +85,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 2,
             inputType: 'date',
             searchValue: 'calldate',
-            databaseField: 'CAST(search.CallDateTime AS DATE)',
+            databaseField: 'CAST(ec.CallDateTime AS DATE)',
             name: 'Call Date',
             inNotIn: false
         },
@@ -93,7 +93,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 3,
             inputType: 'text',
             searchValue: 'tagno',
-            databaseField: 'search.TagNumber',
+            databaseField: 'p.TagNumber',
             name: 'Tag no.',
             inNotIn: false
         },
@@ -101,7 +101,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 4,
             inputType: 'text',
             searchValue: 'cname',
-            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
+            databaseField: 'ec.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
                 'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
                 'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
                 'WHERE ecr.IsDeleted ~~ 0 AND c.Name =',
@@ -112,7 +112,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 5,
             inputType: 'number',
             searchValue: 'cnumber',
-            databaseField: 'search.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
+            databaseField: 'ec.EmergencyCaseId IN (SELECT DISTINCT ec.EmergencyCaseId FROM Caller c ' +
                 'INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId ~~ c.CallerId ' +
                 'INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId ~~ ecr.EmergencyCaseId ' +
                 'WHERE ecr.IsDeleted ~~ 0 AND c.Number =',
@@ -123,7 +123,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 6,
             inputType: 'text',
             searchValue: 'location',
-            databaseField: 'search.Location',
+            databaseField: 'ec.Location',
             name: 'Location',
             inNotIn: false
         },
@@ -131,7 +131,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 8,
             inputType: 'dropdown',
             searchValue: 'species',
-            databaseField: 'search.AnimalTypeId',
+            databaseField: 'p.AnimalTypeId',
             dropdownName: 'animaltype',
             name: 'Animal type',
             inNotIn: false
@@ -140,7 +140,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 9,
             inputType: 'dropdown',
             searchValue: 'problem',
-            databaseField: 'search.ProblemId',
+            databaseField: 'pp.ProblemId',
             dropdownName: 'problem',
             name: 'Problem',
             inNotIn: false
@@ -149,7 +149,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 10,
             inputType: 'dropdown',
             searchValue: 'outcome',
-            databaseField: 'search.CallOutcomeId',
+            databaseField: 'ec.CallOutcomeId',
             dropdownName: 'calloutcome',
             name: 'Call outcome',
             inNotIn: false
@@ -166,7 +166,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 12,
             inputType: 'date',
             searchValue: 'releasedate',
-            databaseField: 'CAST(search.ReleaseDate AS DATE)',
+            databaseField: 'p.PatientStatusId ~~ 2 AND CAST(p.PatientStatusDate AS DATE)',
             name: 'Release date',
             inNotIn: false
         },
@@ -174,7 +174,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 13,
             inputType: 'date',
             searchValue: 'dieddate',
-            databaseField: 'CAST(search.DiedDate AS DATE)',
+            databaseField: 'p.PatientStatusId ~~ 3 AND CAST(p.PatientStatusDate AS DATE)',
             name: 'Died date',
             inNotIn: false
         },
@@ -182,7 +182,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 14,
             inputType: 'boolean',
             searchValue: 'tycall',
-            databaseField: 'search.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
             name: 'Thanked',
             inNotIn: true
         }
@@ -378,7 +378,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         if (newDate.toString() === 'Invalid Date') {
             newDate = new Date(`${year}-${dateParts[1]}-${dateParts[2]}`);
         }
-        
+
         return newDate.getMonth() + 1 ? newDate : 0;
     }
 

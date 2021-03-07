@@ -149,6 +149,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
+        console.log(resultBody);
+
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -349,5 +351,5 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
-   
+
 }
