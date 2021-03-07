@@ -119,7 +119,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     initialiseForm() : void {
 
-        if(!this.emergencyCaseId){
+        if (!this.emergencyCaseId) {
             return;
         }
 
@@ -152,9 +152,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
-        console.log(resultBody);
-
-        const result = {
+         const result = {
             message: 'Other error - See admin\n',
             failure: 0
         };
@@ -171,19 +169,19 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         // Check the caller succeeded
 
-        resultBody.callerSuccess.forEach((callerResult: any)=>{
-        if (callerResult.callerSuccess === 1) {
-            result.message += '';
-        } else if (callerResult.callerSuccess === 2) {
-            result.message += 'Error adding the caller: Duplicate record \n';
-            result.failure++;
-        } else {
-            result.message += 'Other error - See admin\n';
-            result.failure++;
-        }
+        resultBody.callerSuccess.forEach((callerResult: any) => {
+            if (callerResult.callerSuccess === 1) {
+                result.message += '';
+            } else if (callerResult.callerSuccess === 2) {
+                result.message += 'Error adding the caller: Duplicate record \n';
+                result.failure++;
+            } else {
+                result.message += 'Other error - See admin\n';
+                result.failure++;
+            }
         });
 
-        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
+        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any) => {
             if (emergencyCallerResult.Success === 1) {
                 result.message += '';
             } else if (emergencyCallerResult.Success === 2) {
@@ -193,7 +191,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.message += 'Other error - See admin\n';
                 result.failure++;
             }
-            });
+        });
 
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
@@ -230,11 +228,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     result.message += '';
                 } else if (problem.success === 2) {
                     result.message +=
-                        'Error adding the patient: Duplicate record \n';
+                        'Error adding the patient problems: Duplicate record \n';
                     result.failure++;
                 } else {
                     result.message +=
-                        'Error adding the patient: Other error - See admin \n';
+                        'Error adding the patient problems: Other error - See admin \n';
                     result.failure++;
                 }
             });
@@ -245,13 +243,13 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     async saveForm() {
 
         this.loading = true;
-        if(this.recordForm.pending){
+        if (this.recordForm.pending) {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
 
-            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
+            if (this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending) {
+                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true });
                 return;
             }
         }
@@ -273,7 +271,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 await this.caseService
                     .insertCase(emergencyForm)
                     .then(data => {
-                        if(data) {
+                        if (data) {
                             this.loading = false;
                         }
                         if (data.status === 'saved') {
@@ -292,15 +290,15 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         }
 
                         if (messageResult.failure === 0) {
-                            this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                            this.showSnackBar.successSnackBar('Case inserted successfully', 'OK');
                             this.syncedToLocalStorage = false;
                             this.recordForm.markAsPristine();
                         }
                         else if (messageResult.failure === -1) {
-                            this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+                            this.showSnackBar.successSnackBar('Duplicate case, please reload case', 'OK');
                         }
                         else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                            this.showSnackBar.errorSnackBar('Case saved offline', 'OK');
                             this.syncedToLocalStorage = true;
                             this.recordForm.markAsPristine();
                         }
@@ -313,9 +311,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     .updateCase(emergencyForm)
                     .then(data => {
 
-                        console.log(data);
-
-                        if(data) {
+                        if (data) {
                             this.loading = false;
                         }
 
@@ -331,17 +327,17 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
                         if (messageResult.failure === 0) {
 
-                            this.showSnackBar.successSnackBar('Case updated successfully','OK');
+                            this.showSnackBar.successSnackBar('Case updated successfully', 'OK');
                             this.syncedToLocalStorage = false;
                             this.recordForm.markAsPristine();
                         }
-                        else if (messageResult.failure === 1){
-                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                        else if (messageResult.failure === 1) {
+                            this.showSnackBar.errorSnackBar('Case updated offline.', 'OK');
                             this.syncedToLocalStorage = true;
                             this.recordForm.markAsPristine();
                         }
-                        else{
-                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
+                        else {
+                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.', 'OK');
                         }
                     })
                     .catch(error => {
@@ -356,4 +352,5 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
+
 }
