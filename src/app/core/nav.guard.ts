@@ -12,6 +12,7 @@ import { sideNavPath } from '../nav-routing';
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavGuard implements CanActivateChild {
     private previousUrl = '';
 
@@ -34,7 +35,7 @@ export class NavGuard implements CanActivateChild {
 
             if (parentPath === sideNavPath) {
                 this.navigationService.selectNavigationItemByPath(
-                    childRoute.url.map(url => url.path).join('/'),
+                    childRoute.url.map(url => url.path).join('/')
                 );
             }
 

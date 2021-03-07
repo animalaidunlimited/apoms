@@ -95,4 +95,8 @@
         <cruelty-details
             [patientId]="patientId"></cruelty-details>
     </mat-tab>
+    <mat-tab label="Logs" [disabled]="patientLoaded">
+        <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
+        <app-logs [logsData]="logsData"></app-logs>
+    </mat-tab>
 </mat-tab-group>
