@@ -149,7 +149,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
-        const result = {
+         const result = {
             message: 'Other error - See admin\n',
             failure: 0
         };
@@ -225,11 +225,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     result.message += '';
                 } else if (problem.success === 2) {
                     result.message +=
-                        'Error adding the patient: Duplicate record \n';
+                        'Error adding the patient problems: Duplicate record \n';
                     result.failure++;
                 } else {
                     result.message +=
-                        'Error adding the patient: Other error - See admin \n';
+                        'Error adding the patient problems: Other error - See admin \n';
                     result.failure++;
                 }
             });
