@@ -43,7 +43,7 @@
                     </div>
                     <div fxFlex class="searchbox-term">
 
-                            <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'"> 
+                            <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'">
                                 <mat-label>Options </mat-label>
                                 <mat-select formControlName="searchTerm"  [errorStateMatcher]="errorMatcher">
                                     <mat-option  *ngFor="let optionDropdown of (item.get('dropdownObservable')?.value | async)" [value]="optionDropdown.value" >
@@ -52,17 +52,17 @@
                                 </mat-select>
                             </mat-form-field>
 
-                            <mat-form-field *ngIf="item.get('inputType')?.value !== 'dropdown'"> 
+                            <mat-form-field *ngIf="item.get('inputType')?.value !== 'dropdown'">
                                 <input formControlName="searchTerm" autocomplete="off" matInput  type="{{item.get('inputType')?.value}}" [errorStateMatcher]="errorMatcher" />
-                            </mat-form-field> 
-                        
+                            </mat-form-field>
+
 
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div fxLayout="row-reverse">
+    <div fxLayout="row" fxLayoutAlign="center start">
         <button mat-mini-fab color="accent" aria-label="Add this Visit" class="add-search-row" (click)="addRow()">
             <mat-icon>add</mat-icon>
         </button>

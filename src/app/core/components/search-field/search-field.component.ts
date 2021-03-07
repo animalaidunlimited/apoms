@@ -180,9 +180,9 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         },
         {
             id: 14,
-            inputType: 'boolean',
+            inputType: 'text',
             searchValue: 'tycall',
-            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId=1)',
+            databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId~~1)',
             name: 'Thanked',
             inNotIn: true
         }
@@ -213,13 +213,13 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             searchRows: this.formBuilder.array([])
         });
 
-  this.navigationService.isSearchClicked
-  .pipe(takeUntil(this.ngUnsubscribe))
-  .subscribe((clicked)=> {
-      if(clicked && this.searchBox){
-            this.searchBox.nativeElement.focus();
-      }
-  });
+    this.navigationService.isSearchClicked
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((clicked)=> {
+        if(clicked && this.searchBox){
+                this.searchBox.nativeElement.focus();
+        }
+    });
 
         this.searchRows = this.searchForm.get('searchRows') as FormArray;
 
@@ -228,6 +228,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
+
     createItem(field: any, term: any, type: string | undefined, observable: Observable<any>): FormGroup {
         return this.formBuilder.group({
             searchField: [field, Validators.required],
@@ -255,11 +256,13 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         }
 
         const searchArray = this.getSearchArray();
+
         if (searchArray.length === 1) {
             if (searchArray[0].split(':')[1] === '' && this.search.searchString === '') {
                 return;
             }
         }
+
         const searchQuerys = searchArray
             .map(async item => {
                 const splitItem = item.split(':');
@@ -267,7 +270,6 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                 const option = this.options.find(
                     optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
                 );
-
 
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
@@ -280,10 +282,11 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                         option.databaseField = option.databaseField?.replace(' IN (', ' NOT IN (');
                     }
 
-                    return option.databaseField + encodeURIComponent(splitItem[1].trim());
+                    return option?.databaseField + (option?.searchValue === 'tycall' ? '' : encodeURIComponent(splitItem[1].trim()));
 
                 }
                 else if (option?.dropdownName) {
+
                     return await this.observableFactory(option?.dropdownName).pipe(
                         map((dropdowns: any) =>
                             dropdowns.map((dropdown: any) =>
@@ -302,15 +305,12 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                 else {
 
                     return option?.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
-
                 }
             });
         Promise.all(searchQuerys).then((searchQuery) => {
             this.searchString.emit(searchQuery.join('&'));
         });
     }
-
-
 
     toggleSearchBox() {
 
@@ -333,13 +333,11 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
 
         const searchArray = this.getSearchArray();
 
-        // Get the array of form elements and clear it out. We'll rebuild it from the
-        // search text box
+        // Get the array of form elements and clear it out. We'll rebuild it from the search text box
         this.searchRows = this.searchForm.get('searchRows') as FormArray;
         this.searchRows.clear();
 
         // Rebuild the search array form the search field
-
         searchArray.forEach(item => {
 
             const splitItem = item.split(':');
@@ -429,7 +427,6 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                 } else if (/^\d+$/.test(searchString)) {
 
                     toSplit = 'cnumber:' + this.search.searchString;
-
                 }
             }
             else {

@@ -149,8 +149,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
-        console.log(resultBody);
-
         const result = {
             message: 'Other error - See admin\n',
             failure: 0
