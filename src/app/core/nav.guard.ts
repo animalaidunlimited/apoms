@@ -38,7 +38,7 @@ export class NavGuard implements CanActivateChild {
                     childRoute.url.map(url => url.path).join('/')
                 );
             }
-            
+
             const noQueryParamsSateUrl = state.url
                 .split('?')[0]
                 .split('/')

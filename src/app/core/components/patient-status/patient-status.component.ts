@@ -19,20 +19,18 @@ import { take } from 'rxjs/operators';
     styleUrls: ['./patient-status.component.scss'],
 })
 export class PatientStatusComponent implements OnInit {
-    
+
     @Input() patientId!: number;
+    @Input() formInvalid!: boolean;
 
     currentTime = '';
     createdDate = '';
     errorMatcher = new CrossFieldErrorMatcher();
 
     notificationDurationSeconds = 3;
-
     patientStates$!:Observable<PatientStatusResponse[]>;
     patientStatusForm!:FormGroup;
-
     tagNumber:string | undefined;
-
 
     constructor(
         private dropdowns: DropdownService,
@@ -44,10 +42,7 @@ export class PatientStatusComponent implements OnInit {
     ) {
 
         this.patientStates$ = this.dropdowns.getPatientStates();
-
     }
-
-
 
     ngOnInit() {
 
@@ -55,15 +50,13 @@ export class PatientStatusComponent implements OnInit {
 
         this.patientStatusForm = this.fb.group({
             patientId: [this.patientId, Validators.required],
-            tagNumber: [, Validators.required],
+            tagNumber: [],
             createdDate: [, Validators.required],
             patientStatusId: [, Validators.required],
             patientStatusDate: [, Validators.required],
             PN: [],
             suspectedRabies: [false],
         });
-
-
 
         this.patientService
             .getPatientByPatientId(
@@ -77,6 +70,10 @@ export class PatientStatusComponent implements OnInit {
             });
 
         this.currentTime = getCurrentTimeString();
+
+        this.patientStatusForm.valueChanges.subscribe(() => {
+            this.formInvalid = this.patientStatusForm.invalid;
+        } );
 
     }
 

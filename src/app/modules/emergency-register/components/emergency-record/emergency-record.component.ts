@@ -49,7 +49,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
-        this.saveForm();
+
+        if(this.recordForm.valid){
+            this.saveForm();
+        }
     }
 
     @HostListener('window:beforeunload', ['$event'])

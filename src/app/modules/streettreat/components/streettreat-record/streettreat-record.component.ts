@@ -10,6 +10,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
+import { take } from 'rxjs/operators';
 
 
 
@@ -92,7 +93,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.animalTypes$ = this.dropdown.getAnimalTypes();
 
-    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res) => {
+    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).pipe(take(1)).subscribe((res) => {
       this.recordForm.patchValue(res);
       this.streetTreatServiceSubscription?.unsubscribe();
     });
