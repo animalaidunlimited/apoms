@@ -7,6 +7,20 @@ $standard-height: 48px;
     padding-bottom: 1px;
 }
 
+.delete-search-row {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: -0.8rem;
+    right: -1.4rem;
+    .material-icons {
+        font-size: 1rem;
+        line-height: 0.3;
+        margin-top: 2px;
+        margin-left: 0.2px;
+    }
+}
+
 .search-form {
     width: 97%;
     max-width: $standard-width * 3;
@@ -32,11 +46,71 @@ $standard-height: 48px;
 }
 
 .add-search-row {
-    margin-left: 15px;
-    margin-right: 15px;
-    height: 48px;
-    vertical-align: middle;
-    position: relative;
-    top: 15px;
-    cursor: pointer;
+    margin-bottom: 50px;
+    color: white;
+    background-color: #607d8b;
+    margin-right: 0.2rem;
+    width: 24px;
+    height: 24px;
+    .material-icons {
+        line-height: 0.4;
+        font-size: 1rem;
+    }
+}
+.searchbox-field, .searchbox-term {
+    .mat-form-field {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width:768px){
+    .searchbox{
+        min-width:29.5rem;
+    }
+    .searchbox-field {
+        margin-left: 0.7rem;
+        margin-right: 1rem !important;
+        .mat-form-field {
+            width: 100%;
+        }
+    }
+    .searchbox-term{
+        .mat-form-field {
+            width: 100%;
+        }
+    }
+}
+@media only screen and (max-width:768px){
+    .searchbox-field {
+        width:100%
+    }
+    .searchbox-term{
+        width: 100%;
+    }
+
+    .delete-search{
+        position: absolute;
+        top: -0.5rem;
+        right: -0.2rem;
+        &-row{
+            margin-top: 7px;
+            margin-bottom: 0;
+        }
+    }
+    .add-search-row{
+        margin-bottom: 25px;
+        margin-right: 0.5rem;
+    }
+}
+.search-form{
+	.searchRows {
+		margin: 10px;
+        border-radius: 0.5rem;
+        position: relative;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 15%), -6px -6px 16px 0 white;
+        margin-top: 1.5rem;
+		> div{
+			padding: 0.5rem;
+		}
+	}
 }

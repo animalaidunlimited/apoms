@@ -164,10 +164,6 @@
             box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
     }
-    .mat-form-field {
-        margin: 0 !important;
-        width: 100%;
-    }
     .mat-raised-button {
         width: 100%;
         margin-right: 0 !important;
@@ -178,6 +174,11 @@
     .mat-fab-wrapper {
         width: 100%;
     }
+    .mat-form-field{
+        width:100% !important;
+        margin-right: 0 !important;
+    }
+    
 }
 @media only screen and (max-width:768x){
     .visitsWrapper div {
@@ -186,6 +187,7 @@
     .visit_row_data > div{
         max-width:43rem !important;
     }
+    
 }
 @media only screen and (min-width: 1000px) {
     .add-visits-fab-btn {

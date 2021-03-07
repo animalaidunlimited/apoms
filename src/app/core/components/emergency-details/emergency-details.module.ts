@@ -1,3 +1,4 @@
+import { LogsModule } from 'src/app/core/components/logs/logs.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -7,7 +8,7 @@ import { EmergencyDetailsComponent } from '../emergency-details/emergency-detail
 
 @NgModule({
     declarations: [EmergencyDetailsComponent],
-    imports: [CommonModule, MaterialModule],
+    imports: [CommonModule, MaterialModule, LogsModule],
     exports: [EmergencyDetailsComponent],
 })
 export class EmergencyDetailsModule {}
