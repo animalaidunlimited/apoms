@@ -10,6 +10,7 @@ export interface SearchValue {
     inputType: string;
     searchValue: string | undefined;
     databaseField: string | undefined;
+    dropdownName?: string;
     name: string | undefined;
     inNotIn: boolean;
 }

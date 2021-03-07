@@ -57,7 +57,11 @@
 
                 </mat-option>
             </mat-select>
-            </mat-form-field>
+        </mat-form-field>
+        <button  mat-icon-button color="primary" aria-label="Release details" class="logs_btn"
+          (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm.get('emergencyDetails.emergencyNumber')); $event.preventDefault();">
+          <mat-icon>description</mat-icon>
+        </button>
 
     </div>
 
