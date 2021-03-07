@@ -410,20 +410,14 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             const chips = this.problemChips.chips;
 
             const foundChip = chips
-                .filter(allChips => {
-                    return allChips.disabled === false;
-                })
-                .find(chip => {
-                    return (
-                        chip.value.substr(0, 1).toLowerCase() ===
-                        event.key.toLowerCase()
-                    );
-                });
+                .filter(allChips => allChips.disabled === false)
+                .find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
 
             if (foundChip) {
                 foundChip.focus();
             }
-        } else if (event.keyCode === 13) {
+            
+        } else if (event.keyCode === 13) { // space
             this.problemChipSelected(problemChip);
         }
     }
