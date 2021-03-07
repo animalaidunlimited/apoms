@@ -159,7 +159,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             inputType: 'text',
             searchValue: 'cloc',
             databaseField: 'search.CurrentLocation',
-            name: 'Current location',
+            name: 'Current area',
             inNotIn: false
         },
         {
