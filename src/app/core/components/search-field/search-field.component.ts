@@ -185,6 +185,14 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId~~1)',
             name: 'Thanked',
             inNotIn: true
+        },
+        {
+            id: 15,
+            inputType: 'text',
+            searchValue: 'aka',
+            databaseField: 'search.KnownAsName',
+            name: 'Known as',
+            inNotIn: false
         }
     ];
 

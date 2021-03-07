@@ -20,6 +20,9 @@ export class NavComponent implements OnInit {
         private router: Router,
     ) {
 
+        console.log('nav.component constructor');
+
+
         this.isOpen = this.navigationService.getIsOpen();
 
     }

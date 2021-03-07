@@ -8,6 +8,7 @@ import { ViewChild } from '@angular/core';
 import { TeamDetailsService } from 'src/app/core/services/team-details/team-details.service';
 import { Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { take } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 @Component({
@@ -60,6 +61,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     getrefreshTableData() {
         this.teamSubsciption = this.teamDetailService
             .getAllTeams()
+            .pipe(take(1))
             .subscribe((teamListData: TeamDetails[]) => {
                 this.dataSource = new MatTableDataSource(teamListData);
                 this.dataSource.sort = this.sort;
@@ -131,7 +133,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
                 },
             },
         });
-        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+        dialogRef.afterClosed().pipe(take(1)).subscribe((confirmed: boolean) => {
             if (confirmed) {
                 this.teamDetails.get('IsDeleted')?.setValue(true);
                 this.submit();

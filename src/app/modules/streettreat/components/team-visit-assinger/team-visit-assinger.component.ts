@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import {MediaObserver} from '@angular/flex-layout';
+import { take } from 'rxjs/operators';
 
 
 export interface Position {
@@ -132,6 +133,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatServiceSubs =
         this.streetTreatService
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+        .pipe(take(1))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
@@ -162,6 +164,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   private initSwimlane() {
     this.streetTreatServiceSubs =
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+        .pipe(take(1))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
 
@@ -175,7 +178,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           this.streetTreatServiceSubs.unsubscribe();
         });
 
-    this.streetTreatService.getChartData().subscribe((data) => {
+    this.streetTreatService.getChartData().pipe(take(1)).subscribe((data) => {
       this.initChartData(data);
     });
   }
@@ -264,6 +267,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
           this.streetTreatServiceSubs = this.streetTreatService
           .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+          .pipe(take(1))
           .subscribe((streetTreatCaseByVisitDateResponse) => {
 
             streetTreatCaseByVisitDateResponse.Cases?.forEach(team =>
@@ -395,7 +399,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     $event?.stopPropagation();
     this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
 
-    this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
+    this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().pipe(take(1)).subscribe((cases)=>{
 
       this.streetTreatCaseByVisitDateResponse = cases;
       this.filteredStreetTreatCases = cases;
