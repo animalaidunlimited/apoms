@@ -98,13 +98,13 @@ export class TreatmentListComponent implements OnInit {
 
         let sortResult = 0;
 
-        if(this.getTreatmentPriority(a['Treatment priority'].toString()) === this.getTreatmentPriority(b['Treatment priority'].toString())){
+        if(this.getTreatmentPriority(a['Treatment priority']) === this.getTreatmentPriority(b['Treatment priority'])){
 
           sortResult = a['Tag number'] < b['Tag number'] ? -1 : 1;
         }
         else {
 
-          sortResult = this.getTreatmentPriority(a['Treatment priority'].toString()) < this.getTreatmentPriority(b['Treatment priority'].toString()) ?
+          sortResult = this.getTreatmentPriority(a['Treatment priority']) < this.getTreatmentPriority(b['Treatment priority']) ?
           1 : -1;
 
         }
@@ -128,25 +128,23 @@ export class TreatmentListComponent implements OnInit {
 
      };
 
-
       this.patientRecords.sort = this.sort;
-
 
     });
 
 
   }
-  getTreatmentPriority(treatmentPriority:string) : number {
+  getTreatmentPriority(treatmentPriority:string|number) : string {
 
     switch(treatmentPriority){
       case 'High' :
-        return 3;
+        return '3';
       case 'Medium' :
-        return 2;
+        return '2';
       case 'Low' :
-        return 1;
+        return '1';
       default :
-        return 0;
+        return '0';
     }
 
   }
@@ -218,14 +216,14 @@ export class TreatmentListComponent implements OnInit {
         },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    // dialogRef.afterClosed().subscribe(result => {
 
-        if (result) {
+    //    if (result) {
 
-          console.log(result);
+    //      console.log(result);
 
-        }
-    });
+    //    }
+    // });
 }
 
 cellClicked(cell:string, value:any){

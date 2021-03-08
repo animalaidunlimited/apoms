@@ -65,8 +65,6 @@ export class AssignReleaseComponent implements OnInit {
 
     this.releaseDetails.saveRelease(this.recordForm.getRawValue()).then((response: any)=>{
 
-      console.log(response);
-
       if(response?.success === -1){
         this.showSnackBar.errorSnackBar('Error updating patient status','OK');
         return;
