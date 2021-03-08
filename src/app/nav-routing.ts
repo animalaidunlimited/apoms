@@ -130,9 +130,6 @@ export class NavRouteService {
 
     constructor(router: Router) {
 
-        console.log('navRoute.service constructor');
-
-
         const routes = router.config.find(route => route.path === sideNavPath);
 
         if(routes){

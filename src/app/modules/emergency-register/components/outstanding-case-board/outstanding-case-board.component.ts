@@ -86,7 +86,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     {actionStatus: 5, actionStatusName: 'Admitted'}];
 
     autoRefresh = false;
-
+    
     caseFilter = [{
       groupId: 1,
       showTitle: 'Ambulance action',
