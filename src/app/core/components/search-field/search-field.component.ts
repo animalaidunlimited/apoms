@@ -273,11 +273,10 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
 
         const searchQuerys = searchArray
             .map(async item => {
+
                 const splitItem = item.split(':');
 
-                const option = this.options.find(
-                    optionVal => optionVal.searchValue === splitItem[0].toLowerCase(),
-                );
+                const option = this.options.find( optionVal => optionVal.searchValue === splitItem[0].toLowerCase() );
 
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
@@ -315,6 +314,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                     return option?.databaseField + '=' + encodeURIComponent(splitItem[1].trim());
                 }
             });
+
         Promise.all(searchQuerys).then((searchQuery) => {
             this.searchString.emit(searchQuery.join('&'));
         });
@@ -453,18 +453,23 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         // Create a nice string of all of the values for the user to look at
         const searchText = searchArray.controls
             .map(item => {
+
                 const option = this.options.find(currentOption => currentOption.id === item.value.searchField);
+
                 if (item.value.searchTerm instanceof Object) {
                     return option?.searchValue + ':' + item.value.searchTerm.value;
                 }
+
                 if (this.isDate(item.value.searchTerm)) {
                     const date = this.datepipe.transform(new Date(item.value.searchTerm), 'dd/MM/yyyy');
                     return option?.searchValue + ':' + date;
                 }
-                return option?.searchValue + ':' + item.value.searchTerm;
+
+                return option?.searchValue ? option.searchValue + ':' + item.value.searchTerm : '';
 
             })
             .join(' ');
+
 
         // Put the formatted string back into the text box.
         return searchText;

@@ -148,9 +148,13 @@ export class ReportingPageComponent implements OnInit {
 
             if(val.emergencyCaseDate) {
                 this.emergencyCases =  this.reportingService.getEmergencyCaseByDateAndOutcomeOrST(val.emergencyCaseDate, val.streetTreat, val.admission);
-                this.emergencyCases.subscribe((cases: any)=> {
+                this.emergencyCases.subscribe(cases=> {
                     if(cases) {
-                        this.emergencyCaseCount.next(cases.length || 0);
+
+
+                        const caseArray = new Set(cases.map(currentCase => currentCase.emergencyNumber));
+
+                        this.emergencyCaseCount.next(caseArray.size || 0);
                     }
                 });
             }

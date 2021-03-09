@@ -149,9 +149,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			if (!this.isStreetTreatTrue) {
 				this.clearValidators();
 			}
+
+			this.initStreetTreatForm();
 		}, 1);
 
-		this.initStreetTreatForm();
+
 	}
 
 	ngOnChanges() {
@@ -176,6 +178,57 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
+
+	initStreetTreatForm() {
+
+		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+
+		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
+		.pipe(takeUntil(this.ngUnsubscribe))
+		.subscribe((response) => {
+
+			if (response.streetTreatCaseId) {
+				if (response.visits.length > 0) {
+					response.visits.forEach((visit: VisitResponse) => {
+
+						this.showVisitDate = (!!visit.visit_date || response.autoAdded);
+
+						if (visit.visit_date) {
+
+							// Set Validators Visit Date Unique When Date are finialized
+							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
+							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
+							this.visitDates.push(
+								{
+									status: visit.visit_status,
+									date: visit.visit_date
+								});
+						}
+						this.visitsArray.push(this.getVisitFormGroup());
+					});
+				}
+				this.streetTreatCase = response;
+				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
+
+				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
+
+				if (this.visitDates?.length > 0) {
+					this.dateClass();
+					if(this.calendar){
+						this.calendar.updateTodaysDate();
+					}
+				}
+
+				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
+
+				this.streatTreatForm.patchValue(response);
+
+				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
+
+				this.changeDetectorRef.detectChanges();
+			}
+		});
+	}
 
 
 	public get castedVisitArray() {
@@ -268,54 +321,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.changeDetectorRef.detectChanges();
 	}
 
-	initStreetTreatForm() {
 
-		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
-
-		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
-		.pipe(takeUntil(this.ngUnsubscribe))
-		.subscribe((response) => {
-
-			if (response.streetTreatCaseId) {
-				if (response.visits.length > 0) {
-					response.visits.forEach((visit: any) => {
-
-						if (visit.visit_date) {
-							this.showVisitDate = true;
-							// Set Validators Visit Date Unique When Date are finialized
-							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
-							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
-							this.visitDates.push(
-								{
-									status: visit.visit_status,
-									date: visit.visit_date
-								});
-						}
-						this.visitsArray.push(this.getVisitFormGroup());
-					});
-				}
-				this.streetTreatCase = response;
-				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
-
-				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
-
-				if (this.visitDates?.length > 0) {
-					this.dateClass();
-					if(this.calendar){
-						this.calendar.updateTodaysDate();
-					}
-				}
-
-				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
-
-				this.streatTreatForm.patchValue(response);
-
-				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
-
-				this.changeDetectorRef.detectChanges();
-			}
-		});
-	}
 
 	deleteDialog() {
 		const message = `If you save this record, the StreetTreat case and its visits will be deleted,
