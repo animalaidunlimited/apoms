@@ -2,19 +2,19 @@
 
     <legend class="legend">Caller Details</legend>
 
-   
+
 
     <div >
 
       <div formArrayName="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index">
 
-        <app-caller-autocomplete 
-        [callerForm]="caller" 
+        <app-caller-autocomplete
+        [callerForm]="caller"
         [callerIndex]="callerIndex"
         (callerDeleted) = "removeCaller($event)"
         (isPrimary)="primaryCaller($event)"></app-caller-autocomplete>
     </div>
-    <button class="addCallerButton" type="button" (click)="addCaller($event)" mat-mini-fab color="primary" style="float:right;">
+    <button class="addCallerButton" type="button" (click)="addCaller($event)" mat-mini-fab color="primary">
       <mat-icon>add</mat-icon>
     </button>
   </div>

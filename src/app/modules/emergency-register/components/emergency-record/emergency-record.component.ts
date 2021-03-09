@@ -8,7 +8,7 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 
 
@@ -176,7 +176,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.message += 'Error adding the caller: Duplicate record \n';
                 result.failure++;
             } else {
-                result.message += 'Other error - See admin\n';
+                result.message += 'Other error (Caller) - See admin\n';
                 result.failure++;
             }
         });
@@ -188,7 +188,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.message += 'Error adding the EmergencyCaller: Duplicate record \n';
                 result.failure++;
             } else {
-                result.message += 'Other error - See admin\n';
+                result.message += 'Other error (EmergencyCaller) - See admin\n';
                 result.failure++;
             }
         });

@@ -416,7 +416,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             if (foundChip) {
                 foundChip.focus();
             }
-            
+
         } else if (event.keyCode === 13) { // space
             this.problemChipSelected(problemChip);
         }
@@ -674,6 +674,13 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
                 const resultCurrentPatient = this.getcurrentPatient();
 
                 resultCurrentPatient.get('tagNumber')?.setValue(result.value);
+
+                const outcomeId = this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
+
+                if(outcomeId === 18){
+                    resultCurrentPatient.get('tagNumber')?.setValidators(Validators.required);
+                    resultCurrentPatient.get('tagNumber')?.updateValueAndValidity();
+                }
 
                 resultCurrentPatient.get('duplicateTag')?.setValue(result.status);
 
