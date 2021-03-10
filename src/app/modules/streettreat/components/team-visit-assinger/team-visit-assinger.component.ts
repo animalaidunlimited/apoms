@@ -102,17 +102,18 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
   ngOnInit(): void {
+
     this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
       mediaQuerys.forEach((mediaQuery) =>
       {
 
       });
     });
+
     this.teamsgroup = this.fb.group({
       teams:[''],
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
-
 
     this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
 
@@ -164,7 +165,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   private initSwimlane() {
     this.streetTreatServiceSubs =
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
-        .pipe(take(1))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
 
@@ -178,7 +178,8 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           this.streetTreatServiceSubs.unsubscribe();
         });
 
-    this.streetTreatService.getChartData().pipe(take(1)).subscribe((data) => {
+    this.streetTreatService.getChartData().subscribe((data) => {
+      console.log(data);
       this.initChartData(data);
     });
   }
@@ -197,7 +198,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
       }
     });
-
 
     datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
 

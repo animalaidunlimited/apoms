@@ -110,7 +110,7 @@ export class StreetTreatRecordComponent implements OnInit {
     });
 
 
-    setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
+    setTimeout(() => this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {
         this.recordForm.get('EndDate')?.setValidators([Validators.required]);

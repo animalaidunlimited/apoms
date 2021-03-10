@@ -62,7 +62,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
     tagNumber: string | undefined;
-    validRow =true;
+    validRow = true;
 
     emergencyCardHTML = '';
 
@@ -77,6 +77,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.updateTag(this.getcurrentPatient());
         }
     }
+
     constructor(
         private dialog: MatDialog,
         private fb: FormBuilder,
@@ -105,12 +106,16 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.dropdown
             .getAnimalTypes()
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
+            .subscribe(animalTypes => (this.animalTypes$ = animalTypes.sort((a,b) =>
+
+                a.AnimalType.substr(0,1) < b.AnimalType.substr(0,1) ? -1 : a.AnimalType.substr(0,1) > b.AnimalType.substr(0,1) ? 1 : a.Sort - b.Sort)));
 
         this.dropdown
             .getProblems()
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(problems => (this.problems$ = problems));
+            .subscribe(problems => {
+                this.problems$ = problems.sort((a,b) => a.Problem < b.Problem ? -1 : 1);
+            });
 
         this.exclusions = this.dropdown.getExclusions();
 
@@ -123,6 +128,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     subscribeToChanges() {
+
         this.recordForm.get('patients')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(items => {
@@ -422,19 +428,28 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    cycleChips(event:any, chipGroup: string, property: string) {
+    cycleChips(event:any, chipGroup: string, property: string, select: boolean) {
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
-            const currentPatient =
-                this.getcurrentPatient().get(property)?.value || '';
+
+            let currentChip = '';
 
             let chips;
 
             if (chipGroup === 'animaltype') {
                 chips = this.animalTypeChips.chips;
+                currentChip = this.getcurrentPatient().get(property)?.value || '';
             } else if (chipGroup === 'problem') {
                 chips = this.problemChips.chips;
+                const problems = (this.getcurrentPatient().get(property) as FormArray).controls;
+
+                console.log(problems[0]?.value);
+
+                currentChip = problems && problems[0]?.value ? problems[0]?.value : '';
+
             }
+
+            console.log(currentChip);
 
             let lastInstance = '';
             let currentIndex:any;
@@ -442,14 +457,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             // Get the last value of the current key (e.g. last animal beginning with p)
             // Also get the index of the current item
             chips?.forEach((item, index) => {
-                if (
-                    item.value.substr(0, 1).toLowerCase() ===
-                    currentPatient.substr(0, 1).toLowerCase()
-                ) {
+                if (item.value.substr(0, 1).toLowerCase() === currentChip.substr(0, 1).toLowerCase()) {
                     lastInstance = item.value;
                 }
 
-                if (item.value === currentPatient) {
+                if (item.value === currentChip) {
                     currentIndex = index;
                 }
             });
@@ -458,25 +470,25 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             const currentArray = chips?.filter((chip, index) => {
                 return (
                     !(
-                        chip.value.substr(0, 1).toLowerCase() ===
-                            currentPatient.substr(0, 1).toLowerCase() &&
+                        chip.value.substr(0, 1).toLowerCase() === currentChip.substr(0, 1).toLowerCase() &&
                         index <= currentIndex
                     ) ||
-                    currentPatient === '' ||
-                    lastInstance === currentPatient
+                    currentChip === '' || lastInstance === currentChip
                 );
             });
 
             // Get the chip we need
-            const currentKeyChip = currentArray?.find(chip => {
-                return (
-                    chip.value.substr(0, 1).toLowerCase() ===
-                    event.key.toLowerCase()
-                );
-            });
+            const currentKeyChip = currentArray?.find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
 
             if(currentKeyChip){
+
+                console.log(currentKeyChip);
+
                 currentKeyChip.selected = true;
+                //select ?
+                //currentKeyChip.selected = true
+                //:
+                //currentKeyChip.focus();
             }
 
         }
@@ -675,9 +687,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
                 resultCurrentPatient.get('tagNumber')?.setValue(result.value);
 
-                const outcomeId = this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
-
-                if(outcomeId === 18){
+                if(this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18){
                     resultCurrentPatient.get('tagNumber')?.setValidators(Validators.required);
                     resultCurrentPatient.get('tagNumber')?.updateValueAndValidity();
                 }
