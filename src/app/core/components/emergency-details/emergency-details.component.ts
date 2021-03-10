@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
@@ -11,6 +11,8 @@ import { EmergencyCode } from '../../models/emergency-record';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { LogsComponent } from '../logs/logs.component';
 
 
 @Component({
@@ -47,9 +49,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         private datePipe: DatePipe,
         private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
-    ) {
-
-    }
+        public dialog: MatDialog,
+    ) {}
 
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
@@ -65,13 +66,18 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
 
     ngOnInit(): void {
-
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
-        this.minimumDate = this.datePipe.transform(this.userOptions.getMinimumDate(), 'yyyy-MM-ddThh:mm:ss.ms') || '';
+        this.minimumDate =
+            this.datePipe.transform(
+                this.userOptions.getMinimumDate(),
+                'yyyy-MM-ddThh:mm:ss.ms',
+            ) || '';
 
-        this.emergencyDetails = this.recordForm.get('emergencyDetails') as FormGroup;
+        this.emergencyDetails = this.recordForm.get(
+            'emergencyDetails',
+        ) as FormGroup;
 
         const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
 
@@ -91,9 +97,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
             .getEmergencyCaseById(emergencyCaseId?.value)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(result => {
-
                 this.recordForm.patchValue(result);
-
             });
 
         this.recordForm
@@ -106,9 +110,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
                 this.updateEmergencyNumber(val);
             });
-
-
-
     }
 
     ngOnDestroy() {
@@ -153,13 +154,11 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         }
     }
 
-    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean{
-
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {
         return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
     }
 
-    selectEmergencyCode($event:any){
-
+    selectEmergencyCode($event: any) {
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
         this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
@@ -169,12 +168,28 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
             });
 
-            if(selectedCode){
-                this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
+            if (selectedCode) {
+                this.recordForm
+                    .get('emergencyDetails.code')
+                    ?.setValue(selectedCode);
             }
         });
-
     }
 
+    openLogsDialog(emergencyCaseId: any,emergencyNumber:any) {
+        const dialogRef = this.dialog.open(LogsComponent, {
+            maxHeight: '100vh',
+            maxWidth: '100vw',
+            data: {
+                emergencyCaseId,
+                emergencyNumber,
+                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
+            },
+        });
 
+        dialogRef
+            .afterClosed()
+            .subscribe(() => {})
+            .unsubscribe();
+    }
 }
