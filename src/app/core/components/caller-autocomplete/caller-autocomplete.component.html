@@ -1,4 +1,4 @@
-<div [formGroup] = "callerForm">
+<div [formGroup] = "callerForm" class="callerForm">
 
     <mat-form-field >
     <input tabindex="3" #callerNumberRef formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
@@ -9,7 +9,7 @@
                 <small>{{ caller.Name }}</small>
 
             </mat-option>
-    </mat-autocomplete>
+        </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field>
@@ -22,7 +22,7 @@
 
     <mat-checkbox class="checkBox" [checked]= "true" (change)="checkBox(callerIndex)" formControlName="primaryCaller">primary</mat-checkbox>
 
-   <button class="deleteCallerButton" type="button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
+    <button class="deleteCallerButton" type="button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
         <mat-icon>delete</mat-icon>
     </button>
 </div>

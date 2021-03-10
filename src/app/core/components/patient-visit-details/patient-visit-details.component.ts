@@ -301,7 +301,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 				if (this.visitDates?.length > 0) {
 					this.dateClass();
-					this.calendar.updateTodaysDate();
+					if(this.calendar){
+						this.calendar.updateTodaysDate();
+					}
 				}
 
 				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');

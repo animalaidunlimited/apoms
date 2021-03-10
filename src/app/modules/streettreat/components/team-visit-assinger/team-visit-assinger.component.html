@@ -124,8 +124,8 @@
                                         (click)="openCase(streetTreatCaseDetails,$event);">create</mat-icon>
                                 </div>
                             </div>
-                            <div class="timeline">
-                                <ng-container *ngIf="streetTreatCaseDetails.Visits.length > 0">
+                            <div class="timeline"  *ngIf="streetTreatCaseDetails.Visits.length > 0">
+                                <ng-container>
                                     <div *ngFor="let visit of streetTreatCaseDetails.Visits" class="timeline-badge">
                                         <ul>
                                             <li>

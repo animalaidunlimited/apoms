@@ -35,6 +35,7 @@ import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsModule} from '../../core/components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
 import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
+import { LogsModule } from 'src/app/core/components/logs/logs.module';
 
 
 
@@ -74,7 +75,8 @@ import { AnimalHeaderModule } from './components/animal-header/animal-header.mod
         NgxGalleryModule,
         CallerDetailsModule,
         PatientVisitDetailsModule,
-        AnimalHeaderModule
+        AnimalHeaderModule,
+        LogsModule
     ],
     exports: [],
 })
