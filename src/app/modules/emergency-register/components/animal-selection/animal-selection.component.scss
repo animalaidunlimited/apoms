@@ -62,5 +62,9 @@ table {
     .mat-standard-chip {
         margin: 0px;
         padding: 0 0.5rem;
+        min-width: fit-content;
+    }
+    .mat-chip-list-wrapper {
+        margin: 0.5rem !important;
     }
 }
