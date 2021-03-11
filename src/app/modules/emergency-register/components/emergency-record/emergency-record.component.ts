@@ -10,6 +10,8 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivateChild } from '@angular/router';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -41,6 +43,10 @@ export class EmergencyRecordComponent implements OnInit {
 
     syncedToLocalStorage = false;
 
+    permissionType!: number[];
+
+    hasWritePermission: boolean = false;
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
 
@@ -67,10 +73,29 @@ export class EmergencyRecordComponent implements OnInit {
         private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService
-    ) {}
+        private showSnackBar: SnackbarService,
+        private route: ActivatedRoute
+    ) {
+        
+    }
 
     ngOnInit() {
+
+        this.route.data.subscribe(val=> {
+
+            console.log(val);
+            
+            this.permissionType = val.permissionId.filter((id:number)=>{
+                return val.userPermissionArray.value.indexOf(id) > -1
+            });
+
+            console.log(this.permissionType);
+
+            if (this.permissionType[0] % 2 === 0) {
+                this.hasWritePermission = true;
+            }
+
+        })
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -232,108 +257,116 @@ export class EmergencyRecordComponent implements OnInit {
 
     async saveForm() {
 
-        this.loading = true;
-        if(this.recordForm.pending){
-            // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
-            // So mark it as error so the user knows to recheck it
-            this.recordForm.updateValueAndValidity();
+        console.log(this.hasWritePermission);
 
-            if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
-                return;
+        if(this.hasWritePermission) {
+            this.loading = true;
+            if(this.recordForm.pending){
+                // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+                // So mark it as error so the user knows to recheck it
+                this.recordForm.updateValueAndValidity();
+
+                if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
+                    this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
+                    return;
+                }
+            }
+
+            if (this.recordForm.valid) {
+                this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
+
+                const emergencyForm = {
+                    emergencyForm: this.recordForm.value,
+                } as EmergencyCase;
+
+                let messageResult = {
+                    failure: 0,
+                    message: ''
+                };
+
+                if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+
+                    await this.caseService
+                        .insertCase(emergencyForm)
+                        .then(data => {
+                            if(data) {
+                                this.loading = false;
+                            }
+                            if (data.status === 'saved') {
+                                messageResult.failure = 1;
+                            } else {
+                                const resultBody = data as EmergencyResponse;
+
+                                // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+
+                                this.emergencyCaseId = resultBody.emergencyCaseId;
+
+                                this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
+                                this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
+                                messageResult = this.getCaseSaveMessage(resultBody);
+
+                            }
+
+                            if (messageResult.failure === 0) {
+                                this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                                this.syncedToLocalStorage = false;
+                                this.recordForm.markAsPristine();
+                            }
+                            else if (messageResult.failure === -1) {
+                                this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+                            }
+                            else if (messageResult.failure === 1) {
+                                this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                                this.syncedToLocalStorage = true;
+                                this.recordForm.markAsPristine();
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                } else {
+                    await this.caseService
+                        .updateCase(emergencyForm)
+                        .then(data => {
+
+                            if(data) {
+                                this.loading = false;
+                            }
+
+                            if (data.status === 'saved') {
+
+                                messageResult.failure = 1;
+
+                            } else {
+
+                                const resultBody = data as EmergencyResponse;
+                                messageResult = this.getCaseSaveMessage(resultBody);
+                            }
+
+                            if (messageResult.failure === 0) {
+
+                                this.showSnackBar.successSnackBar('Case updated successfully','OK');
+                                this.syncedToLocalStorage = false;
+                                this.recordForm.markAsPristine();
+                            }
+                            else if (messageResult.failure === 1){
+                                this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                                this.syncedToLocalStorage = true;
+                                this.recordForm.markAsPristine();
+                            }
+                            else{
+                                this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
             }
         }
 
-        if (this.recordForm.valid) {
-            this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
-
-            const emergencyForm = {
-                emergencyForm: this.recordForm.value,
-            } as EmergencyCase;
-
-            let messageResult = {
-                failure: 0,
-                message: ''
-            };
-
-            if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
-
-                await this.caseService
-                    .insertCase(emergencyForm)
-                    .then(data => {
-                        if(data) {
-                            this.loading = false;
-                        }
-                        if (data.status === 'saved') {
-                            messageResult.failure = 1;
-                        } else {
-                            const resultBody = data as EmergencyResponse;
-
-                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
-
-                            this.emergencyCaseId = resultBody.emergencyCaseId;
-
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
-                            this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
-                            messageResult = this.getCaseSaveMessage(resultBody);
-
-                        }
-
-                        if (messageResult.failure === 0) {
-                            this.showSnackBar.successSnackBar('Case inserted successfully','OK');
-                            this.syncedToLocalStorage = false;
-                            this.recordForm.markAsPristine();
-                        }
-                        else if (messageResult.failure === -1) {
-                            this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
-                        }
-                        else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar('Case saved offline','OK');
-                            this.syncedToLocalStorage = true;
-                            this.recordForm.markAsPristine();
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            } else {
-                await this.caseService
-                    .updateCase(emergencyForm)
-                    .then(data => {
-
-                        if(data) {
-                            this.loading = false;
-                        }
-
-                        if (data.status === 'saved') {
-
-                            messageResult.failure = 1;
-
-                        } else {
-
-                            const resultBody = data as EmergencyResponse;
-                            messageResult = this.getCaseSaveMessage(resultBody);
-                        }
-
-                        if (messageResult.failure === 0) {
-
-                            this.showSnackBar.successSnackBar('Case updated successfully','OK');
-                            this.syncedToLocalStorage = false;
-                            this.recordForm.markAsPristine();
-                        }
-                        else if (messageResult.failure === 1){
-                            this.showSnackBar.errorSnackBar('Case updated offline.','OK');
-                            this.syncedToLocalStorage = true;
-                            this.recordForm.markAsPristine();
-                        }
-                        else{
-                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            }
+        else {
+            this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
         }
 
     }

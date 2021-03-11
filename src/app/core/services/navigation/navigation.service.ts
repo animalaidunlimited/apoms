@@ -19,7 +19,7 @@ export class Page {
 export class NavigationService {
     private readonly navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
-    private activePage: Page = new Page('', false,false);
+    private activePage: Page = new Page('', false,true);
     private navigationStack: Array<Array<string>> = [];
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
