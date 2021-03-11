@@ -55,3 +55,7 @@ $standard-width: 183px;
     color: gold;
     cursor: default
 }
+
+.disable {
+    pointer-events: none;
+}

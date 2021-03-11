@@ -16,7 +16,7 @@ export const sideNavPath = 'nav';
 
 export const navRoutes: NavRoute[] = [
     {
-        data: { title: 'Home', permissionId:[], userHasPermission: false},
+        data: { title: 'Home', permissionId:[], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'home',
         path: 'home',
         loadChildren: () =>
@@ -30,7 +30,7 @@ export const navRoutes: NavRoute[] = [
         pathMatch: 'full',
     },
     {
-        data: { title: 'Emergency Register', permissionId:[1,2], userHasPermission: false },
+        data: { title: 'Emergency Register', permissionId:[1,2], userHasPermission: false , userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: '',
         path: 'emergency-register',
@@ -40,7 +40,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.EmergencyRegisterPageModule),
     },
     {
-        data: { title: 'Hospital Manager', permissionId:[3,4], userHasPermission: false},
+        data: { title: 'Hospital Manager', permissionId:[3,4], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: '',
         path: 'hospital-manager',
@@ -50,7 +50,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Census' ,permissionId:[7,8], userHasPermission: false},
+        data: { title: 'Census' ,permissionId:[7,8], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: '',
         path: 'census',
@@ -59,7 +59,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.CensusPageModule),
     },
     {
-        data: { title: 'Case List', permissionId:[5,6], userHasPermission: false},
+        data: { title: 'Case List', permissionId:[5,6], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: '',
         group: 'Street Treat',
         path: 'street-treat',
@@ -70,7 +70,7 @@ export const navRoutes: NavRoute[] = [
     },
     
     {
-        data: { title: 'Teams', permissionId:[5,6], userHasPermission: false},
+        data: { title: 'Teams', permissionId:[5,6], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: 'Street Treat',
         path: 'teams',
@@ -79,7 +79,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.TeamsPageModule),
     },
     {
-        data: { title: 'Reporting' ,permissionId:[9,10], userHasPermission: false},
+        data: { title: 'Reporting' ,permissionId:[9,10], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: '',
         path: 'reporting',
@@ -88,7 +88,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.ReportingPageModule),
     },
     {
-        data: { title: 'Settings' ,permissionId:[], userHasPermission: false},
+        data: { title: 'Settings' ,permissionId:[], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'settings_applications',
         group: 'Settings',
         path: 'settings',
@@ -97,7 +97,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule),
     },
     {
-        data: { title: 'User Admin' ,permissionId:[11,12], userHasPermission: false},
+        data: { title: 'User Admin' ,permissionId:[11,12], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: 'Settings',
         path: 'users',
@@ -106,7 +106,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule),
     },
     {
-        data: { title: 'Organisations' ,permissionId:[11,12], userHasPermission: false},
+        data: { title: 'Organisations' ,permissionId:[11,12], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: 'Settings',
         path: 'organisations',
@@ -115,7 +115,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule),
     },
     {
-        data: { title: 'Print templates' ,permissionId:[11,12], userHasPermission: false},
+        data: { title: 'Print templates' ,permissionId:[11,12], userHasPermission: false, userPermissionArray:new BehaviorSubject<number[]>([])},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',
@@ -153,12 +153,13 @@ export class NavRouteService {
             throw new Error ('No routes detected');
         }
 
-
+        console.log('I called so must be true');
         this.navRoute.children?.forEach(routeVal=> {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
-                if(val && routeVal.data) {
+                if(val.userPermissionBoolean && routeVal.data) {
                     routeVal.data.userHasPermission = true;
+                    routeVal.data.userPermissionArray.next(val.userPermissionArray);
                 }
 
                 this.navRoutes.next(this.newMethod() || []);
