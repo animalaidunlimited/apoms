@@ -1,23 +1,23 @@
-import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { MatChip, MatChipList } from '@angular/material/chips';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { iif, Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { MediaItem } from 'src/app/core/models/media';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
-import { MediaItem } from 'src/app/core/models/media';
-import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 
 
 @Component({
@@ -33,12 +33,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     @Input() recordForm!: FormGroup;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
-    @ViewChild('animalTypeChips', { static: true }) animalTypeChips!: MatChipList;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
-    @ViewChild('animalTypeChips', { read: ElementRef, static:true }) animalTypeChipsElement!: ElementRef;
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
-    @ViewChild('poblemAuto') poblemAuto!: ElementRef<HTMLInputElement>;
+    @ViewChildren('problemAuto') problemAuto!: QueryList<ElementRef<HTMLInputElement>>;
+    @ViewChildren('speciesInput') speciesInput!: QueryList<ElementRef<HTMLInputElement>>;
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
     
 
@@ -50,13 +49,17 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
    
     selectable = true;
     removable = true;
-    showMainProblemError = true;
+    showSpeciesError:boolean[]=[];
+    showMainProblemError:boolean[]=[] ;
+    showSpeciesTypeList:boolean[] =[] ;
+    showMainProbelmChipList:boolean[] =[];
     problemInput = new FormControl();
     animalInput = new FormControl();
     currentPatientChip: string | undefined;
     emergencyCaseId: number | undefined;
     exclusions: Exclusions[] = [] as Exclusions[];
 
+    problemsExclusions!: string[];
     filteredProblems!: Observable<ProblemDropdownResponse[]>;
     filteredAnimalTypes!:Observable<AnimalType[]>;
 
@@ -92,8 +95,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         this.addPatientRow();
-        /* this.clearChips(); */
-        this.animalTypeChips.chips.first.focus();
+       this.speciesInput.toArray()[this.speciesInput.toArray().length - 1].nativeElement.focus();
     }
 
 
@@ -103,10 +105,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
         // Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
         // So unless we check to see which version of this component is visible, we won't know which tab to update.
-        if(this.animalTypeChipsElement.nativeElement.offsetParent){
+        /* if(this.animalTypeChipsElement.nativeElement.offsetParent){
 
             this.updateTag(this.getcurrentPatient());
-        }
+        } */
     }
     constructor(
         private dialog: MatDialog,
@@ -116,10 +118,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         private dropdown: DropdownService,
         private printService: PrintTemplateService,
         private userOptions: UserOptionsService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
-
+        this.addEmptyShowHideToggle();
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
@@ -159,15 +162,18 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             switchMap(problem => this.problemFilter(problem)),
             map(problems => {
                 const currentPatient = this.getcurrentPatient() as FormGroup;
-                const selectedProblems =  currentPatient.get('problemsString')?.value;
+                const selectedProblems =  currentPatient.get('problems')?.value;
                 if(selectedProblems !== ''){
-
-                    const problemsArray = selectedProblems.split(',').map((problemOption:string) => problemOption.trim());
-                    const filteredProblemsArray = problems.filter((problem:any) => !problemsArray.includes(problem.Problem.trim()));
+                    const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
+                    const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
                     return filteredProblemsArray;
                 }else{
                     return problems;
                 }
+            }),
+            map(problems => {
+                return this.problemsExclusions ? problems.filter(problem => !this.problemsExclusions.includes(problem.Problem.trim())):
+                        problems;
             })
         );
 
@@ -175,9 +181,21 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.filteredAnimalTypes = 
             this.animalInput.valueChanges.pipe(
                 startWith(''),
-                switchMap(animalType => this.animalFilter(animalType))
+                switchMap(animalType => iif(
+                    () => typeof animalType === 'string'
+                        , this.animalFilter(animalType)
+                        , this.dropdown.getAnimalTypes()
+             ))
             );
       
+    }
+
+    addEmptyShowHideToggle(){
+        this.showMainProblemError.push(true);
+        this.showSpeciesError.push(true);
+        this.showSpeciesTypeList.push(false);
+        this.showMainProbelmChipList.push(false);
+        
     }
     animalFilter(filterValue:string){
         return this.dropdown.getAnimalTypes().pipe(
@@ -332,7 +350,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     toggleRow(row:FormGroup) {
         if(this.selection.isSelected(row)){
-            row
+            row;
         }
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
@@ -408,20 +426,20 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         const problems = currentPatient.get('problems') as FormArray;
 
         problems.controls.forEach(problem => {
-            this.problemChips.chips.forEach(chip => {
+           /*  this.problemChips.chips.forEach(chip => {
                 problem.get('problem')?.value === chip.value
                     ? chip.toggleSelected()
                     // tslint:disable-next-line: no-unused-expression
                     : chip.deselect;
-            });
+            }); */
         });
     }
-
-    animalChipSelected(animalTypeChip:any) {
+    
+    animalSelected($event:MatAutocompleteSelectedEvent, index:number):void {
 
         this.recordForm.markAsDirty();
 
-        this.currentPatientChip = undefined;
+        // this.currentPatientChip = undefined;
 
         const selectedCount: number = this.selection.selected.length;
 
@@ -429,34 +447,30 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             alert('Please select only one animal in the table to change');
             return;
         }
+        
+        // this.currentPatientChip = $event.option.viewValue;
+     
 
-        this.currentPatientChip = animalTypeChip.isSelected
-            ? animalTypeChip.value
-            : undefined;
-
-        if (
-            selectedCount === 1 &&
-            (animalTypeChip.selected ||
-                !(this.animalTypeChips.selected instanceof MatChip))
-        ) {
+       if (selectedCount === 1 ) {
             // There is only 1 row selected, so we can update the animal for that row
-            let animalTypeObject;
+            // let animalTypeObject;
 
-            animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
+           // animalTypeObject = this.getAnimalFromObservable(animalTypeChip.value);
 
             const currentPatient = this.getcurrentPatient();
 
-            currentPatient.get('animalType')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalType : null );
+            currentPatient.get('animalType')?.setValue($event.option.viewValue);
 
-            currentPatient.get('animalTypeId')?.setValue(animalTypeChip.selected ? animalTypeObject?.AnimalTypeId : null);
+            currentPatient.get('animalTypeId')?.setValue($event.option.value);
 
             currentPatient.get('updated')?.setValue(true);
+            this.speciesInput.toArray()[index].nativeElement.value = $event.option.viewValue;
         }
 
         // if there are no rows, then we need to add a new one
-        if (selectedCount === 0 && animalTypeChip.selected) {
+         if (selectedCount === 0) {
 
-            const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
+            const currentAnimalType = this.getAnimalFromObservable( $event.option.viewValue );
 
             const position: number = this.patientDataSource.data.length + 1;
 
@@ -470,19 +484,20 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
             this.setSelected(position);
         }
-
-    /*     this.hideIrrelevantChips(animalTypeChip); */
+        this.hideIrrelevantChips($event.option.viewValue); 
         this.patientTable.renderRows();
     }
 
     addPatientRow(){
         if(this.patientArray.valid){
+            this.addEmptyShowHideToggle();
             const patient = this.getEmptyPatient();
             this.patientArray.push(patient);
             this.resetTableDataSource();
             const selected = this.patientDataSource.data[this.patientArray.length - 1];
             this.selection.select(selected);
             this.subscribeToChanges();
+
         }
     }
     setSelected(position: number) {
@@ -590,8 +605,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
 
         if (
-            !this.currentPatientChip &&
-            !(this.animalTypeChips.selected instanceof MatChip)
+            !this.currentPatientChip /* &&
+            !(this.animalTypeList.selected instanceof MatChip) */
         ) {
 
             // TODO replace this with a better dialog.
@@ -604,12 +619,13 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    hideIrrelevantChips(animalTypeChip:any) {
+    hideIrrelevantChips(animal:string) {
+       
 
         const currentExclusions = this.exclusions.filter(
-            (animalType) => animalType.animalType === animalTypeChip.value,
+            (animalType) => animalType.animalType === animal,
         );
-
+        
         // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
         // two for the new patient type, followed by an unset for the old patient type
         const currentPatient = this.getcurrentPatient();
@@ -618,31 +634,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if(!(currentPatient.get('animalType')?.value === animalTypeChip.value) && !animalTypeChip.selected){
+        if(!(currentPatient.get('animalType')?.value === animal)){
             return;
         }
-
-        /* this.problemChips.chips.forEach(chip => {
-            chip.disabled = false;
-            chip.selectable = true;
-        }); */
-
-
-        if (!animalTypeChip.selected) {
-            return;
-        }
-
-        currentExclusions[0]?.exclusionList.forEach((exclusion:any) => {
-
-            /* this.problemChips.chips.forEach(chip => {
-
-                if (chip.value === exclusion) {
-                    chip.disabled = true;
-                    chip.selectable = false;
-                    chip.selected = false;
-                }
-            }); */
-        });
+        this.problemsExclusions = currentExclusions[0]?.exclusionList;
     }
 
     getcurrentPatient() {
@@ -679,54 +674,64 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.patientTable.renderRows();
     }
 
-    updatePatientProblemArray(problemChip:any) {
+    updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
+
+        this.problemAuto.first.nativeElement.value = '';
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
-
+       
         if(!currentPatient){
             return;
         }
 
         // Get the current list of problems and replace the existing problem array
-        let problemsObject: ProblemDropdownResponse | undefined;
+        // let problemsObject: ProblemDropdownResponse | undefined;
 
-        problemsObject = this.problems$.find(item => item.Problem === problemChip.value);
+        // problemsObject = this.problems$.find(item => item.Problem === problemChip.value);
 
-        if(problemsObject === undefined){
+        /* if(problemsObject === undefined){
             throw new TypeError('Missing problem in problem list!');
-        }
+        } */
 
         const problemsGroup = this.fb.group({
-            problemId: [problemsObject.ProblemId, Validators.required],
-            problem: [problemsObject.Problem, Validators.required],
+            problemId: [event.option.value, Validators.required],
+            problem: [event.option.viewValue, Validators.required],
         });
 
         // If the problem chip has been selected we need to add it to the problem array of the animal
         // else we need to find this problem in the array and remove it.
         const problems = currentPatient.get('problems') as FormArray;
-
+ 
         const problemIndex = problems.controls.findIndex(
             problem =>
-                problem.get('problemId')?.value === problemsObject?.ProblemId,
+                problem.get('problemId')?.value === event.option.value,
         );
 
-        if (problemChip.selected && problemIndex === -1) {
+        if (problemIndex === -1) {
             problems.push(problemsGroup);
             currentPatient.get('updated')?.setValue(true);
         }
 
-        if (!problemChip.selected) {
-            problems.removeAt(problemIndex);
-        }
-
-        const problemString = problems.controls
-            .map(problem => problem.get('problem')?.value)
-            .join(',');
-        
-        currentPatient.get('problemsString')?.setValue(problemString);
-
         this.patientTable.renderRows();
     }
+
+    remove(removeProblem:number){
+        
+        const currentPatient = this.getcurrentPatient() as FormGroup;
+       
+        if(!currentPatient){
+            return;
+        }
+
+         const problems = currentPatient.get('problems') as FormArray;
+         const problemIndex = problems.controls.findIndex(
+            problem =>
+                problem.get('problemId')?.value === removeProblem,
+        );
+
+        problems.removeAt(problemIndex);
+       
+     }
 
     updateTag(currentPatient:any) {
 
@@ -806,95 +811,85 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     // If you tab into the chip lists, you have to tab through them all to get out.
     // So the below finds the last element and skips to the next value
-   /*  tabPressed(list:string){
-        if(list === 'AnimalType'){
-            this.animalTypeChips.chips.last.focus();
-        }
-        else if (list === 'ProblemType'){
-            this.problemChips.chips.last.focus();
-        }
-    } */
+    tabPressed($event:Event,index:number){
+        $event.preventDefault();
+        this.showMainProblemError[index] = false;
+        this.showMainProbelmChipList[index] = true;
+        this.cdr.detectChanges();        
+        this.problemAuto.toArray()[index].nativeElement.focus()
+       
+    }
 
-    /* shiftTabPressed(list:string){
-
-        if(list === 'AnimalType'){
-            this.animalTypeChips.chips.first.focus();
-        }
-        else if (list === 'ProblemType'){
-            console.log(this.problemChips);
-            this.problemChips.chips.first.focus();
-        }
-    } */
+    shiftTabPressed($event: Event,index:number){
+        $event.preventDefault();
+        this.speciesInput.toArray()[index].nativeElement.focus();
+    }
     
       
-    checkSpecies(){
-       /*  if (
-            !this.currentPatientChip &&
-            !(this.animalTypeChips.selected instanceof MatChip)
-        ) {
+    checkSpecies(row:FormGroup,index:number){
+        if(this.selection.isSelected(row)){
+            const currentPatient = this.getcurrentPatient() as FormGroup;
+            const selectedSpecies =  currentPatient.get('animalType')?.value;
+            if (selectedSpecies === '') {
 
-            // TODO replace this with a better dialog.
-            this.poblemAuto.nativeElement.blur();
-            alert('Please select an animal');
-        } */
-       /*  const currentPatient = this.getcurrentPatient() as FormGroup;
-        const selectedProblems =  currentPatient.get('problemsString')?.value;
-        if(selectedProblems === ''){
-            this.showMainProblemError = true;
+                // TODO replace this with a better dialog.
+                this.problemAuto.toArray()[index].nativeElement.blur();
+                alert('Please select an animal');
+            }
         }else{
-            this.showMainProblemError = false;
-        } */
+            return;
+        }
     }
 
-    selected(event: MatAutocompleteSelectedEvent): void{
-        this.poblemAuto.nativeElement.value = '';
-        this.problemInput.setValue(null);
+    
 
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        const selectedProblems =  currentPatient.get('problemsString')?.value;
- 
-        if(selectedProblems === '')
-        {
-            currentPatient.get('problemsString')?.setValue(event.option.viewValue);
-        }
-        else{
-            currentPatient.get('problemsString')?.setValue(`${selectedProblems},${event.option.viewValue}`);
-        }
-        this.patientTable.renderRows();
-        console.log(this.problemChips);
-    }
+   
 
-    remove(removeProblem:string){
-        
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        const selectedProblems =  currentPatient.get('problemsString')?.value;
-        if(selectedProblems !== ''){
-            currentPatient.get('problemsString')?.setValue(selectedProblems.split(',').filter((problems:string) => problems.trim() !== removeProblem.trim()).join(','));
-        }
-
-    }
-
-    changeFocusToProblemsSelection($event:Event){
+    changeFocusToSpeciesSelection($event:MouseEvent | KeyboardEvent | FocusEvent, index:number){
         $event.stopPropagation();
-        this.poblemAuto.nativeElement.focus();
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        const selectedAnimals = currentPatient.get('animalType')?.value;
-        if(selectedAnimals !=='' ){
-            this.showMainProblemError = false;
-        }
+        this.showSpeciesError[index] = false;
+        this.showSpeciesTypeList[index] = true;
+        this.cdr.detectChanges();
+        this.speciesInput.toArray()[index].nativeElement.focus();        
     }
 
-    setMainProblemError(){
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        const selectedProblems =  currentPatient.get('problemsString')?.value;
-        if(selectedProblems === '' ){
-            this.showMainProblemError = true;
-        }
-    }
-    animalSelected($event:MatAutocompleteSelectedEvent){
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-        currentPatient.get('animalType')?.setValue($event.option.viewValue);
+    changeFocusToProblemsSelection($event:MouseEvent | KeyboardEvent | FocusEvent, index:number){
+        $event.stopPropagation();
+        this.showMainProblemError[index] = false;
+        this.showMainProbelmChipList[index] = true;
+        this.cdr.detectChanges();
+        this.problemAuto.toArray()[index].nativeElement.focus();
     }
 
- 
+    setMainProblemError(row:FormGroup, index:number){
+        if(this.selection.isSelected(row)){
+            const currentPatient = this.getcurrentPatient() as FormGroup;
+            const selectedProblems =  currentPatient.get('problemsString')?.value;
+            this.showMainProblemError[index] =  selectedProblems === '' ? true : false;
+            this.showMainProbelmChipList[index] = !this.showMainProblemError[index]; 
+        }else{
+            return;
+        }
+        
+    }
+
+    speciesFocusOut($event: EventTarget | null | undefined, index:number){
+        const species = ($event as HTMLInputElement)?.value;
+        this.showSpeciesError[index] =  species === '' ? true : false;
+            
+        this.showSpeciesTypeList[index] = !this.showSpeciesError[index]; 
+    }
+    
+    speciesOptionClick(index:number){
+        this.showSpeciesError[index] = false; 
+        this.showSpeciesTypeList[index] = !this.showSpeciesError[index];  
+    }
+
+    checkRowSelected($event:Event, row: FormGroup){
+        $event.stopPropagation();
+        if(!this.selection.isSelected(row)){
+            return;
+        }
+    }
+    
 }

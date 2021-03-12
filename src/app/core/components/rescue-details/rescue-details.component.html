@@ -4,7 +4,7 @@
 
             <mat-form-field>
                 <mat-label>Driver</mat-label>
-                    <mat-select tabindex="11" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
+                    <mat-select tabindex="12" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
                     <mat-option>N/A</mat-option>
                         <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
                         {{rescuer.FirstName}}
@@ -14,7 +14,7 @@
 
             <mat-form-field>
                     <mat-label>Worker</mat-label>
-                        <mat-select tabindex="12" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
+                        <mat-select tabindex="13" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
                             <mat-option>N/A</mat-option>
                             <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
                             {{rescuer.FirstName}}
@@ -43,7 +43,7 @@
         </mat-form-field>
 
         <mat-form-field>
-                    <input tabindex="9" formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                    <input tabindex="10" formControlName="rescueTime" type="datetime-local" name="rescueTime"
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
                     (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
 
