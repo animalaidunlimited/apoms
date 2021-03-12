@@ -60,11 +60,31 @@ table {
 }
 .form-sub-group .mat-table {
     .mat-standard-chip {
-        margin: 0px;
+        margin: 0px 0px 0px 0.3rem;
         padding: 0 0.5rem;
         min-width: fit-content;
     }
-    .mat-chip-list-wrapper {
-        margin: 0.5rem !important;
+    .mat-column-mainProblem{
+        position: relative;
+    }
+    ::ng-deep .mat-chip-list-wrapper {
+        position: absolute !important;
+        top: -15px !important;
+        left: -7px !important;
+    }
+}
+
+.speciesTypeList{
+    height: 2.2rem;
+    width: 5rem;
+    &:focus{
+        border-bottom: 2px solid white;
+    }
+}
+.problemList{
+    height: 2rem;
+    width:4.5rem;
+    &:focus{
+        border-bottom: 2px solid white;
     }
 }
