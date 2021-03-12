@@ -94,7 +94,7 @@
                 (click)="animalTypeChip.toggleSelected()"
                 (keydown.tab)="tabPressed('AnimalType')"
                 (keydown.shift.tab)="shiftTabPressed('AnimalType')"
-                (keydown)="cycleChips($event, 'animaltype', 'animalType', true)"
+                (keydown)="cycleChips($event, 'animaltype', 'animalType')"
                 (selectionChange)="animalChipSelected(animalTypeChip);"
                 #animalTypeChip="matChip"
                 *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
@@ -106,15 +106,13 @@
 
             <label class="label">Main problem(s)</label>
 
-            <!--(keydown)="focusProblemChip($event, problemChip)"-->
-            <!---->
             <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
                     <mat-chip
                     tabindex="8"
                     (click)="problemChip.toggleSelected()"
                     (keydown.tab)="tabPressed('ProblemType')"
                     (keydown.shift.tab)="shiftTabPressed('ProblemType')"
-                    (keydown)="cycleChips($event, 'problem', 'problems', false)"
+                    (keydown)="focusProblemChip($event, problemChip)"
                     (selectionChange)="problemChipSelected(problemChip);"
                     #problemChip="matChip"
                     *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>

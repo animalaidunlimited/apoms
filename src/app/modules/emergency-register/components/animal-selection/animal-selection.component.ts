@@ -428,28 +428,19 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    cycleChips(event:any, chipGroup: string, property: string, select: boolean) {
+    cycleChips(event:any, chipGroup: string, property: string) {
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
 
-            let currentChip = '';
+            const currentPatient = this.getcurrentPatient().get(property)?.value || '';
 
             let chips;
 
             if (chipGroup === 'animaltype') {
                 chips = this.animalTypeChips.chips;
-                currentChip = this.getcurrentPatient().get(property)?.value || '';
             } else if (chipGroup === 'problem') {
                 chips = this.problemChips.chips;
-                const problems = (this.getcurrentPatient().get(property) as FormArray).controls;
-
-                console.log(problems[0]?.value);
-
-                currentChip = problems && problems[0]?.value ? problems[0]?.value : '';
-
             }
-
-            console.log(currentChip);
 
             let lastInstance = '';
             let currentIndex:any;
@@ -457,38 +448,31 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             // Get the last value of the current key (e.g. last animal beginning with p)
             // Also get the index of the current item
             chips?.forEach((item, index) => {
-                if (item.value.substr(0, 1).toLowerCase() === currentChip.substr(0, 1).toLowerCase()) {
+                if (
+                    item.value.substr(0, 1).toLowerCase() === currentPatient.substr(0, 1).toLowerCase()
+                ) {
                     lastInstance = item.value;
                 }
 
-                if (item.value === currentChip) {
+                if (item.value === currentPatient) {
                     currentIndex = index;
                 }
             });
 
             // Filter out any previous records so we can go directly to the next one in the list
-            const currentArray = chips?.filter((chip, index) => {
-                return (
-                    !(
-                        chip.value.substr(0, 1).toLowerCase() === currentChip.substr(0, 1).toLowerCase() &&
+            const currentArray = chips?.filter((chip, index) =>
+
+                    !(  chip.value.substr(0, 1).toLowerCase() === currentPatient.substr(0, 1).toLowerCase() &&
                         index <= currentIndex
-                    ) ||
-                    currentChip === '' || lastInstance === currentChip
-                );
-            });
+                    ) || currentPatient === '' || lastInstance === currentPatient
+
+        );
 
             // Get the chip we need
             const currentKeyChip = currentArray?.find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
 
             if(currentKeyChip){
-
-                console.log(currentKeyChip);
-
                 currentKeyChip.selected = true;
-                //select ?
-                //currentKeyChip.selected = true
-                //:
-                //currentKeyChip.focus();
             }
 
         }
