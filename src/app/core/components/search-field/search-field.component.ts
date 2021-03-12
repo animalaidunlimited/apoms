@@ -180,9 +180,10 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         },
         {
             id: 14,
-            inputType: 'text',
+            inputType: 'dropdown',
             searchValue: 'tycall',
             databaseField: 'p.PatientId IN (SELECT PatientId FROM AAU.PatientCall WHERE CallTypeId~~1)',
+            dropdownName: 'tycall',
             name: 'Thanked',
             inNotIn: true
         },
@@ -502,6 +503,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     }
 
     observableFactoryPiped(dropdownType: string | undefined) {
+
         return this.observableFactory(dropdownType).pipe(
             map((dropdowns: any) =>
                 dropdowns.map((dropdown: any) =>
@@ -514,8 +516,11 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     }
 
     observableFactory(dropdownType: string | undefined) {
+
         if (dropdownType) {
-            return dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() : dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes();
+            return dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() :
+            dropdownType === 'tycall' ? this.dropdowns.getYesNo() :
+            dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes();
         }
         return of();
     }
