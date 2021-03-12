@@ -1,3 +1,4 @@
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';	
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -46,15 +47,16 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     // I used animalTypes$ instead of animalType here to make the ngFors more readable (let specie(?) of animalType )
     animalTypes$: AnimalType[] = [] as AnimalType[];
 
-   
+    errorMatcher = new CrossFieldErrorMatcher();
+
     selectable = true;
     removable = true;
-    showSpeciesError:boolean[]=[];
+    
     showMainProblemError:boolean[]=[] ;
-    showSpeciesTypeList:boolean[] =[] ;
+
     showMainProbelmChipList:boolean[] =[];
     problemInput = new FormControl();
-    animalInput = new FormControl();
+    animalInput = new FormControl('', Validators.required);
     currentPatientChip: string | undefined;
     emergencyCaseId: number | undefined;
     exclusions: Exclusions[] = [] as Exclusions[];
@@ -192,8 +194,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     addEmptyShowHideToggle(){
         this.showMainProblemError.push(true);
-        this.showSpeciesError.push(true);
-        this.showSpeciesTypeList.push(false);
+        
         this.showMainProbelmChipList.push(false);
         
     }
@@ -228,7 +229,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             if (items.length > 0) {
                 if (items[0].patientId == null && items[0].position == null) {
                     this.initPatientArray();
-                    /* this.clearChips(); */
                 }
             }
         });
@@ -268,10 +268,9 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         const newPatient = this.fb.group({
             patientId: [patientId],
             position: [position],
-            animalTypeId: [''],
-            animalType: [''],
+            animalTypeId: ['', Validators.required],
+            animalType: ['', Validators.required],
             problems,
-            problemsString: ['', Validators.required],
             tagNumber: [''],
             duplicateTag: [false, Validators.required],
             updated: [isUpdate, Validators.required],
@@ -358,7 +357,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.selection.toggle(this.selection.selected[0]);
             /* this.clearChips(); */
             this.selection.toggle(row);
-            this.reloadChips();
         }
         else if (this.selection.selected.length !== 0 && this.selection.selected[0] === row){
             this.selection.toggle(this.selection.selected[0]);
@@ -366,7 +364,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
         else {
             this.selection.toggle(row);
-            this.reloadChips();
         }
     }
 
@@ -406,35 +403,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         });
     } */
 
-    reloadChips() {
-        const currentPatient = this.getcurrentPatient();
-
-        if (!currentPatient) {
-            return;
-        }
-
-        const currentAnimal = currentPatient.get('animalType')?.value;
-
-        /* this.animalTypeChips.chips.forEach(chip => {
-            currentAnimal === chip.value
-                ? (chip.toggleSelected(),
-                  (this.currentPatientChip = chip.value))
-                // tslint:disable-next-line: no-unused-expression
-                : chip.deselect;
-        }); */
-
-        const problems = currentPatient.get('problems') as FormArray;
-
-        problems.controls.forEach(problem => {
-           /*  this.problemChips.chips.forEach(chip => {
-                problem.get('problem')?.value === chip.value
-                    ? chip.toggleSelected()
-                    // tslint:disable-next-line: no-unused-expression
-                    : chip.deselect;
-            }); */
-        });
-    }
-    
+   
     animalSelected($event:MatAutocompleteSelectedEvent, index:number):void {
 
         this.recordForm.markAsDirty();
@@ -529,66 +498,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    /* cycleChips(event:any, chipGroup: string, property: string) {
-
-        if (event.keyCode >= 65 && event.keyCode <= 90) {
-            const currentPatient =
-                this.getcurrentPatient().get(property)?.value || '';
-
-            let chips;
-
-            if (chipGroup === 'animaltype') {
-                chips = this.animalTypeChips.chips;
-            } else if (chipGroup === 'problem') {
-                chips = this.problemChips.chips;
-            }
-
-            let lastInstance = '';
-            let currentIndex:any;
-
-            // Get the last value of the current key (e.g. last animal beginning with p)
-            // Also get the index of the current item
-            chips?.forEach((item, index) => {
-                if (
-                    item.value.substr(0, 1).toLowerCase() ===
-                    currentPatient.substr(0, 1).toLowerCase()
-                ) {
-                    lastInstance = item.value;
-                }
-
-                if (item.value === currentPatient) {
-                    currentIndex = index;
-                }
-            });
-
-            // Filter out any previous records so we can go directly to the next one in the list
-            const currentArray = chips?.filter((chip, index) => {
-                return (
-                    !(
-                        chip.value.substr(0, 1).toLowerCase() ===
-                            currentPatient.substr(0, 1).toLowerCase() &&
-                        index <= currentIndex
-                    ) ||
-                    currentPatient === '' ||
-                    lastInstance === currentPatient
-                );
-            });
-
-            // Get the chip we need
-            const currentKeyChip = currentArray?.find(chip => {
-                return (
-                    chip.value.substr(0, 1).toLowerCase() ===
-                    event.key.toLowerCase()
-                );
-            });
-
-            if(currentKeyChip){
-                currentKeyChip.selected = true;
-            }
-
-        }
-    } */
-
+   
     problemChipSelected(problemChip:any) {
 
         this.recordForm.markAsDirty();
@@ -843,16 +753,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     
 
-   
-
-    changeFocusToSpeciesSelection($event:MouseEvent | KeyboardEvent | FocusEvent, index:number){
-        $event.stopPropagation();
-        this.showSpeciesError[index] = false;
-        this.showSpeciesTypeList[index] = true;
-        this.cdr.detectChanges();
-        this.speciesInput.toArray()[index].nativeElement.focus();        
-    }
-
     changeFocusToProblemsSelection($event:MouseEvent | KeyboardEvent | FocusEvent, index:number){
         $event.stopPropagation();
         this.showMainProblemError[index] = false;
@@ -871,19 +771,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             return;
         }
         
-    }
-
-    speciesFocusOut($event: EventTarget | null | undefined, index:number){
-        const species = ($event as HTMLInputElement)?.value;
-        this.showSpeciesError[index] =  species === '' ? true : false;
-            
-        this.showSpeciesTypeList[index] = !this.showSpeciesError[index]; 
-    }
-    
-    speciesOptionClick(index:number){
-        this.showSpeciesError[index] = false; 
-        this.showSpeciesTypeList[index] = !this.showSpeciesError[index];  
-    }
+    }   
 
     checkRowSelected($event:Event, row: FormGroup){
         $event.stopPropagation();
