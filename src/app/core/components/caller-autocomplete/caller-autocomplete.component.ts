@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
 import { Validators, AbstractControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap, map, catchError, takeUntil } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
@@ -6,6 +6,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Callers } from '../../models/responses';
 import { CallerDetailsService } from '../caller-details/caller-details.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
+import { ElementRef } from '@angular/core';
 @Component({
   selector: 'app-caller-autocomplete',
   templateUrl: './caller-autocomplete.component.html',
@@ -20,6 +21,9 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
 
   @Output() isPrimary: EventEmitter<number> = new EventEmitter();
   @Output() callerDeleted: EventEmitter<number> = new EventEmitter();
+
+  @ViewChild('callerNumberRef') callerNumberRef!:ElementRef;
+
 
   callerNumber!: AbstractControl | null;
   callerAutoComplete$!: Observable<any> | undefined;

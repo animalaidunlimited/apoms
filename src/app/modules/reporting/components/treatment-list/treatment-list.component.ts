@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 export class TreatmentListComponent implements OnInit {
 
   displayedColumns: BehaviorSubject<string[]>
-          = new BehaviorSubject<string[]>(['index','Emergency number','Tag number','Species','Caller name','Number','Call date']);
+          = new BehaviorSubject<string[]>(['index','Tag number','Age','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
 
   columnsExcludingIndex: Observable<string[]>;
 
