@@ -13,6 +13,7 @@ import {
 } from 'src/app/core/models/patients';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -96,6 +97,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     loadPatientCalls() {
         this.patientService
             .getPatientCallsByPatientId(this.patientId)
+            .pipe(take(1))
             .subscribe((data: PatientCalls) => {this.populatePatientCalls(data);});
     }
 
@@ -175,7 +177,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
 
                this.toastResultMessage(comErrorFlag, resErrorFlag);
-                
+
 
                 result.forEach((callResult: PatientCallModifyResponse) => {
                     this.calls.controls.forEach(call => {
@@ -198,7 +200,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
         this.showSnackBar.errorSnackBar('Communication error, See admin.', 'Ok') :
 
-        resErrorFlag ? 
+        resErrorFlag ?
 
         this.showSnackBar.errorSnackBar('Failed to save', 'Ok') :
 

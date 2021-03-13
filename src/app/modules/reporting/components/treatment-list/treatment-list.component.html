@@ -1,11 +1,13 @@
-<div mat-dialog-content>
+<!--<div mat-dialog-content>-->
     <fieldset class="form-sub-group">
 
-      <legend class="legend ">{{data?.areaName}} - ({{patientRecords?.data?.length}})</legend>
+      <legend class="legend ">{{areaName}} - ({{patientRecords?.data?.length}})</legend>
+
+      <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
 
       <button type="button" mat-raised-button color="primary" (click)="censusLayout()">Census layout</button>
 
-      <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
+      <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
 
 
         <table mat-table matSort [dataSource]="patientRecords" class="mat-elevation-z8 table">
@@ -38,9 +40,9 @@
 
 
     </fieldset>
-</div>
+<!--</div>
 
 <div mat-dialog-action>
   <button type="button" mat-raised-button color="primary" (click)="onCancel()">Close</button>
   <button type="button" mat-raised-button color="primary" (click)="print()">Print</button>
-</div>
+</div>-->

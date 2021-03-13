@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -8,7 +8,7 @@ import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 
 
@@ -43,13 +43,23 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     resetFormEvent(event: KeyboardEvent) {
 
         event.preventDefault();
-        this.resetForm();
+
+        const element = this.elementRef.nativeElement;
+
+        if(element.offsetParent){
+            this.resetForm();
+        }
     }
 
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
-        this.saveForm();
+
+        const element = this.elementRef.nativeElement;
+
+        if(this.recordForm.valid && element.offsetParent){
+            this.saveForm();
+        }
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -65,7 +75,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
+        private elementRef: ElementRef
     ) {}
 
     ngOnInit() {
@@ -144,12 +155,14 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             EmergencyCode: null
         });
 
+        this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString());
+
         this.changeDetectorRef.detectChanges();
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
-        const result = {
+         const result = {
             message: 'Other error - See admin\n',
             failure: 0
         };
@@ -173,7 +186,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.message += 'Error adding the caller: Duplicate record \n';
                 result.failure++;
             } else {
-                result.message += 'Other error - See admin\n';
+                result.message += 'Other error (Caller) - See admin\n';
                 result.failure++;
             }
         });
@@ -185,7 +198,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.message += 'Error adding the EmergencyCaller: Duplicate record \n';
                 result.failure++;
             } else {
-                result.message += 'Other error - See admin\n';
+                result.message += 'Other error (EmergencyCaller) - See admin\n';
                 result.failure++;
             }
         });
@@ -225,11 +238,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     result.message += '';
                 } else if (problem.success === 2) {
                     result.message +=
-                        'Error adding the patient: Duplicate record \n';
+                        'Error adding the patient problems: Duplicate record \n';
                     result.failure++;
                 } else {
                     result.message +=
-                        'Error adding the patient: Other error - See admin \n';
+                        'Error adding the patient problems: Other error - See admin \n';
                     result.failure++;
                 }
             });

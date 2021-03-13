@@ -1,1 +1,16 @@
 <h1 class="legend">Apoms: {{releaseVersion}}</h1>
+
+
+<div fxLayout="column" fxLayoutAlign="center center">
+
+    <div class="refresh-text">
+    To get the latest version of the app, click the refresh button
+    </div>
+
+    <div>
+        <button mat-mini-fab (click)="refreshApp()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
+
+</div>

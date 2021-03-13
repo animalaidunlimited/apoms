@@ -12,9 +12,13 @@ export class SettingsPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.releaseVersion = '1.0.12';
+        this.releaseVersion = '1.0.17';
 
 
 
+    }
+
+    refreshApp(){
+        window.location.reload();
     }
 }

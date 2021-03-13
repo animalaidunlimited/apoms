@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
 import { map } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
@@ -24,6 +24,7 @@ import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
+import { KeyValuePair } from '../../models/generic';
 
 
 
@@ -70,6 +71,7 @@ export class DropdownService extends APIService {
 	priority$!:Observable<Priority[]>;
     releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
+    yesNo$!:any[];
 
 
 
@@ -358,6 +360,16 @@ export class DropdownService extends APIService {
         }
 
         return this.eyeDischarge$;
+    }
+
+    getYesNo() : Observable<KeyValuePair[]> {
+
+        const yesNo:KeyValuePair[] = [
+            {key: '1', value: 'Yes'},
+            {key: '2', value: 'No'}
+        ];
+
+        return of(yesNo);
     }
 
     getNasalDischarge() {

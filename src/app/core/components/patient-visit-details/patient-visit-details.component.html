@@ -20,7 +20,7 @@
 
 		<mat-form-field appearance="fill">
 			<mat-label>Main problem</mat-label>
-			<mat-select  formControlName="mainProblem" [errorStateMatcher]="errorMatcher">
+			<mat-select formControlName="mainProblem" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let problem of (problems$ | async)" [value]="problem.MainProblemId">
 					{{ problem.MainProblem}}
 				</mat-option>
@@ -37,8 +37,10 @@
 
 		<mat-form-field appearance="fill">
 			<mat-label>Case status</mat-label>
-			<mat-select placeholder="Select" formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
-				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
+			<mat-select formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
+				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">
+					{{ status.Status}}
+				</mat-option>
 			</mat-select>
 		</mat-form-field>
 
@@ -116,8 +118,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
-		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVisits($event)">
+	<div class="mat-fab-wrapper" class="add-visits-fab-btn" fxLayout="row" fxLayoutAlign="center center">
+		<button mat-mini-fab color="primary" aria-label="Add this Visit" (click)="addVisits($event)">
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>

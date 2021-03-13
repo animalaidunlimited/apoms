@@ -12116,15 +12116,15 @@
         ]
       },
       {
-        "name": "PatientDetailsDialogComponent",
-        "file": "components/patient-details-dialog/patient-details-dialog.component.ts",
-        "selector": "patient-details-dialog",
+        "name": "TreatmentListComponent",
+        "file": "components/treatment-list/treatment-list.component.ts",
+        "selector": "treatment-list",
         "providers": [],
         "templateUrl": [
-          "patient-details-dialog.component.html"
+          "treatment-list.component.html"
         ],
         "styleUrls": [
-          "patient-details-dialog.component.scss"
+          "treatment-list.component.scss"
         ],
         "__raw": [
           {
@@ -12150,7 +12150,7 @@
               "modifierFlagsCache": 0,
               "transformFlags": 0,
               "kind": 10,
-              "text": "patient-details-dialog",
+              "text": "treatment-list",
               "hasExtendedUnicodeEscape": false
             }
           },
@@ -12177,7 +12177,7 @@
               "modifierFlagsCache": 0,
               "transformFlags": 0,
               "kind": 10,
-              "text": "./patient-details-dialog.component.html",
+              "text": "./treatment-list.component.html",
               "hasExtendedUnicodeEscape": false
             }
           },
@@ -12212,7 +12212,7 @@
                   "modifierFlagsCache": 0,
                   "transformFlags": 0,
                   "kind": 10,
-                  "text": "./patient-details-dialog.component.scss",
+                  "text": "./treatment-list.component.scss",
                   "hasExtendedUnicodeEscape": false
                 }
               ],
@@ -12391,7 +12391,7 @@
               "modifierFlagsCache": 0,
               "transformFlags": 0,
               "kind": 78,
-              "escapedText": "PatientDetailsDialogComponent"
+              "escapedText": "TreatmentListComponent"
             },
             {
               "pos": 825,

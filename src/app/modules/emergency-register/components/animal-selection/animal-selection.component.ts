@@ -89,7 +89,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
     tagNumber: string | undefined;
-    validRow =true;
+    validRow = true;
 
     emergencyCardHTML = '';
 
@@ -112,6 +112,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.updateTag(this.getcurrentPatient());
         } */
     }
+
     constructor(
         private dialog: MatDialog,
         private fb: FormBuilder,
@@ -229,6 +230,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     subscribeToChanges() {
+
         this.recordForm.get('patients')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(items => {
@@ -499,7 +501,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             if (foundChip) {
                 foundChip.focus();
             }
-            
+
         } else if (event.keyCode === 13) { // space
             this.problemChipSelected(problemChip);
         }
@@ -688,6 +690,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
                 const resultCurrentPatient = this.getcurrentPatient();
 
                 resultCurrentPatient.get('tagNumber')?.setValue(result.value);
+
+                if(this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18){
+                    resultCurrentPatient.get('tagNumber')?.setValidators(Validators.required);
+                    resultCurrentPatient.get('tagNumber')?.updateValueAndValidity();
+                }
 
                 resultCurrentPatient.get('duplicateTag')?.setValue(result.status);
 

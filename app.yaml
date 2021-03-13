@@ -1,4 +1,4 @@
-service: apoms
+service: apoms-staging
 runtime: nodejs12
 env: standard
 

@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { take } from 'rxjs/operators';
 @Component({
     selector: 'app-teams-page',
     templateUrl: './teams-page.component.html',
@@ -33,8 +34,8 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
             TeamId: 0,
             TeamName: '',
             IsDeleted: '0',
+            TeamColour: '#000000',
             Capacity: 0,
-            TeamColour: ''
         };
         this.dataSource = new MatTableDataSource([emptyTeam]);
     }
@@ -42,12 +43,14 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     displayedColumns: string[] = [
         'TeamName',
         'Capacity',
+        'TeamColour'
     ];
 
     teamDetails = this.fb.group({
         TeamId: [],
         TeamName: ['', Validators.required],
         Capacity: [, Validators.required],
+        TeamColour: ['#000000',Validators.required],
         IsDeleted: [],
     });
 
@@ -60,6 +63,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     getrefreshTableData() {
         this.teamSubsciption = this.teamDetailService
             .getAllTeams()
+            .pipe(take(1))
             .subscribe((teamListData: TeamDetails[]) => {
                 this.dataSource = new MatTableDataSource(teamListData);
                 this.dataSource.sort = this.sort;

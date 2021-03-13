@@ -29,23 +29,24 @@
     complainerInformed: number;
     releaseRequestForm: ReleaseRequestForm;
   }
-  
+
   interface ReleaseRequestForm {
     requestedDate: string;
     requestedUser: string;
   }
-  
+
   export interface StreetTreatForm {
     teamId: number;
     visits: VisitResponse[];
     patientId: number;
     adminNotes: string;
+    autoAdded: boolean;
     mainProblem: number;
     casePriority: number;
     streetTreatCaseId: number;
     streetTreatCaseStatus: number;
   }
-  
+
   export interface VisitResponse {
     visitId: number;
     visit_day: number;
