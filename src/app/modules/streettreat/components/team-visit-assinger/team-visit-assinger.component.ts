@@ -179,7 +179,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         });
 
     this.streetTreatService.getChartData().subscribe((data) => {
-      console.log(data);
       this.initChartData(data);
     });
   }

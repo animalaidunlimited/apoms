@@ -36,8 +36,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
-    callDateTime: string | Date = getCurrentTimeString();
-    minimumDate = '';
+    callDateTime: string = getCurrentTimeString();
+    minimumDate = '2018-02-14T00:00';
 
     hasEmergencyCaseId: number | undefined = undefined;
 
@@ -136,8 +136,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
         this.emergencyDetails.addControl('code',new FormControl({ EmergencyCodeId: null, EmergencyCode: null }));
-        this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
-        this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
