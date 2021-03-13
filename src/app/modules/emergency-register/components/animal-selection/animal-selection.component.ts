@@ -52,11 +52,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     selectable = true;
     removable = true;
     
-    showMainProblemError:boolean[]=[] ;
 
-    showMainProbelmChipList:boolean[] =[];
+
+ 
     problemInput = new FormControl();
-    animalInput = new FormControl('', Validators.required);
+    animalInput = new FormControl();
     currentPatientChip: string | undefined;
     emergencyCaseId: number | undefined;
     exclusions: Exclusions[] = [] as Exclusions[];
@@ -124,7 +124,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.addEmptyShowHideToggle();
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
@@ -183,21 +182,29 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.filteredAnimalTypes = 
             this.animalInput.valueChanges.pipe(
                 startWith(''),
+                map(animalType =>{
+                    if(animalType === '')
+                    {
+                        const currentPatient = this.getcurrentPatient();
+
+                        currentPatient.get('animalType')?.reset();
+
+                        currentPatient.get('animalTypeId')?.reset();
+
+                        currentPatient.get('updated')?.setValue(true);
+                    }
+                    return animalType;
+                }),
                 switchMap(animalType => iif(
                     () => typeof animalType === 'string'
                         , this.animalFilter(animalType)
                         , this.dropdown.getAnimalTypes()
              ))
             );
-      
+        
     }
 
-    addEmptyShowHideToggle(){
-        this.showMainProblemError.push(true);
-        
-        this.showMainProbelmChipList.push(false);
-        
-    }
+   
     animalFilter(filterValue:string){
         return this.dropdown.getAnimalTypes().pipe(
             map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(filterValue.toLowerCase()) === 0))
@@ -458,8 +465,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     addPatientRow(){
-        if(this.patientArray.valid){
-            this.addEmptyShowHideToggle();
+        if(this.patientArray.valid){ 
+
             const patient = this.getEmptyPatient();
             this.patientArray.push(patient);
             this.resetTableDataSource();
@@ -723,8 +730,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     // So the below finds the last element and skips to the next value
     tabPressed($event:Event,index:number){
         $event.preventDefault();
-        this.showMainProblemError[index] = false;
-        this.showMainProbelmChipList[index] = true;
         this.cdr.detectChanges();        
         this.problemAuto.toArray()[index].nativeElement.focus()
        
@@ -751,22 +756,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    
-
-    changeFocusToProblemsSelection($event:MouseEvent | KeyboardEvent | FocusEvent, index:number){
-        $event.stopPropagation();
-        this.showMainProblemError[index] = false;
-        this.showMainProbelmChipList[index] = true;
-        this.cdr.detectChanges();
-        this.problemAuto.toArray()[index].nativeElement.focus();
-    }
 
     setMainProblemError(row:FormGroup, index:number){
         if(this.selection.isSelected(row)){
             const currentPatient = this.getcurrentPatient() as FormGroup;
             const selectedProblems =  currentPatient.get('problemsString')?.value;
-            this.showMainProblemError[index] =  selectedProblems === '' ? true : false;
-            this.showMainProbelmChipList[index] = !this.showMainProblemError[index]; 
         }else{
             return;
         }
