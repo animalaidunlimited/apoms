@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
 import { map } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
@@ -24,6 +24,7 @@ import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
+import { KeyValuePair } from '../../models/generic';
 
 
 

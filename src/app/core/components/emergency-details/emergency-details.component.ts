@@ -105,7 +105,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
-                    this.callDateTimeField.nativeElement.focus();
+                    this.emergencyNumberField.nativeElement.focus();
                 }
 
                 this.updateEmergencyNumber(val);
@@ -142,16 +142,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
     updateEmergencyNumber(emergencyNumber: number) {
         this.loadEmergencyNumber.emit(emergencyNumber);
-    }
-
-    setInitialTime() {
-        const currentTime = this.recordForm.get(
-            'emergencyDetails.callDateTime',
-        );
-
-        if (!currentTime?.value) {
-            currentTime?.setValue(getCurrentTimeString());
-        }
     }
 
     compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {

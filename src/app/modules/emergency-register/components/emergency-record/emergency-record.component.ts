@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -43,14 +43,21 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     resetFormEvent(event: KeyboardEvent) {
 
         event.preventDefault();
-        this.resetForm();
+
+        const element = this.elementRef.nativeElement;
+
+        if(element.offsetParent){
+            this.resetForm();
+        }
     }
 
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
 
-        if(this.recordForm.valid){
+        const element = this.elementRef.nativeElement;
+
+        if(this.recordForm.valid && element.offsetParent){
             this.saveForm();
         }
     }
@@ -68,7 +75,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
-        private showSnackBar: SnackbarService
+        private showSnackBar: SnackbarService,
+        private elementRef: ElementRef
     ) {}
 
     ngOnInit() {
@@ -146,6 +154,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             EmergencyCodeId: null,
             EmergencyCode: null
         });
+
+        this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString());
 
         this.changeDetectorRef.detectChanges();
     }
@@ -241,8 +251,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     async saveForm() {
-
-        console.log(this.recordForm);
 
         this.loading = true;
         if (this.recordForm.pending) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChildren, HostListener } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
@@ -7,6 +7,8 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { QueryList } from '@angular/core';
+import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -14,11 +16,13 @@ import { Subject } from 'rxjs';
     templateUrl: './caller-details.component.html',
     styleUrls: ['./caller-details.component.scss'],
 })
+
 export class CallerDetailsComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
     @Input() recordForm!: FormGroup;
+    @ViewChildren(CallerAutocompleteComponent) callerAutoComplete!: QueryList<CallerAutocompleteComponent>;
 
     caller$!: Caller;
     callerDetails!:FormGroup;
@@ -35,6 +39,15 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private snackbar: SnackbarService,
     ) {}
+
+
+
+    @HostListener('document:keydown.alt.shift.n', ['$event'])
+    setFocusNumber(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+    }
+
 
     ngOnInit() {
 
@@ -145,3 +158,5 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     }
 
 }
+
+
