@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, HostListener, ViewChildren, QueryList, ElementRef, ContentChildren } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, HostListener, ViewChildren, QueryList } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
@@ -31,6 +31,14 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
 
     errorMatcher = new CrossFieldErrorMatcher();
     selection = new SelectionModel<any>(false, []);
+
+    @HostListener('document:keydown.meta.shift.n', ['$event'])
+    setMacFocusNumber(event: KeyboardEvent){
+        event.preventDefault();
+        if(navigator.platform.match('Mac')){
+            this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+        }
+    }
 
     @HostListener('document:keydown.alt.shift.n', ['$event'])
     setFocusNumber(event: KeyboardEvent) {
