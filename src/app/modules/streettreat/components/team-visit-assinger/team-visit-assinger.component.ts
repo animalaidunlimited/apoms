@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import {MediaObserver} from '@angular/flex-layout';
+import { take } from 'rxjs/operators';
 
 
 export interface Position {
@@ -101,17 +102,18 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
   ngOnInit(): void {
+
     this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
       mediaQuerys.forEach((mediaQuery) =>
       {
 
       });
     });
+
     this.teamsgroup = this.fb.group({
       teams:[''],
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
-
 
     this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
 
@@ -132,6 +134,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatServiceSubs =
         this.streetTreatService
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+        .pipe(take(1))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
@@ -176,6 +179,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         });
 
     this.streetTreatService.getChartData().subscribe((data) => {
+      console.log(data);
       this.initChartData(data);
     });
   }
@@ -194,7 +198,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         dateObj.series = charts.filter(chart => chart.name === dateObj.name)[0].series;
       }
     });
-
 
     datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
 
@@ -264,6 +267,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
           this.streetTreatServiceSubs = this.streetTreatService
           .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
+          .pipe(take(1))
           .subscribe((streetTreatCaseByVisitDateResponse) => {
 
             streetTreatCaseByVisitDateResponse.Cases?.forEach(team =>
@@ -395,7 +399,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     $event?.stopPropagation();
     this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
 
-    this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().subscribe((cases)=>{
+    this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().pipe(take(1)).subscribe((cases)=>{
 
       this.streetTreatCaseByVisitDateResponse = cases;
       this.filteredStreetTreatCases = cases;

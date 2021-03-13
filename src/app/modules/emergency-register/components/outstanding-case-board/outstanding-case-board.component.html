@@ -59,13 +59,13 @@
 
 
    <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
-    <mat-expansion-panel [expanded]="true" *ngFor="let options of caseFilter" hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{options.showTitle}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
 
+  <div class="filter-card" *ngFor="let options of caseFilter">
+  <div class="filter-header">
+    {{options.showTitle}}
+  </div>
+
+  <div class="filter-content">
     <mat-chip-list #filterChips multiple>
       <mat-chip #filterChip="matChip"
       (click)="filterChip.toggleSelected()"
@@ -74,7 +74,10 @@
         {{option.value}}
       </mat-chip>
     </mat-chip-list>
-    </mat-expansion-panel>
+  </div>
+</div>
+
+
 
   </div>
 </div>

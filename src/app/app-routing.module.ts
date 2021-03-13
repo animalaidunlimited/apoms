@@ -1,10 +1,5 @@
 import { NgModule } from '@angular/core';
-import {
-    Routes,
-    RouterModule,
-    PreloadAllModules,
-    RouteReuseStrategy,
-} from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules, RouteReuseStrategy } from '@angular/router';
 import { navRoutes, sideNavPath } from './nav-routing';
 import { NavComponent } from './core/components/nav/nav.component';
 import { AuthGuard } from './auth/auth.guard';
@@ -19,22 +14,21 @@ const routes: Routes = [
         path: 'settings',
         loadChildren: () =>
             import('./pages/settings-page/settings-page.module').then(
-                m => m.SettingsPageModule,
-            ),
+                m => m.SettingsPageModule
+            )
     },
     {
         path: 'reporting',
         loadChildren: () =>
-            import('./modules/reporting/reporting-page.module').then(
-                m => m.ReportingPageModule,
-            ),
+            import('./modules/reporting/reporting-page.module')
+            .then(m => m.ReportingPageModule)
     },
     {
         path: 'surgery-register',
         loadChildren: () =>
             import(
                 './modules/surgery-register/surgery-register-page.module'
-            ).then(m => m.SurgeryRegisterPageModule),
+            ).then(m => m.SurgeryRegisterPageModule)
     },
     {
         path: 'census',
@@ -99,11 +93,11 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
     ],
     exports: [RouterModule],
     providers: [
-        { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+        { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy }
     ],
 })
 export class AppRoutingModule {}

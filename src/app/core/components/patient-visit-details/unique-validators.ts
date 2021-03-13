@@ -15,7 +15,7 @@ export class UniqueValidators {
 
 			controls.map(formGroup => formGroup.get(field)).forEach(x => {
 				if (x?.errors) {
-					delete x.errors['uniqueBy'];
+					delete x.errors.uniqueBy;
 					if (isBlank(x.errors)) {
 						x.setErrors(null);
 					}

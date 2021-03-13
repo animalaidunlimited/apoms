@@ -90,34 +90,20 @@
             </ng-container>
 
             <ng-container matColumnDef="tagNo">
-                <th mat-header-cell *matHeaderCellDef fxHide.lt-md>Tag number</th>
-                <td
-                    mat-cell
-                    *matCellDef="let row"
+
+                    <th mat-header-cell *matHeaderCellDef> Tag number </th>
+                    <td mat-cell *matCellDef="let row"
                     (click)="selectIfNotSelected(row); updateTag(row)"
-                    [class.invalid-cell]="
-                        recordForm.get('callOutcome.CallOutcome')?.value
-                            ?.CallOutcomeId === 1 &&
-                        !row.get('tagNumber')?.value
-                    "
+                    [class.invalid-cell]="(recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1 || recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ) && !row.get('tagNumber')?.value"
                     [ngClass]="{
                         duplicate: row.get('duplicateTag')?.value == 'INVALID',
                         pending: row.get('duplicateTag')?.value == 'PENDING'
                     }"
-                    style="cursor:pointer"
-                >
-                    {{ row.get('tagNumber')?.value }}
-                    <p
-                        style="color:red"
-                        *ngIf="
-                            recordForm.get('callOutcome.CallOutcome')?.value
-                                ?.CallOutcomeId === 1 &&
-                            !row.get('tagNumber')?.value
-                        "
-                    >
-                        Tag number
-                    </p>
-                </td>
+                    style="cursor:pointer">
+
+                        {{row.get("tagNumber")?.value}}
+                        <p style="color:red" *ngIf="(recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1 || recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 )&& !row.get('tagNumber')?.value">  Tag number</p>
+                    </td>
             </ng-container>
 
             <ng-container matColumnDef="media">

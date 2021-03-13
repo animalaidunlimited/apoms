@@ -9,12 +9,13 @@ import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { MatDialog } from '@angular/material/dialog';
 import { SurgeriesByDateDialogComponent } from '../../components/surgeries-by-date-dialog/surgeries-by-date-dialog.component';
-import { PatientDetailsDialogComponent } from '../../components/patient-details-dialog/patient-details-dialog.component';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { take } from 'rxjs/operators';
+import { TreatmentListComponent } from '../../components/treatment-list/treatment-list.component';
 
 
 @Component({
@@ -23,6 +24,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
     styleUrls: ['./reporting-page.component.scss'],
 })
 export class ReportingPageComponent implements OnInit {
+    currentAreaName = '';
 
     constructor(
         private fb: FormBuilder,
@@ -44,6 +46,7 @@ export class ReportingPageComponent implements OnInit {
     totalPatientCount = 0;
     isAdmissionChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    showTreatmentList = false;
 
     ngOnInit() {
 
@@ -54,20 +57,23 @@ export class ReportingPageComponent implements OnInit {
 
     getPatientDetailsByArea(area:string){
 
-        this.dialog.open(PatientDetailsDialogComponent, {
+        this.showTreatmentList = true;
+        this.currentAreaName = area;
 
-          width: '90%',
-          maxHeight: 'auto',
-          data: {
-            areaName : area
-          },
-      });
+    //    this.dialog.open(TreatmentListComponent, {
+
+    //      width: '90%',
+    //      maxHeight: 'auto',
+    //      data: {
+    //        areaName : area
+    //      },
+    //  });
 
     }
-    
+
     openSurgeryDetailsDialog(){
 
-        this.surgeries.subscribe(surgeryList => {
+        this.surgeries.pipe(take(1)).subscribe(surgeryList => {
 
            this.dialog.open(SurgeriesByDateDialogComponent, {
                 minWidth: '50%',
@@ -81,7 +87,7 @@ export class ReportingPageComponent implements OnInit {
     }
 
     openEmergencyCaseDialog() {
-        this.emergencyCases.subscribe((caseList: EmergencyRecordTable[] | null)=> {
+        this.emergencyCases.pipe(take(1)).subscribe((caseList: EmergencyRecordTable[] | null)=> {
             this.dialog.open(EmergencyCaseDialogComponent, {
                 width: '90%',
                 maxHeight: 'auto',
@@ -142,9 +148,13 @@ export class ReportingPageComponent implements OnInit {
 
             if(val.emergencyCaseDate) {
                 this.emergencyCases =  this.reportingService.getEmergencyCaseByDateAndOutcomeOrST(val.emergencyCaseDate, val.streetTreat, val.admission);
-                this.emergencyCases.subscribe((cases: any)=> {
+                this.emergencyCases.subscribe(cases=> {
                     if(cases) {
-                        this.emergencyCaseCount.next(cases.length || 0);
+
+
+                        const caseArray = new Set(cases.map(currentCase => currentCase.emergencyNumber));
+
+                        this.emergencyCaseCount.next(caseArray.size || 0);
                     }
                 });
             }

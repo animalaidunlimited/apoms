@@ -7,38 +7,51 @@
         </mat-form-field>
         <mat-form-field>
           <input type="number" step="10" placeholder="Capacity per day" formControlName='Capacity' matInput required>
-        </mat-form-field> 
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Pick color</mat-label>
+          <input type="color" formControlName='TeamColour' matInput>
+      </mat-form-field>
       </div>
       <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="column" fxLayoutAlign='start center'>
         <button type='submit' mat-raised-button color='primary'>Save</button>
-           
+
         <button type='button' mat-raised-button  (click)="resetForm()"  color='white'>Reset</button>
 
         <button type='button' mat-raised-button (click)="deleteTeam()" [disabled]="disabledDeleteBtn" color='primary'>Delete</button>
       </div>
     </fieldset>
-</form> 
+</form>
 
 
 <div class="team_list_table_group" style="border:2px solid rgb(175, 175, 175);">
   <h3>Team List</h3>
   <mat-form-field  class="filter">
-    <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label> 
+    <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label>
     <input matInput (keyup)="applyFilter($event)" #input>
   </mat-form-field>
   <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" matSort class = "sortTableCursor">  
+  <table mat-table [dataSource]="dataSource" matSort class = "sortTableCursor">
 
     <ng-container matColumnDef="TeamName">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Team name </th>
       <td mat-cell *matCellDef="let element"> {{element.TeamName}} </td>
     </ng-container>
-  
+
     <ng-container matColumnDef="Capacity">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Capacity </th>
       <td mat-cell *matCellDef="let element"> {{element.Capacity}} </td>
     </ng-container>
-  
+    <ng-container matColumnDef="TeamColour">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Team colour </th>
+      <td mat-cell *matCellDef="let element">
+        <svg width="125" height="25">
+          <rect width="125" height="25"
+            [attr.fill]="element.TeamColour" />
+        </svg> </td>
+
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
   </table>

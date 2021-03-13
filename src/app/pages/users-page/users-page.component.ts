@@ -9,6 +9,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger } from '@angular/animations';
+import { take } from 'rxjs/operators';
 
 
 interface StreetTreatRole {
@@ -125,10 +126,10 @@ export class UsersPageComponent implements OnInit {
     }];
 
     ngOnInit() {
-        this.dropdown.getAllTeams().subscribe(team=>{
+        this.dropdown.getAllTeams().pipe(take(1)).subscribe(team=>{
           this.teamNames = team;
         });
-        this.dropdown.getUserJobType().subscribe(jobType=>{
+        this.dropdown.getUserJobType().pipe(take(1)).subscribe(jobType=>{
           this.jobTypes = jobType;
         });
         this.getrefreshTableData();
@@ -138,11 +139,11 @@ export class UsersPageComponent implements OnInit {
 
     getrefreshTableData() {
       this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
-        this.userList = userListData;   
-        this.initialiseTable(this.userList);   
+        this.userList = userListData;
+        this.initialiseTable(this.userList);
       });
 
-      
+
     }
 
     initialiseTable(userTableData:UserDetails[]) {

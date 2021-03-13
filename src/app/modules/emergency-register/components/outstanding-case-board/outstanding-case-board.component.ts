@@ -298,11 +298,6 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     this.outstandingCaseService.toggleAutoRefresh();
   }
 
-  // changeDetection(value: Event) {
-  //   console.log(value);
-  // }
-
-
   setup(){
 
     // Find out whether we have permission to receive notifications or not

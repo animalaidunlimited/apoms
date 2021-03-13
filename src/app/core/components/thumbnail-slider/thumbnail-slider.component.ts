@@ -3,6 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
 
 import { Observable, BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { MediaItem } from '../../models/media';
 
 @Component({
@@ -20,7 +21,7 @@ export class ThumbnailSliderComponent implements OnInit{
 
     ngOnInit() {
 
-        this.mediaData.subscribe(mediaItems => {
+        this.mediaData.pipe(take(1)).subscribe(mediaItems => {
 
             if(!mediaItems){
                 this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
