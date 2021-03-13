@@ -50,8 +50,6 @@ $standard-width: 180px;
     overflow: hidden;
 }
 
-
-
 .drag-drop-box {
     padding: 20px 10px;
     border-bottom: solid 1px #ccc;
@@ -105,22 +103,6 @@ $standard-width: 180px;
 .border-yellow {
     border-right: 8px solid gold;
 }
-
-//.dot {
-//    height: 20px;
-//    width: 20px;
-//    border-radius: 50%;
-//    display: inline-block;
-//}
-//.dot-red {
-//    background-color: red;
-//}
-//.dot-green {
-//    background-color: green;
-//}
-//.dot-yellow {
-//    background-color: gold;
-//}
 
 .name {
     margin: 10px 0px 0px 10px;
@@ -239,7 +221,6 @@ $standard-width: 180px;
 .filter-header{
     background-color: lightsteelblue;
     height: 64px;
-    cursor: pointer;
 	display: flex;
     flex-direction: row;
     align-items: center;

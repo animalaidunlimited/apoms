@@ -38,7 +38,13 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <button type="button" mat-raised-button color="primary" (click)="addTreatment()">Add treatment</button>
+      <!--<button type="button" mat-raised-button color="primary" (click)="addTreatment()">Add treatment</button>-->
+
+      <div fxLayoutAlign = "center center" style="padding-top: 10px;">
+        <button type="button" mat-mini-fab (click)="addTreatment()" color="primary">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
 
     </fieldset>
 
