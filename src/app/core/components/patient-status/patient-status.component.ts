@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
@@ -21,7 +21,7 @@ import { take } from 'rxjs/operators';
 export class PatientStatusComponent implements OnInit {
 
     @Input() patientId!: number;
-    @Input() formInvalid!: boolean;
+    @Output() formInvalid: EventEmitter<boolean> = new EventEmitter();
 
     currentTime = '';
     createdDate = '';
@@ -72,7 +72,8 @@ export class PatientStatusComponent implements OnInit {
         this.currentTime = getCurrentTimeString();
 
         this.patientStatusForm.valueChanges.subscribe(() => {
-            this.formInvalid = this.patientStatusForm.invalid;
+            
+            this.formInvalid.emit(this.patientStatusForm.invalid);
         } );
 
     }
