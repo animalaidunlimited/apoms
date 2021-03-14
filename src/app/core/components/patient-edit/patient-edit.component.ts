@@ -12,7 +12,7 @@ export interface DialogData {
     templateUrl: './patient-edit.component.html',
     styleUrls: ['./patient-edit.component.scss']
 })
-export class PatientEditDialog implements OnInit {
+export class PatientEditDialog {
 
     @Input() patientStatusForm!: FormGroup;
 
@@ -29,11 +29,13 @@ export class PatientEditDialog implements OnInit {
 
     }
 
-    ngOnInit() {
-
-    }
-
     onCancel(): void {
         this.dialogRef.close();
     }
+
+    setFormValidity($event:boolean){
+        this.formInvalid = $event;
+    }
+
+
 }
