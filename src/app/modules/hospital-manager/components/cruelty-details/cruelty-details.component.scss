@@ -1,3 +1,14 @@
 .form-sub-group {
     width: fit-content;
 }
+
+.extra-wide {
+    max-width: 70%;
+}
+
+
+@media(max-width: 600px) { 
+    .extra-wide {
+        max-width: 300px !important;
+    } 
+}

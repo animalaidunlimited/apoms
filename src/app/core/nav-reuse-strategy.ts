@@ -41,7 +41,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
     }
 
     private isReusable(route: ActivatedRouteSnapshot) {
-        return route.data && route.data.shouldReuse && route.data.userPermissionArray;
+        return route.data && route.data.shouldReuse && route.data.componentPermissionLevel;
     }
 
     private getKey(route: ActivatedRouteSnapshot) {

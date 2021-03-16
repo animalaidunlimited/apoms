@@ -43,8 +43,6 @@ export class EmergencyRecordComponent implements OnInit {
 
     syncedToLocalStorage = false;
 
-    permissionType!: number[];
-
     hasWritePermission: boolean = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
@@ -84,14 +82,7 @@ export class EmergencyRecordComponent implements OnInit {
         this.route.data.subscribe(val=> {
 
             console.log(val);
-            
-            this.permissionType = val.permissionId.filter((id:number)=>{
-                return val.userPermissionArray.value.indexOf(id) > -1
-            });
-
-            console.log(this.permissionType);
-
-            if (this.permissionType[0] % 2 === 0) {
+            if (val.componentPermissionLevel === 2) {
                 this.hasWritePermission = true;
             }
 

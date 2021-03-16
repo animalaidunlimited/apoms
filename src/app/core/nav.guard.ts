@@ -16,7 +16,7 @@ import { EvaluatePermissionService } from './services/permissions/evaluate-permi
 })
 export class NavGuard implements CanActivateChild {
     private previousUrl = '';
-    userHasPermission: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    userHasPermission: BehaviorSubject<number| undefined> = new BehaviorSubject<number | undefined>(undefined);
 
     constructor(private navigationService: NavigationService,
         private permissionService:EvaluatePermissionService,
@@ -30,8 +30,9 @@ export class NavGuard implements CanActivateChild {
  {
 
         return await this.permissionService.permissionTrueOrFalse(childRoute.data.permissionId).then(val=> {
-            this.userHasPermission.next(val.userPermissionBoolean);
-            if (childRoute.data && childRoute.data.title && this.userHasPermission.value) {
+            this.userHasPermission.next(val);
+            console.log(!!this.userHasPermission.value)
+            if (childRoute.data && childRoute.data.title && !!this.userHasPermission.value) {
                 // tslint:disable-next-line:no-non-null-assertion
                 const parentPath: string = childRoute.parent!.url
                     .map(url => url.path)
@@ -61,7 +62,7 @@ export class NavGuard implements CanActivateChild {
                     childRoute.data.title,
                     childRoute.url.map(url => url.path),
                     childRoute.data.isChild,
-                    this.userHasPermission.value
+                    !!this.userHasPermission.value
                 );
     
     
@@ -76,7 +77,9 @@ export class NavGuard implements CanActivateChild {
                 this.router.navigate(['home'])
             }
 
-            return this.userHasPermission.value;
+            console.log(!!this.userHasPermission.value);
+
+            return !!this.userHasPermission.value;
 
             
         })

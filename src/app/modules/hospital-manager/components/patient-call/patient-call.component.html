@@ -62,9 +62,11 @@
             </div>
 
 
-            <mat-form-field style="width:100%">
-                <textarea style="width:100%" formControlName="comments" rows="2" placeholder="Comments" [errorStateMatcher]="errorMatcher" matInput></textarea>
-            </mat-form-field>
+            <div>
+                <mat-form-field class="textBoxWrapper">
+                    <textarea formControlName="comments" rows="2" placeholder="Comments" [errorStateMatcher]="errorMatcher" matInput></textarea>
+                </mat-form-field>
+            </div>
 
         </div>
 

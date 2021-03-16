@@ -10,6 +10,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger, group } from '@angular/animations';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { ActivatedRoute } from '@angular/router';
 
 
 interface StreetTreatRole {
@@ -87,6 +88,9 @@ export class UsersPageComponent implements OnInit {
     myCheck = false;
     currentState = 'closed';
 
+    hasWritePermission!: boolean;
+
+
     dataSource: MatTableDataSource<UserDetails> ;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -96,7 +100,8 @@ export class UsersPageComponent implements OnInit {
     constructor(private dropdown : DropdownService,
       private fb : FormBuilder,
       private userAction : UserActionService,
-      private snackBar: SnackbarService) {
+      private snackBar: SnackbarService,
+      private route: ActivatedRoute) {
         const emptyUser = {
           userId : 0,
           firstName: '',
@@ -149,6 +154,15 @@ export class UsersPageComponent implements OnInit {
     }];
 
     ngOnInit() {
+
+      this.route.data.subscribe(val=> {
+
+        console.log(val);
+        if (val.componentPermissionLevel === 2) {
+            this.hasWritePermission = true;
+        }
+
+    })
 
       this.permissionGroupObject = [
         {
@@ -264,49 +278,57 @@ export class UsersPageComponent implements OnInit {
 
     Submit(userDetailsForm: any) {
 
-      console.log(userDetailsForm.value);
-      this.loading = true;
+      if(this.hasWritePermission) {
+        console.log(userDetailsForm.value);
+        this.loading = true;
 
-      if(userDetailsForm.get('password').value !== ''){
-        userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
-      }
-      else {
-        userDetailsForm.get('password').setValue('');
-      }
+        if(userDetailsForm.get('password').value !== ''){
+          userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
+        }
+        else {
+          userDetailsForm.get('password').setValue('');
+        }
 
-      if(userDetailsForm.valid) {
-        this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+        if(userDetailsForm.valid) {
+          this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+            this.loading = false;
+
+            if(res.success) {
+              res.success === 1 ?
+
+              this.insertSuccess() :
+
+              res.success === -1 ?
+
+                this.connectionError() :
+
+                this.fail();
+            }
+
+            else if(res.updateSuccess) {
+              res.updateSuccess === 1 ?
+
+              this.updateSuccess() :
+
+              res.updateSuccess === -1 ?
+
+                this.connectionError() :
+
+                this.fail();
+            }
+          });
+        }
+        else {
           this.loading = false;
-
-          if(res.success) {
-            res.success === 1 ?
-
-            this.insertSuccess() :
-
-            res.success === -1 ?
-
-              this.connectionError() :
-
-              this.fail();
-          }
-
-          else if(res.updateSuccess) {
-            res.updateSuccess === 1 ?
-
-            this.updateSuccess() :
-
-            res.updateSuccess === -1 ?
-
-              this.connectionError() :
-
-              this.fail();
-          }
-        });
+          this.snackBar.errorSnackBar('Invalid input fields','Ok');
+        }
       }
+
       else {
-        this.loading = false;
-        this.snackBar.errorSnackBar('Invalid input fields','Ok');
+        this.snackBar.errorSnackBar('you have no appropriate permissions.','Ok');
       }
+
+      
     }
 
     insertSuccess () {
