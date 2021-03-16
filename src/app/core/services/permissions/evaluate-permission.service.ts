@@ -7,7 +7,7 @@ import { UserActionService } from '../user-details/user-action.service';
 })
 export class EvaluatePermissionService {
 
-  componentPermissionLayer!: number;
+  componentPermissionLayer!: number | undefined;
 
   permissionGivenToUser!: number[];
 
@@ -16,27 +16,29 @@ export class EvaluatePermissionService {
   public async permissionTrueOrFalse(componentPermissionArray: number[]){
 
      return await this.userService.getUserPermissions().then(userPermissions=> {
+
+      console.log(userPermissions);
+
+      console.log(componentPermissionArray);
+
+      if(!componentPermissionArray?.length) {
+        this.componentPermissionLayer = 1;
+      }
       
-        if(componentPermissionArray?.length) {
-          
-          this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1 })
-
-          if(this.permissionGivenToUser && this.permissionGivenToUser[0] % 2 === 0) {
-            this.componentPermissionLayer = 2;
-          }
-          else {
-            this.componentPermissionLayer = 1
-          }
-
-          return this.componentPermissionLayer;
-
+      if(componentPermissionArray?.length) {
+        this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1 })
+        if(this.permissionGivenToUser.length && this.permissionGivenToUser[0] % 2 === 0) {
+          this.componentPermissionLayer = 2;
         }
-        else if (!componentPermissionArray?.length) {
-          return this.componentPermissionLayer = 2
+        else if(this.permissionGivenToUser.length && this.permissionGivenToUser[0] % 2 !== 0) {
+          this.componentPermissionLayer = 1
         }
         else {
-          return  this.componentPermissionLayer
+          this.componentPermissionLayer = 0;
         }
+      }
+
+      return this.componentPermissionLayer;
       
     })
 
