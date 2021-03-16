@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogsComponent } from './logs.component';
@@ -8,6 +9,9 @@ describe('LogsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       declarations: [ LogsComponent ]
     })
     .compileComponents();
@@ -16,6 +20,13 @@ describe('LogsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LogsComponent);
     component = fixture.componentInstance;
+
+    component.logsData = {
+      emergencyCaseId: '70092',
+      emergencyNumber: '70062'
+    };
+
+
     fixture.detectChanges();
   });
 
