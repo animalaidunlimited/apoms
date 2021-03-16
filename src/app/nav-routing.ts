@@ -152,8 +152,6 @@ export class NavRouteService {
         if(!this.navRoute.children){
             throw new Error ('No routes detected');
         }
-
-        console.log('I called so must be true');
         this.navRoute.children?.forEach(routeVal=> {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
@@ -175,6 +173,8 @@ export class NavRouteService {
     private newMethod() {
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
+
+                // console.log(route);
 
                 if (route.group) {
                     const group: NavRoute | undefined = groupedList.find(navRoute => {
