@@ -58,7 +58,7 @@ table {
 .patientSelected{
     background-color: lightsteelblue;
 }
-.form-sub-group .mat-table {
+/*.form-sub-group .mat-table {
     .mat-standard-chip {
         margin: 0px 0px 0px 0.3rem;
         padding: 0 0.5rem;
@@ -72,14 +72,14 @@ table {
         top: -15px !important;
         left: -7px !important;
     }
-    .mat-error{
+     .mat-error{
         border-bottom: 1px solid #f64336; 
         height: 1.7rem; 
         margin-top: 0.5rem;
         position:relative;
         z-index:9;
-    }
-}
+    } 
+}*/
 
 .problemList{
     height: 2rem;
@@ -87,12 +87,4 @@ table {
     position: relative;
     z-index:10;
     
-}
-
-.speciesList{
-    position: absolute;
-    z-index: 10;
-    height: 2rem;
-    top: 0;
-    margin-top: 0.6rem;
 }
