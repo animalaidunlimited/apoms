@@ -11,37 +11,37 @@ $standard-width: 175px;
     width: auto;
 }
 
-table {
-    margin-top: 10px;
-    width: 100%;
-    align-items: center;
-    border: 1px solid $colour-border;
-}
+// table {
+//     margin-top: 10px;
+//     width: 100%;
+//     align-items: center;
+//     border: 1px solid $colour-border;
+// }
 
 .filter {
     font-size: 18px;
     width: 100%;
 }
 
-.mat-row:hover{
-  background-color: #8F99A0;
-  cursor: pointer;
+// .mat-row:hover{
+//   background-color: #8F99A0;
+//   cursor: pointer;
 
-}
+// }
 
-.mat-row {
-    background-color: white;
-    font-family: sans-serif;
-}
+// .mat-row {
+//     background-color: white;
+//     font-family: sans-serif;
+// }
 
 .streetTreatUser {
     margin-top: 20px;
 }
 
 
-.sortTableCursor {
-    cursor: pointer;
-}
+// .sortTableCursor {
+//     cursor: pointer;
+// }
 
 
 .streetTreatDisplay {
@@ -61,14 +61,95 @@ table {
     margin: auto;
 }
 
-  @keyframes move {
+//   @keyframes move {
 
+//   }
+//   @media only screen and (max-width:600px){
+//     :host {
+//         padding-top:60px;
+//         display:block;
+//     }
+// }
+
+.example-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+    min-width: 300px;
   }
-  @media only screen and (max-width:600px){
-    :host {
-        padding-top:60px;
-        display:block;
-    }
+  
+  .mat-table {
+    // overflow: auto;
+    max-height: fit-content;
+    border: 1px solid $colour-border;
+    cursor: pointer;
+  }
+  
+  .mobile-label {
+    display: none;
+  }
+
+  .mat-row:hover{
+  background-color: #8F99A0;
+  cursor: pointer;
+
 }
 
+.mat-row {
+    background-color: white;
+    font-family: sans-serif;
+}
+  
+  @media(max-width: 600px) {
 
+    .form-sub-group {
+        border: 2px solid;
+        border-radius: 5px;
+        border-color: $colour-border;
+        padding-left: 5px;
+        padding-right: 5px;
+        width: auto;
+        margin-top: 65px;
+    }
+
+    .legend {
+        font-size: large;
+        color: $colour-border;
+        font-weight: bold;
+        font-family: sans-serif;
+        text-align: center;
+      }
+
+    .mobile-label {
+        width: 80px;
+        display: inline-block;
+        font-weight: bold;
+    }
+  
+    .mat-header-row {
+      display: none;
+    }
+  
+    .mat-row { 
+      flex-direction: column;
+      align-items: start;
+      padding: 4px 20px;
+      background-color: white;
+      font-family: sans-serif;
+    }
+
+    .mat-row:hover{
+        background-color: #8F99A0;
+        cursor: pointer;
+      
+      }
+
+    mat-cell:first-of-type {
+        padding-left: 0px;
+    }
+
+    mat-row, mat-footer-row {
+        min-height: 30px;
+    }
+  }
+  

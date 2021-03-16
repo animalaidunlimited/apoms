@@ -63,18 +63,11 @@ export class StreetTreatRecordComponent implements OnInit {
     this.route.data.subscribe(val=> {
 
       console.log(val);
-      
-      this.permissionType = val.permissionId.filter((id:number)=>{
-          return val.userPermissionArray.value.indexOf(id) > -1
-      });
-
-      console.log(this.permissionType);
-
-      if (this.permissionType[0] % 2 === 0) {
+      if (val.componentPermissionLevel === 2) {
           this.hasWritePermission = true;
       }
 
-    })
+  })
 
     this.recordForm = this.fb.group({
       EmergencyNumber: ['', Validators.required],

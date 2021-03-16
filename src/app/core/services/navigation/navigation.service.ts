@@ -119,7 +119,7 @@ export class NavigationService {
         title: string,
         url: string[],
         isChild: boolean = false,
-        userHasPermission: boolean = true
+        userHasPermission: boolean = false
     ) {
 
         if (url.length > 0 && userHasPermission) {

@@ -7,32 +7,35 @@ import { UserActionService } from '../user-details/user-action.service';
 })
 export class EvaluatePermissionService {
 
+  componentPermissionLayer!: number;
+
+  permissionGivenToUser!: number[];
+
   constructor(private userService: UserActionService) { }
 
   public async permissionTrueOrFalse(componentPermissionArray: number[]){
 
      return await this.userService.getUserPermissions().then(userPermissions=> {
-      let userPermissionObject = {
-        userPermissionBoolean: false,
-        userPermissionArray: []
-      };
-
+      
         if(componentPermissionArray?.length) {
           
-          userPermissionObject.userPermissionBoolean = userPermissions?.some((permissionId:number) => componentPermissionArray.includes(permissionId));
-          userPermissionObject.userPermissionArray = userPermissions;
-          return  userPermissionObject
+          this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1 })
+
+          if(this.permissionGivenToUser && this.permissionGivenToUser[0] % 2 === 0) {
+            this.componentPermissionLayer = 2;
+          }
+          else {
+            this.componentPermissionLayer = 1
+          }
+
+          return this.componentPermissionLayer;
 
         }
         else if (!componentPermissionArray?.length) {
-          userPermissionObject.userPermissionBoolean = true;
-          userPermissionObject.userPermissionArray = userPermissions;
-          return  userPermissionObject
+          return this.componentPermissionLayer = 2
         }
         else {
-          userPermissionObject.userPermissionBoolean = false;
-          userPermissionObject.userPermissionArray = userPermissions;
-          return  userPermissionObject
+          return  this.componentPermissionLayer
         }
       
     })

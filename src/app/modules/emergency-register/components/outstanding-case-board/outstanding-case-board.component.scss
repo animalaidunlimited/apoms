@@ -136,6 +136,7 @@ $standard-width: 180px;
     margin-bottom: 5px;
 }
 
+
 .telephone-dash {
     stroke: #607d8b;
     stroke-width: 4;
@@ -275,6 +276,10 @@ $standard-width: 180px;
             width: 80%;
             display: block;
         }
+    }
+
+    mat-form-field.mat-form-field.search-box {
+        max-width: 100%;
     }
 
 
