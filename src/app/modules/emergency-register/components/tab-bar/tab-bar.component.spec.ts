@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TabBarComponent } from './tab-bar.component';
 
@@ -16,6 +17,10 @@ describe('TabBarComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+          imports: [
+            MatDialogModule,
+            BrowserAnimationsModule
+          ],
             declarations: [TabBarComponent],
             providers: [
               {

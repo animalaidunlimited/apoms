@@ -20,7 +20,8 @@
 
         <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex | async">
           <th mat-header-cell mat-sort-header *matHeaderCellDef> {{column}} </th>
-          <td mat-cell *matCellDef="let element;" [class.link]="column === 'Tag number'" (click)="cellClicked(column, element[column])"> {{element[column]}} </td>
+          <td mat-cell *matCellDef="let element;" [class.link]="column === 'Tag number'"
+          (click)="cellClicked(column, element[column])"> {{element[column]}} </td>
         </ng-container>
 
         <ng-container matColumnDef="complete">

@@ -123,6 +123,7 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: NavRoute[];
@@ -135,11 +136,11 @@ export class NavRouteService {
             this.navRoute = routes;
         }
 
-        if(!this.navRoute.children){
+        if(!this.navRoute?.children){
             throw new Error ('No routes detected');
         }
 
-        this.navRoutes = this.navRoute.children.filter(route => route.data && route.data.title)
+        this.navRoutes = this.navRoute?.children.filter(route => route.data && route.data.title)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
                 if (route.group) {
                     const group: NavRoute | undefined = groupedList.find(navRoute => {
