@@ -29,8 +29,8 @@ describe('TeamsPageComponent', () => {
 
     const dialogData = {};
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
                 MatDialogModule,
@@ -51,7 +51,7 @@ describe('TeamsPageComponent', () => {
             declarations: [TeamsPageComponent, MockConfirmationDialogComponent]
 
         }).compileComponents();
-    }));
+    });
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(TeamsPageComponent);

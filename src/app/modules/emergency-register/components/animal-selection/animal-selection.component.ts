@@ -94,6 +94,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(newValue => this.emergencyCaseId = newValue);

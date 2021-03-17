@@ -56,7 +56,7 @@ describe('SearchResultCardComponent', () => {
     component = fixture.componentInstance;
 
     dialog = TestBed.get(MatDialog);
-    
+
     const caller:CallerDetails = {
       callerId: 0,
       callerName: '',
@@ -81,6 +81,8 @@ describe('SearchResultCardComponent', () => {
       Latitude: 0,
       Longitude: 0,
       CurrentLocation: ''};
+
+    component.record = component.record;
 
     fixture.detectChanges();
   });
