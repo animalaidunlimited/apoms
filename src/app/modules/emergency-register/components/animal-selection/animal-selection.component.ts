@@ -114,6 +114,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients = this.recordForm.get('patients') as FormArray;
         
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
