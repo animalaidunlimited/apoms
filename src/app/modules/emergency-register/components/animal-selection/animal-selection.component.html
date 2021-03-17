@@ -1,8 +1,8 @@
-<fieldset [formGroup]="patients" class="form-sub-group" fxLayout="column" >
-
+<fieldset class="form-sub-group" fxLayout="column" >
+    <!-- [formGroup]="patients"  -->
     <legend class="legend">Patient details</legend>
 
-        <div fxFlex formArrayName="patientArray" *ngFor="let patient of patientArray.controls; let patientIndex = index">
+        <!-- <div fxFlex formArrayName="patientArray" *ngFor="let patient of patientArray.controls; let patientIndex = index"> -->
             <app-emergency-register-patients></app-emergency-register-patients>
             <!-- <ng-container [formGroupName]="patientIndex">
                 <!-- (keydown.tab)="tabPressed($event,patientIndex)"  
@@ -142,7 +142,7 @@
                     ></tr>
                            </table> 
             </ng-container> -->
-        </div>
+       <!--  </div> -->
     <!-- <div fxLayout="row-reverse">
         <button
             #addPatientBtn
