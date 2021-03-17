@@ -1,10 +1,14 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Component, inject } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ReactiveFormsModule, FormsModule, FormBuilder } from "@angular/forms";
-import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { SearchFieldComponent } from "./search-field.component";
+import { Component } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
+import { SearchFieldComponent } from './search-field.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { sideNavPath } from 'src/app/nav-routing';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -30,26 +34,34 @@ describe('SearchFieldComponent', () => {
   beforeEach(async() => {
     await TestBed.configureTestingModule({
       imports: [
-        MatDialogModule,
+            RouterTestingModule.withRoutes([
+            {
+                path: sideNavPath,
+                children: [],
+            },
+        ]),
         HttpClientTestingModule,
-        ReactiveFormsModule,
         FormsModule,
+        MaterialModule,
+        ReactiveFormsModule,
         BrowserAnimationsModule
       ],
       providers: [
+        DatePipe,
         {
           provide: MAT_DIALOG_DATA,
-          useValue: dialogData },
+          useValue: dialogData
+        },
         {
         provide: MatDialogRef,
         useValue: mockDialogRef
-      }],
+        }
+      ],
       declarations: [ SearchFieldComponent, MockSearchFieldComponent ]
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
 
     fixture = TestBed.createComponent(SearchFieldComponent);
     component = fixture.componentInstance;
@@ -57,7 +69,7 @@ describe('SearchFieldComponent', () => {
     dialog = TestBed.get(MatDialog);
 
     fixture.detectChanges();
-  }));
+   }));
 
 
   it('should create', () => {

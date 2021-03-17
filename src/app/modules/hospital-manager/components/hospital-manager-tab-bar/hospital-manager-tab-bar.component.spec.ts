@@ -14,7 +14,7 @@ describe('HospitalManagerTabBarComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                RouterTestingModule,
+                RouterTestingModule.withRoutes([]),
                 RecordSearchModule,
                 MatTabsModule,
                 HttpClientTestingModule,
