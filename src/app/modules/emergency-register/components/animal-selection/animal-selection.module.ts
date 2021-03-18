@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../../../../material-module';
 import { AnimalSelectionComponent } from './animal-selection.component';
-import { EmergencyRegisterPatientsModule } from 'src/app/modules/emergency-register/components/emergency-register-patients/emergency-register-patients.module';
+import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
 
 @NgModule({
-    declarations: [AnimalSelectionComponent],
+    declarations: [AnimalSelectionComponent,EmergencyRegisterPatientComponent],
     imports: [
         CommonModule,
-        MaterialModule,
-        EmergencyRegisterPatientsModule
+        MaterialModule
     ],
-    exports: [AnimalSelectionComponent]
+    exports:[AnimalSelectionComponent,EmergencyRegisterPatientComponent]
 })
 export class AnimalSelectionModule {}

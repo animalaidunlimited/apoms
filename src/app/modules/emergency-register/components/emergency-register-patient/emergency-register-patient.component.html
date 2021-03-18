@@ -1,0 +1,42 @@
+<div [formGroup] = "patientForm">
+    <mat-form-field>
+        <input type="text" placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher">
+        <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
+          <mat-option *ngFor="let animal of filteredAnimalTypes$ | async" [value]="animal">
+            {{ animal.AnimalType }}
+          </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-chip-list #chipList >
+          <mat-chip
+            *ngFor="let problem of problemsArray?.value"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(problem.problemId)">
+            {{problem.problem}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Main problem(s)"
+            #problemRef
+            [formControl]="problemInput"
+            [matAutocomplete]="problemAuto"
+            [matChipInputFor]="chipList"
+           >
+        </mat-chip-list>
+        <mat-autocomplete autoActiveFirstOption #problemAuto="matAutocomplete"  (optionSelected)="updatePatientProblemArray($event)">
+          <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
+            {{problem.Problem}}
+          </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field >
+        <mat-label>Tag number</mat-label>
+        <input matInput formControlName="tagNumber">
+    </mat-form-field>
+    <mat-icon style="cursor:pointer; padding-left: 10px">add_photo_alternate</mat-icon>
+    <mat-icon style="cursor:pointer; padding-left: 10px">print</mat-icon>
+    <mat-icon *ngIf="!patientForm.get('deleted')?.value" style="cursor:pointer" >delete </mat-icon>
+    <mat-icon *ngIf="patientForm.get('deleted')?.value" style="cursor:pointer" >undo </mat-icon>
+</div>
