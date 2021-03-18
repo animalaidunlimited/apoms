@@ -1,4 +1,4 @@
-import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';	
+
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -37,30 +37,17 @@ export class AnimalSelectionComponent implements OnInit{
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
-    @ViewChildren('problemAuto') problemAuto!: QueryList<ElementRef<HTMLInputElement>>;
-    /* @ViewChildren('speciesInput') speciesInput!: QueryList<ElementRef<HTMLInputElement>>; */
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
     
 
-    @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
+    @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;  
 
-    errorMatcher = new CrossFieldErrorMatcher();
-
-    selectable = true;
-    removable = true;
-    
-
-
- 
-    problemInput = new FormControl();
     currentPatientSpecies: string | undefined;
     emergencyCaseId: number | undefined;
     exclusions: Exclusions[] = [] as Exclusions[];
 
     problemsExclusions!: string[];
-    filteredProblems!: Observable<ProblemDropdownResponse[]>;
-    filteredAnimalTypes:Observable<AnimalType[]> = this.dropdown.getAnimalTypes();
-
+    
     selectedProblems:string[] = [];
 
     patientArrayDisplayedColumns: string[] = [
@@ -129,80 +116,20 @@ export class AnimalSelectionComponent implements OnInit{
         this.patients = this.recordForm.get('patients') as FormGroup;
        
         this.patientArray = this.patients.get('patientArray') as FormArray;
-
-        /*
+        
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(newValue => this.emergencyCaseId = newValue);
 
-
-        this.exclusions = this.dropdown.getExclusions();
-
-        this.subscribeToChanges();
-        
-        this.filteredProblems = 
-        this.problemInput.valueChanges.pipe(
-            startWith(''),
-            switchMap(problem => this.problemFilter(problem)),
-            map(problems => {
-                const currentPatient = this.getcurrentPatient() as FormGroup;
-                const selectedProblems =  currentPatient.get('problems')?.value;
-                if(selectedProblems !== ''){
-                    const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
-                    const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
-                    return filteredProblemsArray;
-                }else{
-                    return problems;
-                }
-            }),
-            map(problems => {
-                return this.problemsExclusions ? problems.filter(problem => !this.problemsExclusions.includes(problem.Problem.trim())):
-                        problems;
-            })
-        );
-        */
+        // this.subscribeToChanges();
        
-         /*    const patients = this.patientArray.at(0).get('animalType') as AbstractControl;
-            
-            patients.valueChanges.subscribe(animalType => console.log(animalType)); */
-         
-        // this.patients.get('patientArray')?.statusChanges.subscribe(newStatus => console.log(newStatus));
-        
-    
-        this.patientArray.controls.forEach(
-            control => control.valueChanges.subscribe(() => {
-                const species = this.patientArray.at(this.patientArray.controls.indexOf(control)).get('animalType')?.value;
-                if(typeof species === 'string'){
-                    console.log(species);
-                    this.filteredAnimalTypes = this.dropdown.getAnimalTypes().pipe(
-                        map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(species.toLowerCase()) === 0))
-                    );
-                }
-            })
-        );
     }
     
 
 
 
-    animalSelected($event:MatAutocompleteSelectedEvent, index:number):void {
-
-        this.currentPatientSpecies = $event.option.viewValue;
-
-        const currentPatient = this.patientArray.at(index);
-
-        currentPatient.get('animalType')?.setValue($event.option.viewValue);
-
-        currentPatient.get('animalTypeId')?.setValue($event.option.value);
-
-        currentPatient.get('updated')?.setValue(true);
-
-        this.filteredAnimalTypes =  this.dropdown.getAnimalTypes();
-
-        // this.hideIrrelevantChips($event.option.viewValue); 
-     
-    } 
+  
    /* 
 
     problemFilter(filterValue:any) {
@@ -243,10 +170,7 @@ export class AnimalSelectionComponent implements OnInit{
                 position: [],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
-                problems: [this.fb.group({
-                    problemId: [''],
-                    problem: [''],
-                })],
+                problems: this.fb.array([]),
                 tagNumber: [''],
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
@@ -491,27 +415,6 @@ export class AnimalSelectionComponent implements OnInit{
         }
     }
 
-    hideIrrelevantChips(animal:string) {
-       
-
-        const currentExclusions = this.exclusions.filter(
-            (animalType) => animalType.animalType === animal,
-        );
-        
-        // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
-        // two for the new patient type, followed by an unset for the old patient type
-        const currentPatient = this.getcurrentPatient();
-
-        if(!currentPatient){
-            return;
-        }
-
-        if(!(currentPatient.get('animalType')?.value === animal)){
-            return;
-        }
-        this.problemsExclusions = currentExclusions[0]?.exclusionList;
-    }
-
     getcurrentPatient() {
         return this.selection.selected[0];
     }
@@ -546,64 +449,7 @@ export class AnimalSelectionComponent implements OnInit{
         this.patientTable.renderRows();
     }
 
-    updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
-
-        this.problemAuto.first.nativeElement.value = '';
-
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-       
-        if(!currentPatient){
-            return;
-        }
-
-        // Get the current list of problems and replace the existing problem array
-        // let problemsObject: ProblemDropdownResponse | undefined;
-
-        // problemsObject = this.problems$.find(item => item.Problem === problemChip.value);
-
-        /* if(problemsObject === undefined){
-            throw new TypeError('Missing problem in problem list!');
-        } 
-
-        const problemsGroup = this.fb.group({
-            problemId: [event.option.value, Validators.required],
-            problem: [event.option.viewValue, Validators.required],
-        });
-
-        // If the problem chip has been selected we need to add it to the problem array of the animal
-        // else we need to find this problem in the array and remove it.
-        const problems = currentPatient.get('problems') as FormArray;
  
-        const problemIndex = problems.controls.findIndex(
-            problem =>
-                problem.get('problemId')?.value === event.option.value,
-        );
-
-        if (problemIndex === -1) {
-            problems.push(problemsGroup);
-            currentPatient.get('updated')?.setValue(true);
-        }
-
-        this.patientTable.renderRows();
-    }
-
-    remove(removeProblem:number){
-        
-        const currentPatient = this.getcurrentPatient() as FormGroup;
-       
-        if(!currentPatient){
-            return;
-        }
-
-         const problems = currentPatient.get('problems') as FormArray;
-         const problemIndex = problems.controls.findIndex(
-            problem =>
-                problem.get('problemId')?.value === removeProblem,
-        );
-
-        problems.removeAt(problemIndex);
-       
-     }
 
     updateTag(currentPatient:any) {
 
