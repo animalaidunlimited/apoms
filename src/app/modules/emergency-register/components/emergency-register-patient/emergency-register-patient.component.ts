@@ -81,6 +81,8 @@ export class EmergencyRegisterPatientComponent implements OnInit {
     this.exclusions = this.dropdown.getExclusions();
 
 
+    console.log(this.patientForm);
+
     this.animalType = this.patientForm.get('animalType') as AbstractControl;
     this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
       startWith(''),
