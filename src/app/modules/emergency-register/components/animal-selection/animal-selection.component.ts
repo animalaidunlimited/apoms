@@ -98,7 +98,7 @@ export class AnimalSelectionComponent implements OnInit{
         private dialog: MatDialog,
         private fb: FormBuilder,
         private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
+        private uniqueTagNumberValidator: UniqueTagNumberValidator,
         private dropdown: DropdownService,
         private printService: PrintTemplateService,
         private userOptions: UserOptionsService,
@@ -106,7 +106,7 @@ export class AnimalSelectionComponent implements OnInit{
     ) {}
 
     ngOnInit() {
-        
+
         this.recordForm.addControl('patients', 
             this.fb.group({
                 patientArray: this.fb.array([this.getEmptyPatient()])
@@ -130,19 +130,7 @@ export class AnimalSelectionComponent implements OnInit{
 
     deletePatient(patientIndex:number) {
         
-
-        // if there's no patient id and we click delete, let's get rid of the patient.
         this.patientArray.removeAt(patientIndex);
-       /*  if (!row.get('patientId')?.value) {
-            patients.removeAt(removeIndex);
-        } else {
-            const currentPatient = patients.controls.find(
-                patient => patient.get('position')?.value === position,
-            );
-
-            currentPatient?.get('deleted')?.setValue(!deleted);
-            currentPatient?.get('updated')?.setValue(true);
-        } */
     }
 
 
@@ -176,7 +164,7 @@ export class AnimalSelectionComponent implements OnInit{
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
                 problems: this.fb.array([],Validators.required),
-                tagNumber: [''],
+                tagNumber: ['', /* this.uniqueTagNumberValidator.validate(this.emergencyCaseId as number,this.fb.control({value: this.patientId})) */],
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
                 deleted: [false, Validators.required],

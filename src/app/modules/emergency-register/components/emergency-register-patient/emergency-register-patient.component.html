@@ -1,4 +1,4 @@
-<div [formGroup] = "patientForm" fxLayout="row" fxLayoutAlign="flex-start flex-end" >
+<div [formGroup]="patientForm" class="patientForm" fxLayout="row" fxLayoutAlign="flex-start flex-end" >
     <mat-form-field>
         <input tabindex="8" type="text" placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher">
         <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
@@ -7,7 +7,7 @@
           </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field fxFlex="1 1 49%" >
+    <mat-form-field fxFlex="1 1 53%" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
         <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()"  formArrayName="problems">
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
@@ -35,11 +35,15 @@
     <mat-form-field >
         <mat-label>Tag number</mat-label>
         <input matInput formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+        <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
+          The tag number already exists.
+        </mat-error>
     </mat-form-field>
     <div class="patients_icons">
       <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
-      <mat-icon *ngIf="!patientForm.get('deleted')?.value" style="cursor:pointer" (click)="deletePatient($event, patientIndex)">delete </mat-icon>
-      <mat-icon *ngIf="patientForm.get('deleted')?.value" style="cursor:pointer" >undo </mat-icon>
     </div>  
+    <button class="deletePatientButton" type="button"  (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
+      <mat-icon>delete</mat-icon>
+  </button>
 </div>
