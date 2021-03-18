@@ -19,6 +19,8 @@ interface IncomingData {
 })
 export class MediaCaptureComponent implements OnInit, OnDestroy {
 
+  private ngUnsubscribe = new Subject();
+
   @ViewChild('video', { static: true }) videoElement!: ElementRef;
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
 
@@ -109,6 +111,9 @@ videoHeight = 0;
     this.stream.getTracks().forEach((track) => {
       track.stop();
     });
+
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
 
   }
 
@@ -234,7 +239,9 @@ uploadAndAddToGallery(newFile:any, type:string){
 
     setTimeout(() => {this.addNewGalleryItem(localSrc, type);},0);
 
-    returnObject.mediaItemId.subscribe((result) => {
+    returnObject.mediaItemId
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((result) => {
 
       if(returnObject.mediaItem && result){
         this.uploading--;

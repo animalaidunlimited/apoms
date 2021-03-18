@@ -14,7 +14,8 @@ CREATE PROCEDURE AAU.sp_UpdatePatientDetails(
                                     IN prm_ABCStatus INT,
                                     IN prm_ReleaseStatus INT,
                                     IN prm_Temperament INT,
-                                    IN prm_Age INT)
+                                    IN prm_Age INT,
+                                    IN prm_KnownAsName VARCHAR(256))
 BEGIN
 
 /*
@@ -47,8 +48,13 @@ START TRANSACTION;
 				ABCStatus			= prm_ABCStatus,
 				ReleaseStatus		= prm_ReleaseStatus,
 				Temperament			= prm_Temperament,
+<<<<<<< HEAD:scripts/database/Release/Release_1.17/sp_UpdatePatientDetails_A032.sql
+				Age					= prm_Age,
+				KnownAsName = prm_KnownAsName
+=======
 				UpdateTime			= NOW(),
 				Age					= prm_Age
+>>>>>>> d4dd222b72db8391092cd9b2522b33e03d79d3ba:scripts/database/Release/Release_1.16/sp_UpdatePatientDetails_A032.sql
 	WHERE PatientId = prm_PatientId;
    
 COMMIT;         

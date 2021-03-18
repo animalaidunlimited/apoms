@@ -2,7 +2,7 @@
 
     <legend class="legend">Emergency Details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
 
         <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
@@ -17,21 +17,21 @@
 
         </mat-form-field>
 
-        <mat-form-field>
-                <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
-                (focus)="setInitialTime()"
-                [min]="minimumDate"
-                [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
-        </mat-form-field>
+    <mat-form-field>
+            <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
+            [max]="callDateTime"
+            [min]="minimumDate"
+            [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+    </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>Dispatcher</mat-label>
-            <mat-select tabindex="10" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-                <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
-                    {{dispatcher.FirstName}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field >
+    <mat-form-field>
+        <mat-label>Dispatcher</mat-label>
+        <mat-select tabindex="10" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
+                {{dispatcher.FirstName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field >
 
         <mat-form-field>
             <mat-label>Code</mat-label>
@@ -58,6 +58,10 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <button  mat-icon-button color="primary" aria-label="Release details" class="logs_btn"
+          (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm.get('emergencyDetails.emergencyNumber')); $event.preventDefault();">
+          <mat-icon>description</mat-icon>
+        </button>
 
     </div>
 

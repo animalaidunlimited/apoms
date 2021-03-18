@@ -3,7 +3,6 @@
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
-
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
             <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
               <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)" matTooltip="Changes not saved">sync_disabled</mat-icon>
@@ -27,8 +26,9 @@
 
               <fieldset class="form-sub-group">
 
-                  <legend class="legend">Rescue Details</legend>
+                  <legend class="legend">Rescue Details</legend> -->
 
+                  
                   <rescue-details
                       [recordForm]="recordForm"
                       [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId')?.value">

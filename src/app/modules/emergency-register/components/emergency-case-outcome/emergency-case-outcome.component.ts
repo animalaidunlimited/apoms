@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
 import { UniqueEmergencyNumberValidator } from '../../../../core/validators/emergency-number.validator';
@@ -8,6 +8,7 @@ import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -15,7 +16,9 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
   templateUrl: './emergency-case-outcome.component.html',
   styleUrls: ['./emergency-case-outcome.component.scss']
 })
-export class EmergencyCaseOutcomeComponent implements OnInit {
+export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   @Input() recordForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
@@ -23,11 +26,10 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
   @ViewChild('callOutcomeField',{ read: ElementRef, static:false }) callOutcomeField!: ElementRef;
 
-
-  errorMatcher = new CrossFieldErrorMatcher();
-
   callOutcomes$!:Observable<CallOutcomeResponse[]>;
   currentOutcomeId:number | undefined;
+
+  errorMatcher = new CrossFieldErrorMatcher();
 
   sameAs:boolean | undefined;
   sameAsId:number | undefined;
@@ -55,7 +57,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     if(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value){
 
-      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value).subscribe(result =>
+      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result =>
 
         this.recordForm.patchValue(result)
 
@@ -65,19 +69,28 @@ export class EmergencyCaseOutcomeComponent implements OnInit {
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
-    this.callOutcomes$.subscribe(callOutcome => {
+    this.callOutcomes$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(callOutcome => {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;
 
     });
 
-    this.recordForm.get('callOutcome.CallOutcome')?.valueChanges.subscribe(() => {
+    this.recordForm.get('callOutcome.CallOutcome')?.valueChanges
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
 
       this.outcomeChanged();
 
     });
 
     this.changeDetector.detectChanges();
+  }
+
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
   }
 
   outcomeChanged(){

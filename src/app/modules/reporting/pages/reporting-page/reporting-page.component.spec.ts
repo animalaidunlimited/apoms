@@ -4,7 +4,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PatientDetailsDialogComponent } from '../../components/patient-details-dialog/patient-details-dialog.component';
+import { TreatmentListComponent } from '../../components/treatment-list/treatment-list.component';
 
 import { ReportingPageComponent } from './reporting-page.component';
 
@@ -19,7 +19,7 @@ describe('ReportingPageComponent', () => {
 
     const dialogData = {areaName : 'A-Kennel'};
 
-    let dialog: MatDialogRef<PatientDetailsDialogComponent>;
+    let dialog: MatDialogRef<TreatmentListComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

@@ -32,15 +32,34 @@
     display: inherit !important;
 }
 
-.emergencySyncIcon .mat-icon {
-    font-size: 2.5rem;
-    position: absolute !important;
-    right: 5% !important;
-    top: 4rem !important;
-    color: gold;
-    cursor: default
-}
+// .emergencySyncIcon .mat-icon {
+//     font-size: 2.5rem;
+//     position: absolute !important;
+//     right: 5% !important;
+//     top: 4rem !important;
+//     color: gold;
+//     cursor: default
+// }
 
+// @media only screen and (min-width:600px){
+//     .logs_btn{
+//         margin-left: -1rem;
+//         font-size: 2.4rem;
+//         .mat-icon{
+//             font-size: 2rem;
+//         }
+//     }
+// }
+
+@media(max-width: 600px) {  
+    .logs_btn{
+        font-size: 1.5rem;
+        position: absolute !important;
+        right: 5% !important;
+        top: 4rem !important;
+        cursor: pointer
+    }
+}
 // To disable the Emergency number field by css.
 // .disable {
 //     pointer-events: none;

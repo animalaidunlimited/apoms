@@ -8,6 +8,7 @@ import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-outcome',
@@ -64,7 +65,7 @@ export class OutcomeComponent implements OnInit {
             }),
         });
 
-        this.patientService.getPatientOutcomeForm(this.patientId).subscribe(outcome => {
+        this.patientService.getPatientOutcomeForm(this.patientId).pipe(take(1)).subscribe(outcome => {
 
             if(!outcome){
                 return;

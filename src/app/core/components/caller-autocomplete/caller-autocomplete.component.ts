@@ -1,26 +1,33 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
-import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operators';
-import { of, Observable, BehaviorSubject } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
+import { Validators, AbstractControl } from '@angular/forms';
+import { startWith, debounceTime, switchMap, map, catchError, takeUntil } from 'rxjs/operators';
+import { of, Observable, Subject } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Callers, Caller } from '../../models/responses';
+import { Callers } from '../../models/responses';
 import { CallerDetailsService } from '../caller-details/caller-details.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
+import { ElementRef } from '@angular/core';
 @Component({
   selector: 'app-caller-autocomplete',
   templateUrl: './caller-autocomplete.component.html',
   styleUrls: ['./caller-autocomplete.component.scss']
 })
-export class CallerAutocompleteComponent implements OnInit {
+export class CallerAutocompleteComponent implements OnInit, OnDestroy {
 
-  @Input() callerIndex!: number; 
+  private ngUnsubscribe = new Subject();
+
+  @Input() callerIndex!: number;
   @Input() callerForm!: any;
-  callerNumber!: AbstractControl | null;
-  callerAutoComplete$!: Observable<any> | undefined;
-  errorMatcher = new CrossFieldErrorMatcher();
+
   @Output() isPrimary: EventEmitter<number> = new EventEmitter();
   @Output() callerDeleted: EventEmitter<number> = new EventEmitter();
 
+  @ViewChild('callerNumberRef') callerNumberRef!:ElementRef;
+
+
+  callerNumber!: AbstractControl | null;
+  callerAutoComplete$!: Observable<any> | undefined;
+  errorMatcher = new CrossFieldErrorMatcher();
 
   constructor(private callerService: CallerDetailsService) { }
 
@@ -41,10 +48,15 @@ export class CallerAutocompleteComponent implements OnInit {
               return of(null);
             }
         }),
+        takeUntil(this.ngUnsubscribe)
     );
-    
+
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+}
 
   lookup(value:any): Observable<Callers|null> {
     return this.callerService.getCallerByNumber(value).pipe(
@@ -75,7 +87,7 @@ updateValidators() {
 }
 
   onChanges(): void {
-    this.callerForm.valueChanges.subscribe((val:any) => {
+    this.callerForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
         // The values won't have bubbled up to the parent yet, so wait for one tick
         setTimeout(() => this.updateValidators());
     });
@@ -95,6 +107,6 @@ updateValidators() {
 
   checkBox(callerIndex: number) {
     this.isPrimary.emit(callerIndex);
-  } 
+  }
 
 }

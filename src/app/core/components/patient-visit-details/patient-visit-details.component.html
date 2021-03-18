@@ -20,7 +20,7 @@
 
 		<mat-form-field appearance="fill">
 			<mat-label>Main problem</mat-label>
-			<mat-select  formControlName="mainProblem" [errorStateMatcher]="errorMatcher">
+			<mat-select formControlName="mainProblem" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let problem of (problems$ | async)" [value]="problem.MainProblemId">
 					{{ problem.MainProblem}}
 				</mat-option>
@@ -37,8 +37,10 @@
 
 		<mat-form-field appearance="fill">
 			<mat-label>Case status</mat-label>
-			<mat-select placeholder="Select" formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
-				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
+			<mat-select formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
+				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">
+					{{ status.Status}}
+				</mat-option>
 			</mat-select>
 		</mat-form-field>
 
@@ -47,7 +49,7 @@
 		<div fxLayout="row wrap" fxLayoutGap="10px" class="visitsWrapper-header">
 			<h5 mat-dialog-title class="visit-header">Visits</h5>
 
-			<div class="visit-calendar-wrapper">
+			<div class="visit-calendar-wrapper" *ngIf="visitDates.length > 0">
 				<button mat-raised-button (click)="loadCalendar($event)" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
 				<div class="visit_calendar" [hidden]="loadCalendarComponent" >
 					<mat-calendar [dateClass]="dateClass()" (selectedChange)="onSelect($event)" ></mat-calendar>
@@ -94,7 +96,7 @@
 						</mat-select>
 
 					</mat-form-field>
-					<mat-form-field appearance="fill" class="admin">
+					<mat-form-field appearance="fill" class="admin" gdArea.lt-md="admin">
 						<mat-label>Admin notes</mat-label>
 						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
 							cdkAutosizeMaxRows="5" formControlName="visit_comments"></textarea>
@@ -116,8 +118,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="mat-fab-wrapper" class="add-visits-fab-btn">
-		<button mat-mini-fab color="accent" aria-label="Add this Visit" (click)="addVisits($event)">
+	<div class="mat-fab-wrapper" class="add-visits-fab-btn" fxLayout="row" fxLayoutAlign="center center">
+		<button mat-mini-fab color="primary" aria-label="Add this Visit" (click)="addVisits($event)">
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>

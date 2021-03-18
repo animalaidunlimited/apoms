@@ -1,8 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface DialogData {
     tagNumber: string;
@@ -17,7 +19,10 @@ interface DialogData {
     styleUrls: ['./tag-number-dialog.component.scss'],
 })
 
-export class TagNumberDialog implements OnInit {
+export class TagNumberDialog implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+    
     errorMatcher = new CrossFieldErrorMatcher();
 
     constructor(
@@ -45,10 +50,17 @@ export class TagNumberDialog implements OnInit {
             ],
         });
 
-        this.tagForm.valueChanges.subscribe(changes => {
+        this.tagForm.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(changes => {
             this.data.tagNumber = changes.tagNumber;
         });
 
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     onCancel(): void {

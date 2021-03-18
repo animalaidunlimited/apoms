@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input, HostListener, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -16,6 +16,8 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -23,18 +25,10 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
-export class AnimalSelectionComponent implements OnInit {
+export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
-    constructor(
-        private dialog: MatDialog,
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
-        private printService: PrintTemplateService,
-        private userOptions: UserOptionsService,
-        private mediaPaster: MediaPasteService
-    ) {}
+    private ngUnsubscribe = new Subject();
+
 
     @Input() recordForm!: FormGroup;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -62,13 +56,14 @@ export class AnimalSelectionComponent implements OnInit {
     patientArray:FormArray  = new FormArray([]);
 
     form = new FormGroup({});
-    patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
+    // patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
+    patientDataSource: FormGroup[] = []
 
     problems$: ProblemDropdownResponse[] = [];
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
     tagNumber: string | undefined;
-    validRow =true;
+    validRow = true;
 
     emergencyCardHTML = '';
 
@@ -83,33 +78,66 @@ export class AnimalSelectionComponent implements OnInit {
             this.updateTag(this.getcurrentPatient());
         }
     }
+
+    constructor(
+        private dialog: MatDialog,
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private dropdown: DropdownService,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private mediaPaster: MediaPasteService
+    ) {}
+
     ngOnInit() {
+
+        console.log('ngOninit');
 
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
-        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges.subscribe(newValue => this.emergencyCaseId = newValue);
+        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(newValue => {
+            this.emergencyCaseId = newValue});
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
-            ? this.loadPatientArray(this.emergencyCaseId)
+        ? this.loadPatientArray(this.emergencyCaseId)
             : this.initPatientArray();
 
         this.dropdown
             .getAnimalTypes()
-            .subscribe(animalTypes => (this.animalTypes$ = animalTypes));
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(animalTypes => (this.animalTypes$ = animalTypes.sort((a,b) =>
+
+                a.AnimalType.substr(0,1) < b.AnimalType.substr(0,1) ? -1 : a.AnimalType.substr(0,1) > b.AnimalType.substr(0,1) ? 1 : a.Sort - b.Sort)));
 
         this.dropdown
             .getProblems()
-            .subscribe(problems => (this.problems$ = problems));
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(problems => {
+                this.problems$ = problems.sort((a,b) => a.Problem < b.Problem ? -1 : 1);
+            });
 
         this.exclusions = this.dropdown.getExclusions();
 
         this.subscribeToChanges();
     }
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     subscribeToChanges() {
-        this.recordForm.get('patients')?.valueChanges.subscribe(items => {
+
+        console.log('subscribeToChanges');
+
+        this.recordForm.get('patients')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(items => {
 
             if (items.length > 0) {
                 if (items[0].patientId == null && items[0].position == null) {
@@ -121,6 +149,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     getEmptyPatient() {
+
+        console.log('getEmptyPatient');
+
         const problems = this.fb.array([]);
 
         return this.getPatient(problems, 1, true, 0);
@@ -130,6 +161,10 @@ export class AnimalSelectionComponent implements OnInit {
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
+
+        console.log('populatePatient');
+
+
         const problems = this.fb.array([]);
 
         patient.problems.forEach(problem => {
@@ -150,6 +185,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
+
+        console.log('getPatient');
+
 
         const newPatient = this.fb.group({
             patientId: [patientId],
@@ -180,7 +218,12 @@ export class AnimalSelectionComponent implements OnInit {
 
     loadPatientArray(emergencyCaseId: number) {
 
-        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId).subscribe((patients: Patients) => {
+        console.log('loadPatientArray');
+
+
+        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((patients: Patients) => {
 
 
                     this.patientArray = this.recordForm.get('patients') as FormArray;
@@ -202,6 +245,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     initPatientArray() {
+
+        console.log('initPatientArray');
+
         this.patientArray = this.recordForm.get('patients') as FormArray;
 
         this.patientArray.clear();
@@ -218,21 +264,34 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     resetTableDataSource() {
-        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
-        this.patientDataSource = new MatTableDataSource(patients);
+        console.log('resetTableDataSource');
+
+
+        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
+        // const patients:FormGroup[] = []
+
+        console.log(patients);
+
+        this.patientDataSource =  patients;
 
         this.selection = new SelectionModel<FormGroup>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
+
+        console.log('isAllSelected');
+
+
         const numSelected = this.selection.selected.length;
-        const numRows = this.patientDataSource.data.length;
+        const numRows = this.patientDataSource.length;
         return numSelected === numRows;
     }
 
     toggleRow(row:FormGroup) {
+
+
 
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
@@ -263,6 +322,9 @@ export class AnimalSelectionComponent implements OnInit {
 
     /** The label for the checkbox on the passed row */
     checkboxLabel(row?: FormGroup): string {
+
+        console.log('checkboxLabel');
+
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
@@ -272,6 +334,10 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     clearChips() {
+
+        console.log('clearChips');
+
+
         this.currentPatientChip = '';
 
         // Get all of the chip lists on the page and reset them all.
@@ -358,7 +424,7 @@ export class AnimalSelectionComponent implements OnInit {
 
             const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
-            const position: number = this.patientDataSource.data.length + 1;
+            const position: number = this.patientDataSource.length + 1;
 
             const newPatient = this.getEmptyPatient();
 
@@ -377,8 +443,10 @@ export class AnimalSelectionComponent implements OnInit {
 
     setSelected(position: number) {
 
+        console.log('setSelected');
+
         // Set the new row to be selected
-        const selected = this.patientDataSource.data.find(row => row.get('position')?.value === position);
+        const selected = this.patientDataSource.find(row => row.get('position')?.value === position);
 
         if(selected === undefined){
             throw new TypeError('Selected value was not found!');
@@ -388,33 +456,33 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     focusProblemChip(event:any, problemChip:any) {
+
+        console.log('focusProblemChip');
+
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const chips = this.problemChips.chips;
 
             const foundChip = chips
-                .filter(allChips => {
-                    return allChips.disabled === false;
-                })
-                .find(chip => {
-                    return (
-                        chip.value.substr(0, 1).toLowerCase() ===
-                        event.key.toLowerCase()
-                    );
-                });
+                .filter(allChips => allChips.disabled === false)
+                .find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
 
             if (foundChip) {
                 foundChip.focus();
             }
-        } else if (event.keyCode === 13) {
+
+        } else if (event.keyCode === 13) { // space
             this.problemChipSelected(problemChip);
         }
     }
 
     cycleChips(event:any, chipGroup: string, property: string) {
 
+        console.log('cycleChips');
+
+
         if (event.keyCode >= 65 && event.keyCode <= 90) {
-            const currentPatient =
-                this.getcurrentPatient().get(property)?.value || '';
+
+            const currentPatient = this.getcurrentPatient().get(property)?.value || '';
 
             let chips;
 
@@ -431,8 +499,7 @@ export class AnimalSelectionComponent implements OnInit {
             // Also get the index of the current item
             chips?.forEach((item, index) => {
                 if (
-                    item.value.substr(0, 1).toLowerCase() ===
-                    currentPatient.substr(0, 1).toLowerCase()
+                    item.value.substr(0, 1).toLowerCase() === currentPatient.substr(0, 1).toLowerCase()
                 ) {
                     lastInstance = item.value;
                 }
@@ -443,25 +510,16 @@ export class AnimalSelectionComponent implements OnInit {
             });
 
             // Filter out any previous records so we can go directly to the next one in the list
-            const currentArray = chips?.filter((chip, index) => {
-                return (
-                    !(
-                        chip.value.substr(0, 1).toLowerCase() ===
-                            currentPatient.substr(0, 1).toLowerCase() &&
+            const currentArray = chips?.filter((chip, index) =>
+
+                    !(  chip.value.substr(0, 1).toLowerCase() === currentPatient.substr(0, 1).toLowerCase() &&
                         index <= currentIndex
-                    ) ||
-                    currentPatient === '' ||
-                    lastInstance === currentPatient
-                );
-            });
+                    ) || currentPatient === '' || lastInstance === currentPatient
+
+        );
 
             // Get the chip we need
-            const currentKeyChip = currentArray?.find(chip => {
-                return (
-                    chip.value.substr(0, 1).toLowerCase() ===
-                    event.key.toLowerCase()
-                );
-            });
+            const currentKeyChip = currentArray?.find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
 
             if(currentKeyChip){
                 currentKeyChip.selected = true;
@@ -471,6 +529,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     problemChipSelected(problemChip:any) {
+
+        console.log('problemChipSelected');
+
 
         this.recordForm.markAsDirty();
 
@@ -501,6 +562,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     hideIrrelevantChips(animalTypeChip:any) {
+
+        console.log('hideIrrelevantChips');
+
 
         const currentExclusions = this.exclusions.filter(
             (animalType) => animalType.animalType === animalTypeChip.value,
@@ -542,10 +606,15 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     getcurrentPatient() {
+        console.log('getcurrentPatient');
+
         return this.selection.selected[0];
     }
 
     deletePatientRow(row:FormGroup) {
+
+        console.log('getcurrentPatient');
+
         const position = row.get('position')?.value;
 
         const deleted = row.get('deleted')?.value;
@@ -576,6 +645,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     updatePatientProblemArray(problemChip:any) {
+
+        console.log('updatePatientProblemArray');
+
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
@@ -626,6 +698,10 @@ export class AnimalSelectionComponent implements OnInit {
 
     updateTag(currentPatient:any) {
 
+
+        console.log('updateTag');
+
+
         if(this.selection.selected.length === 0){
 
             // TODO make this a pretty dialog
@@ -642,6 +718,8 @@ export class AnimalSelectionComponent implements OnInit {
 
     openTagNumberDialog(event:any): void {
 
+        console.log('openTagNumberDialog');
+
         const currentPatient: Patient = event;
 
         const dialogRef = this.dialog.open(TagNumberDialog, {
@@ -654,12 +732,19 @@ export class AnimalSelectionComponent implements OnInit {
             },
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(result => {
 
             if (result) {
                 const resultCurrentPatient = this.getcurrentPatient();
 
                 resultCurrentPatient.get('tagNumber')?.setValue(result.value);
+
+                if(this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18){
+                    resultCurrentPatient.get('tagNumber')?.setValidators(Validators.required);
+                    resultCurrentPatient.get('tagNumber')?.updateValueAndValidity();
+                }
 
                 resultCurrentPatient.get('duplicateTag')?.setValue(result.status);
 
@@ -686,6 +771,9 @@ export class AnimalSelectionComponent implements OnInit {
 
     printEmergencyCard(row:FormGroup){
 
+        console.log('printEmergencyCard');
+
+
         const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
         this.printService.printPatientDocument(printTemplateId, row.get('patientId')?.value);
@@ -693,6 +781,9 @@ export class AnimalSelectionComponent implements OnInit {
     }
 
     getAnimalFromObservable(name: string) {
+
+        console.log('getAnimalFromObservable');
+
         return this.animalTypes$.find(
             animalType => animalType.AnimalType === name,
         );

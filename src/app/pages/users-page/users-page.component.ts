@@ -248,8 +248,8 @@ export class UsersPageComponent implements OnInit {
 
     getrefreshTableData() {
       this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
-        this.userList = userListData;   
-        this.initialiseTable(this.userList);   
+        this.userList = userListData;
+        this.initialiseTable(this.userList);
       });
 
 

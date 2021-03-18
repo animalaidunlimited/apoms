@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -7,8 +7,8 @@ import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/cor
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivateChild } from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -21,27 +21,25 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
     styleUrls: ['./emergency-record.component.scss'],
 })
 
-export class EmergencyRecordComponent implements OnInit {
+export class EmergencyRecordComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() emergencyCaseId: number | undefined;
     @Input() guId!: BehaviorSubject<string>;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
 
-
-    loading = false;
-
-    recordForm: FormGroup = new FormGroup({});
-
-    windowWidth = window.innerWidth;
-
+    currentTime = '';
     errorMatcher = new CrossFieldErrorMatcher();
 
-    currentTime = '';
+    hasComments!: boolean;
+    loading = false;
 
     notificationDurationSeconds = 3;
-
-    hasComments!: boolean;
-
+    recordForm: FormGroup = new FormGroup({});
     syncedToLocalStorage = false;
+
+    windowWidth = window.innerWidth;
 
     hasWritePermission: boolean = false;
 
@@ -49,13 +47,23 @@ export class EmergencyRecordComponent implements OnInit {
     resetFormEvent(event: KeyboardEvent) {
 
         event.preventDefault();
-        this.resetForm();
+
+        const element = this.elementRef.nativeElement;
+
+        if(element.offsetParent){
+            this.resetForm();
+        }
     }
 
     @HostListener('document:keydown.control.s', ['$event'])
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
-        this.saveForm();
+
+        const element = this.elementRef.nativeElement;
+
+        if(this.recordForm.valid && element.offsetParent){
+            this.saveForm();
+        }
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -72,7 +80,8 @@ export class EmergencyRecordComponent implements OnInit {
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private elementRef: ElementRef
     ) {
         
     }
@@ -103,7 +112,9 @@ export class EmergencyRecordComponent implements OnInit {
             caseComments: [],
         });
 
-        this.caseService.emergencyResponse.subscribe(data=> {
+        this.caseService.emergencyResponse
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(data=> {
             if(data.guId === this.recordForm.get('emergencyDetails.guId')?.value) {
 
                 this.emergencyCaseId = data.emergencyCaseId;
@@ -125,13 +136,20 @@ export class EmergencyRecordComponent implements OnInit {
         }
     }
 
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     initialiseForm() : void {
 
-        if(!this.emergencyCaseId){
+        if (!this.emergencyCaseId) {
             return;
         }
 
-        this.caseService.getEmergencyCaseById(this.emergencyCaseId).pipe(take(1)).subscribe(result => {
+        this.caseService.getEmergencyCaseById(this.emergencyCaseId)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(result => {
 
             this.recordForm.patchValue(result);
 
@@ -141,24 +159,30 @@ export class EmergencyRecordComponent implements OnInit {
 
     resetForm() {
 
-        this.recordForm.reset();
+        this.recordForm.reset({});
+
+        console.log('hi');
 
         this.guId.next(this.caseService.generateUUID());
 
         this.loadEmergencyNumber.emit({emergencyNumber : 'New Case*' , GUID: this.guId.value});
 
-        this.recordForm.get('emergencyDetails.guId')?.setValue(this.guId.value);
+        this.recordForm.get('emergencyDetails.guId')?.setValue(this.guId.value, {emitEvent:false});
         this.recordForm.get('emergencyDetails.code')?.setValue({
             EmergencyCodeId: null,
             EmergencyCode: null
-        });
+        },{emitEvent:false});
 
-        this.changeDetectorRef.detectChanges();
+        this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString(),{emitEvent:false});
+
+        console.log('hello');
+
+        // this.changeDetectorRef.detectChanges();
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
-        const result = {
+         const result = {
             message: 'Other error - See admin\n',
             failure: 0
         };
@@ -175,29 +199,29 @@ export class EmergencyRecordComponent implements OnInit {
 
         // Check the caller succeeded
 
-        resultBody.callerSuccess.forEach((callerResult: any)=>{
-        if (callerResult.callerSuccess === 1) {
-            result.message += '';
-        } else if (callerResult.callerSuccess === 2) {
-            result.message += 'Error adding the caller: Duplicate record \n';
-            result.failure++;
-        } else {
-            result.message += 'Other error - See admin\n';
-            result.failure++;
-        }
+        resultBody.callerSuccess.forEach((callerResult: any) => {
+            if (callerResult.callerSuccess === 1) {
+                result.message += '';
+            } else if (callerResult.callerSuccess === 2) {
+                result.message += 'Error adding the caller: Duplicate record \n';
+                result.failure++;
+            } else {
+                result.message += 'Other error (Caller) - See admin\n';
+                result.failure++;
+            }
         });
 
-        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any)=>{
+        resultBody.emergencyCallerSuccess.forEach((emergencyCallerResult: any) => {
             if (emergencyCallerResult.Success === 1) {
                 result.message += '';
             } else if (emergencyCallerResult.Success === 2) {
                 result.message += 'Error adding the EmergencyCaller: Duplicate record \n';
                 result.failure++;
             } else {
-                result.message += 'Other error - See admin\n';
+                result.message += 'Other error (EmergencyCaller) - See admin\n';
                 result.failure++;
             }
-            });
+        });
 
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
@@ -234,11 +258,11 @@ export class EmergencyRecordComponent implements OnInit {
                     result.message += '';
                 } else if (problem.success === 2) {
                     result.message +=
-                        'Error adding the patient: Duplicate record \n';
+                        'Error adding the patient problems: Duplicate record \n';
                     result.failure++;
                 } else {
                     result.message +=
-                        'Error adding the patient: Other error - See admin \n';
+                        'Error adding the patient problems: Other error - See admin \n';
                     result.failure++;
                 }
             });
@@ -366,4 +390,5 @@ export class EmergencyRecordComponent implements OnInit {
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
+
 }

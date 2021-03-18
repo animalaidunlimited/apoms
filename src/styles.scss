@@ -157,6 +157,7 @@ mat-radio-button{
     margin-top: 10px !important;
     margin-bottom: 10px !important;
     max-width: 120px;
+    font-size: 13px;
   }
 
   body {
@@ -195,7 +196,10 @@ mat-radio-button{
 
   .legend {
     font-size: 110%;
+  }
 
+  .mat-input-element {
+    font-size: 13px !important;
   }
 
   .tag-number {

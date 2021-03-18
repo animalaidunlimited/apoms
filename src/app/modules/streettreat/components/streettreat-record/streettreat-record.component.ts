@@ -11,6 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { map, take } from 'rxjs/operators';
 
 
 
@@ -70,10 +71,10 @@ export class StreetTreatRecordComponent implements OnInit {
   })
 
     this.recordForm = this.fb.group({
-      EmergencyNumber: ['', Validators.required],
-      TagNumber: ['', Validators.required],
-      NextVisit: [''],
-      PercentComplete: ['', Validators.required],
+      EmergencyNumber: [{value: '', disabled: true}, Validators.required],
+      TagNumber: [{value: '', disabled: true}, Validators.required],
+      NextVisit: [{value: '', disabled: true}],
+      PercentComplete: [{value: '', disabled: true}, Validators.required],
       AnimalTypeId: ['', Validators.required],
       AnimalName:[''],
       BeginDate:[{value: '', disabled: true}, Validators.required],
@@ -108,13 +109,24 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.animalTypes$ = this.dropdown.getAnimalTypes();
 
-    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId).subscribe((res) => {
+    this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId)
+    .pipe(
+      map(item => {
+
+        item.PercentComplete = item.PercentComplete * 100;
+
+        return item;
+    } ),
+      take(1))
+    .subscribe((res) => {
+
       this.recordForm.patchValue(res);
+
       this.streetTreatServiceSubscription?.unsubscribe();
     });
 
 
-    setTimeout(()=>this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
+    setTimeout(() => this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {
         this.recordForm.get('EndDate')?.setValidators([Validators.required]);

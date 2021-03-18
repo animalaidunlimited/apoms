@@ -2,14 +2,12 @@
 
     <legend class="legend">Caller Details</legend>
 
-   
-
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
+    <div>
 
       <div formArrayName="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index">
 
-        <app-caller-autocomplete 
-        [callerForm]="caller" 
+        <app-caller-autocomplete
+        [callerForm]="caller"
         [callerIndex]="callerIndex"
         (callerDeleted) = "removeCaller($event)"
         (isPrimary)="primaryCaller($event)"></app-caller-autocomplete>

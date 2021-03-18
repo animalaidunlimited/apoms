@@ -14,6 +14,7 @@ import { EvaluatePermissionService } from './services/permissions/evaluate-permi
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavGuard implements CanActivateChild {
     private previousUrl = '';
     userHasPermission: BehaviorSubject<number| undefined> = new BehaviorSubject<number | undefined>(undefined);

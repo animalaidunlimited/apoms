@@ -4,11 +4,11 @@ import { MatDialogRef, MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angu
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { PatientDetailsDialogComponent } from './patient-details-dialog.component';
+import { TreatmentListComponent } from './treatment-list.component';
 
-describe('PatientDetailsDialogComponent', () => {
-  let component: PatientDetailsDialogComponent;
-  let fixture: ComponentFixture<PatientDetailsDialogComponent>;
+describe('TreatmentListComponent', () => {
+  let component: TreatmentListComponent;
+  let fixture: ComponentFixture<TreatmentListComponent>;
 
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
@@ -17,7 +17,7 @@ describe('PatientDetailsDialogComponent', () => {
 
 const dialogData = {};
 
-let dialog: MatDialogRef<PatientDetailsDialogComponent>;
+let dialog: MatDialogRef<TreatmentListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -38,13 +38,13 @@ let dialog: MatDialogRef<PatientDetailsDialogComponent>;
             useValue: mockDialogRef,
         },
       ],
-      declarations: [ PatientDetailsDialogComponent ]
+      declarations: [ TreatmentListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PatientDetailsDialogComponent);
+    fixture = TestBed.createComponent(TreatmentListComponent);
     component = fixture.componentInstance;
     dialog = TestBed.get(MatDialog);
     fixture.detectChanges();
