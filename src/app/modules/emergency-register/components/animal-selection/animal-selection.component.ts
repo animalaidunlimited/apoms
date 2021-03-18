@@ -128,21 +128,26 @@ export class AnimalSelectionComponent implements OnInit{
     
 
 
+    deletePatient(patientIndex:number) {
+        
+
+        // if there's no patient id and we click delete, let's get rid of the patient.
+        this.patientArray.removeAt(patientIndex);
+       /*  if (!row.get('patientId')?.value) {
+            patients.removeAt(removeIndex);
+        } else {
+            const currentPatient = patients.controls.find(
+                patient => patient.get('position')?.value === position,
+            );
+
+            currentPatient?.get('deleted')?.setValue(!deleted);
+            currentPatient?.get('updated')?.setValue(true);
+        } */
+    }
+
 
   
    /* 
-
-    problemFilter(filterValue:any) {
-        if(typeof filterValue === 'string' || filterValue?.Problem){
-            const searchTerm = typeof filterValue === 'string' ? filterValue : filterValue.Problem;
-
-            return this.dropdown.getProblems().pipe(
-                map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0))
-            );
-        }else{
-                return this.dropdown.getProblems();
-        }
-    }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
@@ -170,7 +175,7 @@ export class AnimalSelectionComponent implements OnInit{
                 position: [],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
-                problems: this.fb.array([]),
+                problems: this.fb.array([],Validators.required),
                 tagNumber: [''],
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
@@ -419,35 +424,7 @@ export class AnimalSelectionComponent implements OnInit{
         return this.selection.selected[0];
     }
 
-    deletePatientRow(row:FormGroup) {
-        const position = row.get('position')?.value;
-
-        const deleted = row.get('deleted')?.value;
-
-        const patients = this.recordForm.get('patients') as FormArray;
-
-        const removeIndex = patients.controls.findIndex(
-            patient => patient.get('position')?.value === position,
-        );
-
-        // if there's no patient id and we click delete, let's get rid of the patient.
-        if (!row.get('patientId')?.value) {
-            patients.removeAt(removeIndex);
-        } else {
-            const currentPatient = patients.controls.find(
-                patient => patient.get('position')?.value === position,
-            );
-
-            currentPatient?.get('deleted')?.setValue(!deleted);
-            currentPatient?.get('updated')?.setValue(true);
-        }
-
-        this.selection.clear();
-
-        this.clearChips(); 
-
-        this.patientTable.renderRows();
-    }
+    
 
  
 

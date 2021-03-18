@@ -5,6 +5,7 @@
             <app-emergency-register-patient
                 [patientForm]="patient"
                 [patientIndex]="patientIndex"
+                (patientDeleted)="deletePatient($event)"
             ></app-emergency-register-patient>
             <!-- 
                    <ng-container matColumnDef="tagNo">
