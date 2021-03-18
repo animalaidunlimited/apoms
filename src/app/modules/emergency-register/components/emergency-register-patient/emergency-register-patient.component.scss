@@ -4,3 +4,9 @@
         margin: 0px;
     }
 }
+.patients_icons{
+    height: 3rem;
+    .mat-icon:not(:last-child){
+        margin: 0 0.4rem;
+    }
+}

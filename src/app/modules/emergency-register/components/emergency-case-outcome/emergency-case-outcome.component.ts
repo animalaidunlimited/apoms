@@ -115,7 +115,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     sameAsNumber?.updateValueAndValidity();
 
-    const patientArray = this.recordForm.get('patients') as FormArray;
+    const patientArray = this.recordForm.get('patients.patientArray') as FormArray;
 
     if(callOutcomeId === 1){
 

@@ -1,22 +1,30 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipList } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
+import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions,ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';	
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 @Component({
   selector: 'app-emergency-register-patient',
   templateUrl: './emergency-register-patient.component.html',
   styleUrls: ['./emergency-register-patient.component.scss']
 })
-export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
+export class EmergencyRegisterPatientComponent implements OnInit {
 
   @Input() patientIndex!: number;
   @Input() patientForm!: any;
+
+  @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
 
   private _callOutcome = '';
@@ -28,7 +36,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
   get callOutcome(): string { return this._callOutcome; }
   
   @ViewChild('problemRef') problemRef!: ElementRef;
+  @ViewChild('chipList',{static: false}) chipList!: MatChipList;
 
+  
   problemInput = new FormControl();
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -59,7 +69,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
 
   constructor(
     private dropdown: DropdownService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private printService: PrintTemplateService,
+    private userOptions: UserOptionsService,
   ) { }
 
 
@@ -81,11 +94,18 @@ export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
       switchMap((problem:string) => problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems),
     );
     this.problemsArray = this.patientForm.get('problems') as FormArray;
-  
-  }
-
-  ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
     
+
+    setTimeout(()=>{                           
+      this.chipList.errorState = true;
+    }, 1);
+    
+  }
+  ngAfterViewInit(): void{
+    
+    this.patientForm.get('problems').valueChanges.subscribe((problems:{problemId: 1, problem: "Abdominal swelling"}[]) => {
+      this.chipList.errorState = false ;
+    });
   }
 
   animalFilter(fitlerValue: string){
@@ -154,7 +174,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
 
   hideIrrelevantProblems(animal:string) {
        
-
     const currentExclusions = this.exclusions.filter(animalType => animalType.animalType === animal);
     
     // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
@@ -165,8 +184,40 @@ export class EmergencyRegisterPatientComponent implements OnInit,OnChanges {
         return;
     }
     this.problemsExclusions = currentExclusions[0]?.exclusionList;
+
   }
 
-  
+
+
+  isSpeciesBlank(){
+    this.animalType.value === '' ? alert('Please select an animal') : '' ;
+  }
+
+
+  openMediaDialog(mediaObject:MediaItem){
+    // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
+    const dialogRef = this.dialog.open(MediaDialogComponent, {
+      minWidth: '50%',
+      data: {
+          tagNumber: this.patientForm.get('tagNumber')?.value,
+          patientId: this.patientForm.get('patientId')?.value,
+          mediaItem: mediaObject
+      }
+    });
+  }
+
+  printEmergencyCard(patientForm:FormGroup){
+
+    const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+
+    if(patientForm.get('patientId')?.value){
+      this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
+    }
+      
+  }
+
+  deletePatient(event: Event, patientIndex: number){
+    this.patientDeleted.emit(patientIndex);
+  }
 
 }
