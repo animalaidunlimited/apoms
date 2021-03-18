@@ -98,7 +98,7 @@ export class AnimalSelectionComponent implements OnInit{
         private dialog: MatDialog,
         private fb: FormBuilder,
         private patientService: PatientService,
-        private uniqueTagNumberValidator: UniqueTagNumberValidator,
+        private tagNumberValidator: UniqueTagNumberValidator,
         private dropdown: DropdownService,
         private printService: PrintTemplateService,
         private userOptions: UserOptionsService,
@@ -164,12 +164,21 @@ export class AnimalSelectionComponent implements OnInit{
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
                 problems: this.fb.array([],Validators.required),
-                tagNumber: ['', /* this.uniqueTagNumberValidator.validate(this.emergencyCaseId as number,this.fb.control({value: this.patientId})) */],
+                tagNumber: [''],
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
                 deleted: [false, Validators.required],
             });
-        
+            const patientIdControl = patient.get('patientId');
+
+            if(!patientIdControl){
+                throw new TypeError('patientIdControl is undefined');
+            }
+
+            patient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
+                this.emergencyCaseId || -1,
+                patientIdControl,
+            ));
         return patient;
     }
 
