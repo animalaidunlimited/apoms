@@ -5,6 +5,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'patient-details',
@@ -25,7 +26,7 @@ export class PatientDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.dropdown.getAnimalTypes().subscribe(animalTypes => this.animalTypes$ = animalTypes);
+        this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
         const initialNumber = -1;
 
@@ -42,11 +43,13 @@ export class PatientDetailsComponent implements OnInit {
         patientDetails.addControl('releaseStatus',new FormControl(initialNumber, Validators.required));
         patientDetails.addControl('temperament',new FormControl(initialNumber, Validators.required));
         patientDetails.addControl('age',new FormControl(initialNumber, Validators.required));
+        patientDetails.addControl('knownAsName',new FormControl('', Validators.required));
 
         this.maxDate = getCurrentTimeString();
 
         this.patientService
             .getPatientByPatientId(this.recordForm.get('patientDetails.patientId')?.value)
+            .pipe(take(1))
             .subscribe(result => {
                 this.recordForm.patchValue(result);
 

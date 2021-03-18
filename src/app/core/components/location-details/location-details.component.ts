@@ -1,9 +1,11 @@
-import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit, HostListener } from '@angular/core';
+import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
 import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { LocationDetailsService } from './location-details.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface Position {
     lat: number;
@@ -21,7 +23,10 @@ export interface Marker {
     templateUrl: './location-details.component.html',
     styleUrls: ['./location-details.component.scss'],
 })
-export class LocationDetailsComponent implements OnInit, AfterViewInit {
+export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     @Input() recordForm!: FormGroup;
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
 
@@ -68,9 +73,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
         this.locationDetails = this.recordForm.get('locationDetails') as FormGroup;
 
         this.locationService
-            .getLocationByEmergencyCaseId(
-                this.recordForm.get('emergencyDetails.emergencyCaseId')?.value,
-            )
+            .getLocationByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((location: LocationResponse) => {
                 this.recordForm.patchValue(location);
 
@@ -113,6 +117,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.getPlaceAutocomplete();
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     getPlaceAutocomplete() {

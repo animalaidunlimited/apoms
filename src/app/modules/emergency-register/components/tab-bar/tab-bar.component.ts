@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmergencyTab } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
@@ -6,7 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
 import { CaseService } from '../../services/case.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -21,7 +22,10 @@ interface EmergencyCaseIndentifiers {
     styleUrls: ['./tab-bar.component.scss'],
 })
 
-export class TabBarComponent implements OnInit {
+export class TabBarComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
+
     selected = new FormControl(0);
 
     tabs = [
@@ -37,7 +41,9 @@ export class TabBarComponent implements OnInit {
 
     ngOnInit() {
 
-        this.navigationService.isSearchClicked.subscribe((clicked)=>
+        this.navigationService.isSearchClicked
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((clicked)=>
             {
                 if(clicked)
                 {
@@ -47,13 +53,20 @@ export class TabBarComponent implements OnInit {
         );
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
-        sharedMediaItem.subscribe((mediaItem:File[])=>{
+        sharedMediaItem
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((mediaItem:File[])=>{
 
            if(mediaItem.length > 0){
                 this.openSearchMediaDialog(mediaItem);
            }
         });
 
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     removeTab(index: number) {

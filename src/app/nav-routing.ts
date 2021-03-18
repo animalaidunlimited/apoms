@@ -68,14 +68,13 @@ export const navRoutes: NavRoute[] = [
                 './modules/streettreat/streettreat-page.module')
                 .then(m => m.StreetTreatPageModule),
     },
-    
     {
         data: { title: 'Teams', permissionId:[5,6], componentPermissionLevel: null},
         icon: 'none',
         group: 'Street Treat',
         path: 'teams',
         loadChildren: () =>
-            import('./pages/street-treat/pages/teams-page/teams-page.module')
+            import('./modules/streettreat/pages/teams-page/teams-page.module')
             .then(m => m.TeamsPageModule),
     },
     {

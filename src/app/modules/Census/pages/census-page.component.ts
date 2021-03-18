@@ -9,6 +9,6 @@ export class CensusPageComponent implements OnInit {
  constructor(
     ) {}
 
-    ngOnInit() {};
+    ngOnInit() {}
 
 }

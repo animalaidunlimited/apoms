@@ -1,7 +1,7 @@
 
 .deleteCallerButton {
-    margin-left: 5px;
-
+    float : right;
+    margin-top:1rem;
 }
 
 .checkBox {
@@ -10,4 +10,60 @@
 
 ::ng-deep .cdk-overlay-pane{
     min-width: 250px;
+}
+
+@media only screen and (min-width:767px)
+{
+    .callerForm {
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
+        padding-left: 15px;
+        position:relative;
+    }
+    .deleteCallerButton {
+        position: absolute;
+        top: -1.5rem;
+        right: -0.5rem;
+        width: 30px;
+        height: 30px;
+        .mat-icon{
+            font-size:1rem;
+        }
+    }
+}
+
+@media(max-width: 600px) {
+
+    .callerForm {
+        border-radius: 0.5rem;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
+        margin-top: 4px;
+        padding-bottom: 10px;
+    }
+    button.mat-focus-indicator.deleteCallerButton {
+        width: 25px;
+        height: 25px;
+        position: relative;
+        top: -87px;
+        left: 8px;
+
+        .mat-icon {
+            position: absolute;
+            top: 4px;
+            left: 1px;
+            font-size: 1rem;
+        }
+    }
+    // .deleteCallerButton {
+    //     position: absolute;
+    //     top: -1.5rem;
+    //     right: -0.5rem;
+    //     width: 30px;
+    //     height: 30px;
+    //     .mat-icon{
+    //         font-size:1rem;
+    //     }
+    // }
+
 }

@@ -10,11 +10,15 @@ export interface DialogData {
 @Component({
     selector: 'patient-edit',
     templateUrl: './patient-edit.component.html',
-    styleUrls: ['./patient-edit.component.scss'],
+    styleUrls: ['./patient-edit.component.scss']
 })
-export class PatientEditDialog implements OnInit {
-    patientId: number;
+export class PatientEditDialog {
+
     @Input() patientStatusForm!: FormGroup;
+
+    patientId: number;
+
+    formInvalid = true;
 
     constructor(
         public dialogRef: MatDialogRef<PatientEditDialog>,
@@ -25,11 +29,13 @@ export class PatientEditDialog implements OnInit {
 
     }
 
-    ngOnInit() {
-
-    }
-
     onCancel(): void {
         this.dialogRef.close();
     }
+
+    setFormValidity($event:boolean){
+        this.formInvalid = $event;
+    }
+
+
 }

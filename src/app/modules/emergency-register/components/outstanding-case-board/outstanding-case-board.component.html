@@ -27,6 +27,7 @@
       <div *ngFor="let selectedChips of filterChips">
         <mat-chip [removable]="removable"
           (removed)="selected.toggleSelected()"
+          style="cursor: pointer"
           selected
           *ngFor="let selected of (selectedChips.selected | chipListType)">
           {{selected.value}}
@@ -45,7 +46,7 @@
     </button>
 
 
-    <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
+    <button mat-mini-fab [color]="hideMap ? 'primary' : filterBtnColor" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 
@@ -59,13 +60,13 @@
 
 
    <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
-    <mat-expansion-panel [expanded]="true" *ngFor="let options of caseFilter" hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{options.showTitle}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
 
+  <div class="filter-card" *ngFor="let options of caseFilter">
+  <div class="filter-header">
+    {{options.showTitle}}
+  </div>
+
+  <div class="filter-content">
     <mat-chip-list #filterChips multiple>
       <mat-chip #filterChip="matChip"
       (click)="filterChip.toggleSelected()"
@@ -74,7 +75,10 @@
         {{option.value}}
       </mat-chip>
     </mat-chip-list>
-    </mat-expansion-panel>
+  </div>
+</div>
+
+
 
   </div>
 </div>
@@ -83,7 +87,7 @@
 
 <outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
-<div cdkDropListGroup [hidden]="!hideMap" style="padding-left: 15px">
+<div cdkDropListGroup [hidden]="!hideMap" class="outstandingExpansionWrapper">
     <div class="drag-drop-container" *ngFor="let lane of outstandingCasesArray">
 
       <h2>{{lane.actionStatusName}}</h2>

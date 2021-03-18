@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -6,8 +6,9 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -17,7 +18,9 @@ import { User } from '../../models/user';
   styleUrls: ['./rescue-details.component.scss']
 })
 
-export class RescueDetailsComponent implements OnInit {
+export class RescueDetailsComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   @Input() emergencyCaseId!: number;
   @Input() recordForm!: FormGroup;
@@ -25,8 +28,13 @@ export class RescueDetailsComponent implements OnInit {
   @ViewChild('rescueTimeField' ,{ read: ElementRef, static:true }) rescueTimeField!: ElementRef;
   @ViewChild('ambulanceArrivalTimeField' ,{ read: ElementRef, static:true }) ambulanceArrivalTimeField!: ElementRef;
 
-  errorMatcher = new CrossFieldErrorMatcher();
 
+  admissionTime!:AbstractControl;
+  ambulanceArrivalTime!:AbstractControl;
+
+  callDateTimeForm!:AbstractControl;
+  callOutcome!:AbstractControl;
+  callDateTime!:AbstractControl;
 
   currentCallDateTime!: AbstractControl;
   currentAdmissionTime!: AbstractControl;
@@ -34,19 +42,14 @@ export class RescueDetailsComponent implements OnInit {
   currentRescueTime!: AbstractControl;
   currentTime!: string;
 
-  rescuer1Id!:AbstractControl;
-  rescuer2Id!:AbstractControl;
-  ambulanceArrivalTime!:AbstractControl;
-  rescueTime!:AbstractControl;
-  admissionTime!:AbstractControl;
-  callDateTimeForm!:AbstractControl;
-  callOutcome!:AbstractControl;
-  callDateTime!:AbstractControl;
+  errorMatcher = new CrossFieldErrorMatcher();
 
   rescueDetails:FormGroup = new FormGroup({});
-
-  rescuers$!:Observable<User[]>;
   rescueDetails$:FormGroup = new FormGroup({});
+  rescueTime!:AbstractControl;
+  rescuer1Id!:AbstractControl;
+  rescuer2Id!:AbstractControl;
+  rescuers$!:Observable<User[]>;
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
@@ -80,6 +83,7 @@ export class RescueDetailsComponent implements OnInit {
     this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 
     this.rescueDetailsService.getRescueDetailsByEmergencyCaseId(this.emergencyCaseId || 0)
+    .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((rescueDetails: RescueDetailsParent) => {
 
       this.zone.run(() => {
@@ -125,20 +129,33 @@ export class RescueDetailsComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+  }
+
   onChanges(): void {
+    // this.subscribeToValueChanges('rescueDetails');
+    // this.subscribeToValueChanges('emergencyDetails.callDateTime');
 
-    this.recordForm.valueChanges.subscribe(val => {
+  }
 
-      // The values won't have bubbled up to the parent yet, so wait for one tick
-      setTimeout(() =>
+  private subscribeToValueChanges(abstractControlName:string) {
+    this.recordForm.get(abstractControlName)?.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((val) => {
 
-        this.updateValidators()
-      );
-    });
+        console.log(val);
+
+        // The values won't have bubbled up to the parent yet, so wait for one tick
+        setTimeout(() => this.updateValidators()
+        );
+      });
   }
 
 updateValidators()
 {
+  console.log('val');
 
  this.ambulanceArrivalTime.clearValidators();
  this.rescueTime.clearValidators();

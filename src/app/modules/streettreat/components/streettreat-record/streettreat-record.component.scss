@@ -9,23 +9,19 @@
     background: white;
     border-radius: 6px;
     border: 2px solid #a9abad;
+    
 }
 @media only screen and (max-width: 600px) {
-    .st_form .mat-form-field {
-        width: 100%;
+    .mat-form-field{
+        width:100% !important;
+    }
+    ::ng-deep .visitsWrapper .visit_row_data {
+        padding: 0.5rem 0.8rem 0.5rem 0.5rem;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 #fff;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
     }
 }
-
-/* @media only screen and (min-width: 1441px) {
-    :host ::ng-deep {
-        .visit_row_data {
-            > div:first-child{
-                min-width: 64rem;
-                max-width: 64rem;
-            }
-        }
-    }
-} */
 
 @media only screen and (min-width: 1201px) {
 

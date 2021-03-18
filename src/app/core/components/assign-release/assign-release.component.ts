@@ -17,12 +17,11 @@ import { ReleaseDetails } from '../../models/release';
 })
 export class AssignReleaseComponent implements OnInit {
 
-  releasers$!: Observable<User[]>;
-
-  recordForm!: FormGroup;
-
   @Input() formData!: ReleaseDetails;
   @Output() public saveSuccessResponse = new EventEmitter<number>();
+
+  recordForm!: FormGroup;
+  releasers$!: Observable<User[]>;
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
@@ -63,7 +62,6 @@ export class AssignReleaseComponent implements OnInit {
 }
 
   saveReleaseDetails() {
-
 
     this.releaseDetails.saveRelease(this.recordForm.getRawValue()).then((response: any)=>{
 

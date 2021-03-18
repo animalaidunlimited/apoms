@@ -1,7 +1,7 @@
 <form [formGroup]='userDetails' (ngSubmit)='Submit(userDetails)'>
 
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
-    
+
     <fieldset class='form-sub-group'>
         <legend class="legend">User Details</legend>
 
@@ -19,7 +19,7 @@
             <mat-form-field>
                 <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput>
             </mat-form-field>
-            
+
         </div>
 
 
@@ -47,9 +47,9 @@
 
         </div>
 
-        <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown>
+        <!-- <div > -->
             
-            <div class= "streetTreatUser" fxLayout='row wrap' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start end'>
+            <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row" fxLayoutAlign='start center'>
                 <mat-form-field appearance="fill">
                     <mat-label>-Team-</mat-label>
                     <mat-select  formControlName= 'teamId'>
@@ -67,10 +67,10 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            
-        </div>
+<!--             
+        </div> -->
 
-        
+
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <mat-form-field style="padding-top: 20px;" appearance="fill">
@@ -96,15 +96,15 @@
 
         <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <button type='submit' mat-raised-button color='primary'>Save</button>
-            <button type='button' (click)="resetForm()" mat-raised-button color='white'>Reset</button>
             <button type='button' mat-raised-button color='primary'>Delete</button>
+            <button type='button' (click)="resetForm()" mat-raised-button color='white'>Reset</button>
         </div>
     </fieldset>
 </form>
 
 
 <mat-form-field class="filter">
-    <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label> 
+    <mat-label>Filter<mat-icon>filter_alt</mat-icon></mat-label>
     <input matInput (keyup)="applyFilter($event)" #input>
 </mat-form-field>
 

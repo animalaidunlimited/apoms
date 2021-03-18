@@ -25,11 +25,6 @@ export class ReleaseService extends APIService {
     }
   }
 
-/*   public async getReleaseDetailsById(patientId: number): Promise<any>{
-    const request = `?PatientId=${patientId}`;
-    return await this.get(request);
-  } */
-
   public getReleaseDetails(patientId: number) : Observable<any> {
 
     const request = '?PatientId=' + patientId;
