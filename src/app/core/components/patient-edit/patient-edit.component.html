@@ -2,7 +2,7 @@
 
 <div mat-dialog-content>
 
-<patient-status [patientId]="patientId" [formInvalid]="formInvalid" #patient></patient-status>
+<patient-status [patientId]="patientId" (formInvalid)="setFormValidity($event)" #patient></patient-status>
 
 </div>
 <div mat-dialog-actions>
