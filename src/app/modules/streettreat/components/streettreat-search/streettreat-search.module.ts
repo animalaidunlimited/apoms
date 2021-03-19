@@ -18,4 +18,5 @@ import { SearchFieldModule } from 'src/app/core/components/search-field/search-f
       StreetTreatSearchComponent
     ]
 })
+
 export class StreetTreatSeachModule {}

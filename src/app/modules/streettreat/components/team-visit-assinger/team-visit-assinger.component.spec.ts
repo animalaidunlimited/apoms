@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +21,8 @@ describe('TeamVisitAssingerComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule
       ],
-      providers: [{ provide: FormBuilder, useValue: formBuilder }],
+      providers: [ DatePipe,
+        { provide: FormBuilder, useValue: formBuilder }],
       declarations: [ TeamVisitAssingerComponent ]
     })
     .compileComponents();
