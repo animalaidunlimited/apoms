@@ -40,7 +40,9 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <div fxLayoutAlign = "center center">
-    <button type="button" mat-raised-button color="primary"  (click)="launchSurgeryDialog(null)">Add Surgery</button>
+  <div fxLayoutAlign = "center center" style="padding-top: 10px;">
+    <button type="button" mat-mini-fab (click)="launchSurgeryDialog(null)" color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
 </fieldset>

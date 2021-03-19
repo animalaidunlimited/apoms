@@ -27,6 +27,7 @@
       <div *ngFor="let selectedChips of filterChips">
         <mat-chip [removable]="removable"
           (removed)="selected.toggleSelected()"
+          style="cursor: pointer"
           selected
           *ngFor="let selected of (selectedChips.selected | chipListType)">
           {{selected.value}}
@@ -45,7 +46,7 @@
     </button>
 
 
-    <button mat-mini-fab color="primary" aria-label="Map" (click)="hideMap = !hideMap">
+    <button mat-mini-fab [color]="hideMap ? 'primary' : filterBtnColor" aria-label="Map" (click)="hideMap = !hideMap">
       <mat-icon>map</mat-icon>
     </button>
 

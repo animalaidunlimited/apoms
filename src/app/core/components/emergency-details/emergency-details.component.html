@@ -19,8 +19,9 @@
 
     <mat-form-field>
             <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
+            [max]="callDateTime"
             [min]="minimumDate"
-            [max]="callDateTime" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+            [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
     </mat-form-field>
 
     <mat-form-field>
