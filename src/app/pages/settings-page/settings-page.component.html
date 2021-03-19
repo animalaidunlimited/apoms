@@ -14,3 +14,23 @@
     </div>
 
 </div>
+
+<fieldset class="form-sub-group">
+    <legend class="legend">Dummy Census Records</legend>
+    <mat-form-field class="example-chip-list">
+        <mat-label>Add dummy record</mat-label>
+        <mat-chip-list
+        #chipList aria-label="Add Dummy Records">
+          <mat-chip *ngFor="let tag of dummyRecordTags" [selectable]="selectable"
+          [style.background] = "saveSuccess ? '#3d801f' : '#cc3300'" 
+                   [removable]="removable" (removed)="remove(tag)">
+            {{tag.tagNumber}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="TagNumber"
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+      </mat-form-field>
+</fieldset>
