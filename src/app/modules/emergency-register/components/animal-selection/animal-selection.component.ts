@@ -133,7 +133,12 @@ export class AnimalSelectionComponent implements OnInit{
         this.patientArray.removeAt(patientIndex);
     }
 
-
+    addPatientRow(){
+        if(this.patientArray.valid){ 
+            const patient = this.getEmptyPatient();
+            this.patientArray.push(patient);
+        }
+    }
   
    /* 
 
@@ -345,18 +350,7 @@ export class AnimalSelectionComponent implements OnInit{
         });
     } 
 
-    addPatientRow(){
-        if(this.patientArray.valid){ 
 
-            const patient = this.getEmptyPatient();
-            this.patientArray.push(patient);
-            this.resetTableDataSource();
-            const selected = this.patientDataSource.data[this.patientArray.length - 1];
-            this.selection.select(selected);
-            this.subscribeToChanges();
-
-        }
-    }
     setSelected(position: number) {
 
         // Set the new row to be selected
