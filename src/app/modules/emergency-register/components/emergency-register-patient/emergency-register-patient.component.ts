@@ -26,7 +26,6 @@ export class EmergencyRegisterPatientComponent implements OnInit {
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
-
   private _callOutcome = '';
   @Input()
   set callOutcome(callOutcome: string) {

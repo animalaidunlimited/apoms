@@ -58,33 +58,13 @@ table {
 .patientSelected{
     background-color: lightsteelblue;
 }
-/*.form-sub-group .mat-table {
-    .mat-standard-chip {
-        margin: 0px 0px 0px 0.3rem;
-        padding: 0 0.5rem;
-        min-width: fit-content;
-    }
-    .mat-column-mainProblem{
-        position: relative;
-    }
-    ::ng-deep .mat-chip-list-wrapper {
-        position: absolute !important;
-        top: -15px !important;
-        left: -7px !important;
-    }
-     .mat-error{
-        border-bottom: 1px solid #f64336; 
-        height: 1.7rem; 
-        margin-top: 0.5rem;
-        position:relative;
-        z-index:9;
-    } 
-}*/
 
-.problemList{
-    height: 2rem;
-    width:4.5rem;
-    position: relative;
-    z-index:10;
-    
+.addPatientButton{
+    margin-top: -7px;
+    width: 30px;
+    height: 30px;
+    .mat-icon{
+        font-size:1rem;
+    }
 }
+
