@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
@@ -19,7 +19,7 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
   templateUrl: './emergency-register-patient.component.html',
   styleUrls: ['./emergency-register-patient.component.scss']
 })
-export class EmergencyRegisterPatientComponent implements OnInit {
+export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
   @Input() patientForm!: any;
@@ -94,15 +94,15 @@ export class EmergencyRegisterPatientComponent implements OnInit {
     );
     this.problemsArray = this.patientForm.get('problems') as FormArray;
     
-
+    
     setTimeout(()=>{                           
-      this.chipList.errorState = true;
-    }, 1);
+      this.chipList.errorState  = this.problemsArray.length > 0 ? false : true; 
+    },1);
     
   }
   ngAfterViewInit(): void{
     
-    this.patientForm.get('problems').valueChanges.subscribe((problems:{problemId: 1, problem: "Abdominal swelling"}[]) => {
+    this.patientForm.get('problems').valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
       this.chipList.errorState = false ;
     });
   }
@@ -138,7 +138,8 @@ export class EmergencyRegisterPatientComponent implements OnInit {
     this.currentPatientSpecies = $event.option.viewValue;
 
     this.patientForm.get('animalType')?.setValue($event.option.viewValue);
-    this.patientForm.get('animalTypeId')?.setValue($event.option.value);
+    this.patientForm.get('animalTypeId')?.setValue($event.option.value.AnimalTypeId);
+
     this.patientForm.get('updated')?.setValue(true);
 
     this.hideIrrelevantProblems($event.option.viewValue); 

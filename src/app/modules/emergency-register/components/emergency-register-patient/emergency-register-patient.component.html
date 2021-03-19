@@ -8,7 +8,7 @@
         </mat-autocomplete>
     </mat-form-field>
     <mat-form-field fxFlex="1 1 53%" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
-        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()"  formArrayName="problems">
+        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()"  >
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
             [selectable]="selectable"

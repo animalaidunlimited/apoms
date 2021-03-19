@@ -27,7 +27,7 @@ import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.componen
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
-export class AnimalSelectionComponent implements OnInit{
+export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     private ngUnsubscribe = new Subject();
 
@@ -50,17 +50,8 @@ export class AnimalSelectionComponent implements OnInit{
     
     selectedProblems:string[] = [];
 
-    patientArrayDisplayedColumns: string[] = [
-        /* 'select', */
-        'animalType',
-        'mainProblem',
-        'tagNo',
-        'media',
-        'print',
-        'delete',
-    ];
-    patients!:FormGroup;
-    patientArray!:FormArray;
+    
+    patients!:FormArray;
 
     form = new FormGroup({});
     
@@ -77,7 +68,7 @@ export class AnimalSelectionComponent implements OnInit{
     @HostListener('document:keydown.control.p', ['$event'])
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
-        // this.addPatientRow();
+        this.addPatientRow();
        // this.speciesInput.toArray()[this.speciesInput.toArray().length - 1].nativeElement.focus();
     }
 
@@ -107,20 +98,22 @@ export class AnimalSelectionComponent implements OnInit{
 
     ngOnInit() {
 
-        this.recordForm.addControl('patients', 
-            this.fb.group({
-                patientArray: this.fb.array([this.getEmptyPatient()])
-            })
-        );
         
-        this.patients = this.recordForm.get('patients') as FormGroup;
-       
-        this.patientArray = this.patients.get('patientArray') as FormArray;
+        this.recordForm.addControl('patients', 
+            this.fb.array([])
+        );
+    
+        this.patients = this.recordForm.get('patients') as FormArray;
         
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
+        // tslint:disable-next-line: deprecation
         .subscribe(newValue => this.emergencyCaseId = newValue);
+
+        this.emergencyCaseId
+        ? this.loadPatientArray(this.emergencyCaseId)
+            : this.initPatientArray();
 
         // this.subscribeToChanges();
        
@@ -130,27 +123,27 @@ export class AnimalSelectionComponent implements OnInit{
 
     deletePatient(patientIndex:number) {
         
-        this.patientArray.removeAt(patientIndex);
+        this.patients.removeAt(patientIndex);
     }
 
     addPatientRow(){
-        if(this.patientArray.valid){ 
+        if(this.patients.valid){ 
             const patient = this.getEmptyPatient();
-            this.patientArray.push(patient);
+            this.patients.push(patient);
         }
     }
+    
   
-   /* 
-
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
-
-    subscribeToChanges() {
+     
+    /* subscribeToChanges() {
 
         this.recordForm.get('patients')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
+        // tslint:disable-next-line: deprecation
         .subscribe(items => {
 
             if (items.length > 0) {
@@ -159,16 +152,16 @@ export class AnimalSelectionComponent implements OnInit{
                 }
             }
         });
-    }*/
+    } */
 
     getEmptyPatient() {
         const patient = 
             this.fb.group({
                 patientId: [],
-                position: [],
+                position: [this.patients?.length ? this.patients.length + 1: 1],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
-                problems: this.fb.array([],Validators.required),
+                problems: this.fb.array([]),
                 tagNumber: [''],
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
@@ -190,7 +183,7 @@ export class AnimalSelectionComponent implements OnInit{
     // TODO fix any issues with the update flag here.
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
-    /*populatePatient(isUpdate: boolean, patient: Patient) {
+    populatePatient(isUpdate: boolean, patient: Patient) {
         const problems = this.fb.array([]);
 
         patient.problems.forEach(problem => {
@@ -198,10 +191,9 @@ export class AnimalSelectionComponent implements OnInit{
                 problemId: [problem.problemId],
                 problem: [problem.problem],
             });
-
             problems.push(newProblem);
         });
-
+       
         return this.getPatient(
             problems,
             patient.position,
@@ -210,6 +202,7 @@ export class AnimalSelectionComponent implements OnInit{
         );
     }
 
+    
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
 
         const newPatient = this.fb.group({
@@ -229,7 +222,6 @@ export class AnimalSelectionComponent implements OnInit{
         if(!patientIdControl){
             throw new TypeError('patientIdControl is undefined');
         }
-
         newPatient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
             this.emergencyCaseId || -1,
             patientIdControl,
@@ -237,48 +229,36 @@ export class AnimalSelectionComponent implements OnInit{
 
         return newPatient;
     }
-
     loadPatientArray(emergencyCaseId: number) {
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((patients: Patients) => {
-
-
-                    this.patientArray = this.recordForm.get('patients') as FormArray;
-
-                    patients.patients.forEach(patient => {
+        // tslint:disable-next-line: deprecation
+        .subscribe((patients: Patients) => {                                      patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
                         patient.deleted = !!+patient.deleted;
 
                         const newPatient = this.populatePatient(true, patient);
-
-                        this.patientArray.push(newPatient);
+                        this.patients.push(newPatient);
                     });
 
                     this.recordForm.patchValue(patients);
                 },
                 err => console.error(err),
-                () => this.resetTableDataSource(),
-            );
+                );
     }
-
     initPatientArray() {
-        this.patientArray = this.recordForm.get('patients') as FormArray;
-
-        this.patientArray.clear();
+  
+        this.patients.clear();
 
         const patient = this.getEmptyPatient();
 
-        this.patientArray.push(patient);
+        this.patients.push(patient);
 
-        this.resetTableDataSource();
-
-        /* this.setSelected(1); 
-
-        this.subscribeToChanges();
+        // this.subscribeToChanges();
     }
 
+    /*
     resetTableDataSource() {
         const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
@@ -333,22 +313,7 @@ export class AnimalSelectionComponent implements OnInit{
         } row ${row.get('position')?.value + 1}`;
     } */
 
-    /* clearChips() {
-        this.currentPatientChip = '';
-
-        // Get all of the chip lists on the page and reset them all.
-        this.animalTypeChips.chips.forEach(chip => {
-            chip.selected = false;
-            chip.disabled = false;
-            chip.selectable = true;
-        });
-
-        this.problemChips.chips.forEach(chip => {
-            chip.selected = false;
-            chip.disabled = false;
-            chip.selectable = true;
-        });
-    } 
+    /*
 
 
     setSelected(position: number) {
@@ -363,53 +328,6 @@ export class AnimalSelectionComponent implements OnInit{
         this.selection.select(selected);
     } 
 
-    focusProblemChip(event:any, problemChip:any) {
-        if (event.keyCode >= 65 && event.keyCode <= 90) {
-            const chips = this.problemChips.chips;
-
-            const foundChip = chips
-                .filter(allChips => allChips.disabled === false)
-                .find(chip => chip.value.substr(0, 1).toLowerCase() === event.key.toLowerCase());
-
-            if (foundChip) {
-                foundChip.focus();
-            }
-
-        } else if (event.keyCode === 13) { // space
-            this.problemChipSelected(problemChip);
-        }
-    }
-
-   
-    problemChipSelected(problemChip:any) {
-
-        this.recordForm.markAsDirty();
-
-        if(!problemChip.selected)
-        {
-            this.updatePatientProblemArray(problemChip);
-            return;
-        }
-
-        if (!problemChip.selectable && problemChip.selected) {
-            problemChip.selected = false;
-            return;
-        }
-
-        if (
-            !this.currentPatientSpecies  &&
-            !(this.animalTypeList.selected instanceof MatChip) 
-        ) {
-
-            // TODO replace this with a better dialog.
-            alert('Please select an animal');
-            problemChip.selected = false;
-            return;
-        }
-        else {
-            this.updatePatientProblemArray(problemChip);
-        }
-    }
 
     getcurrentPatient() {
         return this.selection.selected[0];
