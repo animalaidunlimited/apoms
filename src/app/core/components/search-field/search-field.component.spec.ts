@@ -38,7 +38,7 @@ describe('SearchFieldComponent', () => {
             {
                 path: sideNavPath,
                 children: [],
-            },
+            }
         ]),
         HttpClientTestingModule,
         FormsModule,
