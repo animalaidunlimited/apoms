@@ -23,7 +23,7 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },
-    files: ['src/app/core/components/location-details/google-maps-mock.js'],
+    files: ['./app/core/components/location-details/google-maps-mock.js'],
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
