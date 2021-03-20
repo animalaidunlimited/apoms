@@ -232,10 +232,11 @@ ngx-charts-bar-vertical-stacked{
 }
 @media only screen and (max-width: 600px) {
   .info_tiles div{
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     border-radius: 2.5%;
-    margin: 1rem;
+    margin: 0.5rem;
     margin-bottom:0;
+    box-shadow: 3px 3px 10px #bebebe, -3px -3px 10px #fff;
   }
   .streetreat_visit{
     min-width: unset;
@@ -246,6 +247,9 @@ ngx-charts-bar-vertical-stacked{
   }
   .StreetTreat_Container_visit_compression{
     margin-left:5px;
+  }
+  .info_tiles div:last-of-type:nth-child(odd) {
+    grid-area: 3 / 1 / 3 / 3;
   }
 }
 
