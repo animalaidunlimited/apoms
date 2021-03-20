@@ -127,10 +127,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     addPatientRow(){
-        if(this.patients.valid){ 
-            const patient = this.getEmptyPatient();
-            this.patients.push(patient);
-        }
+        const patient = this.getEmptyPatient();
+        this.patients.push(patient);
     }
     
   
@@ -139,20 +137,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.ngUnsubscribe.complete();
     }
      
-    /* subscribeToChanges() {
-
-        this.recordForm.get('patients')?.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        // tslint:disable-next-line: deprecation
-        .subscribe(items => {
-
-            if (items.length > 0) {
-                if (items[0].patientId == null && items[0].position == null) {
-                    this.initPatientArray();
-                }
-            }
-        });
-    } */
 
     getEmptyPatient() {
         const patient = 
