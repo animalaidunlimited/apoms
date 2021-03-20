@@ -4,6 +4,7 @@ import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from 'src/app/auth/auth.service';
 import { MaterialModule } from 'src/app/material-module';
 
@@ -34,11 +35,11 @@ describe('ReleaseDetailsDialogComponent', () => {
 
   const formBuilder: FormBuilder = new FormBuilder();
 
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
           HttpClientTestingModule,
+          BrowserAnimationsModule,
           MaterialModule
          ],
       declarations: [ ReleaseDetailsDialogComponent ],

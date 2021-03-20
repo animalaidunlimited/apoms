@@ -52,8 +52,6 @@ export class PrintTemplatesPageComponent implements OnInit {
 
      }
 
-
-
   loading = false;
 
   printElements:FormArray = new FormArray([]);
