@@ -64,12 +64,11 @@ export class CensusRecordComponent implements OnInit {
 
         this.route.data.subscribe(val=> {
 
-            console.log(val);
             if (val.componentPermissionLevel === 2) {
                 this.hasWritePermission = true;
             }
 
-        })
+        });
 
         this.censusDate = this.fb.group({
             CensusDate: [this.getCurrentDate()],

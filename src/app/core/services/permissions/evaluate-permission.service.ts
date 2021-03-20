@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { UserActionService } from '../user-details/user-action.service';
 
 @Injectable({
@@ -16,10 +15,6 @@ export class EvaluatePermissionService {
   public async permissionTrueOrFalse(componentPermissionArray: number[]){
 
      return await this.userService.getUserPermissions().then(userPermissions=> {
-
-      console.log(userPermissions);
-
-      console.log(componentPermissionArray);
 
       if(!componentPermissionArray?.length) {
         this.componentPermissionLayer = 1;

@@ -6,8 +6,7 @@ $standard-width: 180px;
     border: 2px solid;
     border-radius: 5px;
     border-color: $colour-border;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding:10px;
 }
 
 table {
@@ -64,3 +63,17 @@ table {
     }
 }
 
+
+@media only screen and (max-width:767px){
+    .addPatientButton{
+        width: 25px;
+        height: 25px;
+        margin-top: -2rem;
+        .mat-icon{
+            font-size: 1rem;
+            position: relative;
+            top: -3px;
+            left:1px;
+        }
+    }
+}

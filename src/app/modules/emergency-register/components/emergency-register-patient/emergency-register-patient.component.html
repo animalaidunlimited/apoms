@@ -1,4 +1,4 @@
-<div [formGroup]="patientForm" class="patientForm" fxLayout="row" fxLayoutAlign="flex-start flex-end" >
+<div [formGroup]="patientForm" class="patientForm" fxLayout.lt-md="row wrap" fxLayout="row" fxLayoutAlign="flex-start flex-end" >
     <mat-form-field>
         <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
         (keydown.Tab)="isSpeciesBlank($event)">
@@ -8,7 +8,7 @@
           </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field fxFlex="1 1 100" ngStyle.gt-sm="min-width:35rem;" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
+    <mat-form-field fxFlex.gt-md="1 1 100" ngStyle.lt-md="max-width:unset; min-width:16rem;" fxFlexOrder.lt-md="1" ngStyle.gt-md="min-width:35rem;" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
         <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" >
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
@@ -40,7 +40,7 @@
           The tag number already exists.
         </mat-error>
     </mat-form-field>
-    <div class="patients_icons">
+    <div class="patients_icons" fxFlexOrder.lt-md="2">
       <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>  
