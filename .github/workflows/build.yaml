@@ -4,10 +4,10 @@ name: Build
 on:
   push:
     branches:
-      - ${GITHUB_REF##*/}
+      - A040
   pull_request:
     branches:
-      - ${GITHUB_REF##*/}
+      - A040
 
   workflow_dispatch:
 
@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+
+      run: echo running on branch ${GITHUB_REF##*/}
 
       - name: Cache node modules
         uses: actions/cache@v1
