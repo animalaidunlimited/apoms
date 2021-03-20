@@ -23,9 +23,6 @@
     width: 17px !important;
 }
 
-.mat-icon{
-    vertical-align: text-bottom !important;
-}
 
 // TODO FIX THIS SO IT'S THE SAME HEIGHT AS EVERYTHING ELSE
 .mat-select-trigger{
@@ -58,6 +55,18 @@
         right: 0.6rem !important;
         top: 5.4rem !important;
         cursor: pointer
+    }
+    .mat-icon{
+        vertical-align: text-bottom !important;
+    }
+    
+}
+
+
+@media(min-width: 600px) {  
+    .mat-icon{
+        font-size: 2rem;
+        margin-top: -2rem;
     }
 }
 // To disable the Emergency number field by css.
