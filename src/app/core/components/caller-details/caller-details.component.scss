@@ -20,6 +20,10 @@
             top: -1px;
         }
     }
+    .form-sub-group{
+        place-content: center;
+        display: flex;
+    }
 }
 
 @media(max-width: 600px) { 

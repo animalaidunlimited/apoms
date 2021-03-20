@@ -54,8 +54,8 @@ mat-form-field.mat-form-field.mat-wrapper{
 .emergencySyncIcon .mat-icon {
     font-size: 2.5rem;
     position: absolute !important;
-    right: 5% !important;
-    top: 4rem !important;
+    right: calc(100% - 60rem) !important;
+    top: 3.2rem !important;
     color: gold;
     cursor: default
 }
@@ -65,7 +65,7 @@ mat-form-field.mat-form-field.mat-wrapper{
 }
 
 
-@media(max-width: 600px) {
+@media (max-width: 600px) {
     .emergencySyncIcon .mat-icon {
         font-size: 1.5rem;
         position: absolute !important;
@@ -73,5 +73,14 @@ mat-form-field.mat-form-field.mat-wrapper{
         top: 2.5rem !important;
         color: gold;
         cursor: default
+    }
+}
+@media (min-width: 600px) {
+    .form-sub-group {
+        min-width: 62rem;
+        box-sizing:  content-box !important;
+    }
+    .emergency_record_wrapper > caller-details{
+        min-width: 63.8rem;
     }
 }
