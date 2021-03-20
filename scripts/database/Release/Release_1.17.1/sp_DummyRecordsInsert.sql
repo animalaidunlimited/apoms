@@ -5,7 +5,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
-									IN prm_UserName VARCHAR(64),
+																		IN prm_UserName VARCHAR(64),
                                     IN prm_GUID VARCHAR(128),
                                     IN prm_EmergencyNumber INT,
 									IN prm_CallDateTime DATETIME,
@@ -43,13 +43,10 @@ DECLARE vSuccess INT;
 SET vEmNoExists = 0;
 SET vOrganisationId = 0;
 
-IF Prm_EmergencyNumber = -1 THEN
+IF prm_EmergencyNumber = -1 THEN
 
-	SELECT (MIN(EmergencyNumber) - 1) INTO DummyEmNo 
+	SELECT (MIN(EmergencyNumber) - 1) INTO prm_EmergencyNumber 
     FROM AAU.EmergencyCase WHERE EmergencyNumber < 0;
-    
-ELSE 
-	SELECT Prm_EmergencyNumber INTO DummyEmNo;
 
 END IF;
 
@@ -97,8 +94,8 @@ INSERT INTO AAU.EmergencyCase
 VALUES
 (
 	vOrganisationId,
-	-- prm_EmergencyNumber,
-    DummyEmNo,
+	prm_EmergencyNumber,
+    -- DummyEmNo,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
