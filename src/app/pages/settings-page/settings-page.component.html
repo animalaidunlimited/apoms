@@ -27,7 +27,7 @@
             {{tag.tagNumber}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="TagNumber"
+          <input (focus)="true" placeholder="TagNumber"
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  (matChipInputTokenEnd)="add($event)">
