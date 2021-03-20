@@ -16,6 +16,32 @@ describe('SearchStreettreetResultCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchStreetTreetResultCardComponent);
     component = fixture.componentInstance;
+
+    component.record = {
+      AnimalType: 'Dog',
+      AnimalTypeId: 10,
+      CallDateTime: 20210319,
+      CallOutcome: undefined,
+      CallOutcomeId: undefined,
+      CallerId: 17,
+      CurrentLocation: undefined,
+      EmergencyCaseId: 1,
+      EmergencyNumber: 8,
+      StreetTreatCaseId: 12,
+      Latitude: 74.0000,
+      Location: 'Udaipur',
+      Longitude: 24.000,
+      MediaCount: 1,
+      Name: 'Bobafet',
+      Number: '333333',
+      PatientId: 72,
+      NextVisit: 'manana',
+      TagNumber: 'tag',
+      UserName: 'Boba',
+      sameAsNumber: undefined,
+      ReleaseStatus: 'Released'
+  }
+
     fixture.detectChanges();
   });
 
