@@ -1,13 +1,21 @@
 # This is the CI action for the Apoms repo. The build must succeed and all tests must pass before any pull requests can be made.
 
+- name: Extract branch name
+  shell: bash
+  run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+  id: extract_branch
+
+
+
+
 name: Build
 on:
   push:
     branches:
-      - A040
+      - ${GITHUB_REF##*/}
   pull_request:
     branches:
-      - A040
+      - ${GITHUB_REF##*/}
 
   workflow_dispatch:
 
