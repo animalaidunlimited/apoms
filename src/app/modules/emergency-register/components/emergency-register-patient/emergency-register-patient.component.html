@@ -1,14 +1,15 @@
 <div [formGroup]="patientForm" class="patientForm" fxLayout="row" fxLayoutAlign="flex-start flex-end" >
     <mat-form-field>
-        <input tabindex="8" type="text" placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher">
+        <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
+        (keydown.Tab)="isSpeciesBlank($event)">
         <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
           <mat-option *ngFor="let animal of filteredAnimalTypes$ | async" [value]="animal">
             {{ animal.AnimalType }}
           </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field fxFlex="1 1 53%" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
-        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()"  >
+    <mat-form-field fxFlex="1 1 100" ngStyle.gt-sm="min-width:35rem;" class="mainProblem" [ngClass]="{mainProblem: patientForm.get('problems')?.length > 0 }">
+        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" >
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
             [selectable]="selectable"

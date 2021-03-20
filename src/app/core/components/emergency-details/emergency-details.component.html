@@ -35,7 +35,7 @@
 
         <mat-form-field>
             <mat-label>Code</mat-label>
-            <mat-select tabindex="9" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
+            <mat-select tabindex="10" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
                 <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId">
 
