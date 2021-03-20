@@ -59,3 +59,11 @@ mat-tab-body {
     z-index: 5000;
     margin: auto;
 }
+
+
+@media(max-width: 600px) { 
+
+    .locationContainer {
+        width: 100%;
+    }
+}

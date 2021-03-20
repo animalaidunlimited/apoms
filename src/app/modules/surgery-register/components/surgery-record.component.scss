@@ -30,3 +30,13 @@ table {
     display: inline-block;
     font-size: 15px;
 }
+
+.surgeryTypeWrapper {
+    width: 100%;
+}
+
+@media (max-width: 600px){
+    .surgeryTypeWrapper {
+        max-width: 97%;
+    }
+}
