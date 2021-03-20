@@ -27,7 +27,7 @@ export class EvaluatePermissionService {
       
       if(componentPermissionArray?.length) {
 
-        if(userPermissions.length) {
+        if(userPermissions) {
           
           this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1 })
 
