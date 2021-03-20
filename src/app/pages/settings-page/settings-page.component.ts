@@ -58,7 +58,7 @@ export class SettingsPageComponent implements OnInit {
                     patientId: 0,
                     position: 1,
                     problems: [
-                        {problemId: 81, problem: "Wound"}
+                        {problemId: 42, problem: "Wound"}
                     ],
                     problemsString: "Wound",
                     tagNumber: '',
@@ -116,16 +116,21 @@ export class SettingsPageComponent implements OnInit {
                     this.caseService
                     .insertCase(this.emergencyRecord)
                     .then(data => {
+
+                        console.log(data);
                         if(data.emergencyCaseSuccess === 1 && data.patients[0].success === 1) {
+                            console.log('saveSuccess');
                             this.saveSuccess = true;
                         }
-                    })
+                    });
+
+                    if ((value || '').trim()) {
+                        this.dummyRecordTags.push({tagNumber: tagNumber});
+                    }
                 }
             
                 // Add our fruit
-                if ((value || '').trim()) {
-                  this.dummyRecordTags.push({tagNumber: tagNumber});
-                }
+                
             }
 
             else {
