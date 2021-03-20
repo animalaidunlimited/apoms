@@ -36,7 +36,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   
   @ViewChild('problemRef') problemRef!: ElementRef;
   @ViewChild('chipList',{static: false}) chipList!: MatChipList;
-
+  @ViewChild('animalTypeInput') animalTypeInput!: ElementRef;
   
   problemInput = new FormControl();
 
@@ -188,8 +188,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
 
-  isSpeciesBlank(){
-    this.animalType.value === '' ? alert('Please select an animal') : '' ;
+  isSpeciesBlank($event:Event){
+    
+    if(this.animalType.value === '' )
+    { 
+      alert('Please select an animal'); 
+      $event.preventDefault();
+      this.animalTypeInput.nativeElement.focus();
+    }
+    
   }
 
 
