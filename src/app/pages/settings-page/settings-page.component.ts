@@ -117,9 +117,7 @@ export class SettingsPageComponent implements OnInit {
                     .insertCase(this.emergencyRecord)
                     .then(data => {
 
-                        console.log(data);
                         if(data.emergencyCaseSuccess === 1 && data.patients[0].success === 1) {
-                            console.log('saveSuccess');
                             this.saveSuccess = true;
                         }
                     });
