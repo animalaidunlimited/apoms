@@ -135,21 +135,27 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
   }
 
   onChanges(): void {
+    // this.subscribeToValueChanges('rescueDetails');
+    // this.subscribeToValueChanges('emergencyDetails.callDateTime');
 
-    this.recordForm.valueChanges
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => {
+  }
 
-      // The values won't have bubbled up to the parent yet, so wait for one tick
-      setTimeout(() =>
+  private subscribeToValueChanges(abstractControlName:string) {
+    this.recordForm.get(abstractControlName)?.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((val) => {
 
-        this.updateValidators()
-      );
-    });
+        console.log(val);
+
+        // The values won't have bubbled up to the parent yet, so wait for one tick
+        setTimeout(() => this.updateValidators()
+        );
+      });
   }
 
 updateValidators()
 {
+  console.log('val');
 
  this.ambulanceArrivalTime.clearValidators();
  this.rescueTime.clearValidators();

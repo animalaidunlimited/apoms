@@ -1,9 +1,9 @@
 
 <div [formGroup]="callOutcome">
 
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
 
-    <mat-form-field class="full-width">
+    <mat-form-field class="outcomeWrapper">
         <mat-label>Call Outcome</mat-label>
         <mat-select tabindex="14" #callOutcomeField formControlName="CallOutcome" [compareWith]="compareCallOutcome">
             <mat-option>N/A</mat-option>

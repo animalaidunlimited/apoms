@@ -10,6 +10,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { map, take } from 'rxjs/operators';
 
 
@@ -20,6 +21,10 @@ import { map, take } from 'rxjs/operators';
   styleUrls: ['./streettreat-record.component.scss']
 })
 export class StreetTreatRecordComponent implements OnInit {
+
+  permissionType!: number[];
+
+  hasWritePermission: boolean = false;
 
   @Input() inputStreetTreatCase!: StreetTreatTab;
 
@@ -39,6 +44,7 @@ export class StreetTreatRecordComponent implements OnInit {
     private patientService: PatientService,
     private changeDetector: ChangeDetectorRef,
     private showSnackBar: SnackbarService,
+    private route : ActivatedRoute
   ) { }
 
   public get emergencyCaseId() {
@@ -54,6 +60,16 @@ export class StreetTreatRecordComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.route.data.subscribe(val=> {
+
+      console.log(val);
+      if (val.componentPermissionLevel === 2) {
+          this.hasWritePermission = true;
+      }
+
+  })
+
     this.recordForm = this.fb.group({
       EmergencyNumber: [{value: '', disabled: true}, Validators.required],
       TagNumber: [{value: '', disabled: true}, Validators.required],
@@ -127,6 +143,8 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
   saveForm(){
+
+   if(this.hasWritePermission) {
     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
 
       response.success === 1
@@ -139,6 +157,10 @@ export class StreetTreatRecordComponent implements OnInit {
       }
 
     });
+   }
+   else {
+    this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
+   }
 
   }
 

@@ -2,9 +2,9 @@
 
     <legend class="legend">Emergency Details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
 
-    <mat-form-field>
+        <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
             <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
@@ -65,4 +65,4 @@
 
     </div>
 
-  </fieldset>
+</fieldset>

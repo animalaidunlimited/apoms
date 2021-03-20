@@ -168,6 +168,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
+
+        console.log('populatePatient');
+
+
         const problems = this.fb.array([]);
 
         patient.problems.forEach(problem => {
@@ -188,6 +192,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
+
+        console.log('getPatient');
+
 
         const newPatient = this.fb.group({
             patientId: [patientId],
@@ -215,6 +222,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
     loadPatientArray(emergencyCaseId: number) {
 
+        console.log('loadPatientArray');
+
+
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
@@ -239,22 +249,32 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         this.patients.push(patient);
 
-        // this.subscribeToChanges();
     }
 
     /*
     resetTableDataSource() {
-        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
-        this.patientDataSource = new MatTableDataSource(patients);
+        console.log('resetTableDataSource');
+
+
+        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
+        // const patients:FormGroup[] = []
+
+        console.log(patients);
+
+        this.patientDataSource =  patients;
 
         this.selection = new SelectionModel<FormGroup>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. 
     isAllSelected() {
+
+        console.log('isAllSelected');
+
+
         const numSelected = this.selection.selected.length;
-        const numRows = this.patientDataSource.data.length;
+        const numRows = this.patientDataSource.length;
         return numSelected === numRows;
     }
 
@@ -302,8 +322,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     setSelected(position: number) {
 
+        console.log('setSelected');
+
         // Set the new row to be selected
-        const selected = this.patientDataSource.data.find(row => row.get('position')?.value === position);
+        const selected = this.patientDataSource.find(row => row.get('position')?.value === position);
 
         if(selected === undefined){
             throw new TypeError('Selected value was not found!');
@@ -314,6 +336,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     getcurrentPatient() {
+        console.log('getcurrentPatient');
+
         return this.selection.selected[0];
     }
 
@@ -322,6 +346,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
  
 
     updateTag(currentPatient:any) {
+
+
+        console.log('updateTag');
+
 
         if(this.selection.selected.length === 0){
 
@@ -338,6 +366,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     openTagNumberDialog(event:any): void {
+
+        console.log('openTagNumberDialog');
 
         const currentPatient: Patient = event;
 
@@ -389,6 +419,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     printEmergencyCard(row:FormGroup){
+
+        console.log('printEmergencyCard');
+
 
         const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
