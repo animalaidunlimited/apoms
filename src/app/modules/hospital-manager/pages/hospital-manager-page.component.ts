@@ -17,7 +17,7 @@ export class HospitalManagerPageComponent implements OnInit {
         private caseService: CaseService,
         private tabBar: HospitalManagerTabBarService) {
 
-        route.params.subscribe(params => {
+        route.params.subscribe(() => {
 
             if(route.snapshot.params.tagNumber){
 
