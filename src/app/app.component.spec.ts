@@ -12,7 +12,8 @@ describe('AppComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule,
+            imports: [
+                RouterTestingModule,
                 HttpClientTestingModule,
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase), ],

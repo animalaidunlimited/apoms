@@ -12,8 +12,8 @@ import { ChipListType } from '../../pipes/chip-list-type';
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,
-         OutstandingCaseMapComponent,
-         ChipListType
+        OutstandingCaseMapComponent,
+        ChipListType
     ],
     imports: [
         CommonModule,
@@ -24,7 +24,7 @@ import { ChipListType } from '../../pipes/chip-list-type';
         MatChipsModule
     ],
     providers:[
-        
+
     ],
     exports: [OutstandingCaseBoardComponent],
 })

@@ -5,6 +5,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HospitalManagerTabBarComponent } from './hospital-manager-tab-bar.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { sideNavPath } from 'src/app/nav-routing';
+import { DatePipe } from '@angular/common';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('HospitalManagerTabBarComponent', () => {
     let component: HospitalManagerTabBarComponent;
@@ -13,12 +17,18 @@ describe('HospitalManagerTabBarComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                RouterTestingModule.withRoutes([{
+                    path: sideNavPath,
+                    children: [],
+                }]),
                 RecordSearchModule,
                 MatTabsModule,
+                MaterialModule,
                 HttpClientTestingModule,
                 BrowserAnimationsModule,
             ],
-            declarations: [HospitalManagerTabBarComponent],
+            declarations: [ HospitalManagerTabBarComponent ],
+            providers: [ DatePipe ]
         }).compileComponents();
     }));
 

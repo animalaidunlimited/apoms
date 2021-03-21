@@ -2,6 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
 import { NavRoute } from '../../../nav-routing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('NavigationService', () => {
     let service: NavigationService;
@@ -20,6 +21,7 @@ describe('NavigationService', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [ RouterTestingModule ],
             providers: [
                 {
                     provide: NavigationService,
