@@ -12,7 +12,9 @@ describe('CaseService', () => {
 
     beforeEach(() =>
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
                 CaseService,
                 MatSnackBar,
