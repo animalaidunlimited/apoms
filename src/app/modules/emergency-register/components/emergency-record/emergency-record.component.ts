@@ -252,6 +252,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         this.loading = true;
         if (this.recordForm.pending) {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
