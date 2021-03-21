@@ -10,18 +10,22 @@ import { StreetTreatService } from '../../services/streettreat.service';
   styleUrls: ['./streettreat-search.component.scss']
 })
 export class StreetTreatSearchComponent implements OnInit {
+
   @Output() public openStreetTreatCase = new EventEmitter<SearchStreetTreatResponse>();
+
   constructor(
     private streetTreatService: StreetTreatService,
   ) { }
+
   searchResults$!:Observable<SearchStreetTreatResponse[]>;
-  
+
   ngOnInit(): void {
   }
 
-  onSearchQuery(searchQuery:string){  
+  onSearchQuery(searchQuery:string){
   this.searchResults$ = this.streetTreatService.searchCases(searchQuery);
   }
+  
   openCase(searchResult: SearchStreetTreatResponse) {
     this.openStreetTreatCase.emit(searchResult);
   }

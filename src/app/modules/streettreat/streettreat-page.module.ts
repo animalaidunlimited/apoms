@@ -8,7 +8,6 @@ import { MaterialModule } from 'src/app/material-module';
 import { RecordSearchModule } from 'src/app/core/components/record-search/record-search.module';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import { SearchFieldModule } from 'src/app/core/components/search-field/search-field.module';
-import { SearchStreetTreetResultCardComponent } from './components/search-streettreet-result-card/search-streettreet-result-card.component';
 import { StreetTreatRecordComponent } from './components/streettreat-record/streettreat-record.component';
 import { PatientVisitDetailsModule } from '../../core/components/patient-visit-details/patient-visit-details.module';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
@@ -23,7 +22,6 @@ import { StreetTreatSeachModule } from './components/streettreat-search/streettr
   declarations: [
     StreetTreatPageComponent,
     StreetTreatTabBarComponent,
-    SearchStreetTreetResultCardComponent,
     StreetTreatRecordComponent
   ],
   imports: [
