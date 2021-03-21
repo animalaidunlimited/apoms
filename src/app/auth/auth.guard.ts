@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
+
         if (this.authService.isLogged()) {
             this.authService.redirectUrl = '';
             return true;
@@ -24,9 +25,8 @@ export class AuthGuard implements CanActivate {
 
         this.authService.redirectUrl = state.url;
 
-        setTimeout(()=> {
-            this.router.navigate(['']);
-       }, 150);
+        this.router.navigate(['']);
+
         return false;
     }
 }

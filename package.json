@@ -18,7 +18,9 @@
     "genpage": "node ./scripts/generatePage",
     "postgenpage": "ng lint --fix",
     "build:stats": "ng build --stats-json",
-    "analyze": "webpack-bundle-analyzer dist/apoms/stats.json"
+    "analyze": "webpack-bundle-analyzer dist/apoms/stats.json",
+    "build:ci": "ng build --prod --sourceMap=false",
+    "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom"
   },
   "husky": {
     "hooks": {
@@ -85,6 +87,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "protractor": "~7.0.0",
+    "puppeteer": "^8.0.0",
     "scripty": "^1.9.1",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",

@@ -7,7 +7,7 @@ export interface MediaItem{
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
-    isPrimary:boolean;
+    isPrimary: boolean;
     datetime: Date|string;
     deleted: boolean;
     comment: string;

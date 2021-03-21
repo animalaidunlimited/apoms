@@ -11,7 +11,7 @@ import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.val
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
-import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -94,6 +94,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(newValue => this.emergencyCaseId = newValue);

@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Caller, Callers } from '../../models/responses';
 import { APIService } from '../../services/http/api.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CallerDetailsService extends APIService {
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient,
+        private fb: FormBuilder) {
         super(http);
     }
 
@@ -41,6 +43,27 @@ export class CallerDetailsService extends APIService {
             return output;
         }).catch((error:any)=>{
             console.log(error);
+        });
+    }
+
+    public getCallerFormGroup(): FormGroup {
+        return this.fb.group({
+            callerId: [],
+            callerName: ['', Validators.required],
+            callerNumber: [
+                '',
+                [
+                    Validators.required,
+                    Validators.pattern(
+                        '^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$',
+                    ),
+                ],
+            ],
+            callerAlternativeNumber: [
+                '',
+                Validators.pattern('^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$'),
+            ],
+            primaryCaller: []
         });
     }
 }

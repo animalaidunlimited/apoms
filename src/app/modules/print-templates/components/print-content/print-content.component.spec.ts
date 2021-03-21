@@ -9,25 +9,28 @@ describe('PrintContentComponent', () => {
   let component: PrintContentComponent;
   let fixture: ComponentFixture<PrintContentComponent>;
 
-  const fakeActivatedRoute = {
-    snapshot: { params: { printTemplate: {
+  const printTemplate = [{
       printTemplateId: 1,
       templateName: '',
       showTemplateImage: false,
       backgroundImageUrl: '',
-      paperDimensions: {
+      paperDimensions: [{
         paperDimensionsId: 1,
         name: '',
         width: '',
         height: ''
-      },
+      }],
       orientation: '',
       printElements: [],
       updated: false,
       updateDateTime: ''
-    } } } };
+    }];
 
-  beforeEach(async(() => {
+
+  const fakeActivatedRoute = {
+    snapshot: { params: { printTemplate: JSON.stringify(printTemplate) } } };
+
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -41,7 +44,7 @@ describe('PrintContentComponent', () => {
       declarations: [ PrintContentComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PrintContentComponent);
