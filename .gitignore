@@ -46,8 +46,6 @@ testem.log
 Thumbs.db
 /src/environments/environment.prod.ts
 /src/environments/environment.ts
-/src/index.prod.html
-/src/index.html
 settings.json
 
 # Index Files
