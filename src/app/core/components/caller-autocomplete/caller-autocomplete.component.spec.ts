@@ -51,8 +51,7 @@ describe('CallerAutocompleteComponent', () => {
         .get('callerName')
         ?.setValue('Alfred Bumblehorn');
 
-        //TODO - Put this back to false
-    expect(component.callerForm.valid).toEqual(true);
+    expect(component.callerForm.valid).toEqual(false);
 });
 
 it('Invalid form - caller number only', () => {
