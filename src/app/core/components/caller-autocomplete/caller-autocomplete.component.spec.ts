@@ -33,7 +33,7 @@ describe('CallerAutocompleteComponent', () => {
 
     component = fixture.componentInstance;
 
-    component.callerForm = service.getCallerFormGroup();
+    component.incomingCallerForm = service.getCallerFormGroup();
 
     fixture.detectChanges();
   });

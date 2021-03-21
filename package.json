@@ -19,7 +19,7 @@
     "postgenpage": "ng lint --fix",
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/apoms/stats.json",
-    "build:ci": "npm run test && npm run build:prod"
+    "build:ci": "ng test && bg build --prod"
   },
   "husky": {
     "hooks": {
