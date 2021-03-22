@@ -3,20 +3,22 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production: false,
-    API_URL: '',
-    firebase: {
-      apiKey: 'AIzaSyB1FEu4JYuoJhxeUpYmNDq8t5EeI3RjAl4',
-      authDomain: 'streettreat.firebaseapp.com',
-      databaseURL: 'https://streettreat.firebaseio.com',
-      projectId: 'streettreat',
-      storageBucket: 'streettreat.appspot.com',
-      messagingSenderId: '275309609166',
-      appId: '1:275309609166:web:57881f3451f618d031909f',
-      measurementId: 'G-2FQTQ26YCP',
-      email: 'jim.mackenzie@animalaidunlimited.org',
-      password: 'L33ds@AAU' }
+  production: false,
+  API_URL: 'API_URL',
+  firebase: {
+    apiKey: 'FIREBASE_API_KEY',
+    authDomain: 'FIREBASE_AUTH_DOMAIN',
+    databaseURL: 'FIREBASE_DATABASE_URL',
+    projectId: 'PROJECT_ID',
+    storageBucket: 'STORAGE_BUCKET',
+    messagingSenderId: 'FIREBASE_SENDER_ID',
+    appId: 'FIREBASE_APP_ID',
+    measurementId: 'FIREBASE_MEASUREMENT_ID',
+    email: 'ANGULAR_FIRE_EMAIL',
+    password: 'ANGULAR_FIRE_PASSWORD'
+  }
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file
