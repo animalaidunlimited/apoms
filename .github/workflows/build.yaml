@@ -42,7 +42,7 @@ jobs:
         run: npm install
 
       - name: Configure environments
-        run: npm configure:env
+        run: npm configure:ci
 
       - name: Build
         run: npm run build:ci
