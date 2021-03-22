@@ -38,4 +38,6 @@ jobs:
         with:
           project: ${{ secrets.PROJECT_ID }}
           deliverables: dist/app.yaml
+
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+
