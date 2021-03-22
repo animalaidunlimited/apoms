@@ -55,14 +55,37 @@
               "buildOptimizer": true,
               "extractCss": true,
               "extractLicenses": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "index": {
                 "input": "src/index.prod.html",
+                "output": "index.html"
+              },
+              "namedChunks": false,
+              "ngswConfigPath": "ngsw-config.json",
+              "optimization": true,
+              "outputHashing": "all",
+              "serviceWorker": true,
+              "sourceMap": false,
+              "vendorChunk": false
+            },
+            "stage": {
+              "aot": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "12.1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "16kb"
+                }
+              ],
+              "buildOptimizer": true,
+              "extractCss": true,
+              "extractLicenses": true,
+              "index": {
+                "input": "src/index.stage.html",
                 "output": "index.html"
               },
               "namedChunks": false,

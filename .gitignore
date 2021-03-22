@@ -44,11 +44,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/src/environments/environment.prod.ts
-/src/environments/environment.ts
+
 settings.json
 
-# Index Files
-index.html
-index.prod.html
-
+#The below files aren't ignored, however we're not tracking their changes
+#Read more here: https://stackoverflow.com/questions/936249/how-to-stop-tracking-and-ignore-changes-to-a-file-in-git
+#/src/environments/environment.ts
+#index.html
