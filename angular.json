@@ -55,12 +55,6 @@
               "buildOptimizer": true,
               "extractCss": true,
               "extractLicenses": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "index": {
                 "input": "src/index.prod.html",
                 "output": "index.html"
@@ -73,7 +67,7 @@
               "sourceMap": false,
               "vendorChunk": false
             },
-            "test": {
+            "stage": {
               "aot": true,
               "budgets": [
                 {
@@ -90,14 +84,8 @@
               "buildOptimizer": true,
               "extractCss": true,
               "extractLicenses": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ],
               "index": {
-                "input": "src/index.test.html",
+                "input": "src/index.stage.html",
                 "output": "index.html"
               },
               "namedChunks": false,
