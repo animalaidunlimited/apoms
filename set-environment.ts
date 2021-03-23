@@ -6,11 +6,9 @@ https://betterprogramming.pub/how-to-secure-angular-environment-variables-for-us
 https://medium.com/@ferie/how-to-pass-environment-variables-at-building-time-in-an-angular-application-using-env-files-4ae1a80383c
 */
 
-
-
 const { writeFile, existsSync, mkdirSync } = require('fs');
 // Configure Angular `environment.ts` file path
-const targetPath = './src/environments/environment.ts';
+const environmentTargetPath = './src/environments/environment.ts';
 // Load node modules
 const colors = require('colors');
 
@@ -33,13 +31,12 @@ const envConfigFile = `export const environment = {
   };`;
 
 
-console.log(colors.magenta('The file `environment.ts` will be written with the following content: \n'));
-console.log(colors.grey(envConfigFile));
-writeFile(targetPath, envConfigFile, function (err:string) {
+console.log(colors.magenta('The file `environment.ts` will be updated.'));
+writeFile(environmentTargetPath, envConfigFile, function (err:string) {
    if (err) {
        throw console.error(err);
    } else {
-       console.log(colors.magenta(`Angular environment.ts file generated correctly at ${targetPath} \n`));
+       console.log(colors.magenta(`Angular environment.ts file generated correctly at ${environmentTargetPath} \n`));
    }
 });
 
