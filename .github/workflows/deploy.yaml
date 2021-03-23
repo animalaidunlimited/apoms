@@ -43,5 +43,5 @@ jobs:
         with:
           project_id: ${{ secrets.PROJECT_ID }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          deliverables: dist/app.yaml
+          deliverables: app.yaml
           promote: true
