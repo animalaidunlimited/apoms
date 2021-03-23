@@ -57,6 +57,9 @@ jobs:
       - name: Configure app.yaml
         run: npm run app-config:ci
         
+      - name: Echo deploy script version
+        run: echo V1.0 === ${{ secrets.DUMMY_SECRET }}
+        
       - name: Deploy an App Engine app
         uses: google-github-actions/deploy-appengine@main
         with:
