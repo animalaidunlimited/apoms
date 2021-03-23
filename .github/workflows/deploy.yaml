@@ -1,0 +1,26 @@
+# This is the CI action for the Apoms repo. The build must succeed and all tests must pass before any pull requests can be made.
+
+name: Deploy
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Deploy an App Engine app
+        id: deploy-app
+        uses: google-github-actions/deploy-appengine@main
+        with:
+          project: ${{ secrets.PROJECT_ID }}
+          deliverables: dist/app.yaml
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
