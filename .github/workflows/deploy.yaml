@@ -60,10 +60,18 @@ jobs:
       - name: Echo deploy script version
         run: echo V1.0 === ${{ secrets.DUMMY_SECRET }}
         
-      - name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@v0.2.0
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Use gcloud CLI
+        run: gcloud info
+        
+      - name: Deploy
+        uses: google-github-actions/deploy-appengine@main
         with:
           deliverables: dist/app.yaml
-          project_id: ${{ secrets.GCP_PROJECT }}
-          credentials: ${{ secrets.GCP_SA_KEY }}
           promote: true
