@@ -60,8 +60,7 @@ jobs:
       - name: Deploy an App Engine app
         id: deploy-app
         uses: google-github-actions/deploy-appengine@main
-        with:
-          project_id: ${{ secrets.PROJECT_ID }}
+        with:          
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          deliverables: app.yaml
+          deliverables: dist/app.yaml
           promote: true
