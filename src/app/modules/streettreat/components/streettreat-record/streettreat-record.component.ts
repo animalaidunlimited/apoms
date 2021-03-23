@@ -63,7 +63,6 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.route.data.subscribe(val=> {
 
-      console.log(val);
       if (val.componentPermissionLevel === 2) {
           this.hasWritePermission = true;
       }

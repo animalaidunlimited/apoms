@@ -1,10 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { MediaItem } from 'src/app/core/models/media';
@@ -37,6 +37,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @ViewChild('problemRef') problemRef!: ElementRef;
   @ViewChild('chipList',{static: false}) chipList!: MatChipList;
   @ViewChild('animalTypeInput') animalTypeInput!: ElementRef;
+  @ViewChild('animalTypeInput', { read: MatAutocompleteTrigger }) animalAutoComplete! : MatAutocompleteTrigger;
+  
   
   problemInput = new FormControl();
 
@@ -60,6 +62,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   );
 
   sortedProblems = this.dropdown.getProblems().pipe(
+    tap(problems => {
+      const selectedProblems = this.patientForm.get('problems')?.value.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
+      
+      console.log(selectedProblems);
+      console.log(problems.filter(problems => !selectedProblems.includes(problems.Problem)));
+
+    }),
     map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
   );
 
