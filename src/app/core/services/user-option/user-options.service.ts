@@ -14,7 +14,7 @@ export class UserOptionsService{
         lng: 73.691544,
     };
     notifactionDuration = 3;
-    minimumDate = new Date('2010-01-01');
+    minimumDate = new Date('2018-01-01');
 
     constructor(private storage: StorageService) {}
 
