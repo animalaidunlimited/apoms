@@ -59,5 +59,8 @@ jobs:
           ANGULAR_FIRE_EMAIL:        ${{ secrets.ANGULAR_FIRE_EMAIL }}
           ANGULAR_FIRE_PASSWORD:     ${{ secrets.ANGULAR_FIRE_PASSWORD }}
 
+      - name: Configure app.yaml
+        run: npm run app-config:ci
+
       - name: Test
         run: npm run test:ci
