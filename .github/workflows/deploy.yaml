@@ -22,7 +22,7 @@ jobs:
         id: deploy-app
         uses: google-github-actions/deploy-appengine@main
         with:
-          project: ${{ secrets.PROJECT_ID }}          
+          project_id: ${{ secrets.PROJECT_ID }}          
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           deliverables: app.yaml
           promote: true
