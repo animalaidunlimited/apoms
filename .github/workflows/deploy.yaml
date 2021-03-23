@@ -2,7 +2,8 @@
 
 name: Deploy
 on:
-  push:
+  pull_request:
+    types: closed
     branches:
       - develop
       - master
@@ -16,11 +17,12 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    steps:
-      - name: Deploy an App Engine app
-        id: deploy-app
-        uses: google-github-actions/deploy-appengine@main
-        with:
-          project: ${{ secrets.PROJECT_ID }}
-          deliverables: dist/app.yaml
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+    #steps:
+    #  - name: Deploy an App Engine app
+    #    id: deploy-app
+    #    uses: google-github-actions/deploy-appengine@main
+    #    with:
+    #      project: ${{ secrets.PROJECT_ID }}
+    #      credentials: ${{ secrets.GCP_CREDENTIALS }}
+    #      deliverables: dist/app.yaml
+    #      promote: true

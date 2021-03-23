@@ -57,11 +57,3 @@ jobs:
 
       - name: Test
         run: npm run test:ci
-
-      - name: Deploy an App Engine app
-        id: deploy-app
-        uses: google-github-actions/deploy-appengine@v0.1.0
-        with:
-          project: ${{ secrets.PROJECT_ID }}
-          deliverables: dist/app.yaml
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
