@@ -1,3 +1,5 @@
+import { CallerDetails } from "./emergency-record";
+
 export interface OutstandingCaseResponse {
     outstandingActions : OutstandingCase[];
 }
@@ -56,12 +58,6 @@ export interface OutstandingAssignment {
     moved?: boolean;
     searchCandidate?: boolean;
     filteredCandidate?: boolean;
-}
-
-export interface CallerDetails {
-    callerId: number;
-    callerName: string;
-    callerNumber: string;
 }
 
 export interface ActionPatient{

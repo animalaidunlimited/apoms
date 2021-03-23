@@ -127,13 +127,14 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
     // navRoutes!: NavRoute[];
     userPermissionArray!: number[];
     permission!: boolean;
-    userPermissions!: number[]
+    userPermissions!: number[];
 
 
 
@@ -148,7 +149,7 @@ export class NavRouteService {
             this.navRoute = routes;
         }
 
-        if(!this.navRoute.children){
+        if(!this.navRoute?.children){
             throw new Error ('No routes detected');
         }
         this.navRoute.children?.forEach(routeVal=> {
@@ -158,19 +159,14 @@ export class NavRouteService {
                     routeVal.data.componentPermissionLevel = val;
                 }
                 this.navRoutes.next(this.newMethod() || []);
-            })
+            });
             
-        })
+        });
         
         
 
 
-
-        
-    }
-
-    private newMethod() {
-        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
+        this.navRoutes = this.navRoute?.children.filter(route => route.data && route.data.title)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
                 // console.log(route);

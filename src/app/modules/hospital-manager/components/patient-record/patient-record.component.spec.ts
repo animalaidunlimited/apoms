@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -32,10 +33,11 @@ describe('PatientRecordComponent', () => {
 
     const formBuilder: FormBuilder = new FormBuilder();
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             declarations: [PatientRecordComponent],
             imports: [
+                HttpClientTestingModule,
                 MaterialModule,
                 FormsModule,
                 ReactiveFormsModule,
@@ -43,7 +45,7 @@ describe('PatientRecordComponent', () => {
             ],
             providers: [{ provide: FormBuilder, useValue: formBuilder }],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(PatientRecordComponent);

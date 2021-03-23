@@ -1,3 +1,5 @@
+[![build status](https://github.com/animalaidunlimited/apoms/workflows/Build/badge.svg)](https://github.com/animalaidunlimited/apoms/actions)
+
 # apoms
 
 APOMS is the abbreviation for Animal Protection Organisation Management System.

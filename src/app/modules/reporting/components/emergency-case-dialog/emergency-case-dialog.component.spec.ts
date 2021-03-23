@@ -1,14 +1,58 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
 
 import { EmergencyCaseDialogComponent } from './emergency-case-dialog.component';
+
+@Component({
+  selector: 'app-assign-release-dialog',
+  template: '<p>Mock emergency-case Component</p>'
+})
+class MockEmergencyCaseDialogComponent {}
 
 describe('EmergencyCaseDialogComponent', () => {
   let component: EmergencyCaseDialogComponent;
   let fixture: ComponentFixture<EmergencyCaseDialogComponent>;
 
+  const emergencyRecordTable = {
+    emergencyNumber: 1,
+    callDateTime: new Date(),
+    animalType: '',
+    tagNumber : '',
+    location : '',
+    dispatcher: '',
+    staff1: '',
+    staff2: '',
+    callOutcome: ''
+};
+
+  const mockDialogRef = {
+    open: jasmine.createSpy('open'),
+    close: jasmine.createSpy('close')
+  };
+
+  const dialogData = {
+    emergencyCases: [emergencyRecordTable]
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EmergencyCaseDialogComponent ]
+      imports: [ HttpClientTestingModule,
+        BrowserAnimationsModule,
+        MaterialModule ],
+      declarations: [ EmergencyCaseDialogComponent ],
+      providers: [
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: dialogData },
+        {
+        provide: MatDialogRef,
+        useValue: mockDialogRef
+      }
+      ]
     })
     .compileComponents();
   });

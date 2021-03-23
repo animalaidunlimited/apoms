@@ -1,4 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
 
 import { SettingsPageComponent } from './settings-page.component';
 
@@ -8,7 +12,10 @@ describe('SettingsPageComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [SettingsPageComponent],
+            imports: [ HttpClientTestingModule,
+                BrowserAnimationsModule,
+                MaterialModule ],
+            declarations: [SettingsPageComponent]
         }).compileComponents();
     }));
 

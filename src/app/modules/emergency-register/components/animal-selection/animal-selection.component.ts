@@ -9,18 +9,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { iif, Observable, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
-import { AnimalType } from 'src/app/core/models/animal-type';
-import { MediaItem } from 'src/app/core/models/media';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaItem } from 'src/app/core/models/media';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
 @Component({
@@ -114,6 +114,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients = this.recordForm.get('patients') as FormArray;
         
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation

@@ -20,12 +20,15 @@ import { LogsData } from '../../models/logs-data';
     styleUrls: ['./logs.component.scss'],
 })
 export class LogsComponent implements OnInit {
-    @Input() recordForm!: FormGroup;
+
     @Input() logsData!:LogsData;
-    logs: any;
-    dataSource!: MatTableDataSource<any>;
+
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
+
+    logs: any;
+    dataSource!: MatTableDataSource<any>;
+
     displayedColumns: string[] = [
         'userName',
         'changeTable',
@@ -59,12 +62,13 @@ export class LogsComponent implements OnInit {
         else{
             searchQuery = Object.values(this.logsData).toString();
         }
-        
+
         this.initLogs(searchQuery);
     }
 
     async initLogs(searchQuery: string) {
         const logs = await this.logsService.getLogger(searchQuery);
+
         if (logs) {
           this.dataSource = new MatTableDataSource(logs);
           this.dataSource.paginator = this.paginator;

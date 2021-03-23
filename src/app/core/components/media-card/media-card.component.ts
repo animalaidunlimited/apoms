@@ -24,6 +24,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
   @Input() isPrimaryChanged!: BehaviorSubject<number>;
+
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
   @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
 
@@ -46,7 +47,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnInit(): void {
 
     this.mediaItem.isPrimary = Boolean(this.mediaItem.isPrimary);
-    
+
     this.mediaForm = this.fb.group({
       mediaItemId: this.mediaItem.mediaItemId,
       patientMediaItemId: this.mediaItem.patientMediaItemId,
@@ -54,9 +55,9 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       patientId: this.mediaItem.patientId,
       localURL: this.mediaItem.localURL,
       remoteURL: this.mediaItem.remoteURL,
-      isPrimary: [this.mediaItem.isPrimary],
+      isPrimary: this.mediaItem.isPrimary,
       datetime: this.mediaItem.datetime,
-      comment: [this.mediaItem.comment],
+      comment: this.mediaItem.comment,
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
@@ -69,21 +70,21 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     this.isPrimaryChanged
-    .pipe(takeUntil(this.ngUnsubscribe))
+    ?.pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(changedPrimaryMediaItemId=>{
 
       const mediaItemId$ = this.mediaForm.get('mediaItemId')?.value as Observable<number>;
 
       mediaItemId$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(itemId=>{
+      ?.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(itemId => {
         if(itemId !== changedPrimaryMediaItemId && changedPrimaryMediaItemId !== 0){
 
           const isPrimaryControl =  this.mediaForm.get('isPrimary') as AbstractControl;
 
-          if(isPrimaryControl.value !== false){
+          if(isPrimaryControl?.value !== false){
 
-            isPrimaryControl.setValue(false,{emitEvent:false});
+            isPrimaryControl?.setValue(false,{emitEvent:false});
 
             this.mediaForm.markAsTouched();
           }
@@ -95,7 +96,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
     });
 
     this.mediaForm.get('isPrimary')?.valueChanges
-    .pipe(takeUntil(this.ngUnsubscribe))
+    ?.pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(changedPrimary=>{
       if(changedPrimary){
 
