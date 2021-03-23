@@ -11,18 +11,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
 
-    #steps:
-    #  - name: Deploy an App Engine app
-    #    id: deploy-app
-    #    uses: google-github-actions/deploy-appengine@main
-    #    with:
-    #      project: ${{ secrets.PROJECT_ID }}
-    #      credentials: ${{ secrets.GCP_CREDENTIALS }}
-    #      deliverables: dist/app.yaml
-    #      promote: true
+    steps:
+      - name: Deploy an App Engine app
+        id: deploy-app
+        uses: google-github-actions/deploy-appengine@main
+        with:
+          project: ${{ secrets.PROJECT_ID }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          deliverables: dist/app.yaml
+          promote: true
