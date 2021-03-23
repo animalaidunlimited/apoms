@@ -20,6 +20,7 @@
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/apoms/stats.json",
     "configure:ci": "ts-node set-environment.ts",
+    "app-config:ci": "ts-node set-app-yaml.ts",
     "build:ci": "ng build --prod --configuration=$npm_config_environment --sourceMap=false",
     "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom"
   },
