@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { sideNavPath } from 'src/app/nav-routing';
 
 import { PrintTemplateService } from './print-template.service';
 
@@ -11,7 +12,12 @@ describe('PrintTemplatesService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes([
+          {
+              path: sideNavPath,
+              children: [],
+          },
+      ])
       ],
 
     });

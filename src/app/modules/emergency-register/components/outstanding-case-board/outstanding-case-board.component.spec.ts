@@ -17,6 +17,8 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ChipListType } from '../../pipes/chip-list-type';
+
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'rescue-details',
@@ -46,7 +48,7 @@ describe('OutstandingCaseBoardComponent', () => {
                 BrowserAnimationsModule,
                 AngularFireMessagingModule,
                 RouterTestingModule,
-                AngularFireModule.initializeApp(environment.firebase),
+                AngularFireModule.initializeApp(environment.firebase)
             ],
             providers: [
                 MatDialog,
@@ -60,7 +62,10 @@ describe('OutstandingCaseBoardComponent', () => {
                     useValue: mockDialogRef,
                 },
             ],
-            declarations: [OutstandingCaseBoardComponent],
+            declarations: [
+                OutstandingCaseBoardComponent,
+                ChipListType
+            ],
         }).compileComponents();
     }));
 

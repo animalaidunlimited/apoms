@@ -1,5 +1,4 @@
 import {
-    async,
     ComponentFixture,
     TestBed,
     inject,
@@ -14,12 +13,16 @@ import { MaterialModule } from 'src/app/material-module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
+import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
 
 describe('EmergencyDetailsComponent', () => {
     let component: EmergencyDetailsComponent;
+    let rescueDetails: RescueDetailsComponent;
+
+    let rescueDetailsFixture: ComponentFixture<RescueDetailsComponent>;
     let fixture: ComponentFixture<EmergencyDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -29,12 +32,14 @@ describe('EmergencyDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             providers: [DatePipe],
-            declarations: [EmergencyDetailsComponent],
+            declarations: [EmergencyDetailsComponent, RescueDetailsComponent],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(EmergencyDetailsComponent);
+        rescueDetailsFixture = TestBed.createComponent(RescueDetailsComponent);
+
         component = fixture.componentInstance;
 
         component.recordForm = fb.group({
@@ -42,11 +47,19 @@ describe('EmergencyDetailsComponent', () => {
                 emergencyCaseId: [1],
             }),
             callOutcome: fb.group({
-                callOutcome: [''],
+                CallOutcome: [''],
             }),
         });
 
         fixture.detectChanges();
+
+        //These two component rely on each other as we need to check fields across components
+        rescueDetails = rescueDetailsFixture.componentInstance;
+        rescueDetails.recordForm = component.recordForm;
+        rescueDetails.emergencyCaseId = 17;
+
+        rescueDetailsFixture.detectChanges();
+
     }));
 
     afterEach((done) => {
@@ -63,37 +76,47 @@ describe('EmergencyDetailsComponent', () => {
         component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
         component.recordForm.get('emergencyDetails.code')?.setValue('1');
 
-        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
-            true,
-        );
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(true);
     });
 
     it('Invalid form - no records', () => {
-        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
-            false,
-        );
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(false);
     });
 
     it('Invalid form - Missing code', () => {
-        component.recordForm
-            .get('emergencyDetails.emergencyNumber')?.setValue(70022);
+        component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
 
-        component.recordForm.get('emergencyDetails.dispatcher')?.setValue(1);
+        component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
+        component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
 
-        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
-            false,
-        );
+        component.recordForm.get('emergencyDetails.code')?.setValue(null);
+
+        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
+
+        rescueDetails.updateValidators();
+
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(false);
+    });
+
+    it('Valid form - Emergency code', () => {
+        component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
+
+        component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
+        component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
+
+        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
+
+        rescueDetails.updateValidators();
+
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(true);
     });
 
     it('Set Initial Time Works', () => {
-        component.setInitialTime();
 
         const testTime = new Date();
 
         component.recordForm.get('emergencyDetails.callDateTime')?.setValue(testTime);
 
-        expect(
-            component.recordForm.get('emergencyDetails.callDateTime')?.value
-        ).toEqual(testTime);
+        expect(component.recordForm.get('emergencyDetails.callDateTime')?.value).toEqual(testTime);
     });
 });

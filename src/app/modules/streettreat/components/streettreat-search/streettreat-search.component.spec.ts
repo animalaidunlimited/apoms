@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StreetTreatSearchComponent } from './streettreat-search.component';
@@ -8,11 +9,12 @@ describe('StreettreatSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [ HttpClientTestingModule ],
       declarations: [ StreetTreatSearchComponent ]
     })
     .compileComponents();
   });
-
+  
   beforeEach(() => {
     fixture = TestBed.createComponent(StreetTreatSearchComponent);
     component = fixture.componentInstance;

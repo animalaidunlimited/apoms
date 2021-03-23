@@ -45,7 +45,7 @@ describe('AuthService', () => {
 
             authService
                 .mockLogin('user', 'user')
-                .then((redirectUrl: string) => {
+                .then((redirectUrl: string | null) => {
                     expect(storageService.save).toHaveBeenCalled();
                     expect(redirectUrl).toEqual('/welcome');
                 });

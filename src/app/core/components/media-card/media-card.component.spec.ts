@@ -3,7 +3,9 @@ import { Component } from '@angular/core';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs/internal/observable/of';
+import { MaterialModule } from 'src/app/material-module';
 import { MediaItem } from '../../models/media';
 
 import { MediaCardComponent } from './media-card.component';
@@ -33,20 +35,20 @@ describe('MediaCardComponent', () => {
 
   const inputMediaItem: MediaItem = {
     mediaItemId: of(0),
+    patientMediaItemId: 0,
     mediaType: 'image',
     localURL: 'SafeUrl',
     remoteURL: 'string',
+    isPrimary: false,
     datetime: '2020-10-05T16:51:35',
+    deleted: false,
     comment: 'This is a comment',
     patientId: 1,
     heightPX: 300,
     widthPX: 300,
     tags: ['Tag 1', 'Tag 2'],
     uploadProgress$: of(0),
-    updated: false,
-    isPrimary: false,
-    deleted: false,
-    patientMediaItemId: 0
+    updated: false
   };
 
   let dialog: MatDialogRef<MockConformationComponent>;
@@ -57,7 +59,9 @@ describe('MediaCardComponent', () => {
         MatDialogModule,
         HttpClientTestingModule,
         FormsModule,
-        ReactiveFormsModule
+        MaterialModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule
     ],
     providers: [
       {
@@ -73,11 +77,13 @@ describe('MediaCardComponent', () => {
   }));
 
   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+
     fixture = TestBed.createComponent(MediaCardComponent);
     component = fixture.componentInstance;
 
     component.mediaItem = inputMediaItem;
     component.tagNumber = 'A378';
+
 
     dialog = TestBed.get(MatDialog);
 

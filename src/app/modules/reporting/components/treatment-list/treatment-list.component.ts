@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 export class TreatmentListComponent implements OnInit {
 
   displayedColumns: BehaviorSubject<string[]>
-          = new BehaviorSubject<string[]>(['index','Tag number','Age','Treatment priority','ABC status','Release status','Temperament','Release ready','complete']);
+          = new BehaviorSubject<string[]>(['index','Tag number','Adm.','Rel.','Died','Temperament','Release ready','complete']);
 
   columnsExcludingIndex: Observable<string[]>;
 
@@ -174,13 +174,6 @@ export class TreatmentListComponent implements OnInit {
      });
 
   }
-
-
-  //onCancel(){
-
-  //  this.dialogRef.close();
-
-  //}
 
   treatmentLayout(){
 
