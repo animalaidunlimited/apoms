@@ -58,10 +58,8 @@ jobs:
         run: npm run app-config:ci
         
       - name: Deploy an App Engine app
-        id: deploy-app
         uses: google-github-actions/deploy-appengine@main
         with:
-          project_id: ${{ secrets.PROJECT_ID }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           deliverables: dist/app.yaml
           promote: true
