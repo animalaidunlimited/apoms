@@ -3,6 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -18,6 +19,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 
 
@@ -41,6 +43,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     
 
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;  
+
+    @ViewChildren(EmergencyRegisterPatientComponent) emergencyRegisterPatients!: QueryList<EmergencyRegisterPatientComponent>;
 
     currentPatientSpecies: string | undefined;
     emergencyCaseId: number | undefined;
@@ -69,7 +73,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         this.addPatientRow();
-       // this.speciesInput.toArray()[this.speciesInput.toArray().length - 1].nativeElement.focus();
+        this.cdr.detectChanges();
+        
+        const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
+        this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
+        this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput.nativeElement.focus();
     }
 
 
@@ -169,7 +177,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
 
-        console.log('populatePatient');
+
 
 
         const problems = this.fb.array([]);
@@ -193,7 +201,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
 
-        console.log('getPatient');
+
 
 
         const newPatient = this.fb.group({
@@ -222,7 +230,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
     loadPatientArray(emergencyCaseId: number) {
 
-        console.log('loadPatientArray');
+
 
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
@@ -252,103 +260,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     /*
-    resetTableDataSource() {
-
-        console.log('resetTableDataSource');
-
-
-        const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
-        // const patients:FormGroup[] = []
-
-        console.log(patients);
-
-        this.patientDataSource =  patients;
-
-        this.selection = new SelectionModel<FormGroup>(true, []);
-    }
-
-    /** Whether the number of selected elements matches the total number of rows. 
-    isAllSelected() {
-
-        console.log('isAllSelected');
-
-
-        const numSelected = this.selection.selected.length;
-        const numRows = this.patientDataSource.length;
-        return numSelected === numRows;
-    }
-
-    toggleRow(row:FormGroup) {
-        if(this.selection.isSelected(row)){
-            row;
-        }
-        if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
-
-            // We only ever want to have one item selected at once, but WE want to control when the change happens and how.
-            this.selection.toggle(this.selection.selected[0]);
-            this.clearChips(); 
-            this.selection.toggle(row);
-        }
-        else if (this.selection.selected.length !== 0 && this.selection.selected[0] === row){
-            this.selection.toggle(this.selection.selected[0]);
-            this.clearChips(); 
-        }
-        else {
-            this.selection.toggle(row);
-        }
-    }
-
-    selectIfNotSelected(row:FormGroup){
-
-        if (!this.selection.isSelected(row)){
-            this.toggleRow(row);
-        }
-
-    }
-
-
-    /** The label for the checkbox on the passed row */
-/*     checkboxLabel(row?: FormGroup): string {
-        if (!row) {
-            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-        }
-        return `${
-            this.selection.isSelected(row) ? 'deselect' : 'select'
-        } row ${row.get('position')?.value + 1}`;
-    } */
-
-    /*
-
-
-    setSelected(position: number) {
-
-        console.log('setSelected');
-
-        // Set the new row to be selected
-        const selected = this.patientDataSource.find(row => row.get('position')?.value === position);
-
-        if(selected === undefined){
-            throw new TypeError('Selected value was not found!');
-        }
-
-        this.selection.select(selected);
-    } 
-
-
-    getcurrentPatient() {
-        console.log('getcurrentPatient');
-
-        return this.selection.selected[0];
-    }
-
-    
-
- 
+   
 
     updateTag(currentPatient:any) {
 
 
-        console.log('updateTag');
 
 
         if(this.selection.selected.length === 0){
@@ -366,8 +282,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     openTagNumberDialog(event:any): void {
-
-        console.log('openTagNumberDialog');
 
         const currentPatient: Patient = event;
 
@@ -401,81 +315,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 this.patientTable.renderRows();
             }
         });
-    }
 
-    openMediaDialog(mediaObject:MediaItem): void{
-
-        const currentPatient: FormGroup = this.getcurrentPatient();
-
-        const dialogRef = this.dialog.open(MediaDialogComponent, {
-            minWidth: '50%',
-            data: {
-                tagNumber: currentPatient.get('tagNumber')?.value,
-                patientId: currentPatient.get('patientId')?.value,
-                mediaItem: mediaObject
-            }
-        });
-
-    }
-
-    printEmergencyCard(row:FormGroup){
-
-        console.log('printEmergencyCard');
-
-
-        const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
-
-        this.printService.printPatientDocument(printTemplateId, row.get('patientId')?.value);
-
-    }
-
-
-    // If you tab into the chip lists, you have to tab through them all to get out.
-    // So the below finds the last element and skips to the next value
-    tabPressed($event:Event,index:number){
-        $event.preventDefault();
-        this.cdr.detectChanges();        
-        this.problemAuto.toArray()[index].nativeElement.focus()
-       
-    }
-
-    shiftTabPressed($event: Event,index:number){
-        $event.preventDefault();
-        // this.speciesInput.toArray()[index].nativeElement.focus();
-    }
-    
-      
-    checkSpecies(row:FormGroup,index:number){
-        if(this.selection.isSelected(row)){
-            const currentPatient = this.getcurrentPatient() as FormGroup;
-            const selectedSpecies =  currentPatient.get('animalType')?.value;
-            if (selectedSpecies === '') {
-
-                // TODO replace this with a better dialog.
-                this.problemAuto.toArray()[index].nativeElement.blur();
-                alert('Please select an animal');
-            }
-        }else{
-            return;
-        }
-    }
-
-
-    setMainProblemError(row:FormGroup, index:number){
-        if(this.selection.isSelected(row)){
-            const currentPatient = this.getcurrentPatient() as FormGroup;
-            const selectedProblems =  currentPatient.get('problemsString')?.value;
-        }else{
-            return;
-        }
-        
-    }   
-
-    checkRowSelected($event:Event, row: FormGroup){
-        $event.stopPropagation();
-        if(!this.selection.isSelected(row)){
-            return;
-        }
-    }
     */
 }

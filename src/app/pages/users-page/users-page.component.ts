@@ -157,7 +157,6 @@ export class UsersPageComponent implements OnInit {
 
       this.route.data.subscribe(val=> {
 
-        console.log(val);
         if (val.componentPermissionLevel === 2) {
             this.hasWritePermission = true;
         }
@@ -279,7 +278,7 @@ export class UsersPageComponent implements OnInit {
     Submit(userDetailsForm: any) {
 
       if(this.hasWritePermission) {
-        console.log(userDetailsForm.value);
+  
         this.loading = true;
 
         if(userDetailsForm.get('password').value !== ''){

@@ -17,7 +17,7 @@
     box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
     padding: 9px 5px 0 5px;
     position: relative;
-    ::ng-deep .mainProblem .mat-form-field-infix{
+    ::ng-deep .mainProblemDirty .mat-form-field-infix{
         padding: 0;
     } 
     .mat-standard-chip{
@@ -40,15 +40,6 @@
     }
 }
 
-@media only screen and (min-width:767px)
-{
-    
-    .patientForm{
-        max-height: 75px;
-        min-height: 75px;
-        width: 100%;
-    }
-}
 @media only screen and (max-width:767px)
 {
     .deletePatientButton {

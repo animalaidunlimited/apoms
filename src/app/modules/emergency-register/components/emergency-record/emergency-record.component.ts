@@ -90,7 +90,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.route.data.subscribe(val=> {
 
-            console.log(val);
             if (val.componentPermissionLevel === 2) {
                 this.hasWritePermission = true;
             }
@@ -161,7 +160,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.recordForm.reset({});
 
-        console.log('hi');
 
         this.guId.next(this.caseService.generateUUID());
 
@@ -175,7 +173,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString(),{emitEvent:false});
 
-        console.log('hello');
+
 
         // this.changeDetectorRef.detectChanges();
     }
@@ -272,7 +270,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
-        console.log(this.hasWritePermission);
 
         if(this.hasWritePermission) {
             this.loading = true;
