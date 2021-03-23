@@ -61,7 +61,6 @@ jobs:
         uses: google-github-actions/deploy-appengine@v0.2.0
         with:
           deliverables: dist/app.yaml
-          working_directory: dist/apoms
           project_id: ${{ secrets.PROJECT_ID }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           promote: true
