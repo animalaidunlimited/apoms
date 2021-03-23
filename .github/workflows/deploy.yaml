@@ -56,11 +56,18 @@ jobs:
 
       - name: Configure app.yaml
         run: npm run app-config:ci
-
-      - name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@v0.2.0
+        
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
         with:
-          deliverables: dist/app.yaml
+          project_id: myid
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
+
+      - id: Deploy
+        name: Deploy to App Engine
+        uses: google-github-actions/deploy-appengine@main
+        with:
           project_id: ${{ secrets.PROJECT_ID }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-          promote: true         
+          working_directory: dist/apoms
+          deliverables: dist/app.yaml
