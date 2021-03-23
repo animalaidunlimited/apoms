@@ -82,6 +82,16 @@ describe('EmergencyDetailsComponent', () => {
         expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(false);
     });
 
+    it('Valid form - Emergency code', () => {
+        component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
+
+        component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
+
+        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
+
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(true);
+    });
+
     it('Set Initial Time Works', () => {
 
         const testTime = new Date();
