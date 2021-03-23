@@ -55,7 +55,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'census',
         loadChildren: () =>
-            import('./modules/census/census-page.module')
+            import('./modules/Census/census-page.module')
             .then(m => m.CensusPageModule),
     },
     {
@@ -127,7 +127,6 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
-
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
@@ -149,7 +148,7 @@ export class NavRouteService {
             this.navRoute = routes;
         }
 
-        if(!this.navRoute?.children){
+        if(!this.navRoute.children){
             throw new Error ('No routes detected');
         }
         this.navRoute.children?.forEach(routeVal=> {
@@ -166,7 +165,12 @@ export class NavRouteService {
         
 
 
-        this.navRoutes = this.navRoute?.children.filter(route => route.data && route.data.title)
+
+        
+    }
+
+    private newMethod() {
+        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
                 // console.log(route);
