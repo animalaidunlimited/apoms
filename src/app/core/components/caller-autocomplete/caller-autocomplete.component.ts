@@ -37,8 +37,6 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
 
     this.callerNumber = this.callerForm.get('callerNumber');
 
-
-
     this.callerAutoComplete$ = this.callerNumber?.valueChanges.pipe(
         startWith(''),
         // delay emits
