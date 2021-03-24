@@ -58,14 +58,13 @@ jobs:
         run: npm run app-config:ci
         
       - name: Echo deploy script version
-        run: echo V1.0 === ${{ secrets.DUMMY_SECRET }}
+        run: echo V1.1 === ${{ secrets.DUMMY_SECRET }}
         
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: ${{ secrets.GCP_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Use gcloud CLI
         run: gcloud info
