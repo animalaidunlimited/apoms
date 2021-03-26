@@ -42,22 +42,22 @@ jobs:
       - name: Build
         run: npm run build:ci
         env:
-          API_URL:                   ${{ secrets.API_URL }}
-          FIREBASE_API_KEY:          ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_AUTH_DOMAIN:      ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          FIREBASE_DATABASE_URL:     ${{ secrets.FIREBASE_DATABASE_URL }}
-          PROJECT_ID:                ${{ secrets.PROJECT_ID }}
-          STORAGE_BUCKET:            ${{ secrets.STORAGE_BUCKET }}
-          FIREBASE_SENDER_ID:        ${{ secrets.FIREBASE_SENDER_ID }}
-          FIREBASE_APP_ID:           ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_MEASUREMENT_ID:   ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-          ANGULAR_FIRE_EMAIL:        ${{ secrets.ANGULAR_FIRE_EMAIL }}
-          ANGULAR_FIRE_PASSWORD:     ${{ secrets.ANGULAR_FIRE_PASSWORD }}
+          API_URL: ${{ secrets.API_URL }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          FIREBASE_SENDER_ID: ${{ secrets.FIREBASE_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+          ANGULAR_FIRE_EMAIL: ${{ secrets.ANGULAR_FIRE_EMAIL }}
+          ANGULAR_FIRE_PASSWORD: ${{ secrets.ANGULAR_FIRE_PASSWORD }}
 
       - name: Configure app.yaml
         run: npm run app-config:ci
         env:
-          DEPLOYMENT_ENVIRONMENT:    ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
         
       - name: Deploy
         uses: google-github-actions/deploy-appengine@main
