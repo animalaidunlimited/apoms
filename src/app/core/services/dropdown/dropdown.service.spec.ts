@@ -6,6 +6,7 @@ import {
     HttpClientTestingModule,
     HttpTestingController,
 } from '@angular/common/http/testing';
+import { AnimalType } from '../../models/animal-type';
 
 describe('DropdownService', () => {
     let injector: TestBed;
@@ -221,7 +222,8 @@ describe('DropdownService', () => {
     });
 
     it('getAnimalTypes() should return data', () => {
-        const animalTypes = [{ AnimalTypeId: 1, AnimalType: 'Cat' }];
+
+        const animalTypes:AnimalType[] = [{ AnimalTypeId: 1, AnimalType: 'Cat', Sort: 10 }];
 
         service.getAnimalTypes().subscribe(res => {
             expect(res).toEqual(animalTypes);

@@ -2,24 +2,43 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
 import { NavRoute } from '../../../nav-routing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BehaviorSubject } from 'rxjs';
+import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
+import { UserActionService } from '../user-details/user-action.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 describe('NavigationService', () => {
     let service: NavigationService;
+    let http: HttpClient;
 
     const mockNavRouteItems: NavRoute[] = [
-        { path: 'somePath', data: { title: 'someTitle' } },
+        { path: 'somePath', data: { title: 'someTitle' , permissionId:[2,4,6,8,10,12], componentPermissionLevel: 'someVal' } },
         { path: 'somePath2' },
         { path: 'somePath3' },
     ];
+
+    const userService = new UserActionService(http)
+    const permService = new EvaluatePermissionService(userService)
     const mockNavRouteService = {
         navRoute: {},
-        navRoutes: [],
+        navRoutes: new BehaviorSubject<NavRoute[]>([]),
         router: null,
-        getNavRoutes: () => mockNavRouteItems
+        getNavRoutes: () => mockNavRouteItems,
+        userPermissionArray: [],
+        permission: true,
+        userPermissions: [],
+        permissionService: permService
+,
+        showNavRoutes:()=> {}
+
+
+        
     };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [ RouterTestingModule ],
             providers: [
                 {
                     provide: NavigationService,

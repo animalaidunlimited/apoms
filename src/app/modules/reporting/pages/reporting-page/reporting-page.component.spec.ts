@@ -4,6 +4,8 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MaterialModule } from 'src/app/material-module';
 import { TreatmentListComponent } from '../../components/treatment-list/treatment-list.component';
 
 import { ReportingPageComponent } from './reporting-page.component';
@@ -21,13 +23,15 @@ describe('ReportingPageComponent', () => {
 
     let dialog: MatDialogRef<TreatmentListComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
                 MatDialogModule,
                 FormsModule,
+                MaterialModule,
                 ReactiveFormsModule,
+                RouterTestingModule,
                 OverlayModule,
                 BrowserAnimationsModule
             ],
@@ -44,7 +48,7 @@ describe('ReportingPageComponent', () => {
             ],
             declarations: [ReportingPageComponent],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
 

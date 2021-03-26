@@ -272,7 +272,13 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
-        console.log(this.hasWritePermission);
+        console.log(this.recordForm.value);
+
+        this.loading = true;
+        if (this.recordForm.pending) {
+            // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+            // So mark it as error so the user knows to recheck it
+            this.recordForm.updateValueAndValidity();
 
         if(this.hasWritePermission) {
             this.loading = true;
@@ -386,9 +392,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     }
 
-    emergencyNumberUpdated(emergencyNumber: any) {
+    // emergencyNumberUpdated(emergencyNumber: any) {
 
-        this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
+    //     this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
 
 }

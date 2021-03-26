@@ -13,7 +13,7 @@ describe('NavGuard', () => {
                         path: sideNavPath,
                         children: [],
                     },
-                ]),
+                ])
             ],
             providers: [NavGuard],
         });

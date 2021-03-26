@@ -4,7 +4,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@animalaidunlimited/ngx-gallery-aau';
 import { Subject, timer } from 'rxjs';
 import { finalize, take, takeUntil } from 'rxjs/operators';
-import { MediaPasteService } from '../../services/media-paste/media-paste.service';
+import { MediaPasteService } from '../../services/navigation/media-paste/media-paste.service';
 
 
 interface IncomingData {

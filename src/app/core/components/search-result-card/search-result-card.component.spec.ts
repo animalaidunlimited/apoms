@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CallerDetails } from '../../models/emergency-record';
+
 
 import { SearchResultCardComponent } from './search-result-card.component';
 
@@ -55,13 +57,18 @@ describe('SearchResultCardComponent', () => {
 
     dialog = TestBed.get(MatDialog);
 
+    const caller:CallerDetails = {
+      callerId: 0,
+      callerName: '',
+      callerNumber: '',
+      callerAlternativeNumber: ''
+    };
+
     component.record = {
       EmergencyCaseId: 0,
       EmergencyNumber: 0,
       CallDateTime: '',
-      CallerId: 0,
-      Name: '',
-      Number: '',
+      callerDetails: [caller],
       AnimalTypeId: 0,
       AnimalType: '',
       PatientId: 0,
@@ -74,6 +81,8 @@ describe('SearchResultCardComponent', () => {
       Latitude: 0,
       Longitude: 0,
       CurrentLocation: ''};
+
+    component.record = component.record;
 
     fixture.detectChanges();
   });

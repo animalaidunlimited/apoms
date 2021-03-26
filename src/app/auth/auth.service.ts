@@ -21,7 +21,7 @@ export class AuthService extends APIService {
     endpoint = 'Auth';
     token: string;
     response!: Response;
-    redirectUrl!: string;
+    redirectUrl: string | null = null;
     socketEndPoint!: string;
 
     constructor(
@@ -40,6 +40,7 @@ export class AuthService extends APIService {
                 username,
                 password,
             })) as Response;
+
             this.token = this.response.token || '';
 
             if (!this.response.success) {
@@ -63,7 +64,8 @@ export class AuthService extends APIService {
                     'When using mockLogin, login with credentials: \nemail: user\npassword:user',
                 );
             }
-            this.token = 'user';
+            this.token = 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImppbSIsImV4cGlyZXMiOjI2MDkzMTE5MTQzOTR9.dJ7j8Fr6NHMzchI3FbljUcWCZCczFaRj2Tdh6SfnlKA';
+
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
         } catch (e) {

@@ -4,11 +4,17 @@ import { CaseService } from './case.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Overlay } from '@angular/cdk/overlay';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 describe('CaseService', () => {
+
+    let snackbarService: SnackbarService;
+
     beforeEach(() =>
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
                 CaseService,
                 MatSnackBar,
@@ -19,6 +25,11 @@ describe('CaseService', () => {
 
     it('should be created', () => {
         const service: CaseService = TestBed.get(CaseService);
+        snackbarService = TestBed.inject(SnackbarService);
+
+
+
+
         expect(service).toBeTruthy();
     });
 });

@@ -34,7 +34,8 @@ export class SearchResultCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.callerObject = JSON.parse(this.record.callerDetails);
+
+    this.callerObject = this.record.callerDetails;
 
     this.printService.initialisePrintTemplates();
   }

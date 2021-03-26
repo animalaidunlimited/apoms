@@ -24,11 +24,9 @@ export class EmergencyRegisterPageComponent implements OnInit {
         private printService: PrintTemplateService
         ) {
 
-
             this.message = this.messagingService.currentMessage;
 
             window.addEventListener('beforeunload', () => {
-
                 this.messagingService.unsubscribe();
              });
 
