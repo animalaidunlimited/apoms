@@ -57,9 +57,6 @@ jobs:
       - name: Configure app.yaml
         run: npm run app-config:ci
         
-      - name: Echo secrets.GCP_SA_KEY
-        run: echo ${{ secrets.GCP_SA_KEY }}
-        
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
