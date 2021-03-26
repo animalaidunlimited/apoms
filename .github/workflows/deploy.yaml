@@ -57,6 +57,13 @@ jobs:
       - name: Configure app.yaml
         run: npm run app-config:ci
         
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+        with:
+          args: gcloud auth login    
+        
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
