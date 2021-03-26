@@ -17,9 +17,8 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+
     environment: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
-
-
 
     steps:
 
