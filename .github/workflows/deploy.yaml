@@ -60,7 +60,7 @@ jobs:
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
-          project_id: streettreat
+          project_id: ${{ secrets.PROJECT_ID }}
           credentials: ${{ secrets.GCP_SA_KEY }}
           deliverables: dist/app.yaml
           promote: true
