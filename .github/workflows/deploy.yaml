@@ -14,7 +14,7 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    environment: develop
+    environment: ${{ secrets.ENVIRONMENT }}
 
     steps:
       - uses: actions/checkout@v2
