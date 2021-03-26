@@ -3,12 +3,12 @@ const { writeFile, existsSync, mkdirSync } = require('fs');
 
 const colors = require('colors');
 
-console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${process.env.DEPLOYMENT_ENVIRONMENT}`));
+console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to $DEPLOYMENT_ENVIRONMENT`));
 const appYamlPath = 'dist/app.yaml';
 
 
 
-const appYamlFile =`service: ${process.env.DEPLOYMENT_ENVIRONMENT}
+const appYamlFile =`service: $DEPLOYMENT_ENVIRONMENT
 runtime: nodejs12
 env: standard
 
