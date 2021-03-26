@@ -57,14 +57,7 @@ jobs:
       - name: Configure app.yaml
         run: npm run app-config:ci
         
-      - uses: actions-hub/gcloud@master
-        env:
-          PROJECT_ID: streetreat
-          APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-        with:
-          args: gcloud auth login    
-        
-      - id: Deploy
+      - name: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
           project_id: ${{ secrets.PROJECT_ID }}
