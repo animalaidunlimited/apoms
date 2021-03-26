@@ -56,6 +56,8 @@ jobs:
 
       - name: Configure app.yaml
         run: npm run app-config:ci
+        env:
+          DEPLOYMENT_ENVIRONMENT:    ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
         
       - name: Deploy
         uses: google-github-actions/deploy-appengine@main
