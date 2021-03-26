@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
-import { Validators, AbstractControl } from '@angular/forms';
+import { Validators, AbstractControl, FormGroup } from '@angular/forms';
 import { startWith, debounceTime, switchMap, map, catchError, takeUntil } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -17,14 +17,14 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   @Input() callerIndex!: number;
-  @Input() callerForm!: any;
+  @Input() incomingCallerForm!: AbstractControl;
 
   @Output() isPrimary: EventEmitter<number> = new EventEmitter();
   @Output() callerDeleted: EventEmitter<number> = new EventEmitter();
 
   @ViewChild('callerNumberRef') callerNumberRef!:ElementRef;
 
-
+  callerForm!: FormGroup;
   callerNumber!: AbstractControl | null;
   callerAutoComplete$!: Observable<any> | undefined;
   errorMatcher = new CrossFieldErrorMatcher();
@@ -32,6 +32,8 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
   constructor(private callerService: CallerDetailsService) { }
 
   ngOnInit(): void {
+
+    this.callerForm = this.incomingCallerForm as FormGroup;
 
     this.callerNumber = this.callerForm.get('callerNumber');
 
@@ -70,8 +72,8 @@ export class CallerAutocompleteComponent implements OnInit, OnDestroy {
 }
 
 updateValidators() {
-    const callerName = this.callerForm.get('callerDetails.callerName');
-    const callerNumber = this.callerForm.get('callerDetails.callerNumber');
+    const callerName = this.callerForm.get('callerName');
+    const callerNumber = this.callerForm.get('callerNumber');
 
     if (
         (callerName?.value || callerNumber?.value) &&

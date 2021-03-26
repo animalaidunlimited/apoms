@@ -39,26 +39,7 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                },
-                {
-                  "replace": "src/index.html",
-                  "with": "src/index.prod.html"
-                }
-
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
               "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -71,8 +52,49 @@
                   "maximumError": "16kb"
                 }
               ],
+              "buildOptimizer": true,
+              "extractCss": true,
+              "extractLicenses": true,
+              "index": {
+                "input": "src/index.prod.html",
+                "output": "index.html"
+              },
+              "namedChunks": false,
+              "ngswConfigPath": "ngsw-config.json",
+              "optimization": true,
+              "outputHashing": "all",
               "serviceWorker": true,
-              "ngswConfigPath": "ngsw-config.json"
+              "sourceMap": false,
+              "vendorChunk": false
+            },
+            "stage": {
+              "aot": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "12.1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "16kb"
+                }
+              ],
+              "buildOptimizer": true,
+              "extractCss": true,
+              "extractLicenses": true,
+              "index": {
+                "input": "src/index.stage.html",
+                "output": "index.html"
+              },
+              "namedChunks": false,
+              "ngswConfigPath": "ngsw-config.json",
+              "optimization": true,
+              "outputHashing": "all",
+              "serviceWorker": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           }
         },

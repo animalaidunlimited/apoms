@@ -9,32 +9,36 @@ import { NavigationService, Page } from '../../../services/navigation/navigation
     styleUrls: ['./nav-toolbar.component.scss'],
 })
 export class NavToolbarComponent implements OnInit {
-    mobile:boolean = false;
+
     @Input() activePage!: Page;
     @Input() previousUrl!: string[];
+
     @Output() toggleSideNav = new EventEmitter();
     @Output() logout = new EventEmitter();
 
-    constructor(private navigationService: NavigationService,private router: Router) {}
+    mobile = false;
+
+    constructor(private navigationService: NavigationService, private router: Router) {}
 
     ngOnInit() {
-        this.checkUrl()
+
+        this.checkUrl();
+
         if (window.screen.width < 786) { // 768px portrait
-            this.router.events.pipe(filter((event:any) => event instanceof NavigationEnd)).subscribe((val) => {
-                this.checkUrl()
-            })
+            this.router.events
+                .pipe(filter((event:any) => event instanceof NavigationEnd))
+                .subscribe((val) => {
+                    this.checkUrl();
+                });
         }
     }
+
     checkUrl(){
-        const urlParams = this.router.url.substring(this.router.url.lastIndexOf("/")+1,this.router.url.length);
-        if(urlParams === 'hospital-manager' || urlParams === 'emergency-register')
-        {   
-            this.mobile = true; 
-        }
-        else
-        {
-            this.mobile = false; 
-        }
+
+        const urlParams = this.router.url.substring(this.router.url.lastIndexOf('/') + 1, this.router.url.length);
+
+        this.mobile = urlParams === 'hospital-manager' || urlParams === 'emergency-register';
+
     }
 
     public onToggleSideNav() {
@@ -44,6 +48,7 @@ export class NavToolbarComponent implements OnInit {
     public onLogout() {
         this.logout.emit();
     }
+
     onSetSearchFocus(){
         this.navigationService.isSearchClicked.next(true);
     }

@@ -1,4 +1,4 @@
-import {  map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';

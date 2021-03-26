@@ -54,7 +54,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
         this.recordForm.addControl(
             'callerDetails',
             this.fb.group({
-                callerArray: this.fb.array([this.getCallerFormGroup()])
+                callerArray: this.fb.array([this.callerService.getCallerFormGroup()])
             })
         );
 
@@ -72,7 +72,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             if(empty && this.callerArray.pristine && callers.length >= 1){
                 // We've reset, so empty the array and repopulate, and make sure we set the primary again
                 this.callerArray.clear();
-                this.callerArray.push(this.getCallerFormGroup());
+                this.callerArray.push(this.callerService.getCallerFormGroup());
                 this.callerArray.at(0).get('primaryCaller')?.setValue(true);
             }
 
@@ -86,7 +86,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((caller: Callers) => {
                 for(let i=0 ; i< caller.length - 1 ; i++) {
-                    this.callerArray.push(this.getCallerFormGroup());
+                    this.callerArray.push(this.callerService.getCallerFormGroup());
                 }
                 this.callerArray.patchValue(caller);
             });
@@ -98,29 +98,10 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     }
 
 
-    getCallerFormGroup(): FormGroup {
-        return this.fb.group({
-            callerId: [],
-            callerName: ['', Validators.required],
-            callerNumber: [
-                '',
-                [
-                    Validators.required,
-                    Validators.pattern(
-                        '^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$',
-                    ),
-                ],
-            ],
-            callerAlternativeNumber: [
-                '',
-                Validators.pattern('^[+]?[\\d\\s](?!.* {2})[ \\d]{2,15}$'),
-            ],
-            primaryCaller: []
-        });
-    }
+
 
     addCaller(event: Event) {
-        this.callerArray.push(this.getCallerFormGroup());
+        this.callerArray.push(this.callerService.getCallerFormGroup());
     }
 
     removeCaller(callerIndex: number) {

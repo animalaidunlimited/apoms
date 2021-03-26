@@ -40,8 +40,9 @@ export class AssignReleaseComponent implements OnInit {
       Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
-      pickupDate: [],
+      pickupDate: []
     });
+
     this.recordForm.patchValue(this.formData);
 
   }

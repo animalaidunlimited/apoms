@@ -18,61 +18,25 @@ import { TeamDetailsService } from './team-details.service';
 
 describe('TeamDetailsService', () => {
     let service: TeamDetailsService;
-    let snackbar: SnackbarService;
-    let component: TeamsPageComponent;
-    let fixture: ComponentFixture<TeamsPageComponent>;
 
     const mockDialogRef = {
         open: jasmine.createSpy('open'),
         close: jasmine.createSpy('close')
       };
 
-    let dialog: MatDialogRef<MockConfirmationDialogComponent>;
 
     const dialogData = {};
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                MatDialogModule,
-                FormsModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                OverlayModule
-            ],
-            declarations: [TeamsPageComponent],
-            providers: [MatSnackBar,
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: dialogData },
-                  {
-                  provide: MatDialogRef,
-                  useValue: mockDialogRef
-                }]
+            imports: [ HttpClientTestingModule ],
+            providers: [TeamDetailsService]
         });
     });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-        service = TestBed.inject(TeamDetailsService);
-        fixture = TestBed.createComponent(TeamsPageComponent);
-        component = fixture.componentInstance;
-
-        dialog = TestBed.get(MatDialog);
-
-        fixture.detectChanges();
-    }));
-    afterEach(function(done) {
-        component.teamDetails.reset();
-    });
     it('should be created', () => {
+        service = TestBed.inject(TeamDetailsService);
         expect(service).toBeTruthy();
     });
-    it('Invalid form - team name is required', () => {
-        component.teamDetails.get('TeamName')?.setValue(null);
-        expect(component.teamDetails.valid).toBe(false);
-    });
-    it('Invalid form - Capacity is required', () => {
-        component.teamDetails.get('Capacity')?.setValue(null);
-        expect(component.teamDetails.valid).toBe(false);
-    });
+
 });
