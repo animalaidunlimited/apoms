@@ -3,7 +3,7 @@ const { writeFile, existsSync, mkdirSync } = require('fs');
 
 const colors = require('colors');
 
-console.log(colors.magenta('Adding the current deployment environment, i.e. the service'));
+console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${process.env.DEPLOYMENT_ENVIRONMENT}`));
 const appYamlPath = 'dist/app.yaml';
 
 
