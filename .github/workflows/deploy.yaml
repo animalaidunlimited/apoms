@@ -2,8 +2,9 @@
 
 name: Deploy
 on:
-  pull_request:
-    types: closed
+  push:
+  #pull_request:
+  #types: closed
     branches:
       - develop
       - master
@@ -58,7 +59,7 @@ jobs:
         run: npm run app-config:ci
         env:
           DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
-        
+
       - name: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
