@@ -17,6 +17,14 @@ else{
   console.log('other');
 }
 
+if(process.env.DEPLOYMENT_ENVIRONMENT?.includes('streettreat'))
+{
+  console.log("st yes");
+}
+else{
+  console.log('st no');
+}
+
 console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${environment}`));
 const appYamlPath = 'dist/app.yaml';
 
