@@ -16,22 +16,13 @@ env:
 
 jobs:
 
-  configure:
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Check environment
-        run: echo branch name ${GITHUB_REF#refs/heads/}
-
-
   deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
 
-    environment: $DEPLOY_ENV
+    environment: ${{env.DEPLOY_ENV}}
 
     steps:
 
