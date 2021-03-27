@@ -22,7 +22,7 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    environment: ${{ env.DEPLOY_ENV }}
+    environment: ${{ DEPLOY_ENV }}
 
     steps:
 
