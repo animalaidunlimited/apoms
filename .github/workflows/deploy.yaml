@@ -22,14 +22,14 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    environment: ${{env.DEPLOY_ENV}}
+    environment: ${{ env.DEPLOY_ENV }}
 
     steps:
 
       - uses: actions/checkout@v2
 
       - name: Check env
-        run: "echo $GITHUB_REF"
+        run: echo ${{ env.DEPLOY_ENV }}
 
       - name: Cache node modules
         uses: actions/cache@v1
