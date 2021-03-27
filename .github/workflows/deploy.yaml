@@ -11,8 +11,7 @@ on:
 
   workflow_dispatch:
 
-env:
-  DEPLOY_ENV: ${GITHUB_REF#refs/heads/}
+
 
 jobs:
 
@@ -22,7 +21,10 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    environment: ${{ DEPLOY_ENV }}
+    env:
+      DEPLOY_ENV: ${GITHUB_REF#refs/heads/}
+
+    environment: ${{ env.DEPLOY_ENV }}
 
     steps:
 
