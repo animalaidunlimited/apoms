@@ -5,9 +5,9 @@ const colors = require('colors');
 
 require('dotenv').load();
 
-const environment = JSON.stringify(process.env.DEPLOYMENT_ENVIRONMENT || 'other');
+const environment = env.DEPLOYMENT_ENVIRONMENT || 'other';
 
-console.log(process.env.DEPLOYMENT_ENVIRONMENT?.trim().length);
+console.log(env.DEPLOYMENT_ENVIRONMENT?.trim().length);
 
 console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${environment}`));
 const appYamlPath = 'dist/app.yaml';
