@@ -64,6 +64,7 @@ jobs:
         run: npm run app-config:ci
         env:
           DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          PROJECT: ${{ secrets.PROJECT_ID }}
 
       - name: Deploy
         uses: google-github-actions/deploy-appengine@main
