@@ -13,6 +13,15 @@ on:
 
 jobs:
 
+  configure:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check environment
+        run: echo branch name ${GITHUB_REF#refs/heads/}
+
+
   deploy:
     runs-on: ubuntu-latest
     strategy:
