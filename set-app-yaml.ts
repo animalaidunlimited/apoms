@@ -7,28 +7,8 @@ require('dotenv').load();
 
 const environment = process.env.DEPLOYMENT_ENVIRONMENT || 'other';
 
-console.log(process.env.DEPLOYMENT_ENVIRONMENT?.trim().length);
-
-if(process.env.DEPLOYMENT_ENVIRONMENT?.includes('staging'))
-{
-  console.log("Staging");
-}
-else{
-  console.log('other');
-}
-
-if(process.env.PROJECT_ID?.includes('streettreat'))
-{
-  console.log("st yes");
-}
-else{
-  console.log('st no');
-}
-
 console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${environment}`));
 const appYamlPath = 'dist/app.yaml';
-
-
 
 const appYamlFile =`service: ${environment}
 runtime: nodejs12
