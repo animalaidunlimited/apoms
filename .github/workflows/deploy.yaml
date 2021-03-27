@@ -20,7 +20,7 @@ jobs:
         node-version: [12.x]
     if: ${{ github.ref == 'refs/heads/develop' }}
 
-    environment: ${{ GITHUB_REF#refs/heads/ }}
+    environment: ${{ github.ref#refs/heads/ }}
 
     steps:
 
