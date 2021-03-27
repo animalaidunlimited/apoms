@@ -11,78 +11,78 @@ on:
 
   workflow_dispatch:
 
-  env:
-    DEPLOY_ENV: ${GITHUB_REF#refs/heads/}
+env:
+  DEPLOY_ENV: ${GITHUB_REF#refs/heads/}
 
-  jobs:
+jobs:
 
-    configure:
-      runs-on: ubuntu-latest
+  configure:
+    runs-on: ubuntu-latest
 
-      steps:
+    steps:
 
-        - name: Check environment
-          run: echo branch name ${GITHUB_REF#refs/heads/}
+      - name: Check environment
+        run: echo branch name ${GITHUB_REF#refs/heads/}
 
 
-    deploy:
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          node-version: [12.x]
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
 
-      environment: $DEPLOY_ENV
+    environment: $DEPLOY_ENV
 
-      steps:
+    steps:
 
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        - name: Check env
-          run: "echo $GITHUB_REF"
+      - name: Check env
+        run: "echo $GITHUB_REF"
 
-        - name: Cache node modules
-          uses: actions/cache@v1
-          with:
-            path: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-node-
-        - name: Node ${{ matrix.node-version }}
-          uses: actions/setup-node@v1
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Install dependencies
-          run: npm install
+      - name: Install dependencies
+        run: npm install
 
-        - name: Configure environments
-          run: npm run configure:ci
+      - name: Configure environments
+        run: npm run configure:ci
 
-        - name: Build
-          run: npm run build:ci
-          env:
-            API_URL: ${{ secrets.API_URL }}
-            FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-            FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-            FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-            PROJECT_ID: ${{ secrets.PROJECT_ID }}
-            STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-            FIREBASE_SENDER_ID: ${{ secrets.FIREBASE_SENDER_ID }}
-            FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-            FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-            ANGULAR_FIRE_EMAIL: ${{ secrets.ANGULAR_FIRE_EMAIL }}
-            ANGULAR_FIRE_PASSWORD: ${{ secrets.ANGULAR_FIRE_PASSWORD }}
+      - name: Build
+        run: npm run build:ci
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          FIREBASE_SENDER_ID: ${{ secrets.FIREBASE_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+          ANGULAR_FIRE_EMAIL: ${{ secrets.ANGULAR_FIRE_EMAIL }}
+          ANGULAR_FIRE_PASSWORD: ${{ secrets.ANGULAR_FIRE_PASSWORD }}
 
-        - name: Configure app.yaml
-          run: npm run app-config:ci
-          env:
-            DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
-            PROJECT: ${{ secrets.PROJECT_ID }}
+      - name: Configure app.yaml
+        run: npm run app-config:ci
+        env:
+          DEPLOYMENT_ENVIRONMENT: ${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          PROJECT: ${{ secrets.PROJECT_ID }}
 
-        - name: Deploy
-          uses: google-github-actions/deploy-appengine@main
-          with:
-            project_id: ${{ secrets.PROJECT_ID }}
-            credentials: ${{ secrets.GCP_SA_KEY }}
-            deliverables: dist/app.yaml
-            promote: false
+      - name: Deploy
+        uses: google-github-actions/deploy-appengine@main
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          credentials: ${{ secrets.GCP_SA_KEY }}
+          deliverables: dist/app.yaml
+          promote: false
