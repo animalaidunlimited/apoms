@@ -21,17 +21,14 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    env:
-      DEPLOY_ENV: ${GITHUB_REF#refs/heads/}
-
-    environment: ${{ env.DEPLOY_ENV }}
+    environment: ${GITHUB_REF#refs/heads/}
 
     steps:
 
       - uses: actions/checkout@v2
 
       - name: Check env
-        run: echo ${{ env.DEPLOY_ENV }}
+        run: echo ${GITHUB_REF#refs/heads/}
 
       - name: Cache node modules
         uses: actions/cache@v1
