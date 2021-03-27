@@ -17,7 +17,7 @@ else{
   console.log('other');
 }
 
-if(process.env.DEPLOYMENT_ENVIRONMENT?.includes('streettreat'))
+if(process.env.PROJECT_ID?.includes('streettreat'))
 {
   console.log("st yes");
 }
