@@ -2,12 +2,12 @@
 
 name: Deploy
 on:
+  push:
   #pull_request:
   #types: closed
-  push:
-  branches:
-    - develop
-    - master
+    branches:
+      - develop
+      - master
 
   workflow_dispatch:
 
