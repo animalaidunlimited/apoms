@@ -43,9 +43,6 @@ jobs:
 
       - name: Configure environments
         run: npm run configure:ci
-
-      - name: Build
-        run: npm run build:ci
         env:
           API_URL: ${{ secrets.API_URL }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -58,6 +55,10 @@ jobs:
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
           ANGULAR_FIRE_EMAIL: ${{ secrets.ANGULAR_FIRE_EMAIL }}
           ANGULAR_FIRE_PASSWORD: ${{ secrets.ANGULAR_FIRE_PASSWORD }}
+
+      - name: Build
+        run: npm run build:ci
+        env:
           NPM_CONFIG_ENVIRONMENT: ${{ secrets.NPM_CONFIG_ENVIRONMENT }}
 
       - name: Configure app.yaml
