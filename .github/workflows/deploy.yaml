@@ -19,7 +19,7 @@ jobs:
         node-version: [12.x]
     if: ${{ github.ref == 'refs/heads/develop' }}
 
-    environment: ${{github.event.pull_request.base.ref}}
+    environment: develop
 
     steps:
 
