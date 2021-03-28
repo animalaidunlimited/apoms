@@ -19,7 +19,7 @@ jobs:
         node-version: [12.x]
     if: ${{ github.ref == 'refs/heads/develop' }}
 
-    environment: develop
+    environment: ${{github.event.pull_request.base.ref}}
 
     steps:
 
@@ -134,4 +134,4 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           credentials: ${{ secrets.GCP_SA_KEY }}
           deliverables: dist/app.yaml
-          promote: false
+          promote: true
