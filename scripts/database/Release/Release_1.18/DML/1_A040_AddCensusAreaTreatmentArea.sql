@@ -1,0 +1,13 @@
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ ALTER TABLE AAU.CensusArea
+ADD COLUMN `TreatmentListMain` TINYINT AFTER SortArea;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;	
+
+UPDATE AAU.CensusArea SET TreatmentListMain = 1 WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation');

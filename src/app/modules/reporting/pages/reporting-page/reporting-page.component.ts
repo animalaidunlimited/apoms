@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CensusArea, PatientCountInArea } from 'src/app/core/models/census-details';
+import { PatientCountInArea } from 'src/app/core/models/census-details';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CensusService } from 'src/app/core/services/census/census.service';
@@ -15,7 +15,6 @@ import { EmergencyCaseDialogComponent } from '../../components/emergency-case-di
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { take } from 'rxjs/operators';
-import { TreatmentListComponent } from '../../components/treatment-list/treatment-list.component';
 
 
 @Component({
@@ -35,8 +34,6 @@ export class ReportingPageComponent implements OnInit {
         private surgeryService: SurgeryService,
         private reportingService : ReportingService) {}
 
-    censusAreas$! : Observable<CensusArea[]>;
-    censusArea! : FormGroup;
     errorMatcher = new CrossFieldErrorMatcher();
     patientCountData : PatientCountInArea[] | null = null;
     surgeries!: Observable<SurgeryRecord[]>;
@@ -47,7 +44,6 @@ export class ReportingPageComponent implements OnInit {
     totalPatientCount = 0;
     isAdmissionChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    showTreatmentList = false;
 
     ngOnInit() {
 
@@ -97,22 +93,6 @@ export class ReportingPageComponent implements OnInit {
         this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
 
         this.reportingDetails.get('emergencyCaseDate')?.setValue(getCurrentDateString());
-    }
-
-    getPatientDetailsByArea(area:string){
-
-        this.showTreatmentList = true;
-        this.currentAreaName = area;
-
-    //    this.dialog.open(TreatmentListComponent, {
-
-    //      width: '90%',
-    //      maxHeight: 'auto',
-    //      data: {
-    //        areaName : area
-    //      },
-    //  });
-
     }
 
     openSurgeryDetailsDialog(){

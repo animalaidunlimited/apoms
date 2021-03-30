@@ -1,0 +1,117 @@
+<div fxLayout="column" fxLayoutAlign="start center" >
+    <fieldset class="form-sub-group">
+
+      <mat-spinner *ngIf="showSpinner" style="margin:0 auto;"></mat-spinner>
+
+      <legend class="legend ">{{areaName}} - ({{patientRecords?.data?.length}})</legend>
+
+      <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
+
+      <button type="button" mat-raised-button color="primary" (click)="censusLayout()">Census layout</button>
+
+      <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
+
+
+        <mat-table matSort [dataSource]="patientRecords">
+
+        <!-- Index Column -->
+        <ng-container matColumnDef="index">
+          <mat-header-cell *matHeaderCellDef class="flex-100 start"> Count </mat-header-cell>
+          <mat-cell *matCellDef="let index = index" class="flex-100 start"> {{index + 1}} </mat-cell>
+        </ng-container>
+
+        <!--(click)="cellClicked(column.name, element[column.name])"-->
+
+
+
+        <ng-container [matColumnDef]="column.name" *ngFor="let column of columnsExcludingIndex | async">
+          <mat-header-cell
+            mat-sort-header *matHeaderCellDef
+            [class.flex-100]="column.name !== 'Treatment priority'"
+            [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
+            [class.flex-175]="column.name == 'Treatment priority'">
+            {{column.name}}
+          </mat-header-cell>
+
+          <mat-cell
+          [class.flex-100]="column.name !== 'Treatment priority'"
+          [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
+          [class.flex-175]="column.name == 'Treatment priority'"
+          *matCellDef="let element;" [class.link]="column.name === 'Tag number'">
+
+          <div *ngIf="column.type === 'text'">
+            {{element[column.name]}}
+          </div>
+
+          <div *ngIf="column.type === 'select'" class="flex-175 start">
+            <mat-select [value]="element[column.name]"
+            (selectionChange)="priorityChanged(element, $event)">
+                <mat-option>N/A</mat-option>
+                <mat-option [value]="2">High</mat-option>
+                <mat-option [value]="3">Medium</mat-option>
+                <mat-option [value]="4">Low</mat-option>
+            </mat-select>
+          </div>
+
+          <div *ngIf="column.type === 'button'">
+
+            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
+            (click)="quickUpdate(element.PatientId, element['Tag number'])">
+                <mat-icon>event</mat-icon>
+            </button>
+
+          </div>
+
+          <div *ngIf="column.type === 'checkbox'">
+            <mat-checkbox></mat-checkbox>
+          </div>
+
+        </mat-cell>
+
+        </ng-container>
+
+        <ng-container matColumnDef="Other">
+          <mat-header-cell *matHeaderCellDef class="flex-175 start"> Other </mat-header-cell>
+
+          <mat-cell *matCellDef="let row" class="flex-175 start">
+            <mat-select (selectionChange)="priorityChanged(row, $event)">
+              <mat-option>N/A</mat-option>
+              <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
+            </mat-select>
+          </mat-cell>
+
+        </ng-container>
+
+        <ng-container matColumnDef="complete">
+          <mat-header-cell *matHeaderCellDef> Treated </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-chip-list>
+            <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
+              <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+          </mat-cell>
+        </ng-container>
+
+
+
+        <ng-container matColumnDef="detail-group">
+          <mat-header-cell *matHeaderCellDef fxFlex="415px"></mat-header-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="moved-out-to-group">
+          <mat-header-cell *matHeaderCellDef fxFlex="fill"> Moved out to </mat-header-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="['detail-group', 'moved-out-to-group']"></mat-header-row>
+        <mat-header-row *matHeaderRowDef="displayedColumns | async"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: (displayedColumns | async);">
+
+        </mat-row>
+      </mat-table>
+
+
+    </fieldset>
+
+  </div>

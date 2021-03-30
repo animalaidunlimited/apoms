@@ -25,6 +25,7 @@ import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
+import { TreatmentListArea } from '../../models/treatment';
 
 
 
@@ -71,6 +72,7 @@ export class DropdownService extends APIService {
 	priority$!:Observable<Priority[]>;
     releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
+    treatmentListAreas$!:Observable<TreatmentListArea[]>;
     yesNo$!:any[];
 
 
@@ -643,6 +645,7 @@ export class DropdownService extends APIService {
 	  }
 	  return this.visitTypes$;
   }
+  
   getPriority(): Observable<Priority[]>{
 	  const request = '/GetPriority';
 	  if(!this.priority$){
@@ -685,5 +688,20 @@ export class DropdownService extends APIService {
     return this.streetTreatMainProblem$;
 
   }
+
+  getTreatmentListAreas(): Observable<TreatmentListArea[]> {
+    const request = '/GetCensusAreasForTreatmentList';
+
+    if(!this.treatmentListAreas$) {
+      this.treatmentListAreas$ = this.getObservable(request).pipe(
+          map((response: TreatmentListArea[])=>{
+              return response;
+          })
+      );
+  }
+
+  return this.treatmentListAreas$;
+
+}
 
 }
