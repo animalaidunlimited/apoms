@@ -1,0 +1,59 @@
+.mat-table{
+  min-width: 900px;
+}
+
+  @media print {
+    .isPrinting > * { display: none; }
+    .mat-dialog-container { display: none !important; }
+    .cdk_overlay_pane > * { display: none !important; }
+  }
+
+  .complete{
+    color: green;
+  }
+
+.is-hidden{
+  visibility: hidden;
+}
+
+:host ::ng-deep .mat-select-arrow {
+  border: none;
+}
+
+.header-center{
+  flex: 0 0 100px !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-100{
+  flex: 0 0 100px !important;
+}
+
+.flex-175{
+  flex: 0 0 175px !important;
+}
+
+.flex-center{
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-start{
+  align-items: start;
+  justify-content: center;
+}
+
+:host ::ng-deep .mat-checkbox-inner-container-no-side-margin {
+  margin-right: 15px !important;
+}
+
+.mat-spinner {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  right: 50%;
+  margin-left: 50%;
+  z-index: 5000;
+  margin: auto;
+}

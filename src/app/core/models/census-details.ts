@@ -22,6 +22,7 @@ export interface CensusPatient {
 export interface CensusArea {
     areaId:number;
     areaName : string;
+    sortArea?: number;
 }
 
 export interface ReportPatientRecord {
@@ -37,7 +38,8 @@ export interface ReportPatientRecord {
     'Release ready': boolean;
     'Release status': number | string;
     'Temperament': number | string;
-    'Treatment priority': number | string;
+    'Treatment priority': number;
+    showOther: boolean;
     treatedToday: boolean;
 }
 

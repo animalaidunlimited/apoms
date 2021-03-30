@@ -103,9 +103,9 @@ export class SettingsPageComponent implements OnInit {
         const value = event.value;
 
         const tagNumber = value.trim().toUpperCase().toString();
-        let guid = this.caseService.generateUUID();
+        const guid = this.caseService.generateUUID();
 
-        let tagExistBoolean = this.patientService.checkTagNumberExists(tagNumber,0,0);
+        const tagExistBoolean = this.patientService.checkTagNumberExists(tagNumber,0,0);
 
         tagExistBoolean.subscribe(val=> {
             if(val.success === 0) {
@@ -123,7 +123,7 @@ export class SettingsPageComponent implements OnInit {
                     });
 
                     if ((value || '').trim()) {
-                        this.dummyRecordTags.push({tagNumber: tagNumber});
+                        this.dummyRecordTags.push({tagNumber});
                     }
                 }
             

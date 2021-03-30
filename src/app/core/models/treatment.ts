@@ -1,3 +1,5 @@
+import { CensusArea } from './census-details';
+
 export interface TreatmentRecord{
     treatmentId: number;
     patientId: number;
@@ -12,4 +14,9 @@ export interface TreatmentRecord{
   export interface TreatmentResponse{
     success: number;
     treatmentId: number;
+  }
+
+  export interface TreatmentListArea{
+    TreatmentListMain: boolean;
+    AreaList: CensusArea[];
   }

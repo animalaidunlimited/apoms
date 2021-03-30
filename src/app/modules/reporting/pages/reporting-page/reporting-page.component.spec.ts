@@ -6,7 +6,7 @@ import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
-import { TreatmentListComponent } from '../../components/treatment-list/treatment-list.component';
+import { TreatmentListComponent } from '../../../treatment-list/components/treatment-list/treatment-list.component';
 
 import { ReportingPageComponent } from './reporting-page.component';
 

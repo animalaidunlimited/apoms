@@ -1,0 +1,35 @@
+<form [formGroup]="areas">
+
+    <div fxLayout="row-wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+        <div>
+            <mat-form-field >
+                <mat-label>Treatment area</mat-label>
+                <mat-select formControlName="area">
+                    <mat-option>N/A</mat-option>
+                    <mat-option [value]="area.areaName" *ngFor="let area of (censusAreas | async)">{{ area.areaName }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+
+        <mat-form-field >
+                <mat-label>Treatment date</mat-label>
+                <input type="date" formControlName="date" matInput>
+
+        </mat-form-field>
+
+
+        <div>
+
+        </div>
+
+
+    </div>
+
+
+
+</form>
+
+
+<app-treatment-list [areaName]="currentArea"></app-treatment-list>

@@ -17,8 +17,8 @@ export const navRoutes: NavRoute[] = [
         path: 'home',
         loadChildren: () =>
             import('./pages/home-page/home-page.module').then(
-                m => m.HomePageModule,
-            ),
+                m => m.HomePageModule
+            )
     },
     {
         path: '',
@@ -33,7 +33,7 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import(
                 './modules/emergency-register/emergency-register-page.module')
-                .then(m => m.EmergencyRegisterPageModule),
+                .then(m => m.EmergencyRegisterPageModule)
     },
     {
         data: { title: 'Hospital Manager', permissionId: 4 },
@@ -43,7 +43,16 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import(
                 './modules/hospital-manager/hospital-manager-page.module')
-                .then(m => m.HospitalManagerPageModule),
+                .then(m => m.HospitalManagerPageModule)
+    },
+    {
+        data: {title: 'Treatment List'},
+        icon: 'none',
+        group: '',
+        path: 'treatment-list',
+        loadChildren: () =>
+            import('./modules/treatment-list/treatment-list-page.module').
+            then(m => m.TreatmentListPageModule)
     },
     {
         data: { title: 'Census' },
@@ -52,7 +61,7 @@ export const navRoutes: NavRoute[] = [
         path: 'census',
         loadChildren: () =>
             import('./modules/census/census-page.module')
-            .then(m => m.CensusPageModule),
+            .then(m => m.CensusPageModule)
     },
     {
         data: { title: 'Case List' },
@@ -62,7 +71,7 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import(
                 './modules/streettreat/streettreat-page.module')
-                .then(m => m.StreetTreatPageModule),
+                .then(m => m.StreetTreatPageModule)
     },
     {
         data: { title: 'Teams' },
@@ -71,7 +80,7 @@ export const navRoutes: NavRoute[] = [
         path: 'teams',
         loadChildren: () =>
             import('./modules/streettreat/pages/teams-page/teams-page.module')
-            .then(m => m.TeamsPageModule),
+            .then(m => m.TeamsPageModule)
     },
     {
         data: { title: 'Reporting' },
@@ -80,7 +89,7 @@ export const navRoutes: NavRoute[] = [
         path: 'reporting',
         loadChildren: () =>
             import('./modules/reporting/reporting-page.module')
-            .then(m => m.ReportingPageModule),
+            .then(m => m.ReportingPageModule)
     },
     {
         data: { title: 'Settings' },
@@ -89,7 +98,7 @@ export const navRoutes: NavRoute[] = [
         path: 'settings',
         loadChildren: () =>
             import('./pages/settings-page/settings-page.module')
-            .then(m => m.SettingsPageModule),
+            .then(m => m.SettingsPageModule)
     },
     {
         data: { title: 'User Admin' },
@@ -98,7 +107,7 @@ export const navRoutes: NavRoute[] = [
         path: 'users',
         loadChildren: () =>
             import('./pages/users-page/users-page.module')
-            .then(m => m.UsersPageModule),
+            .then(m => m.UsersPageModule)
     },
     {
         data: { title: 'Organisations' },
@@ -107,7 +116,7 @@ export const navRoutes: NavRoute[] = [
         path: 'organisations',
         loadChildren: () =>
             import('./pages/organisations-page/organisations-page.module')
-            .then(m => m.OrganisationsPageModule),
+            .then(m => m.OrganisationsPageModule)
     },
     {
         data: { title: 'Print templates' },
@@ -116,9 +125,10 @@ export const navRoutes: NavRoute[] = [
         path: 'print-templates',
         loadChildren: () =>
             import('./modules/print-templates/print-templates-page.module')
-            .then(m => m.PrintTemplatesPageModule),
-    },
-];
+            .then(m => m.PrintTemplatesPageModule)
+    }
+
+                ];
 
 @Injectable({
     providedIn: 'root',

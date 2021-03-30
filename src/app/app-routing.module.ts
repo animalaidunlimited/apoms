@@ -59,6 +59,13 @@ const routes: Routes = [
             ),
     },
     {
+        path: 'treatment-list',
+        loadChildren: () =>
+            import('./modules/treatment-list/treatment-list-page.module').then(
+                m => m.TreatmentListPageModule,
+            ),
+    },
+    {
         path: 'print',
         outlet: 'print',
         component: PrintWrapperComponent,
