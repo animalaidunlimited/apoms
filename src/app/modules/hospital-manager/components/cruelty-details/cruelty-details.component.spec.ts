@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -16,7 +11,7 @@ describe('CrueltyDetailsComponent', () => {
     let component: CrueltyDetailsComponent;
     let fixture: ComponentFixture<CrueltyDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

@@ -1,6 +1,6 @@
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,7 +15,7 @@ describe('CensusRecordComponent', () => {
   let component: CensusRecordComponent;
   let fixture: ComponentFixture<CensusRecordComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,

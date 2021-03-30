@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { EmergencyRecordComponent } from './emergency-record.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ describe('EmergencyRecordComponent', () => {
     let fixture: ComponentFixture<EmergencyRecordComponent>;
     const formBuilder: FormBuilder = new FormBuilder();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

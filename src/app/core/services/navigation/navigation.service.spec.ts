@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
 import { NavRoute } from '../../../nav-routing';
@@ -19,7 +19,7 @@ describe('NavigationService', () => {
         getNavRoutes: () => mockNavRouteItems
     };
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [ RouterTestingModule ],
             providers: [

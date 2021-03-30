@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { CallerDetailsComponent } from './caller-details.component';
 
@@ -20,7 +15,7 @@ describe('CallerDetailsComponent', () => {
     let component: CallerDetailsComponent;
     let fixture: ComponentFixture<CallerDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

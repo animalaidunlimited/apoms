@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { RecordSearchComponent } from './record-search.component';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
@@ -35,7 +30,7 @@ describe('RecordSearchComponent', () => {
 
     let dialog: MatDialogRef<PatientEditDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

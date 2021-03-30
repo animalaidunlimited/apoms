@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,7 +11,7 @@ describe('EmergencyCaseOutcomeComponent', () => {
 
     const formBuilder: FormBuilder = new FormBuilder();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

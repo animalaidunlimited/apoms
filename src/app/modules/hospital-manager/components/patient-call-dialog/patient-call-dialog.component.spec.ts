@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
@@ -26,7 +21,7 @@ describe('PatientCallDialogComponent', () => {
 
     let dialog: MatDialogRef<PatientCallDialogComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

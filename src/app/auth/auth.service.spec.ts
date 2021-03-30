@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
 import { StorageService } from '../core/services/storage/storage.service';
@@ -22,7 +22,7 @@ describe('AuthService', () => {
     let authService: AuthService;
     let storageService: StorageService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [

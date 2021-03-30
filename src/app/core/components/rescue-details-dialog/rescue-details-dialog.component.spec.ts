@@ -1,4 +1,4 @@
- import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
  import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -35,7 +35,7 @@
 
    let dialog: MatDialogRef<MockRescueDetailsComponent>;
 
-   beforeEach(async(() => {
+   beforeEach(waitForAsync(() => {
      TestBed.configureTestingModule({
        imports: [MatDialogModule,
         FormsModule, ReactiveFormsModule, HttpClientTestingModule,

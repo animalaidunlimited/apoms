@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { TagNumberDialog } from './tag-number-dialog.component';
 
@@ -30,7 +25,7 @@ describe('TagNumberDialog', () => {
 
     let dialog: MatDialogRef<TagNumberDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
