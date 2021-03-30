@@ -389,7 +389,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
 		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
 
-		// tslint:disable-next-line:prefer-for-of
+		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let i = 0; i < this.visitsArray?.controls.length; i++) {
 			this.visitsArray.removeAt(i);
 		}

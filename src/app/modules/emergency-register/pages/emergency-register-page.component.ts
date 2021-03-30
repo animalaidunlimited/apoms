@@ -7,7 +7,7 @@ import { OutstandingCaseService } from '../services/outstanding-case.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'emergency-register-page',
     templateUrl: './emergency-register-page.component.html',
     styleUrls: ['./emergency-register-page.component.scss'],

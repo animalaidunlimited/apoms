@@ -156,10 +156,10 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
           patient['ABC status'] = ABCStatus[patientObject['ABC status']];
           patient['Release status'] = ReleaseStatus[patientObject['Release status']];
-          // tslint:disable-next-line:no-string-literal
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           patient['Temperament'] = Temperament[patientObject['Temperament']];
           // patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
-          // tslint:disable-next-line:no-string-literal
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           patient['Age'] = Age[patientObject['Age']];
 
           return patient;

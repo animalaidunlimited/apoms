@@ -112,17 +112,17 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   setRequired(name: string) {
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name]?.setValidators(Validators.required);
 
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name].updateValueAndValidity();
   }
 
   setNotRequired(name: string) {
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name].clearValidators();
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name].updateValueAndValidity();
   }
 

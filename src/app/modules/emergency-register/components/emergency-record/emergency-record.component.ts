@@ -13,7 +13,7 @@ import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'emergency-record',
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],

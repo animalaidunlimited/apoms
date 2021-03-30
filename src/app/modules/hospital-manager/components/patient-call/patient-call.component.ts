@@ -16,7 +16,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { take } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'patient-call',
     templateUrl: './patient-call.component.html',
     styleUrls: ['./patient-call.component.scss'],

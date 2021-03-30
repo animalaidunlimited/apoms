@@ -40,7 +40,7 @@ export interface FilterKeys {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
   styleUrls: ['./outstanding-case-board.component.scss'],

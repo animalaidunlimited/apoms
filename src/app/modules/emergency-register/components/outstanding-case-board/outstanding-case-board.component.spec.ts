@@ -20,7 +20,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ChipListType } from '../../pipes/chip-list-type';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'rescue-details',
     template: '<p>Mock Rescue Details Component</p>',
 })

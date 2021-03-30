@@ -20,7 +20,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'animal-selection',
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
@@ -326,7 +326,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             currentAnimal === chip.value
                 ? (chip.toggleSelected(),
                   (this.currentPatientChip = chip.value))
-                // tslint:disable-next-line: no-unused-expression
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 : chip.deselect;
         });
 
@@ -336,7 +336,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             this.problemChips.chips.forEach(chip => {
                 problem.get('problem')?.value === chip.value
                     ? chip.toggleSelected()
-                    // tslint:disable-next-line: no-unused-expression
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     : chip.deselect;
             });
         });

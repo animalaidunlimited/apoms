@@ -16,7 +16,7 @@ import { LogsComponent } from '../logs/logs.component';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'emergency-details',
     templateUrl: './emergency-details.component.html',
     styleUrls: ['./emergency-details.component.scss'],
