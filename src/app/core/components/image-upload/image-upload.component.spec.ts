@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ImageUploadDialog } from './image-upload.component';
 import {
@@ -17,7 +17,7 @@ describe('ImageUploadDialog', () => {
 
     let dialog: MatDialogRef<ImageUploadDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [MatDialogModule],
             providers: [

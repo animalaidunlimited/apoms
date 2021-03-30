@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RecordSearchModule } from 'src/app/core/components/record-search/record-search.module';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -14,7 +14,7 @@ describe('HospitalManagerTabBarComponent', () => {
     let component: HospitalManagerTabBarComponent;
     let fixture: ComponentFixture<HospitalManagerTabBarComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule.withRoutes([{

@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { PatientStatusComponent } from './patient-status.component';
 
@@ -24,7 +19,7 @@ describe('PatientStatusComponent', () => {
     let component: PatientStatusComponent;
     let fixture: ComponentFixture<PatientStatusComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

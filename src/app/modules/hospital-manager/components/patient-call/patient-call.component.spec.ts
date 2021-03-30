@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PatientCallComponent } from './patient-call.component';
 
@@ -10,7 +10,7 @@ describe('PatientCallComponent', () => {
     let component: PatientCallComponent;
     let fixture: ComponentFixture<PatientCallComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule, MatSnackBarModule],
             declarations: [PatientCallComponent],

@@ -53,7 +53,6 @@
                 }
               ],
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "index": {
                 "input": "src/index.prod.html",
@@ -82,7 +81,6 @@
                 }
               ],
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "index": {
                 "input": "src/index.stage.html",

@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { AnimalSelectionComponent } from './animal-selection.component';
 import {
@@ -38,7 +33,7 @@ describe('AnimalSelectionComponent', () => {
     let dialog: MatDialogRef<TagNumberDialog>;
 
     
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,

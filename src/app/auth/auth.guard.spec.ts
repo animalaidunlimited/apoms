@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -26,7 +26,7 @@ describe('AuthGuard', () => {
     let service: AuthService;
     let router: Router;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
