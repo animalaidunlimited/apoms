@@ -17,8 +17,7 @@ export class Page {
     providedIn: 'root',
 })
 export class NavigationService {
-    
-    private readonly navigationItems: NavRoute[];
+    private readonly navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
     private activePage: Page = new Page('', false,true);
     private navigationStack: Array<Array<string>> = [];
