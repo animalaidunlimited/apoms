@@ -2,7 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
 import { NavRoute } from '../../../nav-routing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
 
 describe('NavigationService', () => {
     let service: NavigationService;
@@ -12,16 +12,22 @@ describe('NavigationService', () => {
         { path: 'somePath2' },
         { path: 'somePath3' },
     ];
+    
     const mockNavRouteService = {
         navRoute: {},
         navRoutes: [],
         router: null,
-        getNavRoutes: () => mockNavRouteItems
+        userPermissionArray:[2,4,6,8,10,12],
+        permission: true,
+        userPermissions:[10],
+        getNavRoutes: () => mockNavRouteItems,
+        permissionService: EvaluatePermissionService,
+        newMethod: () => null
+        
     };
 
-    beforeEach(async(() => {
+    beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
             providers: [
                 {
                     provide: NavigationService,
@@ -29,8 +35,8 @@ describe('NavigationService', () => {
                 },
             ],
         });
-        service = TestBed.get(NavigationService);
-    }));
+        service = TestBed.inject(NavigationService);
+    });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
