@@ -11,7 +11,6 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'census-record',
   templateUrl: './census-record.component.html',
   styleUrls: ['./census-record.component.scss']
@@ -113,7 +112,7 @@ export class CensusRecordComponent implements OnInit {
             else {
                 this.showErrorLogBtn = false;
             }
-            
+
         });
     }
 

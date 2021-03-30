@@ -11,7 +11,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'emergency-case-outcome',
   templateUrl: './emergency-case-outcome.component.html',
   styleUrls: ['./emergency-case-outcome.component.scss']

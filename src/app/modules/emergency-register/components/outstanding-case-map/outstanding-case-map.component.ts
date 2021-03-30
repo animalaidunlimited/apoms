@@ -9,7 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'outstanding-case-map',
   templateUrl: './outstanding-case-map.component.html',
   styleUrls: ['./outstanding-case-map.component.scss']

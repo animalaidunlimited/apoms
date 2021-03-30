@@ -11,7 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'patient-record',
     templateUrl: './patient-record.component.html',
     styleUrls: ['./patient-record.component.scss'],

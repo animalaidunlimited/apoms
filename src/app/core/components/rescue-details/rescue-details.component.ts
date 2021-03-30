@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'rescue-details',
   templateUrl: './rescue-details.component.html',
   styleUrls: ['./rescue-details.component.scss']
