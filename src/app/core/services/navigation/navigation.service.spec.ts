@@ -6,8 +6,15 @@ import { NavRoute, NavRouteService } from '../../../nav-routing';
 import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, RouterModule} from '@angular/router';
 import { UserActionService } from '../user-details/user-action.service';
+import {routes} from '../../../app-routing.module';
+class RouterStub {
+    navigateByUrl(url: string) {
+      return url;
+    }
+  }
+
 
 describe('NavigationService', () => {
     let service: NavigationService;
@@ -36,26 +43,13 @@ describe('NavigationService', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                RouterTestingModule
+                RouterTestingModule.withRoutes(routes)
             ],
             providers: [ 
                 NavigationService, 
                 NavRouteService, 
                 EvaluatePermissionService, 
-                UserActionService,
-                /* {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: {
-                                get(): string {
-                                    return '123';
-                                },
-                            },
-                        },
-                    },
-                } */
-                ActivatedRoute
+                UserActionService
             ],
         });
         service = TestBed.inject(NavigationService);
