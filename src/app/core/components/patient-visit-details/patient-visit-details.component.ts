@@ -409,7 +409,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	}
 
-	onSelect(selectedDate: Date) {
+	onSelect(selectedDate: Date | null) {
+
+		if(!selectedDate){
+			return;
+		}
 
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
 

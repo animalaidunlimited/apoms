@@ -33,14 +33,16 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
+  addRecordVisible = false;
+
   columnsExcludingIndex: Observable<Column[]>;
 
   displayedColumns: Observable<string[]>;
 
   columns: BehaviorSubject<Column[]>
           = new BehaviorSubject<Column[]>([
-            {name: 'index', type: 'string'},
-            {name: 'Tag number', type: 'string'},
+            {name: 'index', type: 'text'},
+            {name: 'Tag number', type: 'text'},
             {name: 'Adm', type: 'checkbox'},
             {name: 'Rel', type: 'checkbox'},
             {name: 'Died', type: 'checkbox'}]);
@@ -138,6 +140,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
         mainAreas.unshift({name: 'index', type: 'text'});
 
         mainAreas.push({name: 'Other', type: 'checkbox'});
+        mainAreas.push({name: 'complete', type: 'button'});
 
       this.columns.next(mainAreas);
     });
@@ -322,6 +325,10 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
       width: '500px',
       data: { patientId, tagNumber },
   });
+}
+
+toggleAddRecord(){
+  this.addRecordVisible = !this.addRecordVisible;
 }
 
 }
