@@ -1,5 +1,5 @@
-.mat-table{
-  min-width: 900px;
+.mat-table {
+  width: 100%;
 }
 
   @media print {
@@ -34,14 +34,21 @@
   flex: 0 0 175px !important;
 }
 
-.flex-center{
-  align-items: center;
-  justify-content: center;
+:host ::ng-deep .flex-center{
+  text-align: center !important;
+  //justify-content: center;
 }
 
-.flex-start{
-  align-items: start;
-  justify-content: center;
+:host ::ng-deep .flex-start{
+  text-align: start !important;
+}
+
+.mat-column-Other {
+  min-width: 174px;
+}
+
+.mat-column-index{
+  min-width: 50px;
 }
 
 :host ::ng-deep .mat-checkbox-inner-container-no-side-margin {
@@ -56,4 +63,28 @@
   margin-left: 50%;
   z-index: 5000;
   margin: auto;
+}
+
+.add-record-box{
+  height: 300px;
+  margin-right: 7%;
+  border-radius: 4%;
+  bottom: 6%;
+  position: sticky;
+  background-color: aquamarine;
+}
+
+.add-patient-fab{
+  margin-top:20px;
+  margin-left: 93%;
+  bottom: 2%;
+  position: sticky;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .add-patient-fab{
+    margin-left: 3%;
+  }
+
 }
