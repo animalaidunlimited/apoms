@@ -24,7 +24,7 @@ export class EvaluatePermissionService {
 
         if(userPermissions) {
           
-          this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1 })
+          this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1; }) ;
 
         }
         
@@ -32,7 +32,7 @@ export class EvaluatePermissionService {
           this.componentPermissionLayer = 2;
         }
         else if(this.permissionGivenToUser.length && this.permissionGivenToUser[0] % 2 !== 0) {
-          this.componentPermissionLayer = 1
+          this.componentPermissionLayer = 1 ;
         }
         else {
           this.componentPermissionLayer = 0;
@@ -41,7 +41,7 @@ export class EvaluatePermissionService {
 
       return this.componentPermissionLayer;
       
-    })
+    });
 
         
   }

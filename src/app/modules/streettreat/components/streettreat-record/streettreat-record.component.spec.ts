@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
 
 import { StreetTreatRecordComponent } from './streettreat-record.component';
@@ -19,7 +20,8 @@ describe('StreettreatRecordComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        RouterTestingModule,
     ],
     providers: [{ provide: FormBuilder, useValue: formBuilder }],
     declarations: [ StreetTreatRecordComponent ]
