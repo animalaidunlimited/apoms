@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -45,6 +46,7 @@ describe('PatientRecordComponent', () => {
                 HttpClientTestingModule,
                 MaterialModule,
                 FormsModule,
+                RouterTestingModule,
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
             ],

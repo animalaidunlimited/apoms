@@ -4,6 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
 
 import { StreetTreatRecordComponent } from './streettreat-record.component';
@@ -25,7 +26,8 @@ describe('StreettreatRecordComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        RouterTestingModule,
     ],
     providers: [
       { provide: ActivatedRoute, useValue: fakeActivatedRoute },

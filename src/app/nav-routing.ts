@@ -186,7 +186,7 @@ export class NavRouteService {
                                 }, []);
     }
 
-    public getNavRoutes(): BehaviorSubject<NavRoute[]>{
+    getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
 
