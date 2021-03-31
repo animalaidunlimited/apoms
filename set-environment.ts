@@ -13,6 +13,16 @@ const environmentTargetPath = './src/environments/environment.ts';
 const colors = require('colors');
 
 require('dotenv').load();
+
+if(process.env.API_URL?.includes('stag')){
+    console.log('Staging');
+}
+else
+{
+    console.log('Not Staging');
+}
+
+
 // `environment.ts` file structure
 const envConfigFile = `export const environment = {
     production: true,

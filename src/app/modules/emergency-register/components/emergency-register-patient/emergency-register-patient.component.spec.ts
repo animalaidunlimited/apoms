@@ -4,6 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { EmergencyRegisterPatientComponent } from './emergency-register-patient.component';
 

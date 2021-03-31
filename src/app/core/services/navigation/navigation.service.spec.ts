@@ -1,9 +1,20 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
-import { NavRoute } from '../../../nav-routing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { NavRoute, NavRouteService } from '../../../nav-routing';
+import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { UserActionService } from '../user-details/user-action.service';
+import {routes} from '../../../app-routing.module';
+import { RouterTestingModule } from '@angular/router/testing';
+
+class RouterStub {
+    navigateByUrl(url: string) {
+      return url;
+    }
+  }
+
 
 describe('NavigationService', () => {
     let service: NavigationService;
@@ -18,53 +29,55 @@ describe('NavigationService', () => {
     const mockNavRouteService = {
         navRoute: {},
         navRoutes: new BehaviorSubject<NavRoute[]>([]),
-        permission: false,
-        userPermissionArray: [1,2,3,4,5,6,7,8,9,10,11,12],
-        userPermissions: [1,2,3,4,5,6,7,8,9,10,11,12],
+        router: null,
+        userPermissionArray:[2,4,6,8,10,12],
+        permission: true,
+        userPermissions:[10],
         getNavRoutes: () => mockNavRouteItems,
-        getNavRouteList: () => mockNavRouteItems
-        //,permissionService: new NavigationService(mockUserPermissionService)
+        permissionService: EvaluatePermissionService,
+        newMethod: () => null
+
     };
 
-        //navRoute!: Route;
-    //navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
-    //userPermissionArray!: number[];
-    //permission!: boolean;
-    //userPermissions!: number[];
+    beforeEach(async () => {
 
-
-    beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule.withRoutes(routes)
+            ],
             providers: [
-                NavigationService
-                //{
-                //    provide: NavigationService,
-                //    useValue: new NavigationService(mockNavRouteService),
-                //},
+                NavigationService,
+                NavRouteService,
+                EvaluatePermissionService,
+                UserActionService
             ],
         });
-        service = TestBed.get(NavigationService);
-    }));
-
-    it('should be created', () => {
-        expect(service).toBeTruthy();
+        service = TestBed.inject(NavigationService);
     });
 
-    //describe('getNavigationItems', () => {
-    //    it('should get the correct navigationItems', () => {
-    //        expect(service.getNavigationItems()).toEqual(mockNavRouteItems);
-    //    });
-    //});
+   /*  it('should be initialized',  inject([NavigationService], (navigationService: NavigationService) => {
+        expect(navigationService).toBeTruthy();
+      })); */
 
-    //describe('setActivePage', () => {
-    //    it('should set the activePage', () => {
-    //        service.setActivePage('fakeTitle', ['fake'], true);
-    //        const activePage = service.getActivePage();
-    //        expect(activePage.title).toEqual('fakeTitle');
-    //        expect(activePage.isChild).toEqual(true);
-    //    });
-    //});
+      it('should be initialized', () => {
+        expect(service).toBeTruthy();
+      });
+
+    /* describe('getNavigationItems', () => {
+        it('should get the correct navigationItems', () => {
+            expect(service.getNavigationItems()).toEqual(mockNavRouteItems);
+        });
+    }); */
+
+    /* describe('setActivePage', () => {
+        it('should set the activePage', () => {
+            service.setActivePage('fakeTitle', ['fake'], true);
+            const activePage = service.getActivePage();
+            expect(activePage.title).toEqual('fakeTitle');
+            expect(activePage.isChild).toEqual(true);
+        });
+    });
 
     //describe('getActivePage', () => {
     //    it('should get the activePage', () => {
@@ -84,7 +97,7 @@ describe('NavigationService', () => {
 
     //        }
 
-    //        expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
-    //    });
-    //});
+            expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
+        });
+    }); */
 });
