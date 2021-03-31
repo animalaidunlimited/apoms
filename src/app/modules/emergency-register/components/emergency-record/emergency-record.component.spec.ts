@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('EmergencyRecordComponent', () => {
     let component: EmergencyRecordComponent;
@@ -20,6 +21,7 @@ describe('EmergencyRecordComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 MaterialModule,
+                RouterTestingModule,
                 BrowserAnimationsModule,
                 AngularFireModule.initializeApp(environment.firebase)
             ],

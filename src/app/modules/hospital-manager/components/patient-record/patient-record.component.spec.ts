@@ -11,6 +11,7 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -40,6 +41,7 @@ describe('PatientRecordComponent', () => {
                 HttpClientTestingModule,
                 MaterialModule,
                 FormsModule,
+                RouterTestingModule,
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
             ],
