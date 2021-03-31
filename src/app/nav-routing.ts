@@ -1,7 +1,5 @@
 import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { UserActionService } from './core/services/user-details/user-action.service';
-import { AuthService } from './auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 
@@ -55,7 +53,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'census',
         loadChildren: () =>
-            import('./modules/Census/census-page.module')
+            import('./modules/census/census-page.module')
             .then(m => m.CensusPageModule),
     },
     {
@@ -130,16 +128,11 @@ export const navRoutes: NavRoute[] = [
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
-    // navRoutes!: NavRoute[];
     userPermissionArray!: number[];
     permission!: boolean;
     userPermissions!: number[];
 
-
-
     constructor(router: Router, private permissionService: EvaluatePermissionService) {
-
-        
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
@@ -157,51 +150,46 @@ export class NavRouteService {
                 if(routeVal.data && val) {
                     routeVal.data.componentPermissionLevel = val;
                 }
-                this.navRoutes.next(this.newMethod() || []);
+                this.navRoutes.next(this.getNavRouteList() || []);
             });
-            
+
         });
-        
-        
 
 
-
-        
     }
 
-    private newMethod() {
-        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
-            .reduce((groupedList: NavRoute[], route: NavRoute) => {
+    private getNavRouteList() {
+        return this.navRoute.children
+                                ?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
+                                .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
-                // console.log(route);
+                                    if (route.group) {
+                                        const group: NavRoute | undefined = groupedList.find(navRoute => {
+                                            return (
+                                                navRoute.group === route.group &&
+                                                navRoute.groupedNavRoutes !== undefined
+                                            );
+                                        });
 
-                if (route.group) {
-                    const group: NavRoute | undefined = groupedList.find(navRoute => {
-                        return (
-                            navRoute.group === route.group &&
-                            navRoute.groupedNavRoutes !== undefined
-                        );
-                    });
-
-                    if (group) {
-                        group.groupedNavRoutes?.push(route);
-                    } else {
-                        groupedList.push({
-                            group: route.group,
-                            groupedNavRoutes: [route],
-                        });
-                    }
-                } else {
-                    groupedList.push(route);
-                }
-                return groupedList;
-            }, []);
+                                        if (group) {
+                                            group.groupedNavRoutes?.push(route);
+                                        } else {
+                                            groupedList.push({
+                                                group: route.group,
+                                                groupedNavRoutes: [route],
+                                            });
+                                        }
+                                    } else {
+                                        groupedList.push(route);
+                                    }
+                                    return groupedList;
+                                }, []);
     }
 
     public getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
-    
 
-    
+
+
 }

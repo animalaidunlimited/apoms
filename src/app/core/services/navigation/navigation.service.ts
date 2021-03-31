@@ -17,8 +17,8 @@ export class Page {
     providedIn: 'root',
 })
 export class NavigationService {
-    
-    private readonly navigationItems: NavRoute[];
+
+    private readonly navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
     private activePage: Page = new Page('', false,true);
     private navigationStack: Array<Array<string>> = [];
@@ -48,9 +48,9 @@ export class NavigationService {
                 return flatList;
             }, [])
             .find((navItem:NavRoute) => navItem.path === path)
-            
-        ); 
-            
+
+        );
+
     }
 
     public getSelectedNavigationItem(): NavRoute | undefined {
