@@ -55,7 +55,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'census',
         loadChildren: () =>
-            import('./modules/Census/census-page.module')
+            import('./modules/census/census-page.module')
             .then(m => m.CensusPageModule),
     },
     {
@@ -130,7 +130,6 @@ export const navRoutes: NavRoute[] = [
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
-    // navRoutes!: NavRoute[];
     userPermissionArray!: number[];
     permission!: boolean;
     userPermissions!: number[];
@@ -169,7 +168,7 @@ export class NavRouteService {
         
     }
 
-    private newMethod() {
+    newMethod() {
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
@@ -198,7 +197,7 @@ export class NavRouteService {
             }, []);
     }
 
-    public getNavRoutes(): BehaviorSubject<NavRoute[]>{
+    getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
     
