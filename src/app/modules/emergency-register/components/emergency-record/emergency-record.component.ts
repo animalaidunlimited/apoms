@@ -76,14 +76,13 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
         private route: ActivatedRoute,
         private elementRef: ElementRef
     ) {
-        
+
     }
 
     ngOnInit() {
@@ -94,7 +93,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 this.hasWritePermission = true;
             }
 
-        })
+        });
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
