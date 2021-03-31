@@ -16,18 +16,18 @@ require('dotenv').load();
 // `environment.ts` file structure
 const envConfigFile = `export const environment = {
     production: true,
-    API_URL: '${process.env.API_URL}',
+    API_URL: '$API_URL',
     firebase: {
-      apiKey: '${process.env.FIREBASE_API_KEY}',
-      authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',
-      databaseURL: '${process.env.FIREBASE_DATABASE_URL}',
-      projectId: '${process.env.PROJECT_ID}',
-      storageBucket: '${process.env.STORAGE_BUCKET}',
-      messagingSenderId: '${process.env.FIREBASE_SENDER_ID}',
-      appId: '${process.env.FIREBASE_APP_ID}',
-      measurementId: '${process.env.FIREBASE_MEASUREMENT_ID}',
-      email: '${process.env.ANGULAR_FIRE_EMAIL}',
-      password: '${process.env.ANGULAR_FIRE_PASSWORD}'}
+      apiKey: '$FIREBASE_API_KEY',
+      authDomain: '$FIREBASE_AUTH_DOMAIN',
+      databaseURL: '$FIREBASE_DATABASE_URL',
+      projectId: '$PROJECT_ID',
+      storageBucket: '$STORAGE_BUCKET',
+      messagingSenderId: '$FIREBASE_SENDER_ID',
+      appId: '$FIREBASE_APP_ID',
+      measurementId: '$FIREBASE_MEASUREMENT_ID',
+      email: '$ANGULAR_FIRE_EMAIL',
+      password: '$ANGULAR_FIRE_PASSWORD'}
   };`;
 
 
