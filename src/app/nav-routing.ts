@@ -55,7 +55,7 @@ export const navRoutes: NavRoute[] = [
         group: '',
         path: 'census',
         loadChildren: () =>
-            import('./modules/Census/census-page.module')
+            import('./modules/census/census-page.module')
             .then(m => m.CensusPageModule),
     },
     {
