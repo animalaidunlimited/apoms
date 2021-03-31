@@ -7,6 +7,9 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { EmergencyRegisterPatientComponent } from './emergency-register-patient.component';
+import { routes } from 'src/app/app-routing.module';
+import { MaterialModule } from 'src/app/material-module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('EmergencyRegisterPatientComponent', () => {
   let component: EmergencyRegisterPatientComponent;
@@ -22,14 +25,16 @@ const dialogData = {};
 
 let dialog: MatDialogRef<MediaDialogComponent>;
 
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        MatDialogModule
+        MatDialogModule,
+        MaterialModule,
+        RouterTestingModule.withRoutes(routes),
+        BrowserAnimationsModule
       ],
       declarations: [ EmergencyRegisterPatientComponent ],
       providers: [
@@ -45,8 +50,22 @@ let dialog: MatDialogRef<MediaDialogComponent>;
   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
     fixture = TestBed.createComponent(EmergencyRegisterPatientComponent);
     const dialog = TestBed.get(MatDialog);
+
     component = fixture.componentInstance;
+
+    component.patientForm = fb.group({
+      animalType: 'Dog',
+      animalTypeId: 10,
+      updated: false,
+      tagNumber: 'A378',
+      patientId: 230719,
+      problems: fb.array([]),
+  });
+
     fixture.detectChanges();
+
+
+
   }));
 
   it('should create', () => {
