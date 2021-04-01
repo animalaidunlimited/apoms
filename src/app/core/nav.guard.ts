@@ -32,7 +32,7 @@ export class NavGuard implements CanActivateChild {
 
         return await this.permissionService.permissionTrueOrFalse(childRoute.data.permissionId).then(val=> {
             this.userHasPermission.next(val);
-            console.log(!!this.userHasPermission.value)
+            console.log(this.userHasPermission.value)
             if (childRoute.data && childRoute.data.title && !!this.userHasPermission.value) {
                 // tslint:disable-next-line:no-non-null-assertion
                 const parentPath: string = childRoute.parent!.url

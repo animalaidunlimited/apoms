@@ -159,6 +159,7 @@ ngx-charts-bar-vertical-stacked{
 ::ng-deep .Team_Compare_date {
   & .mat-form-field-appearance-fill .mat-form-field-flex {
     padding: 0em 0.1em 0 0.75em;
+    min-width: 30%;
     & .mat-form-field-empty.mat-form-field-label{
       padding-top: .0em;
     }
@@ -247,6 +248,27 @@ ngx-charts-bar-vertical-stacked{
   .StreetTreat_Container_visit_compression{
     margin-left:5px;
   }
+
+  ::ng-deep .Team_Compare_date {
+    & .mat-form-field {
+      max-width: 100% !important;
+    }
+  }
+  ::ng-deep .Team_Compare_list{
+    & .mat-form-field {
+      max-width: 100% !important;
+    }
+  }
+  ::ng-deep .Team_Comapre_Visit_btn{
+
+    & button {
+      padding:0.2rem;
+    }
+  }
+  .Team_Compare{
+    margin-right: 0.5rem;
+  }
+
 }
 
 

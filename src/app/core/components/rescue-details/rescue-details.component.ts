@@ -144,9 +144,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     this.recordForm.get(abstractControlName)?.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((val) => {
-
-        console.log(val);
-
         // The values won't have bubbled up to the parent yet, so wait for one tick
         setTimeout(() => this.updateValidators()
         );
@@ -155,7 +152,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
 updateValidators()
 {
-  console.log('val');
 
  this.ambulanceArrivalTime.clearValidators();
  this.rescueTime.clearValidators();

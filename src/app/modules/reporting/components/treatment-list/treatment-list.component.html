@@ -10,34 +10,51 @@
       <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
 
 
-        <table mat-table matSort [dataSource]="patientRecords" class="mat-elevation-z8 table">
+      <div class="example-container mat-elevation-z8">
+        <mat-table matSort #table [dataSource]="patientRecords">
 
-        <!-- Index Column -->
-        <ng-container matColumnDef="index">
-          <th mat-header-cell *matHeaderCellDef> Count </th>
-          <td mat-cell *matCellDef="let index = index"> {{index + 1}} </td>
-        </ng-container>
+          <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
 
-        <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex | async">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef> {{column}} </th>
-          <td mat-cell *matCellDef="let element;" [class.link]="column === 'Tag number'"
-          (click)="cellClicked(column, element[column])"> {{element[column]}} </td>
-        </ng-container>
+          <!-- Position Column -->
+          <ng-container matColumnDef="index">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Count </mat-header-cell>
+            <mat-cell *matCellDef="let index = index" class="link"> 
+              <span class="mobile-label">Count:</span>
+              {{index + 1}}
+            </mat-cell>
+          </ng-container>
 
-        <ng-container matColumnDef="complete">
-          <th mat-header-cell *matHeaderCellDef> Treated </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-chip-list>
-            <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
-              <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
-          </td>
-        </ng-container>
+          <!-- Name Column -->
+          <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex | async">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </mat-header-cell>
+            <mat-cell *matCellDef="let element;" [class.link]="column === 'Tag number'"
+            (click)="cellClicked(column, element[column])"> 
+              <span class="mobile-label">{{column}}:</span>
+              {{element[column]}} 
+            </mat-cell>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns | async"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns | async;"></tr>
-      </table>
+          <!-- Weight Column -->
+          <ng-container matColumnDef="complete">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Treated </mat-header-cell>
+            <mat-cell *matCellDef="let row"> 
+              <span class="mobile-label">Treated:</span>
+              <mat-chip-list>
+                <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
+                  <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Symbol Column -->
+
+          <mat-header-row *matHeaderRowDef="displayedColumns | async"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns | async;"></mat-row>
+        </mat-table>
+
+      </div>
 
 
     </fieldset>

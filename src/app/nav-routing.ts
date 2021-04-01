@@ -16,7 +16,7 @@ export const sideNavPath = 'nav';
 
 export const navRoutes: NavRoute[] = [
     {
-        data: { title: 'Home', permissionId:[], componentPermissionLevel: null},
+        data: { title: 'Home', permissionId:[], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'home',
         path: 'home',
         loadChildren: () =>
@@ -30,7 +30,7 @@ export const navRoutes: NavRoute[] = [
         pathMatch: 'full',
     },
     {
-        data: { title: 'Emergency Register', permissionId:[1,2], componentPermissionLevel: null},
+        data: { title: 'Emergency Register', permissionId:[1,2], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'emergency-register',
@@ -40,7 +40,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.EmergencyRegisterPageModule),
     },
     {
-        data: { title: 'Hospital Manager', permissionId:[3,4], componentPermissionLevel: null},
+        data: { title: 'Hospital Manager', permissionId:[3,4], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'hospital-manager',
@@ -50,7 +50,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule),
     },
     {
-        data: { title: 'Census' ,permissionId:[7,8], componentPermissionLevel: null},
+        data: { title: 'Census' ,permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'census',
@@ -59,7 +59,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.CensusPageModule),
     },
     {
-        data: { title: 'Case List', permissionId:[5,6], componentPermissionLevel: null},
+        data: { title: 'Case List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: '',
         group: 'Street Treat',
         path: 'street-treat',
@@ -69,7 +69,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.StreetTreatPageModule),
     },
     {
-        data: { title: 'Teams', permissionId:[5,6], componentPermissionLevel: null},
+        data: { title: 'Teams', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Street Treat',
         path: 'teams',
@@ -78,7 +78,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.TeamsPageModule),
     },
     {
-        data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: null},
+        data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'reporting',
@@ -87,7 +87,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.ReportingPageModule),
     },
     {
-        data: { title: 'Settings' ,permissionId:[], componentPermissionLevel: null},
+        data: { title: 'Settings' ,permissionId:[], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'settings_applications',
         group: 'Settings',
         path: 'settings',
@@ -96,7 +96,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule),
     },
     {
-        data: { title: 'User Admin' ,permissionId:[11,12], componentPermissionLevel: null},
+        data: { title: 'User Admin' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'users',
@@ -105,7 +105,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule),
     },
     {
-        data: { title: 'Organisations' ,permissionId:[11,12], componentPermissionLevel: null},
+        data: { title: 'Organisations' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'organisations',
@@ -114,7 +114,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule),
     },
     {
-        data: { title: 'Print templates' ,permissionId:[11,12], componentPermissionLevel: null},
+        data: { title: 'Print templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',
@@ -156,7 +156,7 @@ export class NavRouteService {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
                 if(routeVal.data && val) {
-                    routeVal.data.componentPermissionLevel = val;
+                    routeVal.data.componentPermissionLevel.next(val);
                 }
                 this.navRoutes.next(this.showNavRoutes() || []);
             })
@@ -171,7 +171,7 @@ export class NavRouteService {
     }
 
     private showNavRoutes() {
-        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
+        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
                 // console.log(route);

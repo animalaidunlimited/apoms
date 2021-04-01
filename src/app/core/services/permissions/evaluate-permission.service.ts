@@ -17,10 +17,6 @@ export class EvaluatePermissionService {
 
      return await this.userService.getUserPermissions().then(userPermissions=> {
 
-      console.log(userPermissions);
-
-      console.log(componentPermissionArray);
-
       if(!componentPermissionArray?.length) {
         this.componentPermissionLayer = 1;
       }

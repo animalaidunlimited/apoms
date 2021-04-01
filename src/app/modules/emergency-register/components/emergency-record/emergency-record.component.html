@@ -11,7 +11,8 @@
             </div>
             <emergency-details
               [recordForm]="recordForm"
-              [focusEmergencyNumber]="true"></emergency-details>
+              [focusEmergencyNumber]="true"
+              (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
             <animal-selection [recordForm]="recordForm"></animal-selection>
 
@@ -25,7 +26,7 @@
 
               <fieldset class="form-sub-group">
 
-                  <legend class="legend">Rescue Details</legend> -->
+                  <legend class="legend">Rescue Details</legend>
 
                   
                   <rescue-details
