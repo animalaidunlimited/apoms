@@ -64,7 +64,7 @@ export class CensusRecordComponent implements OnInit {
 
         this.route.data.subscribe(val=> {
 
-            if (val.componentPermissionLevel === 2) {
+            if (val.componentPermissionLevel.value === 2) {
                 this.hasWritePermission = true;
             }
 

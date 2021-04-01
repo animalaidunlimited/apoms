@@ -1,25 +1,20 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatButton } from '@angular/material/button';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { iif, Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Patient, Patients } from 'src/app/core/models/patients';
-import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
-import { MediaItem } from 'src/app/core/models/media';
+import { Exclusions } from 'src/app/core/models/responses';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
-import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
@@ -53,15 +48,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     problemsExclusions!: string[];
     
     selectedProblems:string[] = [];
-
     
     patients!:FormArray;
 
     form = new FormGroup({});
     
     patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
-
-    
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
     tagNumber: string | undefined;
@@ -94,13 +86,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     constructor(
-        private dialog: MatDialog,
         private fb: FormBuilder,
         private patientService: PatientService,
         private tagNumberValidator: UniqueTagNumberValidator,
-        private dropdown: DropdownService,
-        private printService: PrintTemplateService,
-        private userOptions: UserOptionsService,
         private cdr: ChangeDetectorRef
     ) {}
 
@@ -123,8 +111,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.emergencyCaseId
         ? this.loadPatientArray(this.emergencyCaseId)
             : this.initPatientArray();
-
-        // this.subscribeToChanges();
        
     }
     
@@ -178,9 +164,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
 
-
-
-
         const problems = this.fb.array([]);
 
         patient.problems.forEach(problem => {
@@ -201,9 +184,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
-
-
-
 
         const newPatient = this.fb.group({
             patientId: [patientId],
@@ -250,6 +230,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 err => console.error(err),
                 );
     }
+
+    
     initPatientArray() {
   
         this.patients.clear();

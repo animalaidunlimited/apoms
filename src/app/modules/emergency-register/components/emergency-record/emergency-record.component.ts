@@ -9,9 +9,7 @@ import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivateChild } from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ActivatedRoute} from '@angular/router';
 
 
 @Component({
@@ -88,8 +86,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.route.data.subscribe(val=> {
-
-            if (val.componentPermissionLevel === 2) {
+            
+            if (val.componentPermissionLevel.value === 2) {
+                
                 this.hasWritePermission = true;
             }
 
@@ -269,14 +268,13 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
-        console.log(this.recordForm.value);
-
+        
         this.loading = true;
-        if (this.recordForm.pending) {
+
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
-
+            console.log(this.hasWritePermission);
             if(this.hasWritePermission) {
                 this.loading = true;
                 if(this.recordForm.pending){
@@ -387,7 +385,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
             }
 
-        }
     }
 
     emergencyNumberUpdated(emergencyNumber: any) {
