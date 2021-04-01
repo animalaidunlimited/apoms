@@ -265,9 +265,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     updateTag(currentPatient:any) {
 
-
-
-
         if(this.selection.selected.length === 0){
 
             // TODO make this a pretty dialog
