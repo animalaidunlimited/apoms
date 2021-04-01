@@ -9,7 +9,6 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
-import { ConsoleReporter } from 'jasmine';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -128,7 +127,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.updateTimes();
-        
+
         this.onChanges();
     }
 

@@ -87,7 +87,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.route.data.subscribe(val=> {
             
-            if (val.componentPermissionLevel.value === 2) {
+            if (val.componentPermissionLevel?.value === 2) {
                 
                 this.hasWritePermission = true;
             }

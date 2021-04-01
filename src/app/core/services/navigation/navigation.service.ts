@@ -48,9 +48,7 @@ export class NavigationService {
                 return flatList;
             }, [])
             .find((navItem:NavRoute) => navItem.path === path)
-
         );
-
     }
 
     public getSelectedNavigationItem(): NavRoute | undefined {
