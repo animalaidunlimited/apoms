@@ -2,47 +2,73 @@
 
   <legend class="legend">Surgery Details</legend>
 
-<table mat-table [dataSource]="surgeryRecords" class="mat-elevation-z8">
+  <div class="example-container mat-elevation-z8">
+    <mat-table matSort #table [dataSource]="surgeryRecords">
 
-    <ng-container matColumnDef="Date">
-      <th mat-header-cell *matHeaderCellDef> Date </th>
-      <td mat-cell *matCellDef="let row"> {{row.date | date}} </td>
-    </ng-container>
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
 
-    <ng-container matColumnDef="Type">
-      <th mat-header-cell *matHeaderCellDef> Type </th>
-      <td mat-cell *matCellDef="let row"> {{row.type}} </td>
-    </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="Date">
+        <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Date:</span>
+          {{row.date | date}}
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Surgeon">
-      <th mat-header-cell *matHeaderCellDef> Surgeon </th>
-      <td mat-cell *matCellDef="let row"> {{row.surgeon}} </td>
-    </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="Type">
+        <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Type:</span>
+          {{row.type}} 
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Site">
-      <th mat-header-cell *matHeaderCellDef> Site </th>
-      <td mat-cell *matCellDef="let row"> {{row.site}} </td>
-    </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="Surgeon">
+        <mat-header-cell *matHeaderCellDef> Surgeon </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Surgeon:</span>
+          {{row.surgeon}} 
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Anesthesia Minutes">
-      <th mat-header-cell *matHeaderCellDef> Anesthesia Minutes </th>
-      <td mat-cell *matCellDef="let row"> {{row.anesthesiaMinutes}} </td>
-    </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="Site">
+        <mat-header-cell *matHeaderCellDef> Site </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Site:</span>
+          {{row.site}}
+        </mat-cell>
+      </ng-container>
 
+      <ng-container matColumnDef="Anesthesia Minutes">
+        <mat-header-cell *matHeaderCellDef> Anesthesia Minutes </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Anesthesia Minutes:</span>
+          {{row.anesthesiaMinutes}}
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Edit Surgery">
-      <th mat-header-cell *matHeaderCellDef> Edit Surgery </th>
-      <td mat-cell *matCellDef="let row">
-      <mat-icon (click)="launchSurgeryDialog(row)"  class="Edit">edit</mat-icon>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="Edit Surgery">
+        <mat-header-cell *matHeaderCellDef> Edit Surgery </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Edit Surgery:</span>
+          <mat-icon (click)="launchSurgeryDialog(row)"  class="Edit">edit</mat-icon>
+        </mat-cell>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+
   <div fxLayoutAlign = "center center" style="padding-top: 10px;">
     <button type="button" mat-mini-fab (click)="launchSurgeryDialog(null)" color="primary">
       <mat-icon>add</mat-icon>
     </button>
   </div>
+
 </fieldset>

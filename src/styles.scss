@@ -132,6 +132,17 @@ mat-radio-button{
 
 @media(max-width: 600px) {
 
+  .mat-cell {
+    font-size: 13px;
+    width: auto;
+  }
+
+  .mobile-label[_ngcontent-yue-c345] {
+    width: auto;
+    display: inline-block;
+    font-weight: bold;
+  }
+
   .mat-form-field{
     max-width: 41.9%;
   }

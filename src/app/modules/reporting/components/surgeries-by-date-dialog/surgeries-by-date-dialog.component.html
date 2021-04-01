@@ -2,41 +2,69 @@
 
 <div mat-dialog-content>
 
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <div class="example-container mat-elevation-z8">
+    <mat-table matSort #table [dataSource]="dataSource">
 
-        <ng-container matColumnDef="tagNumber">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tag number </th>
-          <td mat-cell *matCellDef="let element"> {{element.tagNumber}} </td>
-        </ng-container>
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
 
-        <ng-container matColumnDef="animalType">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Animal type </th>
-          <td mat-cell *matCellDef="let element"> {{element.animalType}} </td>
-        </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="tagNumber">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> TagNumber </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">TagNumber:</span>
+          {{row.tagNumber}}
+        </mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Surgery type </th>
-          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-        </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="animalType">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Animal type </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Animal type:</span>
+          {{row.animalType}} 
+        </mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="surgeon">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Surgeon </th>
-          <td mat-cell *matCellDef="let element"> {{element.surgeon}} </td>
-        </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Surgery type </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Surgery type:</span>
+          {{row.type}} 
+        </mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="site">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Site </th>
-            <td mat-cell *matCellDef="let element"> {{element.site}} </td>
-        </ng-container>
+      <ng-container matColumnDef="surgeon">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Surgeon</mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Surgeon:</span>
+          {{row.surgeon}} 
+        </mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="anesthesiaMinutes">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Minutes under anesthesia </th>
-            <td mat-cell *matCellDef="let element"> {{element.anesthesiaMinutes}} </td>
-        </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="site">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Site </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Site:</span>
+          {{row.site}}
+        </mat-cell>
+      </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+      <ng-container matColumnDef="anesthesiaMinutes">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Minutes under anesthesia </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="mobile-label">Minutes under anesthesia:</span>
+          {{row.anesthesiaMinutes}}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+  </div>
 
 </div>
 <div mat-dialog-actions>

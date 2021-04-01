@@ -92,8 +92,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        console.log('ngOninit');
-
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
@@ -134,8 +132,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     subscribeToChanges() {
 
-        console.log('subscribeToChanges');
-
         this.recordForm.get('patients')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(items => {
@@ -151,8 +147,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     getEmptyPatient() {
 
-        console.log('getEmptyPatient');
-
         const problems = this.fb.array([]);
 
         return this.getPatient(problems, 1, true, 0);
@@ -162,8 +156,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
-
-        console.log('populatePatient');
 
 
         const problems = this.fb.array([]);
@@ -186,8 +178,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
-
-        console.log('getPatient');
 
 
         const newPatient = this.fb.group({
@@ -219,9 +209,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     loadPatientArray(emergencyCaseId: number) {
 
-        console.log('loadPatientArray');
-
-
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((patients: Patients) => {
@@ -247,8 +234,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     initPatientArray() {
 
-        console.log('initPatientArray');
-
         this.patientArray = this.recordForm.get('patients') as FormArray;
 
         this.patientArray.clear();
@@ -266,13 +251,9 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     resetTableDataSource() {
 
-        console.log('resetTableDataSource');
-
 
         const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
         // const patients:FormGroup[] = []
-
-        console.log(patients);
 
         this.patientDataSource =  patients;
 
@@ -281,9 +262,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
-
-        console.log('isAllSelected');
-
 
         const numSelected = this.selection.selected.length;
         const numRows = this.patientDataSource.length;
@@ -324,8 +302,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     /** The label for the checkbox on the passed row */
     checkboxLabel(row?: FormGroup): string {
 
-        console.log('checkboxLabel');
-
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
@@ -335,9 +311,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     clearChips() {
-
-        console.log('clearChips');
-
 
         this.currentPatientChip = '';
 
@@ -444,8 +417,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     setSelected(position: number) {
 
-        console.log('setSelected');
-
         // Set the new row to be selected
         const selected = this.patientDataSource.find(row => row.get('position')?.value === position);
 
@@ -457,8 +428,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     focusProblemChip(event:any, problemChip:any) {
-
-        console.log('focusProblemChip');
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const chips = this.problemChips.chips;
@@ -477,8 +446,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     cycleChips(event:any, chipGroup: string, property: string) {
-
-        console.log('cycleChips');
 
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
@@ -531,8 +498,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     problemChipSelected(problemChip:any) {
 
-        console.log('problemChipSelected');
-
 
         this.recordForm.markAsDirty();
 
@@ -563,9 +528,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     hideIrrelevantChips(animalTypeChip:any) {
-
-        console.log('hideIrrelevantChips');
-
 
         const currentExclusions = this.exclusions.filter(
             (animalType) => animalType.animalType === animalTypeChip.value,
@@ -607,14 +569,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getcurrentPatient() {
-        console.log('getcurrentPatient');
 
         return this.selection.selected[0];
     }
 
     deletePatientRow(row:FormGroup) {
-
-        console.log('getcurrentPatient');
 
         const position = row.get('position')?.value;
 
@@ -646,9 +605,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     updatePatientProblemArray(problemChip:any) {
-
-        console.log('updatePatientProblemArray');
-
 
         const currentPatient = this.getcurrentPatient() as FormGroup;
 
@@ -700,9 +656,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     updateTag(currentPatient:any) {
 
 
-        console.log('updateTag');
-
-
         if(this.selection.selected.length === 0){
 
             // TODO make this a pretty dialog
@@ -718,8 +671,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     openTagNumberDialog(event:any): void {
-
-        console.log('openTagNumberDialog');
 
         const currentPatient: Patient = event;
 
@@ -772,9 +723,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     printEmergencyCard(row:FormGroup){
 
-        console.log('printEmergencyCard');
-
-
         const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
         this.printService.printPatientDocument(printTemplateId, row.get('patientId')?.value);
@@ -782,8 +730,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getAnimalFromObservable(name: string) {
-
-        console.log('getAnimalFromObservable');
 
         return this.animalTypes$.find(
             animalType => animalType.AnimalType === name,
