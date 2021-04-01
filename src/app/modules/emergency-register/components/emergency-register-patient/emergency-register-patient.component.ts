@@ -63,9 +63,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   );
 
   sortedProblems = this.dropdown.getProblems().pipe(
-    tap(problems => {
-      const selectedProblems = this.patientForm.get('problems')?.value.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
-    }),
+    map( problems =>
+      { 
+        const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
+        const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
+        return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
+      }
+    ),
     map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
   );
 
