@@ -75,25 +75,19 @@ describe('EmergencyDetailsComponent', () => {
     });
 
     it('Invalid form - Missing code', () => {
-        component.recordForm
-            .get('emergencyDetails.emergencyNumber')?.setValue(70022);
+        component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
 
-        component.recordForm.get('emergencyDetails.dispatcher')?.setValue(1);
+        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
 
-        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(
-            false,
-        );
+        expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(false);
     });
 
     it('Set Initial Time Works', () => {
-        component.setInitialTime();
 
         const testTime = new Date();
 
         component.recordForm.get('emergencyDetails.callDateTime')?.setValue(testTime);
 
-        expect(
-            component.recordForm.get('emergencyDetails.callDateTime')?.value
-        ).toEqual(testTime);
+        expect(component.recordForm.get('emergencyDetails.callDateTime')?.value).toEqual(testTime);
     });
 });

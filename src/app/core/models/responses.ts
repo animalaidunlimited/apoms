@@ -1,5 +1,5 @@
-import { CallOutcome, EmergencyDetails } from './emergency-record';
-import { CallerDetails } from './outstanding-case';
+import { CallerDetails, CallOutcome, EmergencyDetails } from './emergency-record';
+
 
 export interface EmergencyResponse {
    emergencyCallerSuccess: [];

@@ -45,7 +45,6 @@
                         'dot-green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
                         'dot-yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{recordForm.get('emergencyDetails.code')?.value?.EmergencyCode}}</mat-select-trigger>
 
-
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
 
                         <mat-icon [ngClass]="{
@@ -53,7 +52,6 @@
                             'dot-red' : code.EmergencyCodeId == 1,
                             'dot-green' : code.EmergencyCodeId == 2,
                             'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{code.EmergencyCode}}
-
 
                 </mat-option>
             </mat-select>

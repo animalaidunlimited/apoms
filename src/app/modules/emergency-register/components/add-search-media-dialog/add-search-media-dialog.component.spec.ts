@@ -1,6 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AddSearchMediaDialogComponent } from './add-search-media-dialog.component';
 
@@ -8,6 +10,7 @@ import { AddSearchMediaDialogComponent } from './add-search-media-dialog.compone
   selector: 'app-add-search-media-dialog',
   template: '<p>Mock add-search-media Component</p>'
 })
+
 class MockAddSearchMediaDialogComponent {}
 
 describe('AddSearchMediaDialogComponent', () => {
@@ -25,7 +28,13 @@ describe('AddSearchMediaDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddSearchMediaDialogComponent, MockAddSearchMediaDialogComponent ],
+      declarations: [
+        MatDialogModule,
+        AddSearchMediaDialogComponent,
+        MockAddSearchMediaDialogComponent,
+        HttpClientTestingModule,
+        BrowserAnimationsModule
+      ],
       providers: [
         {
           provide: MAT_DIALOG_DATA,

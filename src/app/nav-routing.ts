@@ -127,6 +127,7 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
+
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
@@ -148,7 +149,7 @@ export class NavRouteService {
             this.navRoute = routes;
         }
 
-        if(!this.navRoute.children){
+        if(!this.navRoute?.children){
             throw new Error ('No routes detected');
         }
         this.navRoute.children?.forEach(routeVal=> {
