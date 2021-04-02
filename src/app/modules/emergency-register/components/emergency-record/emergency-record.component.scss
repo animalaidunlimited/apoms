@@ -54,7 +54,7 @@ mat-form-field.mat-form-field.mat-wrapper{
 .emergencySyncIcon .mat-icon {
     font-size: 2.5rem;
     position: absolute !important;
-    right: calc(100% - 60rem) !important;
+    right: calc(100% - 55rem) !important;
     top: 3.2rem !important;
     color: gold;
     cursor: default
@@ -77,10 +77,7 @@ mat-form-field.mat-form-field.mat-wrapper{
 }
 @media (min-width: 600px) {
     .form-sub-group {
-        min-width: 62rem;
+        min-width:55.1rem;
         box-sizing:  content-box !important;
-    }
-    .emergency_record_wrapper > caller-details{
-        min-width: 63.8rem;
     }
 }
