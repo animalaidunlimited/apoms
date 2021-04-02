@@ -13,17 +13,17 @@ describe('PrintContentComponent', () => {
     snapshot: { params: { printTemplate: {
       printTemplateId: 1,
       templateName: '',
-      showTemplateImage: false,
+      showTemplateImage: [false],
       backgroundImageUrl: '',
-      paperDimensions: {
+      paperDimensions:[{
         paperDimensionsId: 1,
         name: '',
         width: '',
         height: ''
-      },
+      }],
       orientation: '',
       printElements: [],
-      updated: false,
+      updated: [false],
       updateDateTime: ''
     } } } };
 

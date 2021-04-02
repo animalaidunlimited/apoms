@@ -1,5 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
 
 import { PatientVisitDetailsComponent } from './patient-visit-details.component';
 
@@ -16,8 +20,15 @@ describe('PatientVisitDetailsComponent', () => {
   };
 
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        FormsModule,
+        MaterialModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule
+    ],
       providers: [
         {
           provide: MAT_DIALOG_DATA,
@@ -29,13 +40,13 @@ describe('PatientVisitDetailsComponent', () => {
       declarations: [ PatientVisitDetailsComponent ]
     })
     .compileComponents();
-  });
+  }));
 
-  beforeEach(() => {
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
     fixture = TestBed.createComponent(PatientVisitDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

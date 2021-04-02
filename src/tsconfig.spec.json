@@ -4,8 +4,11 @@
     "outDir": "../out-tsc/spec",
     "types": [
       "jasmine",
-      "node"
+      "node",
+      "googlemaps",
+      "dom-mediacapture-record"
     ]
+
   },
   "files": [
     "test.ts",

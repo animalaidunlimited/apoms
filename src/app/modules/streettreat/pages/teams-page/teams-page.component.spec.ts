@@ -15,7 +15,7 @@ import { TeamsPageComponent } from './teams-page.component';
     template: '<p>Mock confirmation-dialog Component</p>'
   })
   class MockConfirmationDialogComponent {}
-  
+
 describe('TeamsPageComponent', () => {
     let component: TeamsPageComponent;
     let fixture: ComponentFixture<TeamsPageComponent>;
@@ -31,7 +31,13 @@ describe('TeamsPageComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TeamsPageComponent],
+            imports: [
+                HttpClientTestingModule,
+                MatDialogModule,
+                OverlayModule,
+                FormsModule,
+                ReactiveFormsModule,
+                BrowserAnimationsModule],
             providers: [
                 MatSnackBar,
                 {
@@ -42,12 +48,8 @@ describe('TeamsPageComponent', () => {
                   useValue: mockDialogRef
                 }
             ],
-            imports: [HttpClientTestingModule,
-                MatDialogModule,
-                OverlayModule,
-                FormsModule,
-                ReactiveFormsModule,
-                BrowserAnimationsModule]
+            declarations: [TeamsPageComponent, MockConfirmationDialogComponent]
+
         }).compileComponents();
     }));
 
@@ -57,10 +59,22 @@ describe('TeamsPageComponent', () => {
 
         dialog = TestBed.get(MatDialog);
 
+        component.teamDetails.reset();
+
         fixture.detectChanges();
     }));
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('Invalid form - team name is required', () => {
+        component.teamDetails.get('TeamName')?.setValue(null);
+        expect(component.teamDetails.valid).toBe(false);
+    });
+
+    it('Invalid form - Capacity is required', () => {
+        component.teamDetails.get('Capacity')?.setValue(null);
+        expect(component.teamDetails.valid).toBe(false);
     });
 });

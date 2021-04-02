@@ -21,7 +21,7 @@ export class AuthService extends APIService {
     endpoint = 'Auth';
     token: string;
     response!: Response;
-    redirectUrl!: string;
+    redirectUrl: string | null = null;
     socketEndPoint!: string;
 
     constructor(
@@ -40,6 +40,7 @@ export class AuthService extends APIService {
                 username,
                 password,
             })) as Response;
+
             this.token = this.response.token || '';
 
             if (!this.response.success) {

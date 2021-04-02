@@ -1,12 +1,5 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
-
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { EmergencyRecordComponent } from './emergency-record.component';
-
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
@@ -27,7 +20,7 @@ describe('EmergencyRecordComponent', () => {
                 BrowserAnimationsModule,
             ],
             providers: [{ provide: FormBuilder, useValue: formBuilder }],
-            declarations: [EmergencyRecordComponent],
+            declarations: [ EmergencyRecordComponent ],
         }).compileComponents();
     }));
 
