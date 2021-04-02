@@ -50,7 +50,6 @@ export class PatientRecordComponent implements OnInit {
 
         this.route.data.subscribe(val=> {
 
-            console.log(val);
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }

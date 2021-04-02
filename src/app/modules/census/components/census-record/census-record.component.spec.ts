@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
+
+
 import { CensusRecordComponent } from './census-record.component';
 
 describe('CensusRecordComponent', () => {
@@ -21,8 +23,9 @@ describe('CensusRecordComponent', () => {
         OverlayModule,
         FormsModule,
         RouterTestingModule
-      ],
-      providers: [MatSnackBar, Overlay],
+    ],
+      providers: [ MatSnackBar, Overlay ],
+
       declarations: [ CensusRecordComponent ]
     })
     .compileComponents();

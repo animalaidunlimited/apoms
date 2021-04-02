@@ -1,40 +1,72 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MaterialModule } from 'src/app/material-module';
 
 import { EmergencyRegisterPatientComponent } from './emergency-register-patient.component';
+import { routes } from 'src/app/app-routing.module';
+import { MaterialModule } from 'src/app/material-module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('EmergencyRegisterPatientComponent', () => {
   let component: EmergencyRegisterPatientComponent;
   let fixture: ComponentFixture<EmergencyRegisterPatientComponent>;
 
+  const formBuilder: FormBuilder = new FormBuilder();
+
+  const mockDialogRef = {
+    open: jasmine.createSpy('open'),
+    close: jasmine.createSpy('close'),
+};
+const dialogData = {};
+
+let dialog: MatDialogRef<MediaDialogComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        ReactiveFormsModule, 
+        FormsModule,
+        ReactiveFormsModule,
         MatDialogModule,
-        RouterTestingModule,
-        MaterialModule
-    ],
-    providers: [
-      { provide: MatDialogRef, useValue: {} },
-	    { provide: MAT_DIALOG_DATA, useValue: [] }
-  ],
-      declarations: [ EmergencyRegisterPatientComponent ]
+        MaterialModule,
+        RouterTestingModule.withRoutes(routes),
+        BrowserAnimationsModule
+      ],
+      declarations: [ EmergencyRegisterPatientComponent ],
+      providers: [
+        PrintTemplateService,
+        { provide: FormBuilder, useValue: formBuilder },
+        { provide: MAT_DIALOG_DATA, useValue: dialogData },
+        { provide: MatDialogRef, useValue: mockDialogRef }
+      ]
     })
     .compileComponents();
   });
 
-  beforeEach(() => {
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
     fixture = TestBed.createComponent(EmergencyRegisterPatientComponent);
+    const dialog = TestBed.get(MatDialog);
+
     component = fixture.componentInstance;
-    fixture.detectChanges();
+
+    component.patientForm = fb.group({
+      animalType: 'Dog',
+      animalTypeId: 10,
+      updated: false,
+      tagNumber: 'A378',
+      patientId: 230719,
+      problems: fb.array([]),
   });
+
+    fixture.detectChanges();
+
+
+
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
