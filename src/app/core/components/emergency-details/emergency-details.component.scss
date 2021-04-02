@@ -51,13 +51,40 @@
 //     }
 // }
 
+// .mat-icon .log_btn {
+//     position: relative;
+//     font-size: 2rem;
+//     margin-left: 9rem;
+//     margin-bottom: 1.8rem;
+// }
+
+mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+
+    position: relative;
+    font-size: 2rem;
+    margin-left: 9rem;
+    margin-bottom: 1.8rem;
+    cursor: pointer;
+
+}
+
 @media(max-width: 600px) {  
-    .logs_btn{
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
         font-size: 1.5rem;
+        position: absolute!important;
+        right: 3% !important;
+        top: 6rem !important;
+        cursor: pointer;
+    }
+}
+
+@media(max-width: 1024px) {  
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
+        font-size: 2rem;
         position: absolute !important;
-        right: 5% !important;
-        top: 4rem !important;
-        cursor: pointer
+        right: 29.5rem !important;
+        top: 9rem !important;
+        cursor: pointer;
     }
 }
 // To disable the Emergency number field by css.

@@ -53,11 +53,23 @@ mat-form-field.mat-form-field.mat-wrapper{
 
 .emergencySyncIcon .mat-icon {
     font-size: 2.5rem;
-    position: absolute !important;
-    right: 5% !important;
-    top: 4rem !important;
+    position: relative!important;
+    left: 62rem !important;
+    top: 3rem !important;
     color: gold;
-    cursor: default
+    cursor: default;
+}
+
+.iconWrapper {
+    position: absolute;
+}
+
+.mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+    font-size: 2.5rem;
+    position: relative!important;
+    left: 55rem !important;
+    top: 3rem !important;
+    cursor: pointer;
 }
 
 .disable {
@@ -68,10 +80,49 @@ mat-form-field.mat-form-field.mat-wrapper{
 @media(max-width: 600px) {
     .emergencySyncIcon .mat-icon {
         font-size: 1.5rem;
-        position: absolute !important;
-        right: 5% !important;
-        top: 4rem !important;
+        position: relative !important;
+        left: 1.5rem !important;
+        top: 3rem !important;
         color: gold;
-        cursor: default
+        cursor: default;
+    }
+
+    .iconWrapper {
+        position: relative;
+        margin-bottom: -20px !important;
+
+    }
+
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+        font-size: 1.5rem;
+        position: relative !important;
+        left: -1rem !important;
+        top: 6rem !important;
+        cursor: pointer;
+    }
+}
+
+@media only screen and (min-width:767px) and (max-width: 1024px) {
+    .emergencySyncIcon .mat-icon {
+        font-size: 2rem;
+        position: relative !important;
+        left: 1rem !important;
+        top: 4.5rem !important;
+        color: gold;
+        cursor: default;
+    }
+
+    .iconWrapper {
+        position: relative;
+        margin-bottom: -20px !important;
+
+    }
+
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+        font-size: 2rem;
+        position: relative !important;
+        left: -1.5rem !important;
+        top: 9rem !important;
+        cursor: pointer;
     }
 }
