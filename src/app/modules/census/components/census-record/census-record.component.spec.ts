@@ -20,10 +20,9 @@ describe('CensusRecordComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         OverlayModule,
-        FormsModule,
-        RouterTestingModule
-    ],
-      providers: [ MatSnackBar, Overlay ],
+        FormsModule
+      ],
+      providers: [MatSnackBar, Overlay],
       declarations: [ CensusRecordComponent ]
     })
     .compileComponents();

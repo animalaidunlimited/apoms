@@ -8,7 +8,7 @@ import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -46,8 +46,6 @@ export class CensusRecordComponent implements OnInit {
 
   showErrorLogBtn = false;
 
-  hasWritePermission = false;
-
   // TODO: Create a type for this.
   censusErrorRecords!: any;
 
@@ -57,18 +55,9 @@ export class CensusRecordComponent implements OnInit {
       private snackBar: SnackbarService,
       private cdref : ChangeDetectorRef,
       private router: Router,
-      private route: ActivatedRoute
   ) {}
 
     ngOnInit() {
-
-        this.route.data.subscribe(val=> {
-
-            if (val.componentPermissionLevel === 2) {
-                this.hasWritePermission = true;
-            }
-
-        });
 
         this.censusDate = this.fb.group({
             CensusDate: [this.getCurrentDate()],
@@ -157,99 +146,90 @@ export class CensusRecordComponent implements OnInit {
 
   addPatients(incomingAreaId:number | undefined, incomingActionId:number | undefined, event: MatChipInputEvent): void {
 
-    if(this.hasWritePermission) {
+    if(!incomingAreaId){
+        throw new Error ('IncomingAreaId is undefineed');
+    }
 
-        if(!incomingAreaId){
-            throw new Error ('IncomingAreaId is undefineed');
-        }
-    
-        if(!incomingActionId){
-            throw new Error ('IncomingActionId is undefineed');
-        }
-    
-          const input = event.input;
-          const tag = event.value.trim();
-          if (tag || '') {
-              this.censusArea.forEach(area => {
-                  if (area.areaId === incomingAreaId) {
-                      area.actions.forEach(action => {
-                          if (action.actionId === incomingActionId) {
-                              const exists = action.patients.some(patient => {
-                                  return (
-                                      patient.tagNumber.toLowerCase() ===  tag.toLowerCase()
-                                  );
-                              });
-                              this.loading = true;
-    
-                              exists
-                                  ? (this.snackBar.errorSnackBar('Duplicate Error!','OK',), this.loading = false)
-                                  : this.census
-                                        .insertCensusData(
-                                            area.areaId || -1,
-                                            area.sortArea || -1,
-                                            action.actionId,
-                                            action.sortAction || -1,
-                                            tag,
-                                            this.censusDate.get('CensusDate')?.value
-                                        )
-                                        .then(response => {
-    
-                                            if(response){
-                                                this.loading = false;
-                                                this.loadCensusErrorRecords();
-                                                action.patients.push({
-                                                    patientId: response[0].vPatientId,
-                                                    tagNumber: tag.toUpperCase(),
-                                                    colour: '',
-                                                    errorCode: response[0].vErrorCode,
-                                                });
-                                                this.cdref.detectChanges();
-                                            }
-    
-                                             this.censusArea.forEach(censusAreas=>
-                                                {
-    
-                                                    censusAreas.actions.forEach(censusActions=>{
-                                                        censusActions.patients.forEach(censusPatients=>{
-    
-                                                            if(censusPatients.tagNumber === tag.toUpperCase() ||
-                                                            censusPatients.patientId === response[0].vPatientId){
-                                                                censusPatients.errorCode = response[0].vErrorCode;
-                                                                this.cdref.detectChanges();
-                                                            }
-                                                        });
-    
-    
+    if(!incomingActionId){
+        throw new Error ('IncomingActionId is undefineed');
+    }
+
+      const input = event.input;
+      const tag = event.value.trim();
+      if (tag || '') {
+          this.censusArea.forEach(area => {
+              if (area.areaId === incomingAreaId) {
+                  area.actions.forEach(action => {
+                      if (action.actionId === incomingActionId) {
+                          const exists = action.patients.some(patient => {
+                              return (
+                                  patient.tagNumber.toLowerCase() ===  tag.toLowerCase()
+                              );
+                          });
+                          this.loading = true;
+
+                          exists
+                              ? (this.snackBar.errorSnackBar('Duplicate Error!','OK',), this.loading = false)
+                              : this.census
+                                    .insertCensusData(
+                                        area.areaId || -1,
+                                        area.sortArea || -1,
+                                        action.actionId,
+                                        action.sortAction || -1,
+                                        tag,
+                                        this.censusDate.get('CensusDate')?.value
+                                    )
+                                    .then(response => {
+
+                                        if(response){
+                                            this.loading = false;
+                                            this.loadCensusErrorRecords();
+                                            action.patients.push({
+                                                patientId: response[0].vPatientId,
+                                                tagNumber: tag.toUpperCase(),
+                                                colour: '',
+                                                errorCode: response[0].vErrorCode,
+                                            });
+                                            this.cdref.detectChanges();
+                                        }
+
+                                         this.censusArea.forEach(censusAreas=>
+                                            {
+
+                                                censusAreas.actions.forEach(censusActions=>{
+                                                    censusActions.patients.forEach(censusPatients=>{
+
+                                                        if(censusPatients.tagNumber === tag.toUpperCase() ||
+                                                        censusPatients.patientId === response[0].vPatientId){
+                                                            censusPatients.errorCode = response[0].vErrorCode;
+                                                            this.cdref.detectChanges();
+                                                        }
                                                     });
+
+
                                                 });
-                                        });
-    
-                                        const CensusTableData : CensusRecord = {
-                                            date : this.censusDate.get('CensusDate')?.value,
-                                            area : area.areaName,
-                                            action : action.actionName,
-                                            days : 0,
-                                            order: 0
-                                        };
-                                        this.result.emit(CensusTableData);
-                            }
-                        });
-                    }
-                });
-            }
-    
-    
-    
-          if (input) {
-              input.value = '';
-          }
+                                            });
+                                    });
 
-    }
-    else {
-        this.snackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
-    }
+                                    const CensusTableData : CensusRecord = {
+                                        date : this.censusDate.get('CensusDate')?.value,
+                                        area : area.areaName,
+                                        action : action.actionName,
+                                        days : 0,
+                                        order: 0
+                                    };
+                                    this.result.emit(CensusTableData);
+                        }
+                    });
+                }
+            });
+        }
 
-    
+
+
+      if (input) {
+          input.value = '';
+      }
 
   }
 
