@@ -87,7 +87,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.route.data.subscribe(val=> {
             
-            if (val.componentPermissionLevel.value === 2) {
+            if (val.componentPermissionLevel?.value === 2) {
                 
                 this.hasWritePermission = true;
             }
@@ -274,7 +274,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
-            
+            console.log(this.hasWritePermission);
             if(this.hasWritePermission) {
                 this.loading = true;
                 if(this.recordForm.pending){
