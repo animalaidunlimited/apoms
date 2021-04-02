@@ -2,6 +2,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
 
@@ -13,6 +15,10 @@ describe('StreettreatRecordComponent', () => {
 
   const formBuilder: FormBuilder = new FormBuilder();
 
+  const permissions$ = of({componentPermissionLevel: 2});
+
+  const fakeActivatedRoute = { data: permissions$ };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
@@ -23,7 +29,10 @@ describe('StreettreatRecordComponent', () => {
         BrowserAnimationsModule,
         RouterTestingModule,
     ],
-    providers: [{ provide: FormBuilder, useValue: formBuilder }],
+    providers: [
+      { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+      { provide: FormBuilder, useValue: formBuilder }
+    ],
     declarations: [ StreetTreatRecordComponent ]
     })
     .compileComponents();

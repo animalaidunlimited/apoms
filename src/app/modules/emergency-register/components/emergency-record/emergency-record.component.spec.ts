@@ -4,9 +4,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('EmergencyRecordComponent', () => {
@@ -14,7 +15,11 @@ describe('EmergencyRecordComponent', () => {
     let fixture: ComponentFixture<EmergencyRecordComponent>;
     const formBuilder: FormBuilder = new FormBuilder();
 
-    beforeEach(async(() => {
+    const permissions$ = of({componentPermissionLevel: 2});
+
+    const fakeActivatedRoute = { data: permissions$ };
+
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -25,10 +30,13 @@ describe('EmergencyRecordComponent', () => {
                 BrowserAnimationsModule,
                 AngularFireModule.initializeApp(environment.firebase)
             ],
-            providers: [{ provide: FormBuilder, useValue: formBuilder }],
+            providers: [
+                { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+                { provide: FormBuilder, useValue: formBuilder }
+            ],
             declarations: [ EmergencyRecordComponent ],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(EmergencyRecordComponent);
