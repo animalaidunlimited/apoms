@@ -65,17 +65,14 @@ describe('NavigationService', () => {
 
     describe('getSelectedNavigationItem', () => {
         it('should get the correct selectedNavigationItem', () => {
-            /* const navigationItem = mockNavRouteItems.value[0];
+             const navigationItem = mockNavRouteItems?.value[0];
 
             if(navigationItem.path){
-                console.log(navigationItem.path);
-                console.log(service.selectNavigationItemByPath(navigationItem.path));
                 service.selectNavigationItemByPath(navigationItem.path);
-
+                if(service.getSelectedNavigationItem()){ 
+                    expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
+                }
             }
-            console.log('service.getSelectedNavigationItem()');
-            console.log(service.getSelectedNavigationItem()); */
-            // expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
         });
     });
 });
