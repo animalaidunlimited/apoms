@@ -159,10 +159,9 @@ export class NavRouteService {
     }
 
     getNavRouteList() {
-        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel.value)
+        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
-                // console.log(route);
 
                 if (route.group) {
                     const group: NavRoute | undefined = groupedList.find(navRoute => {

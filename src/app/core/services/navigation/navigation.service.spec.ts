@@ -14,8 +14,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('NavigationService', () => {
     let navigationService: NavigationService;
     let navRouteService: NavRouteService;
-    let navigationItems:  NavRoute[];
-
+    // let navigationItems:  NavRoute[];
+    const navigationItems:NavRoute[] = [{
+        data: {
+            title: 'Settings',
+            permissionId: [],
+            componentPermissionLevel: new BehaviorSubject(0)
+        },
+        icon: 'settings_applications',
+        group: 'Settings',
+        path: 'settings'
+    }];
     const mockNavRouteItems: BehaviorSubject<NavRoute[]> = new BehaviorSubject(routes);
 
     beforeEach(async () => {
@@ -35,7 +44,7 @@ describe('NavigationService', () => {
 
         navigationService = TestBed.inject(NavigationService);
         navRouteService = TestBed.inject(NavRouteService);
-        navigationItems = navRouteService.getNavRouteList() as NavRoute[];
+        // navigationItems = navRouteService.getNavRouteList() as NavRoute[];
         spyOn(navigationService, 'getNavigationItems').and.returnValue(new BehaviorSubject(navigationItems));
     });
 
