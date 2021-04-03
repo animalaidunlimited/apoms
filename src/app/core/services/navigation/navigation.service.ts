@@ -17,7 +17,8 @@ export class Page {
     providedIn: 'root',
 })
 export class NavigationService {
-    private readonly navigationItems: BehaviorSubject<NavRoute[]>;
+
+    navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
     private activePage: Page = new Page('', false,true);
     private navigationStack: Array<Array<string>> = [];
@@ -34,6 +35,7 @@ export class NavigationService {
     }
 
     public selectNavigationItemByPath(path: string) {
+        // tslint:disable-next-line: deprecation
         this.navigationItems.subscribe(nav=>
             this.selectedNavigationItem = nav
             .reduce((flatList:NavRoute[], navItem:NavRoute) => {
@@ -47,9 +49,7 @@ export class NavigationService {
                 return flatList;
             }, [])
             .find((navItem:NavRoute) => navItem.path === path)
-            
-        ); 
-            
+        );
     }
 
     public getSelectedNavigationItem(): NavRoute | undefined {
@@ -94,6 +94,7 @@ export class NavigationService {
 
         let haveRun = false;
 
+        // tslint:disable-next-line: deprecation
         this.isOpen.subscribe(currentValue => {
 
             if(haveRun){

@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from '../../../../nav-routing';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('NavMenuItemComponent', () => {
     let component: NavMenuItemComponent;
@@ -16,6 +17,7 @@ describe('NavMenuItemComponent', () => {
             imports: [
                 MatIconModule,
                 MatExpansionModule,
+                HttpClientTestingModule,
                 RouterTestingModule.withRoutes([
                     {
                         path: sideNavPath,

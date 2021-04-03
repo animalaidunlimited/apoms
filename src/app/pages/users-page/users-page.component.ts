@@ -161,7 +161,7 @@ export class UsersPageComponent implements OnInit {
 
       this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
-        if (val.componentPermissionLevel.value === 2) {
+        if (val.componentPermissionLevel?.value === 2) {
             this.hasWritePermission = true;
         }
 
