@@ -10,8 +10,6 @@ import { UserActionService } from '../user-details/user-action.service';
 import { routes } from '../../../app-routing.module';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
 
 describe('NavigationService', () => {
     let navigationService: NavigationService;
