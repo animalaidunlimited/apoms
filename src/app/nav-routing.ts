@@ -158,7 +158,7 @@ export class NavRouteService {
 
     }
 
-    private getNavRouteList() {
+    getNavRouteList() {
         return this.navRoute.children
                                 ?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
                                 .reduce((groupedList: NavRoute[], route: NavRoute) => {
