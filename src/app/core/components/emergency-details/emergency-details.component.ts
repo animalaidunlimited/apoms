@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../helpers/utils';
@@ -50,6 +50,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         private userOptions: UserOptionsService,
         private emergencyNumberValidator: UniqueEmergencyNumberValidator,
         public dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) {}
 
     @HostListener('document:keydown.control.shift.c', ['$event'])
@@ -58,6 +59,18 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.callDateTimeField.nativeElement.focus();
     }
 
+  /*   @HostListener('document:keydown.alt.shift.t', ['$event'])
+    focusCallTime(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callDateTimeField.nativeElement.focus();
+        this.callDateTimeField.nativeElement.dispatchEvent(new KeyboardEvent('keydown',{keyCode: 9}));
+        if (event.keyCode === 9 || event.code === '9') {
+            console.log("tab key pressed");
+          }
+        this.cdr.detectChanges();
+    } */
+
+    
     @HostListener('document:keydown.control.d', ['$event'])
     focusCallDispatcher(event: KeyboardEvent) {
         event.preventDefault();

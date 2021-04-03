@@ -66,12 +66,13 @@ export class CensusRecordComponent implements OnInit {
 
     ngOnInit() {
 
+        // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
-            if (val.componentPermissionLevel.value === 2) {
+            if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
 
-        })
+        });
 
         this.censusDate = this.fb.group({
             CensusDate: [this.getCurrentDate()],
@@ -109,6 +110,7 @@ export class CensusRecordComponent implements OnInit {
         ];
 
         /* Detects the change in date and Brings back the censusdata on that perticular date*/
+        // tslint:disable-next-line: deprecation
         this.censusDate.valueChanges.subscribe(changes => {
             this.date = changes.CensusDate.toString();
 
