@@ -6,9 +6,10 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -22,6 +23,8 @@ export class PatientRecordComponent implements OnInit {
     recordForm: FormGroup = new FormGroup({});
 
     @Input() incomingPatient!: SearchRecordTab;
+
+    private ngUnsubscribe = new Subject();
 
     patientId!:number;
 
@@ -48,7 +51,7 @@ export class PatientRecordComponent implements OnInit {
 
     ngOnInit() {
 
-        this.route.data.subscribe(val=> {
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
             if (val.componentPermissionLevel.value === 2) {
                 this.hasWritePermission = true;

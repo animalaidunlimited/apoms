@@ -11,6 +11,8 @@ import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger, group } from '@angular/animations';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 interface StreetTreatRole {
@@ -90,6 +92,8 @@ export class UsersPageComponent implements OnInit {
 
     hasWritePermission!: boolean;
 
+    private ngUnsubscribe = new Subject();
+
 
     dataSource: MatTableDataSource<UserDetails> ;
 
@@ -155,7 +159,7 @@ export class UsersPageComponent implements OnInit {
 
     ngOnInit() {
 
-      this.route.data.subscribe(val=> {
+      this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
         if (val.componentPermissionLevel.value === 2) {
             this.hasWritePermission = true;
