@@ -88,14 +88,14 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        this.route.data.subscribe(val=> {
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
             
             if (val.componentPermissionLevel.value === 2) {
                 
                 this.hasWritePermission = true;
             }
 
-        });
+        }) ;
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 

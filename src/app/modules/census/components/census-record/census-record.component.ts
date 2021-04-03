@@ -9,6 +9,8 @@ import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
 import { ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -23,6 +25,8 @@ export class CensusRecordComponent implements OnInit {
   @Output() public remove = new EventEmitter<CensusRecord>();
 
   @ViewChild('chipList') chipList! : MatChipList;
+
+  private ngUnsubscribe = new Subject();
 
   loading = false;
 
@@ -62,7 +66,7 @@ export class CensusRecordComponent implements OnInit {
 
     ngOnInit() {
 
-        this.route.data.subscribe(val=> {
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
             if (val.componentPermissionLevel.value === 2) {
                 this.hasWritePermission = true;
             }

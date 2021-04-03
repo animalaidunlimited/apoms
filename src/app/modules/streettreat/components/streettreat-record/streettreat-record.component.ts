@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { StreetTreatTab } from 'src/app/core/models/streettreet';
 
@@ -11,7 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 
 
 
@@ -23,6 +23,8 @@ import { map, take } from 'rxjs/operators';
 export class StreetTreatRecordComponent implements OnInit {
 
   permissionType!: number[];
+
+  private ngUnsubscribe = new Subject();
 
   hasWritePermission: boolean = false;
 
@@ -61,7 +63,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.route.data.subscribe(val=> {
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
       if (val.componentPermissionLevel.value === 2) {
           this.hasWritePermission = true;
       }
