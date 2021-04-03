@@ -26,7 +26,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
-  hasWritePermission: boolean = false;
+  hasWritePermission = false;
 
   @Input() inputStreetTreatCase!: StreetTreatTab;
 
@@ -68,7 +68,7 @@ export class StreetTreatRecordComponent implements OnInit {
           this.hasWritePermission = true;
       }
 
-  })
+  });
 
     this.recordForm = this.fb.group({
       EmergencyNumber: [{value: '', disabled: true}, Validators.required],

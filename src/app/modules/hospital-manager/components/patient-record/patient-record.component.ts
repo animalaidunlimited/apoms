@@ -38,7 +38,7 @@ export class PatientRecordComponent implements OnInit {
 
     permissionType!: number[];
 
-    hasWritePermission: boolean = false;
+    hasWritePermission = false;
 
     mediaData!: BehaviorSubject<MediaItem[]>;
     logsData!:LogsData; 
@@ -53,7 +53,7 @@ export class PatientRecordComponent implements OnInit {
 
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
-            if (val.componentPermissionLevel.value === 2) {
+            if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
 

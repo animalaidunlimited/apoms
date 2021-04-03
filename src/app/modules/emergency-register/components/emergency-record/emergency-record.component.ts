@@ -41,7 +41,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     windowWidth = window.innerWidth;
 
-    hasWritePermission: boolean = false;
+    hasWritePermission = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
@@ -90,7 +90,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
             
-            if (val.componentPermissionLevel.value === 2) {
+            if (val.componentPermissionLevel?.value === 2) {
                 
                 this.hasWritePermission = true;
             }
@@ -384,7 +384,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             }
 
             else {
-                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
+                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
             }
 
     }

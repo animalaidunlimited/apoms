@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
@@ -57,7 +57,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     form = new FormGroup({});
     // patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
-    patientDataSource: FormGroup[] = []
+    patientDataSource: FormGroup[] = [];
 
     problems$: ProblemDropdownResponse[] = [];
 
@@ -98,8 +98,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(newValue => {
-            this.emergencyCaseId = newValue});
+        .subscribe(newValue => 
+            this.emergencyCaseId = newValue);
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
