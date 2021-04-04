@@ -13,9 +13,13 @@ import { Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatSelectChange } from '@angular/material/select';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 interface Column{
   name: string;
+  areaId: number | null;
   type: string;
 }
 
@@ -35,23 +39,29 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
   addRecordVisible = false;
 
-  columnsExcludingIndex: Observable<Column[]>;
-
-  displayedColumns: Observable<string[]>;
+  //filteredColumns: Observable<Column[]>;
 
   columns: BehaviorSubject<Column[]>
-          = new BehaviorSubject<Column[]>([
-            {name: 'index', type: 'text'},
-            {name: 'Tag number', type: 'text'},
-            {name: 'Adm', type: 'checkbox'},
-            {name: 'Rel', type: 'checkbox'},
-            {name: 'Died', type: 'checkbox'}]);
+  = new BehaviorSubject<Column[]>([
+    {name: 'index', areaId: null, type: 'text'},
+    {name: 'Tag number', areaId: null, type: 'text'},
+    {name: 'Treatment priority', areaId: null, type: 'select'},
+    {name: 'Other', areaId: null, type: 'select'},
+    {name: 'complete', areaId: null, type: 'button'}
+  ]);
 
+
+
+  displayedColumns: Observable<string[]>;
 
   isPrinting: BehaviorSubject<boolean>;
   layoutType = 'census';
   otherAreas!: CensusArea[];
-  patientRecords: MatTableDataSource<ReportPatientRecord>;
+  filteredColumns:Observable<Column[]>;
+  treatmentListForm: FormGroup;
+  treatmentListArray: FormArray;
+  //patientRecords: MatTableDataSource<AbstractControl>;
+  patientRecords = new BehaviorSubject<AbstractControl[]>([]);
   showSpinner = false;
   treatmentPriorities: Observable<Priority[]>;
 
@@ -62,40 +72,30 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     private router: Router,
     private printService: PrintTemplateService,
     private changeDetector: ChangeDetectorRef,
+    private fb: FormBuilder,
     private dropdown: DropdownService,
     private census: CensusService ) {
 
-    this.columnsExcludingIndex = this.columns
+    this.filteredColumns = this.columns
                                         .pipe(map(columns =>
                                                     columns.filter(column =>  column.name !== 'index' &&
                                                                               column.name !== this.areaName &&
                                                                               column.name !== 'complete' &&
                                                                               column.name !== 'Other')));
 
-    this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
     this.treatmentPriorities = this.dropdown.getPriority();
 
     this.populateColumnList();
 
     this.isPrinting = this.printService.getIsPrinting();
 
-    const emptyReportPatient:ReportPatientRecord = {'Emergency number': 0,
-    PatientId: 0,
-    'Tag number': '',
-    Species: '',
-    Age: '',
-    'Caller name' : '',
-    Number : 0,
-    'Call date' : '',
-    'ABC status': '',
-    'Release ready': false,
-    'Release status': '',
-    Temperament: '',
-    'Treatment priority': 0,
-    showOther: false,
-    treatedToday: false};
+    this.treatmentListForm = this.fb.group({
+      treatmentList: this.fb.array([this.getEmptyPatient()])});
 
-    this.patientRecords = new MatTableDataSource([emptyReportPatient]);
+    this.treatmentListArray = this.treatmentListForm.get('treatmentList') as FormArray;
+    this.patientRecords.next(this.treatmentListArray.controls);
+
+    this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
 
     }
 
@@ -106,13 +106,37 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     if(change.areaName.currentValue && change.areaName.currentValue !== ''){
 
       this.showSpinner = true;
-
       this.populateColumnList();
       this.loadTreatmentList(change.areaName.currentValue);
 
-
     }
 
+  }
+
+  private getEmptyPatient(): FormGroup {
+
+
+    const returnGroup = this.fb.group({
+      index: 0,
+      'Emergency number': 0,
+      PatientId: 0,
+      'Tag number': '',
+      Species: '',
+      Age: '',
+      'Caller name': '',
+      Number: 0,
+      'Call date': '',
+      'ABC status': '',
+      'Release ready': false,
+      'Release status': '',
+      Temperament: '',
+      'Treatment priority': 0,
+      'Moved to': 0,
+      showOther: false,
+      treatedToday: false
+    });
+
+    return returnGroup;
   }
 
   private populateColumnList() : void {
@@ -121,26 +145,23 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     .pipe(
       take(1)
     ).subscribe(areaList => {
-
       this.otherAreas = areaList.filter(areaGroup => !areaGroup.TreatmentListMain)[0].AreaList
                                                                                         .filter(area => area.areaName !== this.areaName);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
-      const mainAreas = areaList
-        .filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
+      const mainAreas = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
                                                               .filter(area => area.areaName !== this.areaName)
-                                                              .map(area => ({name: area.areaName, type: 'checkbox'}))
-                                                              ;
+                                                              .map(area => ({name: area.areaName, areaId: area.areaId || null, type: 'checkbox'}));
 
-        mainAreas.unshift({name: 'Rel./Died', type: 'button'});
-        mainAreas.unshift({name: 'Treatment priority', type: 'select'});
-        mainAreas.unshift({name: 'Tag number', type: 'text'});
-        mainAreas.unshift({name: 'index', type: 'text'});
+        mainAreas.unshift({name: 'Rel./Died', areaId: null, type: 'button'});
+        mainAreas.unshift({name: 'Treatment priority', areaId: null, type: 'select'});
+        mainAreas.unshift({name: 'Tag number', areaId: null, type: 'text'});
+        mainAreas.unshift({name: 'index', areaId: null, type: 'text'});
 
-        mainAreas.push({name: 'Other', type: 'checkbox'});
-        mainAreas.push({name: 'complete', type: 'button'});
+        mainAreas.push({name: 'Other', areaId: null, type: 'checkbox'});
+        mainAreas.push({name: 'complete', areaId: null, type: 'button'});
 
       this.columns.next(mainAreas);
     });
@@ -191,29 +212,47 @@ export class TreatmentListComponent implements OnInit, OnChanges {
         return sortResult;
       });
 
-      this.patientRecords.sortingDataAccessor = (item: ReportPatientRecord, columnHeader: string) => {
+      this.treatmentListForm.removeControl('treatmentList');
+      this.treatmentListForm.addControl('treatmentList', this.getTreatmentListForm(response));
+      this.treatmentListArray = this.treatmentListForm.get('treatmentList') as FormArray;
 
-        switch (columnHeader) {
-          case 'Treatment priority':
-            return (item['Treatment priority'] + '').toString();
-          default:
+      //this.patientRecords.sortingDataAccessor = (item: ReportPatientRecord, columnHeader: string) => {
 
-            const newObj = JSON.parse(JSON.stringify(item));
+      //  switch (columnHeader) {
+      //    case 'Treatment priority':
+      //      return (item['Treatment priority'] + '').toString();
+      //    default:
 
-            return newObj[columnHeader];
-        }
+      //      const newObj = JSON.parse(JSON.stringify(item));
 
-      };
+      //      return newObj[columnHeader];
+      //  }
+
+      //};
 
 
-      this.patientRecords = new MatTableDataSource(response);
-      this.patientRecords.sort = this.sort;
-      this.changeDetector.detectChanges();
+      //this.patientRecords = new MatTableDataSource(sortedTreatmentList.controls);
+      //this.patientRecords.sort = this.sort;
+      this.patientRecords.next(this.treatmentListArray.controls);
       this.showSpinner = false;
+      this.changeDetector.detectChanges();
+
 
 
     });
 
+
+  }
+
+  getTreatmentListForm(response: ReportPatientRecord[]) : FormArray {
+
+    const returnArray = this.fb.array([]);
+
+    response.forEach(() => returnArray.push(this.getEmptyPatient()));
+
+    returnArray.patchValue(response);
+
+    return returnArray;
 
   }
 
@@ -222,47 +261,40 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
     // this.dialogRef.close();
 
-     this.columns.subscribe(printColumns => {
+    // this.columns.subscribe(printColumns => {
 
-      this.patientRecords.connect().subscribe(sortedData => {
+    //  this.patientRecords.connect().subscribe(sortedData => {
 
-        const printContent: CensusPrintContent = {
-          area: this.areaName,
-          displayColumns: printColumns.map(column => column.name),
-          printList: sortedData
-         };
+    //    console.log(sortedData.values);
 
-         this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+    //    const printContent: CensusPrintContent = {
+    //      area: this.areaName,
+    //      displayColumns: printColumns.map(column => column.name),
+    //      printList: []
+    //     };
 
-      });
-     });
+    //    // this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
+
+    //  });
+    // });
   }
 
   treatmentLayout(){
 
-    this.columns.next([
-      {name: 'index',type: 'string'},
-      {name: 'Tag number',type: 'string'},
-      {name: 'Age',type: 'string'},
-      {name: 'Treatment priority',type: 'string'},
-      {name: 'ABC status',type: 'string'},
-      {name: 'Release status',type: 'string'},
-      {name: 'Temperament',type: 'string'},
-      {name: 'Release ready',type: 'string'},
-      {name: 'complete',type: 'string'}]);
+    this.populateColumnList();
 
   }
 
   censusLayout(){
 
     this.columns.next([
-      {name: 'index', type: 'string'},
-      {name: 'Emergency number', type: 'string'},
-      {name: 'Tag number', type: 'string'},
-      {name: 'Species', type: 'string'},
-      {name: 'Caller name', type: 'string'},
-      {name: 'Number', type: 'string'},
-      {name: 'Call date', type: 'string'}]);
+      {name: 'index', areaId: null,  type: 'string'},
+      {name: 'Emergency number', areaId: null,  type: 'string'},
+      {name: 'Tag number', areaId: null,  type: 'string'},
+      {name: 'Species', areaId: null,  type: 'string'},
+      {name: 'Caller name', areaId: null,  type: 'string'},
+      {name: 'Number', areaId: null,  type: 'string'},
+      {name: 'Call date', areaId: null,  type: 'string'}]);
 
   }
 
@@ -314,10 +346,11 @@ openHospitalManagerRecord(tagNumber: string){
 
 }
 
-priorityChanged(element: any, event:any){
+priorityChanged(element: ReportPatientRecord, event:any){
 
-  console.log(element);
-  console.log(event);
+  const v = this.treatmentListForm.get('treatmentList') as FormArray;
+
+  console.log(v.at(0).get('Treatment priority')?.value);
 }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
@@ -329,6 +362,20 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
 
 toggleAddRecord(){
   this.addRecordVisible = !this.addRecordVisible;
+}
+
+areaChanged(element: ReportPatientRecord, event: MatSelectChange ){
+
+  const v = this.treatmentListForm.get('treatmentList') as FormArray;
+
+  console.log(v.at(0).get('Moved to')?.value);
+
+}
+
+areaCheckboxToggled(areaId:number|null, index: number){
+
+  this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
+
 }
 
 }
