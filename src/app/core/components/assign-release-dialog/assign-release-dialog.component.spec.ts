@@ -1,7 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
+import { AssignReleaseComponent } from '../assign-release/assign-release.component';
 
 import { AssignReleaseDialogComponent } from './assign-release-dialog.component';
 
@@ -35,10 +39,18 @@ describe('AssignReleaseDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AssignReleaseDialogComponent,
+      declarations: [ 
+        AssignReleaseDialogComponent,
+        AssignReleaseComponent,
         MockAssignReleaseDialogComponent
        ],
-      imports: [MatDialogModule],
+      imports: [
+        MatDialogModule,
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        MaterialModule,
+        BrowserAnimationsModule
+      ],
       providers: [
         {
           provide: MAT_DIALOG_DATA,
