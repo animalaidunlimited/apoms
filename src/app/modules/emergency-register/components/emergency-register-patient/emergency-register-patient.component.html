@@ -35,7 +35,7 @@
     </mat-form-field>
     <mat-form-field fxFlexOrder.gt-sm="2">
         <mat-label>Tag number</mat-label>
-        <input matInput formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+        <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
         <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
           The tag number already exists.
         </mat-error>

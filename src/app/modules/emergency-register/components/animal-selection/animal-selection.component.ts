@@ -36,6 +36,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
     
+    
 
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;  
 
@@ -76,13 +77,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-
-        // Check to see if this component is visible because the hostlistener listens to the window, and not just to this component
-        // So unless we check to see which version of this component is visible, we won't know which tab to update.
-        /* if(this.animalTypeChipsElement.nativeElement.offsetParent){
-
-            this.updateTag(this.getcurrentPatient());
-        } */
+        /* if(this.emergencyRegisterPatients.toArray().length  === 1){
+            console.log(this.emergencyRegisterPatients.first); */
+            this.emergencyRegisterPatients.first.tagNumber.nativeElement.focus();
+        /* } */
+        // this.updateTag(this.getcurrentPatient());
+        
     }
 
     constructor(
