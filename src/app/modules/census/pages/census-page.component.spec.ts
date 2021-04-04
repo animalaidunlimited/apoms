@@ -4,6 +4,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CensusPageComponent } from './census-page.component';
+import { CensusRecordComponent } from '../components/census-record/census-record.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CensusPageComponent', () => {
     let component: CensusPageComponent;
@@ -17,9 +19,13 @@ describe('CensusPageComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
+                RouterTestingModule.withRoutes([]),
             ],
             providers: [{ provide: FormBuilder, useValue: formBuilder }],
-            declarations: [CensusPageComponent],
+            declarations: [
+                CensusPageComponent, 
+                CensusRecordComponent
+            ],
         }).compileComponents();
     }));
 
