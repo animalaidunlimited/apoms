@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import {async,ComponentFixture, TestBed, inject} from '@angular/core/testing';
 
 import { RecordSearchComponent } from './record-search.component';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
@@ -11,16 +6,16 @@ import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
-import {
-    MatDialog,
-    MatDialogRef,
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
 import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SearchFieldComponent } from '../search-field/search-field.component';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { routes } from '../../../app-routing.module';
+import { DatePipe } from '@angular/common';
 
 describe('RecordSearchComponent', () => {
     let component: RecordSearchComponent;
@@ -44,9 +39,11 @@ describe('RecordSearchComponent', () => {
                 MaterialModule,
                 MatDialogModule,
                 BrowserAnimationsModule,
+                RouterTestingModule.withRoutes(routes),
             ],
             providers: [
                 MatDialog,
+                DatePipe,
                 OVERLAY_PROVIDERS,
                 {
                     provide: MAT_DIALOG_DATA,
@@ -55,9 +52,12 @@ describe('RecordSearchComponent', () => {
                 {
                     provide: MatDialogRef,
                     useValue: mockDialogRef,
-                },
+                }
             ],
-            declarations: [RecordSearchComponent],
+            declarations: [
+                RecordSearchComponent,
+                SearchFieldComponent
+            ],
         }).compileComponents();
     }));
 
