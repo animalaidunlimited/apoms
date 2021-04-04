@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
@@ -19,6 +20,7 @@ describe('CensusRecordComponent', () => {
       imports: [
         HttpClientTestingModule,
         ReactiveFormsModule,
+        MaterialModule,
         BrowserAnimationsModule,
         OverlayModule,
         FormsModule,

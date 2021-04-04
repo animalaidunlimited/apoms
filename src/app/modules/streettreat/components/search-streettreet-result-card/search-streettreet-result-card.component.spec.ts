@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterialModule } from 'src/app/material-module';
 
 import { SearchStreetTreetResultCardComponent } from './search-streettreet-result-card.component';
 
@@ -8,6 +9,7 @@ describe('SearchStreettreetResultCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports:[MaterialModule],
       declarations: [ SearchStreetTreetResultCardComponent ]
     })
     .compileComponents();
