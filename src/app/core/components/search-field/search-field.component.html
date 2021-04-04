@@ -1,4 +1,4 @@
-<!-- <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'"> -->
+<!-- <mat-form-field class="er-case-search-box"  [@expandSearchForm]="searchShowing ? 'open' : 'closed'"> -->
 
 <mat-form-field class="er-case-search-box">
     <span matPrefix (click)="executeSearch()" >
@@ -13,6 +13,9 @@
         (keyup.enter)="executeSearch()"
         matInput
     />
+ 
+    <mat-icon style="cursor: pointer; font-size: 1.2rem; vertical-align: text-bottom;" id="clearSearchBtn" matSuffix (click)="search.searchString=''" >close</mat-icon>
+
     <mat-icon style="cursor: pointer;" matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
 </mat-form-field>
 
