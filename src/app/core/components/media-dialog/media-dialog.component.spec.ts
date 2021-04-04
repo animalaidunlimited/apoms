@@ -5,6 +5,7 @@ import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MaterialModule } from 'src/app/material-module';
 import { environment } from 'src/environments/environment';
 
 import { MediaDialogComponent } from './media-dialog.component';
@@ -27,6 +28,7 @@ let dialog: MatDialogRef<MediaDialogComponent>;
       imports: [
         HttpClientTestingModule,
         MatDialogModule,
+        MaterialModule,
         FormsModule,
         ReactiveFormsModule,
         AngularFireModule.initializeApp(environment.firebase)],
