@@ -235,7 +235,14 @@
 
     </form>
 
-      <div class="add-record-box" *ngIf="addRecordVisible"></div>
+      <div class="add-record-box" *ngIf="addRecordVisible">
+        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
+          <mat-form-field appearance="fill">
+            <mat-label>TagNumber</mat-label>
+            <input matInput>
+          </mat-form-field>
+        </div>
+      </div>
 
 
       <button mat-fab aria-label="Add new record" class="add-patient-fab" [disabled]="areaName === ''" (click)="toggleAddRecord()"><mat-icon>add</mat-icon></button>

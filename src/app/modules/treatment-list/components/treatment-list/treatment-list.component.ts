@@ -16,6 +16,8 @@ import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSelectChange } from '@angular/material/select';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { PriorityObject } from 'src/app/core/models/patients';
 
 interface Column{
   name: string;
@@ -74,7 +76,8 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     private changeDetector: ChangeDetectorRef,
     private fb: FormBuilder,
     private dropdown: DropdownService,
-    private census: CensusService ) {
+    private census: CensusService,
+    private patientService: PatientService) {
 
     this.filteredColumns = this.columns
                                         .pipe(map(columns =>
@@ -208,7 +211,6 @@ export class TreatmentListComponent implements OnInit, OnChanges {
             1 : -1;
 
         }
-
         return sortResult;
       });
 
@@ -351,6 +353,14 @@ priorityChanged(element: ReportPatientRecord, event:any){
   const v = this.treatmentListForm.get('treatmentList') as FormArray;
 
   console.log(v.at(0).get('Treatment priority')?.value);
+  let priorityObject: PriorityObject = {
+    patientId: element.PatientId,
+    priorityValueId: event.value,
+    updatePriorityFlag: true
+  }
+
+  this.patientService.updatePatientPriority(priorityObject);
+
 }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
