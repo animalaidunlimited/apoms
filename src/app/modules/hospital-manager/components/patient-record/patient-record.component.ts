@@ -118,6 +118,8 @@ export class PatientRecordComponent implements OnInit {
 
     saveForm() {
 
+        console.log(this.recordForm.get('patientDetails')?.value);
+
         this.loading = true;
 
         this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {

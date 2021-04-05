@@ -97,3 +97,9 @@ export interface PatientOutcomeResponse{
     patientOutcomeDetailsId: number;
     success: number;
 }
+
+export interface PriorityObject {
+    patientId: number;
+    priorityValueId: number;
+    updatePriorityFlag: boolean
+}

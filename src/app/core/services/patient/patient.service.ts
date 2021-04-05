@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
-    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
+    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, PriorityObject } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
@@ -378,6 +378,16 @@ export class PatientService extends APIService {
         }
 
 
+    }
+
+    public async updatePatientPriority(priorityObject: PriorityObject): Promise<SuccessOnlyResponse> {
+        return await this.put(priorityObject)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
 
