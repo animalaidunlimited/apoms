@@ -5,14 +5,10 @@ const colors = require('colors');
 
 require('dotenv').load();
 
-const environment = JSON.stringify(process.env.DEPLOYMENT_ENVIRONMENT || 'other');
-
-console.log(process.env.DEPLOYMENT_ENVIRONMENT?.length);
+const environment = process.env.DEPLOYMENT_ENVIRONMENT || 'other';
 
 console.log(colors.magenta(`Setting the current deployment environment, i.e. the service, to ${environment}`));
 const appYamlPath = 'dist/app.yaml';
-
-
 
 const appYamlFile =`service: ${environment}
 runtime: nodejs12

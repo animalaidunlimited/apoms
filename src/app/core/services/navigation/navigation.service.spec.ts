@@ -1,68 +1,78 @@
-import { TestBed, async } from '@angular/core/testing';
+import { map } from 'rxjs/operators';
+import { TestBed} from '@angular/core/testing';
 
 import { NavigationService } from './navigation.service';
-import { NavRoute } from '../../../nav-routing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject } from 'rxjs';
+import { NavRoute, NavRouteService } from '../../../nav-routing';
 import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UserActionService } from '../user-details/user-action.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { routes } from '../../../app-routing.module';
+import { RouterTestingModule } from '@angular/router/testing';
+
 
 describe('NavigationService', () => {
-    let service: NavigationService;
-    let http: HttpClient;
+    let navigationService: NavigationService;
+    let navRouteService: NavRouteService;
+    // let navigationItems:  NavRoute[];
+    const navigationItems:NavRoute[] = [{
+        data: {
+            title: 'Settings',
+            permissionId: [],
+            componentPermissionLevel: new BehaviorSubject(0)
+        },
+        icon: 'settings_applications',
+        group: 'Settings',
+        path: 'settings'
+    }];
+    const mockNavRouteItems: BehaviorSubject<NavRoute[]> = new BehaviorSubject(routes);
 
-    const mockNavRouteItems: NavRoute[] = [
-        { path: 'somePath', data: { title: 'someTitle' , permissionId:[2,4,6,8,10,12], componentPermissionLevel: 'someVal' } },
-        { path: 'somePath2' },
-        { path: 'somePath3' },
-    ];
+    beforeEach(async () => {
 
-    const userService = new UserActionService(http)
-    const permService = new EvaluatePermissionService(userService)
-    const mockNavRouteService = {
-        navRoute: {},
-        navRoutes: new BehaviorSubject<NavRoute[]>([]),
-        router: null,
-        getNavRoutes: () => mockNavRouteItems,
-        userPermissionArray: [],
-        permission: true,
-        userPermissions: [],
-        permissionService: permService
-,
-        showNavRoutes:()=> {}
-
-
-        
-    };
-
-    beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [ RouterTestingModule ],
+            imports: [
+                HttpClientTestingModule,
+                RouterTestingModule.withRoutes(routes)
+            ],
             providers: [
-                {
-                    provide: NavigationService,
-                    useValue: new NavigationService(mockNavRouteService),
-                },
+                NavigationService,
+                NavRouteService,
+                EvaluatePermissionService,
+                UserActionService
             ],
         });
-        service = TestBed.get(NavigationService);
-    }));
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
+        navigationService = TestBed.inject(NavigationService);
+        navRouteService = TestBed.inject(NavRouteService);
+        // navigationItems = navRouteService.getNavRouteList() as NavRoute[];
+        spyOn(navigationService, 'getNavigationItems').and.returnValue(new BehaviorSubject(navigationItems));
+    });
+
+    describe('navigationService', () => {
+      it('should be initialized', () => {
+        expect(navigationService).toBeTruthy();
+      });
     });
 
     describe('getNavigationItems', () => {
-        it('should get the correct navigationItems', () => {
-            expect(service.getNavigationItems()).toEqual(mockNavRouteItems);
+        it('should fetch all navigiation items at initialization',() =>{
+          expect(navigationService.getNavigationItems().value).toBe(navigationItems);
+        });
+      });
+
+    describe('getSelectedNavigationItem', () => {
+        it('should get the correct selectedNavigationItem', () => {
+            const navigationItem = mockNavRouteItems?.value[0];
+            navigationService.navigationItems.next(navigationItems);
+            navigationService.selectNavigationItemByPath(navigationItem.path as string);
+            expect((navigationService.getSelectedNavigationItem() as NavRoute).path).toBe(mockNavRouteItems?.value[0].path);
         });
     });
 
     describe('setActivePage', () => {
         it('should set the activePage', () => {
-            service.setActivePage('fakeTitle', ['fake'], true);
-            const activePage = service.getActivePage();
+            navigationService.setActivePage('fakeTitle', ['fake'], true);
+            const activePage = navigationService.getActivePage();
             expect(activePage.title).toEqual('fakeTitle');
             expect(activePage.isChild).toEqual(true);
         });
@@ -70,23 +80,11 @@ describe('NavigationService', () => {
 
     describe('getActivePage', () => {
         it('should get the activePage', () => {
-            service.setActivePage('fakeTitle', ['fake']);
-            const activePage = service.getActivePage();
-            expect(service.getActivePage()).toEqual(activePage);
+            navigationService.setActivePage('fakeTitle', ['fake']);
+            const activePage = navigationService.getActivePage();
+            expect(navigationService.getActivePage()).toEqual(activePage);
         });
     });
 
-    describe('getSelectedNavigationItem', () => {
-        it('should get the correct selectedNavigationItem', () => {
-            const navigationItem = mockNavRouteItems[0];
-
-            if(navigationItem.path){
-
-                service.selectNavigationItemByPath(navigationItem.path);
-
-            }
-
-            expect(service.getSelectedNavigationItem()).toEqual(navigationItem);
-        });
-    });
+    
 });

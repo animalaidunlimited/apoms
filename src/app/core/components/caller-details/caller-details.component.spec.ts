@@ -15,6 +15,7 @@ import { MaterialModule } from 'src/app/material-module';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 describe('CallerDetailsComponent', () => {
     let component: CallerDetailsComponent;
@@ -31,7 +32,10 @@ describe('CallerDetailsComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
             ],
-            declarations: [CallerDetailsComponent],
+            declarations: [
+                CallerDetailsComponent,
+                CallerAutocompleteComponent
+            ],
         }).compileComponents();
     }));
 
@@ -52,7 +56,7 @@ describe('CallerDetailsComponent', () => {
         fixture.detectChanges();
     }));
 
-    afterEach(function(done) {
+    afterEach((done) => {
         component.recordForm.reset();
         done();
     });
