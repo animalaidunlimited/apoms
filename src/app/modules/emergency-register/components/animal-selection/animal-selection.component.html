@@ -23,13 +23,13 @@
             <ng-container matColumnDef="animalType">
                 <th mat-header-cell *matHeaderCellDef #speciesLabel> Species </th>
                 <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"
-                > {{row.get("animalType")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('animalType')?.value == ''">  Species</p> </td>
+                [class.invalid-cell]="row.invalid && row.get('animalType')?.value == ''"> {{row.get("animalType")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('animalType')?.value == ''">  Species</p> </td>
             </ng-container>
 
             <ng-container matColumnDef="mainProblem">
                     <th mat-header-cell *matHeaderCellDef> Main problem(s) </th>
                     <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"
-                    > {{row.get("problemsString")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('problemsString')?.value == ''">  Main problem(s)</p></td>
+                    [class.invalid-cell]="row.invalid && row.get('problemsString')?.value == ''"  > {{row.get("problemsString")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('problemsString')?.value == ''">  Main problem(s)</p></td>
             </ng-container>
 
             <ng-container matColumnDef="tagNo">
@@ -37,6 +37,7 @@
                     <th mat-header-cell *matHeaderCellDef> Tag number </th>
                     <td mat-cell *matCellDef="let row"
                     (click)="selectIfNotSelected(row); updateTag(row)"
+                    [class.invalid-cell]="(recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1 || recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ) && !row.get('tagNumber')?.value"
                     [ngClass]="{
                         duplicate: row.get('duplicateTag')?.value == 'INVALID',
                         pending: row.get('duplicateTag')?.value == 'PENDING'

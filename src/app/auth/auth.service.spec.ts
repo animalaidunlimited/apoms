@@ -48,7 +48,8 @@ describe('AuthService', () => {
                 .then((redirectUrl: string | null) => {
                     expect(storageService.save).toHaveBeenCalled();
                     expect(redirectUrl).toEqual('/welcome');
-                });
+                })
+                .catch(error => console.log(error.message));
         });
 
         it('should throw an error and reject the promise in the catch block', () => {

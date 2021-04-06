@@ -1,7 +1,5 @@
 import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { UserActionService } from './core/services/user-details/user-action.service';
-import { AuthService } from './auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 
@@ -127,20 +125,14 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
-
 export class NavRouteService {
     navRoute!: Route;
     navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
-    // navRoutes!: NavRoute[];
     userPermissionArray!: number[];
     permission!: boolean;
-    userPermissions!: number[]
-
-
+    userPermissions!: number[];
 
     constructor(router: Router, private permissionService: EvaluatePermissionService) {
-
-        
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
@@ -149,7 +141,7 @@ export class NavRouteService {
             this.navRoute = routes;
         }
 
-        if(!this.navRoute?.children){
+        if(!this.navRoute.children){
             throw new Error ('No routes detected');
         }
         this.navRoute.children?.forEach(routeVal=> {
@@ -158,23 +150,18 @@ export class NavRouteService {
                 if(routeVal.data && val) {
                     routeVal.data.componentPermissionLevel.next(val);
                 }
-                this.navRoutes.next(this.showNavRoutes() || []);
-            })
+                this.navRoutes.next(this.getNavRouteList() || []);
+            });
             
-        })
-        
-        
+        });
 
 
-
-        
     }
 
-    private showNavRoutes() {
-        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel.value)
+    getNavRouteList() {
+        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
-                // console.log(route);
 
                 if (route.group) {
                     const group: NavRoute | undefined = groupedList.find(navRoute => {
@@ -199,10 +186,11 @@ export class NavRouteService {
             }, []);
     }
 
-    public getNavRoutes(): BehaviorSubject<NavRoute[]>{
+    
+    getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
-    
 
-    
+
+
 }
