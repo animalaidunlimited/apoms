@@ -1,3 +1,7 @@
+$colour-border:#a9abad;
+$primary-font-colour: #626262;
+$standard-width: 180px;
+
 .counts{
   text-align: center;
   padding-bottom: 15px;
@@ -19,6 +23,10 @@
   }
 }
 
+.dateFields {
+  width: auto;
+}
+
 @media only screen and (min-width:600px){
   .area {
     width: 250px;
@@ -33,4 +41,30 @@
 .count-heading{
   color: #a9abad;
   padding-bottom: 15px;
+}
+
+.animalCount-sub-group {
+  background-color:white ;
+  border: 2px solid;
+  border-radius: 5px;
+  margin-top: 10px;
+  border-color: $colour-border;
+  padding-left:15px;
+  padding-right:15px;
+}
+
+@media(max-width: 600px) {
+  .animalCount-sub-group {
+    background-color:white ;
+    border: 2px solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    min-width: 90%;
+    border-color: $colour-border;
+    padding-left:15px;
+    padding-right:15px;
+  }
+  .dateFields {
+    min-width: 100%;
+  }
 }

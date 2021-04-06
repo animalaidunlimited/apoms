@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,7 +26,8 @@ let dialog: MatDialogRef<SurgeriesByDateDialogComponent>;
     TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MaterialModule
       ],
       providers: [ {
         provide: MAT_DIALOG_DATA,

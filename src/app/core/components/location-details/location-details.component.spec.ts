@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import {
     async,
     ComponentFixture,
@@ -20,6 +21,7 @@ describe('LocationDetailsComponent', () => {
                 HttpClientTestingModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule
             ],
 
             declarations: [LocationDetailsComponent],
