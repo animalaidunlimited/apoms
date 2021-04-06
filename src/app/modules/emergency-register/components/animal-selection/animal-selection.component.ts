@@ -253,7 +253,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
 
         const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
-        // const patients:FormGroup[] = []
 
         this.patientDataSource =  patients;
 

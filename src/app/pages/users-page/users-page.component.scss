@@ -61,16 +61,6 @@ $standard-width: 175px;
     margin: auto;
 }
 
-//   @keyframes move {
-
-//   }
-//   @media only screen and (max-width:600px){
-//     :host {
-//         padding-top:60px;
-//         display:block;
-//     }
-// }
-
 .example-container {
     display: flex;
     flex-direction: column;
@@ -79,7 +69,6 @@ $standard-width: 175px;
   }
   
   .mat-table {
-    // overflow: auto;
     max-height: fit-content;
     border: 1px solid $colour-border;
     cursor: pointer;

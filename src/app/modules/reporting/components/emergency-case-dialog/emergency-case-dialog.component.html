@@ -5,10 +5,6 @@
   <div class="example-container mat-elevation-z8">
     <mat-table matSort #table [dataSource]="dataSource">
 
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-      <!-- Position Column -->
       <ng-container matColumnDef="emergencyNumber">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Emergency number </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -17,7 +13,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Name Column -->
       <ng-container matColumnDef="animalType">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Animal type </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -26,7 +21,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
       <ng-container matColumnDef="tagNumber">
         <mat-header-cell *matHeaderCellDef mat-sort-header> TagNumber </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -43,7 +37,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Symbol Column -->
       <ng-container matColumnDef="dispatcher">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Dispatcher name </mat-header-cell>
         <mat-cell *matCellDef="let row"> 

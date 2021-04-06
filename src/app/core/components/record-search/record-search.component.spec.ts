@@ -8,7 +8,6 @@ import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchFieldComponent } from '../search-field/search-field.component';
@@ -44,7 +43,6 @@ describe('RecordSearchComponent', () => {
             providers: [
                 MatDialog,
                 DatePipe,
-                OVERLAY_PROVIDERS,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,
