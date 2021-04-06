@@ -70,7 +70,7 @@ mat-radio-button{
 }
 
 .full-width{
-  width: 100%;
+  max-width: 100%;
 }
 
 .extra-wide{
@@ -128,4 +128,99 @@ mat-radio-button{
 @media print {
   .isPrinting > * { display: none;}
   .isPrinting print-wrapper { display: block; }
+}
+
+@media(max-width: 600px) {
+
+  .mat-cell {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .mobile-label[_ngcontent-yue-c345] {
+    width: auto;
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  .mat-form-field{
+    max-width: 41.9%;
+  }
+
+  .form-sub-group
+  {
+    background-color:white ;
+    border: 2px solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    border-color: $colour-border;
+    padding-left:15px;
+    padding-right:15px;
+    margin-top: auto;
+  }
+
+  fieldset.form-sub-group {
+    width: auto;
+  }
+
+  .mat-raised-button{
+    margin-right: 8px !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    max-width: 120px;
+    font-size: 13px;
+  }
+
+  body {
+    margin: 0 !important;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 13px;
+
+    & .body:nth-child(1) {
+      font-size: 13px;
+    }
+  }
+
+  .mat-chip {
+    font-size: 13px;
+  }
+
+  .mat-tab-label {
+    font-size: 13px;
+  }
+
+  .mat-cell {
+    font-size: 13px;
+  }
+
+  .mat-expansion-panel-header {
+    font-size: 13px;
+  }
+
+  .mat-expansion-panel-content {
+    font-size: 13px;
+  }
+
+  .mat-card-content {
+    font-size: 13px;
+  }
+
+  .legend {
+    font-size: 110%;
+  }
+
+  .mat-input-element {
+    font-size: 13px !important;
+  }
+
+  .tag-number {
+    font-size: 30px !important;
+    color: $primary-font-colour !important;
+  }
+
+  .current-area {
+    font-size: 30px !important;
+    color: $primary-font-colour !important;
+  }
+
 }

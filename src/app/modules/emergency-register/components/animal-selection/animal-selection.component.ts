@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, Input, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatTable } from '@angular/material/table';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
@@ -56,7 +56,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     patientArray:FormArray  = new FormArray([]);
 
     form = new FormGroup({});
-    patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
+    // patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
+    patientDataSource: FormGroup[] = [];
 
     problems$: ProblemDropdownResponse[] = [];
 
@@ -97,7 +98,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(newValue => this.emergencyCaseId = newValue);
+        .subscribe(newValue => 
+            this.emergencyCaseId = newValue);
 
         // if we have a case id we're doing a reload. Otherwise this is a new case.
         this.emergencyCaseId
@@ -144,6 +146,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getEmptyPatient() {
+
         const problems = this.fb.array([]);
 
         return this.getPatient(problems, 1, true, 0);
@@ -153,6 +156,8 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
+
+
         const problems = this.fb.array([]);
 
         patient.problems.forEach(problem => {
@@ -173,6 +178,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number) {
+
 
         const newPatient = this.fb.group({
             patientId: [patientId],
@@ -227,6 +233,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     initPatientArray() {
+
         this.patientArray = this.recordForm.get('patients') as FormArray;
 
         this.patientArray.clear();
@@ -243,21 +250,26 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     resetTableDataSource() {
+
+
         const patients:FormGroup[] = ((this.recordForm.get('patients') as FormArray).controls) as FormGroup[];
 
-        this.patientDataSource = new MatTableDataSource(patients);
+        this.patientDataSource =  patients;
 
         this.selection = new SelectionModel<FormGroup>(true, []);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
+
         const numSelected = this.selection.selected.length;
-        const numRows = this.patientDataSource.data.length;
+        const numRows = this.patientDataSource.length;
         return numSelected === numRows;
     }
 
     toggleRow(row:FormGroup) {
+
+
 
         if(this.selection.selected.length !== 0 && this.selection.selected[0] !== row){
 
@@ -288,6 +300,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     /** The label for the checkbox on the passed row */
     checkboxLabel(row?: FormGroup): string {
+
         if (!row) {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
@@ -297,6 +310,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     clearChips() {
+
         this.currentPatientChip = '';
 
         // Get all of the chip lists on the page and reset them all.
@@ -383,7 +397,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
             const currentAnimalType = this.getAnimalFromObservable( animalTypeChip.value );
 
-            const position: number = this.patientDataSource.data.length + 1;
+            const position: number = this.patientDataSource.length + 1;
 
             const newPatient = this.getEmptyPatient();
 
@@ -403,7 +417,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     setSelected(position: number) {
 
         // Set the new row to be selected
-        const selected = this.patientDataSource.data.find(row => row.get('position')?.value === position);
+        const selected = this.patientDataSource.find(row => row.get('position')?.value === position);
 
         if(selected === undefined){
             throw new TypeError('Selected value was not found!');
@@ -413,6 +427,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     focusProblemChip(event:any, problemChip:any) {
+
         if (event.keyCode >= 65 && event.keyCode <= 90) {
             const chips = this.problemChips.chips;
 
@@ -430,6 +445,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     cycleChips(event:any, chipGroup: string, property: string) {
+
 
         if (event.keyCode >= 65 && event.keyCode <= 90) {
 
@@ -480,6 +496,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     problemChipSelected(problemChip:any) {
+
 
         this.recordForm.markAsDirty();
 
@@ -551,10 +568,12 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getcurrentPatient() {
+
         return this.selection.selected[0];
     }
 
     deletePatientRow(row:FormGroup) {
+
         const position = row.get('position')?.value;
 
         const deleted = row.get('deleted')?.value;
@@ -635,6 +654,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
 
     updateTag(currentPatient:any) {
 
+
         if(this.selection.selected.length === 0){
 
             // TODO make this a pretty dialog
@@ -709,6 +729,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
     }
 
     getAnimalFromObservable(name: string) {
+
         return this.animalTypes$.find(
             animalType => animalType.AnimalType === name,
         );

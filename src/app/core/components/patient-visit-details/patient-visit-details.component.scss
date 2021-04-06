@@ -124,15 +124,16 @@
         max-width:67vw;
     }
 
-	.patientVisitFrom mat-form-field {
-		flex-basis: 0;
-		flex-grow: 1;
-	}
+    .patientVisitFrom .mat-form-field {
+        width: 32.6%;
+        margin-right: 0 !important;
+    }
+    
 }
 @media only screen and (max-width: 600px) {
     .calendar-toggle {
         width: 100%;
-        margin-bottom: -10px !important;
+        margin-top: 2rem !important;
     }
     button.mat-mini-fab {
         box-sizing: border-box;
@@ -170,13 +171,21 @@
     }
     .visitsWrapper {
         margin-bottom: 20px;
+        .mat-form-field{
+            max-width: 47.4% !important;
+        }
     }
     .mat-fab-wrapper {
         width: 100%;
     }
     .mat-form-field{
         width:100% !important;
+        max-width: 47.5% !important;
         margin-right: 0 !important;
+        textarea.mat-input-element {
+            height: auto !important;
+            min-height: unset !important;
+        }
     }
 
 }
@@ -189,10 +198,21 @@
     }
 
 }
+
 @media only screen and (min-width: 1000px) {
     .add-visits-fab-btn {
         display:flex !important;
         flex-direction: row-reverse;
         margin:0 calc(50% - 12px) 30px 0;
+    }
+}
+.full-width {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+.visitsWrapper {
+    .mat-form-field.full-width {
+        max-width: 97% !important;
+        width: 97% !important;
     }
 }

@@ -24,4 +24,9 @@ export class UserActionService extends APIService{
     return this.get(request);
   }
 
+  public async getUserPermissions() : Promise<any> {
+    const request = '?Username=' + null;
+    return this.get(request);
+  }
+
 }

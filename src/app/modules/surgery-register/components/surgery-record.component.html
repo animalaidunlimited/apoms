@@ -22,7 +22,7 @@
 
         <fieldset class="form-sub-group">
             <legend class="legend">Surgery type</legend>
-            <mat-form-field style="width:100%">
+            <mat-form-field class="surgeryTypeWrapper">
                 <mat-label >Select surgery type</mat-label>
                 <mat-select formControlName="SurgeryTypeId" style="width: 100%;" [errorStateMatcher]="errorMatcher"  required>
                         <mat-option *ngFor="let surgeryType of surgeryTypes" [value]="surgeryType.SurgeryTypeId" >

@@ -1,5 +1,3 @@
-<!-- <mat-form-field class="er-case-search-box"  [@expandSearchForm]="searchShowing ? 'open' : 'closed'"> -->
-
 <mat-form-field class="er-case-search-box">
     <span matPrefix (click)="executeSearch()" >
         <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
@@ -26,15 +24,14 @@
 >
     <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index" class="searchRows">
         <div [formGroupName]="i">
-            <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="start end">
                 <div fxFlex="7" fxFlexOrder="1" class="delete-search">
                     <button class="delete-search-row" style="cursor: pointer; margin-right:15px; " mat-mini-fab color="warn" aria-label="Delete this Visit" (click)="removeRow(i)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
 
-                <div fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-md="20px" fxLayoutAlign="center center" fxFlex class="searchbox">
-                    <div fxFlex class="searchbox-field">
+                <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="row wrap" fxLayoutAlign="center center" class="searchbox">
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)" [errorStateMatcher]="errorMatcher">
@@ -43,8 +40,6 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                    </div>
-                    <div fxFlex class="searchbox-term">
 
                             <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'">
                                 <mat-label>Options </mat-label>
@@ -60,7 +55,7 @@
                             </mat-form-field>
 
 
-                    </div>
+
                 </div>
             </div>
         </div>

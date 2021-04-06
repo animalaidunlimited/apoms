@@ -3,6 +3,10 @@ body {
     margin: 0 !important;
 }
 
+$colour-border:#a9abad;
+$primary-font-colour: #626262;
+$standard-width: 180px;
+
 
 .form-group {
     margin: 30px;
@@ -83,6 +87,24 @@ fieldset.form-group {
         background-color: #ffcccc;
 
     }
+
+    .form-group {
+        min-width: 20rem;
+        border-radius: 5px;
+        left: -6%;
+        padding-bottom: 30px;
+    }
+    
+    .form-sub-group {
+        min-width: 93%;
+        border-color: white;
+    }
+
+    .census-chip-list {
+        min-width: 100%;
+        padding-top: 10px;
+    }
+    
     
     
     .recordDetailsContainer1 {

@@ -23,37 +23,50 @@
     width: 17px !important;
 }
 
-.mat-icon{
-    vertical-align: text-bottom !important;
-}
 
 // TODO FIX THIS SO IT'S THE SAME HEIGHT AS EVERYTHING ELSE
 .mat-select-trigger{
     display: inherit !important;
 }
 
-.emergencySyncIcon .mat-icon {
-    font-size: 2.5rem;
-    position: absolute !important;
-    right: 5% !important;
-    top: 4rem !important;
-    color: gold;
-    cursor: default
+mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+
+    position: relative;
+    font-size: 2rem;
+    margin-left: 9rem;
+    margin-bottom: 1.8rem;
+    cursor: pointer;
+
 }
 
-@media only screen and (min-width:600px){
-    .logs_btn{
-        margin-left: -1rem;
-        font-size: 2.4rem;
-        .mat-icon{
-            font-size: 2rem;
-        }
+@media(max-width: 600px) {  
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
+        font-size: 1.5rem;
+        position: absolute!important;
+        right: 3% !important;
+        top: 6rem !important;
+        cursor: pointer;
     }
 }
-// To disable the Emergency number field by css.
-// .disable {
-//     pointer-events: none;
-//     background: silver;
-//     border: 1px solid grey;
-//     border-radius: 7px;
-// }
+
+@media(max-width: 1024px) {  
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
+        font-size: 2rem;
+        position: absolute !important;
+        right: 29.5rem !important;
+        top: 9rem !important;
+        cursor: pointer;
+    }
+    .mat-icon{
+        vertical-align: text-bottom !important;
+    }
+    
+}
+
+
+@media(min-width: 600px) {  
+    .mat-icon{
+        font-size: 2rem;
+        margin-top: -2rem;
+    }
+}

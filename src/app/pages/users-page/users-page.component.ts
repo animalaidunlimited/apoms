@@ -8,14 +8,34 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { state, style, transition, animate, trigger } from '@angular/animations';
-import { take } from 'rxjs/operators';
+import { state, style, transition, animate, trigger, group } from '@angular/animations';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 interface StreetTreatRole {
   roleId: number;
   roleName: string;
 }
+
+interface PermissionObject {
+  groupId : number;
+  groupValue: number;
+}
+
+interface UserPermissions {
+  groupNameId: number;
+  groupName: string;
+  permissions: Permissions[];
+}
+
+interface Permissions {
+  permissionId : number;
+  permissionType: string;
+}
+
 
 @Component({
     selector: 'app-users-page',
@@ -32,7 +52,7 @@ interface StreetTreatRole {
          style({
           backgroundColor: '',
           width: '200px',
-          height: '80px',
+          height: '100%',
           visibility: 'visible'
         })),
         transition('true => false', [animate('250ms 750ms')]),
@@ -47,8 +67,13 @@ interface StreetTreatRole {
 
     ]
 })
+
 export class UsersPageComponent implements OnInit {
     loading = false;
+
+    permissionByGroupArray: PermissionObject[] = [];
+
+    permissionGroupObject!: UserPermissions[];
 
     teamNames!: TeamDetails[];
 
@@ -65,6 +90,11 @@ export class UsersPageComponent implements OnInit {
     myCheck = false;
     currentState = 'closed';
 
+    hasWritePermission!: boolean;
+
+    private ngUnsubscribe = new Subject();
+
+
     dataSource: MatTableDataSource<UserDetails> ;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -74,7 +104,8 @@ export class UsersPageComponent implements OnInit {
     constructor(private dropdown : DropdownService,
       private fb : FormBuilder,
       private userAction : UserActionService,
-      private snackBar: SnackbarService) {
+      private snackBar: SnackbarService,
+      private route: ActivatedRoute) {
         const emptyUser = {
           userId : 0,
           firstName: '',
@@ -116,7 +147,8 @@ export class UsersPageComponent implements OnInit {
       isStreetTreatUser:[],
       teamId:[],
       roleId:[],
-      jobTitleId:[]
+      jobTitleId:[],
+      permissionArray:[]
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -126,13 +158,93 @@ export class UsersPageComponent implements OnInit {
     }];
 
     ngOnInit() {
-        this.dropdown.getAllTeams().pipe(take(1)).subscribe(team=>{
-          this.teamNames = team;
-        });
-        this.dropdown.getUserJobType().pipe(take(1)).subscribe(jobType=>{
-          this.jobTypes = jobType;
-        });
-        this.getrefreshTableData();
+
+      this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
+
+        if (val.componentPermissionLevel?.value === 2) {
+            this.hasWritePermission = true;
+        }
+
+    });
+
+      this.permissionGroupObject = [
+        {
+          groupNameId:1,
+          groupName: 'Emergency register',
+          permissions: [{
+            permissionId: 1,
+            permissionType: 'Read'
+          }, {
+            permissionId : 2,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 2,
+          groupName: 'Hospital Manager',
+          permissions: [{
+            permissionId: 3,
+            permissionType: 'Read'
+          }, {
+            permissionId : 4,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 3,
+          groupName: 'StreetTreat',
+          permissions: [{
+            permissionId: 5,
+            permissionType: 'Read'
+          }, {
+            permissionId : 6,
+            permissionType: 'Write'
+          }]
+        }
+        ,{
+          groupNameId: 4,
+          groupName: 'Census',
+          permissions: [{
+            permissionId: 7,
+            permissionType: 'Read'
+          }, {
+            permissionId : 8,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 5,
+          groupName: 'Reporting',
+          permissions: [{
+            permissionId: 9,
+            permissionType: 'Read'
+          }, {
+            permissionId : 10,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 6,
+          groupName: 'Admin',
+          permissions: [{
+            permissionId: 11,
+            permissionType: 'Read'
+          }, {
+            permissionId : 12,
+            permissionType: 'Write'
+          }]
+        }
+      ];
+
+      this.userDetails.get('per');
+
+      this.dropdown.getAllTeams().subscribe(team=>{
+        this.teamNames = team;
+      });
+      this.dropdown.getUserJobType().subscribe(jobType=>{
+        this.jobTypes = jobType;
+      });
+      this.getrefreshTableData();
 
     }
 
@@ -144,60 +256,81 @@ export class UsersPageComponent implements OnInit {
       });
 
 
+      
     }
+
+    permissionChanges(permission: MatOptionSelectionChange) {
+
+      const permissions = this.userDetails.get('permissionArray');
+
+      if(permission.isUserInput && permission.source.selected) {
+          const arrayval = permissions?.value?.filter((val: number)=> 
+          val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
+        );
+        permissions?.setValue(arrayval,{emitEvent:false});
+      }
+
+    }
+
 
     initialiseTable(userTableData:UserDetails[]) {
       this.dataSource = new MatTableDataSource(userTableData);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
-
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
 
     Submit(userDetailsForm: any) {
 
-      this.loading = true;
+      if(this.hasWritePermission) {
+        this.loading = true;
 
-      if(userDetailsForm.get('password').value !== ''){
-        userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
-      }
-      else {
-        userDetailsForm.get('password').setValue('');
-      }
+        if(userDetailsForm.get('password').value !== ''){
+          userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
+        }
+        else {
+          userDetailsForm.get('password').setValue('');
+        }
 
-      if(userDetailsForm.valid) {
-        this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+        if(userDetailsForm.valid) {
+          this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+            this.loading = false;
+
+            if(res.success) {
+              res.success === 1 ?
+
+              this.insertSuccess() :
+
+              res.success === -1 ?
+
+                this.connectionError() :
+
+                this.fail();
+            }
+
+            else if(res.updateSuccess) {
+              res.updateSuccess === 1 ?
+
+              this.updateSuccess() :
+
+              res.updateSuccess === -1 ?
+
+                this.connectionError() :
+
+                this.fail();
+            }
+          });
+        }
+        else {
           this.loading = false;
-
-          if(res.success) {
-            res.success === 1 ?
-
-            this.insertSuccess() :
-
-            res.success === -1 ?
-
-              this.connectionError() :
-
-              this.fail();
-          }
-
-          else if(res.updateSuccess) {
-            res.updateSuccess === 1 ?
-
-            this.updateSuccess() :
-
-            res.updateSuccess === -1 ?
-
-              this.connectionError() :
-
-              this.fail();
-          }
-        });
+          this.snackBar.errorSnackBar('Invalid input fields','Ok');
+        }
       }
+
       else {
-        this.loading = false;
-        this.snackBar.errorSnackBar('Invalid input fields','Ok');
+        this.snackBar.errorSnackBar('you have no appropriate permissions.','Ok');
       }
+
+      
     }
 
     insertSuccess () {

@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import {
     async,
     ComponentFixture,
@@ -46,6 +47,7 @@ describe('AnimalSelectionComponent', () => {
                 BrowserAnimationsModule,
                 RouterTestingModule,
                 ReactiveFormsModule,
+                MaterialModule,
                 FormsModule,
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase)
