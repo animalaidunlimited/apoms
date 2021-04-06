@@ -91,7 +91,7 @@ export class SettingsPageComponent implements OnInit {
     
         }
 
-        this.releaseVersion = '1.0.17';
+        this.releaseVersion = '1.0.18';
     }
 
     refreshApp(){
