@@ -16,7 +16,7 @@ import {
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+// import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -33,7 +33,9 @@ describe('PatientStatusComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
-            providers: [DatePipe, OVERLAY_PROVIDERS, MatSnackBar],
+            providers: [DatePipe, 
+                // OVERLAY_PROVIDERS, 
+                MatSnackBar],
             declarations: [PatientStatusComponent],
         }).compileComponents();
     }));

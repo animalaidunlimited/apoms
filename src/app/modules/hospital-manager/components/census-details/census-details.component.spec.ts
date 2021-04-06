@@ -1,4 +1,4 @@
-import { OverlayModule, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
