@@ -1,5 +1,3 @@
-<!-- <mat-form-field class="er-case-search-box" [@expandSearch]="searchShowing ? 'open' : 'closed'"> -->
-
 <mat-form-field class="er-case-search-box">
     <span matPrefix (click)="executeSearch()" >
         <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
@@ -31,7 +29,6 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="row wrap" fxLayoutAlign="center center" class="searchbox">
-                    <!-- <div class="searchbox-field"> -->
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)" [errorStateMatcher]="errorMatcher">
@@ -40,8 +37,6 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                    <!-- </div> -->
-                    <!-- <div class="searchbox-term"> -->
 
                             <mat-form-field *ngIf="item.get('inputType')?.value === 'dropdown'">
                                 <mat-label>Options </mat-label>
@@ -57,7 +52,7 @@
                             </mat-form-field>
 
 
-                    <!-- </div> -->
+
                 </div>
             </div>
         </div>
