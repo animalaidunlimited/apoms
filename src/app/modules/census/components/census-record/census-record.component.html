@@ -7,8 +7,7 @@
             
             <mat-form-field>
                 <mat-label>Census Date</mat-label>
-                <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
-                (focus)="setInitialTime($event)" cdkFocusInitial >
+                <input matInput type="date" formControlName="CensusDate" name = "CensusDate" cdkFocusInitial >
             </mat-form-field>
             
             <button mat-mini-fab matTooltip="Census errors" *ngIf="showErrorLogBtn" (click)="showCensusErrorLog = !showCensusErrorLog" color="warn" class="censusErrorRecordButton">
