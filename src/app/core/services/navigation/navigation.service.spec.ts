@@ -43,7 +43,6 @@ describe('NavigationService', () => {
 
         navigationService = TestBed.inject(NavigationService);
         navRouteService = TestBed.inject(NavRouteService);
-        // navigationItems = navRouteService.getNavRouteList() as NavRoute[];
         spyOn(navigationService, 'getNavigationItems').and.returnValue(new BehaviorSubject(navigationItems));
     });
 
