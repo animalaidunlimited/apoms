@@ -164,20 +164,4 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         });
     }
 
-    // openLogsDialog(emergencyCaseId: number,emergencyNumber:number) {
-    //     const dialogRef = this.dialog.open(LogsComponent, {
-    //         maxHeight: '100vh',
-    //         maxWidth: '100vw',
-    //         data: {
-    //             emergencyCaseId,
-    //             emergencyNumber,
-    //             patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
-    //         },
-    //     });
-
-    //     dialogRef
-    //         .afterClosed()
-    //         .subscribe(() => {})
-    //         .unsubscribe();
-    // }
 }
