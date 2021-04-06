@@ -47,7 +47,8 @@ export class SearchResultCardComponent implements OnInit {
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
   this.dialog.open(PatientEditDialog, {
-      width: '500px',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
       data: { patientId, tagNumber },
   });
 }
@@ -55,7 +56,8 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
 rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number | undefined, CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
-      width: '500px',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
       data: {
           emergencyCaseId,
           callDateTime,
@@ -68,7 +70,8 @@ rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcome
 
 callUpdate(patientId: number, tagNumber: string | undefined) {
   this.callDialog.open(PatientCallDialogComponent, {
-      width: '500px',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
       data: { patientId, tagNumber },
   });
 }

@@ -120,7 +120,7 @@ export class ReportingPageComponent implements OnInit {
         this.surgeries.pipe(take(1)).subscribe(surgeryList => {
 
            this.dialog.open(SurgeriesByDateDialogComponent, {
-                minWidth: '50%',
+                minWidth: '90%',
                 data: {
                     surgeries: surgeryList
                 }
@@ -133,7 +133,7 @@ export class ReportingPageComponent implements OnInit {
     openEmergencyCaseDialog() {
         this.emergencyCases.pipe(take(1)).subscribe((caseList: EmergencyRecordTable[] | null)=> {
             this.dialog.open(EmergencyCaseDialogComponent, {
-                width: '90%',
+                minWidth: '90%',
                 maxHeight: 'auto',
                 data: {
                     emergencyCases: caseList

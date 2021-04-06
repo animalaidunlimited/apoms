@@ -110,5 +110,7 @@ updateValidators() {
   checkBox(callerIndex: number) {
     this.isPrimary.emit(callerIndex);
   }
-
+  setNumberFocus(){
+    this.callerNumberRef.nativeElement.foucs();
+  }
 }

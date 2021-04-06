@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import {
     async,
     ComponentFixture,
@@ -13,7 +14,7 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { Overlay, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -46,6 +47,7 @@ describe('AnimalSelectionComponent', () => {
                 BrowserAnimationsModule,
                 RouterTestingModule,
                 ReactiveFormsModule,
+                MaterialModule,
                 FormsModule,
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase)

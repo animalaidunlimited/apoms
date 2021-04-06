@@ -9,7 +9,7 @@ import { PrintContentComponent } from './modules/print-templates/components/prin
 import { PrintWrapperComponent } from './modules/print-templates/components/print-wrapper/print-wrapper.component';
 import { CensusListContentComponent } from './modules/print-templates/components/census-list-content/census-list-content.component';
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: 'settings',
         loadChildren: () =>
@@ -93,7 +93,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, onSameUrlNavigation:'reload' }),
     ],
     exports: [RouterModule],
     providers: [

@@ -9,7 +9,9 @@ import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute} from '@angular/router';
+import { LogsComponent } from 'src/app/core/components/logs/logs.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -38,6 +40,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     syncedToLocalStorage = false;
 
     windowWidth = window.innerWidth;
+
+    hasWritePermission = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
@@ -72,14 +76,26 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private changeDetectorRef: ChangeDetectorRef,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
-        private elementRef: ElementRef
-    ) {}
+        private route: ActivatedRoute,
+        private elementRef: ElementRef,
+        public dialog: MatDialog,
+    ) {
+
+    }
 
     ngOnInit() {
+
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
+            
+            if (val.componentPermissionLevel?.value === 2) {
+                
+                this.hasWritePermission = true;
+            }
+
+        }) ;
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -143,21 +159,24 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     resetForm() {
 
-        this.recordForm.reset();
+        this.recordForm.reset({});
+
 
         this.guId.next(this.caseService.generateUUID());
 
         this.loadEmergencyNumber.emit({emergencyNumber : 'New Case*' , GUID: this.guId.value});
 
-        this.recordForm.get('emergencyDetails.guId')?.setValue(this.guId.value);
+        this.recordForm.get('emergencyDetails.guId')?.setValue(this.guId.value, {emitEvent:false});
         this.recordForm.get('emergencyDetails.code')?.setValue({
             EmergencyCodeId: null,
             EmergencyCode: null
-        });
+        },{emitEvent:false});
 
-        this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString());
+        this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString(),{emitEvent:false});
 
-        this.changeDetectorRef.detectChanges();
+
+
+        // this.changeDetectorRef.detectChanges();
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
@@ -252,117 +271,144 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
-        console.log(this.recordForm.value);
-
+        
         this.loading = true;
-        if (this.recordForm.pending) {
+
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
+            if(this.hasWritePermission) {
+                this.loading = true;
+                if(this.recordForm.pending){
+                    // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+                    // So mark it as error so the user knows to recheck it
+                    this.recordForm.updateValueAndValidity();
 
-            if (this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending) {
-                this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true });
-                return;
+                    if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
+                        this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
+                        return;
+                    }
+                }
+
+                if (this.recordForm.valid) {
+                    this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
+
+                    const emergencyForm = {
+                        emergencyForm: this.recordForm.value,
+                    } as EmergencyCase;
+
+                    let messageResult = {
+                        failure: 0,
+                        message: ''
+                    };
+
+                    if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+
+                        await this.caseService
+                            .insertCase(emergencyForm)
+                            .then(data => {
+                                if(data) {
+                                    this.loading = false;
+                                }
+                                if (data.status === 'saved') {
+                                    messageResult.failure = 1;
+                                } else {
+                                    const resultBody = data as EmergencyResponse;
+
+                                    // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+
+                                    this.emergencyCaseId = resultBody.emergencyCaseId;
+
+                                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
+                                    this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
+                                    messageResult = this.getCaseSaveMessage(resultBody);
+
+                                }
+
+                                if (messageResult.failure === 0) {
+                                    this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+                                    this.syncedToLocalStorage = false;
+                                    this.recordForm.markAsPristine();
+                                }
+                                else if (messageResult.failure === -1) {
+                                    this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+                                }
+                                else if (messageResult.failure === 1) {
+                                    this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                                    this.syncedToLocalStorage = true;
+                                    this.recordForm.markAsPristine();
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    } else {
+                        await this.caseService
+                            .updateCase(emergencyForm)
+                            .then(data => {
+
+                                if(data) {
+                                    this.loading = false;
+                                }
+
+                                if (data.status === 'saved') {
+
+                                    messageResult.failure = 1;
+
+                                } else {
+
+                                    const resultBody = data as EmergencyResponse;
+                                    messageResult = this.getCaseSaveMessage(resultBody);
+                                }
+
+                                if (messageResult.failure === 0) {
+
+                                    this.showSnackBar.successSnackBar('Case updated successfully','OK');
+                                    this.syncedToLocalStorage = false;
+                                    this.recordForm.markAsPristine();
+                                }
+                                else if (messageResult.failure === 1){
+                                    this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                                    this.syncedToLocalStorage = true;
+                                    this.recordForm.markAsPristine();
+                                }
+                                else{
+                                    this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    }
+                }
             }
-        }
 
-        if (this.recordForm.valid) {
-            this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
-
-            const emergencyForm = {
-                emergencyForm: this.recordForm.value,
-            } as EmergencyCase;
-
-            let messageResult = {
-                failure: 0,
-                message: ''
-            };
-
-            if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
-
-                await this.caseService
-                    .insertCase(emergencyForm)
-                    .then(data => {
-                        if (data) {
-                            this.loading = false;
-                        }
-                        if (data.status === 'saved') {
-                            messageResult.failure = 1;
-                        } else {
-                            const resultBody = data as EmergencyResponse;
-
-                            // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
-
-                            this.emergencyCaseId = resultBody.emergencyCaseId;
-
-                            this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
-                            this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
-                            messageResult = this.getCaseSaveMessage(resultBody);
-
-                        }
-
-                        if (messageResult.failure === 0) {
-                            this.showSnackBar.successSnackBar('Case inserted successfully', 'OK');
-                            this.syncedToLocalStorage = false;
-                            this.recordForm.markAsPristine();
-                        }
-                        else if (messageResult.failure === -1) {
-                            this.showSnackBar.successSnackBar('Duplicate case, please reload case', 'OK');
-                        }
-                        else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar('Case saved offline', 'OK');
-                            this.syncedToLocalStorage = true;
-                            this.recordForm.markAsPristine();
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            } else {
-                await this.caseService
-                    .updateCase(emergencyForm)
-                    .then(data => {
-
-                        if (data) {
-                            this.loading = false;
-                        }
-
-                        if (data.status === 'saved') {
-
-                            messageResult.failure = 1;
-
-                        } else {
-
-                            const resultBody = data as EmergencyResponse;
-                            messageResult = this.getCaseSaveMessage(resultBody);
-                        }
-
-                        if (messageResult.failure === 0) {
-
-                            this.showSnackBar.successSnackBar('Case updated successfully', 'OK');
-                            this.syncedToLocalStorage = false;
-                            this.recordForm.markAsPristine();
-                        }
-                        else if (messageResult.failure === 1) {
-                            this.showSnackBar.errorSnackBar('Case updated offline.', 'OK');
-                            this.syncedToLocalStorage = true;
-                            this.recordForm.markAsPristine();
-                        }
-                        else {
-                            this.showSnackBar.errorSnackBar('Unknown error, please see admin.', 'OK');
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+            else {
+                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
             }
-        }
 
     }
 
     emergencyNumberUpdated(emergencyNumber: any) {
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
+    }
+
+    openLogsDialog(emergencyCaseId: number,emergencyNumber:number) {
+        const dialogRef = this.dialog.open(LogsComponent, {
+            maxHeight: '100vh',
+            maxWidth: '100vw',
+            data: {
+                emergencyCaseId,
+                emergencyNumber,
+                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
+            },
+        });
+
+        dialogRef
+            .afterClosed()
+            .subscribe(() => {})
+            .unsubscribe();
     }
 
 }

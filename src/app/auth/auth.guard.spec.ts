@@ -1,11 +1,10 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { sideNavPath } from '../nav-routing';
 import {
     Router,
     ActivatedRouteSnapshot,
@@ -37,9 +36,9 @@ describe('AuthGuard', () => {
                 AuthGuard,
             ],
         });
-        guard = TestBed.get(AuthGuard);
-        service = TestBed.get(AuthService);
-        router = TestBed.get(Router);
+        guard = TestBed.inject(AuthGuard);
+        service = TestBed.inject(AuthService);
+        router = TestBed.inject(Router);
     }));
 
     it('should be created', () => {
@@ -61,7 +60,7 @@ describe('AuthGuard', () => {
             expect(service.redirectUrl).toEqual('');
         });
 
-        it('should set the redirectUrl, call router.navigate, and return false', () => {
+        it('should set the redirectUrl, call router.navigate, and return false', fakeAsync(() => {
             spyOn(router, 'navigate');
             spyOn(service, 'isLogged').and.returnValue(false);
 
@@ -72,7 +71,8 @@ describe('AuthGuard', () => {
                 ),
             ).toEqual(false);
             expect(service.redirectUrl).toEqual('fakeUrl');
-            expect(router.navigate).toHaveBeenCalledWith(['']);
-        });
+            tick(10);
+            expect(router.navigate).toHaveBeenCalledWith(['/nav/home']);
+        }));
     });
 });
