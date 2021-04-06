@@ -8,7 +8,6 @@ import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { formatDateString, getCurrentDateString } from 'src/app/core/helpers/utils';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
