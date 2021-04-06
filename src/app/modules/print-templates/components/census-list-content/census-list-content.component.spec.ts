@@ -1,9 +1,11 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { CensusListContentComponent } from './census-list-content.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CensusListContentComponent', () => {
   let component: CensusListContentComponent;
@@ -38,7 +40,9 @@ describe('CensusListContentComponent', () => {
 
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        MaterialModule,
+        BrowserAnimationsModule
       ],
       declarations: [
         CensusListContentComponent

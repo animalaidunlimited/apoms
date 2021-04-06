@@ -1,3 +1,5 @@
+import { MaterialModule } from 'src/app/material-module';
+import { FormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -26,7 +28,9 @@ describe('CensusDetailsComponent', () => {
                 HttpClientTestingModule,
                 BrowserAnimationsModule,
                 MatDialogModule,
-                OverlayModule
+                OverlayModule,
+                FormsModule,
+                MaterialModule
             ],
             providers: [
                 MatDialog,

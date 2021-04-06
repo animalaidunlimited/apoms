@@ -5,8 +5,9 @@
 
     <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
 
-        <mat-form-field style="width: 100%">
-            <input tabindex="6" matInput type="text"
+        <mat-form-field class="locationWrapper">
+            <input 
+            tabindex="6" matInput type="text"
             placeholder="Animal location"
             formControlName="location"
             (keydown.enter)="performSearch()"

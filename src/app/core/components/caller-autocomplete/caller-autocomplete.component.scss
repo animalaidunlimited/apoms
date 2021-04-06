@@ -15,11 +15,15 @@
 @media only screen and (min-width:767px)
 {
     .callerForm {
-        border-radius: 1rem;
+        border-radius: 0.5rem;
         margin-bottom: 1rem;
         box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
-        padding-left: 15px;
-        position:relative;
+        padding: 0 25px 0 5px;
+        position: relative;
+        width: max-content;
+        .mat-form-field{
+            flex-grow: 1;
+        }
     }
     .deleteCallerButton {
         position: absolute;
@@ -31,4 +35,29 @@
             font-size:1rem;
         }
     }
+}
+
+@media(max-width: 600px) {
+
+    .callerForm {
+        border-radius: 0.5rem;
+        box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
+        margin-bottom: 20px;
+        padding: 5px;
+    }
+    button.mat-focus-indicator.deleteCallerButton {
+        width: 25px;
+        height: 25px;
+        position: relative;
+        top: -87px;
+        left: 8px;
+
+        .mat-icon {
+            position: absolute;
+            top: 4px;
+            left: 1px;
+            font-size: 1rem;
+        }
+    }
+
 }
