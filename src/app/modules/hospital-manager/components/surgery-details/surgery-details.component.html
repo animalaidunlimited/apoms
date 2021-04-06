@@ -4,11 +4,6 @@
 
   <div class="example-container mat-elevation-z8">
     <mat-table matSort #table [dataSource]="surgeryRecords">
-
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-      <!-- Position Column -->
       <ng-container matColumnDef="Date">
         <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -17,7 +12,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Name Column -->
       <ng-container matColumnDef="Type">
         <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -26,7 +20,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
       <ng-container matColumnDef="Surgeon">
         <mat-header-cell *matHeaderCellDef> Surgeon </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -35,7 +28,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Symbol Column -->
       <ng-container matColumnDef="Site">
         <mat-header-cell *matHeaderCellDef> Site </mat-header-cell>
         <mat-cell *matCellDef="let row"> 

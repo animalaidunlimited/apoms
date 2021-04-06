@@ -14,7 +14,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('NavigationService', () => {
     let navigationService: NavigationService;
     let navRouteService: NavRouteService;
-    // let navigationItems:  NavRoute[];
     const navigationItems:NavRoute[] = [{
         data: {
             title: 'Settings',
