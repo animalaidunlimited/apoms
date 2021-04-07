@@ -10,4 +10,21 @@ DELIMITER ;
 CALL `?`();
 DROP PROCEDURE `?`;	
 
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ ALTER TABLE AAU.CensusArea
+ADD COLUMN `Abbreviation` VARCHAR(10) AFTER TreatmentListMain;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;	
+
 UPDATE AAU.CensusArea SET TreatmentListMain = 1 WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation');
+
+SELECT *
+FROM 
+
+

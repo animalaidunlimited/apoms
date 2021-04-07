@@ -16,11 +16,13 @@ import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSelectChange } from '@angular/material/select';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FindValueSubscriber } from 'rxjs/internal/operators/find';
 
 interface Column{
   name: string;
-  areaId: number | null;
   type: string;
+  areaId?: number;
+  abbreviation?: string;
 }
 
 @Component({
@@ -37,32 +39,29 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
-  addRecordVisible = false;
-
-  //filteredColumns: Observable<Column[]>;
-
   columns: BehaviorSubject<Column[]>
   = new BehaviorSubject<Column[]>([
-    {name: 'index', areaId: null, type: 'text'},
-    {name: 'Tag number', areaId: null, type: 'text'},
-    {name: 'Treatment priority', areaId: null, type: 'select'},
-    {name: 'Other', areaId: null, type: 'select'},
-    {name: 'complete', areaId: null, type: 'button'}
+    {name: 'index', type: 'text'},
+    {name: 'Tag number', type: 'text'},
+    {name: 'Treatment priority', type: 'select'},
+    {name: 'Other', type: 'select'},
+    {name: 'complete', type: 'button'}
   ]);
 
 
 
   displayedColumns: Observable<string[]>;
+  filteredColumns:Observable<Column[]>;
 
   isPrinting: BehaviorSubject<boolean>;
   layoutType = 'census';
   otherAreas!: CensusArea[];
-  filteredColumns:Observable<Column[]>;
+  patientRecords = new BehaviorSubject<AbstractControl[]>([]);
+  showSpinner = false;
+
   treatmentListForm: FormGroup;
   treatmentListArray: FormArray;
   //patientRecords: MatTableDataSource<AbstractControl>;
-  patientRecords = new BehaviorSubject<AbstractControl[]>([]);
-  showSpinner = false;
   treatmentPriorities: Observable<Priority[]>;
 
   constructor(
@@ -133,7 +132,9 @@ export class TreatmentListComponent implements OnInit, OnChanges {
       'Treatment priority': 0,
       'Moved to': 0,
       showOther: false,
-      treatedToday: false
+      treatedToday: false,
+      saving: false,
+      saved: false
     });
 
     return returnGroup;
@@ -151,17 +152,17 @@ export class TreatmentListComponent implements OnInit, OnChanges {
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
-      const mainAreas = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
+      const mainAreas:Column[] = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
                                                               .filter(area => area.areaName !== this.areaName)
-                                                              .map(area => ({name: area.areaName, areaId: area.areaId || null, type: 'checkbox'}));
+                                                              .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
 
-        mainAreas.unshift({name: 'Rel./Died', areaId: null, type: 'button'});
-        mainAreas.unshift({name: 'Treatment priority', areaId: null, type: 'select'});
-        mainAreas.unshift({name: 'Tag number', areaId: null, type: 'text'});
-        mainAreas.unshift({name: 'index', areaId: null, type: 'text'});
+        mainAreas.unshift({name: 'Rel./Died', type: 'button'});
+        mainAreas.unshift({name: 'Treatment priority', type: 'select'});
+        mainAreas.unshift({name: 'Tag number', type: 'text'});
+        mainAreas.unshift({name: 'index', type: 'text'});
 
-        mainAreas.push({name: 'Other', areaId: null, type: 'checkbox'});
-        mainAreas.push({name: 'complete', areaId: null, type: 'button'});
+        mainAreas.push({name: 'Other', type: 'checkbox'});
+        mainAreas.push({name: 'complete', type: 'button'});
 
       this.columns.next(mainAreas);
     });
@@ -288,45 +289,57 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   censusLayout(){
 
     this.columns.next([
-      {name: 'index', areaId: null,  type: 'string'},
-      {name: 'Emergency number', areaId: null,  type: 'string'},
-      {name: 'Tag number', areaId: null,  type: 'string'},
-      {name: 'Species', areaId: null,  type: 'string'},
-      {name: 'Caller name', areaId: null,  type: 'string'},
-      {name: 'Number', areaId: null,  type: 'string'},
-      {name: 'Call date', areaId: null,  type: 'string'}]);
+      {name: 'index', type: 'string'},
+      {name: 'Emergency number', type: 'string'},
+      {name: 'Tag number', type: 'string'},
+      {name: 'Species', type: 'string'},
+      {name: 'Caller name', type: 'string'},
+      {name: 'Number', type: 'string'},
+      {name: 'Call date', type: 'string'}]);
 
   }
 
-  toggleTreatment(row:ReportPatientRecord){
+  toggleTreatment(row:AbstractControl){
 
-    if(!row.treatedToday){
-      row.treatedToday = !row.treatedToday;
+    const treated = row.get('treatedToday');
 
+    if(!treated?.value){
+      treated?.setValue(!treated.value);
     }
 
+    row.get('saving')?.setValue(true);
     this.openTreatmentDialog(row);
 
   }
 
-  openTreatmentDialog(row:ReportPatientRecord): void {
+  // TODO type this as a AbstractControl or FormGroup
+  openTreatmentDialog(row:AbstractControl): void {
 
     const dialogRef = this.dialog.open(TreatmentRecordComponent, {
         width: '650px',
         data: {
-          patientId: row.PatientId,
+          patientId: row.get('PatientId')?.value,
           treatmentId: 0
         },
     });
 
-    // dialogRef.afterClosed().subscribe(result => {
+     dialogRef.afterClosed().subscribe(result => {
 
-    //    if (result) {
+      row.get('saving')?.setValue(false);
+      row.get('saved')?.setValue(true);
 
-    //      console.log(result);
+      setTimeout(() => {
+        row.get('saved')?.setValue(false);
+        this.changeDetector.detectChanges();
 
-    //    }
-    // });
+      }, 2500);
+
+        if (result) {
+
+          console.log(result);
+
+        }
+     });
 }
 
 cellClicked(cell:string, value:any){
@@ -360,10 +373,6 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-toggleAddRecord(){
-  this.addRecordVisible = !this.addRecordVisible;
-}
-
 areaChanged(element: ReportPatientRecord, event: MatSelectChange ){
 
   const v = this.treatmentListForm.get('treatmentList') as FormArray;
@@ -372,7 +381,7 @@ areaChanged(element: ReportPatientRecord, event: MatSelectChange ){
 
 }
 
-areaCheckboxToggled(areaId:number|null, index: number){
+areaCheckboxToggled(areaId:number|undefined, index: number){
 
   this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
 

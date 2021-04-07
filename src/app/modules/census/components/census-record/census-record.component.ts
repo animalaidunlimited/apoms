@@ -31,8 +31,6 @@ export class CensusRecordComponent implements OnInit {
 
   censusArea: Area[] = [];
 
-  date: Date = new Date();
-
   removable = true;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA , SPACE];
@@ -95,9 +93,9 @@ export class CensusRecordComponent implements OnInit {
 
         /* Detects the change in date and Brings back the censusdata on that perticular date*/
         this.censusDate.valueChanges.subscribe(changes => {
-            this.date = changes.CensusDate.toString();
 
-            this.loadCensusData(this.date);
+            this.loadCensusData(changes.CensusDate.toString() || new Date());
+
         });
 
         this.loadCensusErrorRecords();
@@ -263,7 +261,7 @@ export class CensusRecordComponent implements OnInit {
                           action.actionId || -1,
                           action.sortAction || -1,
                           patient.tagNumber,
-                          this.date,
+                          this.censusUpdateDate,
                       ).then(response=>{
                           if(response){
                               this.loading = false;
