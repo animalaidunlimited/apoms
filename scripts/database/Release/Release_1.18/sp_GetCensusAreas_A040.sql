@@ -28,7 +28,8 @@ SELECT
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT("areaId", AreaId),
 	JSON_OBJECT("areaName", Area),
-    JSON_OBJECT("sortArea", SortArea)
+    JSON_OBJECT("sortArea", SortArea),
+    JSON_OBJECT("abbreviation", Abbreviation)
 	)) AreaList
 FROM AAU.CensusArea
 WHERE OrganisationId = vOrganisationId

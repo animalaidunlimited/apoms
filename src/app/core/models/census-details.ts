@@ -23,6 +23,7 @@ export interface CensusArea {
     areaId:number;
     areaName : string;
     sortArea?: number;
+    abbreviation?: string;
 }
 
 export interface ReportPatientRecord {
