@@ -8,6 +8,7 @@ import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
+
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchFieldComponent } from '../search-field/search-field.component';

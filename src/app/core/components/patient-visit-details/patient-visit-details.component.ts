@@ -409,6 +409,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	}
 
+
 	onSelect(selectedDate: Date | null) {
 
 		if(!selectedDate) {
