@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./census-page.component.scss'],
 })
 export class CensusPageComponent implements OnInit {
+
+    defaultDate = new Date();
  constructor(
     ) {}
 
