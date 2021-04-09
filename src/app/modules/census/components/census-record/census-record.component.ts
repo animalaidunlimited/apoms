@@ -252,17 +252,6 @@ export class CensusRecordComponent implements OnInit {
 
   }
 
-    
-
-//   setInitialTime(event: FocusEvent) {
-//       let currentTime;
-//       currentTime = this.censusDate.get((event.target as HTMLInputElement).name)?.value;
-
-//       if (!currentTime) {
-//           this.censusDate.get((event.target as HTMLInputElement).name)?.setValue(getCurrentDateString());
-//       }
-//   }
-
   /* Removes the patient tagNumber from chips input field*/
 
   removePatients(incomingAreaId:any, incomingActionId:any, patient:any): void {
