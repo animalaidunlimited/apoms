@@ -27,6 +27,7 @@ export interface CensusArea {
 }
 
 export interface ReportPatientRecord {
+    currentAreaId?: number;
     'Emergency number': number;
     'PatientId': number;
     'Tag number': string;

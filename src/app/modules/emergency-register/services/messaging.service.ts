@@ -26,7 +26,7 @@ constructor(
     http: HttpClient) {
         super(http);
 
-     angularFireMessaging.onMessage((payload) => {
+     angularFireMessaging.onMessage((payload:any) => {
         this.distributeMessage(payload);
      });
 

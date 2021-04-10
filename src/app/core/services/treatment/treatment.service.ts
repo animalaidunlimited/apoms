@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ReportPatientRecord } from '../../models/census-details';
 import { TreatmentRecord } from '../../models/treatment';
 import { APIService } from '../http/api.service';
+
+interface PatientMovementObject {
+  currentAreaId: number,
+}
 
 
 @Injectable({
@@ -52,6 +57,12 @@ public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
     return await this.post(saveData);
 
   }
+
+}
+
+movePatientOutOfArea(updatedPatient:ReportPatientRecord){
+
+  console.log(updatedPatient);
 
 }
 

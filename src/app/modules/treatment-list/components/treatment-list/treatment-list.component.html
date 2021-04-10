@@ -2,7 +2,7 @@
 
       <mat-spinner *ngIf="showSpinner" style="margin:0 auto;"></mat-spinner>
 
-      <legend class="legend ">{{areaName}} - ({{treatmentListArray.controls?.length}})</legend>
+      <legend class="legend ">{{area.areaName}} - ({{treatmentListArray.controls?.length}})</legend>
 
 
 
@@ -81,16 +81,12 @@
 
                       <div *ngIf="column.type === 'checkbox'" fxLayout="column" fxLayoutAlign="center center">
 
-                          <mat-radio-button  [checked]="column?.areaId === treatmentListArray.at(index).get('Moved to')?.value" (change)="areaCheckboxToggled(column?.areaId, index)"></mat-radio-button>
-
+                          <mat-radio-button  [checked]="column?.areaId === treatmentListArray.at(index).get('Moved to')?.value" (change)="areaChanged(column?.areaId, index)"></mat-radio-button>
 
                       </div>
 
-
-
                     </td>
                   </ng-container>
-
 
                 </ng-container>
 
@@ -105,7 +101,7 @@
                     <mat-form-field>
                     <mat-select
                     formControlName="Moved to"
-                    (selectionChange)="areaChanged(row, $event)">
+                    (selectionChange)="areaChanged($event?.value, index)">
 
                       <mat-option>N/A</mat-option>
                       <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
