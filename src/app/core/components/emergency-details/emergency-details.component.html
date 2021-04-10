@@ -2,7 +2,7 @@
 
     <legend class="legend">Emergency Details</legend>
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" ngStyle.gt-md="min-width: 54.5rem;" fxLayoutGap="10px" fxLayoutAlign="start end">
+    <div fxLayout="row wrap" ngStyle.gt-md="min-width: auto;" fxLayoutGap="10px" fxLayoutAlign="start">
 
         <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>

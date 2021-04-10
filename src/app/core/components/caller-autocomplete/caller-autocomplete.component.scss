@@ -12,6 +12,10 @@
     min-width: 250px;
 }
 
+// .callerForm {
+//     width: auto;
+// }
+
 @media only screen and (min-width:767px)
 {
     .callerForm {
@@ -20,7 +24,7 @@
         box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
         padding: 0 25px 0 5px;
         position: relative;
-        width: max-content;
+        width: auto;
         .mat-form-field{
             flex-grow: 1;
         }
