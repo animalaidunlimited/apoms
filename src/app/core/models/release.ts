@@ -45,6 +45,7 @@
     casePriority: number;
     streetTreatCaseId: number;
     streetTreatCaseStatus: number;
+    patientReleaseDate?:string;
   }
 
   export interface VisitResponse {
