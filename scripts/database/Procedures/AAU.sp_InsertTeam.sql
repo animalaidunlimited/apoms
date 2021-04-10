@@ -2,12 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
 
-
-
-
 DELIMITER $$
-
-
 
 
 CREATE PROCEDURE AAU.sp_InsertTeam(
