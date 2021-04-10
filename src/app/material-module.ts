@@ -79,6 +79,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatProgressSpinnerModule,
         MatRadioModule,
         MatSortModule,
+        MatProgressSpinnerModule,
         MatTableModule,
         MatRippleModule,
         MatSelectModule,
@@ -95,6 +96,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         ScrollingModule,
     ],
 })
+
 export class MaterialModule {
 
     lastValue:any;

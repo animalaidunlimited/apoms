@@ -18,7 +18,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   censusAreas:Observable<CensusArea[]>;
   areas:FormGroup;
 
-  currentArea = '';
+  currentArea:CensusArea = {areaId: 0, areaName: ''};
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder) {

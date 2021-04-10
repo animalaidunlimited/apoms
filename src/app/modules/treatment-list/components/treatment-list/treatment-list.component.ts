@@ -16,7 +16,7 @@ import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSelectChange } from '@angular/material/select';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { FindValueSubscriber } from 'rxjs/internal/operators/find';
+import { TreatmentService } from 'src/app/core/services/treatment/treatment.service';
 
 interface Column{
   name: string;
@@ -34,7 +34,7 @@ interface Column{
 
 
 export class TreatmentListComponent implements OnInit, OnChanges {
-  @Input() areaName!: string;
+  @Input() area!: CensusArea;
 
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -48,8 +48,6 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     {name: 'complete', type: 'button'}
   ]);
 
-
-
   displayedColumns: Observable<string[]>;
   filteredColumns:Observable<Column[]>;
 
@@ -61,7 +59,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
   treatmentListForm: FormGroup;
   treatmentListArray: FormArray;
-  //patientRecords: MatTableDataSource<AbstractControl>;
+  // patientRecords: MatTableDataSource<AbstractControl>;
   treatmentPriorities: Observable<Priority[]>;
 
   constructor(
@@ -71,6 +69,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     private router: Router,
     private printService: PrintTemplateService,
     private changeDetector: ChangeDetectorRef,
+    private ts: TreatmentService,
     private fb: FormBuilder,
     private dropdown: DropdownService,
     private census: CensusService ) {
@@ -78,7 +77,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     this.filteredColumns = this.columns
                                         .pipe(map(columns =>
                                                     columns.filter(column =>  column.name !== 'index' &&
-                                                                              column.name !== this.areaName &&
+                                                                              column.name !== this.area.areaName &&
                                                                               column.name !== 'complete' &&
                                                                               column.name !== 'Other')));
 
@@ -89,9 +88,11 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     this.isPrinting = this.printService.getIsPrinting();
 
     this.treatmentListForm = this.fb.group({
-      treatmentList: this.fb.array([this.getEmptyPatient()])});
+      treatmentList: this.fb.array([this.getEmptyPatient()])
+    });
 
     this.treatmentListArray = this.treatmentListForm.get('treatmentList') as FormArray;
+
     this.patientRecords.next(this.treatmentListArray.controls);
 
     this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
@@ -102,11 +103,11 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
   ngOnChanges(change:SimpleChanges) : void {
 
-    if(change.areaName.currentValue && change.areaName.currentValue !== ''){
+    if(change.area.currentValue && change.area.currentValue !== ''){
 
       this.showSpinner = true;
       this.populateColumnList();
-      this.loadTreatmentList(change.areaName.currentValue);
+      this.loadTreatmentList(change.area.currentValue.areaName);
 
     }
 
@@ -147,13 +148,13 @@ export class TreatmentListComponent implements OnInit, OnChanges {
       take(1)
     ).subscribe(areaList => {
       this.otherAreas = areaList.filter(areaGroup => !areaGroup.TreatmentListMain)[0].AreaList
-                                                                                        .filter(area => area.areaName !== this.areaName);
+                                                                                        .filter(area => area.areaName !== this.area.areaName);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
       const mainAreas:Column[] = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
-                                                              .filter(area => area.areaName !== this.areaName)
+                                                              .filter(area => area.areaName !== this.area.areaName)
                                                               .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
 
         mainAreas.unshift({name: 'Rel./Died', type: 'button'});
@@ -181,10 +182,10 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
           patient['ABC status'] = ABCStatus[patientObject['ABC status']];
           patient['Release status'] = ReleaseStatus[patientObject['Release status']];
-          // eslint-disable-next-line @typescript-eslint/dot-notation
+          // tslint:disable-next-line: no-string-literal
           patient['Temperament'] = Temperament[patientObject['Temperament']];
           // patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
-          // eslint-disable-next-line @typescript-eslint/dot-notation
+          // tslint:disable-next-line: no-string-literal
           patient['Age'] = Age[patientObject['Age']];
 
           return patient;
@@ -363,7 +364,7 @@ priorityChanged(element: ReportPatientRecord, event:any){
 
   const v = this.treatmentListForm.get('treatmentList') as FormArray;
 
-  console.log(v.at(0).get('Treatment priority')?.value);
+  console.log(v.at(0)?.value);
 }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
@@ -373,17 +374,33 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-areaChanged(element: ReportPatientRecord, event: MatSelectChange ){
+//areaChanged(event: MatSelectChange, index: number ){
 
-  const v = this.treatmentListForm.get('treatmentList') as FormArray;
+//  console.log(event.value);
+//  console.log(index);
 
-  console.log(v.at(0).get('Moved to')?.value);
+//  this.treatmentListArray.at(index).get('Moved to')?.setValue(event.value);
+
+//  this.moveOut(this.treatmentListArray.at(index) as FormGroup);
+
+//}
+
+areaChanged(areaId:number|undefined, index: number){
+
+  this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
+
+  this.moveOut(this.treatmentListArray.at(index) as FormGroup);
 
 }
 
-areaCheckboxToggled(areaId:number|undefined, index: number){
+moveOut(currentPatient: FormGroup) : void{
 
-  this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
+const updatedPatient = {
+  currentAreaId: this.area.areaId,
+  ...currentPatient.value
+};
+
+this.ts.movePatientOutOfArea(updatedPatient);
 
 }
 
