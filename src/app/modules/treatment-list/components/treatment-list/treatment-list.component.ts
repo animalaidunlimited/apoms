@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ABCStatus, Age, ReleaseStatus, Temperament } from 'src/app/core/enums/patient-details';
-import { CensusArea, CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
+import { CensusArea, CensusPrintContent, ReportPatientRecord, TreatmentAreaChange } from 'src/app/core/models/census-details';
 import { map, take } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { Router } from '@angular/router';
@@ -42,10 +42,10 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   columns: BehaviorSubject<Column[]>
   = new BehaviorSubject<Column[]>([
     {name: 'index', type: 'text'},
+    {name: 'complete', type: 'button'},
     {name: 'Tag number', type: 'text'},
     {name: 'Treatment priority', type: 'select'},
-    {name: 'Other', type: 'select'},
-    {name: 'complete', type: 'button'}
+    {name: 'Other', type: 'select'}
   ]);
 
   displayedColumns: Observable<string[]>;
@@ -107,7 +107,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
       this.showSpinner = true;
       this.populateColumnList();
-      this.loadTreatmentList(change.area.currentValue.areaName);
+      this.loadTreatmentList(change.area.currentValue.areaId);
 
     }
 
@@ -117,6 +117,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
 
     const returnGroup = this.fb.group({
+      treatmentListId: 0,
       index: 0,
       'Emergency number': 0,
       PatientId: 0,
@@ -160,10 +161,11 @@ export class TreatmentListComponent implements OnInit, OnChanges {
         mainAreas.unshift({name: 'Rel./Died', type: 'button'});
         mainAreas.unshift({name: 'Treatment priority', type: 'select'});
         mainAreas.unshift({name: 'Tag number', type: 'text'});
+        mainAreas.unshift({name: 'complete', type: 'button'});
+
         mainAreas.unshift({name: 'index', type: 'text'});
 
         mainAreas.push({name: 'Other', type: 'checkbox'});
-        mainAreas.push({name: 'complete', type: 'button'});
 
       this.columns.next(mainAreas);
     });
@@ -171,9 +173,11 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   }
 
 
-  private loadTreatmentList(areaName:string) {
+  private loadTreatmentList(censusAreaId:number) {
 
-    this.census.getPatientDetailsByArea(areaName).then((response: ReportPatientRecord[]) => {
+    this.ts.getTreatmentList(censusAreaId).then((response: ReportPatientRecord[]) => {
+
+      console.log(response);
 
       response ?
         response = response.map(patient => {
@@ -237,6 +241,10 @@ export class TreatmentListComponent implements OnInit, OnChanges {
       //this.patientRecords.sort = this.sort;
       this.patientRecords.next(this.treatmentListArray.controls);
       this.showSpinner = false;
+
+      console.log(this.treatmentListForm);
+      console.log(this.patientRecords.value);
+
       this.changeDetector.detectChanges();
 
 
@@ -251,6 +259,8 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     const returnArray = this.fb.array([]);
 
     response.forEach(() => returnArray.push(this.getEmptyPatient()));
+
+    console.log(response);
 
     returnArray.patchValue(response);
 
@@ -326,14 +336,7 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
      dialogRef.afterClosed().subscribe(result => {
 
-      row.get('saving')?.setValue(false);
-      row.get('saved')?.setValue(true);
-
-      setTimeout(() => {
-        row.get('saved')?.setValue(false);
-        this.changeDetector.detectChanges();
-
-      }, 2500);
+      this.showSavingIcons(row);
 
         if (result) {
 
@@ -342,6 +345,17 @@ export class TreatmentListComponent implements OnInit, OnChanges {
         }
      });
 }
+
+  private showSavingIcons(row: AbstractControl) {
+    row.get('saving')?.setValue(false);
+    row.get('saved')?.setValue(true);
+
+    setTimeout(() => {
+      row.get('saved')?.setValue(false);
+      this.changeDetector.detectChanges();
+
+    }, 2500);
+  }
 
 cellClicked(cell:string, value:any){
 
@@ -372,18 +386,7 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
       width: '500px',
       data: { patientId, tagNumber },
   });
-}
-
-//areaChanged(event: MatSelectChange, index: number ){
-
-//  console.log(event.value);
-//  console.log(index);
-
-//  this.treatmentListArray.at(index).get('Moved to')?.setValue(event.value);
-
-//  this.moveOut(this.treatmentListArray.at(index) as FormGroup);
-
-//}
+};
 
 areaChanged(areaId:number|undefined, index: number){
 
@@ -393,14 +396,25 @@ areaChanged(areaId:number|undefined, index: number){
 
 }
 
-moveOut(currentPatient: FormGroup) : void{
+moveOut(currentPatient: FormGroup) : void {
 
-const updatedPatient = {
-  currentAreaId: this.area.areaId,
-  ...currentPatient.value
-};
+  this.showSavingIcons(currentPatient);
 
-this.ts.movePatientOutOfArea(updatedPatient);
+  const updatedPatient:TreatmentAreaChange = {
+    treatmentListId: currentPatient.get('treatmentListId')?.value,
+    admission: false,
+    patientId: currentPatient.get('PatientId')?.value,
+    movedFromArea: this.area.areaId,
+    movedToArea: currentPatient.get('Moved to')?.value,
+    movedDate: new Date(),
+    movedInAccepted: false
+  };
+
+  this.ts.movePatientOutOfArea(updatedPatient).then(result => {
+
+    console.log(result);
+
+  });
 
 }
 

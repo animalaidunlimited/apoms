@@ -84,11 +84,37 @@ export abstract class APIService<T = any> {
         return response;
     }
 
+    public async putSubEndpoint(subEndpont: string, body: any): Promise<any> {
+        let response = null;
+        try {
+            response = await this.http
+                .put(`${this.url}/${this.endpoint}/${subEndpont}`, body)
+                .toPromise();
+        } catch (error) {
+            response = this.errorHandler('PUT', error);
+        }
+        return response;
+    }
+
     public async post(body: any): Promise<any> {
         let response = null;
         try {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
+                .toPromise();
+        } catch (error) {
+            response = this.errorHandler('POST', error);
+        }
+
+        return response;
+
+    }
+
+    public async postSubEndpoint(subEndpont: string, body: any): Promise<any> {
+        let response = null;
+        try {
+            response = await this.http
+                .post(`${this.url}/${this.endpoint}/${subEndpont}`, body)
                 .toPromise();
         } catch (error) {
             response = this.errorHandler('POST', error);
