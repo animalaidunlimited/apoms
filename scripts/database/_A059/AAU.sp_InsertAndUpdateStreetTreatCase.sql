@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase!!
 
 
 CREATE PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
+									IN prm_Username VARCHAR(45),
 									IN prm_PatientId INT,
 									IN prm_PriorityId INT,
 									IN prm_StatusId INT,
