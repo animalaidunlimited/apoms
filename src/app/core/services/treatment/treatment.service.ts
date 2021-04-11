@@ -1,12 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReportPatientRecord } from '../../models/census-details';
+import { TreatmentAreaChange } from '../../models/census-details';
 import { TreatmentRecord } from '../../models/treatment';
 import { APIService } from '../http/api.service';
-
-interface PatientMovementObject {
-  currentAreaId: number,
-}
 
 
 @Injectable({
@@ -60,9 +56,16 @@ public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
 
 }
 
-movePatientOutOfArea(updatedPatient:ReportPatientRecord){
+public async getTreatmentList(treatmentAreaId:number) : Promise<any> {
 
-  console.log(updatedPatient);
+  const request = '?treatmentAreaId=' + treatmentAreaId;
+  return this.get(request);
+
+}
+
+public async movePatientOutOfArea(updatedPatient:TreatmentAreaChange){
+
+  return await this.postSubEndpoint('MoveOut', updatedPatient);
 
 }
 

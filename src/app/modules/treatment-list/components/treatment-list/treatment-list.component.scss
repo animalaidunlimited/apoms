@@ -93,6 +93,10 @@
   position: sticky;
 }
 
+.revert-display{
+  display: revert !important;
+}
+
 :host ::ng-deep .mat-radio-persistent-ripple.mat-ripple-element {
   right: 0px !important;
 }

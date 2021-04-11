@@ -26,6 +26,17 @@ export interface CensusArea {
     abbreviation?: string;
 }
 
+export interface TreatmentAreaChange {
+    treatmentListId: number | undefined;
+    admission: boolean;
+    patientId: number;
+    movedFromArea: number;
+    movedToArea: number;
+    movedDate: Date | string;
+    movedInAccepted: boolean;
+
+}
+
 export interface ReportPatientRecord {
     currentAreaId?: number;
     'Emergency number': number;
