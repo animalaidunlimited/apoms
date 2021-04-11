@@ -1,3 +1,4 @@
+import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
@@ -39,6 +40,7 @@ export class PatientStatusComponent implements OnInit {
         private userOptions: UserOptionsService,
         private fb: FormBuilder,
         private showSnackBar: SnackbarService,
+        private streetTreatService: StreetTreatService
     ) {
 
         this.patientStates$ = this.dropdowns.getPatientStates();
@@ -79,21 +81,24 @@ export class PatientStatusComponent implements OnInit {
     }
 
     onSave() {
-
+        
         this.patientService
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {
                 // Add this to the messaging service
 
-                result.success === 1
-                    ? this.showSnackBar.successSnackBar(
+                if(result.success === 1)
+                    { 
+                        this.streetTreatService.updateVisitByPatientStatus(this.patientStatusForm.value);
+                        this.showSnackBar.successSnackBar(
                           'Patient status updated successfully',
-                          'OK',
-                      )
-                    : this.showSnackBar.errorSnackBar(
+                          'OK',);
+                    }
+                    else {this.showSnackBar.errorSnackBar(
                           'Error updating patient status',
                           'OK',
                       );
+                    }
             });
     }
 

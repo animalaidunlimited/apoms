@@ -22,7 +22,14 @@ export class StreetTreatService extends APIService {
   redirectUrl = '';
   saveCaseFail = false;
 
-
+  public async updateVisitByPatientStatus(patientId:number){
+    return await this.put(patientId).then(data => {
+      return data;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
 
   /**
    *
@@ -121,6 +128,7 @@ export class StreetTreatService extends APIService {
       })
     );
   }
+
   getScoreCards(){
     const request = '/scorecards';
     return this.getObservable(request).pipe(
@@ -129,5 +137,8 @@ export class StreetTreatService extends APIService {
       })
     );
   }
+
+ 
+
   
 }

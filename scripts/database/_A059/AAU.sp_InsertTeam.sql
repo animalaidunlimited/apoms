@@ -19,8 +19,8 @@ Created On: 23/08/2018
 Purpose: Used to inseret a team
 
 Modified By: Ankit Singh
-Created On: 03/02/2021
-Purpose: Used to inseret a team with colour
+Created On: 11/04/2021
+Purpose: Used to inseret a team with colour with organisation id
 */
 DECLARE vTeamExists INT;
 DECLARE vTeamId INT;
