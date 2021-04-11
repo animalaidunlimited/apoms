@@ -7,6 +7,13 @@ DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
 BEGIN
+
+
+/*
+Created By: Ankit Singh
+Created On: 23/02/2020
+Purpose: Used to fetch streettreat case with visits by patient id
+*/
 SELECT
 	JSON_OBJECT( 
 	"streetTreatForm",
