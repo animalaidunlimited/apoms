@@ -4,18 +4,6 @@
 
         <div fxLayout.lt-md="column" fxLayout.gt-sm="row"  fxLayoutGap="5px" fxLayoutAlign="start">
           <div fxLayout="column" fxFlex="1 1 57" fxLayoutGap="15px" fxLayoutAlign="start">
-            <div class="iconWrapper" fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="end">
-              <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
-                <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)" matTooltip="Changes not saved">sync_disabled</mat-icon>
-                <mat-icon *ngIf="!recordForm.dirty && syncedToLocalStorage" matTooltip="Changes saved locally">cloud_off</mat-icon>
-                <mat-icon *ngIf="!recordForm.dirty && !syncedToLocalStorage && emergencyCaseId" style="color:seagreen" matTooltip="Changes saved to server">cloud_done</mat-icon>
-              </div>
-  
-              <mat-icon color="primary" class="logs_btn" 
-              (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm?.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
-                description
-              </mat-icon>
-            </div>
 
             <emergency-details
               [recordForm]="recordForm"
@@ -74,9 +62,21 @@
                 </fieldset>
 
                 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
+
+                  <div class="emergencySyncIcon"  style="position: relative;margin-bottom: 0;">
+                    <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)" matTooltip="Changes not saved">sync_disabled</mat-icon>
+                    <mat-icon *ngIf="!recordForm.dirty && syncedToLocalStorage" matTooltip="Changes saved locally">cloud_off</mat-icon>
+                    <mat-icon *ngIf="!recordForm.dirty && !syncedToLocalStorage && emergencyCaseId" style="color:seagreen" matTooltip="Changes saved to server">cloud_done</mat-icon>
+                  </div>
+                  
                   <button mat-raised-button color="primary" tabindex="16" type="submit" [disabled]="recordForm.invalid">Save</button>
 
                   <button mat-raised-button color="secondary" tabindex="17" type="button" (click)="resetForm()">Reset</button>
+
+                  <mat-icon color="primary" class="logs_btn" 
+                  (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm?.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
+                    description
+                  </mat-icon>
                 </div>
 
           </div>
