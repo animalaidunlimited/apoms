@@ -72,7 +72,9 @@ export class PatientStatusComponent implements OnInit {
         this.currentTime = getCurrentTimeString();
 
         this.patientStatusForm.valueChanges.subscribe(() => {
-            
+
+            console.log(this.patientStatusForm);
+
             this.formInvalid.emit(this.patientStatusForm.invalid);
         } );
 
@@ -84,6 +86,8 @@ export class PatientStatusComponent implements OnInit {
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {
                 // Add this to the messaging service
+
+                console.log(result);
 
                 result.success === 1
                     ? this.showSnackBar.successSnackBar(
