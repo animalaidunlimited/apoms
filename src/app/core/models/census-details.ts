@@ -37,6 +37,12 @@ export interface TreatmentAreaChange {
 
 }
 
+export interface AcceptTreatmentListMoveIn {
+    treatmentListId: number;
+    patientId: number;
+}
+
+
 export interface ReportPatientRecord {
     currentAreaId?: number;
     'Emergency number': number;

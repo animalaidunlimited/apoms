@@ -29,8 +29,10 @@ SELECT IF(ROW_COUNT() > 0, 1, 0) INTO vSuccess;
 UPDATE AAU.TreatmentList
 	SET OutAccepted = TRUE
 WHERE	PatientId = prm_PatientId AND
-		OutAccepted IS NULL;
+		OutCensusAreaId IS NOT NULL;
 
 SELECT IF(ROW_COUNT() > 0 AND vSuccess = 1, 1, 0) INTO vSuccess;
+
+SELECT vSuccess AS success;
 
 END $$

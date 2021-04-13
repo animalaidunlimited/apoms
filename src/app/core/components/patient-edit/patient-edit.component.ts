@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
     patientId: number;
     tagNumber: string;
+    patientStatusId: number;
 }
 
 @Component({
