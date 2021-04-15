@@ -231,7 +231,7 @@ cellClicked(cell:string, value:any){
 
 openHospitalManagerRecord(tagNumber: string){
 
-  this.router.navigate(['/nav/hospital-manager', {tagNumber}], { replaceUrl: true });
+  this.router.navigate(['/nav/hospital-manager',{tagNumber}], { replaceUrl: true });
   this.dialog.closeAll();
 
 }

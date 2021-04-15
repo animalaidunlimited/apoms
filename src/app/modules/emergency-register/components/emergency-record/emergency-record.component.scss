@@ -49,9 +49,6 @@ $standard-width: 183px;
 
 .emergencySyncIcon .mat-icon {
     font-size: 2.5rem;
-    position: relative!important;
-    left: 54rem !important;
-    top: 3rem !important;
     color: gold;
     cursor: default;
 }
@@ -62,9 +59,7 @@ $standard-width: 183px;
 
 .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     font-size: 2.5rem;
-    position: relative!important;
-    left: 48rem !important;
-    top: 3rem !important;
+    margin-bottom: 3%;
     cursor: pointer;
 }
 
@@ -76,9 +71,6 @@ $standard-width: 183px;
 @media(max-width: 600px) {
     .emergencySyncIcon .mat-icon {
         font-size: 1.5rem;
-        position: relative !important;
-        left: 1.5rem !important;
-        top: 3rem !important;
         color: gold;
         cursor: default;
     }
@@ -91,19 +83,13 @@ $standard-width: 183px;
 
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         font-size: 1.5rem;
-        position: relative !important;
-        left: -1rem !important;
-        top: 6rem !important;
         cursor: pointer;
     }
 }
 
 @media only screen and (min-width:767px) and (max-width: 1024px) {
     .emergencySyncIcon .mat-icon {
-        font-size: 2rem;
-        position: relative !important;
-        left: 1rem !important;
-        top: 4.5rem !important;
+        font-size: 1.5rem;
         color: gold;
         cursor: default;
     }
@@ -115,10 +101,7 @@ $standard-width: 183px;
     }
 
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
-        font-size: 2rem;
-        position: relative !important;
-        left: -1.5rem !important;
-        top: 9rem !important;
+        font-size: 1.5rem;
         cursor: pointer;
     }
 }

@@ -18,10 +18,9 @@ export class HospitalManagerPageComponent implements OnInit {
         private tabBar: HospitalManagerTabBarService) {
 
         route.params.subscribe(() => {
-
             if(route.snapshot.params.tagNumber){
 
-                const searchTerm = `search.TagNumber=${route.snapshot.params.tagNumber}`;
+                const searchTerm = `p.TagNumber=${route.snapshot.params.tagNumber}`;
 
             this.caseService.searchCases(searchTerm).subscribe(result => {
                 this.tabBar.addTab(result);
