@@ -1,6 +1,5 @@
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_UpdateVisitDate;
-;
+DROP procedure IF EXISTS AAU.sp_UpdateVisitDate!!
 
 DELIMITER $$
 
@@ -8,6 +7,11 @@ CREATE PROCEDURE AAU.sp_UpdateVisitDateByReleaseDetailsId(
 	IN prm_ReleaseDetailsId INT
 )
 BEGIN
+/*
+Created By: Ankit Singh
+Created On: 15/04/2021
+Purpose: Renamed procedure to differenciate between similar update visit.
+*/
 DECLARE vStreetTreatCaseId INT;
 DECLARE vDay INT;
 DECLARE vDate DATETIME;
@@ -48,4 +52,3 @@ END IF;
 
 SELECT vSuccess AS success;
 END$$
-DELIMITER ;

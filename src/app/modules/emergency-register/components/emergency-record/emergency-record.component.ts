@@ -288,7 +288,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         return;
                     }
                 }
-
+            
                 if (this.recordForm.valid) {
                     this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
 

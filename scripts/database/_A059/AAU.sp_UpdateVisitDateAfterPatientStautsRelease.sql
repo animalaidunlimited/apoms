@@ -1,6 +1,5 @@
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_UpdateVisitDate;
-;
+DROP procedure IF EXISTS AAU.sp_UpdateVisitDate!!
 
 DELIMITER $$
 
@@ -43,4 +42,3 @@ END IF;
 SELECT vSuccess;
 
 END$$
-DELIMITER ;
