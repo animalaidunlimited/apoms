@@ -1,17 +1,22 @@
 DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient;!!
 
-DROP PROCEDURE IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient!!
 
-
+DELIMITER $$
 CREATE PROCEDURE AAU.sp_AddOrUpdateStreetTreatPatient(IN prm_Username VARCHAR(20),
 													 IN prm_EmergencyCaseId INT,
                                                      IN prm_AddToStreetTreat INT,
                                                      IN prm_PatientId INT
 													)
 BEGIN
-
+/*
+Modified By: Ankit Singh
+Modified On: 15/04/2021
+Purpose: Check for case already in patients table and streettreatcase table by patienid.
+*/
 DECLARE vTeamId INT;
 DECLARE vStreetTreatCaseExists INT;
+DECLARE vPatientExists INT;
 DECLARE vCaseId INT;
 DECLARE stTagNumber VARCHAR(20);
 DECLARE vTagNumber VARCHAR(20);
@@ -30,8 +35,9 @@ IF prm_AddToStreetTreat = 1 THEN
 		WHERE TagNumber LIKE 'ST%';
 		
 		SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.Patient WHERE TagNumber = stTagNumber;        
-		
-		IF vStreetTreatCaseExists = 0 THEN
+		SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient p LEFT JOIN AAU.StreetTreatCase st ON st.PatientId = p.PatientId WHERE st.PatientId = prm_PatientId;
+        
+		IF vStreetTreatCaseExists = 0 AND vPatientExists < 1 THEN
         
         INSERT INTO AAU.StreetTreatCase (PatientId,PriorityId,StatusId,TeamId,MainProblemId,AdminComments,OrganisationId)
 			VALUES(prm_PatientId, 4, 1, vTeamId, 6, 'Added by Apoms',vOrganisationId);
@@ -66,4 +72,3 @@ END IF;
 SELECT vTagNumber, vCaseId;
 
 END$$
-DELIMITER ;

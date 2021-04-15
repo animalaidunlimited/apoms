@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase!!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase;!!
 
 
 CREATE PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(

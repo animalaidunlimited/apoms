@@ -49,4 +49,3 @@ AS Result
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;
 END$$
-DELIMITER ;
