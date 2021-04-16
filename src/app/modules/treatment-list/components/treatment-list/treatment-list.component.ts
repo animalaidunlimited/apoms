@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { AcceptTreatmentListMoveIn, CensusArea, CensusPrintContent, ReportPatientRecord, TreatmentAreaChange } from 'src/app/core/models/census-details';
+import { TreatmentListMoveIn, CensusArea, CensusPrintContent, ReportPatientRecord, TreatmentAreaChange } from 'src/app/core/models/census-details';
 import { map, take } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { Router } from '@angular/router';
@@ -39,7 +39,6 @@ interface Column{
   ]
 })
 
-
 export class TreatmentListComponent implements OnInit, OnChanges {
   @Input() area!: CensusArea;
 
@@ -59,10 +58,12 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
   isPrinting: BehaviorSubject<boolean>;
   layoutType = 'census';
+  allAreas!: CensusArea[];
   otherAreas!: CensusArea[];
+  admissions = new BehaviorSubject<AbstractControl[]>([]);
   patientRecords = new BehaviorSubject<AbstractControl[]>([]);
   unacceptedRecords = new BehaviorSubject<AbstractControl[]>([]);
-  admissions = new BehaviorSubject<AbstractControl[]>([]);
+  rejected  = new BehaviorSubject<AbstractControl[]>([]);
   showSpinner = false;
 
   treatmentListForm: FormGroup;
@@ -139,7 +140,8 @@ export class TreatmentListComponent implements OnInit, OnChanges {
       Temperament: '',
       'Treatment priority': 0,
       'Moved to': 0,
-      'Move accepted': null,
+      'Move accepted': false,
+      Admission: false,
       showOther: false,
       treatedToday: false,
       saving: false,
@@ -151,19 +153,20 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
   private populateColumnList() : void {
 
-    this.dropdown.getTreatmentListAreas()
+    this.dropdown.getTreatmentAreas()
     .pipe(
       take(1)
     ).subscribe(areaList => {
-      this.otherAreas = areaList.filter(areaGroup => !areaGroup.TreatmentListMain)[0].AreaList
-                                                                                        .filter(area => area.areaName !== this.area.areaName);
+
+      this.allAreas = areaList.filter(area => area.areaName !== this.area.areaName);
+
+      this.otherAreas = areaList.filter(area => area.areaName !== this.area.areaName && !area.mainArea);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
-      const mainAreas:Column[] = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
-                                                              .filter(area => area.areaName !== this.area.areaName)
-                                                              .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
+      const mainAreas:Column[] =  this.allAreas.filter(area => area.areaName !== this.area.areaName && area.mainArea)
+                                                .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
 
         mainAreas.unshift({name: 'Rel./Died', type: 'button'});
         mainAreas.unshift({name: 'Treatment priority', type: 'select'});
@@ -192,9 +195,6 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
       this.showSpinner = false;
 
-      console.log(this.treatmentListForm);
-      console.log(this.patientRecords.value);
-
         this.changeDetector.detectChanges();
     });
 
@@ -204,17 +204,20 @@ export class TreatmentListComponent implements OnInit, OnChanges {
 
     // Let's split the lists into the records that have been accepted by the compounder and those that haven't
 
-    const acceptedRecords = this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value);
-    const unacceptedRecords = this.treatmentListArray.controls.filter(element => !(element.get('Move accepted')?.value));
+    console.log(this.treatmentListArray.controls);
 
+    const admissions =  this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === 0 && !!element.get('Admission')?.value === true );
+    const acceptedRecords = this.treatmentListArray.controls.filter(element => !!element.get('Move accepted')?.value);
+    const unacceptedRecords = this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === 0 && !!element.get('Admission')?.value === false);
+    const rejected = this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === null );
+
+    this.admissions.next(admissions);
     this.patientRecords.next(acceptedRecords);
+    this.rejected.next(rejected);
+    this.unacceptedRecords.next(unacceptedRecords);
 
-    if (!this.unacceptedRecords) {
-      this.unacceptedRecords = new BehaviorSubject<AbstractControl[]>(unacceptedRecords);
-    }
-    else {
-      this.unacceptedRecords.next(unacceptedRecords);
-    }
+    console.log(admissions);
+
   }
 
   receiveMessage(){
@@ -227,8 +230,6 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     const returnArray = this.fb.array([]);
 
     response.forEach(() => returnArray.push(this.getEmptyPatient()));
-
-    console.log(response);
 
     returnArray.patchValue(response);
 
@@ -298,11 +299,14 @@ export class TreatmentListComponent implements OnInit, OnChanges {
   private startSave(row: AbstractControl) {
     row.get('saving')?.setValue(true);
     row.get('saved')?.setValue(false);
+    this.changeDetector.detectChanges();
   }
 
   private endSave(row: AbstractControl) {
     row.get('saving')?.setValue(false);
     row.get('saved')?.setValue(true);
+
+    this.changeDetector.detectChanges();
 
     setTimeout(() => {
       row.get('saved')?.setValue(false);
@@ -329,13 +333,6 @@ openHospitalManagerRecord(tagNumber: string){
 
 }
 
-priorityChanged(element: ReportPatientRecord, event:any){
-
-  const v = this.treatmentListForm.get('treatmentList') as FormArray;
-
-  console.log(v.at(0)?.value);
-}
-
 quickUpdate(patientId: number, tagNumber: string | undefined) {
 
   const dialogRef = this.dialog.open(PatientEditDialog, {
@@ -357,15 +354,19 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
 
 areaChanged(areaId:number|undefined, index: number){
 
-  console.log('here');
+  console.log(areaId);
 
-  this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
+  //this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
 
-  this.moveOut(this.treatmentListArray.at(index) as FormGroup);
+  //this.moveOut(this.treatmentListArray.at(index) as FormGroup);
+
+    const v = this.treatmentListForm.get('treatmentList') as FormArray;
+
+    console.log(v.at(0)?.value);
 
 }
 
-moveOut(currentPatient: FormGroup) : void {
+moveOut(currentPatient: AbstractControl) : void {
 
   this.startSave(currentPatient);
 
@@ -390,12 +391,9 @@ moveOut(currentPatient: FormGroup) : void {
 
 acceptMove(currentPatient: AbstractControl) : void {
 
-  const params:AcceptTreatmentListMoveIn = {
-    patientId: currentPatient.get('PatientId')?.value,
-    treatmentListId: currentPatient.get('treatmentListId')?.value
-  };
+  const params = this.extractTreatmentListMoveInObject(currentPatient, true);
 
-  this.ts.acceptMoveIn(params).then((response:SuccessOnlyResponse) => {
+  this.ts.acceptRejectMoveIn(params).then((response:SuccessOnlyResponse) => {
 
     if(response.success === 1){
 
@@ -404,20 +402,34 @@ acceptMove(currentPatient: AbstractControl) : void {
       this.emitLists();
     }
 
-
   });
-
-
 }
 
 rejectMove(currentPatient: AbstractControl) : void {
 
-  const patientIdex = this.treatmentListArray.controls.findIndex(element => element.get('PatientId')?.value === currentPatient.get('PatientId')?.value );
+  const params = this.extractTreatmentListMoveInObject(currentPatient, false);
 
-  this.treatmentListArray.removeAt(patientIdex);
+  this.ts.acceptRejectMoveIn(params).then((response:SuccessOnlyResponse) => {
 
-  this.emitLists();
+    if(response.success === 1){
 
+      const patientIdex = this.treatmentListArray.controls.findIndex(element => element.get('PatientId')?.value === currentPatient.get('PatientId')?.value );
+
+      this.treatmentListArray.removeAt(patientIdex);
+
+      this.emitLists();
+    }
+
+  });
+}
+
+private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accepted: boolean): TreatmentListMoveIn {
+
+  return {
+    patientId: currentPatient.get('PatientId')?.value,
+    treatmentListId: currentPatient.get('treatmentListId')?.value,
+    accepted
+  };
 }
 
 }

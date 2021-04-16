@@ -15,8 +15,3 @@ export interface TreatmentRecord{
     success: number;
     treatmentId: number;
   }
-
-  export interface TreatmentListArea{
-    TreatmentListMain: boolean;
-    AreaList: CensusArea[];
-  }

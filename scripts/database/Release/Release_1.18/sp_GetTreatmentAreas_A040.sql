@@ -2,8 +2,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentAreas!!
 
--- CALL AAU.sp_GetTreatmentAreas('Jim');
-
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_GetTreatmentAreas(IN prm_UserName VARCHAR(45))
@@ -22,6 +20,7 @@ SET vOrganisationId = 1;
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT
+	IFNULL(TreatmentListMain, 0) TreatmentListMain,
 	JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT("areaId", AreaId),
@@ -29,8 +28,9 @@ SELECT
     JSON_OBJECT("sortArea", SortArea),
     JSON_OBJECT("abbreviation", Abbreviation),
     JSON_OBJECT("mainArea", TreatmentListMain)    
-	)) TreatmentAreas
+	)) AreaList
 FROM AAU.CensusArea
-WHERE OrganisationId = vOrganisationId;
+WHERE OrganisationId = vOrganisationId
+GROUP BY IFNULL(TreatmentListMain, 0);
 
 END

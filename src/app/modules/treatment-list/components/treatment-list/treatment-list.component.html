@@ -6,11 +6,113 @@
 
       <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
 
+      <div *ngIf="(rejected | async) as rejected">
+
+        <fieldset class="form-sub-group" fxLayout="column" *ngIf="rejected.length > 0">
+
+          <legend class="legend">Rejected</legend>
+
+          <div *ngFor="let item of rejected">
+
+            <div class="unaccepted-item" fxLayout="row-wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+              <div class="unaccepted-form-fields">
+
+                  <mat-form-field >
+                    <input matInput placeholder="Tag number" disabled="true" [value]="item.get('Tag number')?.value">
+                  </mat-form-field>
+
+                  <mat-form-field >
+                    <mat-select [value]="item.get('Treatment priority')?.value" disabled="true" placeholder="Treatment priority">
+                      <mat-option [value]="2">High</mat-option>
+                      <mat-option [value]="3">Medium</mat-option>
+                      <mat-option [value]="4">Low</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+              </div>
+
+              <button mat-button style="color: green" (click)="acceptMove(item)">
+                <mat-icon>check_circle</mat-icon>
+                Accept
+            </button>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
+
+              <mat-form-field>
+              <mat-select
+              placeholder="Move to"
+              (selectionChange)="moveOut(item)">
+
+                <mat-option>N/A</mat-option>
+                <mat-option [value]="area.areaId" *ngFor="let area of allAreas">{{ area.areaName }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-spinner *ngIf="item.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
+            <mat-icon [@fadeSavedIcon]="item.get('saved')?.value" *ngIf="item.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
+            <!--<mat-icon *ngIf="!row.get('saved')?.value && !row.get('saving')?.value" class="saved-icon"></mat-icon>-->
+
+          </div>
+
+            </div>
+
+          </div>
+
+        </fieldset>
+      </div>
 
       <div *ngIf="(admissions | async) as admissions">
           <fieldset class="form-sub-group" fxLayout="column" *ngIf="admissions.length > 0">
 
             <legend class="legend">Admissions</legend>
+
+            <div *ngFor="let item of admissions">
+
+              <div class="unaccepted-item" fxLayout="row-wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+                <div class="unaccepted-form-fields">
+
+                    <mat-form-field >
+                      <input matInput placeholder="Tag number" disabled="true" [value]="item.get('Tag number')?.value">
+                    </mat-form-field>
+
+                    <mat-form-field >
+                      <mat-select [value]="item.get('Treatment priority')?.value" disabled="true" placeholder="Treatment priority">
+                        <mat-option [value]="2">High</mat-option>
+                        <mat-option [value]="3">Medium</mat-option>
+                        <mat-option [value]="4">Low</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                </div>
+
+                <button mat-button style="color: green" (click)="acceptMove(item)">
+                  <mat-icon>check_circle</mat-icon>
+                  Accept
+              </button>
+
+              <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
+
+                <mat-form-field>
+                <mat-select
+                placeholder="Admit to"
+                (selectionChange)="moveOut(item)">
+
+                  <mat-option>N/A</mat-option>
+                  <mat-option [value]="area.areaId" *ngFor="let area of allAreas">{{ area.areaName }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-spinner *ngIf="item.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
+              <mat-icon [@fadeSavedIcon]="item.get('saved')?.value" *ngIf="item.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
+              <!--<mat-icon *ngIf="!row.get('saved')?.value && !row.get('saving')?.value" class="saved-icon"></mat-icon>-->
+
+            </div>
+
+              </div>
+
+            </div>
 
           </fieldset>
       </div>
@@ -21,7 +123,7 @@
 
           <legend class="legend">Moved in</legend>
 
-          <div *ngFor="let item of (unacceptedRecords | async)">
+          <div *ngFor="let item of unnaccepted">
 
             <div class="unaccepted-item" fxLayout="row-wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
 
@@ -51,11 +153,7 @@
               Reject
           </button>
 
-
-
             </div>
-
-
 
           </div>
 
@@ -117,8 +215,7 @@
                       <div *ngIf="column.type === 'select'" class="width-175 start">
                         <mat-form-field>
                         <mat-select
-                        [formControlName]="column.name"
-                        (selectionChange)="priorityChanged(row, $event)">
+                        [formControlName]="column.name">
                             <mat-option>N/A</mat-option>
                             <mat-option [value]="2">High</mat-option>
                             <mat-option [value]="3">Medium</mat-option>
@@ -140,11 +237,11 @@
                       <div *ngIf="column.type === 'checkbox'" fxLayout="column" fxLayoutAlign="center center">
 
 
-                        <!--[checked]="column?.areaId === treatmentListArray.at(index).get('Moved to')?.value"-->
+                        <!--(change)="areaChanged(column?.areaId, index)"-->
                         <mat-radio-group formControlName="Moved to">
                           <mat-radio-button
-                          [value]="column?.areaId"
-                            (change)="areaChanged(column?.areaId, index)">
+                          [checked]="column?.areaId === treatmentListArray.at(index).get('Moved to')?.value"
+                          [value]="column?.areaId">
                           </mat-radio-button>
 
                         </mat-radio-group>
@@ -168,10 +265,10 @@
 
                   <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
 
+                    <!--(selectionChange)="areaChanged($event?.value, index)"-->
                       <mat-form-field>
                       <mat-select
-                      formControlName="Moved to"
-                      (selectionChange)="areaChanged($event?.value, index)">
+                      formControlName="Moved to">
 
                         <mat-option>N/A</mat-option>
                         <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
