@@ -22,14 +22,6 @@ export class StreetTreatService extends APIService {
   redirectUrl = '';
   saveCaseFail = false;
 
-  public async updateVisitByPatientStatus(patientId:number){
-    return await this.put(patientId).then(data => {
-      return data;
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
 
   /**
    *
