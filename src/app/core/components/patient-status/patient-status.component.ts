@@ -87,18 +87,15 @@ export class PatientStatusComponent implements OnInit {
             .then(result => {
                 // Add this to the messaging service
 
-                if(result.success === 1)
-                    { 
-                        this.streetTreatService.updateVisitByPatientStatus(this.patientStatusForm.value);
-                        this.showSnackBar.successSnackBar(
-                          'Patient status updated successfully',
-                          'OK',);
-                    }
-                    else {this.showSnackBar.errorSnackBar(
-                          'Error updating patient status',
-                          'OK',
-                      );
-                    }
+                result.success === 1
+                ? this.showSnackBar.successSnackBar(
+                      'Patient status updated successfully',
+                      'OK',
+                  )
+                : this.showSnackBar.errorSnackBar(
+                      'Error updating patient status',
+                      'OK',
+                  );
             });
     }
 
