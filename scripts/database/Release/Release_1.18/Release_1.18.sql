@@ -305,7 +305,7 @@ BEGIN
 	SET PermissionArray = '[2,4,6,8,10,12]'
 	WHERE UserName IN (
 		SELECT DISTINCT UserName FROM AAU.Logging
-	)
+	);
 
 END //
 DELIMITER ;
@@ -320,7 +320,11 @@ DROP PROCEDURE `?`;
 
 
 
-INSERT INTO AAU.patientstatus (`PatientStatusId`, `OrganisationId`, `PatientStatus`, `IsDeleted`) VALUES ('7', '1', 'StreetTreat', '0');DELIMITER !!
+INSERT INTO AAU.PatientStatus (`OrganisationId`, `PatientStatus`, `IsDeleted`) VALUES ('1', 'StreetTreat', '0');
+
+DELIMITER !!
+
+
 DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient;!!
 
 
@@ -393,12 +397,16 @@ END IF;
 
 SELECT vTagNumber, vCaseId;
 
-END$$DELIMITER !!
+END$$
 
-DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
+DELIMITER ;
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatWithVisitDetailsByPatientId !!
 
 DELIMITER $$
-
 
 CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
 BEGIN
@@ -443,7 +451,9 @@ AS Result
 	WHERE 
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;
-END$$DELIMITER !!
+END$$
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase;!!
 
@@ -694,9 +704,10 @@ COMMIT;
 	END IF;
 SELECT vTeamId, vSuccess;
 END$$
-DELIMITER ;DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_UpdatePatient;!!
-;
+DELIMITER ;
+
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_UpdatePatient!!
 
 DELIMITER $$
 
