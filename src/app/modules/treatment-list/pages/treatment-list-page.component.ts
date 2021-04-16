@@ -23,13 +23,10 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder) {
 
-    this.censusAreas = this.dropdown.getTreatmentListAreas()
+    this.censusAreas = this.dropdown.getTreatmentAreas()
                               .pipe(
                                 take(1),
-                                reduce((result:CensusArea[], current) => result.concat(...current.map(area => area.AreaList)), []),
-                                map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1))
-
-                              );
+                                map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));
 
     this.areas = this.fb.group({
       area: '',

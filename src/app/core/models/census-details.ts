@@ -24,6 +24,7 @@ export interface CensusArea {
     areaName : string;
     sortArea?: number;
     abbreviation?: string;
+    mainArea?: boolean;
 }
 
 export interface TreatmentAreaChange {
@@ -37,9 +38,10 @@ export interface TreatmentAreaChange {
 
 }
 
-export interface AcceptTreatmentListMoveIn {
+export interface TreatmentListMoveIn {
     treatmentListId: number;
     patientId: number;
+    accepted: boolean;
 }
 
 

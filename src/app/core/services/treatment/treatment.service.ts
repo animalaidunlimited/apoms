@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AcceptTreatmentListMoveIn, ReportPatientRecord, TreatmentAreaChange } from '../../models/census-details';
+import { TreatmentListMoveIn, ReportPatientRecord, TreatmentAreaChange } from '../../models/census-details';
 import { TreatmentRecord } from '../../models/treatment';
 import { APIService } from '../http/api.service';
 import { ABCStatus, Age, ReleaseStatus, Temperament } from 'src/app/core/enums/patient-details';
@@ -110,9 +110,9 @@ public async movePatientOutOfArea(updatedPatient:TreatmentAreaChange){
 
 }
 
-public async acceptMoveIn(acceptedMovePatient:AcceptTreatmentListMoveIn){
+public async acceptRejectMoveIn(acceptedMovePatient:TreatmentListMoveIn){
 
-  return await this.putSubEndpoint('AcceptMoveIn', acceptedMovePatient);
+  return await this.putSubEndpoint('AcceptRejectMoveIn', acceptedMovePatient);
 
 }
 
