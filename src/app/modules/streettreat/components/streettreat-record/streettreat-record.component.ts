@@ -119,7 +119,6 @@ export class StreetTreatRecordComponent implements OnInit {
     } ),
       take(1))
     .subscribe((res) => {
-
       this.recordForm.patchValue(res);
 
       this.streetTreatServiceSubscription?.unsubscribe();
@@ -157,11 +156,15 @@ export class StreetTreatRecordComponent implements OnInit {
       }
 
     });
+    this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
+		.pipe(takeUntil(this.ngUnsubscribe))
+		.subscribe((response) => {
+      this.recordForm.patchValue(response.visits);
+    });
    }
    else {
     this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
    }
-
   }
 
 }
