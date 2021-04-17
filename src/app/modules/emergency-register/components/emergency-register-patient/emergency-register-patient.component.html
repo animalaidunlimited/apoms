@@ -8,7 +8,7 @@
           </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="4" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
+    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
         <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" >
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
@@ -40,7 +40,20 @@
           The tag number already exists.
         </mat-error>
     </mat-form-field>
-    <div class="patients_icons" fxFlexOrder.lt-md="2" fxFlexOrder.gt-sm="3">
+
+    <emergency-case-outcome style="width: 50%;" fxFlexOrder.gt-sm="4" [patientForm]="patientForm"></emergency-case-outcome>
+
+    <mat-form-field fxFlexOrder.gt-sm="5">
+      <mat-label>Admission Area</mat-label>
+      <mat-select formControlName="AdmissionArea">
+        <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.AreaId">
+          {{areaName.Area}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <div class="patients_icons" fxFlexOrder.lt-md="2" fxFlexOrder.gt-sm="6">
       <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>  

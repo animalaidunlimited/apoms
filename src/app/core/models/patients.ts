@@ -97,3 +97,8 @@ export interface PatientOutcomeResponse{
     patientOutcomeDetailsId: number;
     success: number;
 }
+
+export interface TreatmentAreaDropdwn {
+    AreaId: number;
+    Area: string;
+}

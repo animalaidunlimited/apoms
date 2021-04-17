@@ -102,10 +102,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
-            callOutcome: this.fb.group({
-                CallOutcome: [],
-                sameAsNumber: []
-            }),
+            // callOutcome: this.fb.group({
+            //     CallOutcome: [],
+            //     sameAsNumber: []
+            // }),
             caseComments: [],
         });
 
@@ -268,122 +268,125 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
+        console.log(this.recordForm.value);
+
         
-        this.loading = true;
+        // this.loading = true;
 
-            // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
-            // So mark it as error so the user knows to recheck it
-            this.recordForm.updateValueAndValidity();
-            console.log(this.hasWritePermission);
-            if(this.hasWritePermission) {
-                this.loading = true;
-                if(this.recordForm.pending){
-                    // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
-                    // So mark it as error so the user knows to recheck it
-                    this.recordForm.updateValueAndValidity();
+        //     // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+        //     // So mark it as error so the user knows to recheck it
+        //     this.recordForm.updateValueAndValidity();
+        //     console.log(this.hasWritePermission);
+        //     if(this.hasWritePermission) {
+        //         this.loading = true;
+        //         if(this.recordForm.pending){
+        //             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
+        //             // So mark it as error so the user knows to recheck it
+        //             this.recordForm.updateValueAndValidity();
 
-                    if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
-                        this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
-                        return;
-                    }
-                }
+        //             if(this.recordForm.pending && this.recordForm.get('emergencyDetails.emergencyNumber')?.pending){
+        //                 this.recordForm.get('emergencyDetails.emergencyNumber')?.setErrors({ stuckInPending: true});
+        //                 return;
+        //             }
+        //         }
 
-                if (this.recordForm.valid) {
-                    this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
+        //         if (this.recordForm.valid) {
+        //             this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
 
-                    const emergencyForm = {
-                        emergencyForm: this.recordForm.value,
-                    } as EmergencyCase;
+        //             const emergencyForm = {
+        //                 emergencyForm: this.recordForm.value,
+        //             } as EmergencyCase;
 
-                    let messageResult = {
-                        failure: 0,
-                        message: ''
-                    };
+        //             let messageResult = {
+        //                 failure: 0,
+        //                 message: ''
+        //             };
 
-                    if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
+        //             if (!emergencyForm.emergencyForm.emergencyDetails.emergencyCaseId) {
 
-                        await this.caseService
-                            .insertCase(emergencyForm)
-                            .then(data => {
-                                if(data) {
-                                    this.loading = false;
-                                }
-                                if (data.status === 'saved') {
-                                    messageResult.failure = 1;
-                                } else {
-                                    const resultBody = data as EmergencyResponse;
+        //                 await this.caseService
+        //                     .insertCase(emergencyForm)
+        //                     .then(data => {
+        //                         console.log(data);
+        //                         if(data) {
+        //                             this.loading = false;
+        //                         }
+        //                         if (data.status === 'saved') {
+        //                             messageResult.failure = 1;
+        //                         } else {
+        //                             const resultBody = data as EmergencyResponse;
 
-                                    // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
+        //                             // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
-                                    this.emergencyCaseId = resultBody.emergencyCaseId;
+        //                             this.emergencyCaseId = resultBody.emergencyCaseId;
 
-                                    this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
-                                    this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
-                                    messageResult = this.getCaseSaveMessage(resultBody);
+        //                             this.recordForm.get('emergencyDetails.emergencyCaseId')?.setValue(this.emergencyCaseId);
+        //                             this.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(resultBody.emergencyNumber);
+        //                             messageResult = this.getCaseSaveMessage(resultBody);
 
-                                }
+        //                         }
 
-                                if (messageResult.failure === 0) {
-                                    this.showSnackBar.successSnackBar('Case inserted successfully','OK');
-                                    this.syncedToLocalStorage = false;
-                                    this.recordForm.markAsPristine();
-                                }
-                                else if (messageResult.failure === -1) {
-                                    this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
-                                }
-                                else if (messageResult.failure === 1) {
-                                    this.showSnackBar.errorSnackBar('Case saved offline','OK');
-                                    this.syncedToLocalStorage = true;
-                                    this.recordForm.markAsPristine();
-                                }
-                            })
-                            .catch(error => {
-                                console.log(error);
-                            });
-                    } else {
-                        await this.caseService
-                            .updateCase(emergencyForm)
-                            .then(data => {
+        //                         if (messageResult.failure === 0) {
+        //                             this.showSnackBar.successSnackBar('Case inserted successfully','OK');
+        //                             this.syncedToLocalStorage = false;
+        //                             this.recordForm.markAsPristine();
+        //                         }
+        //                         else if (messageResult.failure === -1) {
+        //                             this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
+        //                         }
+        //                         else if (messageResult.failure === 1) {
+        //                             this.showSnackBar.errorSnackBar('Case saved offline','OK');
+        //                             this.syncedToLocalStorage = true;
+        //                             this.recordForm.markAsPristine();
+        //                         }
+        //                     })
+        //                     .catch(error => {
+        //                         console.log(error);
+        //                     });
+        //             } else {
+        //                 await this.caseService
+        //                     .updateCase(emergencyForm)
+        //                     .then(data => {
 
-                                if(data) {
-                                    this.loading = false;
-                                }
+        //                         if(data) {
+        //                             this.loading = false;
+        //                         }
 
-                                if (data.status === 'saved') {
+        //                         if (data.status === 'saved') {
 
-                                    messageResult.failure = 1;
+        //                             messageResult.failure = 1;
 
-                                } else {
+        //                         } else {
 
-                                    const resultBody = data as EmergencyResponse;
-                                    messageResult = this.getCaseSaveMessage(resultBody);
-                                }
+        //                             const resultBody = data as EmergencyResponse;
+        //                             messageResult = this.getCaseSaveMessage(resultBody);
+        //                         }
 
-                                if (messageResult.failure === 0) {
+        //                         if (messageResult.failure === 0) {
 
-                                    this.showSnackBar.successSnackBar('Case updated successfully','OK');
-                                    this.syncedToLocalStorage = false;
-                                    this.recordForm.markAsPristine();
-                                }
-                                else if (messageResult.failure === 1){
-                                    this.showSnackBar.errorSnackBar('Case updated offline.','OK');
-                                    this.syncedToLocalStorage = true;
-                                    this.recordForm.markAsPristine();
-                                }
-                                else{
-                                    this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
-                                }
-                            })
-                            .catch(error => {
-                                console.log(error);
-                            });
-                    }
-                }
-            }
+        //                             this.showSnackBar.successSnackBar('Case updated successfully','OK');
+        //                             this.syncedToLocalStorage = false;
+        //                             this.recordForm.markAsPristine();
+        //                         }
+        //                         else if (messageResult.failure === 1){
+        //                             this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+        //                             this.syncedToLocalStorage = true;
+        //                             this.recordForm.markAsPristine();
+        //                         }
+        //                         else{
+        //                             this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
+        //                         }
+        //                     })
+        //                     .catch(error => {
+        //                         console.log(error);
+        //                     });
+        //             }
+        //         }
+        //     }
 
-            else {
-                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
-            }
+        //     else {
+        //         this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
+        //     }
 
     }
 

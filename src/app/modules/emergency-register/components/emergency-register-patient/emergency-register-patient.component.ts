@@ -8,6 +8,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { MediaItem } from 'src/app/core/models/media';
+import { TreatmentAreaDropdwn } from 'src/app/core/models/patients';
 import { Exclusions,ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -58,6 +59,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   problemsArray!: FormArray;
 
+  treatmentAreaNames$!: Observable<TreatmentAreaDropdwn[]>;
+
 
   sortedAnimalTypes = this.dropdown.getAnimalTypes().pipe(
     map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0))),
@@ -89,6 +92,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   ngOnInit(): void {
 
     this.exclusions = this.dropdown.getExclusions();
+
+
+    this.treatmentAreaNames$ = this.dropdown.getTreatmentAreaNames();
+
+    this.treatmentAreaNames$.subscribe(value=> {
+      console.log(value);
+    })
+
 
 
     this.animalType = this.patientForm.get('animalType') as AbstractControl;

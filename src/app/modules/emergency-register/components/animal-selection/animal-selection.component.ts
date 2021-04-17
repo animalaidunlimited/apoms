@@ -100,6 +100,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         );
     
         this.patients = this.recordForm.get('patients') as FormArray;
+
+
+        console.log(this.patients);
         
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
         
@@ -145,7 +148,83 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
                 deleted: [false, Validators.required],
+                AdmissionArea: [],
+                callOutcome: this.fb.group({
+                    CallOutcome: [],
+                    sameAsNumber: []
+                }),
             });
+
+
+            patient.get('callOutcome.CallOutcome')?.valueChanges.subscribe(value=>{
+
+                console.log(value);
+
+
+                const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
+    
+
+                        const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');                       
+
+                        const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
+                        
+                        const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
+
+
+                if(value){
+
+                    if(value.CallOutcomeId === 1) {
+                        patient.get('tagNumber')?.setValidators(Validators.required);
+                        patient.get('tagNumber')?.updateValueAndValidity();
+
+                        rescuer2Id?.setValidators([Validators.required]);
+                        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                        rescuer1Id?.setValidators([Validators.required]);
+                        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                        rescueTime?.setValidators([Validators.required]);
+                        rescueTime?.updateValueAndValidity({ emitEvent: false });
+
+                        admissionTime?.setValidators([Validators.required]);
+                        admissionTime?.updateValueAndValidity({ emitEvent: false });
+                    
+                    }
+                    else {
+                        patient.get('tagNumber')?.clearValidators();
+                        patient.get('tagNumber')?.updateValueAndValidity();
+
+                        rescuer2Id?.clearValidators();
+                        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                        rescuer1Id?.clearValidators();
+                        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                        rescueTime?.clearValidators();
+                        rescueTime?.updateValueAndValidity({ emitEvent: false });
+                        admissionTime?.clearValidators();
+                        admissionTime?.updateValueAndValidity({ emitEvent: false });
+                    }
+                }
+                else {
+                    patient.get('tagNumber')?.clearValidators();
+                    patient.get('tagNumber')?.updateValueAndValidity();
+
+                    rescuer2Id?.clearValidators();
+                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescuer1Id?.clearValidators();
+                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescueTime?.clearValidators();
+                    rescueTime?.updateValueAndValidity({ emitEvent: false });
+                    admissionTime?.clearValidators();
+                    admissionTime?.updateValueAndValidity({ emitEvent: false });
+                }
+               
+            })
+
+
             const patientIdControl = patient.get('patientId');
 
             if(!patientIdControl){
@@ -195,6 +274,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             duplicateTag: [false, Validators.required],
             updated: [isUpdate, Validators.required],
             deleted: [false, Validators.required],
+            AdmissionArea: [],
+            callOutcome: this.fb.group({
+                CallOutcome: [],
+                sameAsNumber: []
+            }),
         });
 
         const patientIdControl = newPatient.get('patientId');
@@ -217,7 +301,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
-        .subscribe((patients: Patients) => {                                      patients.patients.forEach(patient => {
+        .subscribe((patients: Patients) => {
+            console.log(patients)                                      
+            patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
                         patient.deleted = !!+patient.deleted;
 

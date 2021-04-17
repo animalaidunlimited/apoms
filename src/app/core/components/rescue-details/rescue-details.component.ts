@@ -121,10 +121,10 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.callDateTime = callDateTime;
         }
 
-        const callOutcome = this.recordForm.get('callOutcome.CallOutcome');
-        if (callOutcome) {
-            this.callOutcome = callOutcome;
-        }
+        // const callOutcome = this.recordForm.get('callOutcome.CallOutcome');
+        // if (callOutcome) {
+        //     this.callOutcome = callOutcome;
+        // }
 
         this.updateTimes();
 
@@ -246,18 +246,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.rescueTime.setErrors({ rescueAfterAdmission: true });
             this.admissionTime.setErrors({ rescueAfterAdmission: true });
         }
+        
 
         // When we select admission, we need to check that we have rescue details
  
-        if (this.callOutcome.value?.CallOutcome === 'Admission') {
-            this.rescuer2Id.setValidators([Validators.required]);
-            this.rescuer1Id.setValidators([Validators.required]);
+        // if (this.callOutcome.value?.CallOutcome === 'Admission') {
+        //     this.rescuer2Id.setValidators([Validators.required]);
+        //     this.rescuer1Id.setValidators([Validators.required]);
 
-            this.rescueTime.setValidators([Validators.required]);
-            this.rescueTime.updateValueAndValidity({ emitEvent: false });
-            this.admissionTime.setValidators([Validators.required]);
-            this.admissionTime.updateValueAndValidity({ emitEvent: false });
-        }
+        //     this.rescueTime.setValidators([Validators.required]);
+        //     this.rescueTime.updateValueAndValidity({ emitEvent: false });
+        //     this.admissionTime.setValidators([Validators.required]);
+        //     this.admissionTime.updateValueAndValidity({ emitEvent: false });
+        // }
 
         this.rescuer1Id.updateValueAndValidity({ emitEvent: false });
         this.rescuer2Id.updateValueAndValidity({ emitEvent: false });
