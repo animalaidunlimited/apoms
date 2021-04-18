@@ -29,3 +29,10 @@ table {
 .mat-chip {
     font-weight: unset !important;
 }
+@media (max-width: 600px)
+{
+    .mat-cell {
+        width: auto;
+        padding: 0 0.5rem !important;
+    }
+}
