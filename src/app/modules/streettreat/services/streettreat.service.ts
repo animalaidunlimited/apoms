@@ -116,7 +116,7 @@ export class StreetTreatService extends APIService {
     const request = `?patientId=${patientId}`;
     return this.getObservable(request).pipe(
       map((response)=>{
-        return response.streetTreatForm;
+        return response?.streetTreatForm;
       })
     );
   }
