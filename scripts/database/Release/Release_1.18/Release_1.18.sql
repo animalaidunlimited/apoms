@@ -423,11 +423,9 @@ Purpose: Used to fetch streettreat case with visits by patient id
 */
 
 
-<<<<<<< HEAD
+
 SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
-=======
-SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.Streettreatcase WHERE PatientId=prm_PatientId;
->>>>>>> e29ffb8a8f3f2e79c3e198ecb6f9eacc38fce63e
+
 
 IF vStreetTreatCaseIdExists > 0 THEN
 SELECT
