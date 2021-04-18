@@ -314,13 +314,20 @@ DROP PROCEDURE `?`;
 
 
 
-
-
-
-
-
-
-INSERT INTO AAU.PatientStatus (`OrganisationId`, `PatientStatus`, `IsDeleted`) VALUES ('1', 'StreetTreat', '0');
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+DECLARE statusExsits INT;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+  SELECT count(1) INTO statusExsits FROM AAU.PatientStatus WHERE PatientStatus='StreetTreat';
+IF statusExsits = 0 THEN
+	INSERT INTO AAU.PatientStatus (`OrganisationId`, `PatientStatus`, `IsDeleted`) VALUES ('1', 'StreetTreat', '0');
+END IF;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;	
 
 DELIMITER !!
 
@@ -403,20 +410,22 @@ DELIMITER ;
 
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatWithVisitDetailsByPatientId !!
 
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
-BEGIN
-
-
+DECLARE vStreetTreatCaseIdExists INT;
 /*
 Created By: Ankit Singh
 Created On: 23/02/2020
 Purpose: Used to fetch streettreat case with visits by patient id
 */
+
+
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
+
+IF vStreetTreatCaseIdExists > 0 THEN
 SELECT
 	JSON_OBJECT( 
 	"streetTreatForm",
@@ -428,7 +437,7 @@ SELECT
 				    "mainProblem",s.MainProblemId,
 				    "adminNotes",s.AdminComments,
 				    "streetTreatCaseStatus",s.StatusId,
-                    "patientReleaseDate",IF(p.PatientStatusId = 7, p.PatientStatusDate, null),
+                    "patientReleaseDate",IF(p.PatientStatusId = 8, p.PatientStatusDate, null),
 					"visits",
 					JSON_ARRAYAGG(
 						JSON_OBJECT(
@@ -451,6 +460,9 @@ AS Result
 	WHERE 
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;
+ELSE
+	SELECT null AS Result;
+END IF;
 END$$
 
 DELIMITER !!
@@ -639,6 +651,8 @@ END IF;
 SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
 
 END$$
+
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
@@ -769,12 +783,16 @@ SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
 
 END$$
 
+DELIMITER ;
+
 DELIMITER !!
 DROP procedure IF EXISTS AAU.sp_UpdateVisitDate!!
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_UpdateVisitDateByReleaseDetailsId!!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_UpdateVisitDateByReleaseDetailsId(
+CREATE PROCEDURE AAU.sp_UpdateVisitDate(
 	IN prm_ReleaseDetailsId INT
 )
 BEGIN
@@ -822,4 +840,97 @@ ELSE
 END IF;
 
 SELECT vSuccess AS success;
-END$$
+END$$
+
+DELIMITER ;
+
+
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_UpdatePatientStatusAfterRelease!!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_UpdatePatientStatusAfterRelease(IN prm_ReleaseDetailsId INTEGER, IN prm_ReleaseEndDate DATE)
+BEGIN
+
+/*
+
+Created By: Jim Mackenzie
+Created On: 22/02/2021
+Purpose: When the release is complete we should update the patient status with the release
+end date as we know with certainty that the patient has been released.
+
+*/
+
+UPDATE AAU.Patient p
+INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+SET p.PatientStatusDate = prm_ReleaseEndDate, p.PatientStatusId = 2
+WHERE rd.ReleaseDetailsId = prm_ReleaseId;
+
+
+END$$
+
+DELIMITER ;
+
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_GetReleaseDetailsById!!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetReleaseDetailsById(IN prm_PatientId INT)
+BEGIN
+/*
+Created By: Arpit Trivedi
+Created On: 21/11/2020
+Purpose: To fetch release details of a patient.
+
+
+Modified By: Ankit Singh
+Modified On: 28/01/2021
+Purpose: To seperate visit data
+
+Modified By: Ankit Singh
+Modified On: 18/04/2021
+Purpose: For Null Data Checking
+*/
+
+
+DECLARE vReleaseDetailsIdExists INT;
+DECLARE vStreetTreatCaseIdExists INT;
+
+SELECT COUNT(ReleaseDetailsId) INTO vReleaseDetailsIdExists FROM AAU.ReleaseDetails WHERE PatientId=prm_PatientId;
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
+
+
+IF vStreetTreatCaseIdExists > 0 AND vReleaseDetailsIdExists > 0 THEN
+SELECT
+	JSON_OBJECT( 
+		"releaseId",rd.ReleaseDetailsId,
+		"patientId",rd.PatientId,
+		"releaseRequestForm",
+			JSON_OBJECT(
+				"requestedUser",u.UserName, 
+				"requestedDate",DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")
+			), 
+		"complainerNotes",rd.ComplainerNotes,
+		"complainerInformed",rd.ComplainerInformed,
+		"Releaser1",rd.Releaser1Id, 
+		"Releaser2",rd.Releaser2Id, 
+		"releaseBeginDate",DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"), 
+		"releaseEndDate",DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")
+	) 
+AS Result
+	FROM
+        AAU.ReleaseDetails rd
+        INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
+        LEFT JOIN AAU.StreetTreatCase s ON rd.PatientID = s.PatientId
+        LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
+	WHERE 
+		rd.PatientId =  prm_PatientId
+	GROUP BY rd.ReleaseDetailsId;
+ELSE
+	SELECT null AS Result;
+END IF;
+END$$
+
+DELIMITER ;
