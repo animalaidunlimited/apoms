@@ -137,7 +137,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
-        this.emergencyDetails.addControl('code',new FormControl({ EmergencyCodeId: null, EmergencyCode: null }));
+        this.emergencyDetails.addControl('code',new FormControl());
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
