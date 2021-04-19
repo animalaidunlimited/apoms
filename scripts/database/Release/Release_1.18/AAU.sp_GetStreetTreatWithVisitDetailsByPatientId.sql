@@ -25,7 +25,7 @@ SELECT
 				    "mainProblem",s.MainProblemId,
 				    "adminNotes",s.AdminComments,
 				    "streetTreatCaseStatus",s.StatusId,
-                    "patientReleaseDate",IF(p.PatientStatusId = 8, p.PatientStatusDate, null),
+                    "patientReleaseDate",IF(p.PatientStatusId = 7, p.PatientStatusDate, null),
 					"visits",
 					JSON_ARRAYAGG(
 						JSON_OBJECT(
