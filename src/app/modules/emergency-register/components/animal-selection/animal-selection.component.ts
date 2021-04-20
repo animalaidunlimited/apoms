@@ -1,7 +1,7 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -100,9 +100,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         );
     
         this.patients = this.recordForm.get('patients') as FormArray;
-
-
-        console.log(this.patients);
         
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
         
@@ -148,7 +145,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 duplicateTag: [false, Validators.required],
                 updated: [false, Validators.required],
                 deleted: [false, Validators.required],
-                AdmissionArea: [],
+                admissionArea: [],
                 callOutcome: this.fb.group({
                     CallOutcome: [],
                     sameAsNumber: []
@@ -156,85 +153,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             });
 
 
-            patient.get('callOutcome.CallOutcome')?.valueChanges.subscribe(value=>{
-
-                console.log(value);
-
-
-                const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
-    
-
-                        const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');                       
-
-                        const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
-                        
-                        const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
-
-
-                if(value){
-
-                    if(value.CallOutcomeId === 1) {
-                        patient.get('tagNumber')?.setValidators(Validators.required);
-                        patient.get('tagNumber')?.updateValueAndValidity();
-
-                        rescuer2Id?.setValidators([Validators.required]);
-                        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
-                        rescuer1Id?.setValidators([Validators.required]);
-                        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
-                        rescueTime?.setValidators([Validators.required]);
-                        rescueTime?.updateValueAndValidity({ emitEvent: false });
-
-                        admissionTime?.setValidators([Validators.required]);
-                        admissionTime?.updateValueAndValidity({ emitEvent: false });
-                    
-                    }
-                    else {
-                        patient.get('tagNumber')?.clearValidators();
-                        patient.get('tagNumber')?.updateValueAndValidity();
-
-                        rescuer2Id?.clearValidators();
-                        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
-                        rescuer1Id?.clearValidators();
-                        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
-                        rescueTime?.clearValidators();
-                        rescueTime?.updateValueAndValidity({ emitEvent: false });
-                        admissionTime?.clearValidators();
-                        admissionTime?.updateValueAndValidity({ emitEvent: false });
-                    }
-                }
-                else {
-                    patient.get('tagNumber')?.clearValidators();
-                    patient.get('tagNumber')?.updateValueAndValidity();
-
-                    rescuer2Id?.clearValidators();
-                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
-                    rescuer1Id?.clearValidators();
-                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
-                    rescueTime?.clearValidators();
-                    rescueTime?.updateValueAndValidity({ emitEvent: false });
-                    admissionTime?.clearValidators();
-                    admissionTime?.updateValueAndValidity({ emitEvent: false });
-                }
-               
-            })
-
-
-            const patientIdControl = patient.get('patientId');
-
-            if(!patientIdControl){
-                throw new TypeError('patientIdControl is undefined');
-            }
-
-            patient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
-                this.emergencyCaseId || -1,
-                patientIdControl,
-            ));
+            this.setValidators(patient);
         return patient;
     }
 
@@ -274,25 +193,115 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             duplicateTag: [false, Validators.required],
             updated: [isUpdate, Validators.required],
             deleted: [false, Validators.required],
-            AdmissionArea: [],
+            admissionArea: [],
             callOutcome: this.fb.group({
                 CallOutcome: [],
                 sameAsNumber: []
             }),
         });
 
-        const patientIdControl = newPatient.get('patientId');
-
-        if(!patientIdControl){
-            throw new TypeError('patientIdControl is undefined');
-        }
-        newPatient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
-            this.emergencyCaseId || -1,
-            patientIdControl,
-        ));
+        this.setValidators(newPatient);
 
         return newPatient;
     }
+
+
+    setValidators(patient: FormGroup) {
+
+        const patientIdControl = patient?.get('patientId');
+
+
+        patient.get('tagNumber')?.valueChanges.subscribe(tagVal=> {
+
+            if(tagVal && patientIdControl) {
+                patient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
+                    this.emergencyCaseId || -1,
+                    patientIdControl,
+                ));
+            }
+           
+        });
+
+        patient.get('callOutcome.CallOutcome')?.valueChanges.subscribe(value=>{
+
+
+            const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
+
+
+                    const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');                       
+
+                    const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
+                    
+                    const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
+
+
+            if(value){
+
+                console.log(patient);
+
+                if(value.CallOutcomeId === 1) {
+                    patient.get('tagNumber')?.setValidators(Validators.required);
+                    patient.get('tagNumber')?.updateValueAndValidity();
+
+                    patient.get('admissionArea')?.setValidators(Validators.required);
+                    patient.get('admissionArea')?.updateValueAndValidity();
+
+                    rescuer2Id?.setValidators([Validators.required]);
+                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescuer1Id?.setValidators([Validators.required]);
+                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescueTime?.setValidators([Validators.required]);
+                    rescueTime?.updateValueAndValidity({ emitEvent: false });
+
+                    admissionTime?.setValidators([Validators.required]);
+                    admissionTime?.updateValueAndValidity({ emitEvent: false });
+                
+                }
+                else {
+                    patient.get('tagNumber')?.clearValidators();
+                    patient.get('tagNumber')?.updateValueAndValidity();
+
+                    patient.get('admissionArea')?.clearValidators();
+                    patient.get('admissionArea')?.updateValueAndValidity();
+
+
+                    rescuer2Id?.clearValidators();
+                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescuer1Id?.clearValidators();
+                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                    rescueTime?.clearValidators();
+                    rescueTime?.updateValueAndValidity({ emitEvent: false });
+                    admissionTime?.clearValidators();
+                    admissionTime?.updateValueAndValidity({ emitEvent: false });
+                }
+            }
+            else {
+                patient.get('tagNumber')?.clearValidators();
+                patient.get('tagNumber')?.updateValueAndValidity();
+
+                patient.get('admissionArea')?.clearValidators();
+                patient.get('admissionArea')?.updateValueAndValidity();
+
+                rescuer2Id?.clearValidators();
+                rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+
+                rescuer1Id?.clearValidators();
+                rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+
+                rescueTime?.clearValidators();
+                rescueTime?.updateValueAndValidity({ emitEvent: false });
+                admissionTime?.clearValidators();
+                admissionTime?.updateValueAndValidity({ emitEvent: false });
+            }
+           
+        })
+    }
+
+
     loadPatientArray(emergencyCaseId: number) {
 
 
