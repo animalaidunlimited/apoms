@@ -21,7 +21,8 @@ export class ThumbnailSliderComponent implements OnInit{
 
     ngOnInit() {
 
-        this.mediaData.pipe(take(1)).subscribe(mediaItems => {
+        // tslint:disable-next-line: deprecation
+        this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
                 this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
