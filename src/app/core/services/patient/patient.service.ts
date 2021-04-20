@@ -291,7 +291,10 @@ export class PatientService extends APIService {
             patientMediaItem = this.addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject, patientId);
         }
 
-        this.getObservable(request).subscribe((media : any[])=>{
+        // tslint:disable-next-line: deprecation
+        this.getObservable(request).pipe(
+            map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime()))
+        ).subscribe((media : any[])=>{
 
             if(!media){
                 return;

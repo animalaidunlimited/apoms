@@ -1,0 +1,12 @@
+
+<div fxLayout="row" fxLayoutGap="0.5rem" class="mediaGalleryContainer"> 
+    <ng-container *ngFor="let image of this.images.slice(0,3)">
+        <div style="min-width: 12rem; min-height: 8rem; background-size: cover;background-repeat: no-repeat;border-radius:0.2rem;"
+        [style.backgroundImage]="'url('+ image.big +')'"
+        ></div>
+    </ng-container>
+</div>
+<button type='button' color="primary" mat-mini-fab>
+    <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
+</button>
+

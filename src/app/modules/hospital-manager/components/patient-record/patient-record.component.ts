@@ -51,6 +51,7 @@ export class PatientRecordComponent implements OnInit {
 
     ngOnInit() {
 
+        // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
             if (val.componentPermissionLevel?.value === 2) {
@@ -101,18 +102,18 @@ export class PatientRecordComponent implements OnInit {
 
         if(this.mediaData){
 
-        this.mediaData.subscribe(media=>{
+            // tslint:disable-next-line: deprecation
+            this.mediaData.subscribe(media=>{
+                if(media.length === 0){
+                    return;
+                }
 
-            if(media.length === 0){
-                return;
-            }
+                this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
-            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
+                this.changeDetector.detectChanges();
 
-            this.changeDetector.detectChanges();
-
-        });
-    }
+            });
+        }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
             emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,
