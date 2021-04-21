@@ -1,12 +1,15 @@
 
-<div fxLayout="row" fxLayoutGap="0.5rem" class="mediaGalleryContainer"> 
+<div fxLayout="row" class="mediaGalleryContainer"> 
     <ng-container *ngFor="let image of this.images.slice(0,3)">
-        <div style="min-width: 12rem; min-height: 8rem; background-size: cover;background-repeat: no-repeat;border-radius:0.2rem;"
-        [style.backgroundImage]="'url('+ image.big +')'"
-        ></div>
+        <div class="mediaGalleryImages" [style.backgroundImage]="'url('+ image.big +')'">
+            <span class="imagesTime">{{image.time}}</span>
+        </div>
     </ng-container>
 </div>
-<button type='button' color="primary" mat-mini-fab>
-    <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
-</button>
+<div fxLayout="row" fxLayoutAlign="end center">
+    <button type='button' color="primary" mat-mini-fab>
+        <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
+    </button>
+    <button mat-raised-button (click)="openGalleryDialog($event)" color="primary" style="max-width: 6rem;margin: 1rem;">View More</button>
+</div>
 

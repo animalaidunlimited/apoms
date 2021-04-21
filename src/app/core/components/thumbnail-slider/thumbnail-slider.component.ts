@@ -1,9 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, Input } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
 
-import { Observable, BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 @Component({
@@ -17,7 +18,9 @@ export class ThumbnailSliderComponent implements OnInit{
     galleryImages: NgxGalleryImage[] = [];
     @Input() mediaData!: BehaviorSubject<MediaItem[]>;
 
-    constructor() {}
+    @Input() patientData!: AbstractControl | null;
+
+    constructor(public datepipe: DatePipe) {}
 
     ngOnInit() {
 
@@ -38,13 +41,13 @@ export class ThumbnailSliderComponent implements OnInit{
             }
 
             this.galleryImages = mediaItems.map(item=>{
-               return {
-                        small:item.remoteURL,
-                        medium:item.remoteURL,
-                        big:item.remoteURL,
-                        type: item.mediaType.includes('video') ? 'video' : 'image',
-                        description: item.datetime.toString().replace('T',' '),
-                      };
+                return {
+                    thumbnail:item.remoteURL,
+                    full:item.remoteURL,
+                    type: item.mediaType.includes('video') ? 'video' : 'image',
+                    time: this.datepipe.transform(item.datetime, 'HH:mm'),
+                    date: item.datetime.toString().replace('T',' ').slice(0,10),
+                };
             });
 
 
