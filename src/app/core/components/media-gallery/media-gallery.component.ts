@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MediaItem } from '../../models/media';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -10,41 +12,63 @@ import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
   templateUrl: './media-gallery.component.html',
   styleUrls: ['./media-gallery.component.scss']
 })
-export class MediaGalleryComponent implements OnInit,OnChanges {
+export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
+
+  private ngUnsubscribe = new Subject();
+  
   @Input() images!:any[];
+  @Input() galleryData!:AbstractControl | null;
   constructor(public dialog: MatDialog) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
   ngOnInit(): void {
-    
+   
+    console.log(this.galleryData?.get('tagNumber')?.value);
   }
 
-  ngOnChanges(): void {
-   this.images = this.images;
-  }
+ 
 
+  openGalleryDialog($event: Event): void{
+    $event.preventDefault();
+    const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
+        minWidth: '80vw',
+        data: {
+            mediaGallery: this.images
+        }
+    });
+  }
   openMediaDialog(): void{
 
-    const dialogRef = this.dialog.open(MediaDialogComponent, {
-        minWidth: '50%',
-       /*  data: {
-            tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
-            patientId: this.recordForm.get('patientDetails.patientId')?.value,
-        } */
-    });
+      const dialogRef = this.dialog.open(MediaDialogComponent, {
+          minWidth: '50%',
+          data: {
+              tagNumber: this.galleryData?.get('tagNumber')?.value,
+              patientId: this.galleryData?.get('patientId')?.value,
+          }
+      });
 
-    // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-    /* dialogRef.afterClosed()
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(updatedMedia => {
+      // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
+      dialogRef.afterClosed()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      // tslint:disable-next-line: deprecation
+      .subscribe(updatedMedia => {
 
-        if(updatedMedia){
-            if(updatedMedia.isPrimary === true){
+          if(updatedMedia){
+              if(updatedMedia.isPrimary === true){
 
-                this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
-            }
-        }
-    }); */
+                  // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
+              }
+          }
+      });
 
-}
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
 }

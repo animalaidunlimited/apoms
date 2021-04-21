@@ -18,6 +18,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { MediaGalleryDialogComponent } from './core/components/media-gallery-dialog/media-gallery-dialog.component';
 
 registerLocaleData(localeIt);
 
@@ -38,7 +39,7 @@ export class UIErrorHandler extends ErrorHandler {
 
 @NgModule({
 
-    declarations: [AppComponent, ConfirmationDialog],
+    declarations: [AppComponent, ConfirmationDialog, MediaGalleryDialogComponent],
 
     imports: [
         BrowserModule,
