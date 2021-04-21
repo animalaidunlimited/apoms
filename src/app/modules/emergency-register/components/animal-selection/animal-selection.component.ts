@@ -115,7 +115,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
         const patient = this.getEmptyPatient();
         this.patients.push(patient);
     }
-
+  
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
@@ -163,7 +163,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             });
             problems.push(newProblem);
         });
-
+       
         return this.getPatient(
             problems,
             patient.position,
@@ -227,6 +227,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy {
             );
     }
 
+    
     initPatientArray() {
         this.patients.clear();
 
