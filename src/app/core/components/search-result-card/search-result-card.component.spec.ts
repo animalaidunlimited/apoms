@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -36,7 +37,7 @@ describe('SearchResultCardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [MatDialogModule, HttpClientTestingModule,
-        RouterTestingModule],
+        RouterTestingModule, MaterialModule],
 
       providers: [
         {

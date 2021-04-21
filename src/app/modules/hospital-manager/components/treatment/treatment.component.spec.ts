@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -22,7 +23,7 @@ describe('TreatmentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ MatDialogModule, HttpClientTestingModule ],
+      imports: [ MatDialogModule, HttpClientTestingModule, MaterialModule ],
       declarations: [ TreatmentComponent ]
     })
     .compileComponents();

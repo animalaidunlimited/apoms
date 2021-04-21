@@ -28,11 +28,21 @@ export function getCurrentDateString() {
     return formatDate(currentTime, 'yyyy-MM-dd', locale);
 }
 
+/* Formats the date to correct format*/
+export function formatDateString(date: Date) {
+    const wn = window.navigator as any;
+    const locale = wn.languages ? wn.languages[0] : 'en-GB';
+    return formatDate(date, 'yyyy-MM-dd', locale);
+}
+
+
 // Determine if the given File is an Image (according do its Mime-Type).
 export function isImageFile(file: File): boolean {
 
     return file.type.search(/^image\//i) === 0;
 }
+
+
 
 
 // Determine if the given File is an Video (according do its Mime-Type).

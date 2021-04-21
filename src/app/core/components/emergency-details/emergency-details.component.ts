@@ -59,17 +59,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.callDateTimeField.nativeElement.focus();
     }
 
-  /*   @HostListener('document:keydown.alt.shift.t', ['$event'])
-    focusCallTime(event: KeyboardEvent) {
-        event.preventDefault();
-        this.callDateTimeField.nativeElement.focus();
-        this.callDateTimeField.nativeElement.dispatchEvent(new KeyboardEvent('keydown',{keyCode: 9}));
-        if (event.keyCode === 9 || event.code === '9') {
-            console.log("tab key pressed");
-          }
-        this.cdr.detectChanges();
-    } */
-
     
     @HostListener('document:keydown.control.d', ['$event'])
     focusCallDispatcher(event: KeyboardEvent) {
@@ -148,7 +137,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
-        this.emergencyDetails.addControl('code',new FormControl({ EmergencyCodeId: null, EmergencyCode: null }));
+        this.emergencyDetails.addControl('code',new FormControl());
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
@@ -177,20 +166,4 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         });
     }
 
-    openLogsDialog(emergencyCaseId: any,emergencyNumber:any) {
-        const dialogRef = this.dialog.open(LogsComponent, {
-            maxHeight: '100vh',
-            maxWidth: '100vw',
-            data: {
-                emergencyCaseId,
-                emergencyNumber,
-                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
-            },
-        });
-
-        dialogRef
-            .afterClosed()
-            .subscribe(() => {})
-            .unsubscribe();
-    }
 }

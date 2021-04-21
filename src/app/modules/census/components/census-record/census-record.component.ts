@@ -8,7 +8,10 @@ import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { formatDate } from '@angular/common';
 import { CensusRecord } from 'src/app/modules/hospital-manager/components/census-details/census-details.component';
 import { ChangeDetectorRef } from '@angular/core';
+import { formatDateString, getCurrentDateString } from 'src/app/core/helpers/utils';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -24,6 +27,8 @@ export class CensusRecordComponent implements OnInit {
 
   @ViewChild('chipList') chipList! : MatChipList;
 
+  private ngUnsubscribe = new Subject();
+
   loading = false;
 
   addOnBlur = true;
@@ -31,8 +36,6 @@ export class CensusRecordComponent implements OnInit {
   censusDate: FormGroup = new FormGroup({});
 
   censusArea: Area[] = [];
-
-  date: Date = new Date();
 
   removable = true;
 
@@ -63,8 +66,7 @@ export class CensusRecordComponent implements OnInit {
     ngOnInit() {
 
         // tslint:disable-next-line: deprecation
-        this.route.data.subscribe(val=> {
-           
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
@@ -72,16 +74,10 @@ export class CensusRecordComponent implements OnInit {
         });
 
         this.censusDate = this.fb.group({
-            CensusDate: [this.getCurrentDate()],
+            CensusDate: [formatDateString(this.censusUpdateDate)],
         });
-
-        if(this.censusUpdateDate){
-                this.censusDate.patchValue({CensusDate : this.censusUpdateDate});
-                this.loadCensusData(this.censusDate.get('CensusDate')?.value);
-        }
-        else{
-            this.loadCensusData(this.censusDate.get('CensusDate')?.value);
-        }
+        
+        this.loadCensusData(this.censusDate.get('CensusDate')?.value);
 
         this.censusArea = [
             {
@@ -107,10 +103,10 @@ export class CensusRecordComponent implements OnInit {
         ];
 
         /* Detects the change in date and Brings back the censusdata on that perticular date*/
+        // tslint:disable-next-line: deprecation
         this.censusDate.valueChanges.subscribe(changes => {
-            this.date = changes.CensusDate.toString();
 
-            this.loadCensusData(this.date);
+            this.loadCensusData(changes.CensusDate.toString() || new Date());
         });
 
         this.loadCensusErrorRecords();
@@ -130,9 +126,11 @@ export class CensusRecordComponent implements OnInit {
     }
 
   loadCensusData(censusDate: Date) {
-      this.census.getCensusData(censusDate).then(censusData => {
-          this.censusArea = this.getSortedResponse(censusData);
-      });
+
+    this.census.getCensusData(censusDate).then(censusData => {
+        this.censusArea = this.getSortedResponse(censusData);
+    });
+
   }
 
   /* Sorts the arrays from censusdata object. */
@@ -254,23 +252,6 @@ export class CensusRecordComponent implements OnInit {
 
   }
 
-  /* Returns the Current Date*/
-  getCurrentDate() {
-      const date = new Date();
-      const wn = window.navigator as any;
-      const locale = wn.languages ? wn.languages[0] : 'en-GB';
-      return formatDate(date, 'yyyy-MM-dd', locale);
-  }
-
-  setInitialTime(event: FocusEvent) {
-      let currentTime;
-      currentTime = this.censusDate.get((event.target as HTMLInputElement).name)?.value;
-
-      if (!currentTime) {
-          this.censusDate.get((event.target as HTMLInputElement).name)?.setValue(this.getCurrentDate());
-      }
-  }
-
   /* Removes the patient tagNumber from chips input field*/
 
   removePatients(incomingAreaId:any, incomingActionId:any, patient:any): void {
@@ -285,7 +266,7 @@ export class CensusRecordComponent implements OnInit {
                           action.actionId || -1,
                           action.sortAction || -1,
                           patient.tagNumber,
-                          this.date,
+                          this.censusDate.get('CensusDate')?.value,
                       ).then(response=>{
                           if(response){
                               this.loading = false;
@@ -344,3 +325,4 @@ openHospitalManagerRecord(tagNumber: string){
 
 
 }
+
