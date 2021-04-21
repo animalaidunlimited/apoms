@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import {
     async,
     ComponentFixture,
@@ -34,6 +35,7 @@ describe('SurgeryDetailsComponent', () => {
                 MatDialogModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule
             ],
             providers: [
                 {

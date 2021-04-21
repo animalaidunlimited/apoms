@@ -2,30 +2,44 @@
 
 <legend class="legend">Census details</legend>
 
-<table mat-table [dataSource]="censusRecords" class="mat-elevation-z8">
+<div class="example-container mat-elevation-z8">
+  <mat-table matSort #table [dataSource]="censusRecords">
 
     <ng-container matColumnDef="Date">
-      <th mat-header-cell *matHeaderCellDef> Date </th>
-      <td mat-cell *matCellDef="let element" (click)="editCensus(element)" class="link">{{element.date | date:'dd MMM yyyy' }}</td>
+      <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+      <mat-cell *matCellDef="let row"  (click)="editCensus(row)" class="link"> 
+        <span class="mobile-label">Date:</span>
+        {{row.date | date:'dd MMM yyyy' }}
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="Area">
-      <th mat-header-cell *matHeaderCellDef> Area </th>
-      <td mat-cell *matCellDef="let element"> {{element.area}} </td>
+      <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
+      <mat-cell *matCellDef="let row"> 
+        <span class="mobile-label">Area:</span>
+        {{row.area}} 
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="Action">
-      <th mat-header-cell *matHeaderCellDef> Action </th>
-      <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+      <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+      <mat-cell *matCellDef="let row"> 
+        <span class="mobile-label">Action:</span>
+        {{row.action}} 
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="Days">
-      <th mat-header-cell *matHeaderCellDef> Days </th>
-      <td mat-cell *matCellDef="let element"> {{element.days}} </td>
+      <mat-header-cell *matHeaderCellDef> Days </mat-header-cell>
+      <mat-cell *matCellDef="let row"> 
+        <span class="mobile-label">Days:</span>
+        {{row.days}} 
+      </mat-cell>
     </ng-container>
 
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+</div>
 </fieldset>

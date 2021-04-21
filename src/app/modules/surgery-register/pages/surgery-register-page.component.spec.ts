@@ -1,6 +1,11 @@
+import { MaterialModule } from 'src/app/material-module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SurgeryRecordComponent } from '../components/surgery-record.component';
 
 import { SurgeryRegisterPageComponent } from './surgery-register-page.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SurgeryRegisterPageComponent', () => {
     let component: SurgeryRegisterPageComponent;
@@ -8,7 +13,17 @@ describe('SurgeryRegisterPageComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [SurgeryRegisterPageComponent],
+            imports:[
+                FormsModule,
+                HttpClientTestingModule,
+                ReactiveFormsModule,
+                MaterialModule,
+                BrowserAnimationsModule
+            ],
+            declarations: [
+                SurgeryRegisterPageComponent, 
+                SurgeryRecordComponent
+            ],
         }).compileComponents();
     }));
 

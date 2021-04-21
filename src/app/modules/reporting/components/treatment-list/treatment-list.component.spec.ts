@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -25,7 +26,8 @@ let dialog: MatDialogRef<TreatmentListComponent>;
         MatDialogModule,
         HttpClientTestingModule,
         RouterTestingModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MaterialModule
       ],
       providers: [
         MatDialog,

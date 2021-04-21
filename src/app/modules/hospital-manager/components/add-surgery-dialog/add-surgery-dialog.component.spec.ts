@@ -2,7 +2,7 @@ import {
     async,
     ComponentFixture,
     TestBed,
-    inject,
+    inject
 } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { AddSurgeryDialogComponent } from './add-surgery-dialog.component';
@@ -13,6 +13,9 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SurgeryRecordComponent } from 'src/app/modules/surgery-register/components/surgery-record.component';
+import { MaterialModule } from 'src/app/material-module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AddSurgeryDialogComponent', () => {
     let component: AddSurgeryDialogComponent;
@@ -33,6 +36,8 @@ describe('AddSurgeryDialogComponent', () => {
                 MatDialogModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 {
@@ -44,7 +49,10 @@ describe('AddSurgeryDialogComponent', () => {
                     useValue: mockDialogRef,
                 },
             ],
-            declarations: [AddSurgeryDialogComponent],
+            declarations: [
+                AddSurgeryDialogComponent,
+                SurgeryRecordComponent
+            ],
         }).compileComponents();
     }));
 

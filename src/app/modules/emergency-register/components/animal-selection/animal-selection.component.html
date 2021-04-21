@@ -1,23 +1,122 @@
-<fieldset [formGroup]="recordForm" class="form-sub-group" fxLayout="column" >
+<fieldset class="form-sub-group" fxLayout="column">
+
     <legend class="legend">Patient details</legend>
-    
-        <div fxFlex formArrayName="patients" *ngFor="let patient of patients?.controls; let patientIndex = index">
-            <app-emergency-register-patient
-                [patientForm]="patient"
-                [patientIndex]="patientIndex"
-                (patientDeleted)="deletePatient($event)"
-            ></app-emergency-register-patient>
-        </div>
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <button
-            #addPatientBtn
-            class="addPatientButton"
-            type="button"
-            (click)="addPatientRow()"
-            mat-mini-fab
-            color="primary"
-        >
-            <mat-icon>add</mat-icon>
-        </button>
+
+    <div fxFlex>
+
+        <table mat-table #patientTable [dataSource]="patientDataSource" class="mat-elevation-z8 table">
+
+                <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? toggleRow(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            tabindex="7"
+                            [aria-label]="checkboxLabel(row)">
+                </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="animalType">
+                <th mat-header-cell *matHeaderCellDef #speciesLabel> Species </th>
+                <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"
+                [class.invalid-cell]="row.invalid && row.get('animalType')?.value == ''"> {{row.get("animalType")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('animalType')?.value == ''">  Species</p> </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mainProblem">
+                    <th mat-header-cell *matHeaderCellDef> Main problem(s) </th>
+                    <td mat-cell *matCellDef="let row" (click)="toggleRow(row)"
+                    [class.invalid-cell]="row.invalid && row.get('problemsString')?.value == ''"  > {{row.get("problemsString")?.value}} <p style="color:red" *ngIf="row.invalid && row.get('problemsString')?.value == ''">  Main problem(s)</p></td>
+            </ng-container>
+
+            <ng-container matColumnDef="tagNo">
+
+                    <th mat-header-cell *matHeaderCellDef> Tag number </th>
+                    <td mat-cell *matCellDef="let row"
+                    (click)="selectIfNotSelected(row); updateTag(row)"
+                    [class.invalid-cell]="(recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1 || recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ) && !row.get('tagNumber')?.value"
+                    [ngClass]="{
+                        duplicate: row.get('duplicateTag')?.value == 'INVALID',
+                        pending: row.get('duplicateTag')?.value == 'PENDING'
+                    }"
+                    style="cursor:pointer">
+
+                        {{row.get("tagNumber")?.value}}
+                        <p style="color:red" *ngIf="(recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1 || recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 )&& !row.get('tagNumber')?.value">  Tag number</p>
+                    </td>
+            </ng-container>
+
+            <ng-container matColumnDef="media">
+                <th mat-header-cell *matHeaderCellDef>Media</th>
+                <td mat-cell *matCellDef="let row">
+                <mat-icon (click)="selectIfNotSelected(row); openMediaDialog(row)" style="cursor:pointer; padding-left: 10px">add_photo_alternate</mat-icon>
+
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="print">
+                <th mat-header-cell *matHeaderCellDef>Print card</th>
+                <td mat-cell *matCellDef="let row">
+                <mat-icon (click)="selectIfNotSelected(row); printEmergencyCard(row)" style="cursor:pointer; padding-left: 10px">print</mat-icon>
+
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>Delete</th>
+                <td mat-cell *matCellDef="let row">
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="!row.get('deleted')?.value" style="cursor:pointer">delete</mat-icon>
+                <mat-icon (click)="deletePatientRow(row)" *ngIf="row.get('deleted')?.value" style="cursor:pointer">undo</mat-icon>
+
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="patientArrayDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: patientArrayDisplayedColumns;"
+            [class.deleted]="row.get('deleted')?.value"
+            [class.invalid-row]="row.invalid"></tr>
+
+
+        </table>
+
     </div>
-</fieldset>
+
+    <div>
+
+            <label class="label">Species</label>
+
+            <mat-chip-list #animalTypeChips aria-label="Patient animalType\type" selectable>
+                <mat-chip
+                tabindex="7"
+                (click)="animalTypeChip.toggleSelected()"
+                (keydown.tab)="tabPressed('AnimalType')"
+                (keydown.shift.tab)="shiftTabPressed('AnimalType')"
+                (keydown)="cycleChips($event, 'animaltype', 'animalType')"
+                (selectionChange)="animalChipSelected(animalTypeChip);"
+                #animalTypeChip="matChip"
+                *ngFor="let animalType of animalTypes$">{{animalType.AnimalType}}</mat-chip>
+        </mat-chip-list>
+
+    </div>
+
+    <div>
+
+            <label class="label">Main problem(s)</label>
+
+            <mat-chip-list #problemChips multiple selectable aria-label="Main problem(s)" >
+                    <mat-chip
+                    tabindex="8"
+                    (click)="problemChip.toggleSelected()"
+                    (keydown.tab)="tabPressed('ProblemType')"
+                    (keydown.shift.tab)="shiftTabPressed('ProblemType')"
+                    (keydown)="focusProblemChip($event, problemChip)"
+                    (selectionChange)="problemChipSelected(problemChip);"
+                    #problemChip="matChip"
+                    *ngFor="let problem of problems$">{{problem.Problem}}</mat-chip>
+            </mat-chip-list>
+
+    </div>
+      </fieldset>

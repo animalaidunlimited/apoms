@@ -23,7 +23,6 @@ export class StreetTreatService extends APIService {
   saveCaseFail = false;
 
 
-
   /**
    *
    * @param searchString | string Query for
@@ -117,10 +116,11 @@ export class StreetTreatService extends APIService {
     const request = `?patientId=${patientId}`;
     return this.getObservable(request).pipe(
       map((response)=>{
-        return response.streetTreatForm;
+        return response?.streetTreatForm;
       })
     );
   }
+
   getScoreCards(){
     const request = '/scorecards';
     return this.getObservable(request).pipe(
@@ -129,5 +129,8 @@ export class StreetTreatService extends APIService {
       })
     );
   }
+
+ 
+
   
 }
