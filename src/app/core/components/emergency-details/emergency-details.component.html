@@ -2,7 +2,7 @@
 
     <legend class="legend">Emergency Details</legend>
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" ngStyle.gt-md="min-width: 61.5rem;" fxLayoutGap="10px" fxLayoutAlign="center end">
+    <div fxLayout="row wrap" ngStyle.gt-md="min-width: auto;" fxLayoutGap="10px" fxLayoutAlign="start">
 
         <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
@@ -56,10 +56,6 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <button  mat-icon-button color="primary" aria-label="Release details" class="logs_btn"
-          (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm.get('emergencyDetails.emergencyNumber')); $event.preventDefault();">
-          <mat-icon>description</mat-icon>
-        </button>
 
     </div>
 

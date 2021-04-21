@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
@@ -6,7 +7,6 @@ import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 
 import { TeamsPageComponent } from './teams-page.component';
 
@@ -36,6 +36,7 @@ describe('TeamsPageComponent', () => {
                 MatDialogModule,
                 OverlayModule,
                 FormsModule,
+                MaterialModule,
                 ReactiveFormsModule,
                 BrowserAnimationsModule],
             providers: [

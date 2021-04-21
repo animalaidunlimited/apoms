@@ -82,7 +82,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   openAmbulanceInfoWindow(marker: MapMarker, rescues: RescuerGroup){
 
-    let searchQuery = ' search.EmergencyCaseId IN (';
+    let searchQuery = ' ec.EmergencyCaseId IN (';
 
     let assignments:OutstandingAssignment[] = [];
 
@@ -114,7 +114,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
-    const searchQuery = 'search.EmergencyNumber=' + rescue.emergencyNumber;
+    const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
 
     this.caseService.searchCases(searchQuery)
     .pipe(takeUntil(this.ngUnsubscribe))

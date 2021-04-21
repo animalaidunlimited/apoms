@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
  import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 
  import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -7,6 +8,7 @@
  import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
  import { Component } from '@angular/core';
+import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-register/components/emergency-case-outcome/emergency-case-outcome.component';
 
  @Component({
    selector: 'rescue-details',
@@ -37,9 +39,14 @@
 
    beforeEach(async(() => {
      TestBed.configureTestingModule({
-       imports: [MatDialogModule,
-        FormsModule, ReactiveFormsModule, HttpClientTestingModule,
-         BrowserAnimationsModule],
+       imports: [
+          MatDialogModule,
+          FormsModule, 
+          ReactiveFormsModule, 
+          HttpClientTestingModule,
+          BrowserAnimationsModule,
+          MaterialModule
+      ],
        providers: [
          {
            provide: MAT_DIALOG_DATA,
@@ -49,7 +56,8 @@
          useValue: mockDialogRef
        }],
        declarations: [ RescueDetailsDialogComponent,
-                       MockRescueDetailsComponent ]
+                       MockRescueDetailsComponent,
+                       EmergencyCaseOutcomeComponent ]
      })
      .compileComponents();
    }));

@@ -10,6 +10,8 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute} from '@angular/router';
+import { LogsComponent } from 'src/app/core/components/logs/logs.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -39,7 +41,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     windowWidth = window.innerWidth;
 
-    hasWritePermission: boolean = false;
+    hasWritePermission = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
@@ -78,21 +80,22 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         private caseService: CaseService,
         private showSnackBar: SnackbarService,
         private route: ActivatedRoute,
-        private elementRef: ElementRef
+        private elementRef: ElementRef,
+        public dialog: MatDialog,
     ) {
 
     }
 
     ngOnInit() {
 
-        this.route.data.subscribe(val=> {
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
             
             if (val.componentPermissionLevel?.value === 2) {
                 
                 this.hasWritePermission = true;
             }
 
-        });
+        }) ;
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -268,13 +271,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     async saveForm() {
 
-        
         this.loading = true;
 
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
-            console.log(this.hasWritePermission);
             if(this.hasWritePermission) {
                 this.loading = true;
                 if(this.recordForm.pending){
@@ -287,7 +288,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         return;
                     }
                 }
-
+            
                 if (this.recordForm.valid) {
                     this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
 
@@ -382,7 +383,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             }
 
             else {
-                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
+                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
             }
 
     }
@@ -390,6 +391,23 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     emergencyNumberUpdated(emergencyNumber: any) {
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
+    }
+
+    openLogsDialog(emergencyCaseId: number,emergencyNumber:number) {
+        const dialogRef = this.dialog.open(LogsComponent, {
+            maxHeight: '100vh',
+            maxWidth: '100vw',
+            data: {
+                emergencyCaseId,
+                emergencyNumber,
+                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
+            },
+        });
+
+        dialogRef
+            .afterClosed()
+            .subscribe(() => {})
+            .unsubscribe();
     }
 
 }

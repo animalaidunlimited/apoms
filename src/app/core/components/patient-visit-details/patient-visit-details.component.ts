@@ -95,6 +95,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
 
+	minVisitDate = '0';
+
 	@Input() dateSelected!: string[];
 	@Input() isStreetTreatTrue!: boolean;
 	@Input() recordForm!: FormGroup;
@@ -186,12 +188,20 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
-
 			if (response.streetTreatCaseId) {
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
+						/**
+						 * Checking if patient already has released status with release date 
+						 * if patient is released user can assign dates 
+						 * else
+						 * tentative dates like day 0, day 1 
+						 */
 
-						this.showVisitDate = (!!visit.visit_date || response.autoAdded);
+						if(!!response.patientReleaseDate){
+							this.minVisitDate = response.patientReleaseDate;
+						}
+						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date) {
 
@@ -409,7 +419,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	}
 
-	onSelect(selectedDate: Date) {
+
+	onSelect(selectedDate: Date | null) {
+
+		if(!selectedDate) {
+			return;
+		}
 
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
 
