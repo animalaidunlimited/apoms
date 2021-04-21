@@ -60,10 +60,18 @@ mat-tab-body {
     margin: auto;
 }
 
+.emergencyRecordWrapper {
+    width: 70%;
+}
+
 
 @media(max-width: 600px) { 
 
     .locationContainer {
+        width: 100%;
+    }
+
+    .emergencyRecordWrapper {
         width: 100%;
     }
 }

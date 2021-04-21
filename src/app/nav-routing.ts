@@ -152,40 +152,41 @@ export class NavRouteService {
                 }
                 this.navRoutes.next(this.getNavRouteList() || []);
             });
-
+            
         });
 
 
     }
 
-    private getNavRouteList() {
-        return this.navRoute.children
-                                ?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
-                                .reduce((groupedList: NavRoute[], route: NavRoute) => {
+    getNavRouteList() {
+        return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
+            .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
-                                    if (route.group) {
-                                        const group: NavRoute | undefined = groupedList.find(navRoute => {
-                                            return (
-                                                navRoute.group === route.group &&
-                                                navRoute.groupedNavRoutes !== undefined
-                                            );
-                                        });
 
-                                        if (group) {
-                                            group.groupedNavRoutes?.push(route);
-                                        } else {
-                                            groupedList.push({
-                                                group: route.group,
-                                                groupedNavRoutes: [route],
-                                            });
-                                        }
-                                    } else {
-                                        groupedList.push(route);
-                                    }
-                                    return groupedList;
-                                }, []);
+                if (route.group) {
+                    const group: NavRoute | undefined = groupedList.find(navRoute => {
+                        return (
+                            navRoute.group === route.group &&
+                            navRoute.groupedNavRoutes !== undefined
+                        );
+                    });
+
+                    if (group) {
+                        group.groupedNavRoutes?.push(route);
+                    } else {
+                        groupedList.push({
+                            group: route.group,
+                            groupedNavRoutes: [route],
+                        });
+                    }
+                } else {
+                    groupedList.push(route);
+                }
+                return groupedList;
+            }, []);
     }
 
+    
     getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }

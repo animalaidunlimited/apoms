@@ -9,6 +9,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { EmergencyCaseOutcomeComponent } from '../emergency-case-outcome/emergency-case-outcome.component';
 
 describe('EmergencyRecordComponent', () => {
     let component: EmergencyRecordComponent;
@@ -34,7 +35,10 @@ describe('EmergencyRecordComponent', () => {
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
             ],
-            declarations: [ EmergencyRecordComponent ],
+            declarations: [ 
+                EmergencyRecordComponent,
+                EmergencyCaseOutcomeComponent 
+            ],
         }).compileComponents();
     });
 

@@ -11,6 +11,8 @@ import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger, group } from '@angular/animations';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 interface StreetTreatRole {
@@ -31,7 +33,7 @@ interface UserPermissions {
 
 interface Permissions {
   permissionId : number;
-  permissionType: string
+  permissionType: string;
 }
 
 
@@ -89,6 +91,8 @@ export class UsersPageComponent implements OnInit {
     currentState = 'closed';
 
     hasWritePermission!: boolean;
+
+    private ngUnsubscribe = new Subject();
 
 
     dataSource: MatTableDataSource<UserDetails> ;
@@ -155,13 +159,13 @@ export class UsersPageComponent implements OnInit {
 
     ngOnInit() {
 
-      this.route.data.subscribe(val=> {
+      this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
         if (val.componentPermissionLevel?.value === 2) {
             this.hasWritePermission = true;
         }
 
-    })
+    });
 
       this.permissionGroupObject = [
         {
@@ -232,7 +236,7 @@ export class UsersPageComponent implements OnInit {
         }
       ];
 
-      this.userDetails.get('per')
+      this.userDetails.get('per');
 
       this.dropdown.getAllTeams().subscribe(team=>{
         this.teamNames = team;
@@ -257,10 +261,10 @@ export class UsersPageComponent implements OnInit {
 
     permissionChanges(permission: MatOptionSelectionChange) {
 
-      let permissions = this.userDetails.get('permissionArray');
+      const permissions = this.userDetails.get('permissionArray');
 
       if(permission.isUserInput && permission.source.selected) {
-          let arrayval = permissions?.value?.filter((val: number)=> 
+          const arrayval = permissions?.value?.filter((val: number)=> 
           val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
         );
         permissions?.setValue(arrayval,{emitEvent:false});
@@ -278,7 +282,6 @@ export class UsersPageComponent implements OnInit {
     Submit(userDetailsForm: any) {
 
       if(this.hasWritePermission) {
-  
         this.loading = true;
 
         if(userDetailsForm.get('password').value !== ''){
