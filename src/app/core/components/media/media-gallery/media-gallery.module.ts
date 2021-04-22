@@ -3,15 +3,19 @@ import { CommonModule } from '@angular/common';
 import { MediaGalleryComponent } from './media-gallery.component';
 import { MaterialModule } from 'src/app/material-module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MediaThumbnailsModule } from '../media-thumbnails/media-thumbnails.module';
 
 
 
 @NgModule({
-  declarations: [MediaGalleryComponent],
+  declarations: [
+    MediaGalleryComponent
+  ],
   imports: [
     CommonModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MediaThumbnailsModule
   ],
   exports: [MediaGalleryComponent]
 })

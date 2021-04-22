@@ -5,8 +5,8 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs/internal/observable/of';
+import { MediaItem } from 'src/app/core/models/media';
 import { MaterialModule } from 'src/app/material-module';
-import { MediaItem } from '../../models/media';
 
 import { MediaCardComponent } from './media-card.component';
 

@@ -1,0 +1,10 @@
+<div fxLayout="column" fxLayoutGap="2rem">
+    <ng-container *ngFor="let gallery of galleries">
+        <div style="width:max-content;">
+            {{ gallery.date}}
+            <div fxLayout="row" fxLayoutGap="0.5rem">
+                <media-thumbnails [gallery]="gallery"></media-thumbnails>
+            </div>
+        </div>
+    </ng-container>
+</div>

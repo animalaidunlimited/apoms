@@ -33,8 +33,6 @@ export class MediaGalleryDialogComponent implements OnInit {
         date:media[0],
         images:media[1] as Image[]
     }));
-
-    console.log(this.galleries);
   }
 
 }
