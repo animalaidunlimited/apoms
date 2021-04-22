@@ -1,7 +1,7 @@
 
 <div fxLayout="row" class="mediaGalleryContainer"> 
     <ng-container *ngFor="let image of this.images.slice(0,3)">
-        <div class="mediaGalleryImages" [style.backgroundImage]="'url('+ image.big +')'">
+        <div class="mediaGalleryImages" [style.backgroundImage]="'url('+ image.thumbnail +')'">
             <span class="imagesTime">{{image.time}}</span>
         </div>
     </ng-container>
