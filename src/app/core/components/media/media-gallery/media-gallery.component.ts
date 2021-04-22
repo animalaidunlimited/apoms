@@ -21,15 +21,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
   constructor(public dialog: MatDialog) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-
+    console.log(this.images);
   }
 
   ngOnInit(): void {
    
-    console.log(this.galleryData?.get('tagNumber')?.value);
   }
-
- 
 
   openGalleryDialog($event: Event): void{
     $event.preventDefault();

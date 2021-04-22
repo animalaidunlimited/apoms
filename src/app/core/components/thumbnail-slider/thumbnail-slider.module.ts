@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../material-module';
-import { ThumbnailSliderComponent } from '../thumbnail-slider/thumbnail-slider.component';
+import { NgModule } from '@angular/core';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
-import { MediaGalleryModule } from '../media-gallery/media-gallery.module';
+import { MaterialModule } from '../../../material-module';
+import { MediaGalleryModule } from '../media/media-gallery/media-gallery.module';
+import { ThumbnailSliderComponent } from '../thumbnail-slider/thumbnail-slider.component';
 
 @NgModule({
     declarations: [ThumbnailSliderComponent],

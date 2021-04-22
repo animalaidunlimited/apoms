@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
 import { COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MediaItem } from '../../models/media';
 import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { PatientService } from '../../services/patient/patient.service';
-import { getCurrentTimeString } from '../../helpers/utils';
 import { takeUntil } from 'rxjs/operators';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
+import { MediaItem } from 'src/app/core/models/media';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
 
 
 @Component({

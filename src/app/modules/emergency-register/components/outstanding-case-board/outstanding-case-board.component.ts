@@ -15,7 +15,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
