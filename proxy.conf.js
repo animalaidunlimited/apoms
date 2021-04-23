@@ -16,6 +16,7 @@ const PROXY_CONFIG = [
             "/CensusData",
             "/PrintTemplate",
             "/Treatment",
+            "/TreatmentList",
             "/Users",
             "/Teams",
             "/UserAdmin",

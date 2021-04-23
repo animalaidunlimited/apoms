@@ -6,6 +6,7 @@ import { TreatmentListPageComponent } from './pages/treatment-list-page.componen
 import { MaterialModule } from 'src/app/material-module';
 import { TreatmentListComponent } from './components/treatment-list/treatment-list.component';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
+import { MovedRecordComponent } from './components/moved-record/moved-record.component';
 
 
 
@@ -13,7 +14,8 @@ import { TreatmentRecordComponent } from 'src/app/core/components/treatment-reco
   declarations: [
     TreatmentListPageComponent,
     TreatmentRecordComponent,
-    TreatmentListComponent
+    TreatmentListComponent,
+    MovedRecordComponent
   ],
   imports: [
     CommonModule,

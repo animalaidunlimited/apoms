@@ -41,7 +41,13 @@ export interface TreatmentAreaChange {
 export interface TreatmentListMoveIn {
     treatmentListId: number;
     patientId: number;
+    admission: boolean;
     accepted: boolean;
+}
+
+export interface TreatmentList {
+    treatmentListType: string;
+    treatmentList: ReportPatientRecord[];
 }
 
 
