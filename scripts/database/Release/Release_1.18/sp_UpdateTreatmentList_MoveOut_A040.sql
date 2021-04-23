@@ -17,11 +17,15 @@ Created On: 2021-04-11
 Purpose: Procedure for updating the treatment list to move a patient out of an area. A moved in record can only be added with sp_InsertTreatmentListRecord .
 */
 
+
 UPDATE AAU.TreatmentList SET
-			OutCensusAreaId = prm_OutCensusAreaId,
-			OutDate = prm_OutDate
+			InCensusAreaId = IF(Admission = 1 AND InAccepted != 1, prm_OutCensusAreaId, InCensusAreaId),
+			OutCensusAreaId = IF(InAccepted = 1, prm_OutCensusAreaId, NULL),
+			OutDate = IF(InAccepted = 1, prm_OutDate, NULL)
+            -- OutCensusAreaId = prm_OutCensusAreaId,
+            -- OutDate = prm_OutDate
 WHERE TreatmentListId = prm_TreatmentListId;
 
-SELECT IF(ROW_COUNT() > 0, 1, 0) AS `Success`;
+SELECT IF(ROW_COUNT() > 0, 1, 0) AS `success`;
 
 END $$

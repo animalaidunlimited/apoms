@@ -23,26 +23,27 @@ SET vSuccess = 0;
 IF prm_Accepted = TRUE THEN
 
 UPDATE AAU.TreatmentList
-	SET InAccepted = prm_Accepted
+	SET InAccepted = prm_Accepted,
+    OutCensusAreaId = IF(OutAccepted = 0, NULL, OutAccepted),
+    OutDate = IF(OutAccepted = 0, NULL, OutDate),
+    OutAccepted = IF(OutAccepted = 0, NULL, OutAccepted)
 WHERE TreatmentListId = prm_TreatmentListId;
+
+SELECT IF(ROW_COUNT() > 0, 1, 0) INTO vSuccess;
 
 ELSE
 
 DELETE FROM AAU.TreatmentList WHERE TreatmentListId = prm_TreatmentListId;
 
-END IF;
-
-
-
 SELECT IF(ROW_COUNT() > 0, 1, 0) INTO vSuccess;
 
-UPDATE AAU.TreatmentList
-	SET OutAccepted = prm_Accepted,
-    OutCensusAreaId = IF(prm_Accepted = FALSE, NULL, OutCensusAreaId)
-WHERE	PatientId = prm_PatientId AND
-		OutCensusAreaId IS NOT NULL;
+END IF;
 
-SELECT IF(ROW_COUNT() > 0 AND vSuccess = 1, 1, 0) INTO vSuccess;
+UPDATE AAU.TreatmentList
+	SET OutAccepted = prm_Accepted
+WHERE	PatientId = prm_PatientId AND
+		OutAccepted IS NULL AND
+		OutCensusAreaId IS NOT NULL;
 
 SELECT vSuccess AS success;
 

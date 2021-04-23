@@ -22,20 +22,20 @@ Purpose: Procedure for inserting admission and moved in records to the treatment
 DECLARE vExistingRecord INT;
 SET vExistingRecord = 0;
 
-SELECT COUNT(1) INTO vExistingRecord FROM AAU.TreatmentList WHERE InCensusAreaId = prm_PreviousArea AND CAST(InDate AS DATE) = CAST(prm_InDate AS DATE);
+-- SELECT COUNT(1) INTO vExistingRecord FROM AAU.TreatmentList WHERE InCensusAreaId = prm_PreviousArea AND CAST(OutDate AS DATE) = CAST(prm_InDate AS DATE);
 
-IF vExistingRecord = 0 THEN
+-- IF vExistingRecord = 0 THEN
 
-INSERT INTO AAU.TreatmentList (PatientId, Admission, InCensusAreaId, InDate, InAccepted)
-VALUES (prm_PatientId, prm_Admission, prm_InCensusAreaId, prm_InDate, NULLIF(prm_InAccepted, FALSE));
+INSERT INTO AAU.TreatmentList (PatientId, Admission, InCensusAreaId, InDate)
+VALUES (prm_PatientId, prm_Admission, prm_InCensusAreaId, prm_InDate);
 
-ELSE
+-- ELSE
 
-UPDATE AAU.TreatmentList SET InCensusAreaId = prm_InCensusAreaId WHERE PatientId = prm_PatientId AND InAccepted IS NULL;
+-- UPDATE AAU.TreatmentList SET InCensusAreaId = prm_InCensusAreaId WHERE PatientId = prm_PatientId AND InAccepted IS NULL;
 
-END IF;
+-- END IF;
 
-SELECT LAST_INSERT_ID() AS `TreatmentListId`, 1 AS `Success`;
+SELECT LAST_INSERT_ID() AS `TreatmentListId`, 1 AS `success`;
 
 END $$
 

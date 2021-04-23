@@ -87,8 +87,6 @@ export class PatientStatusComponent implements OnInit {
             .then(result => {
                 // Add this to the messaging service
 
-                console.log(result);
-
                 result.success === 1
                     ? this.showSnackBar.successSnackBar(
                           'Patient status updated successfully',

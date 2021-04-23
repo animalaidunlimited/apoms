@@ -32,9 +32,15 @@ SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%
 FROM AAU.EmergencyCase ec
 WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
 AND ec.CallOutcomeId = 1
-)
-
+),
+RecordSplitCTE AS
+(
 SELECT
+CASE
+WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admission'
+WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'unaccepted'
+WHEN tl.OutAccepted = 0 THEN 'rejected'
+ELSE 'accepted' END AS `RecordType`,
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("treatmentListId" , tl.treatmentListId),
@@ -54,7 +60,7 @@ JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
 JSON_OBJECT("Release ready", p.ReleaseReady),
 JSON_OBJECT("Moved to", IF(tl.OutAccepted IS NULL AND tl.OutCensusAreaId IS NOT NULL, tl.OutCensusAreaId, NULL)),
-JSON_OBJECT("Admission", tl.Admission),
+JSON_OBJECT("Admission", IF(tl.Admission = 1 AND InAccepted = 1, 0 , 1)), -- This prevents records showing up in new admissions the first move.
 JSON_OBJECT("Move accepted", tl.InAccepted),
 JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
 ))patientDetails		
@@ -69,6 +75,20 @@ FROM PatientCTE p
 		SELECT DISTINCT t.PatientId
 		FROM AAU.Treatment t
 		WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
-	) t ON t.PatientId = p.PatientId;
+	) t ON t.PatientId = p.PatientId
+GROUP BY CASE
+WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admission'
+WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'unaccepted'
+WHEN tl.OutAccepted = 0 THEN 'rejected'
+ELSE 'accepted' END
+)
+
+SELECT
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("treatmentListType",RecordType),
+JSON_OBJECT("treatmentList",patientDetails)
+)) AS `TreatmentList`
+FROM RecordSplitCTE;
 
 END $$

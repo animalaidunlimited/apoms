@@ -16,6 +16,10 @@
   visibility: hidden;
 }
 
+.saved-icon{
+  color: green;
+}
+
 :host ::ng-deep .mat-select-arrow {
   border: none;
 }
@@ -38,36 +42,12 @@
   width: 175px;
 }
 
-.saved-icon{
-  color: green;
-}
-
 :host ::ng-deep .mat-chip-list-wrapper{
   margin: 0 !important;
 }
 
 .complete-column{
   padding-left: 6px;
-}
-
-.unaccepted-form-fields{
-  padding-top: 10px;
-}
-
-.unaccepted-item{
-  box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
-  height: 65px;
-  margin: 5px 0 5px 0;
-  border-radius: 8px;
-}
-
-.saved-spinner{
-  position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 5000;
-    margin: 0 !important;
 }
 
 :host ::ng-deep .center-columnm{
