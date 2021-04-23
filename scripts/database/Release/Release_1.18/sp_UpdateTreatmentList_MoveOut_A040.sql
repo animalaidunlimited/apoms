@@ -21,7 +21,8 @@ Purpose: Procedure for updating the treatment list to move a patient out of an a
 UPDATE AAU.TreatmentList SET
 			InCensusAreaId = IF(Admission = 1 AND InAccepted != 1, prm_OutCensusAreaId, InCensusAreaId),
 			OutCensusAreaId = IF(InAccepted = 1, prm_OutCensusAreaId, NULL),
-			OutDate = IF(InAccepted = 1, prm_OutDate, NULL)
+			OutDate = IF(InAccepted = 1, prm_OutDate, NULL),
+            OutAccepted = NULL
             -- OutCensusAreaId = prm_OutCensusAreaId,
             -- OutDate = prm_OutDate
 WHERE TreatmentListId = prm_TreatmentListId;

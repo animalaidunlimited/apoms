@@ -5,7 +5,6 @@ import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
 
-import { TreatmentListMoveIn, CensusArea, CensusPrintContent, TreatmentList, ReportPatientRecord, TreatmentAreaChange } from 'src/app/core/models/census-details';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { Router } from '@angular/router';
@@ -17,6 +16,7 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmeantListObject } from 'src/app/core/models/treatment-lists';
+import { CensusArea } from 'src/app/core/models/census-details';
 
 interface Column{
   name: string;
