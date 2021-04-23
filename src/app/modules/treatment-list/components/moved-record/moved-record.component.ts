@@ -55,20 +55,14 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes:SimpleChanges){
 
-    console.log(changes);
-
     this.movedRecordsGroup = this.movedRecordsInput as FormGroup;
     this.movedRecords = this.movedRecordsInput.get('movedList') as FormArray;
-
-    console.log(this.movedRecords);
 
   }
 
   acceptMove(currentPatient: AbstractControl) : void {
 
     this.ts.acceptRejectMoveIn(currentPatient, true).then(() => {
-
-      console.log('detecting changes');
       this.changeDetector.detectChanges();
     });
   }
@@ -84,8 +78,6 @@ export class MovedRecordComponent implements OnInit, OnChanges {
   areaChanged(currentPatient: AbstractControl, index:number) : void {
 
     this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then((result:SuccessOnlyResponse) => {
-
-      console.log(result);
 
       if(result.success === 1){
         this.movedRecords.removeAt(index);

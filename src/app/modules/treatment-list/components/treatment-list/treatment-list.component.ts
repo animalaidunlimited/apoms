@@ -144,7 +144,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     }
 
-    // this.accepted.subscribe(val => console.log(val));
   }
 
   ngOnDestroy() {

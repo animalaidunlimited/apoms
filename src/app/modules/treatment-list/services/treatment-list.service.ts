@@ -191,25 +191,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     return returnGroup;
   }
 
-//private emitLists() {
-
-//  // Let's split the lists into the records that have been accepted by the compounder and those that haven't
-
-//  const admissions =  this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === 0 && !!element.get('Admission')?.value === true );
-//  const acceptedRecords = this.treatmentListArray.controls.filter(element => !!element.get('Move accepted')?.value);
-//  const unacceptedRecords = this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === 0 && !!element.get('Admission')?.value === false);
-//  const rejected = this.treatmentListArray.controls.filter(element => element.get('Move accepted')?.value === null );
-
-//  this.admissions.next(admissions);
-//  this.patientRecords.next(acceptedRecords);
-//  this.rejected.next(rejected);
-//  this.unacceptedRecords.next(unacceptedRecords);
-
-//  console.log(admissions);
-
-//}
-
-
 
 public async movePatientOutOfArea(currentPatient:AbstractControl, areaId: number){
 
@@ -223,8 +204,6 @@ public async movePatientOutOfArea(currentPatient:AbstractControl, areaId: number
     movedDate: new Date(),
     movedInAccepted: currentPatient.get('Move accepted')?.value
   };
-
-  console.log(updatedPatient);
 
   return await this.putSubEndpoint('MoveOut', updatedPatient);
 
