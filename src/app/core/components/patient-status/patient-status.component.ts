@@ -73,8 +73,6 @@ export class PatientStatusComponent implements OnInit {
 
         this.patientStatusForm.valueChanges.subscribe(() => {
 
-            console.log(this.patientStatusForm);
-
             this.formInvalid.emit(this.patientStatusForm.invalid);
         } );
 
