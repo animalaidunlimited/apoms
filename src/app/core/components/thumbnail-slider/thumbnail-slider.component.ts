@@ -2,8 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
-import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
-
+import { NgxGalleryOptions,  NgxGalleryAnimation } from '@animalaidunlimited/ngx-gallery-aau';
+import { Image } from 'src/app/core/models/media';
 import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
@@ -15,7 +15,7 @@ import { MediaItem } from '../../models/media';
 })
 export class ThumbnailSliderComponent implements OnInit{
     galleryOptions: NgxGalleryOptions[] = [];
-    galleryImages: NgxGalleryImage[] = [];
+    galleryImages: Image[] = [];
     @Input() mediaData!: BehaviorSubject<MediaItem[]>;
 
     @Input() patientData!: AbstractControl | null;
@@ -28,9 +28,8 @@ export class ThumbnailSliderComponent implements OnInit{
         this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
-                this.galleryImages.push({small:'../../../../../assets/images/image_placeholder.png',
-                    medium:'../../../../../assets/images/image_placeholder.png',
-                    big:'../../../../../assets/images/image_placeholder.png',
+                this.galleryImages.push({thumbnail:'../../../../../assets/images/image_placeholder.png',
+                    full:'../../../../../assets/images/image_placeholder.png',
                     type: 'image'
                     });
 

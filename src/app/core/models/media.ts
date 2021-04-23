@@ -35,3 +35,15 @@ export interface MediaItem{
     image: File[];
     video: File[];
   }
+
+  export interface Image {
+    thumbnail: string;
+    full: string;
+    type: string;
+    time?: string | null;
+    date?: string | null;
+  }
+  export interface Gallery {
+    date: string;
+    images: Image[];
+  }
