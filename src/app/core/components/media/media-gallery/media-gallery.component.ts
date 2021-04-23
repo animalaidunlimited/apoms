@@ -1,3 +1,4 @@
+import { Image } from 'src/app/core/models/media';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,12 +17,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
 
   private ngUnsubscribe = new Subject();
   
-  @Input() images!:any[];
+  @Input() images!:Image[];
   @Input() galleryData!:AbstractControl | null;
   constructor(public dialog: MatDialog) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.images);
+    
   }
 
   ngOnInit(): void {

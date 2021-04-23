@@ -1,17 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-export interface Image {
-  thumbnail: string;
-  full: string;
-  type: string;
-  time: string;
-  date: string;
-}
-interface Gallery {
-  date: string;
-  images: Image[];
-}
-
+import { Gallery, Image } from 'src/app/core/models/media';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery-dialog',

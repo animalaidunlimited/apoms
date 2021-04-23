@@ -1,4 +1,4 @@
-<ng-container *ngFor="let image of gallery.images" >
+<ng-container *ngFor="let image of gallery" >
     <div class="mediaGalleryImages" [style.backgroundImage]="'url('+ image.thumbnail +')'">
         <span class="imagesTime">{{image.time}}</span>
     </div>
