@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from 'src/app/material-module';
-import { MediaThumbnailsModule } from './media-thumbnails/media-thumbnails.module';
 
 
 @NgModule({
