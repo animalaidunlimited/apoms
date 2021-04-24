@@ -1,0 +1,72 @@
+::ng-deep .media-preview-dialog .mat-dialog-container {
+    padding: 0 !important;
+}
+
+::ng-deep .mat-form-field-appearance-fill 
+{
+    .mat-form-field-flex {
+        border-radius: 0;
+        padding: 0;
+        background: none ;
+    }
+    .mat-form-field-infix {
+        padding: .25em 0 0.3rem 0;
+    }
+}
+.imagePreviewSidePanel{
+    box-shadow: -1px -1px 3px #FFFFFF, 1.5px 1.5px 2px rgba(174, 174, 192, 0.4);
+    border-radius: 0.3rem ;
+    background: rgba(240, 240, 243, 0.73);
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 2.5rem;
+    width: 100%;
+}
+
+::ng-deep{
+    .imageDate .mat-form-field-label-wrapper {
+        font-size: 1.5rem;
+        top: -0.6rem;
+    }
+    .mat-form-field-label{
+        color: #707C97;
+    }
+    .imageTags {
+        width:90%;
+        input{
+            background-color: #fff;
+            border-radius:0.3rem;
+            height: 1.9rem;
+            margin-top: 1.5rem;
+            margin-left: 5%;
+            box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%);
+        }
+        .mat-form-field-underline{
+            display: none;
+        }
+    }
+    
+}
+
+.imagePreviewSidePanel ::ng-deep .mat-form-field:not(.imageDate) .mat-form-field-label-wrapper {
+    font-size: 1.1rem;
+}
+.imageTagsSidePanel{
+    position: relative;
+}
+.imageTagsButton{
+    position:absolute;
+    position: absolute;
+    width: 1.3rem;
+    height: 1.3rem;
+    right: 0.7rem;
+    bottom: 1.3rem;
+    background: linear-gradient(
+332deg
+, rgba(96,125,139,1) 0%, rgba(96,125,128,1) 50%, rgba(96, 125, 128, 0.438) 100%);
+    .mat-icon{
+        margin-top: -0.9rem;
+        font-size: 1.1rem;
+        margin-left: -0.1rem;
+    }
+}

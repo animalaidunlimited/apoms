@@ -1,0 +1,37 @@
+<div fxLayout="row" style="background: #F0F0F0;">
+    <div [style.backgroundImage]="'url('+ imageData.full +')'" style="
+        background-size: cover;
+        min-width: 75%;
+        background-repeat: no-repeat;
+        min-height: 70vh;"
+    ></div>
+    <div style="
+        width: 100%;
+        padding: 0.5rem;
+    " [formGroup]="recordForm">
+        <div class="imagePreviewSidePanel" >
+            <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
+                <mat-label >Date</mat-label>
+                <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;
+                border-top: none;
+                border-right: none;
+                border-left: none;
+                margin-top: 1rem;
+                "/>
+            </mat-form-field>
+            <button 
+            mat-raised-button 
+            color="primary" 
+            style="max-width: 5rem;margin: 1rem;">Update</button>
+        </div>
+        <div class="imagePreviewSidePanel imageTagsSidePanel">
+            <mat-form-field appearance="fill" fxLayout="column" class="imageTags">
+                <mat-label>Tags</mat-label>
+                <input matInput style="width: 100%;" type="text" name="imageTags" formControlName="imageTags" />
+            </mat-form-field>
+            <button mat-mini-fab class="imageTagsButton" color="primary" >
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

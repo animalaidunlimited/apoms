@@ -42,6 +42,7 @@ export interface MediaItem{
     type: string;
     time?: string | null;
     date?: string | null;
+    tags?: string[] | null;
   }
   export interface Gallery {
     date: string;

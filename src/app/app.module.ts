@@ -19,6 +19,7 @@ import { ConfirmationDialog } from './core/components/confirm-dialog/confirmatio
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { MediaGalleryDialogModule } from './core/components/media/media-gallery-dialog/media-gallery-dialog.module';
+import { MediaPreviewComponent } from './core/components/media/media-preview/media-preview.component';
 
 registerLocaleData(localeIt);
 
@@ -41,7 +42,8 @@ export class UIErrorHandler extends ErrorHandler {
 
     declarations: [
       AppComponent, 
-      ConfirmationDialog
+      ConfirmationDialog,
+      MediaPreviewComponent
     ],
 
     imports: [
