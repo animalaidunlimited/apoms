@@ -46,6 +46,7 @@ export class ThumbnailSliderComponent implements OnInit{
                     type: item.mediaType.includes('video') ? 'video' : 'image',
                     time: this.datepipe.transform(item.datetime, 'HH:mm'),
                     date: item.datetime.toString().replace('T',' ').slice(0,10),
+                    tags: item.tags
                 };
             });
 
