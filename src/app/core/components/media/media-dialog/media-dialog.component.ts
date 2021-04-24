@@ -53,6 +53,7 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
 
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId)
     .pipe(takeUntil(this.ngUnsubscribe))
+    // tslint:disable-next-line: deprecation
     .subscribe(mediaItems => {
 
         if(mediaItems){
@@ -124,6 +125,7 @@ upload(file: File, patientId: number) : MediaItemReturnObject {
   const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
     mediaItem.mediaItemId
     .pipe(takeUntil(this.ngUnsubscribe))
+    // tslint:disable-next-line: deprecation
     .subscribe(result => {
       if(result){
         this.uploading--;
@@ -207,7 +209,7 @@ openMobileMediaCaptureDialog(){
         tagNumber: this.data.tagNumber,
         patientId: this.data.patientId,
     }
-});
+  });
 
 }
 
