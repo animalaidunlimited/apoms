@@ -1,9 +1,9 @@
-.form-sub-group {
-    border: 2px solid;
-    border-radius: 5px;
-    border-color: #a9abad;
-    padding-left: 5px;
-    padding-right: 5px;
+.form-sub-group {	
+    border: 2px solid;	
+    border-radius: 5px;	
+    border-color: #a9abad;	
+    padding-left: 5px;	
+    padding-right: 5px;	
 }
 table {
     width: 100%;
@@ -20,19 +20,49 @@ table {
 .deleted {
     background-color: gray;
 }
-.invalid-row {
-    background-color: #fadce0;
-}
+
 .duplicate {
     color: red;
 }
-.mat-chip {
-    font-weight: unset !important;
-}
-@media (max-width: 600px)
+
+.invalid-row 
 {
-    .mat-cell {
-        width: auto;
-        padding: 0 0.5rem !important;
+    .invalid-cell{
+        position:relative;
+    }
+    .invalid-cell::before {
+        content: " ";
+        display: inline-block;
+        border-bottom: 1.7px solid red;
+        margin-bottom: 12px;
+        position: absolute;
+        top: 40px;
+        width: 75%;
+    }
+}
+.addPatientButton{
+    margin-top: -7px;
+    width: 30px;
+    height: 30px;
+    .mat-icon{
+        font-size:1rem;
+    }
+}
+@media only screen and (max-width:767px){
+    .addPatientButton{
+        width: 25px;
+        height: 25px;
+        margin-top: -2rem;
+        .mat-icon{
+            font-size: 1rem;
+            position: relative;
+            top: -3px;
+            left:1px;
+        }
+    }
+}
+@media only screen and (min-width:767px){
+    .form-sub-group{
+        min-height: 96.5%;
     }
 }
