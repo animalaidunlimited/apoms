@@ -46,8 +46,8 @@
     <mat-form-field fxFlexOrder.gt-sm="5">
       <mat-label>Admission Area</mat-label>
       <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
-        <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.AreaId">
-          {{areaName.Area}}
+        <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
+          {{areaName.areaName}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -56,7 +56,7 @@
     <div class="patients_icons" fxFlexOrder.lt-md="2" fxFlexOrder.gt-sm="6">
       <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
-    </div>  
+    </div>
     <button class="deletePatientButton" type="button"  (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
       <mat-icon>delete</mat-icon>
   </button>

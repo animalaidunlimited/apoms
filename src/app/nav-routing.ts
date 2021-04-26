@@ -48,7 +48,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule)
     },
     {
-        data: {title: 'Treatment List'},
+        data: {title: 'Treatment List', permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'treatment-list',
@@ -57,7 +57,7 @@ export const navRoutes: NavRoute[] = [
             then(m => m.TreatmentListPageModule)
     },
     {
-        data: { title: 'Census' ,permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Census', permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'census',
@@ -157,6 +157,7 @@ export class NavRouteService {
         this.navRoute.children?.forEach(routeVal=> {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
+
                 if(routeVal.data && val) {
                     routeVal.data.componentPermissionLevel.next(val);
                 }

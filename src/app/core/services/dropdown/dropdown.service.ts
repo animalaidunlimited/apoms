@@ -17,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 import { User, ReleaseManager } from '../../models/user';
 import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
-import { Antibiotic, TreatmentAreaDropdwn } from '../../models/patients';
+import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
 import { TeamDetails } from '../../models/team';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
@@ -42,7 +42,7 @@ export class DropdownService extends APIService {
     animalTypes$!: Observable<AnimalType[]>;
     antibiotics$!: any[];
 
-    treatmentAreaNames$!: Observable<TreatmentAreaDropdwn[]>;
+    treatmentAreaNames$!: Observable<CensusArea[]>;
 
     areas$!: any[];
     callOutcomes$!: Observable<CallOutcomeResponse[]>;
