@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
+import { CensusArea } from 'src/app/core/models/census-details';
 import { MediaItem } from 'src/app/core/models/media';
-import { TreatmentAreaDropdwn } from 'src/app/core/models/patients';
 import { Exclusions,ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -28,7 +28,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
   private _callOutcome = '';
-  
+
   @Input()
   set callOutcome(callOutcome: string) {
     this._callOutcome = callOutcome;
@@ -59,7 +59,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   problemsArray!: FormArray;
 
-  treatmentAreaNames$!: Observable<TreatmentAreaDropdwn[]>;
+  treatmentAreaNames$!: Observable<CensusArea[]>;
 
 
   sortedAnimalTypes = this.dropdown.getAnimalTypes().pipe(
@@ -68,7 +68,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   sortedProblems = this.dropdown.getProblems().pipe(
     map( problems =>
-      { 
+      {
         const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
         const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
         return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
@@ -94,13 +94,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.exclusions = this.dropdown.getExclusions();
 
 
-    this.treatmentAreaNames$ = this.dropdown.getTreatmentAreaNames();
-
-    this.treatmentAreaNames$.subscribe(value=> {
-      console.log(value);
-    })
-
-
+    this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
     this.animalType = this.patientForm.get('animalType') as AbstractControl;
     this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
@@ -130,6 +124,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   animalFilter(fitlerValue: string){
+    
     return this.dropdown.getAnimalTypes().pipe(
       map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(fitlerValue) === 0)),
       map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0)))
@@ -141,11 +136,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     return this.dropdown.getProblems().pipe(
       map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue) === 0)),
       map(problems => {
+
         const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
+
          if(selectedProblems.length > 0){
+
             const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
             const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
             return filteredProblemsArray;
+
         }else{
             return problems;
         }
