@@ -247,6 +247,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((assignments) => {
 
+      console.log(assignments);
+
       this.outstandingCasesArray = assignments;
 
       this.actionStatus.forEach(status=> {
@@ -399,6 +401,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
+
+    console.log(outstandingCase);
 
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         width: '500px',
