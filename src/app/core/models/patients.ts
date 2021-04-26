@@ -1,3 +1,4 @@
+import { CallOutcome } from './emergency-record';
 import { Problem } from './problem';
 
 export interface Patient {
@@ -14,6 +15,8 @@ export interface Patient {
     patientStatusDate: string | Date;
     updated: boolean;
     deleted: boolean;
+    admissionArea: number;
+    callOutcome: CallOutcome;
 }
 
 export interface Patients{

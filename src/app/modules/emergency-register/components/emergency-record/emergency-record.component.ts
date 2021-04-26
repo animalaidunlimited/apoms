@@ -269,7 +269,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     async saveForm() {
 
         console.log(this.recordForm.value);
-
         
         this.loading = true;
 
