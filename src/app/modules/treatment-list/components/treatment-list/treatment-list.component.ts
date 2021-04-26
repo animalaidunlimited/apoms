@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -7,7 +7,7 @@ import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
 
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
@@ -15,8 +15,8 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/for
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
-import { TreatmeantListObject } from 'src/app/core/models/treatment-lists';
-import { CensusArea } from 'src/app/core/models/census-details';
+import { TreatmeantListObject, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
+import { CensusArea, CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
 
 interface Column{
   name: string;
@@ -45,6 +45,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   @Input() area!: CensusArea;
+  @Input() selectedDate!: Date | string;
 
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -60,8 +61,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   displayedColumns: Observable<string[]>;
   filteredColumns:Observable<Column[]>;
 
-  isPrinting: BehaviorSubject<boolean>;
-  layoutType = 'census';
   smallScreen = false;
 
   otherAreas!: CensusArea[];
@@ -70,6 +69,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   movedLists!: FormArray;
 
   resizeObservable$!: Observable<Event>;
+
+  incomingList:string|undefined;
 
   showSpinner = false;
 
@@ -81,11 +82,24 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     // @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog,
     private router: Router,
-    private printService: PrintTemplateService,
+    route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
+    private printService: PrintTemplateService,
     private ts: TreatmentListService,
     private fb: FormBuilder,
     private dropdown: DropdownService ) {
+
+    // Update the paramters to this component based upon the route parameters if we're trying to print the treatment list
+    this.incomingList = route.snapshot.params?.treatmentList;
+
+    if(this.incomingList){
+
+      const incomingDetails:TreatmentListPrintObject = JSON.parse(route.snapshot.params.treatmentList);
+
+      this.area = incomingDetails?.area;
+      this.selectedDate = incomingDetails?.selectedDate;
+
+    }
 
     this.filteredColumns = this.columns.pipe(map(columns =>
                                           columns.filter(column =>  column.name !== 'index' &&
@@ -97,8 +111,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.populateColumnList();
 
-    this.isPrinting = this.printService.getIsPrinting();
-
     this.treatmentListForm = this.fb.group({});
 
     this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
@@ -107,7 +119,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    this.resizeObservable$ = fromEvent(window, 'resize')
+    this.resizeObservable$ = fromEvent(window, 'resize');
+
     this.resizeObservable$.pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe( evt => {
@@ -134,18 +147,30 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(change:SimpleChanges) : void {
 
-    if(change.area.currentValue && change.area.currentValue !== ''){
+    if(change.hasOwnProperty('area')){
+      this.area = change.area.currentValue as CensusArea;
+    }
+
+    if(change.hasOwnProperty('selectedDate')){
+      this.selectedDate = change.selectedDate.currentValue;
+    }
+
+    if(this.area && this.selectedDate){
 
       this.smallScreen = window.innerWidth > 840 ? false : true;
 
       this.showSpinner = true;
       this.populateColumnList();
-      this.ts.populateTreatmentList(change.area.currentValue.areaId);
+
+      this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
 
     }
+    else{
+      this.ts.resetTreatmentList();
+    }
+
 
   }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -160,7 +185,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       take(1)
     ).subscribe(areaList => {
 
-      this.otherAreas = areaList.filter(area => area.areaName !== this.area.areaName && !area.mainArea);
+      this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName && !area.mainArea);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
@@ -180,7 +205,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       if(!this.smallScreen){
 
-          const areas = areaList.filter(area => area.areaName !== this.area.areaName && area.mainArea)
+          const areas = areaList.filter(area => area.areaName !== this.area?.areaName && area.mainArea)
           .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
 
           mainAreas.push(...areas);
@@ -189,6 +214,12 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       }
 
       this.columns.next(mainAreas);
+
+      if(this.incomingList){
+        this.printService.onDataReady('treatment-list');
+      }
+
+
     });
 
   }
@@ -197,31 +228,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   receiveMessage(){
   // TODO On incoming message, search through the treatment lists, find any existing records and remove it. Then add the new one.
 
-  }
-
-
-
-
-  print(){
-
-    // this.dialogRef.close();
-
-    // this.columns.subscribe(printColumns => {
-
-    //  this.patientRecords.connect().subscribe(sortedData => {
-
-    //    console.log(sortedData.values);
-
-    //    const printContent: CensusPrintContent = {
-    //      area: this.areaName,
-    //      displayColumns: printColumns.map(column => column.name),
-    //      printList: []
-    //     };
-
-    //    // this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
-
-    //  });
-    // });
   }
 
   toggleTreatment(row:AbstractControl){

@@ -42,9 +42,9 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
 }
 
-  public populateTreatmentList(treatmentAreaId:number) : void {
+  public populateTreatmentList(treatmentAreaId:number, selectedDate: Date | string) : void {
 
-    const request = '?treatmentAreaId=' + treatmentAreaId;
+    const request = `?treatmentAreaId=${treatmentAreaId}&selectedDate=${selectedDate}`;
 
     // Let's get the treatment list and sort it before we send it to the component
     this.get(request).then((unknownResponse:any) => {
@@ -146,6 +146,15 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   }
 
+  public resetTreatmentList(){
+
+    this.treatmentListForm = this.getEmptyTreatmentForm();
+
+    this.emitTreatmentObject();
+
+
+  }
+
   private getTreatmentListForm(response: ReportPatientRecord[]) : FormArray {
 
     const returnArray = this.fb.array([]);
@@ -179,6 +188,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       'Release status': '',
       Temperament: '',
       'Treatment priority': 0,
+      'Actioned by area': '',
       'Moved to': 0,
       'Move accepted': false,
       Admission: false,

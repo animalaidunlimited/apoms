@@ -4,9 +4,7 @@
 
       <mat-spinner *ngIf="showSpinner" style="margin:0 auto;"></mat-spinner>
 
-      <legend class="legend ">{{area.areaName}} - ({{acceptedFormArray?.controls?.length}})</legend>
-
-      <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
+      <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
       <div *ngFor="let movedRecords of movedLists.controls">
 
@@ -14,10 +12,24 @@
 
       </div>
 
+  <table mat-table [dataSource]="accepted" formArrayName="accepted" style="margin-top: 15px;">
 
+      <!-- Header row first group -->
+  <ng-container matColumnDef="header-row-patient-details-group">
+    <th mat-header-cell *matHeaderCellDef
+        style="text-align: center"
+        [attr.colspan]="5">
+      Patient details
+    </th>
+  </ng-container>
 
+  <!-- Header row second group -->
+  <ng-container matColumnDef="header-row-moved-out-group">
+    <th mat-header-cell *matHeaderCellDef
+    class="moved-out-group" [attr.colspan]="5"> Move out to</th>
+  </ng-container>
 
-  <table mat-table [dataSource]="accepted" formArrayName="accepted">
+  <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']"></tr>
 
     <tr mat-header-row *matHeaderRowDef="(displayedColumns | async)"></tr>
     <tr mat-row *matRowDef="let row; let i = index; columns: (displayedColumns | async);"></tr>
@@ -87,11 +99,10 @@
 
           </div>
 
-          <div *ngIf="column.type === 'checkbox'" fxLayout="column" fxLayoutAlign="center center">
+          <div *ngIf="column.type === 'checkbox'" class='checkbox-column' fxLayout="column" fxLayoutAlign="center center">
 
             <!--formControlName="Moved to"-->
-            <mat-radio-group
-            >
+            <mat-radio-group>
             <mat-radio-button
             [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
               (change)="areaChanged(column?.areaId, index)"

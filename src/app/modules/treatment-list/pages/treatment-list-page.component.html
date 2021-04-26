@@ -18,13 +18,15 @@
 
         </mat-form-field>
 
+        <button type="button" [disabled]="currentArea.areaId === 0" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
+
     </div>
 
 </form>
 
 <div fxLayout="column" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="start start">
 
-<app-treatment-list [area]="currentArea"></app-treatment-list>
+<app-treatment-list [area]="currentArea" [selectedDate]="selectedDate"></app-treatment-list>
 
 </div>
 
