@@ -40,7 +40,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
         private caseService: CaseService) {}
 
     ngOnInit() {
-
+        this.selected.setValue(1);
         this.navigationService.isSearchClicked
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((clicked)=>

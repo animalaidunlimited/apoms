@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { sideNavPath } from '../nav-routing';
 import {
     Router,
     ActivatedRouteSnapshot,

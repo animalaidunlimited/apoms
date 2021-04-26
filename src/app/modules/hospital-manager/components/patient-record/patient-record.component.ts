@@ -8,6 +8,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -32,15 +33,28 @@ export class PatientRecordComponent implements OnInit {
 
     loading = false;
 
+    permissionType!: number[];
+
+    hasWritePermission: boolean = false;
+
     mediaData!: BehaviorSubject<MediaItem[]>;
     logsData!:LogsData; 
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
         private changeDetector: ChangeDetectorRef,
-        private patientService: PatientService) {}
+        private patientService: PatientService,
+        private route : ActivatedRoute) {}
 
     ngOnInit() {
+
+        this.route.data.subscribe(val=> {
+
+            if (val.componentPermissionLevel?.value === 2) {
+                this.hasWritePermission = true;
+            }
+
+        });
 
         this.hideMenu = window.innerWidth > 840 ? false : true;
 
@@ -118,15 +132,20 @@ export class PatientRecordComponent implements OnInit {
 
     saveForm() {
 
-        this.loading = true;
+        if(this.hasWritePermission) {
+            this.loading = true;
 
-        this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
-            this.loading = false;
-            result.success === 1 ?
-                this.snackbar.successSnackBar('Update successful','OK')
-                :
-                this.snackbar.errorSnackBar('Update failed','OK');
-        });
+            this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
+                this.loading = false;
+                result.success === 1 ?
+                    this.snackbar.successSnackBar('Update successful','OK')
+                    :
+                    this.snackbar.errorSnackBar('Update failed','OK');
+            });
+        }
+        else {
+            this.snackbar.errorSnackBar('You have no appropriate permissions' , 'OK');
+        }
 
     }
 }

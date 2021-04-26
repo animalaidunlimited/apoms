@@ -16,6 +16,27 @@
         height: 30px;
         .mat-icon{
             font-size:1rem;
+            position: relative;
+            top: -1px;
+        }
+    }
+    .form-sub-group{
+        place-content: center;
+        display: flex;
+    }
+}
+
+@media(max-width: 600px) { 
+    .addCallerButton{
+        margin-left: calc(50% - 1.7rem);
+        margin-top: -2rem;
+        position:absolute;
+        width: 25px;
+        height: 25px;
+        .mat-icon{
+            font-size:1rem;
+            position: relative;
+            top: -3px;
         }
     }
 }

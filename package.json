@@ -21,7 +21,7 @@
     "analyze": "webpack-bundle-analyzer dist/apoms/stats.json",
     "configure:ci": "ts-node set-environment.ts",
     "app-config:ci": "ts-node set-app-yaml.ts",
-  "build:ci": "ng build --prod --configuration=$npm_config_environment --sourceMap=false",
+    "build:ci": "ng build --prod --configuration=$NPM_CONFIG_ENVIRONMENT --sourceMap=false",
     "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom"
   },
   "husky": {
