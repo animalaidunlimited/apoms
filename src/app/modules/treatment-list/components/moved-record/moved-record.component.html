@@ -7,18 +7,30 @@
 
          <div [formGroupName]="index"
           class="unaccepted-item"
-          fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap.gt-sm="20px">
+          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px">
 
-        <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap.gt-sm="20px"
+        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px"
             class="unaccepted-form-fields">
 
 
+
+            <button mat-button class="action-button"
+            [ngStyle]="{ 'border-color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white',
+            'color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white'}"
+            >
+              {{item.get('Actioned by area')?.value || 'Admission'}}
+              <mat-icon *ngIf="listType === 'admissions'" >plus_one</mat-icon>
+              <mat-icon *ngIf="listType === 'rejected from'">error</mat-icon>
+              <mat-icon *ngIf="listType === 'moved in from'">swap_horiz</mat-icon>
+            </button>
+
+
               <mat-form-field >
-                <input matInput placeholder="Tag number"  [value]="item.get('Tag number')?.value">
+                <input matInput disabled="true" placeholder="Tag number" [value]="item.get('Tag number')?.value">
               </mat-form-field>
 
               <mat-form-field >
-                <mat-select [value]="item.get('Treatment priority')?.value"  placeholder="Treatment priority">
+                <mat-select disabled="true" [value]="item.get('Treatment priority')?.value"  placeholder="Treatment priority">
                   <mat-option [value]="2">High</mat-option>
                   <mat-option [value]="3">Medium</mat-option>
                   <mat-option [value]="4">Low</mat-option>
@@ -28,23 +40,19 @@
 
           </div>
 
-          <div>
-            <button mat-button style="color: green" (click)="acceptMove(item)">
+            <button mat-button class="accept-button" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>
               Accept
             </button>
-          </div>
 
-          <div>
-            <button *ngIf="listType === 'unaccepted'" mat-button style="color:red" (click)="rejectMove(item)">
+            <button *ngIf="listType === 'moved in from' || listType === 'admissions'" mat-button class="reject-button" (click)="rejectMove(item)">
               <mat-icon>highlight_off</mat-icon>
               Reject
             </button>
-          </div>
 
 
-        <!--<div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;" *ngIf="listType === 'rejected' || listType === 'admission'">-->
-        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected' || listType === 'admission'">
+        <!--<div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;" *ngIf="listType === 'rejected from' || listType === 'admission'">-->
+        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
 
 
           <mat-form-field>

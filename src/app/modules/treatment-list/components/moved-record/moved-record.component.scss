@@ -3,9 +3,27 @@
     min-height: 65px;
     margin: 5px 0 5px 0;
     border-radius: 8px;
+    padding-left: 10px;
   }
 
   .unaccepted-form-fields{
     padding-top: 10px;
   }
 
+.reject-button{
+    background-color: red;
+    border-radius: 8px;
+    color: white;
+}
+
+.accept-button{
+    background-color: green;
+    border-radius: 8px;
+    color: white;
+}
+
+.action-button{
+    border-bottom: 6px solid;
+    width: 125px;
+    cursor: default;
+}
