@@ -93,7 +93,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.exclusions = this.dropdown.getExclusions();
 
-
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreaNames();
 
     this.treatmentAreaNames$.subscribe(value=> {
