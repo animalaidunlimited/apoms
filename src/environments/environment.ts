@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_URL: 'API_URL',
+  API_URL: '',
   firebase: {
     apiKey: 'FIREBASE_API_KEY',
     authDomain: 'FIREBASE_AUTH_DOMAIN',

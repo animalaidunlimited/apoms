@@ -47,7 +47,7 @@ describe('CallerDetailsComponent', () => {
         fixture.detectChanges();
     }));
 
-    afterEach(function(done) {
+    afterEach((done) => {
         component.recordForm.reset();
         done();
     });
