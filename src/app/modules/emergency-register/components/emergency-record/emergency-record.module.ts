@@ -35,6 +35,6 @@ import { AnimalSelectionModule } from '../animal-selection/animal-selection.modu
         PatientVisitDetailsModule,
         AnimalSelectionModule
     ],
-    exports: [EmergencyRecordComponent],
+    exports: [EmergencyRecordComponent,AnimalSelectionModule],
 })
 export class EmergencyRecordModule {}

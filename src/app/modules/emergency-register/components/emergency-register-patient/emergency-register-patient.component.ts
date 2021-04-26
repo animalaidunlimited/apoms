@@ -124,7 +124,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   animalFilter(fitlerValue: string){
-    
+
     return this.dropdown.getAnimalTypes().pipe(
       map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(fitlerValue) === 0)),
       map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0)))
