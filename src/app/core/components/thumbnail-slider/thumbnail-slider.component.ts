@@ -28,9 +28,11 @@ export class ThumbnailSliderComponent implements OnInit{
         this.mediaData.subscribe(mediaItems => {
 
             if(!mediaItems){
-                this.galleryImages.push({thumbnail:'../../../../../assets/images/image_placeholder.png',
+                this.galleryImages.push({
+                    thumbnail:'../../../../../assets/images/image_placeholder.png',
                     full:'../../../../../assets/images/image_placeholder.png',
-                    type: 'image'
+                    type: 'image',
+                    comments:null
                     });
 
             }
@@ -38,7 +40,7 @@ export class ThumbnailSliderComponent implements OnInit{
             if(!mediaItems){
                 return;
             }
-
+            
             this.galleryImages = mediaItems.map(item=>{
                 return {
                     thumbnail:item.remoteURL,
@@ -46,7 +48,8 @@ export class ThumbnailSliderComponent implements OnInit{
                     type: item.mediaType.includes('video') ? 'video' : 'image',
                     time: this.datepipe.transform(item.datetime, 'HH:mm'),
                     date: item.datetime.toString().replace('T',' ').slice(0,10),
-                    tags: item.tags
+                    tags: item.tags,
+                    comments: item.comments
                 };
             });
 

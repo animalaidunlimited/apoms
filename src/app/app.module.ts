@@ -18,8 +18,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
-import { MediaGalleryDialogModule } from './core/components/media/media-gallery-dialog/media-gallery-dialog.module';
-import { MediaPreviewComponent } from './core/components/media/media-preview/media-preview.component';
+import { MediaModule } from './core/components/media/media.module';
 
 registerLocaleData(localeIt);
 
@@ -42,8 +41,7 @@ export class UIErrorHandler extends ErrorHandler {
 
     declarations: [
       AppComponent, 
-      ConfirmationDialog,
-      MediaPreviewComponent
+      ConfirmationDialog
     ],
 
     imports: [
@@ -62,7 +60,7 @@ export class UIErrorHandler extends ErrorHandler {
         AngularFireAuthModule,
         AngularFireMessagingModule,
         AngularFireStorageModule,
-        MediaGalleryDialogModule,
+        MediaModule,
         AngularFireModule.initializeApp(environment.firebase)
     ],
     exports: [],

@@ -57,7 +57,8 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       remoteURL: this.mediaItem.remoteURL,
       isPrimary: this.mediaItem.isPrimary,
       datetime: this.mediaItem.datetime,
-      comment: this.mediaItem.comment,
+      /*comments: this.mediaItem.comment,*/
+      comments: null,
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),
@@ -120,7 +121,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
     this.tags = this.mediaForm.get('tags') as FormArray;
 
-      this.mediaItem.tags.forEach(tag => {
+      this.mediaItem.tags.forEach((tag:any) => {
 
         const newTag = JSON.parse(JSON.stringify(tag));
 

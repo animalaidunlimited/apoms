@@ -10,11 +10,11 @@ export interface MediaItem{
     isPrimary: boolean;
     datetime: Date|string;
     deleted: boolean;
-    comment: string;
+    comments: Comment[] | null;
     patientId: number;
     heightPX: number;
     widthPX: number;
-    tags: string[];
+    tags: Tag[] | string[];
     uploadProgress$: Observable<number> | null;
     updated: boolean;
   }
@@ -42,9 +42,35 @@ export interface MediaItem{
     type: string;
     time?: string | null;
     date?: string | null;
-    tags?: string[] | null;
+    tags?: any;
+    comments:Comment[] | null;
   }
   export interface Gallery {
     date: string;
     images: Image[];
   }
+
+  export interface Comment {
+    userId: number;
+    comment: string;
+    timestamp: string;
+    userColour: string;
+    userInitials: string;
+  }
+
+  export interface Tag {
+    tag: string;
+  }
+  export interface MediaResponse {
+    tags: Tag[];
+    widthPX: number;
+    comments: Comment[];
+    datetime: Date;
+    heightPX: number;
+    localURL?: any;
+    isPrimary: number;
+    mediaType: string;
+    patientId: number;
+    remoteURL: string;
+    mediaItemId: number;
+}
