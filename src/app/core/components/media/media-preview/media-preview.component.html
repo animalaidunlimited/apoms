@@ -24,14 +24,42 @@
             color="primary" 
             style="max-width: 5rem;margin: 1rem;">Update</button>
         </div>
-        <div class="imagePreviewSidePanel imageTagsSidePanel">
+        <div class="imagePreviewSidePanel imageTagsSidePanel" fxLayout="column">
             <mat-form-field appearance="fill" fxLayout="column" class="imageTags">
                 <mat-label>Tags</mat-label>
-                <input matInput style="width: 100%;" type="text" name="imageTags" formControlName="imageTags" />
+                <input matInput style="width: 100%;" type="text" 
+                [matChipInputFor]="chipList"
+                (matChipInputTokenEnd)="add($event)"
+                #tagsControl
+                />
+                <button mat-mini-fab class="imageTagsButton" color="primary" (click)="addTagByBtn(tagsControl.value)">
+                    <mat-icon>add</mat-icon>
+                </button>
             </mat-form-field>
-            <button mat-mini-fab class="imageTagsButton" color="primary" >
-                <mat-icon>add</mat-icon>
-            </button>
+            
+            <mat-chip-list #chipList >
+                <mat-chip *ngFor="let tag of recordForm.get('imageTags')?.value" 
+                         [removable]="removable" (removed)="remove(tag)">
+                            {{tag}}
+                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+        <div class="imagePreviewSidePanel imageChatSidePanel" fxLayout="column">
+            <h3>Comments</h3>
+            <ng-container *ngFor="let comment of imageData.comments">
+
+                <p><span>{{comment.timestamp | timeAgo}}</span>{{comment.comment}}</p>
+                
+            </ng-container>
+            <mat-form-field appearance="fill" style="width: 100%;" fxLayout="column">
+                <input matInput  type="text" style="background: transparent;
+                border-top: 0.1rem solid #707c9752;
+                padding: 0.3rem 0 0 0.3rem;
+                font-size: 0.9rem;
+                "
+                placeholder="Type a message here"/>
+            </mat-form-field>
         </div>
     </div>
 </div>

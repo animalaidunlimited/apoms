@@ -68,7 +68,8 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
           remoteURL: mediaItem.remoteURL,
           isPrimary :mediaItem.isPrimary,
           datetime: mediaItem.datetime,
-          comment: mediaItem.comment,
+          comments:  null,
+          /* comments: mediaItem.comment | null,*/
           patientId: mediaItem.patientId,
           heightPX: mediaItem.heightPX,
           widthPX: mediaItem.widthPX,

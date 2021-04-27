@@ -5,10 +5,9 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
-import { MediaItem } from 'src/app/core/models/media';
+import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
-import { SuccessOnlyResponse } from '../../models/responses';
 
 interface SuccessResult{
     success: number;
@@ -294,7 +293,8 @@ export class PatientService extends APIService {
         // tslint:disable-next-line: deprecation
         this.getObservable(request).pipe(
             map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime()))
-        ).subscribe((media : any[])=>{
+        ).subscribe((media : MediaResponse[])=>{
+
 
             if(!media){
                 return;
@@ -308,9 +308,9 @@ export class PatientService extends APIService {
                     mediaType: item.mediaType,
                     localURL: item.localURL,
                     remoteURL: item.remoteURL,
-                    isPrimary :item.isPrimary,
+                    isPrimary :item.isPrimary ? true : false,
                     datetime: item.datetime,
-                    comment: item.comment,
+                    comments: item.comments,
                     patientId: item.patientId,
                     heightPX: item.heightPX,
                     widthPX: item.widthPX,
@@ -321,6 +321,8 @@ export class PatientService extends APIService {
                 };
 
             });
+
+            console.log(savedMediaItems);
 
             if(patientMediaItem){
                 patientMediaItem.mediaItem.next(savedMediaItems);
