@@ -1,7 +1,7 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -155,14 +155,15 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 deleted: [false, Validators.required],
                 isAdmission:[false],
                 admissionArea: [],
+                admissionAccepted: [false],
                 callOutcome: this.fb.group({
                     CallOutcome: [],
                     sameAsNumber: []
                 }),
             });
 
-
             this.setValidators(patient);
+
         return patient;
     }
 
@@ -173,44 +174,48 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         const problems = this.fb.array([]);
 
-        patient.problems.forEach(problem => {
-            const newProblem = this.fb.group({
-                problemId: [problem.problemId],
-                problem: [problem.problem],
-            });
-            problems.push(newProblem);
+        patient.problems.forEach(() => {
+
+            problems.push(this.fb.group({
+                problemId: [],
+                problem: [],
+            }));
         });
 
-        return this.getPatient(
-            problems,
-            patient.position,
-            isUpdate,
-            patient.patientId,
-            patient.admissionArea
+        const newPatient = this.getPatient(
+            problems
         );
+
+        newPatient.patchValue(patient);
+
+        if(newPatient.get('admissionAccepted')?.value){
+            newPatient.get('admissionArea')?.disable();
+        }
+
+        return newPatient;
+
     }
 
-
-    getPatient(problems: FormArray, position: number, isUpdate: boolean, patientId: number,admissionArea: number) {
+        getPatient(problems: FormArray) : FormGroup {
 
         const newPatient = this.fb.group({
-            patientId: [patientId],
-            position: [position],
+            patientId: [],
+            position: [],
             animalTypeId: ['', Validators.required],
             animalType: ['', Validators.required],
             problems,
             tagNumber: [''],
             duplicateTag: [false, Validators.required],
-            updated: [isUpdate, Validators.required],
+            updated: [, Validators.required],
             deleted: [false, Validators.required],
-            isAdmission:[admissionArea? true: false],
-            admissionArea: [admissionArea],
+            isAdmission: [],
+            admissionAccepted: [],
+            admissionArea: [],
             callOutcome: this.fb.group({
                 CallOutcome: [],
                 sameAsNumber: []
             }),
         });
-
 
         this.setValidators(newPatient);
 
@@ -234,111 +239,65 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         patient.valueChanges.subscribe((patientVal)=> {
 
-
-            console.log('hi');
-
             const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
-
             const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');
-
             const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
-
             const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
 
-            if(patientVal.callOutcome.CallOutcome) {
-
-                if(patientVal.callOutcome.CallOutcome.CallOutcomeId === 1) {
+                if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
 
                     patient.get('isAdmission')?.setValue(true,{ emitEvent: false });
-
                     patient.get('tagNumber')?.setValidators(Validators.required);
-                    patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-
                     patient.get('admissionArea')?.setValidators(Validators.required);
-                    patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
 
                     rescuer2Id?.setValidators([Validators.required]);
-                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
                     rescuer1Id?.setValidators([Validators.required]);
-                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
                     rescueTime?.setValidators([Validators.required]);
-                    rescueTime?.updateValueAndValidity({ emitEvent: false });
-
                     admissionTime?.setValidators([Validators.required]);
-                    admissionTime?.updateValueAndValidity({ emitEvent: false });
+
+                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
 
                 }
 
                 else {
 
-                   patient.get('admissionArea')?.setValue(null, {emitEvent:false});
-
+                    patient.get('admissionArea')?.setValue(null, {emitEvent:false});
                     patient.get('isAdmission')?.setValue(false, { emitEvent: false });
-
                     patient.get('tagNumber')?.clearValidators();
-                    patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-
                     patient.get('admissionArea')?.clearValidators();
-                    patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
-
 
                     rescuer2Id?.clearValidators();
-                    rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
                     rescuer1Id?.clearValidators();
-                    rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
                     rescueTime?.clearValidators();
-                    rescueTime?.updateValueAndValidity({ emitEvent: false });
                     admissionTime?.clearValidators();
-                    admissionTime?.updateValueAndValidity({ emitEvent: false });
+
+                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
                 }
-
-            }
-
-            else {
-
-                console.log('I was called');
-
-                patient.get('admissionArea')?.setValue(null, {emitEvent:false});
-
-                patient.get('isAdmission')?.setValue(false, { emitEvent: false });
-
-                patient.get('tagNumber')?.clearValidators();
-                patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-
-                patient.get('admissionArea')?.clearValidators();
-                patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
-
-
-                rescuer2Id?.clearValidators();
-                rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-
-                rescuer1Id?.clearValidators();
-                rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-
-                rescueTime?.clearValidators();
-                rescueTime?.updateValueAndValidity({ emitEvent: false });
-                admissionTime?.clearValidators();
-                admissionTime?.updateValueAndValidity({ emitEvent: false });
-            }
 
         });
     }
 
 
+    private updateValueAndValidity(patient: FormGroup, rescuer2Id: AbstractControl | null, rescuer1Id: AbstractControl | null,
+        rescueTime: AbstractControl | null, admissionTime: AbstractControl | null) {
+
+        patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
+        patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
+        rescueTime?.updateValueAndValidity({ emitEvent: false });
+        admissionTime?.updateValueAndValidity({ emitEvent: false });
+    }
+
     loadPatientArray(emergencyCaseId: number) {
-
-
-
 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe((patients: Patients) => {
-            console.log(patients)
+
+            console.log(patients);
+
             patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
                         patient.deleted = !!+patient.deleted;
@@ -347,7 +306,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                         this.patients.push(newPatient);
                     });
 
+                    console.log(this.patients);
+
                     this.recordForm.patchValue(patients);
+
+                    console.log(this.recordForm.value);
 
                     this.setChildOutcomeAsParentPatient(this.patients);
 
@@ -373,12 +336,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
             if(val.callOutcome.CallOutcome) {
 
-                console.log(val);
-
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
 
                     patients.controls.forEach((patient)=> {
-
 
                         patient.get('callOutcome.CallOutcome')?.setValue({
                             CallOutcomeId : val.callOutcome.CallOutcome.CallOutcomeId,

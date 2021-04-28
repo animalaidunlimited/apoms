@@ -56,6 +56,7 @@ export class PatientService extends APIService {
 
         return this.getObservable(request).pipe(
             map((response: Patients) => {
+                console.log(response);
                 return response;
             })
         );
