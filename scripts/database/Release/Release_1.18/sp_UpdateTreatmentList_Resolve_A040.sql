@@ -1,10 +1,10 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_TreatmentListRecord_Resolve !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateTreatmentList_Resolve !!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_TreatmentListRecord_Resolve ( IN prm_PatientId INT, IN prm_OutOfHospital TINYINT)
+CREATE PROCEDURE AAU.sp_UpdateTreatmentList_Resolve ( IN prm_PatientId INT, IN prm_OutOfHospital TINYINT)
 BEGIN
 
 /*

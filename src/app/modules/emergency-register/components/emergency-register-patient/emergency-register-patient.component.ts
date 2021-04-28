@@ -4,12 +4,12 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { CensusArea } from 'src/app/core/models/census-details';
 import { MediaItem } from 'src/app/core/models/media';
-import { Exclusions,ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -91,12 +91,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   ngOnInit(): void {
 
+    console.log(this.patientForm.value);
+
     this.exclusions = this.dropdown.getExclusions();
 
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
     this.animalType = this.patientForm.get('animalType') as AbstractControl;
+
     this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
       startWith(''),
       map(animalType => typeof animalType === 'string'? animalType : animalType.AnimalType),
@@ -108,8 +111,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       map(problem => typeof problem === 'string' ? problem : problem.Problem),
       switchMap((problem:string) => problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems),
     );
-    this.problemsArray = this.patientForm.get('problems') as FormArray;
 
+    this.problemsArray = this.patientForm.get('problems') as FormArray;
 
     setTimeout(()=>{
       this.chipList.errorState  = this.problemsArray.length > 0 ? false : true;

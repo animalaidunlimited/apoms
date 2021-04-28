@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentList !!
 
 DELIMITER $$
 
--- CALL AAU.sp_GetTreatmentList(1, '2021-04-25');
+-- CALL AAU.sp_GetTreatmentList(10, '2021-04-27');
 
 CREATE PROCEDURE AAU.sp_GetTreatmentList ( IN prm_CensusAreaId INT, IN prm_TreatmentListDate DATE )
 BEGIN
@@ -22,12 +22,12 @@ FROM AAU.Patient p
 INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
 WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InCensusAreaId = prm_CensusAreaId)
 AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+AND p.PatientCallOutcomeId = 1
 ),
 EmergencyCaseCTE AS (
 SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
 FROM AAU.EmergencyCase ec
 WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
-AND ec.CallOutcomeId = 1
 ),
 RecordSplitCTE AS
 (

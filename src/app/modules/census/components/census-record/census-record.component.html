@@ -1,16 +1,16 @@
 <fieldset class="form-group">
-    <legend *ngIf="!showCensusErrorLog" class="legend">Census Details</legend>
-    <legend *ngIf="showCensusErrorLog" class="legend">Census Error Log</legend>
-    
+    <legend *ngIf="!showCensusErrorLog" class="legend">Census details</legend>
+    <legend *ngIf="showCensusErrorLog" class="legend">Census error log</legend>
+
     <form [formGroup] = "censusDate">
         <div fxLayout="row" fxLayoutAlign="start end">
-            
+
             <mat-form-field>
                 <mat-label>Census Date</mat-label>
                 <input matInput type="date" formControlName="CensusDate" name = "CensusDate"
                 (focus)="setInitialTime($event)" cdkFocusInitial >
             </mat-form-field>
-            
+
             <button mat-mini-fab matTooltip="Census errors" *ngIf="showErrorLogBtn" (click)="showCensusErrorLog = !showCensusErrorLog" color="warn" class="censusErrorRecordButton">
                 <mat-icon>priority_high</mat-icon>
             </button>
@@ -29,12 +29,12 @@
                     <p><b>Caller Name:-</b> {{errorLog.CallerName}}</p>
                     <p><b>Patient Status:-</b> {{errorLog.PatientStatus}}</p>
                 </div>
-    
+
                 <div class="recordDetailsContainer2" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start">
                     <p><b>Admission Time:-</b> {{errorLog.AdmissionTime}}</p>
-    
+
                     <p><b>Caller Number:-</b> {{errorLog.Number}}</p>
-    
+
                     <p><b>PatientStatus Date:-</b> {{errorLog.PatientStatusDate}}</p>
                 </div>
             </div>
@@ -49,11 +49,11 @@
         <div class="errorPanelContainer" *ngFor="let errorLog of censusErrorRecords">
             <mat-expansion-panel class="expansionPanel" [expanded]='true'>
                 <mat-expansion-panel-header>
-    
-                  <mat-panel-title> 
+
+                  <mat-panel-title>
                     <h4><b>TagNumber:- </b><b class="link" (click)="tagNumberClicked(errorLog.TagNumber)">{{errorLog.TagNumber}}</b></h4>
                   </mat-panel-title>
-    
+
                   <mat-panel-description>
                   </mat-panel-description>
                 </mat-expansion-panel-header>
@@ -69,12 +69,12 @@
                     </div>
                     <p><b>Log:-</b> {{errorLog.ErrorLog}}</p>
                 </div>
-    
+
               </mat-expansion-panel>
         </div>
     </div> -->
 
-   
+
 
     <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 

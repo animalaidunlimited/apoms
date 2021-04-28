@@ -247,8 +247,6 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((assignments) => {
 
-      console.log(assignments);
-
       this.outstandingCasesArray = assignments;
 
       this.actionStatus.forEach(status=> {

@@ -14,21 +14,20 @@
               [focusEmergencyNumber]="true"
               (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-            
+
           </div>
           <caller-details  [recordForm]="recordForm"></caller-details>
           <div fxLayout="column" gdColumns.gt-md="1fr 1fr" fxFlex="0 1 43" fxLayoutGap="5px" fxLayoutAlign="start">
 
-              
-              <animal-selection [recordForm]="recordForm" ></animal-selection>
-              <location-details [recordForm]="recordForm"></location-details>
+            <location-details [recordForm]="recordForm"></location-details>
+            <animal-selection [recordForm]="recordForm" ></animal-selection>
 
           </div>
 
           <fieldset class="form-sub-group" >
 
-            <legend class="legend">Rescue Details</legend> 
-            
+            <legend class="legend">Rescue details</legend>
+
             <rescue-details
                 [recordForm]="recordForm"
                 [emergencyCaseId]="recordForm.get('emergencyDetails.emergencyCaseId')?.value">
@@ -37,8 +36,8 @@
         </fieldset>
 
         <fieldset class="form-sub-group" >
-                <legend class="legend">Add Comment</legend> 
-            
+                <legend class="legend">Add comment</legend>
+
             <mat-form-field class="mat-wrapper">
               <mat-label>Comments</mat-label>
               <textarea matInput  formControlName="caseComments"></textarea>
@@ -48,7 +47,7 @@
 
           <!-- <fieldset class="form-sub-group">
 
-                <legend class="legend">Call Outcome</legend>
+                <legend class="legend">Call outcome</legend>
 
                 <emergency-case-outcome [recordForm]="recordForm"></emergency-case-outcome>
 

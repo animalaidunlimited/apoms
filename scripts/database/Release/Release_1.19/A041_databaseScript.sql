@@ -1,28 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentAreaNames
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetTreatmentAreaNames(IN prm_Username VARCHAR(45))
-BEGIN
-
-/*
-Created By: Arpit Trivedi
-Created Date: 16/04/2021
-Purpose: To get all the treatment areas list
-*/
-
-SELECT AreaId, Area FROM AAU.CensusArea;
-
-END$$
-DELIMITER ;
-
-
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_sp_InsertEmergencyCase !!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
@@ -341,7 +319,7 @@ IN prm_EmergencyCaseId INT,
 IN prm_Position INT,
 IN prm_AnimalTypeId INT,
 IN prm_TagNumber VARCHAR(45),
-IN prm_PatientOutcomeId  INT,
+IN prm_PatientCallOutcomeId  INT,
 IN prm_SameAsEmergencyCaseId INT
 )
 BEGIN
@@ -373,7 +351,7 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			Position,
 			AnimalTypeId,
 			TagNumber,
-            PatientOutcomeId,
+            PatientCallOutcomeId,
             SameAsNumber
 		)
 		VALUES
@@ -383,7 +361,7 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			prm_Position,
 			prm_AnimalTypeId,
 			UPPER(prm_TagNumber),
-            prm_PatientOutcomeId,
+            prm_PatientCallOutcomeId,
             prm_SameAsEmergencyCaseId
 		);
           
@@ -431,7 +409,7 @@ CREATE PROCEDURE AAU.sp_UpdatePatient(
 									IN prm_AnimalTypeId INT,									
                                     IN prm_IsDeleted INT,
                                     IN prm_TagNumber VARCHAR(45),
-                                    IN prm_PatientOutcomeId INT,
+                                    IN prm_PatientCallOutcomeId INT,
                                     IN prm_SameAsNumber INT
 )
 BEGIN
@@ -458,7 +436,7 @@ IF vPatientExists = 0 THEN
 			Position		= prm_Position,
 			AnimalTypeId	= prm_AnimalTypeId,
 			TagNumber		= IF(prm_IsDeleted = 1, NULL, UPPER(prm_TagNumber)),
-            PatientOutcomeId = prm_PatientOutcomeId,
+            PatientCallOutcomeId = prm_PatientCallOutcomeId,
             SameAsNumber = prm_SameAsNumber,
             IsDeleted		= prm_IsDeleted,
             DeletedDate		= CASE
@@ -521,12 +499,12 @@ JSON_OBJECT(
 			JSON_OBJECT("updated", false),
 			JSON_OBJECT("deleted", p.IsDeleted),
 			JSON_OBJECT("duplicateTag", false),
-            JSON_OBJECT("admissionArea", p.AdmissionAreaId),
+            JSON_OBJECT("admissionArea", tl.InCensusAreaId),
             JSON_OBJECT("callOutcome",
 				JSON_MERGE_PRESERVE(
 					JSON_OBJECT("CallOutcome",
 						JSON_MERGE_PRESERVE(
-						JSON_OBJECT("CallOutcomeId",p.PatientOutcomeId),
+						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
 						JSON_OBJECT("CallOutcome",co.CallOutcome))
 					),
 					JSON_OBJECT("sameAsNumber",p.SameAsNumber)
@@ -539,7 +517,6 @@ JSON_OBJECT(
 ) AS Result
 			
 FROM  AAU.Patient p
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientOutcomeId
 INNER JOIN
 	(
 	SELECT pp.patientId, JSON_OBJECT("problems",
@@ -557,6 +534,8 @@ INNER JOIN
 	GROUP BY pp.patientId
 	) pp ON pp.patientId = p.patientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+LEFT JOIN AAU.TreatmentList tl ON tl.Admission = 1 AND tl.PatientId = p.PatientId
+LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 GROUP BY p.EmergencyCaseId;
 
 END$$

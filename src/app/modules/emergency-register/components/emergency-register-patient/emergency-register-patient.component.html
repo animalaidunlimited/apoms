@@ -1,14 +1,22 @@
-<div [formGroup]="patientForm" class="patientForm" fxLayout.lt-md="row wrap" fxLayout="row wrap" fxLayoutAlign="flex-start flex-end" >
+<div [formGroup]="patientForm" class="patientForm" fxLayoutGap="20px" fxLayout.lt-md="row wrap" fxLayout="row wrap" fxLayoutAlign="flex-start flex-end" >
+
     <mat-form-field fxFlexOrder.gt-sm="1">
-        <input tabindex="8" #animalTypeInput type="text"   placeholder="Species" matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
+        <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
+        matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
         (keydown.Tab)="isSpeciesBlank($event)">
+
         <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
+
           <mat-option *ngFor="let animal of filteredAnimalTypes$ | async" [value]="animal">
             {{ animal.AnimalType }}
           </mat-option>
+
         </mat-autocomplete>
+
     </mat-form-field>
-    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
+
+    <mat-form-field fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
+
         <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" >
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
@@ -24,15 +32,17 @@
             [formControl]="problemInput"
             [matAutocomplete]="problemAuto"
             [matChipInputFor]="chipList"
-            tabindex="9"
-           >
+            tabindex="9">
         </mat-chip-list>
+
         <mat-autocomplete  autoActiveFirstOption #problemAuto="matAutocomplete"  (optionSelected)="updatePatientProblemArray($event)">
           <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
             {{problem.Problem}}
           </mat-option>
         </mat-autocomplete>
+
     </mat-form-field>
+
     <mat-form-field fxFlexOrder.gt-sm="2">
         <mat-label>Tag number</mat-label>
         <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
@@ -43,9 +53,10 @@
 
     <emergency-case-outcome style="width: 50%;" fxFlexOrder.gt-sm="4" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field fxFlexOrder.gt-sm="5">
-      <mat-label>Admission Area</mat-label>
-      <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+    <mat-form-field *ngIf="patientForm.get('isAdmission').value" fxFlexOrder.gt-sm="5">
+      <mat-label>Admission area</mat-label>
+      <mat-select formControlName="admissionArea"
+      [errorStateMatcher]="errorMatcher">
         <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
           {{areaName.areaName}}
         </mat-option>

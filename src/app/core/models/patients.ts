@@ -16,6 +16,7 @@ export interface Patient {
     updated: boolean;
     deleted: boolean;
     admissionArea: number;
+    admissionAccepted: boolean;
     callOutcome: CallOutcome;
 }
 
