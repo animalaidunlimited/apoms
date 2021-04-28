@@ -41,18 +41,21 @@
         </mat-error>
     </mat-form-field>
 
-    <emergency-case-outcome style="width: 50%;" fxFlexOrder.gt-sm="4" [patientForm]="patientForm"></emergency-case-outcome>
+    <div style="width: 90%;" fxLayout="row wrap" fxLayoutGap="10px" fxFlexOrder.gt-sm="4">
+      <emergency-case-outcome style="width: 50%;" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <div *ngIf="patientForm.get('isAdmission').value" fxFlexOrder.gt-sm="5">
-      <mat-form-field>
-        <mat-label>Admission Area</mat-label>
-        <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
-          <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.AreaId">
-            {{areaName.Area}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div *ngIf="patientForm.get('isAdmission').value">
+        <mat-form-field>
+          <mat-label>Admission Area</mat-label>
+          <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+            <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.AreaId">
+              {{areaName.Area}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
+    
 
 
     <div class="patients_icons" fxFlexOrder.lt-md="2" fxFlexOrder.gt-sm="6">

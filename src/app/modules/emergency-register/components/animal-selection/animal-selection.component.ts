@@ -234,9 +234,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         patient.valueChanges.subscribe((patientVal)=> {
 
-
-            console.log('hi');
-
             const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
 
             const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');                       
@@ -300,8 +297,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
             else {
 
-                console.log('I was called');
-
                 patient.get('admissionArea')?.setValue(null, {emitEvent:false});
 
                 patient.get('isAdmission')?.setValue(false, { emitEvent: false });
@@ -338,7 +333,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe((patients: Patients) => {
-            console.log(patients)                                      
+                                  
             patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
                         patient.deleted = !!+patient.deleted;
@@ -372,8 +367,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         patients.controls[0].valueChanges.subscribe(val=> {
     
             if(val.callOutcome.CallOutcome) {
-    
-                console.log(val);
     
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
     

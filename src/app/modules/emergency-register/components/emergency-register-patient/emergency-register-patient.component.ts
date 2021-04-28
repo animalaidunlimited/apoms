@@ -95,12 +95,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreaNames();
 
-    this.treatmentAreaNames$.subscribe(value=> {
-      console.log(value);
-    })
-
-
-
     this.animalType = this.patientForm.get('animalType') as AbstractControl;
     this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
       startWith(''),
