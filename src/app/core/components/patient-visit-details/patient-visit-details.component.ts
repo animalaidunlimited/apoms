@@ -203,16 +203,21 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						}
 						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
-						if (visit.visit_date) {
+						if (visit.visit_date || this.showVisitDate) {
 
 							// Set Validators Visit Date Unique When Date are finialized
 							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
 							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
+
+						}
+						if (visit.visit_date) {
+
 							this.visitDates.push(
-								{
-									status: visit.visit_status,
-									date: visit.visit_date
-								});
+							{
+								status: visit.visit_status,
+								date: visit.visit_date
+							});
+							
 						}
 						this.visitsArray.push(this.getVisitFormGroup());
 					});
