@@ -80,7 +80,7 @@
 
 					<mat-form-field appearance="fill" class="status">
 						<mat-label>Visit status</mat-label>
-						<mat-select placeholder="Select" formControlName="visit_status">
+						<mat-select placeholder="Select" formControlName="visit_status" [errorStateMatcher]="errorMatcher">
 							<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -88,7 +88,7 @@
 					<mat-form-field appearance="fill" ngClass.lt-md="full-width">
 						<mat-label>Visit type</mat-label>
 
-						<mat-select placeholder="Select" formControlName="visit_type">
+						<mat-select placeholder="Select" formControlName="visit_type" [errorStateMatcher]="errorMatcher">
 							<mat-option  *ngFor="let visitTypes of (visitType$ | async)" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
 						</mat-select>
 
