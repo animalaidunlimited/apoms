@@ -10,10 +10,6 @@ DELIMITER ;
 CALL `?`();
 DROP PROCEDURE `?`;	
 
-
-
-
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
@@ -470,23 +466,39 @@ END$$
 
 DELIMITER ;
 
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+	ALTER TABLE AAU.StreetTreatCase 
+	ADD UNIQUE INDEX PatientId_UNIQUE (PatientId);
+
+	ALTER TABlE AAU.StreetTreatCase
+	ADD CONSTRAINT FK_StreetTreatCasePatientId_PatientPatientId FOREIGN KEY (PatientId) REFERENCES Patient(PatientId);
+
+END //
+CALL `?`();
+DROP PROCEDURE `?`;	
+
 DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase;!!
-
-
-CREATE PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
-									IN prm_Username VARCHAR(45),
-									IN prm_PatientId INT,
-									IN prm_PriorityId INT,
-									IN prm_StatusId INT,
-									IN prm_TeamId INT,
-                                    IN prm_MainProblemId INT,
-									IN prm_AdminComments VARCHAR(256),
-									IN prm_OperatorNotes VARCHAR(256),
-                                    IN prm_ClosedDate DATE,
-                                    IN prm_EarlyReleaseFlag BOOLEAN,
-                                    IN prm_AnimalDescription VARCHAR(256)
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase;!!
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
+		IN prm_Username VARCHAR(45),
+		IN prm_PatientId INT,
+		IN prm_PriorityId INT,
+		IN prm_StatusId INT,
+		IN prm_TeamId INT,
+		IN prm_MainProblemId INT,
+		IN prm_AdminComments VARCHAR(256),
+		IN prm_OperatorNotes VARCHAR(256),
+		IN prm_ClosedDate DATE,
+		IN prm_EarlyReleaseFlag BOOLEAN,
+		IN prm_AnimalDescription VARCHAR(256)
 )
 BEGIN
 /*
@@ -570,7 +582,8 @@ END IF;
 SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
 
 END$$
-DELIMITER ;
+
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient;!!
