@@ -399,9 +399,6 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
-
-    console.log(outstandingCase);
-
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         width: '500px',
         height: '500px',
