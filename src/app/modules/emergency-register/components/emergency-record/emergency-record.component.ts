@@ -102,10 +102,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
             }),
-            // callOutcome: this.fb.group({
-            //     CallOutcome: [],
-            //     sameAsNumber: []
-            // }),
             caseComments: [],
         });
 
@@ -273,7 +269,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
-            console.log(this.hasWritePermission);
+
             if(this.hasWritePermission) {
                 this.loading = true;
                 if(this.recordForm.pending){
@@ -304,7 +300,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         await this.caseService
                             .insertCase(emergencyForm)
                             .then(data => {
-                                console.log(data);
                                 if(data) {
                                     this.loading = false;
                                 }

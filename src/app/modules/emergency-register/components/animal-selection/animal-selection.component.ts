@@ -295,9 +295,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe((patients: Patients) => {
-
-            console.log(patients);
-
             patients.patients.forEach(patient => {
                         // We get a 0 or 1 from the database, so need to convert to a boolean.
                         patient.deleted = !!+patient.deleted;
@@ -335,7 +332,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         patients.controls[0].valueChanges.subscribe(val=> {
 
             if(val.callOutcome.CallOutcome) {
-
+                
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
 
                     patients.controls.forEach((patient)=> {
