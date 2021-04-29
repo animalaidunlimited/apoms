@@ -328,7 +328,7 @@ DROP PROCEDURE `?`;
 DELIMITER !!
 
 
-DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient;!!
+DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient!!
 
 
 DELIMITER $$
@@ -401,7 +401,6 @@ END IF;
 SELECT vTagNumber, vCaseId;
 
 END$$
-
 DELIMITER ;
 
 DELIMITER !!
@@ -463,7 +462,6 @@ ELSE
 	SELECT null AS Result;
 END IF;
 END$$
-
 DELIMITER ;
 
 
@@ -560,7 +558,7 @@ INSERT INTO AAU.StreetTreatCase(
 	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
 END$$
-
+DELIMITER ;
 
 DELIMITER !!
 
@@ -647,8 +645,9 @@ END IF;
 SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
 
 END$$
-
 DELIMITER ;
+
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
@@ -837,7 +836,6 @@ END IF;
 
 SELECT vSuccess AS success;
 END$$
-
 DELIMITER ;
 
 
@@ -865,7 +863,6 @@ WHERE rd.ReleaseDetailsId = prm_ReleaseId;
 
 
 END$$
-
 DELIMITER ;
 
 DELIMITER !!
@@ -928,7 +925,6 @@ ELSE
 	SELECT null AS Result;
 END IF;
 END$$
-
 DELIMITER ;
 
 			
@@ -1190,12 +1186,11 @@ stat.ActionStatusGroups)
 FROM StatusGroupCTE stat;
  
 END$$
-
 DELIMITER ;
 
 
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits;!!
+DROP procedure IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits!!
 
 DELIMITER $$
 
@@ -1321,17 +1316,13 @@ GROUP BY caseVisits.TeamId,caseVisits.TeamName
 ) AS cases;
 
 END$$
-
-
-
-
 DELIMITER ;
 
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_InsertAndUpdateVisit;!!
+DROP procedure IF EXISTS AAU.sp_InsertAndUpdateVisit!!
 
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_UpsertVisit;!!
+DROP procedure IF EXISTS AAU.sp_UpsertVisit!!
 
 
 DELIMITER $$
@@ -1345,13 +1336,13 @@ CREATE PROCEDURE AAU.sp_UpsertVisit(
 	IN prm_AdminNotes TEXT,
 	IN prm_OperatorNotes TEXT,
 	IN prm_IsDeleted INT,
-	IN prm_Day TINYINT(2)
+	IN prm_Day TINYINT
 )
 BEGIN
 
 DECLARE vVisitExisits INT;
 DECLARE vVisitDateExists INT;
-DECLARE vSuccess TINYINT(1);
+DECLARE vSuccess TINYINT;
 DECLARE vVisitIdExisits boolean;
 
 SET vVisitExisits = 0;
@@ -1427,3 +1418,4 @@ END IF;
 SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
 
 END$$
+DELIMITER ;
