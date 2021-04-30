@@ -88,13 +88,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private userOptions: UserOptionsService,
   ) { }
 
-
   ngOnInit(): void {
 
-    console.log(this.patientForm.value);
-
     this.exclusions = this.dropdown.getExclusions();
-
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 

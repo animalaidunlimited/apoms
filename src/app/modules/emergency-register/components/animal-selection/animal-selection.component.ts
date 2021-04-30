@@ -77,12 +77,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-        /* if(this.emergencyRegisterPatients.toArray().length  === 1){
-            console.log(this.emergencyRegisterPatients.first); */
             this.emergencyRegisterPatients.first.tagNumber.nativeElement.focus();
-        /* } */
-        // this.updateTag(this.getcurrentPatient());
-
     }
 
     constructor(
@@ -303,11 +298,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                         this.patients.push(newPatient);
                     });
 
-                    console.log(this.patients);
-
                     this.recordForm.patchValue(patients);
-
-                    console.log(this.recordForm.value);
 
                     this.setChildOutcomeAsParentPatient(this.patients);
 
@@ -332,7 +323,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         patients.controls[0].valueChanges.subscribe(val=> {
 
             if(val.callOutcome.CallOutcome) {
-                
+
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
 
                     patients.controls.forEach((patient)=> {

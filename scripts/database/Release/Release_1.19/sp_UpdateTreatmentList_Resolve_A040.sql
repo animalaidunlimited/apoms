@@ -13,7 +13,7 @@ Created On: 2021-04-11
 Purpose: Procedure for updating the treatment list to set the OutOfHospital flag when the patient is released from the hospital.
 */
 
-UPDATE AAU.TreatmentList SET OutOfHospital = prm_OutOfHospital WHERE PatientId = prm_PatientId AND OutCensusAreaId IS NULL;
+UPDATE AAU.TreatmentList SET OutOfHospital = prm_OutOfHospital WHERE PatientId = prm_PatientId AND OutTreatmentAreaId IS NULL;
 
 SELECT IF(ROW_COUNT() > 0, 1, 0) AS `success`;
 

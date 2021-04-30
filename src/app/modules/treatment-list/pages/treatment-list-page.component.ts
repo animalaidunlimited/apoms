@@ -48,7 +48,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    
+
 
     this.areas.get('area')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -73,28 +73,6 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
     this.printService.sendTreatmentListToPrinter(JSON.stringify(treatmentObject));
 
-    // this.dialogRef.close();
-
-    // this.columns.subscribe(printColumns => {
-
-    //  this.accepted
-    //  .pipe(take(1))
-    //  .subscribe(sortedData => {
-
-    //    const listToPrint = sortedData.map(current => current.value as ReportPatientRecord);
-
-    //    const printContent: CensusPrintContent = {
-    //      area: this.area.areaName,
-    //      displayColumns: printColumns.map(column => column.abbreviation || column.name),
-    //      printList: listToPrint
-    //    };
-
-    //    console.log(printContent);
-
-    //    this.printService.sendTreatmentListToPrinter(JSON.stringify(printContent));
-
-    //  });
-    // });
   }
 
 }

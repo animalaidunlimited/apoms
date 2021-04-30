@@ -242,6 +242,10 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
 
             const movedPatient = currentList.at(index);
 
+            movedPatient.get('Move accepted')?.setValue(true);
+            movedPatient.get('Moved to')?.reset();
+            movedPatient.get('Admission')?.setValue(accepted);
+
             const ml = movedList.get('movedList') as FormArray;
             ml.removeAt(index);
 

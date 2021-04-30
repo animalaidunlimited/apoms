@@ -15,6 +15,15 @@ Purpose: To retrieve outstanding rescues for display in the rescue board.
 Updated By: Arpit Trivedi
 Date: 29/11/2020
 Purpose: To retrieve outstanding rescues and releases for display on board.
+
+Updated By: Arpit Trivedi
+Date: 28/04/2021
+Purpose: Moved the Outcome to the patient level so now it will retrieve the rescues and releases on the patient call outcome.
+
+Updated By: Jim Mackenzie
+Date: 28/04/2021
+Purpose: Altering status based upon whether the admission area has been added
+
 ***************************************************************************/
 
  WITH BastPatientsCTE AS
@@ -80,7 +89,8 @@ JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId,
 																ec.AmbulanceArrivalTime, 
 																ec.RescueTime, 
 																ec.AdmissionTime, 
-																p.PatientCallOutcomeId
+																p.PatientCallOutcomeId,
+                                                                tl.InTreatmentAreaId
 																)),
                                                                 JSON_OBJECT("staff1", IF(rd.ReleaseDetailsId IS NULL,r1.UserId,rd.Releaser1Id)),
 			JSON_OBJECT("staff1Abbreviation", IF(rd.ReleaseDetailsId IS NULL,r1.Initials,rl1.Initials)),
@@ -133,6 +143,7 @@ INNER JOIN (
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
 LEFT JOIN AAU.User rl1 ON rl1.UserId = rd.Releaser1Id
 LEFT JOIN AAU.User rl2 ON rl2.UserId = rd.Releaser2Id
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id

@@ -38,7 +38,7 @@ JSON_OBJECT(
 			JSON_OBJECT("deleted", p.IsDeleted),
 			JSON_OBJECT("duplicateTag", false),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),
-            JSON_OBJECT("admissionArea", tl.InCensusAreaId),
+            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
             JSON_OBJECT("callOutcome",
 				JSON_MERGE_PRESERVE(
 					JSON_OBJECT("CallOutcome",

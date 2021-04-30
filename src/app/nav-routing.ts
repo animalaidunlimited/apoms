@@ -57,15 +57,6 @@ export const navRoutes: NavRoute[] = [
             then(m => m.TreatmentListPageModule)
     },
     {
-        data: { title: 'Census', permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
-        icon: 'none',
-        group: '',
-        path: 'census',
-        loadChildren: () =>
-            import('./modules/census/census-page.module')
-            .then(m => m.CensusPageModule)
-    },
-    {
         data: { title: 'Case List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: '',
         group: 'Street Treat',
