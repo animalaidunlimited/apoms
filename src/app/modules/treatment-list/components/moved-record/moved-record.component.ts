@@ -65,8 +65,6 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   acceptMove(currentPatient: AbstractControl) : void {
 
-
-
       this.ts.acceptRejectMoveIn(currentPatient, true).then(() => {
         this.changeDetector.detectChanges();
       });
@@ -98,8 +96,6 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
     }
     });
-
-
 
   }
 

@@ -24,7 +24,7 @@ IF prm_Accepted = TRUE THEN
 
 UPDATE AAU.TreatmentList
 	SET InAccepted = prm_Accepted,
-    OutCensusAreaId = IF(OutAccepted = 0, NULL, OutAccepted),
+    OutTreatmentAreaId = IF(OutAccepted = 0, NULL, OutAccepted),
     OutDate = IF(OutAccepted = 0, NULL, OutDate),
     OutAccepted = IF(OutAccepted = 0, NULL, OutAccepted)
 WHERE TreatmentListId = prm_TreatmentListId;
@@ -43,7 +43,7 @@ UPDATE AAU.TreatmentList
 	SET OutAccepted = prm_Accepted
 WHERE	PatientId = prm_PatientId AND
 		OutAccepted IS NULL AND
-		OutCensusAreaId IS NOT NULL;
+		OutTreatmentAreaId IS NOT NULL;
 
 SELECT vSuccess AS success;
 

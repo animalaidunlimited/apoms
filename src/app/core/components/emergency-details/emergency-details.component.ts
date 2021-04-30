@@ -59,18 +59,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.callDateTimeField.nativeElement.focus();
     }
 
-  /*   @HostListener('document:keydown.alt.shift.t', ['$event'])
-    focusCallTime(event: KeyboardEvent) {
-        event.preventDefault();
-        this.callDateTimeField.nativeElement.focus();
-        this.callDateTimeField.nativeElement.dispatchEvent(new KeyboardEvent('keydown',{keyCode: 9}));
-        if (event.keyCode === 9 || event.code === '9') {
-            console.log("tab key pressed");
-          }
-        this.cdr.detectChanges();
-    } */
-
-    
     @HostListener('document:keydown.control.d', ['$event'])
     focusCallDispatcher(event: KeyboardEvent) {
         event.preventDefault();

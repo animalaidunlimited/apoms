@@ -128,7 +128,8 @@ SELECT AAU.fn_GetRescueStatus(
 				ec.AmbulanceArrivalTime, 
 				ec.RescueTime, 
 				ec.AdmissionTime, 
-				p.PatientCallOutcomeId
+				p.PatientCallOutcomeId,
+                tl.InTreatmentAreaId
             ) AS ActionStatus,
             IF(rd.ReleaseDetailsId IS NULL,'Rescue','Release') AS AmbulanceAction,
             rd.ReleaseDetailsId,
@@ -159,6 +160,7 @@ SELECT AAU.fn_GetRescueStatus(
 FROM PatientsCTE p
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND Admission = 1
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId

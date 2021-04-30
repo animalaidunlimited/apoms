@@ -6,7 +6,7 @@ DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_UpdateTreatmentList_MoveOut (
 													IN prm_TreatmentListId INT,
-													IN prm_OutCensusAreaId INT,
+													IN prm_OutTreatmentAreaId INT,
 													IN prm_OutDate DATETIME
 													)
 BEGIN
@@ -19,11 +19,11 @@ Purpose: Procedure for updating the treatment list to move a patient out of an a
 
 
 UPDATE AAU.TreatmentList SET
-			InCensusAreaId = IF(Admission = 1 AND InAccepted != 1, prm_OutCensusAreaId, InCensusAreaId),
-			OutCensusAreaId = IF(InAccepted = 1, prm_OutCensusAreaId, NULL),
+			InTreatmentAreaId = IF(Admission = 1 AND InAccepted != 1, prm_OutTreatmentAreaId, InTreatmentAreaId),
+			OutTreatmentAreaId = IF(InAccepted = 1, prm_OutTreatmentAreaId, NULL),
 			OutDate = IF(InAccepted = 1, prm_OutDate, NULL),
             OutAccepted = NULL
-            -- OutCensusAreaId = prm_OutCensusAreaId,
+            -- OutTreatmentAreaId = prm_OutTreatmentAreaId,
             -- OutDate = prm_OutDate
 WHERE TreatmentListId = prm_TreatmentListId;
 

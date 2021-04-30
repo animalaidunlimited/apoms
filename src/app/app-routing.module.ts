@@ -31,13 +31,6 @@ export const routes: Routes = [
             ).then(m => m.SurgeryRegisterPageModule)
     },
     {
-        path: 'census',
-        loadChildren: () =>
-            import('./modules/census/census-page.module').then(
-                m => m.CensusPageModule,
-            ),
-    },
-    {
         path: 'hospital-manager',
         loadChildren: () =>
             import(
