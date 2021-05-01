@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetStreetTreatCaseById( IN prm_streetTreatCaseId INT)
@@ -45,7 +45,7 @@ SELECT	c.StreetTreatCaseId AS CaseId,
 		c.OperatorNotes,
         DATE_FORMAT(CAST( 
         ( CASE 
-			WHEN ec.CallOutcomeId = 18 THEN
+			WHEN p.PatientCallOutcomeId = 18 THEN
 				ec.CallDateTime
             ELSE
 				IFNULL(rd.EndDate,p.PatientStatusDate)
