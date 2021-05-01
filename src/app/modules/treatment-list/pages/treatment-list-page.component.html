@@ -7,7 +7,7 @@
             <mat-label>Treatment area</mat-label>
             <mat-select formControlName="area">
                 <mat-option>N/A</mat-option>
-                <mat-option [value]="area" *ngFor="let area of (censusAreas | async)">{{ area.areaName }}</mat-option>
+                <mat-option [value]="area" *ngFor="let area of (treatmentAreas | async)">{{ area.areaName }}</mat-option>
             </mat-select>
         </mat-form-field>
 

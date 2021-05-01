@@ -3,8 +3,8 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
-import { CensusArea } from 'src/app/core/models/census-details';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { TreatmentListService } from '../../services/treatment-list.service';
 
@@ -17,10 +17,10 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
 
   @Input() movedRecordsInput!: AbstractControl;
-  @Input() area!: CensusArea;
+  @Input() area!: TreatmentArea;
 
 
-  allAreas!: CensusArea[];
+  allAreas!: TreatmentArea[];
   movedRecords!:FormArray;
   movedRecordsGroup!: FormGroup;
   listType = '';

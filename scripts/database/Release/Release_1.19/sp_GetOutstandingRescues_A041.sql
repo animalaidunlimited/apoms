@@ -53,7 +53,7 @@ SELECT EmergencyCaseId
 FROM AAU.Patient
 WHERE PatientId IN (SELECT PatientId FROM RescuesReleases)
 ),
-CallerCTE AS
+CallerCTE AS 
 (
 SELECT ecr.EmergencyCaseId,
 	JSON_ARRAYAGG(
@@ -87,8 +87,8 @@ PatientsCTE AS
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
-		)) AS Patients
-    FROM AAU.Patient p
+		)) AS Patients     
+    FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
 		SELECT pp.PatientId,
@@ -115,19 +115,19 @@ PatientsCTE AS
 ReleaseRescueCTE AS
 (
 SELECT AAU.fn_GetRescueStatus(
-				rd.ReleaseDetailsId,
-				rd.RequestedUser,
-				rd.RequestedDate,
-				rd.Releaser1Id,
-				rd.Releaser2Id,
+				rd.ReleaseDetailsId, 
+				rd.RequestedUser, 
+				rd.RequestedDate, 
+				rd.Releaser1Id, 
+				rd.Releaser2Id, 
                 rd.PickupDate,
-				rd.BeginDate,
-				rd.EndDate,
-				ec.Rescuer1Id,
-				ec.Rescuer2Id,
-				ec.AmbulanceArrivalTime,
-				ec.RescueTime,
-				ec.AdmissionTime,
+				rd.BeginDate, 
+				rd.EndDate, 
+				ec.Rescuer1Id, 
+				ec.Rescuer2Id, 
+				ec.AmbulanceArrivalTime, 
+				ec.RescueTime, 
+				ec.AdmissionTime, 
 				p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
             ) AS ActionStatus,
@@ -140,21 +140,21 @@ SELECT AAU.fn_GetRescueStatus(
             rd.PickupDate,
             rd.BeginDate,
             rd.EndDate,
-            IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
+            IF(rd.ReleaseDetailsId IS NULL,ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
 			IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer2Id, rd.Releaser2Id) AS Staff2Id,
             ec.AmbulanceArrivalTime,
-            ec.RescueTime,
+            ec.RescueTime,            
 			ec.EmergencyCaseId,
             ec.EmergencyNumber,
             ec.EmergencyCodeId,
             ecd.EmergencyCode,
             ec.CallDateTime,
             p.PatientCallOutcomeId,
-            ec.Location,
+            ec.Location,			
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            ) AS latLngLiteral,
+            ) AS latLngLiteral,            
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
             JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
@@ -165,9 +165,9 @@ LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
 ),
-actionsCTE AS
+actionsCTE AS 
 (
-SELECT
+SELECT	
 	r.ActionStatus,
     r.Staff1Id,
     r.Staff2Id,
@@ -176,7 +176,7 @@ SELECT
     JSON_ARRAYAGG(
     JSON_MERGE_PRESERVE(
     JSON_OBJECT("actionStatus", IFNULL(r.ActionStatus,'')),
-    JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),
+    JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),    
 	JSON_OBJECT("releaseId", r.ReleaseDetailsId),
     JSON_OBJECT("requestedDate", DATE_FORMAT(r.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseType", CONCAT(IF(r.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(r.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(r.Releaser1Id IS NULL,""," + Specific staff"), IF(r.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
@@ -186,7 +186,7 @@ SELECT
 	JSON_OBJECT("staff1", r.Staff1Id),
 	JSON_OBJECT("staff2", r.Staff2Id),
 	JSON_OBJECT("ambulanceArrivalTime", IFNULL(r.AmbulanceArrivalTime,'')),
-	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),
+	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),            
 	JSON_OBJECT("emergencyCaseId", r.EmergencyCaseId),
 	JSON_OBJECT("emergencyNumber", r.EmergencyNumber),
 	JSON_OBJECT("emergencyCodeId", r.EmergencyCodeId),
@@ -213,7 +213,7 @@ JSON_OBJECT("staff1", ag.Staff1Id) AS Staff1Id,
 JSON_OBJECT("staff1Abbreviation", s1.Initials) AS Staff1Initials,
 JSON_OBJECT("staff2", ag.Staff2Id) AS Staff2Id,
 JSON_OBJECT("staff2Abbreviation", s2.Initials) AS Staff2Initials,
-JSON_OBJECT("actions",
+JSON_OBJECT("actions", 
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 ag.AmbulanceAction,
@@ -254,14 +254,14 @@ FROM ActionGroupsCTE ag
 GROUP BY ag.ActionStatus
 )
 
-SELECT
+SELECT 
 
-JSON_OBJECT("outstandingActions",
+JSON_OBJECT("outstandingActions", 
 JSON_ARRAYAGG(
 stat.ActionStatusGroups)
 ) AS Result
 
 FROM StatusGroupCTE stat;
-
+ 
 END$$
 DELIMITER ;

@@ -11,7 +11,6 @@ import { RecordSearchModule } from '../../core/components/record-search/record-s
 import { CallerDetailsModule } from '../../core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from '../../core/components/location-details/location-details.module';
 
-import { CensusDetailsComponent } from './components/census-details/census-details.component';
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
@@ -34,6 +33,7 @@ import { PatientVisitDetailsModule} from '../../core/components/patient-visit-de
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
 import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
 import { LogsModule } from 'src/app/core/components/logs/logs.module';
+import { TreatmentAreaHistoryComponent } from './components/treatment-area-history/treatment-area-history.component';
 
 
 
@@ -43,7 +43,6 @@ import { LogsModule } from 'src/app/core/components/logs/logs.module';
         HospitalManagerTabBarComponent,
         PatientRecordComponent,
         PatientDetailsComponent,
-        CensusDetailsComponent,
         SurgeryDetailsComponent,
         PatientCallComponent,
         PatientCallDialogComponent,
@@ -54,6 +53,7 @@ import { LogsModule } from 'src/app/core/components/logs/logs.module';
         AddSurgeryDialogComponent,
         MediaCaptureComponent,
         TreatmentComponent,
+        TreatmentAreaHistoryComponent,
         ReleaseDetailsDialogComponent,
     ],
     imports: [

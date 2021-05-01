@@ -1,5 +1,3 @@
-import { CensusArea } from './census-details';
-
 export interface TreatmentRecord{
     treatmentId: number;
     patientId: number;

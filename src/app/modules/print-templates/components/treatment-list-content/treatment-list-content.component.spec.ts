@@ -2,12 +2,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TreatmentListContentComponent } from './treatment-list-content.component';
 
-import { CensusListContentComponent } from './census-list-content.component';
 
-describe('CensusListContentComponent', () => {
-  let component: CensusListContentComponent;
-  let fixture: ComponentFixture<CensusListContentComponent>;
+describe('TreatmentListContentComponent', () => {
+  let component: TreatmentListContentComponent;
+  let fixture: ComponentFixture<TreatmentListContentComponent>;
 
 
   const patientCountInArea = {
@@ -41,7 +41,7 @@ describe('CensusListContentComponent', () => {
         RouterTestingModule
       ],
       declarations: [
-        CensusListContentComponent
+        TreatmentListContentComponent
       ],
       providers: [
         {provide: ActivatedRoute, useValue: fakeActivatedRoute}
@@ -51,7 +51,7 @@ describe('CensusListContentComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CensusListContentComponent);
+    fixture = TestBed.createComponent(TreatmentListContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -13,7 +13,6 @@ const PROXY_CONFIG = [
             "/EventEmitter",
             "/SurgeryRegister",
             "/Messaging",
-            "/CensusData",
             "/PrintTemplate",
             "/Treatment",
             "/TreatmentList",
