@@ -4,7 +4,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { CallType, PatientCallOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { CallType, PatientCallerInteractionOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
 import {
@@ -32,7 +32,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     notificationDurationSeconds = 3;
 
     callTypes$: Observable<CallType[]>;
-    callOutcomes$: Observable<PatientCallOutcome[]>;
+    callOutcomes$: Observable<PatientCallerInteractionOutcome[]>;
     assignedTo$: Observable<User[]>;
 
     errorMatcher = new CrossFieldErrorMatcher();
@@ -46,7 +46,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     ) {
 
         this.assignedTo$ = this.dropdown.getCallStaff();
-        this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
+        this.callOutcomes$ = this.dropdown.getPatientCallerInteractionOutcomes();
         this.callTypes$ = this.dropdown.getCallTypes();
 
     }
@@ -124,7 +124,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
             callDateTime: [''],
             callType: [{}],
             assignedTo: [{}],
-            PatientCallOutcomeId: [],
+            PatientCallerInteractionOutcomeId: [],
             createdDateTime: [''],
             createdBy: [],
             comments: [''],
