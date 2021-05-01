@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { CensusArea } from 'src/app/core/models/census-details';
 import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
+import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -59,7 +59,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   problemsArray!: FormArray;
 
-  treatmentAreaNames$!: Observable<CensusArea[]>;
+  treatmentAreaNames$!: Observable<TreatmentArea[]>;
 
 
   sortedAnimalTypes = this.dropdown.getAnimalTypes().pipe(

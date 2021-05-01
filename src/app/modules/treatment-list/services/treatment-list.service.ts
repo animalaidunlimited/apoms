@@ -3,13 +3,9 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { ABCStatus, ReleaseStatus, Temperament, Age } from 'src/app/core/enums/patient-details';
-import { TreatmentList, ReportPatientRecord, TreatmentAreaChange, TreatmentListMoveIn } from 'src/app/core/models/census-details';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-
+import { PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
 import { APIService } from 'src/app/core/services/http/api.service';
-
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +30,16 @@ export class TreatmentListService extends APIService {
 
     this.treatmentListObject = new BehaviorSubject<FormGroup>(this.treatmentListForm);
 
+}
+
+public async getTreatmentListPatientCount(): Promise<PatientCountInArea[] | null>{
+  const request = '?CountPatient';
+  return this.get(request);
+}
+
+public async getTreatmentAreaHistoryByTag(tagNumber : string): Promise<any>{
+  const request = '?TagNumber=' + tagNumber;
+  return this.get(request);
 }
 
 public getTreatmentList() : BehaviorSubject<FormGroup> {

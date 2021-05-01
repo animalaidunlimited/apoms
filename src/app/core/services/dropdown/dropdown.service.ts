@@ -15,7 +15,6 @@ import {
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { User, ReleaseManager } from '../../models/user';
-import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
@@ -25,6 +24,7 @@ import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
+import { TreatmentArea } from '../../models/treatment-lists';
 
 
 
@@ -41,14 +41,10 @@ export class DropdownService extends APIService {
 
     animalTypes$!: Observable<AnimalType[]>;
     antibiotics$!: any[];
-
-    treatmentAreaNames$!: Observable<CensusArea[]>;
-
     areas$!: any[];
     callOutcomes$!: Observable<CallOutcomeResponse[]>;
     callStaff$!: Observable<User[]>;
     callTypes$!: Observable<CallType[]>;
-    censusAreas$!: Observable<CensusArea[]>;
     crueltyIspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -73,7 +69,7 @@ export class DropdownService extends APIService {
 	priority$!:Observable<Priority[]>;
     releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
-    treatmentAreas$!:Observable<CensusArea[]>;
+    treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
 
 
@@ -690,12 +686,12 @@ export class DropdownService extends APIService {
 
   }
 
-  getTreatmentAreas(): Observable<CensusArea[]> {
+  getTreatmentAreas(): Observable<TreatmentArea[]> {
     const request = '/GetTreatmentAreas';
 
     if(!this.treatmentAreas$) {
       this.treatmentAreas$ = this.getObservable(request).pipe(
-          map((response: CensusArea[])=>{
+          map((response: TreatmentArea[])=>{
               return response;
           })
       );

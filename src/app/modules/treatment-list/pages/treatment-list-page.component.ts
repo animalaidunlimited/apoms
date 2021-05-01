@@ -4,8 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, reduce, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
-import { CensusArea } from 'src/app/core/models/census-details';
-import { TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
+import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PrintTemplateService } from '../../print-templates/services/print-template.service';
 
@@ -19,8 +18,8 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   areas:FormGroup;
-  censusAreas:Observable<CensusArea[]>;
-  currentArea:CensusArea = {areaId: 0, areaName: ''};
+  treatmentAreas:Observable<TreatmentArea[]>;
+  currentArea:TreatmentArea = {areaId: 0, areaName: ''};
 
   isPrinting: BehaviorSubject<boolean>;
 
@@ -33,7 +32,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
     this.isPrinting = this.printService.getIsPrinting();
 
-    this.censusAreas = this.dropdown.getTreatmentAreas()
+    this.treatmentAreas = this.dropdown.getTreatmentAreas()
                               .pipe(
                                 take(1),
                                 map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));

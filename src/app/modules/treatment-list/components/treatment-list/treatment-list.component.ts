@@ -15,8 +15,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/for
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
-import { TreatmeantListObject, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
-import { CensusArea, CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
+import { TreatmeantListObject, TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 
 interface Column{
   name: string;
@@ -44,7 +43,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() area!: CensusArea;
+  @Input() area!: TreatmentArea;
   @Input() selectedDate!: Date | string;
 
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -63,7 +62,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   smallScreen = false;
 
-  otherAreas!: CensusArea[];
+  otherAreas!: TreatmentArea[];
   accepted = new BehaviorSubject<AbstractControl[]>([]);
   acceptedFormArray!: FormArray;
   movedLists!: FormArray;
@@ -148,7 +147,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(change:SimpleChanges) : void {
 
     if(change.hasOwnProperty('area')){
-      this.area = change.area.currentValue as CensusArea;
+      this.area = change.area.currentValue as TreatmentArea;
     }
 
     if(change.hasOwnProperty('selectedDate')){

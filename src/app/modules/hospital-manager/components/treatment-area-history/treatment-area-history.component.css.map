@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "AAIA,AAAA,eAAe,CACf;EACE,MAAM,EAAE,SAAS;EACjB,aAAa,EAAE,GAAG;EAClB,YAAY,EARC,OAAO;EASpB,YAAY,EAAC,GAAG;EAChB,aAAa,EAAC,GAAG;CAClB;;AAED,AAAA,KAAK,CAAC;EACF,KAAK,EAAE,IAAI;CACd",
     "sources": [
-        "census-details.component.scss"
+        "treatment-area-history.component.scss"
     ],
     "names": [],
-    "file": "census-details.component.css"
+    "file": "treatment-area-history.component.css"
 }
