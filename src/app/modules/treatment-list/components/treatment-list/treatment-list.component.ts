@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,10 +11,9 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
-import { TreatmeantListObject, TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
+import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 
 interface Column{
   name: string;
@@ -49,6 +47,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
+  accepted = new BehaviorSubject<AbstractControl[]>([]);
+  acceptedFormArray!: FormArray;
+
   columns: BehaviorSubject<Column[]> = new BehaviorSubject<Column[]>([
                                         {name: 'index', type: 'text'},
                                         {name: 'complete', type: 'button'},
@@ -60,18 +61,15 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   displayedColumns: Observable<string[]>;
   filteredColumns:Observable<Column[]>;
 
-  smallScreen = false;
+  incomingList:string|undefined;
 
-  otherAreas!: TreatmentArea[];
-  accepted = new BehaviorSubject<AbstractControl[]>([]);
-  acceptedFormArray!: FormArray;
   movedLists!: FormArray;
+  otherAreas!: TreatmentArea[];
 
   resizeObservable$!: Observable<Event>;
 
-  incomingList:string|undefined;
-
   showSpinner = false;
+  smallScreen = false;
 
   treatmentListForm: FormGroup;
   treatmentPriorities: Observable<Priority[]>;
@@ -122,7 +120,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.resizeObservable$.pipe(
       takeUntil(this.ngUnsubscribe)
-    ).subscribe( evt => {
+    ).subscribe(() => {
       this.smallScreen = window.innerWidth > 840 ? false : true;
       this.populateColumnList();
     });

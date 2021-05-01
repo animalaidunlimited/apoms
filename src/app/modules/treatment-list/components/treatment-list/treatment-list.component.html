@@ -101,17 +101,15 @@
 
           <div *ngIf="column.type === 'checkbox'" class='checkbox-column' fxLayout="column" fxLayoutAlign="center center">
 
-            <!--formControlName="Moved to"-->
+
             <mat-radio-group>
-            <mat-radio-button
-            [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
-              (change)="areaChanged(column?.areaId, index)"
-              [value]="column?.areaId">
+              <mat-radio-button
+                [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
+                (change)="areaChanged(column?.areaId, index)"
+                [value]="column?.areaId">
               </mat-radio-button>
 
             </mat-radio-group>
-
-
 
           </div>
 
@@ -130,9 +128,9 @@
 
       <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
 
-        <!--(selectionChange)="areaChanged($event?.value, index)"-->
-          <mat-form-field>
+        <mat-form-field>
           <mat-select
+          (selectionChange)="areaChanged($event?.value, index)"
           formControlName="Moved to">
 
             <mat-option>N/A</mat-option>
