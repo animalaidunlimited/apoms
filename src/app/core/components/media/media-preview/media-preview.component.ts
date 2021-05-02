@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { Observable } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -19,17 +21,21 @@ export class MediaPreviewComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  patientMediaComments$!: Observable<any> | undefined;
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder, 
     private cdr: ChangeDetectorRef,
-    public datePipe:DatePipe
+    public datePipe:DatePipe,
+    private patientService:PatientService
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data.image);
     this.imageData = this.data.image;
+    this.patientMediaComments$ = this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number);
+    // tslint:disable-next-line: deprecation
+    this.patientMediaComments$.subscribe((val:any) => /console.log(val)*/);
     this.recordForm = this.fb.group({
       imageDate: [this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')],
       imageTags:[this.imageData.tags?.map((tag:any) => tag.tag)]
@@ -62,7 +68,13 @@ export class MediaPreviewComponent implements OnInit {
       imageTags.push(event);
       this.tagsControl.nativeElement.value = '';
     }
-
+  }
+  submitComment(comment:EventTarget | null): void {
+    const commentObject = ({
+      patientMediaItemId : this.imageData.patientMediaItemId,
+      comment: (comment as HTMLInputElement).value
+    });
+    this.patientService.savePatientMediaComment(commentObject);
   }
 }
 

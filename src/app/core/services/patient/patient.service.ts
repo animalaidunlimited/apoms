@@ -295,7 +295,6 @@ export class PatientService extends APIService {
             map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime()))
         ).subscribe((media : MediaResponse[])=>{
 
-
             if(!media){
                 return;
             }
@@ -321,8 +320,6 @@ export class PatientService extends APIService {
                 };
 
             });
-
-            console.log(savedMediaItems);
 
             if(patientMediaItem){
                 patientMediaItem.mediaItem.next(savedMediaItems);
@@ -382,8 +379,30 @@ export class PatientService extends APIService {
 
         }
 
+    }
+    public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {       
+        return await this.post(comment)
+        .then(data => {
+            if(data.success === 1){
+                return data;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
 
     }
+
+    public getPatientMediaComments(patientMediaItemId: number): Observable<any> {
+        const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
+
+        return this.getObservable(request).pipe(
+            map((response: any) => {
+                return response;
+            }),
+        );
+    }
+
 
 
 }

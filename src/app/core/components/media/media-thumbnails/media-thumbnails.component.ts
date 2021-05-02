@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Gallery, Image } from 'src/app/core/models/media';
+import { Image } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 @Component({
     // tslint:disable-next-line: component-selector
@@ -17,7 +17,10 @@ export class MediaThumbnailsComponent implements OnInit{
        
     }
     openPreviewDialog(image:Image){
-        const dialogRef = this.dialog.open(MediaPreviewComponent, {
+        if(image){
+            const orientation = image?.height > image?.width;
+        }
+        this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
             data: {
