@@ -13,15 +13,99 @@
         padding: .25em 0 0.3rem 0;
     }
 }
+
+.mediaPreviewBackgroundImage{
+    background-size: contain;
+    min-width: 73%;
+    background-repeat: no-repeat;
+    min-height: 70vh;
+    background-position: center;
+    border: 0.3rem solid white;
+}
 .imagePreviewSidePanel{
     box-shadow: -1px -1px 3px #FFFFFF, 1.5px 1.5px 2px rgba(174, 174, 192, 0.4);
     border-radius: 0.3rem ;
     background: rgba(240, 240, 243, 0.73);
     display: flex;
     align-items: baseline;
-    margin-bottom: 2.5rem;
     width: 100%;
+    .commentSection{ 
+        width:100%;
+        max-height: 12rem;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+        &::-webkit-scrollbar {
+            background-color: transparent;
+            width: 0.8rem;
+            height: 0.8rem;
+        }
+        /* background of the scrollbar except button or resizer */
+        &::-webkit-scrollbar-track {
+            background-color: #f0f0f2;
+        }
+    
+        /* scrollbar itself */
+        &::-webkit-scrollbar-thumb {
+            background-color: #babac0;
+            border-radius: 1rem;
+            border: 0.2rem solid #f0f0f2;
+        }
+    
+        /* set button(top and bottom of the scrollbar) */
+        &::-webkit-scrollbar-button {
+            display:none;
+        }
+        .imageChatPanel{
+            background: #fff;
+            width: 88%;
+            margin: 0.5rem auto;
+            padding: 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.9rem;
+            color: #707C97;
+            box-shadow: 0 1rem 0.6rem -0.9rem rgb(158 158 158 / 75%);
+            position: relative;
+            .imageChatUser{
+                display: flex;
+                align-items: baseline;
+                gap: 0.5rem;
+                .imageChatAvatar {
+                    min-width: 2rem;
+                    height: 2rem;
+                    border-radius: 50%;
+                    display: flex;
+                    place-content: center;
+                    align-items: center;
+                    color: white;
+                    font-size: 0.9rem;
+                    margin-bottom: 0.5rem;
+                }
+                .imageChatUsername {
+                    color: black;
+                }
+            }
+            span {
+                font-size: 0.9rem;
+                width: 100%;
+                text-align: right;
+            }
+            p{
+                margin: 0.2rem 0;
+            }
+            &:not(:last-child){
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
+    &:not(:last-child){
+        margin-bottom: 0.8rem;
+    }
+    ::ng-deep .mat-form-field:not(.imageDate) .mat-form-field-label-wrapper {
+        font-size: 1.1rem;
+    }
 }
+
+
 
 ::ng-deep{
     .imageDate .mat-form-field-label-wrapper {
@@ -39,7 +123,8 @@
             height: 1.9rem;
             margin-top: 1.5rem;
             margin-left: 5%;
-            box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%);
+            box-shadow: 0 0.5rem 0.5rem -0.5rem rgb(158 158 158 / 75%);
+            padding-left: 0.5rem;
         }
         .mat-form-field-underline{
             display: none;
@@ -48,12 +133,12 @@
             padding-bottom: 0.2rem;
         }
     }
+    .mat-form-field.mat-focused{
+            border:none !important;
+    }
     
 }
 
-.imagePreviewSidePanel ::ng-deep .mat-form-field:not(.imageDate) .mat-form-field-label-wrapper {
-    font-size: 1.1rem;
-}
 .imageTagsSidePanel{
     position: relative;
     ::ng-deep .mat-standard-chip.mat-chip-with-trailing-icon{
@@ -61,7 +146,7 @@
         padding: 0 0.2rem 0 0.4rem;
     }
     ::ng-deep .mat-chip-list-wrapper{
-        margin:0 0.5rem !important;
+        margin:0 0.5rem 0.8rem !important;
     }
     ::ng-deep .mat-standard-chip .mat-chip-trailing-icon {
         margin-left: 0.2rem;
@@ -85,33 +170,23 @@
     ::ng-deep .mat-form-field-wrapper{
         padding-bottom: 0;
     }
+
     ::ng-deep .mat-form-field-underline{
         display: none;
     }
-}
 
-.imageChatSidePanel {
     h3{
         font-size: 1.1rem;
         color: #707C97;
         font-weight: 500;
         margin: 0.5rem 0.2rem 0.5rem .2rem;
     }
-    p{
-        background: #fff;
-        width: 88%;
-        margin: 0.5rem auto;
-        padding: 0.5rem;
-        border-radius: 0.3rem;
-        font-size: 0.9rem;
-        color: #707C97;
-        box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%);
-        position: relative;
-        span {
-            position: absolute;
-            right: 0.3rem;
-            top: 0.2rem;
-            font-size: 0.8rem;
-        }
-    }
 }
+.commentInput{
+    background: transparent;
+    border-top: 0.1rem solid #707c9752;
+    padding: 0.5rem  0.5rem 0.1rem 0.5rem !important;
+    font-size: 0.9rem;
+    width:calc(100% - 1rem)
+}
+

@@ -44,6 +44,9 @@ export interface MediaItem{
     date?: string | null;
     tags?: any;
     comments:Comment[] | null;
+    patientMediaItemId?:number | null;
+    height?: number;
+    width?: number;
   }
   export interface Gallery {
     date: string;
@@ -56,6 +59,7 @@ export interface MediaItem{
     timestamp: string;
     userColour: string;
     userInitials: string;
+    userName?:string | null;
   }
 
   export interface Tag {
