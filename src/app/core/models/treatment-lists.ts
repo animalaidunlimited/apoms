@@ -63,6 +63,11 @@ export interface ReportPatientRecord {
     'Release status': number | string;
     'Temperament': number | string;
     'Treatment priority': number;
+    'Main problems': string;
+    'Description': string;
+    'Sex': number;
+    'Known as name': string;
+    animalTypeId: number;
     showOther: boolean;
     treatedToday: boolean;
 }

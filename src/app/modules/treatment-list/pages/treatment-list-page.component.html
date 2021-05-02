@@ -18,7 +18,14 @@
 
         </mat-form-field>
 
-        <button type="button" [disabled]="currentArea.areaId === 0" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
+        <button type="button" [disabled]="currentArea.areaId === 0 || refreshing" mat-mini-fab color="primary" (click)="print()">
+            <mat-icon>local_printshop</mat-icon>
+        </button>
+
+        <button mat-mini-fab [disabled]="currentArea.areaId === 0 || refreshing" [color]="refreshing ? 'accent' : 'primary'" aria-label="Manual refresh" (click)="refreshTreatmentList()" >
+
+            <mat-icon>refresh</mat-icon>
+        </button>
 
     </div>
 

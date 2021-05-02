@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ThemePalette } from '@angular/material/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { take, reduce, takeUntil, map } from 'rxjs/operators';
+import { take, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PrintTemplateService } from '../../print-templates/services/print-template.service';
+import { TreatmentListService } from '../services/treatment-list.service';
 
 @Component({
   selector: 'app-treatment-list-page',
@@ -23,10 +24,15 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   isPrinting: BehaviorSubject<boolean>;
 
+  //refreshing: BehaviorSubject<boolean>;
+  refreshing = false;
+
   selectedDate: string | Date = getCurrentDateString();
 
   constructor(
     private dropdown: DropdownService,
+    private treatmentList: TreatmentListService,
+    private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
     private fb: FormBuilder) {
 
@@ -47,7 +53,10 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-
+    this.treatmentList.refreshing.subscribe(val => {
+      this.refreshing = val;
+      this.changeDetector.detectChanges();
+    });
 
     this.areas.get('area')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -73,6 +82,14 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
     this.printService.sendTreatmentListToPrinter(JSON.stringify(treatmentObject));
 
   }
+
+  refreshTreatmentList(){
+
+    this.treatmentList.populateTreatmentList(this.currentArea.areaId, this.selectedDate);
+    this.changeDetector.detectChanges();
+
+  }
+
 
 }
 
