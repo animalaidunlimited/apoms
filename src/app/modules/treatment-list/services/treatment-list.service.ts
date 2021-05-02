@@ -6,6 +6,7 @@ import { ABCStatus, ReleaseStatus, Temperament, Age } from 'src/app/core/enums/p
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,14 @@ export class TreatmentListService extends APIService {
   endpoint = 'TreatmentList';
 
   treatmentListObject: BehaviorSubject<FormGroup>;
+  refreshing = new BehaviorSubject<boolean>(false);
 
   treatmentListForm:FormGroup;
 
   acceptedFormArray: FormArray;
 
   constructor(public http: HttpClient,
+    private snackbar: SnackbarService,
     private fb: FormBuilder) {
     super(http);
 
@@ -50,14 +53,25 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   public populateTreatmentList(treatmentAreaId:number, selectedDate: Date | string) : void {
 
+    if(treatmentAreaId === 0){
+      return;
+    }
+
+    this.refreshing.next(true);
+
     const request = `?treatmentAreaId=${treatmentAreaId}&selectedDate=${selectedDate}`;
 
     // Let's get the treatment list and sort it before we send it to the component
     this.get(request).then((unknownResponse:any) => {
 
-      const response = unknownResponse as TreatmentList[];
-
-      this.prepareTreatmentListSubjects(response);
+      if(unknownResponse[0]?.success === -1){
+        this.snackbar.errorSnackBar('An error has occured in the database. Please see admin', 'OK');
+        this.refreshing.next(false);
+      }
+      else {
+        const response = unknownResponse as TreatmentList[];
+        this.prepareTreatmentListSubjects(response);
+      }
 
     });
   }
@@ -120,6 +134,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     this.emitTreatmentObject();
 
   }
+
   getEmptyTreatmentForm(): FormGroup {
 
     return this.fb.group({
@@ -149,6 +164,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
   private emitTreatmentObject(){
 
     this.treatmentListObject.next(this.treatmentListForm);
+    this.refreshing.next(false);
 
   }
 
@@ -175,33 +191,37 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   private getEmptyPatient(): FormGroup {
 
-
     const returnGroup = this.fb.group({
-      treatmentListId: 0,
-      index: 0,
-      'Emergency number': 0,
-      PatientId: 0,
-      PatientStatusId: 0,
-      PatientStatus: '',
-      'Tag number': '',
-      Species: '',
-      Age: '',
-      'Caller name': '',
-      Number: 0,
-      'Call date': '',
       'ABC status': '',
+      'Actioned by area': '',
+      Admission: false,
+      Age: '',
+      animalTypeId: 0,
+      'Call date': '',
+      'Caller name': '',
+      Description: '',
+      'Emergency number': 0,
+      index: 0,
+      'Known as name': '',
+      'Main problems': '',
+      'Move accepted': false,
+      'Moved to': 0,
+      Number: 0,
+      PatientId: 0,
+      PatientStatus: '',
+      PatientStatusId: 0,
       'Release ready': false,
       'Release status': '',
+      saved: false,
+      saving: false,
+      Sex: '',
+      showOther: false,
+      Species: '',
+      'Tag number': '',
       Temperament: '',
       'Treatment priority': 0,
-      'Actioned by area': '',
-      'Moved to': 0,
-      'Move accepted': false,
-      Admission: false,
-      showOther: false,
+      treatmentListId: 0,
       treatedToday: false,
-      saving: false,
-      saved: false
     });
 
     return returnGroup;
@@ -209,7 +229,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
 
 public async movePatientOutOfArea(currentPatient:AbstractControl, areaId: number){
-
 
   const updatedPatient:TreatmentAreaChange = {
     treatmentListId: currentPatient.get('treatmentListId')?.value,
@@ -265,6 +284,10 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
       });
 
     }
+    else {
+      this.snackbar.errorSnackBar('Action failed: please see admin', 'OK');
+    }
+
 
     this.emitTreatmentObject();
 
@@ -272,11 +295,29 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
 
 }
 
-  private acceptMoveIn(movedPatient: AbstractControl) {
+private acceptMoveIn(movedPatient: AbstractControl) {
 
-    const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
-    acceptedList.push(movedPatient);
-  }
+  const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
+  acceptedList.push(movedPatient);
+  acceptedList.controls.sort(this.sortTreatmentAbstractControls);
+}
+
+private sortTreatmentAbstractControls(a: AbstractControl, b: AbstractControl){
+
+  let sortResult = 0;
+
+      if ((a.get('Treatment priority')?.value || 999) === (b.get('Treatment priority')?.value || 999)) {
+
+        sortResult = a.get('Tag number')?.value < b.get('Tag number')?.value ? -1 : 1;
+      }
+      else {
+
+        sortResult = (a.get('Treatment priority')?.value || 999) > (b.get('Treatment priority')?.value || 999) ? 1 : -1;
+      }
+
+      return sortResult;
+
+}
 
 
 private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accepted: boolean): TreatmentListMoveIn {
@@ -288,5 +329,6 @@ private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accept
     accepted
   };
 }
+
 
 }

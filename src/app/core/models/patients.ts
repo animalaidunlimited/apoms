@@ -20,6 +20,20 @@ export interface Patient {
     callOutcome: CallOutcome;
 }
 
+export interface UpdatePatientDetails{
+    patientId: number;
+    animalTypeId: number;
+    mainProblems: string;
+    description: string;
+    sex: number;
+    treatmentPriority: number;
+    abcStatus: number;
+    releaseStatus: number;
+    temperament: number;
+    age: number;
+    knownAsName: string;
+}
+
 export interface Patients{
     patients: Patient[];
 }

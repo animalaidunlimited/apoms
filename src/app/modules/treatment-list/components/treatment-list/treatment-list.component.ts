@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, fromEvent, merge, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,8 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/for
 import { trigger, transition, style, animate } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface Column{
   name: string;
@@ -62,13 +64,14 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   filteredColumns:Observable<Column[]>;
 
   incomingList:string|undefined;
+  isPrinting = false;
 
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
 
+  refreshing: BehaviorSubject<boolean>;
   resizeObservable$!: Observable<Event>;
 
-  showSpinner = false;
   smallScreen = false;
 
   treatmentListForm: FormGroup;
@@ -80,11 +83,15 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     route: ActivatedRoute,
+    private snackbar: SnackbarService,
     private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
     private ts: TreatmentListService,
     private fb: FormBuilder,
+    private patientService: PatientService,
     private dropdown: DropdownService ) {
+
+    this.refreshing = this.ts.refreshing;
 
     // Update the paramters to this component based upon the route parameters if we're trying to print the treatment list
     this.incomingList = route.snapshot.params?.treatmentList;
@@ -92,6 +99,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     if(this.incomingList){
 
       const incomingDetails:TreatmentListPrintObject = JSON.parse(route.snapshot.params.treatmentList);
+
+      this.isPrinting = !!incomingDetails;
 
       this.area = incomingDetails?.area;
       this.selectedDate = incomingDetails?.selectedDate;
@@ -134,11 +143,48 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.accepted.next(this.acceptedFormArray.controls);
 
-      this.showSpinner = false;
+
+      // Here we're getting the changes from each form in the array, so that we can update the patient details
+      // in future releases.
+      merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
+      control.valueChanges.pipe(
+          take(1),
+          map(value => ({ rowIndex: index, control })))
+      )).subscribe(changes => {
+
+        const updatePatient = {
+          patientId: changes.control.get('PatientId')?.value,
+          treatmentPriority: changes.control.get('Treatment priority')?.value,
+          temperament: changes.control.get('Temperament')?.value || null,
+          age: changes.control.get('Age')?.value || null,
+          releaseStatus: changes.control.get('Release status')?.value || null,
+          abcStatus: changes.control.get('ABC status')?.value || null,
+          knownAsName: changes.control.get('Known as name')?.value,
+          sex: changes.control.get('Sex')?.value,
+          description: changes.control.get('Description')?.value || null,
+          mainProblems: changes.control.get('Main Problems')?.value || null,
+          animalTypeId: changes.control.get('animalTypeId')?.value
+        };
+
+        this.startSave(changes.control);
+
+        this.patientService.updatePatientDetails(updatePatient).then(result => {
+
+          if(result.success === 1){
+            this.endSave(changes.control);
+          }
+
+        });
+
+        });
 
       this.changeDetector.detectChanges();
 
     });
+
+
+
+
 
    }
 
@@ -156,7 +202,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.smallScreen = window.innerWidth > 840 ? false : true;
 
-      this.showSpinner = true;
       this.populateColumnList();
 
       this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
@@ -240,7 +285,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  // TODO type this as a AbstractControl or FormGroup
   openTreatmentDialog(row:AbstractControl): void {
 
     const dialogRef = this.dialog.open(TreatmentRecordComponent, {
@@ -338,13 +382,16 @@ moveOut(currentPatient: AbstractControl) : void {
 
   this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
 
+
+    if(result[0].success === -1){
+      this.snackbar.errorSnackBar('Error moving patient: please see admin', 'OK');
+    }
+
     this.endSave(currentPatient);
 
   });
 
 }
-
-
 
 
 }

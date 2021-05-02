@@ -35,10 +35,10 @@ export class PatientRecordComponent implements OnInit {
 
     permissionType!: number[];
 
-    hasWritePermission: boolean = false;
+    hasWritePermission = false;
 
     mediaData!: BehaviorSubject<MediaItem[]>;
-    logsData!:LogsData; 
+    logsData!:LogsData;
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
@@ -115,8 +115,8 @@ export class PatientRecordComponent implements OnInit {
             emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,
             patientId: this.recordForm.value.patientDetails.patientId
         };
-        
- 
+
+
     }
 
     tabChanged(event: MatTabChangeEvent) {
