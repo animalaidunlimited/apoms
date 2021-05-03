@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { PatientService } from '../../services/patient/patient.service';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { PatientResponse } from '../../models/responses';
 
@@ -47,9 +46,9 @@ export class RescueDetailsDialogComponent implements OnInit {
 
   ngOnInit() {
 
-    
-    // In this record form we added a updateFromRescueDialog flag to differentiate between the form coming from ER and this form because in both we are trying to add or update patient 
-    // and also using the ER route. So it will be helpful to tell that the form is from rescue details dialog or from emergency register, If you see the emergency register router file 
+
+    // In this record form we added a updateFromRescueDialog flag to differentiate between the form coming from ER and this form because in both we are trying to add or update patient
+    // and also using the ER route. So it will be helpful to tell that the form is from rescue details dialog or from emergency register, If you see the emergency register router file
     // in api you'll see why i added this flag.
     this.data.recordForm = this.fb.group({
 
@@ -99,7 +98,7 @@ export class RescueDetailsDialogComponent implements OnInit {
       let success = 0;
 
       output.forEach((patient: PatientResponse)=> {
-        
+
         if(patient.success) {
           success = patient.success
         }

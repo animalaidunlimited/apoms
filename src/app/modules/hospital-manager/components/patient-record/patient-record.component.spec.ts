@@ -41,15 +41,15 @@ describe('PatientRecordComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 MaterialModule,
-                FormsModule,
                 RouterTestingModule,
+                FormsModule,
                 ReactiveFormsModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
-            ],
+            ]
         }).compileComponents();
     });
 
