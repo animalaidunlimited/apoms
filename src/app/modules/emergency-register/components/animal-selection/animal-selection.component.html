@@ -1,7 +1,7 @@
 <fieldset [formGroup]="recordForm" class="form-sub-group" fxLayout="column" >
     <legend class="legend">Patient details</legend>
     
-        <div fxFlex formArrayName="patients" *ngFor="let patient of patients?.controls; let patientIndex = index">
+        <div style="width: auto;" fxFlex formArrayName="patients" *ngFor="let patient of patients?.controls; let patientIndex = index">
             <app-emergency-register-patient
                 [patientForm]="patient"
                 [patientIndex]="patientIndex"
