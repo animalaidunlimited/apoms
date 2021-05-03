@@ -9,7 +9,7 @@
         </mat-autocomplete>
     </mat-form-field>
     <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
-        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" >
+        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)">
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
             [selectable]="selectable"
@@ -42,10 +42,10 @@
     </mat-form-field>
 
     <div style="width: 90%;" fxLayout="row wrap" fxLayoutGap="10px" fxFlexOrder.gt-sm="4">
-      <emergency-case-outcome style="width: 50%;" [patientForm]="patientForm"></emergency-case-outcome>
+      <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-      <div *ngIf="patientForm.get('isAdmission').value">
-        <mat-form-field>
+      <div *ngIf="patientForm.get('isAdmission').value" class="admissionAreaDivWrapper">
+        <mat-form-field class="admissionAreaWrapper">
           <mat-label>Admission Area</mat-label>
           <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
             <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.AreaId">

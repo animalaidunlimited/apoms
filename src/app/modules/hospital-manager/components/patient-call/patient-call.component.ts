@@ -96,9 +96,11 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     loadPatientCalls() {
         this.patientService
-            .getPatientCallsByPatientId(this.patientId)
+            .getPatientCallerInteractionByPatientId(this.patientId)
             .pipe(take(1))
-            .subscribe((data: PatientCalls) => {this.populatePatientCalls(data);});
+            .subscribe((data: PatientCalls) => {
+                this.populatePatientCalls(data);
+            });
     }
 
     populatePatientCalls(data: PatientCalls) {
@@ -112,19 +114,20 @@ export class PatientCallComponent implements OnInit, OnChanges {
             }
 
             this.patientCallForm.patchValue(data);
+            console.log(this.patientCallForm.value);
         }
     }
 
     getNewCall(position: number, expanded: boolean) {
         return this.fb.group({
             position: [position, Validators.required],
-            patientCallId: [],
+            patientCallerInteractionId: [],
             patientId: [],
-            positiveCallOutcome: [true],
+            positiveInteraction: [true],
             callDateTime: [''],
             callType: [{}],
-            assignedTo: [{}],
-            PatientCallerInteractionOutcomeId: [],
+            doneBy: [{}],
+            patientCallerInteractionOutcomeId: [],
             createdDateTime: [''],
             createdBy: [],
             comments: [''],
@@ -146,6 +149,9 @@ export class PatientCallComponent implements OnInit, OnChanges {
     }
 
     async savePatientCall() {
+
+        console.log(this.patientCallForm.value);
+
         // TODO replace this with a filter to return only the touched elements
         this.calls.controls.forEach(element => {
             if (element.touched) {
@@ -162,7 +168,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
         });
 
         await this.patientService
-            .savePatientCalls(this.patientCallForm.value)
+            .savePatientCallerInteractions(this.patientCallForm.value)
             .then((result: PatientCallModifyResponse[]) => {
                let comErrorFlag = false;
                let resErrorFlag = false;
@@ -187,7 +193,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
                         currentPatientCallId.setValue(
                             callResult.position === call.get('position')?.value
-                                ? callResult.results.patientCallId
+                                ? callResult.results.patientCallerInteractionId
                                 : currentPatientCallId.value,
                         );
                     });

@@ -400,8 +400,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-        width: '500px',
-        height: '500px',
+        maxWidth: 'auto',
+        maxHeight: '100vh',
         data: {
                 emergencyCaseId:outstandingCase.emergencyCaseId,
                 emergencyNumber:outstandingCase.emergencyNumber

@@ -30,13 +30,13 @@ export interface PatientCalls {
 
 export interface PatientCall {
     position: number;
-    patientCallId: number;
+    patientCallerInteractionId: number;
     patientId: number;
     positiveCallOutcome: boolean;
     callDateTime: string | Date;
     assignedTo: number;
     callType: number;
-    patientCallOutcomeId: number;
+    patientCallerInteractionOutcomeId: number;
     createdDateTime: string | Date;
     createdBy: number;
     comments: string;
@@ -45,7 +45,7 @@ export interface PatientCall {
 
 export interface PatientCallResult {
     success: number;
-    patientCallId: number;
+    patientCallerInteractionId: number;
 }
 
 export interface PatientCallModifyResponse {
