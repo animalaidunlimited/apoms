@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { RescueDetailsComponent } from './rescue-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -35,11 +35,32 @@ describe('RescueDetailsComponent', () => {
                 emergencyCaseId: [1],
                 callDateTime: [''],
             }),
+            patients: fb.array([])
+        });
+
+        const patient =
+        fb.group({
+            patientId: [],
+            position: [0],
+            animalTypeId: [5, Validators.required],
+            animalType: ['Puppy', Validators.required],
+            problems: fb.array([]),
+            tagNumber: [''],
+            duplicateTag: [false, Validators.required],
+            updated: [false, Validators.required],
+            deleted: [false, Validators.required],
+            isAdmission:[false],
+            admissionArea: [],
+            admissionAccepted: [false],
             callOutcome: fb.group({
-                CallOutcome: [''],
-                CallOutcomeId: []
+                CallOutcome: [],
+                sameAsNumber: []
             }),
         });
+
+        const patientArray = component.recordForm.get('patients') as FormArray;
+
+        patientArray.push(patient);
 
         fixture.detectChanges();
     }));
@@ -68,6 +89,7 @@ describe('RescueDetailsComponent', () => {
         expect(component.recordForm.valid).toEqual(false);
     });
     it('Valid form - driver and worker', () => {
+
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.recordForm.get('rescueDetails.rescuer2Id')?.setValue(2);
         component.updateValidators();

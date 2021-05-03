@@ -8,7 +8,7 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
-import { Overlay, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -16,7 +16,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { environment } from 'src/environments/environment';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { DatePipe } from '@angular/common';
 
 describe('AnimalSelectionComponent', () => {
@@ -32,7 +31,7 @@ describe('AnimalSelectionComponent', () => {
 
     let dialog: MatDialogRef<TagNumberDialog>;
 
-    
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [

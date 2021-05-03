@@ -29,7 +29,10 @@ describe('EmergencyCaseOutcomeComponent', () => {
         fixture = TestBed.createComponent(EmergencyCaseOutcomeComponent);
         component = fixture.componentInstance;
 
-        component.recordForm = fb.group({
+
+
+
+        component.patientForm = fb.group({
             emergencyDetails: fb.group({
                 emergencyCaseId: [1],
             }),

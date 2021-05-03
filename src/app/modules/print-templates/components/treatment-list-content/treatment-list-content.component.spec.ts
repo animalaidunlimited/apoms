@@ -54,6 +54,7 @@ describe('TreatmentListContentComponent', () => {
     fixture = TestBed.createComponent(TreatmentListContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    
   });
 
   it('should create', () => {

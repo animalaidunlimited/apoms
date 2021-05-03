@@ -7,6 +7,7 @@
  import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
  import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
  @Component({
    selector: 'rescue-details',
@@ -41,6 +42,7 @@
         FormsModule, ReactiveFormsModule, HttpClientTestingModule,
          BrowserAnimationsModule],
        providers: [
+        MatSnackBar,
          {
            provide: MAT_DIALOG_DATA,
            useValue: dialogData },

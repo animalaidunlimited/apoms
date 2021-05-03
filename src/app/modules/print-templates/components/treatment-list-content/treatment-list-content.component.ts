@@ -17,20 +17,27 @@ export class TreatmentListContentComponent implements OnInit {
   displayedColumns:string[] = [];
   columnsExcludingIndex: string[] = [];
   tableData:MatTableDataSource<ReportPatientRecord>;
-  treatmentList:TreatmentListPrintContent;
+  treatmentList:TreatmentListPrintContent | undefined;
   printDate = new Date();
 
   constructor(
     route: ActivatedRoute,
     private printService: PrintTemplateService
   ) {
-    this.treatmentList = JSON.parse(route.snapshot.params.treatmentList);
-    this.tableData = new MatTableDataSource(this.treatmentList.printList);
+
+
+    if(route.snapshot.params.treatmentList){
+      this.treatmentList = JSON.parse(route.snapshot.params.treatmentList);
+    }
+    this.tableData = new MatTableDataSource(this.treatmentList?.printList);
   }
 
   ngOnInit(): void {
 
-    this.displayedColumns = this.treatmentList.displayColumns;
+    if(this.treatmentList?.displayColumns){
+      this.displayedColumns = this.treatmentList.displayColumns;
+    }
+    
     this.columnsExcludingIndex = this.displayedColumns.filter(column => column !== 'index');
     this.tableData.sort = this.sort;
     this.printService.onDataReady('treatment-list');

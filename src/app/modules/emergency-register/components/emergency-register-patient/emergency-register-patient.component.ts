@@ -37,11 +37,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   get callOutcome(): string { return this._callOutcome; }
 
   @ViewChild('problemRef') problemRef!: ElementRef;
-  @ViewChild('chipList',{static: false}) chipList!: MatChipList;
+  @ViewChild('chipList', {static: false}) chipList!: MatChipList;
   @ViewChild('animalTypeInput') animalTypeInput!: ElementRef;
   @ViewChild('tagNumber') tagNumber!: ElementRef;
   @ViewChild('animalTypeInput', { read: MatAutocompleteTrigger }) animalAutoComplete! : MatAutocompleteTrigger;
-
 
   problemInput = new FormControl();
 
@@ -111,14 +110,19 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.problemsArray = this.patientForm.get('problems') as FormArray;
 
     setTimeout(()=>{
-      this.chipList.errorState  = this.problemsArray.length > 0 ? false : true;
+      if(this.chipList.errorState){
+        this.chipList.errorState = this.problemsArray.length > 0 ? false : true;
+      }
     },1);
 
   }
+
   ngAfterViewInit(): void{
 
     this.patientForm.get('problems').valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
-      this.chipList.errorState = false ;
+      if(this.chipList.errorState){
+        this.chipList.errorState = false ;
+      }
     });
   }
 
@@ -158,7 +162,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.currentPatientSpecies = $event.option.viewValue;
 
     this.patientForm.get('animalType')?.setValue($event.option.viewValue);
-    this.patientForm.get('animalTypeId')?.setValue($event.option.value.AnimalTypeId);
+    this.patientForm.get('animalTypeId')?.setValue($event.option?.value.AnimalTypeId);
 
     this.patientForm.get('updated')?.setValue(true);
 
@@ -169,7 +173,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
 
     const problemsGroup = this.fb.group({
-        problemId: [event.option.value, Validators.required],
+        problemId: [event.option?.value, Validators.required],
         problem: [event.option.viewValue, Validators.required],
     });
 
@@ -210,7 +214,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   isSpeciesBlank($event:Event){
 
-    if(this.animalType.value === '' )
+    if(this.animalType?.value === '' )
     {
       alert('Please select an animal');
       $event.preventDefault();
