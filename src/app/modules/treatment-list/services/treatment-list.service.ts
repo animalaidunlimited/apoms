@@ -259,7 +259,6 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
 
         const currentList = movedList.get('movedList') as FormArray;
 
-
         // Now go through all of the controls and move the one we're changing
         currentList.controls.forEach((element, index:number) => {
 
