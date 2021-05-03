@@ -112,9 +112,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
             for (let i = 0; i < length; i++) {
                 this.addPatientCall(false);
             }
-
             this.patientCallForm.patchValue(data);
-            console.log(this.patientCallForm.value);
         }
     }
 
@@ -149,8 +147,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
     }
 
     async savePatientCall() {
-
-        console.log(this.patientCallForm.value);
 
         // TODO replace this with a filter to return only the touched elements
         this.calls.controls.forEach(element => {
