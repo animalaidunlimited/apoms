@@ -1,0 +1,14 @@
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+	ALTER TABLE AAU.PatientCall 
+	CHANGE COLUMN `PatientCallId` `PatientCallerInteractionId` INT NOT NULL AUTO_INCREMENT ,
+	CHANGE COLUMN `AssignedToUserId` `DoneByUserId` INT NULL DEFAULT NULL ,
+	CHANGE COLUMN `PositiveCallOutcome` `PositiveInteraction` TINYINT NULL ,
+	CHANGE COLUMN `PatientCallOutcomeId` `PatientCallerInteractionOutcomeId` INT NULL DEFAULT NULL , RENAME TO AAU.PatientCallerInteraction ;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;	

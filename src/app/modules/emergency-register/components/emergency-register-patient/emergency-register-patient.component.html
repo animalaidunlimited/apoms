@@ -8,7 +8,7 @@
           </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="max-width:unset;" fxFlexOrder.lt-md="1"  >
+    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="min-width: 86%;" fxFlexOrder.lt-md="1"  >
         <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)">
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
@@ -41,7 +41,7 @@
         </mat-error>
     </mat-form-field>
 
-    <div style="width: 90%;" fxLayout="row wrap" fxLayoutGap="10px" fxFlexOrder.gt-sm="4">
+    <div style="width: 90%;" fxLayout="row wrap" fxFlexOrder.lt-md="4" fxLayoutGap="10px" fxFlexOrder.gt-sm="4">
       <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
       <div *ngIf="patientForm.get('isAdmission').value" class="admissionAreaDivWrapper">
@@ -58,7 +58,7 @@
     
 
 
-    <div class="patients_icons" fxFlexOrder.lt-md="2" fxFlexOrder.gt-sm="6">
+    <div class="patients_icons" fxFlexOrder.lt-md="6" fxFlexOrder.gt-sm="6">
       <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>  
