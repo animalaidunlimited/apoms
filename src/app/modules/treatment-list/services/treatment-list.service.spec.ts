@@ -5,6 +5,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { MaterialModule } from 'src/app/material-module';
 
 import { TreatmentListService } from './treatment-list.service';
 
@@ -18,6 +19,7 @@ describe('TreatmentListService', () => {
       imports: [HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
+        MaterialModule,
         BrowserAnimationsModule
       ],
       providers: [
@@ -29,7 +31,7 @@ describe('TreatmentListService', () => {
     });
 
     service = TestBed.inject(TreatmentListService);
-    
+
 
   });
 
