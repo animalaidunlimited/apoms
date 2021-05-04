@@ -11,6 +11,7 @@ import {
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('TagNumberDialog', () => {
     let component: TagNumberDialog;
@@ -45,6 +46,7 @@ describe('TagNumberDialog', () => {
                 },
             ],
             declarations: [TagNumberDialog],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

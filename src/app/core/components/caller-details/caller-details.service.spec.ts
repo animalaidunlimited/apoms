@@ -4,6 +4,7 @@ import { CallerDetailsService } from './caller-details.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CallerDetailsService', () => {
 
@@ -11,8 +12,13 @@ describe('CallerDetailsService', () => {
 
     beforeEach(() =>
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule],
-            providers: [CallerDetailsService]
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule
+            ],
+            providers: [CallerDetailsService],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }),
     );
 

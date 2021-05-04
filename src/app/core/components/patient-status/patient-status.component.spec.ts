@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientStatusComponent', () => {
     let component: PatientStatusComponent;
@@ -29,6 +30,7 @@ describe('PatientStatusComponent', () => {
             ],
             providers: [DatePipe, Overlay, MatSnackBar],
             declarations: [PatientStatusComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

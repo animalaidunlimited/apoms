@@ -10,6 +10,7 @@ import {
     ActivatedRouteSnapshot,
     RouterStateSnapshot,
 } from '@angular/router';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockAuthService {
     redirectUrl = '';
@@ -35,6 +36,7 @@ describe('AuthGuard', () => {
                 { provide: AuthService, useClass: MockAuthService },
                 AuthGuard,
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         });
         guard = TestBed.get(AuthGuard);
         service = TestBed.get(AuthService);

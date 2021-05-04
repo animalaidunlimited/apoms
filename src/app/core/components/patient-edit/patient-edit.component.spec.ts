@@ -14,6 +14,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientEditDialog', () => {
     let component: PatientEditDialog;
@@ -27,7 +28,7 @@ describe('PatientEditDialog', () => {
     const dialogData = {};
 
     let dialog: MatDialogRef<PatientEditDialog>;
-    
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -49,6 +50,7 @@ describe('PatientEditDialog', () => {
                 },
             ],
             declarations: [PatientEditDialog],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

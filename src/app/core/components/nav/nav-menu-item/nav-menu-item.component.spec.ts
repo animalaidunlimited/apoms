@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from '../../../../nav-routing';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('NavMenuItemComponent', () => {
     let component: NavMenuItemComponent;
@@ -25,6 +26,7 @@ describe('NavMenuItemComponent', () => {
                     },
                 ]),
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

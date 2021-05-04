@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,7 +37,8 @@ let dialog: MatDialogRef<SurgeriesByDateDialogComponent>;
           useValue: mockDialogRef
       }
     ],
-      declarations: [ SurgeriesByDateDialogComponent ]
+      declarations: [ SurgeriesByDateDialogComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

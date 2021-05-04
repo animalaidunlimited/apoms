@@ -1,4 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
@@ -15,7 +16,7 @@ describe('TreatmentComponent', () => {
     open: jasmine.createSpy('open'),
     close: jasmine.createSpy('close')
   };
-  
+
   const dialogData = {};
 
   let dialog: MatDialogRef<TreatmentRecordComponent>;
@@ -23,7 +24,8 @@ describe('TreatmentComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ MatDialogModule, HttpClientTestingModule ],
-      declarations: [ TreatmentComponent ]
+      declarations: [ TreatmentComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
