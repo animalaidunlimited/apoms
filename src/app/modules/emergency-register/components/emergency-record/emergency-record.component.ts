@@ -39,7 +39,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     windowWidth = window.innerWidth;
 
-    hasWritePermission: boolean = false;
+    hasWritePermission = false;
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
@@ -390,7 +390,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             }
 
             else {
-                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK')
+                this.showSnackBar.errorSnackBar('You do not have permission to save; please see the admin ' , 'OK');
             }
 
     }
