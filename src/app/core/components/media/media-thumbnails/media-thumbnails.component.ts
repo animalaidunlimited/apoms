@@ -17,15 +17,16 @@ export class MediaThumbnailsComponent implements OnInit{
        
     }
     openPreviewDialog(image:Image){
-        if(image){
-            const orientation = image?.height > image?.width;
-        }
+        const orientation = image?.height && image?.width ?  image?.height > image?.width ? 'Landscape' : 'Potrait' : '';
+        // console.log(orientation);
+    
         this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
             data: {
                 image,
             }
-          });
+        });
+        
     }
 }
