@@ -3,10 +3,12 @@
 
     <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap.gt-sm="20px">
 
+        <!---->
         <mat-form-field>
             <mat-label>Treatment area</mat-label>
             <mat-select
-            formControlName="area">
+            formControlName="area"
+            >
                 <mat-option>N/A</mat-option>
                 <mat-option [value]="area" *ngFor="let area of (treatmentAreas | async)">{{ area.areaName }}</mat-option>
             </mat-select>

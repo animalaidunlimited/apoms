@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,11 +32,19 @@ describe('TreatmentListService', () => {
     ]
     });
 
+  });
+
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
     service = TestBed.inject(TreatmentListService);
 
-  });
+}));
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
+
 });
