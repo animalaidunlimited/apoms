@@ -7,7 +7,7 @@ import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Pa
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
-import {MediaItemsDataObject} from 'src/app/core/models/media';
+import {MediaItemsDataObject, Comment} from 'src/app/core/models/media';
 
 interface SuccessResult{
     success: number;
@@ -383,7 +383,7 @@ export class PatientService extends APIService {
     public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {       
         return await this.post(comment)
         .then(data => {
-            if(data.success === 1){
+            if(data?.success === 1){
                 return data;
             }
         })
@@ -393,13 +393,16 @@ export class PatientService extends APIService {
 
     }
 
-    public getPatientMediaComments(patientMediaItemId: number): Observable<any> {
+    public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
         const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
 
         return this.getObservable(request).pipe(
-            map((response: any) => {
-                return response;
-            }),
+            map(response => {
+                return  response?.sort((comment1: Comment,comment2:Comment)=> {
+                    return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
+                });
+                
+            })
         );
     }
 
