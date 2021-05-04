@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
-    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, PriorityObject } from 'src/app/core/models/patients';
+    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, UpdatePatientDetails, PriorityObject } from 'src/app/core/models/patients';
 import { MediaItem } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject} from 'src/app/core/models/media';
@@ -102,7 +102,7 @@ export class PatientService extends APIService {
             });
     }
 
-    public async updatePatientDetails(patientDetails: any) {
+    public async updatePatientDetails(patientDetails: Patient | UpdatePatientDetails) {
 
         return await this.put(patientDetails)
             .then(data => {

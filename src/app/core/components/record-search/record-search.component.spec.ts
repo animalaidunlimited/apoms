@@ -13,9 +13,9 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Overlay } from '@angular/cdk/overlay';
 
 describe('RecordSearchComponent', () => {
     let component: RecordSearchComponent;
@@ -42,7 +42,7 @@ describe('RecordSearchComponent', () => {
             ],
             providers: [
                 MatDialog,
-                OVERLAY_PROVIDERS,
+                Overlay,
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: dialogData,

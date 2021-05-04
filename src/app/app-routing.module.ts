@@ -7,9 +7,9 @@ import { CustomRouteReuseStrategy } from './core/nav-reuse-strategy';
 import { NavGuard } from './core/nav.guard';
 import { PrintContentComponent } from './modules/print-templates/components/print-content/print-content.component';
 import { PrintWrapperComponent } from './modules/print-templates/components/print-wrapper/print-wrapper.component';
-import { CensusListContentComponent } from './modules/print-templates/components/census-list-content/census-list-content.component';
+import { TreatmentListComponent } from './modules/treatment-list/components/treatment-list/treatment-list.component';
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: 'settings',
         loadChildren: () =>
@@ -29,13 +29,6 @@ const routes: Routes = [
             import(
                 './modules/surgery-register/surgery-register-page.module'
             ).then(m => m.SurgeryRegisterPageModule)
-    },
-    {
-        path: 'census',
-        loadChildren: () =>
-            import('./modules/census/census-page.module').then(
-                m => m.CensusPageModule,
-            ),
     },
     {
         path: 'hospital-manager',
@@ -76,13 +69,13 @@ const routes: Routes = [
         ]
     },
     {
-        path: 'census-list',
-        outlet: 'census-list',
+        path: 'treatment-list',
+        outlet: 'treatment-list',
         component: PrintWrapperComponent,
         canActivate: [AuthGuard],
         canActivateChild: [NavGuard],
         children: [
-        { path: 'census-list-content/:censusList', component: CensusListContentComponent }
+        { path: 'treatment-list/:treatmentList', component: TreatmentListComponent }
         ]
     },
     {
@@ -100,7 +93,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' })
+        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, onSameUrlNavigation:'reload' }),
     ],
     exports: [RouterModule],
     providers: [

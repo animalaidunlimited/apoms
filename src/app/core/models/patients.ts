@@ -1,3 +1,4 @@
+import { CallOutcome } from './emergency-record';
 import { Problem } from './problem';
 
 export interface Patient {
@@ -14,6 +15,23 @@ export interface Patient {
     patientStatusDate: string | Date;
     updated: boolean;
     deleted: boolean;
+    admissionArea: number;
+    admissionAccepted: boolean;
+    callOutcome: CallOutcome;
+}
+
+export interface UpdatePatientDetails{
+    patientId: number;
+    animalTypeId: number;
+    mainProblems: string;
+    description: string;
+    sex: number;
+    treatmentPriority: number;
+    abcStatus: number;
+    releaseStatus: number;
+    temperament: number;
+    age: number;
+    knownAsName: string;
 }
 
 export interface Patients{
@@ -102,4 +120,8 @@ export interface PriorityObject {
     patientId: number;
     priorityValueId: number;
     updatePriorityFlag: boolean
+}
+export interface TreatmentAreaDropdwn {
+    AreaId: number;
+    Area: string;
 }

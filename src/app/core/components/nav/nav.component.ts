@@ -32,7 +32,7 @@ export class NavComponent implements OnInit {
         this.navigationService.toggleIsOpen();
     }
 
-    public getNavigationItems(): NavRoute[] {
+    public getNavigationItems(): BehaviorSubject<NavRoute[]> {
         return this.navigationService.getNavigationItems();
     }
 

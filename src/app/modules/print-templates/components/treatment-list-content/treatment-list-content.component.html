@@ -1,0 +1,24 @@
+<div mat-dialog-title>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+
+    <div style="font-size:larger; font-weight: bold">{{treatmentList?.area}} - ({{treatmentList?.printList?.length}})</div>
+
+    <div style="font-size:large; font-weight: bold">{{printDate | date:'d MMM y'}}</div>
+  </div>
+</div>
+
+<table mat-table [dataSource]="tableData" class="mat-elevation-z8 table">
+
+  <ng-container matColumnDef="index">
+    <th mat-header-cell *matHeaderCellDef> # </th>
+    <td mat-cell *matCellDef="let index = index"> {{index + 1}} </td>
+  </ng-container>
+
+    <ng-container [matColumnDef]="column" *ngFor="let column of columnsExcludingIndex">
+      <th mat-header-cell *matHeaderCellDef> {{column | titlecase}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

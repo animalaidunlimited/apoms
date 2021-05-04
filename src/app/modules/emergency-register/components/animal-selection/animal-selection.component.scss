@@ -6,8 +6,7 @@ $standard-width: 180px;
     border: 2px solid;
     border-radius: 5px;
     border-color: $colour-border;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding:10px;
 }
 
 table {
@@ -27,9 +26,6 @@ table {
     background-color: gray;
 }
 
-/* .invalid-row {
-    background-color: #fadce0;
-} */
 
 .duplicate {
     color: red;
@@ -55,5 +51,34 @@ table {
         position: absolute;
         top: 40px;
         width: 75%;
+    }
+}
+
+.addPatientButton{
+    margin-top: -7px;
+    width: 30px;
+    height: 30px;
+    .mat-icon{
+        font-size:1rem;
+    }
+}
+
+
+@media only screen and (max-width:767px){
+    .addPatientButton{
+        width: 25px;
+        height: 25px;
+        margin-top: -2rem;
+        .mat-icon{
+            font-size: 1rem;
+            position: relative;
+            top: -3px;
+            left:1px;
+        }
+    }
+}
+@media only screen and (min-width:767px){
+    .form-sub-group{
+        min-height: 96.5%;
     }
 }

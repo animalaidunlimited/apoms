@@ -26,6 +26,7 @@ export interface PatientResponse {
     tagNumber: string;
     position: number;
     success: number;
+    admissionSuccess: number;
     problems: ProblemResponse[];
 }
 

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PatientCountInArea } from 'src/app/core/models/census-details';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CensusService } from 'src/app/core/services/census/census.service';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -15,6 +13,8 @@ import { EmergencyCaseDialogComponent } from '../../components/emergency-case-di
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { take } from 'rxjs/operators';
+import { PatientCountInArea } from 'src/app/core/models/treatment-lists';
+import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';
 
 
 @Component({
@@ -28,7 +28,7 @@ export class ReportingPageComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private census: CensusService,
+        private treatmentList: TreatmentListService,
         private dialog: MatDialog,
         private printService: PrintTemplateService,
         private surgeryService: SurgeryService,
@@ -61,7 +61,7 @@ export class ReportingPageComponent implements OnInit {
             admission: []
         });
 
-        this.census.getCensusPatientCount().then(response => {
+        this.treatmentList.getTreatmentListPatientCount().then(response => {
 
             if(response){
                 response.sort((a,b) => a.area < b.area ? -1 : 1);

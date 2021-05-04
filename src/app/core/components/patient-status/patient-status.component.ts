@@ -72,7 +72,7 @@ export class PatientStatusComponent implements OnInit {
         this.currentTime = getCurrentTimeString();
 
         this.patientStatusForm.valueChanges.subscribe(() => {
-            
+
             this.formInvalid.emit(this.patientStatusForm.invalid);
         } );
 

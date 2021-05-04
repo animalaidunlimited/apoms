@@ -1,18 +1,16 @@
 <div class="wrapper">
 <form [formGroup]="areas">
 
-    <div fxLayout="row-wrap" fxLayoutAlign="center center" fxLayoutGap="20px">
+    <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap.gt-sm="20px">
 
-        <div>
-            <mat-form-field >
-                <mat-label>Treatment area</mat-label>
-                <mat-select formControlName="area">
-                    <mat-option>N/A</mat-option>
-                    <mat-option [value]="area.areaName" *ngFor="let area of (censusAreas | async)">{{ area.areaName }}</mat-option>
-                </mat-select>
-            </mat-form-field>
+        <mat-form-field >
+            <mat-label>Treatment area</mat-label>
+            <mat-select formControlName="area">
+                <mat-option>N/A</mat-option>
+                <mat-option [value]="area" *ngFor="let area of (treatmentAreas | async)">{{ area.areaName }}</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-        </div>
 
         <mat-form-field >
                 <mat-label>Treatment date</mat-label>
@@ -20,13 +18,22 @@
 
         </mat-form-field>
 
+        <button type="button" [disabled]="currentArea.areaId === 0 || refreshing" mat-mini-fab color="primary" (click)="print()">
+            <mat-icon>local_printshop</mat-icon>
+        </button>
+
+        <button mat-mini-fab [disabled]="currentArea.areaId === 0 || refreshing" [color]="refreshing ? 'accent' : 'primary'" aria-label="Manual refresh" (click)="refreshTreatmentList()" >
+
+            <mat-icon>refresh</mat-icon>
+        </button>
+
     </div>
 
 </form>
 
 <div fxLayout="column" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="start start">
 
-<app-treatment-list [areaName]="currentArea"></app-treatment-list>
+<app-treatment-list [area]="currentArea" [selectedDate]="selectedDate"></app-treatment-list>
 
 </div>
 

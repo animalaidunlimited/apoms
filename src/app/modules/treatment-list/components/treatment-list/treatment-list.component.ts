@@ -1,70 +1,80 @@
-import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CensusService } from 'src/app/core/services/census/census.service';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ABCStatus, Age, ReleaseStatus, Temperament } from 'src/app/core/enums/patient-details';
-import { CensusArea, CensusPrintContent, ReportPatientRecord } from 'src/app/core/models/census-details';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, merge, Observable, Subject } from 'rxjs';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatSelectChange } from '@angular/material/select';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { TreatmentListService } from '../../services/treatment-list.service';
+import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { PriorityObject } from 'src/app/core/models/patients';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface Column{
   name: string;
-  areaId: number | null;
   type: string;
+  areaId?: number;
+  abbreviation?: string;
 }
 
 @Component({
   selector: 'app-treatment-list',
   templateUrl: './treatment-list.component.html',
   styleUrls: ['./treatment-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('fadeSavedIcon', [
+      transition('* => void', [
+        style({ opacity: 1 }),
+        animate(2000, style({opacity: 0}))
+      ])
+    ]),
+  ]
 })
 
+export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
-export class TreatmentListComponent implements OnInit, OnChanges {
-  @Input() areaName!: string;
+  private ngUnsubscribe = new Subject();
+
+  @Input() area!: TreatmentArea;
+  @Input() selectedDate!: Date | string;
 
   @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
-  addRecordVisible = false;
+  accepted = new BehaviorSubject<AbstractControl[]>([]);
+  acceptedFormArray!: FormArray;
 
-  //filteredColumns: Observable<Column[]>;
-
-  columns: BehaviorSubject<Column[]>
-  = new BehaviorSubject<Column[]>([
-    {name: 'index', areaId: null, type: 'text'},
-    {name: 'Tag number', areaId: null, type: 'text'},
-    {name: 'Treatment priority', areaId: null, type: 'select'},
-    {name: 'Other', areaId: null, type: 'select'},
-    {name: 'complete', areaId: null, type: 'button'}
-  ]);
-
-
+  columns: BehaviorSubject<Column[]> = new BehaviorSubject<Column[]>([
+                                        {name: 'index', type: 'text'},
+                                        {name: 'complete', type: 'button'},
+                                        {name: 'Tag number', type: 'text'},
+                                        {name: 'Treatment priority', type: 'select'},
+                                        {name: 'Other', type: 'select'}
+                                      ]);
 
   displayedColumns: Observable<string[]>;
-
-  isPrinting: BehaviorSubject<boolean>;
-  layoutType = 'census';
-  otherAreas!: CensusArea[];
   filteredColumns:Observable<Column[]>;
+
+  incomingList:string|undefined;
+  isPrinting = false;
+
+  movedLists!: FormArray;
+  otherAreas!: TreatmentArea[];
+
+  refreshing: BehaviorSubject<boolean>;
+  resizeObservable$!: Observable<Event>;
+
+  smallScreen = false;
+
   treatmentListForm: FormGroup;
-  treatmentListArray: FormArray;
-  //patientRecords: MatTableDataSource<AbstractControl>;
-  patientRecords = new BehaviorSubject<AbstractControl[]>([]);
-  showSpinner = false;
   treatmentPriorities: Observable<Priority[]>;
 
   constructor(
@@ -72,264 +82,249 @@ export class TreatmentListComponent implements OnInit, OnChanges {
     // @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog,
     private router: Router,
-    private printService: PrintTemplateService,
+    route: ActivatedRoute,
+    private snackbar: SnackbarService,
     private changeDetector: ChangeDetectorRef,
+    private printService: PrintTemplateService,
+    private ts: TreatmentListService,
     private fb: FormBuilder,
-    private dropdown: DropdownService,
-    private census: CensusService,
-    private patientService: PatientService) {
+    private patientService: PatientService,
+    private dropdown: DropdownService ) {
 
-    this.filteredColumns = this.columns
-                                        .pipe(map(columns =>
-                                                    columns.filter(column =>  column.name !== 'index' &&
-                                                                              column.name !== this.areaName &&
-                                                                              column.name !== 'complete' &&
-                                                                              column.name !== 'Other')));
+    this.refreshing = this.ts.refreshing;
+
+    // Update the paramters to this component based upon the route parameters if we're trying to print the treatment list
+    this.incomingList = route.snapshot.params?.treatmentList;
+
+    if(this.incomingList){
+
+      const incomingDetails:TreatmentListPrintObject = JSON.parse(route.snapshot.params.treatmentList);
+
+      this.isPrinting = !!incomingDetails;
+
+      this.area = incomingDetails?.area;
+      this.selectedDate = incomingDetails?.selectedDate;
+
+    }
+
+    this.filteredColumns = this.columns.pipe(map(columns =>
+                                          columns.filter(column =>  column.name !== 'index' &&
+                                                                    column.name !== this.area.areaName &&
+                                                                    column.name !== 'complete' &&
+                                                                    column.name !== 'Other')));
 
     this.treatmentPriorities = this.dropdown.getPriority();
 
     this.populateColumnList();
 
-    this.isPrinting = this.printService.getIsPrinting();
-
-    this.treatmentListForm = this.fb.group({
-      treatmentList: this.fb.array([this.getEmptyPatient()])});
-
-    this.treatmentListArray = this.treatmentListForm.get('treatmentList') as FormArray;
-    this.patientRecords.next(this.treatmentListArray.controls);
+    this.treatmentListForm = this.fb.group({});
 
     this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
 
     }
 
-  ngOnInit() {  }
+  ngOnInit() {
+
+    this.resizeObservable$ = fromEvent(window, 'resize');
+
+    this.resizeObservable$.pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(() => {
+      this.smallScreen = window.innerWidth > 840 ? false : true;
+      this.populateColumnList();
+    });
+
+    this.ts.getTreatmentList().subscribe(treatmentListObject => {
+
+      this.treatmentListForm = treatmentListObject;
+      this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+
+      this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
+
+      this.accepted.next(this.acceptedFormArray.controls);
+
+
+      // Here we're getting the changes from each form in the array, so that we can update the patient details
+      // in future releases.
+      merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
+      control.valueChanges.pipe(
+          take(1),
+          map(value => ({ rowIndex: index, control })))
+      )).subscribe(changes => {
+
+        const updatePatient = {
+          patientId: changes.control.get('PatientId')?.value,
+          treatmentPriority: changes.control.get('Treatment priority')?.value,
+          temperament: changes.control.get('Temperament')?.value || null,
+          age: changes.control.get('Age')?.value || null,
+          releaseStatus: changes.control.get('Release status')?.value || null,
+          abcStatus: changes.control.get('ABC status')?.value || null,
+          knownAsName: changes.control.get('Known as name')?.value,
+          sex: changes.control.get('Sex')?.value,
+          description: changes.control.get('Description')?.value || null,
+          mainProblems: changes.control.get('Main Problems')?.value || null,
+          animalTypeId: changes.control.get('animalTypeId')?.value
+        };
+
+        this.startSave(changes.control);
+
+        this.patientService.updatePatientDetails(updatePatient).then(result => {
+
+          if(result.success === 1){
+            this.endSave(changes.control);
+          }
+
+        });
+
+        });
+
+      this.changeDetector.detectChanges();
+
+    });
+
+
+
+
+   }
 
   ngOnChanges(change:SimpleChanges) : void {
 
-    if(change.areaName.currentValue && change.areaName.currentValue !== ''){
-
-      this.showSpinner = true;
-      this.populateColumnList();
-      this.loadTreatmentList(change.areaName.currentValue);
-
+    if(change.hasOwnProperty('area')){
+      this.area = change.area.currentValue as TreatmentArea;
     }
 
+    if(change.hasOwnProperty('selectedDate')){
+      this.selectedDate = change.selectedDate.currentValue;
+    }
+
+    if(this.area && this.selectedDate){
+
+      this.smallScreen = window.innerWidth > 840 ? false : true;
+
+      this.populateColumnList();
+
+      this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
+
+    }
+    else{
+      this.ts.resetTreatmentList();
+    }
+
+
   }
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+}
 
-  private getEmptyPatient(): FormGroup {
 
-
-    const returnGroup = this.fb.group({
-      index: 0,
-      'Emergency number': 0,
-      PatientId: 0,
-      'Tag number': '',
-      Species: '',
-      Age: '',
-      'Caller name': '',
-      Number: 0,
-      'Call date': '',
-      'ABC status': '',
-      'Release ready': false,
-      'Release status': '',
-      Temperament: '',
-      'Treatment priority': 0,
-      'Moved to': 0,
-      showOther: false,
-      treatedToday: false
-    });
-
-    return returnGroup;
-  }
 
   private populateColumnList() : void {
 
-    this.dropdown.getTreatmentListAreas()
+    this.dropdown.getTreatmentAreas()
     .pipe(
       take(1)
     ).subscribe(areaList => {
-      this.otherAreas = areaList.filter(areaGroup => !areaGroup.TreatmentListMain)[0].AreaList
-                                                                                        .filter(area => area.areaName !== this.areaName);
+
+      this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName && !area.mainArea);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
-      const mainAreas = areaList.filter(areaGroup => areaGroup.TreatmentListMain)[0].AreaList
-                                                              .filter(area => area.areaName !== this.areaName)
-                                                              .map(area => ({name: area.areaName, areaId: area.areaId || null, type: 'checkbox'}));
+      const mainAreas:Column[] = [];
 
-        mainAreas.unshift({name: 'Rel./Died', areaId: null, type: 'button'});
-        mainAreas.unshift({name: 'Treatment priority', areaId: null, type: 'select'});
-        mainAreas.unshift({name: 'Tag number', areaId: null, type: 'text'});
-        mainAreas.unshift({name: 'index', areaId: null, type: 'text'});
+      if(!this.smallScreen){
 
-        mainAreas.push({name: 'Other', areaId: null, type: 'checkbox'});
-        mainAreas.push({name: 'complete', areaId: null, type: 'button'});
+          mainAreas.push({name: 'index', type: 'text'});
+          mainAreas.push({name: 'complete', type: 'button'});
+
+      }
+
+          mainAreas.push({name: 'Tag number', type: 'text'});
+          mainAreas.push({name: 'Treatment priority', type: 'select'});
+          mainAreas.push({name: 'Rel./Died', type: 'button'});
+
+      if(!this.smallScreen){
+
+          const areas = areaList.filter(area => area.areaName !== this.area?.areaName && area.mainArea)
+          .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
+
+          mainAreas.push(...areas);
+
+          mainAreas.push({name: 'Other', type: 'checkbox'});
+      }
 
       this.columns.next(mainAreas);
-    });
 
-  }
-
-
-  private loadTreatmentList(areaName:string) {
-
-    this.census.getPatientDetailsByArea(areaName).then((response: ReportPatientRecord[]) => {
-
-      response ?
-        response = response.map(patient => {
-
-          const patientObject = JSON.parse(JSON.stringify(patient));
-
-          patient['ABC status'] = ABCStatus[patientObject['ABC status']];
-          patient['Release status'] = ReleaseStatus[patientObject['Release status']];
-          // eslint-disable-next-line @typescript-eslint/dot-notation
-          patient['Temperament'] = Temperament[patientObject['Temperament']];
-          // patient['Treatment priority'] = TreatmentPriority[patientObject['Treatment priority']];
-          // eslint-disable-next-line @typescript-eslint/dot-notation
-          patient['Age'] = Age[patientObject['Age']];
-
-          return patient;
-
-        })
-        :
-        response = [];
-
-      response.sort((a, b) => {
-
-        let sortResult = 0;
-
-        // if (this.getTreatmentPriority(a['Treatment priority']) === this.getTreatmentPriority(b['Treatment priority'])) {
-        if ((a['Treatment priority'] || 999) === (b['Treatment priority'] || 999)) {
-
-
-          sortResult = a['Tag number'] < b['Tag number'] ? -1 : 1;
-        }
-        else {
-
-          sortResult = (a['Treatment priority'] || 999) > (b['Treatment priority'] || 999) ?
-            1 : -1;
-
-        }
-        return sortResult;
-      });
-
-      this.treatmentListForm.removeControl('treatmentList');
-      this.treatmentListForm.addControl('treatmentList', this.getTreatmentListForm(response));
-      this.treatmentListArray = this.treatmentListForm.get('treatmentList') as FormArray;
-
-      //this.patientRecords.sortingDataAccessor = (item: ReportPatientRecord, columnHeader: string) => {
-
-      //  switch (columnHeader) {
-      //    case 'Treatment priority':
-      //      return (item['Treatment priority'] + '').toString();
-      //    default:
-
-      //      const newObj = JSON.parse(JSON.stringify(item));
-
-      //      return newObj[columnHeader];
-      //  }
-
-      //};
-
-
-      //this.patientRecords = new MatTableDataSource(sortedTreatmentList.controls);
-      //this.patientRecords.sort = this.sort;
-      this.patientRecords.next(this.treatmentListArray.controls);
-      this.showSpinner = false;
-      this.changeDetector.detectChanges();
-
+      if(this.incomingList){
+        this.printService.onDataReady('treatment-list');
+      }
 
 
     });
 
-
-  }
-
-  getTreatmentListForm(response: ReportPatientRecord[]) : FormArray {
-
-    const returnArray = this.fb.array([]);
-
-    response.forEach(() => returnArray.push(this.getEmptyPatient()));
-
-    returnArray.patchValue(response);
-
-    return returnArray;
-
   }
 
 
-  print(){
-
-    // this.dialogRef.close();
-
-    // this.columns.subscribe(printColumns => {
-
-    //  this.patientRecords.connect().subscribe(sortedData => {
-
-    //    console.log(sortedData.values);
-
-    //    const printContent: CensusPrintContent = {
-    //      area: this.areaName,
-    //      displayColumns: printColumns.map(column => column.name),
-    //      printList: []
-    //     };
-
-    //    // this.printService.sendCensusListToPrinter(JSON.stringify(printContent));
-
-    //  });
-    // });
-  }
-
-  treatmentLayout(){
-
-    this.populateColumnList();
+  receiveMessage(){
+  // TODO On incoming message, search through the treatment lists, find any existing records and remove it. Then add the new one.
 
   }
 
-  censusLayout(){
+  toggleTreatment(row:AbstractControl){
 
-    this.columns.next([
-      {name: 'index', areaId: null,  type: 'string'},
-      {name: 'Emergency number', areaId: null,  type: 'string'},
-      {name: 'Tag number', areaId: null,  type: 'string'},
-      {name: 'Species', areaId: null,  type: 'string'},
-      {name: 'Caller name', areaId: null,  type: 'string'},
-      {name: 'Number', areaId: null,  type: 'string'},
-      {name: 'Call date', areaId: null,  type: 'string'}]);
+    const treated = row.get('treatedToday');
 
-  }
-
-  toggleTreatment(row:ReportPatientRecord){
-
-    if(!row.treatedToday){
-      row.treatedToday = !row.treatedToday;
-
+    if(!treated?.value){
+      treated?.setValue(!treated.value);
     }
 
+    row.get('saving')?.setValue(true);
     this.openTreatmentDialog(row);
 
   }
 
-  openTreatmentDialog(row:ReportPatientRecord): void {
+  openTreatmentDialog(row:AbstractControl): void {
 
     const dialogRef = this.dialog.open(TreatmentRecordComponent, {
         width: '650px',
         data: {
-          patientId: row.PatientId,
+          patientId: row.get('PatientId')?.value,
           treatmentId: 0
         },
     });
 
-    // dialogRef.afterClosed().subscribe(result => {
+     dialogRef.afterClosed().subscribe(result => {
 
-    //    if (result) {
+      this.startSave(row);
 
-    //      console.log(result);
+        if (result) {
 
-    //    }
-    // });
+          console.log(result);
+
+        }
+     });
 }
+
+  private startSave(row: AbstractControl) {
+    row.get('saving')?.setValue(true);
+    row.get('saved')?.setValue(false);
+    this.changeDetector.detectChanges();
+  }
+
+  private endSave(row: AbstractControl) {
+    row.get('saving')?.setValue(false);
+    row.get('saved')?.setValue(true);
+
+    this.changeDetector.detectChanges();
+
+    setTimeout(() => {
+      row.get('saved')?.setValue(false);
+      this.changeDetector.detectChanges();
+    }, 2500 );
+
+
+  }
 
 cellClicked(cell:string, value:any){
 
@@ -348,44 +343,55 @@ openHospitalManagerRecord(tagNumber: string){
 
 }
 
-priorityChanged(element: ReportPatientRecord, event:any){
-
-  const v = this.treatmentListForm.get('treatmentList') as FormArray;
-
-  console.log(v.at(0).get('Treatment priority')?.value);
-  let priorityObject: PriorityObject = {
-    patientId: element.PatientId,
-    priorityValueId: event.value,
-    updatePriorityFlag: true
-  }
-
-  this.patientService.updatePatientPriority(priorityObject);
-
-}
-
 quickUpdate(patientId: number, tagNumber: string | undefined) {
-  this.dialog.open(PatientEditDialog, {
+
+  const dialogRef = this.dialog.open(PatientEditDialog, {
       width: '500px',
       data: { patientId, tagNumber },
   });
-}
 
-toggleAddRecord(){
-  this.addRecordVisible = !this.addRecordVisible;
-}
+  dialogRef.afterClosed().subscribe(result => {
 
-areaChanged(element: ReportPatientRecord, event: MatSelectChange ){
+    if (result) {
 
-  const v = this.treatmentListForm.get('treatmentList') as FormArray;
+        console.log(result);
 
-  console.log(v.at(0).get('Moved to')?.value);
+      }
+   });
 
-}
-
-areaCheckboxToggled(areaId:number|null, index: number){
-
-  this.treatmentListArray.at(index).get('Moved to')?.setValue(areaId);
 
 }
 
+areaChanged(areaId:number|undefined, index: number){
+
+  const acceptedArray = this.treatmentListForm.get('accepted') as FormArray;
+
+  const movedPatient = acceptedArray.at(index);
+
+  movedPatient.get('Moved to')?.setValue(areaId);
+  this.changeDetector.detectChanges();
+
+  this.moveOut(movedPatient);
+
 }
+
+moveOut(currentPatient: AbstractControl) : void {
+
+  this.startSave(currentPatient);
+
+  this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
+
+
+    if(result[0].success === -1){
+      this.snackbar.errorSnackBar('Error moving patient: please see admin', 'OK');
+    }
+
+    this.endSave(currentPatient);
+
+  });
+
+}
+
+
+}
+

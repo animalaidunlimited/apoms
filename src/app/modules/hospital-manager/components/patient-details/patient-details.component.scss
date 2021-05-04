@@ -28,5 +28,13 @@ mat-radio-button {
 }
 
 .extra-wide {
-    width: 85%;
+    width: 73%;
+    margin-left: 120px;
+}
+
+@media(max-width: 600px) { 
+    .extra-wide {
+        max-width: 100% !important;
+        margin-left: 20px;
+    } 
 }
