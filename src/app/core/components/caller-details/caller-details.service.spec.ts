@@ -17,8 +17,7 @@ describe('CallerDetailsService', () => {
                 FormsModule,
                 ReactiveFormsModule
             ],
-            providers: [CallerDetailsService],
-            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+            providers: [CallerDetailsService]
         }),
     );
 

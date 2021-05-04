@@ -6,6 +6,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MaterialModule } from 'src/app/material-module';
 import { sideNavPath } from 'src/app/nav-routing';
 
 import { TreatmentListPageComponent } from './treatment-list-page.component';
@@ -21,6 +22,7 @@ describe('TreatmentListPageComponent', () => {
     await TestBed.configureTestingModule({imports: [
       HttpClientTestingModule,
       FormsModule,
+      MaterialModule,
       ReactiveFormsModule,
       BrowserAnimationsModule,
       RouterTestingModule.withRoutes([
@@ -55,5 +57,5 @@ describe('TreatmentListPageComponent', () => {
   afterAll(() => {
     TestBed.resetTestingModule();
   });
-  
+
 });

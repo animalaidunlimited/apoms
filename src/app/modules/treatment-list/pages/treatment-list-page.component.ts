@@ -31,30 +31,33 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
     private printService: PrintTemplateService,
     private fb: FormBuilder) {
 
+    this.areas = this.fb.group({
+      area: {},
+      date: this.selectedDate
+    });
+
     this.isPrinting = this.printService.getIsPrinting();
 
     this.treatmentAreas = this.dropdown.getTreatmentAreas()
                               .pipe(
                                 take(1),
                                 map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));
-
   }
 
   ngOnInit(): void {
 
-    this.areas = this.fb.group({
-      area: '',
-      date: this.selectedDate
-    });
-
-    this.treatmentList.refreshing.subscribe(val => {
-      this.refreshing = val;
-      this.changeDetector.detectChanges();
-    });
+    this.treatmentList.refreshing
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(val => {
+          this.refreshing = val;
+          this.changeDetector.detectChanges();
+        });
 
     this.areas.get('area')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(value => this.currentArea = value);
+        .subscribe(value => {
+          this.currentArea = value;
+        });
 
     this.areas.get('date')?.valueChanges
     .pipe(takeUntil(this.ngUnsubscribe))
