@@ -5,7 +5,7 @@ import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions,ProblemDropdownResponse } from 'src/app/core/models/responses';
