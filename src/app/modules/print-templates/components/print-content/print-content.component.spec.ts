@@ -1,4 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -41,7 +42,8 @@ describe('PrintContentComponent', () => {
         provide: ActivatedRoute,
           useValue: fakeActivatedRoute
         }],
-      declarations: [ PrintContentComponent ]
+      declarations: [ PrintContentComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });

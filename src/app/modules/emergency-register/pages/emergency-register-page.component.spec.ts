@@ -1,4 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,7 +19,8 @@ describe('EmergencyRegisterPageComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 RouterTestingModule,
-                AngularFireModule.initializeApp(environment.firebase)]
+                AngularFireModule.initializeApp(environment.firebase)],
+                schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

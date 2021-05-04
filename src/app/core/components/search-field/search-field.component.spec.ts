@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
@@ -57,7 +57,8 @@ describe('SearchFieldComponent', () => {
         useValue: mockDialogRef
         }
       ],
-      declarations: [ SearchFieldComponent, MockSearchFieldComponent ]
+      declarations: [ SearchFieldComponent, MockSearchFieldComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     }).compileComponents();
   });
 

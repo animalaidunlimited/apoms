@@ -8,6 +8,7 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { PatientCallDialogComponent } from './patient-call-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientCallDialogComponent', () => {
     let component: PatientCallDialogComponent;
@@ -40,6 +41,7 @@ describe('PatientCallDialogComponent', () => {
                 },
             ],
             declarations: [PatientCallDialogComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

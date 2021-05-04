@@ -5,6 +5,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 describe('AppComponent', () => {
@@ -18,6 +19,7 @@ describe('AppComponent', () => {
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase), ],
             declarations: [AppComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

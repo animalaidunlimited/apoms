@@ -20,7 +20,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() patientForm!: FormGroup;
+  @Input() patientForm!: any;
+
+  //patientForm:FormGroup;
 
   // @Input() patientForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
@@ -44,7 +46,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
-  ) { }
+  ) {
+
+   }
 
 
   @HostListener('document:keydown.control.o', ['$event'])

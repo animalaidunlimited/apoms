@@ -6,6 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('RescueDetailsComponent', () => {
     let component: RescueDetailsComponent;
@@ -21,6 +22,7 @@ describe('RescueDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [RescueDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

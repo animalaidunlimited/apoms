@@ -4,6 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { LocationDetailsComponent } from './location-details.component';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('LocationDetailsComponent', () => {
     let component: LocationDetailsComponent;
@@ -18,6 +19,7 @@ describe('LocationDetailsComponent', () => {
             ],
 
             declarations: [LocationDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

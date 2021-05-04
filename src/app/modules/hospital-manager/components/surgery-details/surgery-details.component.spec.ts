@@ -10,6 +10,7 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import { AddSurgeryDialogComponent } from '../add-surgery-dialog/add-surgery-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SurgeryDetailsComponent', () => {
     let component: SurgeryDetailsComponent;
@@ -41,6 +42,7 @@ describe('SurgeryDetailsComponent', () => {
                 }
             ],
             declarations: [SurgeryDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

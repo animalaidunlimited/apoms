@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ThemePalette } from '@angular/material/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -18,16 +17,12 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  areas:FormGroup;
-  treatmentAreas:Observable<TreatmentArea[]>;
+  areas!:FormGroup;
   currentArea:TreatmentArea = {areaId: 0, areaName: ''};
-
   isPrinting: BehaviorSubject<boolean>;
-
-  //refreshing: BehaviorSubject<boolean>;
   refreshing = false;
-
   selectedDate: string | Date = getCurrentDateString();
+  treatmentAreas:Observable<TreatmentArea[]>;
 
   constructor(
     private dropdown: DropdownService,
@@ -43,15 +38,14 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
                                 take(1),
                                 map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));
 
-    this.areas = this.fb.group({
-      area: '',
-      date: this.selectedDate
-      });
-
-
   }
 
   ngOnInit(): void {
+
+    this.areas = this.fb.group({
+      area: '',
+      date: this.selectedDate
+    });
 
     this.treatmentList.refreshing.subscribe(val => {
       this.refreshing = val;

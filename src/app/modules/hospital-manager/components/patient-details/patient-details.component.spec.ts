@@ -6,6 +6,7 @@ import { PatientDetailsComponent } from './patient-details.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientDetailsComponent', () => {
     let component: PatientDetailsComponent;
@@ -21,6 +22,7 @@ describe('PatientDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [PatientDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

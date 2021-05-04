@@ -23,7 +23,9 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
-  @Input() patientForm!: any;
+  @Input() patientFormInput!: any;
+
+  patientForm: FormGroup;
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
@@ -85,7 +87,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private dialog: MatDialog,
     private printService: PrintTemplateService,
     private userOptions: UserOptionsService,
-  ) { }
+  ) {
+
+    this.patientForm = this.patientFormInput as FormGroup;
+   }
 
   ngOnInit(): void {
 
@@ -95,11 +100,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.animalType = this.patientForm.get('animalType') as AbstractControl;
 
+
     this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
       startWith(''),
       map(animalType => typeof animalType === 'string'? animalType : animalType.AnimalType),
       switchMap((animalType:string) => animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes)
     );
+
 
     this.filteredProblems$ = this.problemInput.valueChanges.pipe(
       startWith(''),
@@ -119,7 +126,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   ngAfterViewInit(): void{
 
-    this.patientForm.get('problems').valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
+    this.patientForm.get('problems')?.valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
       if(this.chipList.errorState){
         this.chipList.errorState = false ;
       }
@@ -179,7 +186,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     const problemIndex = this.problemsArray.controls.findIndex(
         problem =>
-            problem.get('problemId')?.value === event.option.value,
+            problem.get('problemId')?.value === event?.option.value,
     );
 
     if (problemIndex === -1) {
@@ -224,14 +231,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
 
-  openMediaDialog(mediaObject:MediaItem){
+  openMediaDialog(patientForm:FormGroup){
     // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
     const dialogRef = this.dialog.open(MediaDialogComponent, {
       minWidth: '50%',
       data: {
-          tagNumber: this.patientForm.get('tagNumber')?.value,
-          patientId: this.patientForm.get('patientId')?.value,
-          mediaItem: mediaObject
+          tagNumber: patientForm.get('tagNumber')?.value,
+          patientId: patientForm.get('patientId')?.value,
+          mediaItem: undefined
       }
     });
   }

@@ -54,7 +54,7 @@
     <div style="width: 90%;" fxLayout="row wrap" fxLayoutGap="10px" fxFlexOrder.gt-sm="4">
       <emergency-case-outcome style="width: 50%;" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field *ngIf="patientForm.get('isAdmission').value" fxFlexOrder.gt-sm="5">
+    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value" fxFlexOrder.gt-sm="5">
       <mat-label>Admission area</mat-label>
       <mat-select formControlName="admissionArea"
       [errorStateMatcher]="errorMatcher">
