@@ -4,7 +4,7 @@
             <app-logo></app-logo>
         </div>
         <mat-nav-list>
-            <app-nav-menu-item *ngFor="let navigationItem of getNavigationItems()"
+            <app-nav-menu-item *ngFor="let navigationItem of getNavigationItems() | async"
                                [navigationItem]="navigationItem"></app-nav-menu-item>
         </mat-nav-list>
     </mat-sidenav>

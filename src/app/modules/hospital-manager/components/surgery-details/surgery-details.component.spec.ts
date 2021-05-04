@@ -19,6 +19,7 @@ describe('SurgeryDetailsComponent', () => {
         close: jasmine.createSpy('close'),
     };
     const dialogData = {};
+
     let dialog: MatDialogRef<AddSurgeryDialogComponent>;
 
     beforeEach(waitForAsync(() => {
@@ -37,7 +38,7 @@ describe('SurgeryDetailsComponent', () => {
                 {
                     provide: MatDialogRef,
                     useValue: mockDialogRef,
-                },
+                }
             ],
             declarations: [SurgeryDetailsComponent],
         }).compileComponents();

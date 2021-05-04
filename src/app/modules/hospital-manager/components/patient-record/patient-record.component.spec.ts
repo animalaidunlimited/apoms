@@ -6,6 +6,9 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -26,6 +29,10 @@ describe('PatientRecordComponent', () => {
         icon: 'close',
     };
 
+    const permissions$ = of({componentPermissionLevel: 2});
+
+    const fakeActivatedRoute = { data: permissions$ };
+
     const formBuilder: FormBuilder = new FormBuilder();
 
     beforeEach(async () => {
@@ -34,11 +41,15 @@ describe('PatientRecordComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 MaterialModule,
+                RouterTestingModule,
                 FormsModule,
                 ReactiveFormsModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
-            providers: [{ provide: FormBuilder, useValue: formBuilder }],
+            providers: [
+                { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+                { provide: FormBuilder, useValue: formBuilder }
+            ]
         }).compileComponents();
     });
 

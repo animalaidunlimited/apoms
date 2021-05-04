@@ -1,251 +1,164 @@
-    <fieldset class="form-sub-group">
+<form [formGroup]="treatmentListForm">
 
-      <mat-spinner *ngIf="showSpinner" style="margin:0 auto;"></mat-spinner>
+<fieldset class="form-sub-group">
 
-      <legend class="legend ">{{areaName}} - ({{treatmentListArray.controls?.length}})</legend>
+      <mat-spinner *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>
 
+      <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
+      <div *ngFor="let movedRecords of movedLists.controls">
 
-      <button type="button" mat-raised-button color="primary" (click)="treatmentLayout()">Treatment layout</button>
+        <app-moved-treatment-record [movedRecordsInput]="movedRecords" [area]="area"></app-moved-treatment-record>
 
-      <button type="button" mat-raised-button color="primary" (click)="censusLayout()">Census layout</button>
+      </div>
 
-      <button type="button" mat-mini-fab color="primary" (click)="print()"><mat-icon>local_printshop</mat-icon></button>
+  <table mat-table [dataSource]="accepted" formArrayName="accepted" style="margin-top: 15px;">
 
-      <form [formGroup]="treatmentListForm">
+      <!-- Header row first group -->
+  <ng-container matColumnDef="header-row-patient-details-group">
+    <th mat-header-cell *matHeaderCellDef
+        style="text-align: center"
+        [attr.colspan]="5">
+      Patient details
+    </th>
+  </ng-container>
 
+  <!-- Header row second group -->
+  <ng-container matColumnDef="header-row-moved-out-group">
+    <th mat-header-cell *matHeaderCellDef
+    class="moved-out-group" [attr.colspan]="5"> Move out to</th>
+  </ng-container>
 
-              <table mat-table [dataSource]="patientRecords" formArrayName="treatmentList">
+  <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']"></tr>
 
+    <tr mat-header-row *matHeaderRowDef="(displayedColumns | async)"></tr>
+    <tr mat-row *matRowDef="let row; let i = index; columns: (displayedColumns | async);"></tr>
 
-                <tr mat-header-row *matHeaderRowDef="(displayedColumns | async)"></tr>
-                <tr mat-row *matRowDef="let row; let i = index; columns: (displayedColumns | async);"></tr>
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef class="very-small-column"> Count </th>
+      <td mat-cell *matCellDef="let index = index" class="very-small-column"> {{index + 1}} </td>
+    </ng-container>
 
-                <ng-container matColumnDef="index">
-                  <th mat-header-cell *matHeaderCellDef class="flex-100 start"> Count </th>
-                  <td mat-cell *matCellDef="let index = index" class="flex-100 start"> {{index + 1}} </td>
-                </ng-container>
+    <ng-container matColumnDef="complete">
+      <th mat-header-cell *matHeaderCellDef class="complete-column"> Treated </th>
+      <td mat-cell *matCellDef="let row;" class="small-column">
 
-                <!--DYNAMIC FIELDS START-->
-
-                <ng-container *ngFor="let column of ( filteredColumns | async)">
-
-                  <!-- Column definitions -->
-                  <ng-container [matColumnDef]="column.name">
-
-                    <!--<th mat-header-cell *matHeaderCellDef> {{column.name}} </th>
-                    <td mat-cell *matCellDef="let row; let index = index"  [formGroupName]="index">
--->
-
-
-                      <th mat-header-cell *matHeaderCellDef
-                      [class.flex-100]="column.name !== 'Treatment priority'"
-                      [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
-                      [class.flex-175]="column.name == 'Treatment priority'">
-                        {{column.name}}
-                      </th>
-
-                      <td mat-cell *matCellDef="let row; let index = index;"
-                      [formGroupName]="index"
-                      [class.flex-100]="column.name !== 'Treatment priority'"
-                      [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
-                      [class.flex-175]="column.name == 'Treatment priority'"
-                      [class.link]="column.name === 'Tag number'">
-
-                      <div *ngIf="column.type === 'text'">
-                        {{row.get(column.name).value}}
-                      </div>
+    <div style="align-items: center; text-align: center;" *ngIf="isPrinting">
+      <mat-radio-button style="text-align: center;"></mat-radio-button>
+    </div>
 
 
-                      <div *ngIf="column.type === 'select'" class="flex-175 start">
-                        <mat-form-field>
-                        <mat-select
-                        [formControlName]="column.name"
-                        (selectionChange)="priorityChanged(row, $event)">
-                            <mat-option>N/A</mat-option>
-                            <mat-option [value]="2">High</mat-option>
-                            <mat-option [value]="3">Medium</mat-option>
-                            <mat-option [value]="4">Low</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                      </div>
+        <mat-chip-list>
+        <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
+          <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
 
-                      <div *ngIf="column.type === 'button'">
+      </td>
+    </ng-container>
 
-                        <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
-                        (click)="quickUpdate(row.PatientId, row['Tag number'])">
-                            <mat-icon>event</mat-icon>
-                        </button>
+    <!--DYNAMIC FIELDS START-->
 
-                      </div>
+    <ng-container *ngFor="let column of ( filteredColumns | async)">
 
-                      <div *ngIf="column.type === 'checkbox'">
-                        <mat-checkbox [checked]="column.areaId === treatmentListArray.at(index).get('Moved to')?.value" (change)="areaCheckboxToggled(column.areaId, index)"></mat-checkbox>
+      <ng-container [matColumnDef]="column.name">
 
-                      </div>
-
-
-
-                    </td>
-                  </ng-container>
-
-
-                </ng-container>
-
-                <!--DYNAMIC FIELDS END-->
-
-                <ng-container matColumnDef="Other">
-                  <th mat-header-cell *matHeaderCellDef class="flex-175 start"> Other </th>
-
-                  <td mat-cell *matCellDef="let row; let index = index;"
-                  [formGroupName]="index"
-                  class="flex-175 start">
-                    <mat-form-field>
-                    <mat-select
-                    formControlName="Moved to"
-                    (selectionChange)="areaChanged(row, $event)">
-
-                      <mat-option>N/A</mat-option>
-                      <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  </td>
-
-                </ng-container>
-
-                <ng-container matColumnDef="complete">
-                  <th mat-header-cell *matHeaderCellDef> Treated </th>
-                  <td mat-cell *matCellDef="let row">
-                    <mat-chip-list>
-                    <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
-                      <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
-                    </mat-chip>
-                  </mat-chip-list>
-                  </td>
-                </ng-container>
-
-
-
-
-            </table>
-
-
-
-
-
-        <!--
-
-        <ng-container matColumnDef="index">
-          <th mat-header-cell *matHeaderCellDef class="flex-100 start"> Count </th>
-          <td mat-cell *matCellDef="let index = index" class="flex-100 start"> {{index + 1}} </td>
-        </ng-container>
-
-        <ng-container [matColumnDef]="column.name" formArrayName="treatmentListForm.get('treatmentList')" *ngFor="let column of ( filteredColumns | async); let i=index;">
-
-          <ng-container formGroupName="{{i}}">
-
-          <th mat-header-cell mat-sort-header *matHeaderCellDef
-          [class.flex-100]="column.name !== 'Treatment priority'"
-          [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
-          [class.flex-175]="column.name == 'Treatment priority'">
-            {{column.name}}
+          <th mat-header-cell *matHeaderCellDef
+          [class.small-column]="column.name !== 'Treatment priority'"
+          [class.center-columnm]="column.name !== 'Tag number'"
+          [class.width-175]="column.name == 'Treatment priority'">
+            {{column.abbreviation || column.name}}
           </th>
 
-          <td mat-cell *matCellDef="let row;"
-          [class.flex-100]="column.name !== 'Treatment priority'"
-          [class.flex-center]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
-          [class.flex-175]="column.name == 'Treatment priority'"
+          <td mat-cell *matCellDef="let row; let index = index;"
+          [formGroupName]="index"
+          [class.small-column]="column.name !== 'Treatment priority'"
+          [class.center-columnm]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
+          [class.width-175]="column.name == 'Treatment priority'"
           [class.link]="column.name === 'Tag number'">
 
           <div *ngIf="column.type === 'text'">
+            {{row.get(column.name).value}}
           </div>
 
-          <div *ngIf="column.type === 'select'" class="flex-175 start">
+
+          <div *ngIf="column.type === 'select'" class="width-175 start">
+            <mat-form-field>
             <mat-select
-            (selectionChange)="priorityChanged(row, $event)">
+            [formControlName]="column.name">
                 <mat-option>N/A</mat-option>
                 <mat-option [value]="2">High</mat-option>
                 <mat-option [value]="3">Medium</mat-option>
                 <mat-option [value]="4">Low</mat-option>
             </mat-select>
+          </mat-form-field>
           </div>
 
           <div *ngIf="column.type === 'button'">
 
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
-            (click)="quickUpdate(row.PatientId, row['Tag number'])">
-                <mat-icon>event</mat-icon>
+            <div *ngIf="isPrinting">R / D</div>
+
+            <button *ngIf="!isPrinting" mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
+            (click)="quickUpdate(row.get('PatientId')?.value, row.get('Tag number')?.value)">
+
+                <mat-icon *ngIf="row.get('PatientStatusId')?.value < 2">event</mat-icon>
+                <div *ngIf="row.get('PatientStatusId')?.value > 1">{{row.get('PatientStatus')?.value}}</div>
+
             </button>
 
           </div>
 
-          <div *ngIf="column.type === 'checkbox'">
-            <mat-checkbox (change)="areaCheckboxToggled(column, row, $event)"></mat-checkbox>
+          <div *ngIf="column.type === 'checkbox'" class='checkbox-column' fxLayout="column" fxLayoutAlign="center center">
+
+
+            <mat-radio-group>
+              <mat-radio-button
+                [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
+                (change)="areaChanged(column?.areaId, index)"
+                [value]="column?.areaId">
+              </mat-radio-button>
+
+            </mat-radio-group>
 
           </div>
 
         </td>
+      </ng-container>
 
-        </ng-container>
+    </ng-container>
 
-        </ng-container>
+    <!--DYNAMIC FIELDS END-->
 
-        <ng-container matColumnDef="Other">
-          <th mat-header-cell *matHeaderCellDef class="flex-175 start"> Other </th>
+    <ng-container matColumnDef="Other">
+      <th mat-header-cell *matHeaderCellDef> Other </th>
 
-          <td mat-cell *matCellDef="let row" class="flex-175 start">
-            <mat-select (selectionChange)="areaChanged(row, $event)">
+      <td mat-cell *matCellDef="let row; let index = index;"
+      [formGroupName]="index">
 
-              <mat-option>N/A</mat-option>
-              <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
-            </mat-select>
-          </td>
+      <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
 
-        </ng-container>
+        <mat-form-field>
+          <mat-select
+          (selectionChange)="areaChanged($event?.value, index)"
+          formControlName="Moved to">
 
-        <ng-container matColumnDef="complete">
-          <th mat-header-cell *matHeaderCellDef> Treated </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-chip-list>
-            <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
-              <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
-          </td>
-        </ng-container>
+            <mat-option>N/A</mat-option>
+            <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
+        <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
+        <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
 
-
-        <ng-container matColumnDef="detail-group">
-          <th mat-header-cell *matHeaderCellDef colspan="4"></th>
-        </ng-container>
-
-
-        <ng-container matColumnDef="moved-out-to-group">
-          <th mat-header-cell *matHeaderCellDef colspan="6"> Moved out to </th>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="['detail-group', 'moved-out-to-group']"></tr>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns | async"></tr>
-        <tr mat-row *matRowDef="let row; columns: (displayedColumns | async);"></tr>
-
-
-      </table>-->
-
-    </form>
-
-      <div class="add-record-box" *ngIf="addRecordVisible">
-        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
-          <mat-form-field appearance="fill">
-            <mat-label>TagNumber</mat-label>
-            <input matInput>
-          </mat-form-field>
-        </div>
       </div>
 
+      </td>
 
-      <button mat-fab aria-label="Add new record" class="add-patient-fab" [disabled]="areaName === ''" (click)="toggleAddRecord()"><mat-icon>add</mat-icon></button>
+    </ng-container>
 
-    </fieldset>
 
+</table>
+
+</fieldset>
+
+</form>

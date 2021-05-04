@@ -9,7 +9,7 @@ import {
     MatDialogModule,
 } from '@angular/material/dialog';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
-import { Overlay, OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 

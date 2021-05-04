@@ -6,7 +6,7 @@ import {
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
 
 import { EmergencyDetailsComponent } from './emergency-details.component';
 import { MaterialModule } from 'src/app/material-module';
@@ -45,11 +45,38 @@ describe('EmergencyDetailsComponent', () => {
         component.recordForm = fb.group({
             emergencyDetails: fb.group({
                 emergencyCaseId: [1],
+                callDateTime: [''],
             }),
             callOutcome: fb.group({
                 CallOutcome: [''],
+                CallOutcomeId: []
+            }),
+            patients: fb.array([])
+        });
+        
+        const patient =
+        fb.group({
+            patientId: [],
+            position: [0],
+            animalTypeId: ['', Validators.required],
+            animalType: ['', Validators.required],
+            problems: fb.array([]),
+            tagNumber: [''],
+            duplicateTag: [false, Validators.required],
+            updated: [false, Validators.required],
+            deleted: [false, Validators.required],
+            isAdmission:[false],
+            admissionArea: [],
+            admissionAccepted: [false],
+            callOutcome: fb.group({
+                CallOutcome: [],
+                sameAsNumber: []
             }),
         });
+
+        const patientArray = component.recordForm.get('patients') as FormArray;
+
+        patientArray.push(patient);
 
         fixture.detectChanges();
 

@@ -34,6 +34,15 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     errorMatcher = new CrossFieldErrorMatcher();
     selection = new SelectionModel<any>(false, []);
 
+    @HostListener('document:keydown.meta.shift.n', ['$event'])
+    setMacFocusNumber(event: KeyboardEvent){
+        event.preventDefault();
+        if(navigator.platform.match('Mac')){
+            this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+        }
+    }
+
+    
     constructor(
         private callerService: CallerDetailsService,
         private fb: FormBuilder,

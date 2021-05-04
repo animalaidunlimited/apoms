@@ -5,9 +5,11 @@ import { NavRoute, NavRouteService } from '../../../nav-routing';
 export class Page {
     title: string;
     isChild: boolean;
-    constructor(title:string, isChild:boolean) {
+    userHasPermission: boolean;
+    constructor(title:string, isChild:boolean,userHasPermission:boolean) {
         this.title = title;
         this.isChild = isChild;
+        this.userHasPermission = userHasPermission;
     }
 }
 
@@ -15,10 +17,10 @@ export class Page {
     providedIn: 'root',
 })
 export class NavigationService {
-    
-    private readonly navigationItems: NavRoute[];
+
+    private readonly navigationItems: BehaviorSubject<NavRoute[]>;
     private selectedNavigationItem: NavRoute | undefined = {} as NavRoute;
-    private activePage: Page = new Page('', false);
+    private activePage: Page = new Page('', false,true);
     private navigationStack: Array<Array<string>> = [];
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
@@ -28,12 +30,13 @@ export class NavigationService {
         this.navigationItems = navRouteService.getNavRoutes();
     }
 
-    public getNavigationItems(): NavRoute[] {
+    public getNavigationItems(): BehaviorSubject<NavRoute[]> {
         return this.navigationItems;
     }
 
     public selectNavigationItemByPath(path: string) {
-        this.selectedNavigationItem = this.navigationItems
+        this.navigationItems.subscribe(nav=>
+            this.selectedNavigationItem = nav
             .reduce((flatList:NavRoute[], navItem:NavRoute) => {
                 if (navItem.groupedNavRoutes) {
                     navItem.groupedNavRoutes.forEach(route => {
@@ -44,7 +47,8 @@ export class NavigationService {
                 }
                 return flatList;
             }, [])
-            .find(navItem => navItem.path === path);
+            .find((navItem:NavRoute) => navItem.path === path)
+        );
     }
 
     public getSelectedNavigationItem(): NavRoute | undefined {
@@ -114,11 +118,12 @@ export class NavigationService {
         title: string,
         url: string[],
         isChild: boolean = false,
+        userHasPermission: boolean = false
     ) {
 
-        if (url.length > 0) {
+        if (url.length > 0 && userHasPermission) {
             isChild ? this.pushToStack(url) : this.resetStack(url);
         }
-        this.activePage = new Page(title, isChild);
+        this.activePage = new Page(title, isChild, userHasPermission);
     }
 }

@@ -1,5 +1,7 @@
 import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -12,7 +14,7 @@ export const sideNavPath = 'nav';
 
 export const navRoutes: NavRoute[] = [
     {
-        data: { title: 'Home' , userHasPermission: false},
+        data: { title: 'Home', permissionId:[], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'home',
         path: 'home',
         loadChildren: () =>
@@ -26,7 +28,7 @@ export const navRoutes: NavRoute[] = [
         pathMatch: 'full',
     },
     {
-        data: { title: 'Emergency Register' },
+        data: { title: 'Emergency Register', permissionId:[1,2], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'emergency-register',
@@ -36,7 +38,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.EmergencyRegisterPageModule)
     },
     {
-        data: { title: 'Hospital Manager', permissionId: 4 },
+        data: { title: 'Hospital Manager', permissionId:[3,4], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'hospital-manager',
@@ -46,7 +48,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.HospitalManagerPageModule)
     },
     {
-        data: {title: 'Treatment List'},
+        data: {title: 'Treatment List', permissionId:[7,8], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'treatment-list',
@@ -55,16 +57,7 @@ export const navRoutes: NavRoute[] = [
             then(m => m.TreatmentListPageModule)
     },
     {
-        data: { title: 'Census' },
-        icon: 'none',
-        group: '',
-        path: 'census',
-        loadChildren: () =>
-            import('./modules/census/census-page.module')
-            .then(m => m.CensusPageModule)
-    },
-    {
-        data: { title: 'Case List' },
+        data: { title: 'Case List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: '',
         group: 'Street Treat',
         path: 'street-treat',
@@ -74,7 +67,7 @@ export const navRoutes: NavRoute[] = [
                 .then(m => m.StreetTreatPageModule)
     },
     {
-        data: { title: 'Teams' },
+        data: { title: 'Teams', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Street Treat',
         path: 'teams',
@@ -83,7 +76,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.TeamsPageModule)
     },
     {
-        data: { title: 'Reporting' },
+        data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'reporting',
@@ -92,7 +85,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.ReportingPageModule)
     },
     {
-        data: { title: 'Settings' },
+        data: { title: 'Settings' ,permissionId:[], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'settings_applications',
         group: 'Settings',
         path: 'settings',
@@ -101,7 +94,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.SettingsPageModule)
     },
     {
-        data: { title: 'User Admin' },
+        data: { title: 'User Admin' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'users',
@@ -110,7 +103,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule)
     },
     {
-        data: { title: 'Organisations' },
+        data: { title: 'Organisations' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'organisations',
@@ -119,7 +112,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule)
     },
     {
-        data: { title: 'Print templates' },
+        data: { title: 'Print templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',
@@ -133,49 +126,72 @@ export const navRoutes: NavRoute[] = [
 @Injectable({
     providedIn: 'root',
 })
-
 export class NavRouteService {
     navRoute!: Route;
-    navRoutes: NavRoute[];
+    navRoutes: BehaviorSubject<NavRoute[]> = new BehaviorSubject<NavRoute[]>([]);
+    userPermissionArray!: number[];
+    permission!: boolean;
+    userPermissions!: number[];
 
-    constructor(router: Router) {
+    constructor(router: Router, private permissionService: EvaluatePermissionService) {
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
         if(routes){
+
             this.navRoute = routes;
         }
 
-        if(!this.navRoute?.children){
+        if(!this.navRoute.children){
             throw new Error ('No routes detected');
         }
+        this.navRoute.children?.forEach(routeVal=> {
 
-        this.navRoutes = this.navRoute?.children.filter(route => route.data && route.data.title)
-            .reduce((groupedList: NavRoute[], route: NavRoute) => {
-                if (route.group) {
-                    const group: NavRoute | undefined = groupedList.find(navRoute => {
-                        return (
-                            navRoute.group === route.group &&
-                            navRoute.groupedNavRoutes !== undefined
-                        );
-                    });
+            this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
 
-                    if (group) {
-                        group.groupedNavRoutes?.push(route);
-                    } else {
-                        groupedList.push({
-                            group: route.group,
-                            groupedNavRoutes: [route],
-                        });
-                    }
-                } else {
-                    groupedList.push(route);
+                if(routeVal.data && val) {
+                    routeVal.data.componentPermissionLevel.next(val);
                 }
-                return groupedList;
-            }, []);
+                this.navRoutes.next(this.getNavRouteList() || []);
+            });
+
+        });
+
+
     }
 
-    public getNavRoutes(): NavRoute[] {
+    private getNavRouteList() {
+        return this.navRoute.children
+                                ?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel)
+                                .reduce((groupedList: NavRoute[], route: NavRoute) => {
+
+                                    if (route.group) {
+                                        const group: NavRoute | undefined = groupedList.find(navRoute => {
+                                            return (
+                                                navRoute.group === route.group &&
+                                                navRoute.groupedNavRoutes !== undefined
+                                            );
+                                        });
+
+                                        if (group) {
+                                            group.groupedNavRoutes?.push(route);
+                                        } else {
+                                            groupedList.push({
+                                                group: route.group,
+                                                groupedNavRoutes: [route],
+                                            });
+                                        }
+                                    } else {
+                                        groupedList.push(route);
+                                    }
+                                    return groupedList;
+                                }, []);
+    }
+
+    getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }
+
+
+
 }

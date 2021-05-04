@@ -15,3 +15,16 @@
     flex-basis: 0;
     background-color: lightsteelblue;
 }
+
+.textBoxWrapper {
+    width: 310% !important;
+}
+
+  
+@media(max-width: 600px) {
+
+    .textBoxWrapper {
+        max-width: 170% !important;
+    }
+
+}

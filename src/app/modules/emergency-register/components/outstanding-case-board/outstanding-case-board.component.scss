@@ -118,6 +118,7 @@ $standard-width: 180px;
     margin-bottom: 5px;
 }
 
+
 .telephone-dash {
     stroke: #607d8b;
     stroke-width: 4;
@@ -290,6 +291,10 @@ $standard-width: 180px;
         }
     }
 
+    mat-form-field.mat-form-field.search-box {
+        max-width: 100%;
+    }
+
 
     .filterWrapper{
         position: absolute !important;
@@ -322,7 +327,9 @@ $standard-width: 180px;
         width: 100% !important;
     }
 
-
+    .outstandingExpansionWrapper {
+        padding-left: 15px;
+    }
 
 }
 }

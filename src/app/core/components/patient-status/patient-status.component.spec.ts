@@ -6,14 +6,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
     ReactiveFormsModule,
     FormBuilder,
-    FormsModule,
-    Validators,
+    FormsModule
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OVERLAY_PROVIDERS } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Overlay } from '@angular/cdk/overlay';
 
 describe('PatientStatusComponent', () => {
     let component: PatientStatusComponent;
@@ -28,7 +27,7 @@ describe('PatientStatusComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
-            providers: [DatePipe, OVERLAY_PROVIDERS, MatSnackBar],
+            providers: [DatePipe, Overlay, MatSnackBar],
             declarations: [PatientStatusComponent],
         }).compileComponents();
     }));

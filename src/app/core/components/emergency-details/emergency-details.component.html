@@ -1,10 +1,10 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
-    <legend class="legend">Emergency Details</legend>
+    <legend class="legend">Emergency details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" ngStyle.gt-md="min-width: 61.5rem;" fxLayoutGap="20px" fxLayoutAlign="center end">
 
-    <mat-form-field>
+        <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
             <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
@@ -26,7 +26,7 @@
 
     <mat-form-field>
         <mat-label>Dispatcher</mat-label>
-        <mat-select tabindex="10" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
+        <mat-select tabindex="11" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
             <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
                 {{dispatcher.FirstName}}
             </mat-option>
@@ -35,7 +35,7 @@
 
         <mat-form-field>
             <mat-label>Code</mat-label>
-            <mat-select tabindex="9" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
+            <mat-select tabindex="10" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
                 <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId">
 
@@ -63,4 +63,4 @@
 
     </div>
 
-  </fieldset>
+</fieldset>
