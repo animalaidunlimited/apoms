@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('LoginPageComponent', () => {
     let component: LoginPageComponent;
@@ -25,8 +26,9 @@ describe('LoginPageComponent', () => {
                 BrowserAnimationsModule,
                 FormsModule,
                 HttpClientTestingModule,
-                RouterTestingModule,
+                RouterTestingModule
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

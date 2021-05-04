@@ -8,6 +8,7 @@ import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { MatChipsModule } from '@angular/material/chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('OutcomeComponent', () => {
     let component: OutcomeComponent;
@@ -24,6 +25,7 @@ describe('OutcomeComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [OutcomeComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

@@ -4,6 +4,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EmergencyCaseOutcomeComponent } from './emergency-case-outcome.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('EmergencyCaseOutcomeComponent', () => {
     let component: EmergencyCaseOutcomeComponent;
@@ -22,15 +23,13 @@ describe('EmergencyCaseOutcomeComponent', () => {
             ],
             providers: [{ provide: FormBuilder, useValue: formBuilder }],
             declarations: [EmergencyCaseOutcomeComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 
     beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(EmergencyCaseOutcomeComponent);
         component = fixture.componentInstance;
-
-
-
 
         component.patientForm = fb.group({
             emergencyDetails: fb.group({

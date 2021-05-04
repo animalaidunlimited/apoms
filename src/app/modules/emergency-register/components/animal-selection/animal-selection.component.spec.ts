@@ -17,6 +17,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AnimalSelectionComponent', () => {
     let component: AnimalSelectionComponent;
@@ -58,6 +59,7 @@ describe('AnimalSelectionComponent', () => {
                 },
             ],
             declarations: [AnimalSelectionComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

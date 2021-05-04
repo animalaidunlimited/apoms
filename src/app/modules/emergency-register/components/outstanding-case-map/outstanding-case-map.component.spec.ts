@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
@@ -30,7 +31,8 @@ describe('OutstandingCaseMapComponent', () => {
         MatSnackBar,
         Overlay
       ],
-      declarations: [ OutstandingCaseMapComponent ]
+      declarations: [ OutstandingCaseMapComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

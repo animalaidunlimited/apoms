@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SurgeryRecordComponent', () => {
     let component: SurgeryRecordComponent;
@@ -23,6 +24,7 @@ describe('SurgeryRecordComponent', () => {
             ],
             providers: [{ provide: FormBuilder, useValue: formBuilder }],
             declarations: [SurgeryRecordComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

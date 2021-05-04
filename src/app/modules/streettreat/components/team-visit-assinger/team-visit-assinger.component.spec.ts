@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,7 +24,8 @@ describe('TeamVisitAssingerComponent', () => {
       ],
       providers: [ DatePipe,
         { provide: FormBuilder, useValue: formBuilder }],
-      declarations: [ TeamVisitAssingerComponent ]
+      declarations: [ TeamVisitAssingerComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });

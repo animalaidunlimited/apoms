@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -46,7 +46,8 @@ describe('SearchResultCardComponent', () => {
         provide: MatDialogRef,
         useValue: mockDialogRef
       }],
-      declarations: [ SearchResultCardComponent, MockPatientEditComponent ]
+      declarations: [ SearchResultCardComponent, MockPatientEditComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

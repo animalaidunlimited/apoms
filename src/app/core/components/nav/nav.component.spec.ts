@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { sideNavPath } from '../../../nav-routing';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('NavComponent', () => {
     let component: NavComponent;
@@ -41,6 +42,7 @@ describe('NavComponent', () => {
                 BrowserAnimationsModule,
                 HttpClientTestingModule,
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

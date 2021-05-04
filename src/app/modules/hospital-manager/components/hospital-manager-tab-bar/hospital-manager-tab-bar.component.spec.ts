@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from 'src/app/nav-routing';
 import { DatePipe } from '@angular/common';
 import { MaterialModule } from 'src/app/material-module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HospitalManagerTabBarComponent', () => {
     let component: HospitalManagerTabBarComponent;
@@ -28,7 +29,8 @@ describe('HospitalManagerTabBarComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [ HospitalManagerTabBarComponent ],
-            providers: [ DatePipe ]
+            providers: [ DatePipe ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

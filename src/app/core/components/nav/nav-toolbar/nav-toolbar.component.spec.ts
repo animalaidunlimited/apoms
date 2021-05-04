@@ -4,6 +4,7 @@ import { NavToolbarComponent } from './nav-toolbar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('NavToolbarComponent', () => {
     let component: NavToolbarComponent;
@@ -17,6 +18,7 @@ describe('NavToolbarComponent', () => {
                 MatToolbarModule,
                 RouterTestingModule
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

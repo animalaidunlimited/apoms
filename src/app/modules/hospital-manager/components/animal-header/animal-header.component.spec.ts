@@ -18,6 +18,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AnimalHeaderComponent', () => {
     let component: AnimalHeaderComponent;
@@ -57,6 +58,7 @@ describe('AnimalHeaderComponent', () => {
                 },
             ],
             declarations: [AnimalHeaderComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 
