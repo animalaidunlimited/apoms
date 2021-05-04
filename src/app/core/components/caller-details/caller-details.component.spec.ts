@@ -10,6 +10,7 @@ import { MaterialModule } from 'src/app/material-module';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CallerDetailsComponent', () => {
     let component: CallerDetailsComponent;
@@ -27,6 +28,7 @@ describe('CallerDetailsComponent', () => {
                 ReactiveFormsModule,
             ],
             declarations: [CallerDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

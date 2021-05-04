@@ -9,6 +9,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('EmergencyRecordComponent', () => {
     let component: EmergencyRecordComponent;
@@ -35,6 +36,7 @@ describe('EmergencyRecordComponent', () => {
                 { provide: FormBuilder, useValue: formBuilder }
             ],
             declarations: [ EmergencyRecordComponent ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

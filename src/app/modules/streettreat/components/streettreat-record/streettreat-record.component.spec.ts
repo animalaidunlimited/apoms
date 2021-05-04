@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
 
 import { StreetTreatRecordComponent } from './streettreat-record.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('StreettreatRecordComponent', () => {
   let component: StreetTreatRecordComponent;
@@ -33,7 +34,8 @@ describe('StreettreatRecordComponent', () => {
       { provide: ActivatedRoute, useValue: fakeActivatedRoute },
       { provide: FormBuilder, useValue: formBuilder }
     ],
-    declarations: [ StreetTreatRecordComponent ]
+    declarations: [ StreetTreatRecordComponent ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });

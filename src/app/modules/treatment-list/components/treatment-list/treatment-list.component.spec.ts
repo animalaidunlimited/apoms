@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -48,7 +49,8 @@ let dialog: MatDialogRef<TreatmentListComponent>;
             useValue: mockDialogRef,
         },
       ],
-      declarations: [ TreatmentListComponent ]
+      declarations: [ TreatmentListComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

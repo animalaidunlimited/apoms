@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,7 +35,8 @@ describe('TreatmentListPageComponent', () => {
         MatSnackBar,
         Overlay,
         { provide: FormBuilder, useValue: formBuilder }
-      ]
+      ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
@@ -49,4 +51,9 @@ describe('TreatmentListPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
+  
 });

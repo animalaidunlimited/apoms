@@ -8,6 +8,7 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { SurgeryRecordDialogComponent } from './surgery-record-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SurgeryRecordDialogComponent', () => {
     let component: SurgeryRecordDialogComponent;
@@ -41,6 +42,7 @@ describe('SurgeryRecordDialogComponent', () => {
                 },
             ],
             declarations: [SurgeryRecordDialogComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

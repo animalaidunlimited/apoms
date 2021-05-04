@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { BehaviorSubject } from 'rxjs';
@@ -13,6 +14,7 @@ describe('ThumbnailSliderComponent', () => {
         TestBed.configureTestingModule({
             imports: [NgxGalleryModule],
             declarations: [ThumbnailSliderComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 
@@ -21,7 +23,7 @@ describe('ThumbnailSliderComponent', () => {
         component = fixture.componentInstance;
 
         component.mediaData = new BehaviorSubject<MediaItem[]>([]);
-        
+
 
         fixture.detectChanges();
     });

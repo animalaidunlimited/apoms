@@ -6,6 +6,7 @@ import {
     MatDialog,
     MatDialogModule,
 } from '@angular/material/dialog';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('ImageUploadDialog', () => {
     let component: ImageUploadDialog;
@@ -27,6 +28,7 @@ describe('ImageUploadDialog', () => {
                 },
             ],
             declarations: [ImageUploadDialog],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

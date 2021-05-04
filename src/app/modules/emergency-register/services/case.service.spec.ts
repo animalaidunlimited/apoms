@@ -24,7 +24,7 @@ describe('CaseService', () => {
     );
 
     it('should be created', () => {
-        const service: CaseService = TestBed.get(CaseService);
+        const service: CaseService = TestBed.inject(CaseService);
         snackbarService = TestBed.inject(SnackbarService);
 
 

@@ -6,6 +6,7 @@ import { CrueltyDetailsComponent } from './cruelty-details.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CrueltyDetailsComponent', () => {
     let component: CrueltyDetailsComponent;
@@ -21,6 +22,7 @@ describe('CrueltyDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [CrueltyDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

@@ -9,6 +9,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -49,7 +50,8 @@ describe('PatientRecordComponent', () => {
             providers: [
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
-            ]
+            ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

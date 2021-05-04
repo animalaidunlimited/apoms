@@ -16,6 +16,7 @@ import {
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('RecordSearchComponent', () => {
     let component: RecordSearchComponent;
@@ -53,6 +54,7 @@ describe('RecordSearchComponent', () => {
                 },
             ],
             declarations: [RecordSearchComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

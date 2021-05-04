@@ -5,6 +5,7 @@ import { PatientCallComponent } from './patient-call.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { FormBuilder } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientCallComponent', () => {
     let component: PatientCallComponent;
@@ -15,6 +16,7 @@ describe('PatientCallComponent', () => {
             imports: [HttpClientTestingModule, MatSnackBarModule],
             declarations: [PatientCallComponent],
             providers: [FormBuilder],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

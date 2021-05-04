@@ -14,6 +14,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
 import { RescueDetailsComponent } from '../rescue-details/rescue-details.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('EmergencyDetailsComponent', () => {
     let component: EmergencyDetailsComponent;
@@ -33,6 +34,7 @@ describe('EmergencyDetailsComponent', () => {
             ],
             providers: [DatePipe],
             declarations: [EmergencyDetailsComponent, RescueDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 
@@ -53,7 +55,7 @@ describe('EmergencyDetailsComponent', () => {
             }),
             patients: fb.array([])
         });
-        
+
         const patient =
         fb.group({
             patientId: [],

@@ -16,7 +16,8 @@ describe('TreatmentListService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule,
+      imports: [
+        HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
@@ -26,12 +27,12 @@ describe('TreatmentListService', () => {
         MatSnackBar,
         Overlay,
         SnackbarService,
+        TreatmentListService,
         { provide: FormBuilder, useValue: formBuilder }
     ]
     });
 
     service = TestBed.inject(TreatmentListService);
-
 
   });
 

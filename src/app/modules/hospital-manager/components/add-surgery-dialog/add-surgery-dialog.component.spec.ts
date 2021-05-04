@@ -8,6 +8,7 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AddSurgeryDialogComponent', () => {
     let component: AddSurgeryDialogComponent;
@@ -40,6 +41,7 @@ describe('AddSurgeryDialogComponent', () => {
                 },
             ],
             declarations: [AddSurgeryDialogComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

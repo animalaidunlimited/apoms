@@ -3,6 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { StorageService } from '../core/services/storage/storage.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockStorageService {
     read() {
@@ -29,6 +30,7 @@ describe('AuthService', () => {
                 { provide: StorageService, useClass: MockStorageService },
                 AuthService,
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         });
         authService = TestBed.get(AuthService);
         storageService = TestBed.get(StorageService);

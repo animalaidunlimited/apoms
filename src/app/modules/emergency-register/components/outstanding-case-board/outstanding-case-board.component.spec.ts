@@ -9,7 +9,7 @@ import {
 
 import { OutstandingCaseBoardComponent } from './outstanding-case-board.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -66,6 +66,7 @@ describe('OutstandingCaseBoardComponent', () => {
                 OutstandingCaseBoardComponent,
                 ChipListType
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 
