@@ -25,7 +25,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @Input() patientIndex!: number;
   @Input() patientFormInput!: any;
 
-  patientForm: FormGroup;
+  patientForm!: FormGroup;
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
@@ -89,10 +89,12 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private userOptions: UserOptionsService,
   ) {
 
-    this.patientForm = this.patientFormInput as FormGroup;
+
    }
 
   ngOnInit(): void {
+
+    this.patientForm = this.patientFormInput as FormGroup;
 
     this.exclusions = this.dropdown.getExclusions();
 

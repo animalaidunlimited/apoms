@@ -90,9 +90,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     ngOnInit() {
 
 
-        this.recordForm.addControl('patients',
-            this.fb.array([])
-        );
+        this.recordForm.addControl('patients', this.fb.array([]));
 
         this.patients = this.recordForm.get('patients') as FormArray;
 
