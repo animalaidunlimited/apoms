@@ -1,5 +1,5 @@
-import { Image } from './../../../models/media';
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Image, Comment } from './../../../models/media';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -21,8 +21,7 @@ export class MediaPreviewComponent implements OnInit {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  /** Given Comment Type but when assign as a blank array it gives error */
-  patientMediaComments$: BehaviorSubject<any> = new BehaviorSubject([]);
+  patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
 
   
   // patientMediaComments$!: Observable<any> | undefined;
@@ -31,7 +30,6 @@ export class MediaPreviewComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder, 
-    private cdr: ChangeDetectorRef,
     public datePipe:DatePipe,
     private patientService:PatientService
   ) { 
