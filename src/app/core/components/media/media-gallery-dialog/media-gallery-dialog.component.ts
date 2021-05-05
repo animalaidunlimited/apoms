@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
 import { Gallery, Image, MediaItem } from 'src/app/core/models/media';
 @Component({
   // tslint:disable-next-line: component-selector
@@ -11,10 +10,12 @@ import { Gallery, Image, MediaItem } from 'src/app/core/models/media';
 export class MediaGalleryDialogComponent implements OnInit {
 
   galleries!:Gallery[];
+
   
-  constructor( @Inject(MAT_DIALOG_DATA) public data: { mediaGallery: Image[], mediaData: BehaviorSubject<MediaItem[]>}) { }
+  constructor( @Inject(MAT_DIALOG_DATA) public data: { mediaGallery: Image[], mediaPatientId: number}) { }
 
   ngOnInit(): void {
+
     this.galleries = Object.entries(this.data.mediaGallery.reduce((r:any, a:any) => {
       r[a.date] = r[a.date] || [];
       r[a.date].push(a);

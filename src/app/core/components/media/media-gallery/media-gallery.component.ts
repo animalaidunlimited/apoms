@@ -16,7 +16,7 @@ import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-galle
 export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
 
   private ngUnsubscribe = new Subject();
-  @Input() mediaData!:BehaviorSubject<MediaItem[]>;
+  @Input() mediaPatientId!:number;
   @Input() images!:Image[];
   @Input() galleryData!:AbstractControl | null;
   constructor(public dialog: MatDialog) { }
@@ -35,7 +35,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
         minWidth: '80vw',
         data: {
             mediaGallery: this.images,
-            mediaData: this.mediaData
+            mediaPatientId: this.mediaPatientId
         }
     });
   }
