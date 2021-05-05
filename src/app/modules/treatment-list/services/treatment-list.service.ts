@@ -11,6 +11,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 @Injectable({
   providedIn: 'root'
 })
+
 export class TreatmentListService extends APIService {
 
   endpoint = 'TreatmentList';
@@ -90,21 +91,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     const movedLists:FormArray = this.fb.array([]);
 
     response.forEach(list => {
-
-      list.treatmentList = list.treatmentList.map((patient) => {
-
-        const patientObject = JSON.parse(JSON.stringify(patient));
-
-        patient['ABC status'] = ABCStatus[patientObject['ABC status']];
-        patient['Release status'] = ReleaseStatus[patientObject['Release status']];
-        // tslint:disable-next-line: no-string-literal
-        patient['Temperament'] = Temperament[patientObject['Temperament']];
-        // tslint:disable-next-line: no-string-literal
-        patient['Age'] = Age[patientObject['Age']];
-
-        return patient;
-
-      });
 
       list.treatmentList.sort(this.sortTreatmentRecords);
 
@@ -268,7 +254,7 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
 
             movedPatient.get('Move accepted')?.setValue(true);
             movedPatient.get('Moved to')?.reset();
-            movedPatient.get('Admission')?.setValue(accepted);
+            movedPatient.get('Admission')?.setValue(false);
 
             const ml = movedList.get('movedList') as FormArray;
             ml.removeAt(index);
@@ -299,6 +285,15 @@ private acceptMoveIn(movedPatient: AbstractControl) {
   const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
   acceptedList.push(movedPatient);
   acceptedList.controls.sort(this.sortTreatmentAbstractControls);
+}
+
+public sortTreatmentList(){
+
+  const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
+  acceptedList.controls.sort(this.sortTreatmentAbstractControls);
+
+  this.emitTreatmentObject();
+
 }
 
 private sortTreatmentAbstractControls(a: AbstractControl, b: AbstractControl){

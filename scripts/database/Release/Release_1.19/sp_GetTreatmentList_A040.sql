@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentList !!
 
 DELIMITER $$
 
--- CALL AAU.sp_GetTreatmentList(2, '2021-05-02');
+-- CALL AAU.sp_GetTreatmentList(5, '2021-05-05');
 
 CREATE PROCEDURE AAU.sp_GetTreatmentList ( IN prm_TreatmentAreaId INT, IN prm_TreatmentListDate DATE )
 BEGIN
@@ -73,7 +73,7 @@ FROM PatientCTE p
     (
 		SELECT InAccepted, Admission, PatientId, TreatmentListId, OutOfHospital, InTreatmentAreaId, InDate,
         OutTreatmentAreaId, OutAccepted, OutDate,
-        OutTreatmentAreaId as `ActionedByArea`
+		IF(OutAccepted = 0, OutTreatmentAreaId,IFNULL(LAG(InTreatmentAreaId, 1) OVER (PARTITION BY PatientId ORDER BY TreatmentListId), OutTreatmentAreaId)) as `ActionedByArea`
 		FROM AAU.TreatmentList tld
         WHERE (prm_TreatmentListDate <= IFNULL(CAST(IF(OutAccepted IS NULL, NULL, OutDate) AS DATE), prm_TreatmentListDate)
         AND CAST(InDate AS DATE) <= prm_TreatmentListDate)

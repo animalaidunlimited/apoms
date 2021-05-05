@@ -154,7 +154,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
         const updatePatient = {
           patientId: changes.control.get('PatientId')?.value,
-          treatmentPriority: changes.control.get('Treatment priority')?.value,
+          treatmentPriority: changes.control.get('Treatment priority')?.value || null,
           temperament: changes.control.get('Temperament')?.value || null,
           age: changes.control.get('Age')?.value || null,
           releaseStatus: changes.control.get('Release status')?.value || null,
@@ -171,7 +171,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
         this.patientService.updatePatientDetails(updatePatient).then(result => {
 
           if(result.success === 1){
+
             this.endSave(changes.control);
+            this.ts.sortTreatmentList();
           }
 
         });
@@ -280,7 +282,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       treated?.setValue(!treated.value);
     }
 
-    row.get('saving')?.setValue(true);
+    row.get('saving')?.setValue(true, {emitEvent: false});
     this.openTreatmentDialog(row);
 
   }
@@ -308,19 +310,19 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 }
 
   private startSave(row: AbstractControl) {
-    row.get('saving')?.setValue(true);
-    row.get('saved')?.setValue(false);
+    row.get('saving')?.setValue(true, {emitEvent: false});
+    row.get('saved')?.setValue(false, {emitEvent: false});
     this.changeDetector.detectChanges();
   }
 
   private endSave(row: AbstractControl) {
-    row.get('saving')?.setValue(false);
-    row.get('saved')?.setValue(true);
+    row.get('saving')?.setValue(false, {emitEvent: false});
+    row.get('saved')?.setValue(true, {emitEvent: false});
 
     this.changeDetector.detectChanges();
 
     setTimeout(() => {
-      row.get('saved')?.setValue(false);
+      row.get('saved')?.setValue(false, {emitEvent: false});
       this.changeDetector.detectChanges();
     }, 2500 );
 
@@ -344,18 +346,23 @@ openHospitalManagerRecord(tagNumber: string){
 
 }
 
-quickUpdate(patientId: number, tagNumber: string | undefined) {
+quickUpdate(row:AbstractControl) {
+
+
 
   const dialogRef = this.dialog.open(PatientEditDialog, {
       width: '500px',
-      data: { patientId, tagNumber },
+      data: { patientId: row.get('PatientId')?.value, tagNumber: row.get('Tag number')?.value },
   });
 
-  dialogRef.afterClosed().subscribe(result => {
+
+  dialogRef.afterClosed().subscribe((result:AbstractControl) => {
 
     if (result) {
 
-        console.log(result);
+        row.get('PatientStatusId')?.setValue(result.get('patientStatusId')?.value);
+        row.get('PatientStatus')?.setValue(result.get('patientStatus')?.value);
+        this.changeDetector.detectChanges();
 
       }
    });
@@ -382,8 +389,7 @@ moveOut(currentPatient: AbstractControl) : void {
 
   this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
 
-
-    if(result[0].success === -1){
+    if(result.success === -1){
       this.snackbar.errorSnackBar('Error moving patient: please see admin', 'OK');
     }
 
