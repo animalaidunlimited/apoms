@@ -58,27 +58,25 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
 
         if(mediaItems){
 
-        this.mediaItems = mediaItems.map(mediaItem => {
+          this.mediaItems = mediaItems.map(mediaItem => {
 
-         this.newItem  = {
-          mediaItemId: mediaItem.mediaItemId,
-          patientMediaItemId: mediaItem.patientMediaItemId,
-          mediaType: mediaItem.mediaType,
-          localURL: mediaItem.localURL,
-          remoteURL: mediaItem.remoteURL,
-          isPrimary :mediaItem.isPrimary,
-          datetime: mediaItem.datetime,
-          comments:  null,
-          /* comments: mediaItem.comment | null,*/
-          patientId: mediaItem.patientId,
-          heightPX: mediaItem.heightPX,
-          widthPX: mediaItem.widthPX,
-          tags: mediaItem.tags,
-          uploadProgress$: of(100),
-          updated: false,
-          deleted: false
-        };
-        return this.newItem;
+          this.newItem  = {
+            mediaItemId: mediaItem.mediaItemId,
+            patientMediaItemId: mediaItem.patientMediaItemId,
+            mediaType: mediaItem.mediaType,
+            localURL: mediaItem.localURL,
+            remoteURL: mediaItem.remoteURL,
+            isPrimary :mediaItem.isPrimary,
+            datetime: mediaItem.datetime,
+            patientId: mediaItem.patientId,
+            heightPX: mediaItem.heightPX,
+            widthPX: mediaItem.widthPX,
+            tags: mediaItem.tags,
+            uploadProgress$: of(100),
+            updated: false,
+            deleted: false
+          };
+          return this.newItem;
         });
 
       }

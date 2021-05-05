@@ -10,7 +10,6 @@ export interface MediaItem{
     isPrimary: boolean;
     datetime: Date|string;
     deleted: boolean;
-    comments: Comment[] | null;
     patientId: number;
     heightPX: number;
     widthPX: number;
@@ -43,7 +42,6 @@ export interface MediaItem{
     time?: string | null;
     date?: string | null;
     tags?: any;
-    comments:Comment[] | null;
     patientMediaItemId?:number | null;
     height?: number;
     width?: number;

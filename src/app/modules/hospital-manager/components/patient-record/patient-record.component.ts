@@ -99,7 +99,7 @@ export class PatientRecordComponent implements OnInit {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
-
+        console.log(this.mediaData);
         if(this.mediaData){
 
             // tslint:disable-next-line: deprecation
