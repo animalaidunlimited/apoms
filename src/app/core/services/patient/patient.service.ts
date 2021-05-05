@@ -292,7 +292,7 @@ export class PatientService extends APIService {
 
         // tslint:disable-next-line: deprecation
         this.getObservable(request).pipe(
-            map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime()))
+            map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
         ).subscribe((media : MediaResponse[])=>{
 
             if(!media){
@@ -309,7 +309,6 @@ export class PatientService extends APIService {
                     remoteURL: item.remoteURL,
                     isPrimary :item.isPrimary ? true : false,
                     datetime: item.datetime,
-                    comments: item.comments,
                     patientId: item.patientId,
                     heightPX: item.heightPX,
                     widthPX: item.widthPX,

@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Image } from 'src/app/core/models/media';
+import { BehaviorSubject } from 'rxjs';
+import { Image, MediaItem } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 @Component({
     // tslint:disable-next-line: component-selector
@@ -10,23 +11,31 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 })
 export class MediaThumbnailsComponent implements OnInit{
     @Input() gallery!:Image[];
-
+    @Input() mediaData!:BehaviorSubject<MediaItem[]>;
     constructor (public dialog: MatDialog) {}
 
     ngOnInit(): void {
-       
+        
     }
     openPreviewDialog(image:Image){
         const orientation = image?.height && image?.width ?  image?.height > image?.width ? 'Landscape' : 'Potrait' : '';
         // console.log(orientation);
-    
-        this.dialog.open(MediaPreviewComponent, {
+
+      
+        const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
             data: {
                 image,
+                mediaData: this.mediaData?.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
             }
         });
+        const subscribeDialog = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
+            console.log(this.mediaData?.value);
+            console.log(mediaItem); 
+        });
+
+        dialogRef.afterClosed().subscribe(() => subscribeDialog.unsubscribe());
         
     }
 }

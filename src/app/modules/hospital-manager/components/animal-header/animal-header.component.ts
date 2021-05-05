@@ -46,7 +46,6 @@ export class AnimalHeaderComponent implements OnInit, OnDestroy {
         this.mediaObject = {
             isPrimary : false,
             tags : [''],
-            comments : null,
             widthPX : 0,
             datetime : '',
             heightPX: 0,

@@ -1,8 +1,8 @@
-import { Image } from 'src/app/core/models/media';
+import { Image, MediaItem } from 'src/app/core/models/media';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
@@ -16,7 +16,7 @@ import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-galle
 export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
 
   private ngUnsubscribe = new Subject();
-  
+  @Input() mediaData!:BehaviorSubject<MediaItem[]>;
   @Input() images!:Image[];
   @Input() galleryData!:AbstractControl | null;
   constructor(public dialog: MatDialog) { }
@@ -34,7 +34,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
     const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
         minWidth: '80vw',
         data: {
-            mediaGallery: this.images
+            mediaGallery: this.images,
+            mediaData: this.mediaData
         }
     });
   }
