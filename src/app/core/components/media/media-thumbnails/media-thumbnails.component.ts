@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Image, MediaItem } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 @Component({
@@ -12,6 +13,7 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 export class MediaThumbnailsComponent implements OnInit{
     @Input() gallery!:Image[];
     @Input() mediaData!:BehaviorSubject<MediaItem[]>;
+    private ngUnsubscribe = new Subject();
     constructor (public dialog: MatDialog) {}
 
     ngOnInit(): void {
@@ -30,12 +32,14 @@ export class MediaThumbnailsComponent implements OnInit{
                 mediaData: this.mediaData?.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
             }
         });
-        const subscribeDialog = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
-            console.log(this.mediaData?.value);
+        const subscribeDialog = dialogRef.componentInstance.onUpdateMediaItem.pipe(takeUntil(this.ngUnsubscribe)).subscribe((mediaItem:MediaItem) => {
             console.log(mediaItem); 
         });
-
         dialogRef.afterClosed().subscribe(() => subscribeDialog.unsubscribe());
         
+    }
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }
