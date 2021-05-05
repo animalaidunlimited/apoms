@@ -120,3 +120,8 @@ export interface TreatmentAreaDropdwn {
     AreaId: number;
     Area: string;
 }
+
+export interface PatientStatusObject {
+    patientStatusId: number;
+    patientStatus: string;
+}
