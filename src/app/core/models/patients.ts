@@ -116,6 +116,11 @@ export interface PatientOutcomeResponse{
     success: number;
 }
 
+export interface PriorityObject {
+    patientId: number;
+    priorityValueId: number;
+    updatePriorityFlag: boolean
+}
 export interface TreatmentAreaDropdwn {
     AreaId: number;
     Area: string;
