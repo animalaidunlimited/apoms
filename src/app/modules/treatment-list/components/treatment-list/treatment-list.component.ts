@@ -187,7 +187,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
-
    }
 
   ngOnChanges(change:SimpleChanges) : void {
