@@ -1,6 +1,6 @@
 
 <div fxLayout="row" class="mediaGalleryContainer"> 
-    <media-thumbnails [gallery]="this.images.slice(0,3)" [mediaPatientId]="mediaPatientId"></media-thumbnails>
+    <media-thumbnails (updatedMediaItem)="updateMediaItems()" [gallery]="galleryImages.slice(0,3)" [mediaPatientItems]="mediaPatientItems"></media-thumbnails>
 </div>
 <div fxLayout="row" fxLayoutAlign="end center">
     <button type='button' color="primary" mat-mini-fab>
