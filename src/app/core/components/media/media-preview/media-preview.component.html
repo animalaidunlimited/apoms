@@ -26,6 +26,7 @@
                 <input matInput style="width: 100%;" type="text" 
                 [matChipInputFor]="chipList"
                 (matChipInputTokenEnd)="add($event)"
+                formControlName="imageTagsChips"
                 #tagsControl
                 />
                 <button mat-mini-fab class="imageTagsButton" color="primary" (click)="addTagByBtn(tagsControl.value)">

@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { Image, MediaItem } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 
-import { PatientService } from 'src/app/core/services/patient/patient.service';
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'media-thumbnails',
@@ -14,30 +12,33 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 })
 export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     @Input() gallery!:Image[];
-    @Input() mediaPatientId!:number;
-    mediaDataImages:MediaItem[] = [];
+    @Input() mediaPatientItems!:MediaItem[];
+
+    @Output() updatedMediaItem:EventEmitter<MediaItem> = new EventEmitter();
+
     private ngUnsubscribe = new Subject();
+
     constructor (
-        public dialog: MatDialog,        
-        private patientService:PatientService
+        public dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
         
     }
     openPreviewDialog(image:Image){
-        this.updatePatientMediaData();
+        // this.updatedMediaItem.emit(true);
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
             data: {
                 image,
-                mediaData: this.mediaDataImages.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
+                mediaData: this.mediaPatientItems.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
             }
         });
-        const onUpdateMedia = dialogRef.componentInstance.onUpdateMediaItem.subscribe(() => {
-            this.updatePatientMediaData();
+        const onUpdateMedia = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
+            this.updatedMediaItem.emit(mediaItem);
         });
+        // tslint:disable-next-line: deprecation
         dialogRef.afterClosed().subscribe(()=> onUpdateMedia.unsubscribe());
         
     }
@@ -46,9 +47,4 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
         this.ngUnsubscribe.complete();
     }
 
-    updatePatientMediaData(){
-        this.patientService.getPatientMediaItemsByPatientId(this.mediaPatientId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((mediaItems:MediaItem[]) => 
-            this.mediaDataImages = mediaItems
-        );
-    }
 }

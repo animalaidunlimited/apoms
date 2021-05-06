@@ -282,7 +282,8 @@ export class PatientService extends APIService {
         let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
             patientMediaItemVal.patientId === patientId
         );
-
+        
+        
         const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
 
@@ -294,7 +295,7 @@ export class PatientService extends APIService {
         this.getObservable(request).pipe(
             map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
         ).subscribe((media : MediaResponse[])=>{
-
+            
             if(!media){
                 return;
             }
@@ -325,6 +326,7 @@ export class PatientService extends APIService {
             }
 
         });
+       
         return returnBehaviorSubject;
     }
 

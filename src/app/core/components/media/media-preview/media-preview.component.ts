@@ -21,6 +21,7 @@ export class MediaPreviewComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  // tslint:disable-next-line: no-output-on-prefix
   @Output() onUpdateMediaItem: EventEmitter<MediaItem> = new EventEmitter();
   
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -48,16 +49,20 @@ export class MediaPreviewComponent implements OnInit {
     
     this.recordForm = this.fb.group({
       imageDate: [this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')],
-      imageTags:[this.imageData.tags?.map((tag:any) => tag.tag)]
+      imageTags:[this.imageData.tags?.map((tag:any) => tag.tag)],
+      imageTagsChips: ''
     });
   }
   remove(tags:string): void {
     const index = this.recordForm.get('imageTags')?.value.indexOf(tags);
     if (index >= 0) {
       const imageTags = this.recordForm.get('imageTags')?.value;
+
       imageTags.splice(index, 1);
+
       const mediaItem = this.getUpdatedPatientMediaItem();
-      this.savePatientMediaItem(mediaItem);
+
+      this.savePatientMediaItem(mediaItem, true);
     }
   }
   add(event: MatChipInputEvent): void {
@@ -122,20 +127,28 @@ export class MediaPreviewComponent implements OnInit {
   
 
 
-  private savePatientMediaItem(mediaItem: MediaItem) {
-    this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
-      if (tagsResponse.success === 1) {
-        this.updatedMediaItem(mediaItem);
-        this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
-      }
-      else {
-        this.showSnackBar.errorSnackBar('Error updating patient tags', 'OK');
-      }
-    });
+  private savePatientMediaItem(mediaItem: MediaItem, removeTag:boolean=false) {
+    if(this.recordForm.dirty || removeTag)
+    {
+      this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
+        if (tagsResponse.success === 1) {
+          this.updatedMediaItem(mediaItem, removeTag);
+          this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
+        }
+        else {
+          this.showSnackBar.errorSnackBar('Error updating patient tags', 'OK');
+        }
+      });
+    }
   }
 
-  updatedMediaItem(mediaItem:MediaItem){
-    this.onUpdateMediaItem.emit(mediaItem);
+  updatedMediaItem(mediaItem:MediaItem, removeTag:boolean = false){
+    
+    if(this.recordForm.dirty || removeTag)
+    {
+      console.log('Media Preview Dialog');
+      this.onUpdateMediaItem.emit(mediaItem);
+    }
   }
 
   private getUpdatedPatientMediaItem(): MediaItem {
