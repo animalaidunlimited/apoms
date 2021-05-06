@@ -33,6 +33,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, OnChanges {
     $event.preventDefault();
     const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
         minWidth: '80vw',
+        panelClass: 'media-gallery-dialog',
         data: {
             mediaGallery: this.images,
             mediaPatientId: this.mediaPatientId

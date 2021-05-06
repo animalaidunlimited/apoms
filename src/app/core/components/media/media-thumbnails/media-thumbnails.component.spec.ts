@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterialModule } from 'src/app/material-module';
 
 import { MediaThumbnailsComponent } from './media-thumbnails.component';
 
@@ -8,6 +9,7 @@ describe('MediaThumbnailsComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports:[MaterialModule],
             declarations: [ MediaThumbnailsComponent ]
         })
         .compileComponents();

@@ -56,6 +56,8 @@ export class MediaPreviewComponent implements OnInit {
     if (index >= 0) {
       const imageTags = this.recordForm.get('imageTags')?.value;
       imageTags.splice(index, 1);
+      const mediaItem = this.getUpdatedPatientMediaItem();
+      this.savePatientMediaItem(mediaItem);
     }
   }
   add(event: MatChipInputEvent): void {
@@ -64,27 +66,7 @@ export class MediaPreviewComponent implements OnInit {
     
     if (value.trim()) {
       
-      const imageTags = this.recordForm.get('imageTags')?.value;
-      imageTags.push(value);
-      
-      const mediaItem:MediaItem = { 
-        ...this.data.mediaData, 
-        ...{ 
-          tags:imageTags.map((tag:{tag:string}) => ({tag:tag})),
-          datetime: this.recordForm.get('imageDate')?.value
-        }
-      };
-
-      this.patientService.savePatientMedia(mediaItem).then((tagsResponse:any) => {
-        if(tagsResponse.success === 1 )
-        {
-          this.updatedMediaItem(mediaItem);
-          this.showSnackBar.successSnackBar('Patient tags updated successfully','OK');
-        } 
-        else {
-          this.showSnackBar.errorSnackBar('Error updating patient tags','OK');
-        }
-      });
+      this.insertPatientTags(value);
 
     }
 
@@ -93,10 +75,10 @@ export class MediaPreviewComponent implements OnInit {
     }
 
   }
+
   addTagByBtn(event: string){
     if (event.trim()) {
-      const imageTags = this.recordForm.get('imageTags')?.value;
-      imageTags.push(event);
+      this.insertPatientTags(event);
       this.tagsControl.nativeElement.value = '';
     }
   }
@@ -123,27 +105,45 @@ export class MediaPreviewComponent implements OnInit {
     return item.timestamp;
   }
 
-  updateDate(imageDate:string){
-    const mediaItem:MediaItem = { 
-                      ...this.data.mediaData, 
-                      datetime:this.datePipe.transform(new Date(imageDate), 'y-MM-dTHH:mm:ss'),
-                      tags: this.recordForm.get('imageTags')?.value.map((tag:{tag:string}) => ({tag:tag}))
-                    };
+  updateDate(){
+    const mediaItem = this.getUpdatedPatientMediaItem();
     
-    this.patientService.savePatientMedia(mediaItem).then((tagsResponse:any) => {
-      if(tagsResponse.success === 1)
-      {
-        this.showSnackBar.successSnackBar('Patient date and time updated successfully','OK')
+    this.savePatientMediaItem(mediaItem); 
+  }
+
+  private insertPatientTags(value: string) {
+    const imageTags = this.recordForm.get('imageTags')?.value;
+    imageTags.push(value);
+
+    const mediaItem = this.getUpdatedPatientMediaItem();
+
+    this.savePatientMediaItem(mediaItem);
+  }
+  
+
+
+  private savePatientMediaItem(mediaItem: MediaItem) {
+    this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
+      if (tagsResponse.success === 1) {
         this.updatedMediaItem(mediaItem);
+        this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
       }
-      else{
-        this.showSnackBar.errorSnackBar('Error updating patient date and time','OK');
+      else {
+        this.showSnackBar.errorSnackBar('Error updating patient tags', 'OK');
       }
-    }); 
+    });
   }
 
   updatedMediaItem(mediaItem:MediaItem){
     this.onUpdateMediaItem.emit(mediaItem);
+  }
+
+  private getUpdatedPatientMediaItem(): MediaItem {
+    return {
+      ...this.data.mediaData,
+      datetime: this.recordForm.get('imageDate')?.value,
+      tags: this.recordForm.get('imageTags')?.value.map((tag: { tag: string; }) => ({ tag }))
+    };
   }
 
 }

@@ -42,7 +42,6 @@ describe('MediaCardComponent', () => {
     isPrimary: false,
     datetime: '2020-10-05T16:51:35',
     deleted: false,
-    comment: 'This is a comment',
     patientId: 1,
     heightPX: 300,
     widthPX: 300,
