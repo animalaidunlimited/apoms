@@ -395,6 +395,7 @@ export class PatientService extends APIService {
     }
 
     public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
+
         const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
 
         return this.getObservable(request).pipe(

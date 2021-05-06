@@ -57,7 +57,6 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       remoteURL: this.mediaItem.remoteURL,
       isPrimary: this.mediaItem.isPrimary,
       datetime: this.mediaItem.datetime,
-      comments: null,
       heightPX: this.mediaItem.heightPX,
       widthPX: this.mediaItem.widthPX,
       tags: this.fb.array([]),

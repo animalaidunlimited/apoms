@@ -23,9 +23,9 @@
 
     <mat-card-content>
       <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>
-      <p>
+      <!-- <p>
         <input matInput type="text" formControlName="comment" placeholder="Comment" autocomplete="off">
-      </p>
+      </p> -->
 
     <mat-form-field class="example-chip-list" style="width:100%">
         <mat-chip-list #chipList formArrayName="tags" aria-label="Media tags">
