@@ -1,9 +1,9 @@
 import { Image, MediaItem,  Gallery} from 'src/app/core/models/media';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { last, map, takeLast, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
@@ -30,8 +30,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     public datepipe: DatePipe,
-    private patientService:PatientService,
-    private cdr: ChangeDetectorRef
+    private patientService:PatientService
   ) { }
 
 
@@ -51,11 +50,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     });
     const resetGallerySubscription = dialogRef.componentInstance.resetGallery.subscribe(() => {
       this.updateMediaItems();
-      console.log(this.mediaPatientItems);
+      /*console.log(this.mediaPatientItems);
       dialogRef.componentInstance.data = {
         mediaGallery: [],
         mediaPatientItems: this.mediaPatientItems
-      };
+      }; */
+      dialogRef.close();
 
     });
     // tslint:disable-next-line: deprecation
@@ -92,23 +92,26 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   }
 
   initMedaiaGallery(){
-    // tslint:disable-next-line: deprecation
-    this.mediaData.subscribe(mediaItems => {
-      if(!mediaItems || mediaItems.length === 0)
-      {
-        return;
-      }
-      
-      this.initMedaiaGalleryProperties(mediaItems);
-       
-    });
-   // this.cdr.detectChanges();
+    if(this.mediaData)
+    { 
+      // tslint:disable-next-line: deprecation
+      this.mediaData.subscribe(mediaItems => {
+        if(!mediaItems || mediaItems.length === 0)
+        {
+          return;
+        }
+        
+        this.initMedaiaGalleryProperties(mediaItems);
+        
+      });
+    }
+    
   }
 
 
 
   updateMediaItems(){
-    console.log('Update media to reset gallery');
+    
     this.patientService.getPatientMediaItemsByPatientId(this.mediaData.value[0].patientId).pipe(
       takeUntil(this.ngUnsubscribe)
     // tslint:disable-next-line: deprecation

@@ -38,18 +38,25 @@ export class MediaPreviewComponent implements OnInit {
     private patientService:PatientService,
     private showSnackBar: SnackbarService
   ) { 
-    this.imageData = this.data.image;
-    // tslint:disable-next-line: deprecation
-    this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
-      this.patientMediaComments$.next(comments);
-    });
+    
+    if(this.data.image){
+      this.imageData = this.data.image;
+      // tslint:disable-next-line: deprecation
+      this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+        this.patientMediaComments$.next(comments);
+      });
+    }
+    
   }
 
   ngOnInit(): void {
     
     this.recordForm = this.fb.group({
-      imageDate: [this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')],
-      imageTags:[this.imageData.tags?.map((tag:any) => tag.tag)],
+      imageDate: [ this.imageData ?
+        this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
+        : ''
+      ],
+      imageTags:[this.imageData ? this.imageData.tags?.map((tag:any) => tag.tag) : []],
       imageTagsChips: ''
     });
   }

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MaterialModule } from 'src/app/material-module';
 
 import { MediaGalleryDialogComponent } from './media-gallery-dialog.component';
 
@@ -8,7 +10,14 @@ describe('MediaGalleryDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MediaGalleryDialogComponent ]
+      imports: [
+        MaterialModule
+      ],
+      declarations: [ MediaGalleryDialogComponent ],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: MatDialogRef, useValue: {} }
+      ]
     })
     .compileComponents();
   });

@@ -1,17 +1,15 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Injector, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Injector,OnDestroy, Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'timeAgo',
   pure: false
 })
 export class TimeAgoPipe implements PipeTransform, OnDestroy {
-
-
   private asyncPipe: AsyncPipe;
 
   constructor(private injector: Injector) {
-    this.asyncPipe = new AsyncPipe(injector.get(ChangeDetectorRef));
+    this.asyncPipe = new AsyncPipe(this.injector.get(ChangeDetectorRef));
   }
 
   ngOnDestroy() {
