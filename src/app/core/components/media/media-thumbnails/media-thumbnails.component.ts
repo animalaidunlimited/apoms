@@ -33,7 +33,8 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             data: {
                 image,
                 mediaData: this.mediaPatientItems.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
-            }
+            },
+            autoFocus: false 
         });
         const onUpdateMedia = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
             this.updatedMediaItem.emit(mediaItem);
