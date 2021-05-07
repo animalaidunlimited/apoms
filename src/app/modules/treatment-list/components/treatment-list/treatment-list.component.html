@@ -77,10 +77,9 @@
           [class.width-175]="column.name == 'Treatment priority'"
           [class.link]="column.name === 'Tag number'">
 
-          <div *ngIf="column.type === 'text'">
+          <div *ngIf="column.type === 'text'" (click)="cellClicked(column.name, row.get(column.name).value)">
             {{row.get(column.name).value}}
           </div>
-
 
           <div *ngIf="column.type === 'select'" class="width-175 start">
             <mat-form-field>
