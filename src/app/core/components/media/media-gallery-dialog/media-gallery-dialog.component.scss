@@ -1,0 +1,36 @@
+::ng-deep .media-gallery-dialog {
+    max-height: 70vh;
+    position:relative !important;
+    .mat-dialog-container{ 
+        &::-webkit-scrollbar-thumb {
+            background: #ccccccfc;
+            border-radius: 1rem;
+            border: 0.8px solid #fff;
+            border-right: 0.2rem solid #fff;
+            display: none;
+        }
+        &:hover::-webkit-scrollbar-thumb {
+            display: block;
+        }
+        &::-webkit-scrollbar {
+            border-top-right-radius: 0.1rem;
+            width: 0.8rem;
+        }
+    }
+}
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    background: #607d8b;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	.mat-icon{
+		font-size:1.2rem;
+	}
+}
