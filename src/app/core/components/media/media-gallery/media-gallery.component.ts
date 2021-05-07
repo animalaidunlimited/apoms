@@ -41,7 +41,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   openGalleryDialog($event: Event): void{
     $event.preventDefault();
     const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
-        minWidth: '80vw',
+        minWidth: '50vw',
+        maxWidth: '100%',
         panelClass: 'media-gallery-dialog',
         data: {
             mediaGallery: this.galleries,
@@ -55,11 +56,11 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
         mediaGallery: this.galleries,
         mediaPatientItems: this.mediaPatientItems
       };
-      //dialogRef.close();
+      // dialogRef.close();
 
     });
     // tslint:disable-next-line: deprecation
-    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => resetGallerySubscription.unsubscribe())
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => resetGallerySubscription.unsubscribe());
   }
   openMediaDialog(): void{
       const dialogRef = this.dialog.open(MediaDialogComponent, {
