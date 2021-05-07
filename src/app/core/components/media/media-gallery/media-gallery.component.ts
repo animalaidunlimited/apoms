@@ -50,12 +50,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     });
     const resetGallerySubscription = dialogRef.componentInstance.resetGallery.subscribe(() => {
       this.updateMediaItems();
-      /*console.log(this.mediaPatientItems);
+      console.log(this.mediaPatientItems);
       dialogRef.componentInstance.data = {
-        mediaGallery: [],
+        mediaGallery: this.galleries,
         mediaPatientItems: this.mediaPatientItems
-      }; */
-      dialogRef.close();
+      };
+      //dialogRef.close();
 
     });
     // tslint:disable-next-line: deprecation

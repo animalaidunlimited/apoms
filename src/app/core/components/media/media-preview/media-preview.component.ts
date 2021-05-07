@@ -20,10 +20,8 @@ export class MediaPreviewComponent implements OnInit {
   visible = true;
   removable = true;
   addOnBlur = true;
-
-  // tslint:disable-next-line: no-output-on-prefix
-  @Output() onUpdateMediaItem: EventEmitter<MediaItem> = new EventEmitter();
-  
+  selectable = false;
+   
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
@@ -31,6 +29,9 @@ export class MediaPreviewComponent implements OnInit {
   
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
+
+   // tslint:disable-next-line: no-output-on-prefix
+   @Output() onUpdateMediaItem: EventEmitter<MediaItem> = new EventEmitter();
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder, 
@@ -153,7 +154,6 @@ export class MediaPreviewComponent implements OnInit {
     
     if(this.recordForm.dirty || removeTag)
     {
-      console.log('Media Preview Dialog');
       this.onUpdateMediaItem.emit(mediaItem);
     }
   }
@@ -164,6 +164,13 @@ export class MediaPreviewComponent implements OnInit {
       datetime: this.recordForm.get('imageDate')?.value,
       tags: this.recordForm.get('imageTags')?.value.map((tag: { tag: string; }) => ({ tag }))
     };
+  }
+  onBackspaceKeydown(event: Event,tagInputValue:any): void { 
+    if(tagInputValue === '')
+    {
+      event.preventDefault();
+      this.tagsControl.nativeElement.focus();
+    }
   }
 
 }
