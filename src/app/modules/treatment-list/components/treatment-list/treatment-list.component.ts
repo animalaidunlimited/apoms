@@ -388,6 +388,8 @@ moveOut(currentPatient: AbstractControl) : void {
 
   this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
 
+    console.log(result);
+
     if(result.success === -1){
       this.snackbar.errorSnackBar('Error moving patient: please see admin', 'OK');
     }

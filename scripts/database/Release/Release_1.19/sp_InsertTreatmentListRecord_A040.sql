@@ -24,6 +24,8 @@ Purpose: Procedure for inserting admission and moved in records to the treatment
 
 DECLARE vUnaccepted INT;
 DECLARE vTotalRecords INT;
+DECLARE vPreviousTreatmentId INT;
+SET vPreviousTreatmentId = 0;
 SET vUnaccepted = 0;
 SET vTotalRecords = 0;
 
@@ -47,6 +49,12 @@ ELSEIF prm_InTreatmentAreaId IS NOT NULL AND prm_Admission = 1 AND vTotalRecords
 	UPDATE AAU.TreatmentList SET InTreatmentAreaId = prm_InTreatmentAreaId WHERE PatientId = prm_PatientId AND Admission = 1;
 
  	SELECT -1 AS `TreatmentListId`, 0 AS `success`;
+    
+ELSEIF prm_InTreatmentAreaId IS NULL THEN
+
+	DELETE FROM AAU.TreatmentList WHERE PatientId = prm_PatientId AND OutAccepted IS NULL AND InAccepted IS NULL;
+    UPDATE AAU.TreatmentList SET OutTreatmentAreaId = NULL, OutDate = NULL WHERE PatientId = prm_PatientId AND OutAccepted IS NULL;
+    SELECT -1 AS `TreatmentListId`, 2 AS `success`;
     
 ELSEIF vUnaccepted > 0 THEN
 
