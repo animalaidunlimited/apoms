@@ -1,13 +1,14 @@
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_GetMediaItemsByPatientId!!
+DROP procedure IF EXISTS AAU.sp_InsertPatientMediaComments!!
 
 DELIMITER $$
-CREATE AAU.sp_InsertPatientMediaComments(
+CREATE PROCEDURE AAU.sp_InsertPatientMediaComments(
 	IN prm_PatientMediaItemId INT,
     IN prm_Username TEXT,
     IN prm_Comment TEXT
 )
 BEGIN
+
 DECLARE vOrganisationId INT;
 DECLARE vUserId INT;
 DECLARE vCommentExists INT DEFAULT 0;
