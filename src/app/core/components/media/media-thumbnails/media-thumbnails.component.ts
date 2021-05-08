@@ -14,8 +14,6 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     @Input() gallery!:Image[];
     @Input() mediaPatientItems!:BehaviorSubject<MediaItem[]>;
 
-    @Output() updatedMediaItem:EventEmitter<MediaItem> = new EventEmitter();
-
     private ngUnsubscribe = new Subject();
 
     constructor (
@@ -27,9 +25,6 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     }
 
     openPreviewDialog(image:Image){
-
-
-        // this.updatedMediaItem.emit(true);
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
@@ -39,14 +34,8 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             },
             autoFocus: false
         });
-
-        const onUpdateMedia = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
-            this.updatedMediaItem.emit(mediaItem);
-        });
-        // tslint:disable-next-line: deprecation
-        dialogRef.afterClosed().subscribe(() => onUpdateMedia.unsubscribe());
-
     }
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();

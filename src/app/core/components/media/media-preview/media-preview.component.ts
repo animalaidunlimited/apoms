@@ -29,8 +29,7 @@ export class MediaPreviewComponent implements OnInit {
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
 
-   // tslint:disable-next-line: no-output-on-prefix
-   @Output() onUpdateMediaItem: EventEmitter<MediaItem> = new EventEmitter();
+   
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
@@ -152,7 +151,7 @@ export class MediaPreviewComponent implements OnInit {
 
       this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
         if (tagsResponse.success === 1) {
-          this.updatedMediaItem(mediaItem, removeTag);
+
           this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
         }
         else {
@@ -160,14 +159,6 @@ export class MediaPreviewComponent implements OnInit {
         }
 
       });
-    }
-  }
-
-  updatedMediaItem(mediaItem:MediaItem, removeTag:boolean = false){
-
-    if(this.recordForm.dirty || removeTag)
-    {
-      this.onUpdateMediaItem.emit(mediaItem);
     }
   }
 

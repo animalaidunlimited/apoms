@@ -10,7 +10,7 @@ import { Gallery, MediaItem } from 'src/app/core/models/media';
 })
 export class MediaGalleryDialogComponent implements OnInit {
 
-  @Output() resetGallery: EventEmitter<boolean> = new EventEmitter();
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:
@@ -21,8 +21,5 @@ export class MediaGalleryDialogComponent implements OnInit {
 
   ngOnInit(): void {
 
-  }
-  updatedMediaItemsFromGallery(){
-    this.resetGallery.emit(true);
   }
 }
