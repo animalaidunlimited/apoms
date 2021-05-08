@@ -37,7 +37,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initMedaiaGallery();
 
-    this.mediaData.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+    this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
 
   }
 
@@ -58,6 +58,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     const resetGallerySubscription = dialogRef.componentInstance.resetGallery.subscribe(() => {
 
       this.updateMediaItems();
+
+      console.log(this.mediaData?.value);
 
       dialogRef.componentInstance.data = {
         mediaGallery: this.galleries,

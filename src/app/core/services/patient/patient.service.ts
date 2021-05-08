@@ -263,9 +263,9 @@ export class PatientService extends APIService {
                     if(existingItem === -1 ){
                         dataItem.push(mediaItem);
                     }
-                    else {
-                        dataItem[existingItem] = mediaItem;
-                    }
+                    //else {
+                    //    dataItem[existingItem] = mediaItem;
+                    //}
 
                     patientMediaItem.mediaItem.next(dataItem);
 
