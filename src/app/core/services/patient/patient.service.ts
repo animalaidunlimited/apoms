@@ -232,16 +232,17 @@ export class PatientService extends APIService {
 
         return await this.put(mediaItem)
             .then((data:SuccessResult) => {
-
+                console.log(this.mediaItemData);
+                
                 if(data.success === 1){
-
+                    // console.log(this.mediaItemData);
                     let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
                         patientMediaItemVal.patientId === mediaItem.patientId
                     );
-
+                  
                     if(!patientMediaItem){
                         // We're loading the service for the first time and the first patient has no photos
-
+                        
                         patientMediaItem = {
                             patientId: mediaItem.patientId,
                             mediaItem : new BehaviorSubject<MediaItem[]>([mediaItem])
@@ -249,11 +250,10 @@ export class PatientService extends APIService {
 
                         this.mediaItemData.push(patientMediaItem);
 
-
                     }
 
                     let dataItem = patientMediaItem.mediaItem.getValue();
-
+                   
                     if(mediaItem.deleted){
                         dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
                     }
@@ -263,10 +263,10 @@ export class PatientService extends APIService {
                     if(existingItem === -1 ){
                         dataItem.push(mediaItem);
                     }
-                    //else {
-                    //    dataItem[existingItem] = mediaItem;
-                    //}
-
+                     else {
+                       dataItem[existingItem] = mediaItem;
+                    }
+                    
                     patientMediaItem.mediaItem.next(dataItem);
 
                 }
@@ -282,12 +282,11 @@ export class PatientService extends APIService {
     public getPatientMediaItemsByPatientId(patientId: number): BehaviorSubject<MediaItem[]> {
 
         const request = '/PatientMediaItems?patientId=' + patientId;
-
+     
         let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
             patientMediaItemVal.patientId === patientId
         );
-
-
+        
         const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
 
@@ -303,7 +302,7 @@ export class PatientService extends APIService {
             if(!media){
                 return;
             }
-
+    
             const savedMediaItems: MediaItem[] = media.map(item=>{
 
                 return {
@@ -324,8 +323,9 @@ export class PatientService extends APIService {
                 };
 
             });
-
+            
             if(patientMediaItem){
+                console.log(savedMediaItems);
                 patientMediaItem.mediaItem.next(savedMediaItems);
             }
 
@@ -341,6 +341,7 @@ export class PatientService extends APIService {
             mediaItem : returnBehaviorSubject
         };
         returnBehaviorSubject.next([]);
+        
         this.mediaItemData.push(newItemData);
 
         return newItemData;
