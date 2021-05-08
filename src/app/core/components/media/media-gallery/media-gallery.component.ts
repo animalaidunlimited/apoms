@@ -36,6 +36,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMedaiaGallery();
+
+    this.mediaData.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+
   }
 
   openGalleryDialog($event: Event): void{
@@ -66,6 +69,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     // tslint:disable-next-line: deprecation
     dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => resetGallerySubscription.unsubscribe());
   }
+
   openMediaDialog(): void{
       const dialogRef = this.dialog.open(MediaDialogComponent, {
           minWidth: '50%',
@@ -168,7 +172,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
         date:media[0],
         images:media[1] as Image[]
     }));
+
     return this.galleries;
-    // this.cdr.detectChanges();
+
   }
 }

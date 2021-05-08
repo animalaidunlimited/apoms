@@ -25,7 +25,10 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     ngOnInit(): void {
 
     }
+
     openPreviewDialog(image:Image){
+
+
         // this.updatedMediaItem.emit(true);
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
