@@ -1,10 +1,9 @@
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase!!
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase!!
 
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase;!!
+DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
 		IN prm_Username VARCHAR(45),

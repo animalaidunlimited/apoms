@@ -2,7 +2,7 @@ DELIMITER !!
 DROP PROCEDURE AAU.sp_UpdatePatientMedia!!
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_UpdatePatientMedia`(
+CREATE PROCEDURE AAU.sp_UpdatePatientMedia(
 IN prm_Username VARCHAR(45),
 IN prm_PatientMediaItemId INT,
 IN prm_MediaType VARCHAR(45),
