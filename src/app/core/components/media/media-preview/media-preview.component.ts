@@ -56,7 +56,7 @@ export class MediaPreviewComponent implements OnInit {
         this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
         : ''
       ],
-      imageTags:[this.imageData ? this.imageData.tags?.map((tag:any) => tag.tag) : []],
+      imageTags:[this.imageData ? this.data.mediaData.tags?.map((tag:any) => tag.tag) : []],
       imageTagsChips: ''
     });
   }
@@ -158,7 +158,7 @@ export class MediaPreviewComponent implements OnInit {
         else {
           this.showSnackBar.errorSnackBar('Error updating patient tags', 'OK');
         }
-        
+
       });
     }
   }
