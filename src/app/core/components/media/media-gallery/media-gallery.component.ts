@@ -22,7 +22,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   @Input() mediaData!:BehaviorSubject<MediaItem[]>;
 
   mediaPatientItems!:MediaItem[];
-  
+
   galleryImages: Image[] = [];
 
   galleries!:Gallery[];
@@ -39,22 +39,26 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   }
 
   openGalleryDialog($event: Event): void{
+
     $event.preventDefault();
+
     const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
         minWidth: '50vw',
         maxWidth: '100%',
         panelClass: 'media-gallery-dialog',
         data: {
             mediaGallery: this.galleries,
-            mediaPatientItems: this.mediaPatientItems
+            mediaPatientItems: this.mediaData
         }
     });
+
     const resetGallerySubscription = dialogRef.componentInstance.resetGallery.subscribe(() => {
+
       this.updateMediaItems();
-      console.log(this.mediaPatientItems);
+
       dialogRef.componentInstance.data = {
         mediaGallery: this.galleries,
-        mediaPatientItems: this.mediaPatientItems
+        mediaPatientItems: this.mediaData
       };
       // dialogRef.close();
 
@@ -93,31 +97,30 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   }
 
   initMedaiaGallery(){
+
     if(this.mediaData)
-    { 
+    {
       // tslint:disable-next-line: deprecation
       this.mediaData.subscribe(mediaItems => {
         if(!mediaItems || mediaItems.length === 0)
         {
           return;
         }
-        
+
         this.initMedaiaGalleryProperties(mediaItems);
-        
+
       });
     }
-    
+
   }
 
-
-
   updateMediaItems(){
-    
+
     this.patientService.getPatientMediaItemsByPatientId(this.mediaData.value[0].patientId).pipe(
       takeUntil(this.ngUnsubscribe)
     // tslint:disable-next-line: deprecation
-    ).subscribe((mediaItems:MediaItem[]) => 
-      {      
+    ).subscribe((mediaItems:MediaItem[]) =>
+      {
         if(mediaItems)
         {
           return;
@@ -125,9 +128,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
         this.initMedaiaGalleryProperties(mediaItems);
       }
     );
-    
-  }
 
+  }
 
   initMedaiaGalleryProperties(mediaItems:MediaItem[]) {
     if(!mediaItems){
@@ -139,8 +141,11 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
 
         return;
     }
+
     this.mediaPatientItems = mediaItems;
+
     this.galleryImages = this.mediaPatientItems.map(item=>{
+
         return {
             thumbnail:item.remoteURL,
             full:item.remoteURL,
@@ -152,6 +157,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
             width: item.widthPX,
             height: item.heightPX
         };
+
     });
 
     this.galleries = Object.entries(this.galleryImages.reduce((r:any, a:any) => {
