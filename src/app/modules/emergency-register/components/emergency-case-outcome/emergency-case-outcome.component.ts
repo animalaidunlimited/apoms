@@ -37,6 +37,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   sameAsId:number | undefined;
 
   callOutcome:FormGroup = new FormGroup({});
+    recordForm: FormGroup | undefined;
 
   constructor(
     private dropdowns: DropdownService,
