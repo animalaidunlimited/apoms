@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Image, MediaItem } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 
@@ -12,7 +12,7 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 })
 export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     @Input() gallery!:Image[];
-    @Input() mediaPatientItems!:MediaItem[];
+    @Input() mediaPatientItems!:BehaviorSubject<MediaItem[]>;
 
     @Output() updatedMediaItem:EventEmitter<MediaItem> = new EventEmitter();
 
@@ -23,7 +23,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     ) {}
 
     ngOnInit(): void {
-        
+
     }
     openPreviewDialog(image:Image){
         // this.updatedMediaItem.emit(true);
@@ -32,16 +32,17 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             panelClass: 'media-preview-dialog',
             data: {
                 image,
-                mediaData: this.mediaPatientItems.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
+                mediaData: this.mediaPatientItems.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
             },
-            autoFocus: false 
+            autoFocus: false
         });
+
         const onUpdateMedia = dialogRef.componentInstance.onUpdateMediaItem.subscribe((mediaItem:MediaItem) => {
             this.updatedMediaItem.emit(mediaItem);
         });
         // tslint:disable-next-line: deprecation
-        dialogRef.afterClosed().subscribe(()=> onUpdateMedia.unsubscribe());
-        
+        dialogRef.afterClosed().subscribe(() => onUpdateMedia.unsubscribe());
+
     }
     ngOnDestroy() {
         this.ngUnsubscribe.next();

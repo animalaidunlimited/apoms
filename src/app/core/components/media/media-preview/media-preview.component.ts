@@ -21,12 +21,11 @@ export class MediaPreviewComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   selectable = false;
-   
+
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
 
-  
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
 
@@ -34,12 +33,12 @@ export class MediaPreviewComponent implements OnInit {
    @Output() onUpdateMediaItem: EventEmitter<MediaItem> = new EventEmitter();
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     public datePipe:DatePipe,
     private patientService:PatientService,
     private showSnackBar: SnackbarService
-  ) { 
-    
+  ) {
+
     if(this.data.image){
       this.imageData = this.data.image;
       // tslint:disable-next-line: deprecation
@@ -47,11 +46,11 @@ export class MediaPreviewComponent implements OnInit {
         this.patientMediaComments$.next(comments);
       });
     }
-    
+
   }
 
   ngOnInit(): void {
-    
+
     this.recordForm = this.fb.group({
       imageDate: [ this.imageData ?
         this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
@@ -61,8 +60,11 @@ export class MediaPreviewComponent implements OnInit {
       imageTagsChips: ''
     });
   }
+
   remove(tags:string): void {
+
     const index = this.recordForm.get('imageTags')?.value.indexOf(tags);
+
     if (index >= 0) {
       const imageTags = this.recordForm.get('imageTags')?.value;
 
@@ -73,12 +75,14 @@ export class MediaPreviewComponent implements OnInit {
       this.savePatientMediaItem(mediaItem, true);
     }
   }
+
   add(event: MatChipInputEvent): void {
+
     const input = event.input;
     const value = event.value;
-    
+
     if (value.trim()) {
-      
+
       this.insertPatientTags(value);
 
     }
@@ -95,21 +99,26 @@ export class MediaPreviewComponent implements OnInit {
       this.tagsControl.nativeElement.value = '';
     }
   }
+
   submitComment(Event:Event | null): void {
+
     Event?.preventDefault();
     const comment = Event?.target;
+
     const commentObject = ({
       patientMediaItemId : this.imageData.patientMediaItemId,
       comment: (comment as HTMLInputElement).value
     });
+
     const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
+
     mediaCommentResponse.then((response:{success:number}) => {
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
         this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
           this.patientMediaComments$.next(comments);
-        }); 
+        });
       }
     });
   }
@@ -120,11 +129,12 @@ export class MediaPreviewComponent implements OnInit {
 
   updateDate(){
     const mediaItem = this.getUpdatedPatientMediaItem();
-    
-    this.savePatientMediaItem(mediaItem); 
+
+    this.savePatientMediaItem(mediaItem);
   }
 
   private insertPatientTags(value: string) {
+
     const imageTags = this.recordForm.get('imageTags')?.value;
     imageTags.push(value);
 
@@ -132,12 +142,14 @@ export class MediaPreviewComponent implements OnInit {
 
     this.savePatientMediaItem(mediaItem);
   }
-  
+
 
 
   private savePatientMediaItem(mediaItem: MediaItem, removeTag:boolean=false) {
+
     if(this.recordForm.dirty || removeTag)
     {
+
       this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
         if (tagsResponse.success === 1) {
           this.updatedMediaItem(mediaItem, removeTag);
@@ -146,12 +158,13 @@ export class MediaPreviewComponent implements OnInit {
         else {
           this.showSnackBar.errorSnackBar('Error updating patient tags', 'OK');
         }
+        
       });
     }
   }
 
   updatedMediaItem(mediaItem:MediaItem, removeTag:boolean = false){
-    
+
     if(this.recordForm.dirty || removeTag)
     {
       this.onUpdateMediaItem.emit(mediaItem);
@@ -165,7 +178,8 @@ export class MediaPreviewComponent implements OnInit {
       tags: this.recordForm.get('imageTags')?.value.map((tag: { tag: string; }) => ({ tag }))
     };
   }
-  onBackspaceKeydown(event: Event,tagInputValue:any): void { 
+
+  onBackspaceKeydown(event: Event,tagInputValue:any): void {
     if(tagInputValue === '')
     {
       event.preventDefault();

@@ -8,6 +8,7 @@ import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Pa
 import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import {MediaItemsDataObject, Comment} from 'src/app/core/models/media';
+import { ConstantPool } from '@angular/compiler';
 
 interface SuccessResult{
     success: number;
@@ -257,10 +258,13 @@ export class PatientService extends APIService {
                         dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
                     }
 
-                    const existingItem = dataItem.find(item => item.patientMediaItemId = mediaItem.patientMediaItemId);
+                    const existingItem = dataItem.findIndex(item => item.patientMediaItemId = mediaItem.patientMediaItemId);
 
-                    if(!existingItem){
+                    if(existingItem === -1 ){
                         dataItem.push(mediaItem);
+                    }
+                    else {
+                        dataItem[existingItem] = mediaItem;
                     }
 
                     patientMediaItem.mediaItem.next(dataItem);
@@ -282,8 +286,8 @@ export class PatientService extends APIService {
         let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
             patientMediaItemVal.patientId === patientId
         );
-        
-        
+
+
         const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
 
@@ -295,7 +299,7 @@ export class PatientService extends APIService {
         this.getObservable(request).pipe(
             map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
         ).subscribe((media : MediaResponse[])=>{
-            
+
             if(!media){
                 return;
             }
@@ -326,7 +330,7 @@ export class PatientService extends APIService {
             }
 
         });
-       
+
         return returnBehaviorSubject;
     }
 
@@ -381,7 +385,7 @@ export class PatientService extends APIService {
         }
 
     }
-    public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {       
+    public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
         return await this.post(comment)
         .then(data => {
             if(data?.success === 1){
@@ -403,7 +407,7 @@ export class PatientService extends APIService {
                 return  response?.sort((comment1: Comment,comment2:Comment)=> {
                     return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
                 });
-                
+
             })
         );
     }
