@@ -9,7 +9,7 @@ import { SearchFieldComponent } from './search-field.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from 'src/app/nav-routing';
 import { DatePipe } from '@angular/common';
-
+import { By } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-search-field',
@@ -66,7 +66,6 @@ describe('SearchFieldComponent', () => {
 
     fixture = TestBed.createComponent(SearchFieldComponent);
     component = fixture.componentInstance;
-
     dialog = TestBed.get(MatDialog);
 
     fixture.detectChanges();
@@ -75,6 +74,13 @@ describe('SearchFieldComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('clearButton',()=> {
+    it('should Exist', () => {
+      const clearBtnElement =  fixture.debugElement.query(By.css('#clearSearchBtn'));
+      expect(clearBtnElement).toBeTruthy();
+    });
   });
 
 });

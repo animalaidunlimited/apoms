@@ -9,6 +9,9 @@ import {
 } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
+import { SurgeryRecordComponent } from 'src/app/modules/surgery-register/components/surgery-record.component';
 
 describe('AddSurgeryDialogComponent', () => {
     let component: AddSurgeryDialogComponent;
@@ -29,6 +32,8 @@ describe('AddSurgeryDialogComponent', () => {
                 MatDialogModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 {
@@ -40,7 +45,10 @@ describe('AddSurgeryDialogComponent', () => {
                     useValue: mockDialogRef,
                 },
             ],
-            declarations: [AddSurgeryDialogComponent],
+            declarations: [
+                AddSurgeryDialogComponent,
+                SurgeryRecordComponent
+            ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));

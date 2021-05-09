@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { StreetTreatTab } from 'src/app/core/models/streettreet';
 
@@ -11,7 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 
 
 
@@ -24,7 +24,9 @@ export class StreetTreatRecordComponent implements OnInit {
 
   permissionType!: number[];
 
-  hasWritePermission: boolean = false;
+  private ngUnsubscribe = new Subject();
+
+  hasWritePermission = false;
 
   @Input() inputStreetTreatCase!: StreetTreatTab;
 
@@ -61,9 +63,8 @@ export class StreetTreatRecordComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.route.data.subscribe(val=> {
-
-      if (val.componentPermissionLevel?.value === 2) {
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
+      if (val.componentPermissionLevel.value === 2) {
           this.hasWritePermission = true;
       }
 
@@ -118,7 +119,6 @@ export class StreetTreatRecordComponent implements OnInit {
     } ),
       take(1))
     .subscribe((res) => {
-
       this.recordForm.patchValue(res);
 
       this.streetTreatServiceSubscription?.unsubscribe();
@@ -143,24 +143,32 @@ export class StreetTreatRecordComponent implements OnInit {
 
   saveForm(){
 
-   if(this.hasWritePermission) {
-    this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
-
-      response.success === 1
-          ? this.showSnackBar.successSnackBar('Street Treat updated successfully','OK')
-          : this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
-
-      if(response?.success === -1){
-        this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
-        return;
-      }
-
-    });
+    if(this.hasWritePermission) {
+     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
+       if(response.success === 1)
+         { 
+           this.showSnackBar.successSnackBar('Street Treat updated successfully','OK');
+           this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
+           .pipe(takeUntil(this.ngUnsubscribe))
+           .subscribe((response) => {
+             this.recordForm.get('streatTreatForm.visits')?.patchValue(response.visits);
+           });
+           
+         }
+         else {
+           this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
+         }
+ 
+       if(response?.success === -1){
+         this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
+         return;
+       }
+       
+     });
+    }
+    else {
+      this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
+    } 
    }
-   else {
-    this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
-   }
-
-  }
 
 }

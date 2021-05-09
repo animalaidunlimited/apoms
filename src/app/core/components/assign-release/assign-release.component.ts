@@ -5,7 +5,6 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
-import { Release } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 

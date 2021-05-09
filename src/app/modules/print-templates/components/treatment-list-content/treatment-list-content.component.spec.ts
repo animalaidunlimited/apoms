@@ -1,9 +1,11 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TreatmentListContentComponent } from './treatment-list-content.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 describe('TreatmentListContentComponent', () => {
@@ -39,7 +41,9 @@ describe('TreatmentListContentComponent', () => {
 
       imports: [
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        MaterialModule,
+        BrowserAnimationsModule
       ],
       declarations: [
         TreatmentListContentComponent

@@ -18,6 +18,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('AnimalSelectionComponent', () => {
     let component: AnimalSelectionComponent;
@@ -41,6 +42,7 @@ describe('AnimalSelectionComponent', () => {
                 BrowserAnimationsModule,
                 RouterTestingModule,
                 ReactiveFormsModule,
+                MaterialModule,
                 FormsModule,
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase)

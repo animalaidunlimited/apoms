@@ -59,7 +59,9 @@ export class LogsComponent implements OnInit {
             ].join(',');
         }
         else{
-            searchQuery = Object.values(this.logsData).toString();
+            if(this.logsData){
+                searchQuery = Object.values(this.logsData).toString();
+            }
         }
 
         this.initLogs(searchQuery);

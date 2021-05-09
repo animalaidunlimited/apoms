@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavMenuItemComponent } from './nav-menu-item.component';
@@ -18,6 +19,7 @@ describe('NavMenuItemComponent', () => {
             imports: [
                 MatIconModule,
                 MatExpansionModule,
+                MaterialModule,
                 HttpClientTestingModule,
                 RouterTestingModule.withRoutes([
                     {

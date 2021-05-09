@@ -1,9 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MaterialModule } from 'src/app/material-module';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SurgeriesByDateDialogComponent } from './surgeries-by-date-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SurgeriesByDateDialogComponent', () => {
   let component: SurgeriesByDateDialogComponent;
@@ -26,7 +27,8 @@ let dialog: MatDialogRef<SurgeriesByDateDialogComponent>;
     TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MaterialModule
       ],
       providers: [ {
         provide: MAT_DIALOG_DATA,

@@ -7,10 +7,7 @@
 
     <div class="media-content">
 
-    <!--<img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL || mediaItem.remoteURL" alt="Media" [ngStyle]="{'height.px': (400 / mediaItem.widthPX) * mediaItem.heightPX}">-->
     <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL || mediaItem.remoteURL" alt="Media" [ngStyle]="{'width.%': 85}">
-
-    <!-- <img mat-card-image *ngIf="mediaItem.mediaType.includes('image')" [src]="mediaItem.localURL" alt="Media"> -->
 
     <video controls *ngIf="mediaItem.mediaType.includes('video')" (click)="toggleVideo()" #videoPlayer [ngStyle]="{'height.px': (370 / mediaItem.widthPX) * mediaItem.heightPX}">
 
@@ -23,9 +20,6 @@
 
     <mat-card-content>
       <mat-progress-bar max="100" *ngIf="!(mediaItem.mediaItemId | async)"  [value]="(mediaItem.uploadProgress$ | async)"></mat-progress-bar>
-      <p>
-        <input matInput type="text" formControlName="comment" placeholder="Comment" autocomplete="off">
-      </p>
 
     <mat-form-field class="example-chip-list" style="width:100%">
         <mat-chip-list #chipList formArrayName="tags" aria-label="Media tags">

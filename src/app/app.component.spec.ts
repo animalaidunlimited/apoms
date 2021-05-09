@@ -6,6 +6,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from './material-module';
 
 
 describe('AppComponent', () => {
@@ -15,6 +16,7 @@ describe('AppComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule,
+                MaterialModule,
                 HttpClientTestingModule,
                 AngularFireMessagingModule,
                 AngularFireModule.initializeApp(environment.firebase), ],

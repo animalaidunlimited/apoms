@@ -166,7 +166,6 @@ return returnObject;
       isPrimary: false,
       remoteURL: '',
       datetime: now,
-      comment: '',
       patientId,
       heightPX: 0,
       widthPX: 0,

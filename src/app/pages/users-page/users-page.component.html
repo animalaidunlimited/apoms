@@ -47,29 +47,24 @@
 
         </div>
 
-        <!-- <div > -->
-
-            <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row" fxLayoutAlign='start center'>
-                <mat-form-field appearance="fill">
-                    <mat-label>-Team-</mat-label>
-                    <mat-select  formControlName= 'teamId'>
-                        <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
-                        {{name.TeamName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="fill" >
-                    <mat-label>-StreetTreat role-</mat-label>
-                    <mat-select formControlName='roleId' >
-                        <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
-                            {{role.roleName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-<!--
-        </div> -->
-
+        <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row" fxLayoutAlign='start center'>
+            <mat-form-field appearance="fill">
+                <mat-label>-Team-</mat-label>
+                <mat-select  formControlName= 'teamId'>
+                    <mat-option *ngFor="let name of teamNames" [value]="name.TeamId">
+                    {{name.TeamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill" >
+                <mat-label>-StreetTreat role-</mat-label>
+                <mat-select formControlName='roleId' >
+                    <mat-option *ngFor="let role of streettreatRoles" [value]="role.roleId">
+                        {{role.roleName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
@@ -108,70 +103,9 @@
     <input matInput (keyup)="applyFilter($event)" #input>
 </mat-form-field>
 
-<!-- <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" matSort
-    class = "sortTableCursor">
-
-        <ng-container matColumnDef="firstName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
-            <td mat-cell *matCellDef="let row"> {{row.firstName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="surName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
-            <td mat-cell *matCellDef="let row"> {{row.surName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="initials">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Initials </th>
-            <td mat-cell *matCellDef="let row"> {{row.initials}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="colour">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Colour </th>
-            <td mat-cell *matCellDef="let row"> {{row.colour}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="telephone">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone Number </th>
-            <td mat-cell *matCellDef="let row"> {{row.telephone}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> User Name </th>
-            <td mat-cell *matCellDef="let row"> {{row.userName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="team">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Team </th>
-            <td mat-cell *matCellDef="let row"> {{row.team}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> StreetTreat Role </th>
-            <td mat-cell *matCellDef="let row"> {{row.role}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="jobTitle">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Job Title </th>
-            <td mat-cell *matCellDef="let row"> {{row.jobTitle}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
-</div> -->
-
-
-
 <div class="example-container mat-elevation-z8">
     <mat-table matSort #table [dataSource]="dataSource">
 
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-      <!-- Position Column -->
       <ng-container matColumnDef="firstName">
         <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -180,7 +114,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Name Column -->
       <ng-container matColumnDef="surName">
         <mat-header-cell *matHeaderCellDef> Surname </mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -189,7 +122,6 @@
         </mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
       <ng-container matColumnDef="initials">
         <mat-header-cell *matHeaderCellDef> Initials </mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -197,8 +129,7 @@
           {{row.initials}}
         </mat-cell>
       </ng-container>
-
-      <!-- Symbol Column -->
+      
       <ng-container matColumnDef="colour">
         <mat-header-cell *matHeaderCellDef> Colour </mat-header-cell>
         <mat-cell *matCellDef="let row">

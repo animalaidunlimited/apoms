@@ -10,7 +10,7 @@
                         [profileUrl]="profileUrl">
                     </animal-header>
 
-                    <thumbnail-slider [mediaData]="mediaData"></thumbnail-slider>
+                    <thumbnail-slider [mediaData]="mediaData" [patientData]="recordForm.get('patientDetails')"></thumbnail-slider>
 
                     <fieldset class="form-sub-group" autocomplete=false>
                         <legend class="legend" i18n>Status</legend>
@@ -41,9 +41,7 @@
 
     <mat-tab label="Emergency details" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-        <!-- <fieldset class="form-sub-group">
-            <legend class="legend" i18n>Emergency details</legend> -->
-            <div fxLayout="column" fxLayout.lt-md="row wrap" fxLayoutGap="15px" fxLayoutAlign="start end">
+            <div class="emergencyRecordWrapper" fxLayout="column" fxLayout.lt-md="row wrap" fxLayoutGap="15px" fxLayoutAlign="start">
                 <emergency-details
                     [recordForm]="recordForm"
                     [focusEmergencyNumber]="false"></emergency-details>
