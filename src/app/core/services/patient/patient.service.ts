@@ -4,10 +4,11 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
-    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
-import { MediaItem } from 'src/app/core/models/media';
+    CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, UpdatePatientDetails, PriorityObject } from 'src/app/core/models/patients';
+import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
-import {MediaItemsDataObject} from 'src/app/core/models/media';
+import { MediaItemsDataObject, Comment } from 'src/app/core/models/media';
+import { SuccessOnlyResponse } from '../../models/responses';
 
 interface SuccessResult{
     success: number;
@@ -168,8 +169,6 @@ export class PatientService extends APIService {
         patientCalls: PatientCalls,
     ): Promise<PatientCallModifyResponse[]> {
 
-        console.log(patientCalls);
-
         const response:PatientCallModifyResponse[] = [];
 
         for (const call of patientCalls.calls) {
@@ -329,7 +328,6 @@ export class PatientService extends APIService {
             });
 
             if(patientMediaItem){
-                console.log(savedMediaItems);
                 patientMediaItem.mediaItem.next(savedMediaItems);
             }
 
