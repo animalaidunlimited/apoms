@@ -256,7 +256,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         const patientArray = this.recordForm.get('patients') as FormArray;
 
-        const admission = patientArray.controls.some(currentPatient =>
+        const admission = patientArray?.controls.some(currentPatient =>
                 currentPatient.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Admission'
         );
 
