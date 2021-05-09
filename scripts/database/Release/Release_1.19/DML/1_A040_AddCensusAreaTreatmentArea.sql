@@ -22,9 +22,9 @@ DELIMITER ;
 CALL `?`();
 DROP PROCEDURE `?`;	
 
-UPDATE AAU.CensusArea SET TreatmentListMain = 1 WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation');
+UPDATE AAU.CensusArea 
+	SET TreatmentListMain = 1 
+WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation') AND AreaId <> 0;
 
-SELECT *
-FROM 
 
 
