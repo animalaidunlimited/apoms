@@ -1,1 +1,0 @@
-INSERT INTO AAU.patientstatus (`PatientStatusId`, `OrganisationId`, `PatientStatus`, `IsDeleted`) VALUES ('7', '1', 'StreetTreat', '0');
