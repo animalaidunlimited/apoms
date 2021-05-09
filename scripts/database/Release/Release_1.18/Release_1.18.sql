@@ -10,10 +10,6 @@ DELIMITER ;
 CALL `?`();
 DROP PROCEDURE `?`;	
 
-
-
-
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
@@ -332,7 +328,7 @@ DROP PROCEDURE `?`;
 DELIMITER !!
 
 
-DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient;!!
+DROP procedure IF EXISTS AAU.sp_AddOrUpdateStreetTreatPatient!!
 
 
 DELIMITER $$
@@ -405,7 +401,6 @@ END IF;
 SELECT vTagNumber, vCaseId;
 
 END$$
-
 DELIMITER ;
 
 DELIMITER !!
@@ -467,51 +462,61 @@ ELSE
 	SELECT null AS Result;
 END IF;
 END$$
-
 DELIMITER ;
 
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+	ALTER TABLE AAU.StreetTreatCase 
+	ADD UNIQUE INDEX PatientId_UNIQUE (PatientId);
+
+	ALTER TABlE AAU.StreetTreatCase
+	ADD CONSTRAINT FK_StreetTreatCasePatientId_PatientPatientId FOREIGN KEY (PatientId) REFERENCES Patient(PatientId);
+
+END //
+CALL `?`();
+DROP PROCEDURE `?`;	
+
 DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase;!!
-
-
-CREATE PROCEDURE AAU.sp_InsertAndUpdateStreetTreatCase(
-									IN prm_Username VARCHAR(45),
-									IN prm_PatientId INT,
-									IN prm_PriorityId INT,
-									IN prm_StatusId INT,
-									IN prm_TeamId INT,
-                                    IN prm_MainProblemId INT,
-									IN prm_AdminComments VARCHAR(256),
-									IN prm_OperatorNotes VARCHAR(256),
-                                    IN prm_ClosedDate DATE,
-                                    IN prm_EarlyReleaseFlag BOOLEAN,
-                                    IN prm_AnimalDescription VARCHAR(256)
+DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase;!!
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
+		IN prm_Username VARCHAR(45),
+		IN prm_PatientId INT,
+		IN prm_PriorityId INT,
+		IN prm_StatusId INT,
+		IN prm_TeamId INT,
+		IN prm_MainProblemId INT,
+		IN prm_AdminComments VARCHAR(256),
+		IN prm_OperatorNotes VARCHAR(256),
+		IN prm_ClosedDate DATE,
+		IN prm_EarlyReleaseFlag BOOLEAN,
+		IN prm_AnimalDescription VARCHAR(256)
 )
 BEGIN
 /*
 Created By: Ankit Singh
 Created On: 02/12/2020
 Purpose: Used to insert a new case.
+
+
+Created By: Ankit Singh
+Created On: 27/04/2021
+Purpose: ON DUPLICATE KEY UPDATE Added
 */
 
-DECLARE vCaseNoExists INT;
-DECLARE vSuccess INT;
 DECLARE vStreetTreatCaseId INT;
+DECLARE vSuccess INT;
 DECLARE vOrganisationId INT;
 
 SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE UserName = prm_Username LIMIT 1;
 
-SET vCaseNoExists = 0;
-
-SELECT COUNT(1), StreetTreatCaseId INTO vCaseNoExists, vStreetTreatCaseId 
-FROM AAU.StreetTreatCase 
-WHERE PatientId = prm_PatientId GROUP BY PatientId;
-
-IF vCaseNoExists = 0 THEN
-
-	INSERT INTO AAU.StreetTreatCase
-						(
+INSERT INTO AAU.StreetTreatCase(
                         PatientId,
 						PriorityId,
 						StatusId,
@@ -522,9 +527,7 @@ IF vCaseNoExists = 0 THEN
                         ClosedDate,
                         EarlyReleaseFlag,
                         OrganisationId
-						)
-				VALUES
-						(
+					) VALUES (
                         prm_PatientId,
 						prm_PriorityId,
 						prm_StatusId,
@@ -535,42 +538,28 @@ IF vCaseNoExists = 0 THEN
                         prm_ClosedDate,
                         prm_EarlyReleaseFlag,
                         vOrganisationId
-						);
+						) ON DUPLICATE KEY UPDATE
+                        PriorityId			= prm_PriorityId,
+						StatusId			= prm_StatusId,
+						TeamId				= prm_TeamId,
+						MainProblemId		= prm_MainProblemId,
+						AdminComments		= prm_AdminComments,
+						OperatorNotes		= prm_OperatorNotes,
+						ClosedDate			= prm_ClosedDate,
+						EarlyReleaseFlag	= prm_EarlyReleaseFlag;
+                        
 	SELECT 1 INTO vSuccess;
-    SELECT LAST_INSERT_ID() INTO vStreetTreatCaseId;
     
+	SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
+
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
     
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'Case','Insert', NOW());
-    
-ELSEIF vCaseNoExists > 0 THEN
-
-    UPDATE  AAU.StreetTreatCase
-    SET 
-		PriorityId			= prm_PriorityId,
-		StatusId			= prm_StatusId,
-		TeamId				= prm_TeamId,
-		MainProblemId		= prm_MainProblemId,
-		AdminComments		= prm_AdminComments,
-		OperatorNotes		= prm_OperatorNotes,
-		ClosedDate			= prm_ClosedDate,
-		EarlyReleaseFlag	= prm_EarlyReleaseFlag
-	WHERE
-		PatientId = prm_PatientId;
-        
-	UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
-        
-	SELECT 2 INTO vSuccess;
-
-ELSE
-	SELECT 3 INTO vSuccess;
-END IF;
-
-SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
-
+	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
+	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
 END$$
 DELIMITER ;
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient;!!
@@ -656,8 +645,9 @@ END IF;
 SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
 
 END$$
-
 DELIMITER ;
+
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
@@ -846,7 +836,6 @@ END IF;
 
 SELECT vSuccess AS success;
 END$$
-
 DELIMITER ;
 
 
@@ -874,7 +863,6 @@ WHERE rd.ReleaseDetailsId = prm_ReleaseId;
 
 
 END$$
-
 DELIMITER ;
 
 DELIMITER !!
@@ -937,7 +925,6 @@ ELSE
 	SELECT null AS Result;
 END IF;
 END$$
-
 DELIMITER ;
 
 			
@@ -1199,15 +1186,11 @@ stat.ActionStatusGroups)
 FROM StatusGroupCTE stat;
  
 END$$
-
-
-
-
 DELIMITER ;
 
 
 DELIMITER !!
-DROP procedure IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits;!!
+DROP procedure IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits!!
 
 DELIMITER $$
 
@@ -1333,3 +1316,106 @@ GROUP BY caseVisits.TeamId,caseVisits.TeamName
 ) AS cases;
 
 END$$
+DELIMITER ;
+
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_InsertAndUpdateVisit!!
+
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_UpsertVisit!!
+
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_UpsertVisit(
+	IN prm_StreetTreatCaseId INT,
+    IN prm_VisitId INT,
+	IN prm_VisitDate DATE,
+	IN prm_VisitTypeId INT,
+	IN prm_StatusId INT,
+	IN prm_AdminNotes TEXT,
+	IN prm_OperatorNotes TEXT,
+	IN prm_IsDeleted INT,
+	IN prm_Day TINYINT
+)
+BEGIN
+
+DECLARE vVisitExisits INT;
+DECLARE vVisitDateExists INT;
+DECLARE vSuccess TINYINT;
+DECLARE vVisitIdExisits boolean;
+
+SET vVisitExisits = 0;
+SET vVisitDateExists = 0;
+SET vSuccess = -1;
+
+SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit WHERE 
+VisitId = prm_VisitId 
+AND StreetTreatCaseId = prm_StreetTreatCaseId
+AND (IsDeleted = 0 OR IsDeleted IS NULL);
+    
+SELECT COUNT(1) INTO vVisitDateExists FROM AAU.Visit WHERE 
+StreetTreatCaseId = prm_StreetTreatCaseId AND 
+VisitId = prm_VisitId AND
+Date = prm_VisitDate AND
+isDeleted = 0;
+
+IF prm_VisitId IS NULL THEN 
+
+	INSERT INTO AAU.Visit(
+			StreetTreatCaseId,
+			VisitTypeId,
+			Date,
+			StatusId,
+			AdminNotes,
+			OperatorNotes,
+			IsDeleted,
+			Day
+		) VALUES (
+			prm_StreetTreatCaseId,
+			prm_VisitTypeId,
+			prm_VisitDate,							
+			prm_StatusId,
+			prm_AdminNotes,
+			prm_OperatorNotes,
+			prm_IsDeleted,
+			prm_Day
+		);
+                            
+    SELECT LAST_INSERT_ID() INTO prm_VisitId;    
+    SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (NULL,prm_VisitId,'Visit','Insert', NOW());
+        
+           
+ELSEIF vVisitExisits = 1 AND vVisitDateExists = 0 THEN
+	
+	UPDATE AAU.Visit 
+		SET
+			VisitTypeId		= prm_VisitTypeId,
+            Date			= prm_VisitDate,
+            StatusId		= prm_StatusId,
+            AdminNotes		= prm_AdminNotes,
+            OperatorNotes	= prm_OperatorNotes,
+            IsDeleted		= prm_IsDeleted,
+            Day				= prm_Day
+		WHERE
+			VisitId = prm_VisitId;
+	
+    INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (NULL,prm_VisitId,'Visit','Update', NOW());
+
+    SELECT 2 INTO vSuccess;
+
+ELSEIF vVisitDateExists > 0 THEN
+    SELECT 3 INTO vSuccess;
+ELSE
+	SELECT 4 INTO vSuccess;
+    
+END IF;
+
+SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
+
+END$$
+DELIMITER ;
