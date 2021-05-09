@@ -221,7 +221,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-    if(this.animalType?.value === '' )
+    if(this.animalType?.value === '')
     {
       alert('Please select an animal');
       $event.preventDefault();
@@ -244,7 +244,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       });
     }
   }
-
+  checkMainProblem(){
+    if(this.problemsArray.length === 0){
+      this.problemRef.nativeElement.value = '';
+    }
+  }
   openMediaDialog(patientForm:FormGroup){
     // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
     const dialogRef = this.dialog.open(MediaDialogComponent, {
