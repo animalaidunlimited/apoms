@@ -15,7 +15,7 @@
 
     </mat-form-field>
     <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="min-width: 86%;" fxFlexOrder.lt-md="1"  >
-        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)">
+        <mat-chip-list #chipList [disabled]="animalType.value === ''"  (click)="isSpeciesBlank($event)">
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
             [selectable]="selectable"
@@ -30,7 +30,8 @@
             [formControl]="problemInput"
             [matAutocomplete]="problemAuto"
             [matChipInputFor]="chipList"
-            tabindex="9">
+            tabindex="9"
+            (focusout)="checkMainProblem()">
         </mat-chip-list>
 
         <mat-autocomplete  autoActiveFirstOption #problemAuto="matAutocomplete"  (optionSelected)="updatePatientProblemArray($event)">
