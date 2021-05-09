@@ -147,7 +147,7 @@
                     <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
                   </div>
 
-                  <div flFlex="none">{{getTimer(outstandingCase.callDateTime)}}</div>
+                  <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
 
                 </mat-expansion-panel-header>
 
@@ -221,7 +221,7 @@
                   <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
                 </div>
 
-                <div flFlex="none">{{getTimer(outstandingCase.requestedDate)}}</div>
+                <div flFlex="none">{{outstandingCase.requestedDate | timeAgo}}</div>
 
                 </mat-expansion-panel-header>
 

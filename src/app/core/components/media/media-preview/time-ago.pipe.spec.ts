@@ -1,10 +1,17 @@
-import { ChangeDetectorRef } from '@angular/core';
 import { TimeAgoPipe } from './time-ago.pipe';
 
 describe('TimeAgoPipe', () => {
-  let ref!:ChangeDetectorRef;
+
+  let pipe:TimeAgoPipe;
+
+  beforeEach(() => {
+
+    pipe = new TimeAgoPipe();
+
+  });
+
   it('create an instance', () => {
-    const pipe = new TimeAgoPipe(ref);
+
     expect(pipe).toBeTruthy();
   });
 });

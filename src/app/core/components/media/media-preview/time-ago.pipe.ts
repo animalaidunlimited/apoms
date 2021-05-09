@@ -1,23 +1,13 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Injector,OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import {  Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'timeAgo',
   pure: false
 })
-export class TimeAgoPipe implements PipeTransform, OnDestroy {
-  private asyncPipe: AsyncPipe;
-
-  constructor(private ref: ChangeDetectorRef ) {
-    this.asyncPipe = new AsyncPipe(this.ref);
-  }
-
-  ngOnDestroy() {
-     this.asyncPipe.ngOnDestroy();
-  }
+export class TimeAgoPipe implements PipeTransform {
 
 
-  transform(value: string, ...args: string[]): string {
+  transform(value: string | Date, ...args: string[]): string {
     let result = '';
     if (value) {
       // current time
@@ -27,15 +17,15 @@ export class TimeAgoPipe implements PipeTransform, OnDestroy {
       if (delta < 10) {
         result = 'now';
       } else if (delta < 60) { // sent in last minute
-        result = Math.floor(delta) + ' Seconds';
+        result = Math.floor(delta) + 's';
       } else if (delta < 3600) { // sent in last hour
-        result = Math.floor(delta / 60) + ' Minutes';
+        result = Math.floor(delta / 60) + 'm';
       } else if (delta < 86400) { // sent on last day
-        result = Math.floor(delta / 3600) + ' Hours';
+        result = Math.floor(delta / 3600) + 'h';
       } else { // sent more than one day ago
-        result = Math.floor(delta / 86400) + ' Days';
+        result = Math.floor(delta / 86400) + 'd';
       }
-      
+
     }
     return result;
   }
