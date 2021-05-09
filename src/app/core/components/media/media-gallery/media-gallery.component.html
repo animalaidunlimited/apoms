@@ -1,0 +1,25 @@
+
+<div fxLayout="row" class="mediaGalleryContainer">
+
+    <media-thumbnails
+        [gallery]="galleryImages.slice(0,3)"
+        [mediaPatientItems]="mediaData">
+    </media-thumbnails>
+
+</div>
+
+<div fxLayout="row" fxLayoutAlign="end center">
+
+    <button type='button' color="primary" mat-mini-fab>
+        <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
+    </button>
+
+    <button
+        mat-raised-button
+        (click)="openGalleryDialog($event)"
+        color="primary"
+        style="max-width: 6rem;margin: 1rem;">View more
+    </button>
+
+</div>
+

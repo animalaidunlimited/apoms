@@ -51,6 +51,7 @@ export class PatientRecordComponent implements OnInit {
 
     ngOnInit() {
 
+        // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
             if (val.componentPermissionLevel?.value === 2) {
@@ -98,21 +99,20 @@ export class PatientRecordComponent implements OnInit {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
-
         if(this.mediaData){
 
-        this.mediaData.subscribe(media=>{
+            // tslint:disable-next-line: deprecation
+            this.mediaData.subscribe(media=>{
+                if(media.length === 0){
+                    return;
+                }
+                
+                this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
-            if(media.length === 0){
-                return;
-            }
+                this.changeDetector.detectChanges();
 
-            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
-
-            this.changeDetector.detectChanges();
-
-        });
-    }
+            });
+        }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
             emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,

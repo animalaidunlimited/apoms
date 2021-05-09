@@ -10,7 +10,7 @@
                         [profileUrl]="profileUrl">
                     </animal-header>
 
-                    <thumbnail-slider [mediaData]="mediaData"></thumbnail-slider>
+                    <thumbnail-slider [mediaData]="mediaData" [patientData]="recordForm.get('patientDetails')"></thumbnail-slider>
 
                     <fieldset class="form-sub-group" autocomplete=false>
                         <legend class="legend" i18n>Status</legend>
