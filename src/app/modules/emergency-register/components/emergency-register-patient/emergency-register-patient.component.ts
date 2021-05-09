@@ -42,7 +42,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @ViewChild('animalTypeInput') animalTypeInput!: ElementRef;
   @ViewChild('tagNumber') tagNumber!: ElementRef;
   @ViewChild('animalTypeInput', { read: MatAutocompleteTrigger }) animalAutoComplete! : MatAutocompleteTrigger;
-
+  @ViewChild('problemRef', { read: MatAutocompleteTrigger }) problemAutoComplete!: MatAutocompleteTrigger;
   problemInput = new FormControl();
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -221,13 +221,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-    if(this.animalType?.value === '')
-    {
-      alert('Please select an animal');
-      $event.preventDefault();
-      this.animalTypeInput.nativeElement.focus();
-    }
-
+   setTimeout(() =>{
+      if(this.animalType?.value === '')
+      {
+        alert('Please select an animal');
+        $event.preventDefault();
+        this.animalTypeInput.nativeElement.focus();
+        this.problemAutoComplete.closePanel();
+      }
+   });
   }
 
   checkAnimalType(animalType:string){
@@ -241,6 +243,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
           // tslint:disable-next-line: no-unused-expression
           this.animalType?.setValue('');
           this.animalTypeInput.nativeElement.value = '';
+          this.animalTypeInput.nativeElement.focus();
         }
       });
     }
@@ -249,7 +252,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     if(this.problemsArray.length === 0){
       this.problemRef.nativeElement.value = '';
       this.chipList.errorState = true;
-      console.log(this.chipList.errorState);
     }
   }
   openMediaDialog(patientForm:FormGroup){
