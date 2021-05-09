@@ -33,4 +33,4 @@ SELECT
 FROM AAU.TreatmentArea
 WHERE OrganisationId = vOrganisationId;
 
-END
+END$$

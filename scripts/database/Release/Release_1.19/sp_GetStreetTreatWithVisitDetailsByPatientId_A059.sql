@@ -1,10 +1,10 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatWithVisitDetailsByPatientId!!
 
 DELIMITER $$
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetStreetTreatWithVisitDetailsByPatientId`(IN prm_PatientId INT)
+CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
 BEGIN
 DECLARE vStreetTreatCaseIdExists INT;
 /*
