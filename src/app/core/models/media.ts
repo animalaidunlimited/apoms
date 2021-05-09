@@ -10,11 +10,10 @@ export interface MediaItem{
     isPrimary: boolean;
     datetime: Date|string;
     deleted: boolean;
-    comment: string;
     patientId: number;
     heightPX: number;
     widthPX: number;
-    tags: string[];
+    tags: Tag[] | string[];
     uploadProgress$: Observable<number> | null;
     updated: boolean;
   }
@@ -35,3 +34,45 @@ export interface MediaItem{
     image: File[];
     video: File[];
   }
+
+  export interface Image {
+    thumbnail: string;
+    full: string;
+    type: string;
+    time?: string | null;
+    date?: string | null;
+    tags?: any;
+    patientMediaItemId?:number | null;
+    height?: number;
+    width?: number;
+  }
+  export interface Gallery {
+    date: string;
+    images: Image[];
+  }
+
+  export interface Comment {
+    userId: number;
+    comment: string;
+    timestamp: string;
+    userColour: string;
+    userInitials: string;
+    userName?:string | null;
+  }
+
+  export interface Tag {
+    tag: string;
+  }
+  export interface MediaResponse {
+    tags: Tag[];
+    widthPX: number;
+    comments: Comment[];
+    datetime: Date;
+    heightPX: number;
+    localURL?: any;
+    isPrimary: number;
+    mediaType: string;
+    patientId: number;
+    remoteURL: string;
+    mediaItemId: number;
+}

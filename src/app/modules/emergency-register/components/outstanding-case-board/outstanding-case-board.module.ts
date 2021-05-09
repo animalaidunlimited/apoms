@@ -6,8 +6,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { ChipListType } from '../../pipes/chip-list-type';
+import { SharedPipesModule } from 'src/app/shared-pipes.module';
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import { ChipListType } from '../../pipes/chip-list-type';
         FlexLayoutModule,
         GoogleMapsModule,
         SearchResultCardModule,
+        SharedPipesModule,
         MatChipsModule
     ],
     providers:[

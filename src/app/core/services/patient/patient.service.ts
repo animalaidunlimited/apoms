@@ -5,10 +5,10 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse } from 'src/app/core/models/patients';
-import { MediaItem } from 'src/app/core/models/media';
+import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
-import {MediaItemsDataObject} from 'src/app/core/models/media';
-import { SuccessOnlyResponse } from '../../models/responses';
+import {MediaItemsDataObject, Comment} from 'src/app/core/models/media';
+import { ConstantPool } from '@angular/compiler';
 
 interface SuccessResult{
     success: number;
@@ -232,16 +232,17 @@ export class PatientService extends APIService {
 
         return await this.put(mediaItem)
             .then((data:SuccessResult) => {
-
+                
+                
                 if(data.success === 1){
-
+                   
                     let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
                         patientMediaItemVal.patientId === mediaItem.patientId
                     );
-
+                    
                     if(!patientMediaItem){
                         // We're loading the service for the first time and the first patient has no photos
-
+                        
                         patientMediaItem = {
                             patientId: mediaItem.patientId,
                             mediaItem : new BehaviorSubject<MediaItem[]>([mediaItem])
@@ -249,25 +250,29 @@ export class PatientService extends APIService {
 
                         this.mediaItemData.push(patientMediaItem);
 
-
                     }
 
                     let dataItem = patientMediaItem.mediaItem.getValue();
-
+                
+                
                     if(mediaItem.deleted){
                         dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
                     }
 
-                    const existingItem = dataItem.find(item => item.patientMediaItemId = mediaItem.patientMediaItemId);
-
-                    if(!existingItem){
+                    const existingItem = dataItem.findIndex(item => item.patientMediaItemId === mediaItem.patientMediaItemId); 
+                   
+                    
+                    if(existingItem === -1 ){
                         dataItem.push(mediaItem);
                     }
-
+                     else {
+                       dataItem[existingItem] = mediaItem;
+                    }
+                    
                     patientMediaItem.mediaItem.next(dataItem);
 
                 }
-
+ 
                 return data;
             })
             .catch(error => {
@@ -279,11 +284,11 @@ export class PatientService extends APIService {
     public getPatientMediaItemsByPatientId(patientId: number): BehaviorSubject<MediaItem[]> {
 
         const request = '/PatientMediaItems?patientId=' + patientId;
-
+     
         let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
             patientMediaItemVal.patientId === patientId
         );
-
+        
         const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
         patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
 
@@ -291,12 +296,15 @@ export class PatientService extends APIService {
             patientMediaItem = this.addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject, patientId);
         }
 
-        this.getObservable(request).subscribe((media : any[])=>{
+        // tslint:disable-next-line: deprecation
+        this.getObservable(request).pipe(
+            map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
+        ).subscribe((media : MediaResponse[])=>{
 
             if(!media){
                 return;
             }
-
+    
             const savedMediaItems: MediaItem[] = media.map(item=>{
 
                 return {
@@ -305,9 +313,8 @@ export class PatientService extends APIService {
                     mediaType: item.mediaType,
                     localURL: item.localURL,
                     remoteURL: item.remoteURL,
-                    isPrimary :item.isPrimary,
+                    isPrimary :item.isPrimary ? true : false,
                     datetime: item.datetime,
-                    comment: item.comment,
                     patientId: item.patientId,
                     heightPX: item.heightPX,
                     widthPX: item.widthPX,
@@ -318,12 +325,14 @@ export class PatientService extends APIService {
                 };
 
             });
-
+            
             if(patientMediaItem){
+                console.log(savedMediaItems);
                 patientMediaItem.mediaItem.next(savedMediaItems);
             }
 
         });
+
         return returnBehaviorSubject;
     }
 
@@ -334,6 +343,7 @@ export class PatientService extends APIService {
             mediaItem : returnBehaviorSubject
         };
         returnBehaviorSubject.next([]);
+        
         this.mediaItemData.push(newItemData);
 
         return newItemData;
@@ -377,8 +387,34 @@ export class PatientService extends APIService {
 
         }
 
+    }
+    public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
+        return await this.post(comment)
+        .then(data => {
+            if(data?.success === 1){
+                return data;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
 
     }
+
+    public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
+
+        const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
+
+        return this.getObservable(request).pipe(
+            map(response => {
+                return  response?.sort((comment1: Comment,comment2:Comment)=> {
+                    return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
+                });
+
+            })
+        );
+    }
+
 
 
 }
