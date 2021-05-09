@@ -221,7 +221,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-
     if(this.animalType?.value === '' )
     {
       alert('Please select an animal');
@@ -231,6 +230,20 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   }
 
+  checkAnimalType(animalType:string){
+    if(animalType !== '')
+    { 
+      this.sortedAnimalTypes.forEach(animals =>{
+        const matchAnimal = animals.filter(animal => animal.AnimalType === animalType);
+        if(matchAnimal.length === 0)
+        { 
+          // tslint:disable-next-line: no-unused-expression
+          this.animalType?.setValue('');
+          this.animalTypeInput.nativeElement.value = '';
+        }
+      });
+    }
+  }
 
   openMediaDialog(patientForm:FormGroup){
     // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
