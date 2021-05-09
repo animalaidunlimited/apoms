@@ -487,33 +487,6 @@ openAssignReleaseDialog(caseDetails: OutstandingAssignment) {
   });
 }
 
-getTimer(startDateTime: Date | string) : string {
-
-  if(typeof startDateTime === 'string'){
-    startDateTime = new Date(startDateTime);
-  }
-
-  const result = Math.floor((new Date()).getTime() - startDateTime.getTime());
-
-  let elapsedTime = '';
-
-  if(result < 3600000){
-    elapsedTime = Math.round(result / 60000) + 'm';
-  }
-  else if (result >= 3600000 && result < 86400000){
-    elapsedTime = Math.round(result / 3600000) + 'h';
-  }
-  else if (result >= 86400000){
-    elapsedTime = Math.round(result / 86400000) + 'd';
-  }
-  else {
-    elapsedTime = 'Unk';
-  }
-
-  return elapsedTime;
-
-}
-
 filterChipSelected(groupName: string, chip: MatChip) {
 
   this.incomingObject = {
