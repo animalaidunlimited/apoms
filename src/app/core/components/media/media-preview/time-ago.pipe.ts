@@ -8,8 +8,8 @@ import { ChangeDetectorRef, Injector,OnDestroy, Pipe, PipeTransform } from '@ang
 export class TimeAgoPipe implements PipeTransform, OnDestroy {
   private asyncPipe: AsyncPipe;
 
-  constructor(private injector: Injector) {
-    this.asyncPipe = new AsyncPipe(this.injector.get(ChangeDetectorRef));
+  constructor(private ref: ChangeDetectorRef ) {
+    this.asyncPipe = new AsyncPipe(ref);
   }
 
   ngOnDestroy() {
