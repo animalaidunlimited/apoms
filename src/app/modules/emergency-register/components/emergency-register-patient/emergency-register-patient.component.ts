@@ -233,6 +233,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   checkAnimalType(animalType:string){
     if(animalType !== '')
     { 
+      
       this.sortedAnimalTypes.forEach(animals =>{
         const matchAnimal = animals.filter(animal => animal.AnimalType === animalType);
         if(matchAnimal.length === 0)
@@ -247,6 +248,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   checkMainProblem(){
     if(this.problemsArray.length === 0){
       this.problemRef.nativeElement.value = '';
+      this.chipList.errorState = true;
+      console.log(this.chipList.errorState);
     }
   }
   openMediaDialog(patientForm:FormGroup){
