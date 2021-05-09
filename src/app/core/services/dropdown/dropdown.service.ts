@@ -7,7 +7,7 @@ import { EmergencyCode } from '../../models/emergency-code';
 import {
     ProblemDropdownResponse,
     CallType,
-    PatientCallOutcome,
+    PatientCallerInteractionOutcome,
     Exclusions,
     PatientStatusResponse,
     StreetTreatMainProblem
@@ -54,7 +54,7 @@ export class DropdownService extends APIService {
     nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
-    patientCallOutcome$!: Observable<PatientCallOutcome[]>;
+    patientCallOutcome$!: Observable<PatientCallerInteractionOutcome[]>;
     patientStates$!: Observable<PatientStatusResponse[]>;
     printableElements$!: Observable<PrintElement[]>;
     problems$!: Observable<ProblemDropdownResponse[]>;
@@ -550,12 +550,12 @@ export class DropdownService extends APIService {
         return this.surgeryTypes$;
     }
 
-    getPatientCallOutcomes(): Observable<PatientCallOutcome[]> {
-        const request = '/PatientCallOutcomes';
+    getPatientCallerInteractionOutcomes(): Observable<PatientCallerInteractionOutcome[]> {
+        const request = '/PatientCallerInteractionOutcomes';
 
         if (!this.patientCallOutcome$) {
             this.patientCallOutcome$ = this.getObservable(request).pipe(
-                map((response: PatientCallOutcome[]) => {
+                map((response: PatientCallerInteractionOutcome[]) => {
                     return response;
                 }),
             );

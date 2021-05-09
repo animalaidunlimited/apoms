@@ -4,7 +4,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { CallType, PatientCallOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { CallType, PatientCallerInteractionOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
 import {
@@ -32,7 +32,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     notificationDurationSeconds = 3;
 
     callTypes$: Observable<CallType[]>;
-    callOutcomes$: Observable<PatientCallOutcome[]>;
+    callOutcomes$: Observable<PatientCallerInteractionOutcome[]>;
     assignedTo$: Observable<User[]>;
 
     errorMatcher = new CrossFieldErrorMatcher();
@@ -46,7 +46,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     ) {
 
         this.assignedTo$ = this.dropdown.getCallStaff();
-        this.callOutcomes$ = this.dropdown.getPatientCallOutcomes();
+        this.callOutcomes$ = this.dropdown.getPatientCallerInteractionOutcomes();
         this.callTypes$ = this.dropdown.getCallTypes();
 
     }
@@ -96,9 +96,11 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     loadPatientCalls() {
         this.patientService
-            .getPatientCallsByPatientId(this.patientId)
+            .getPatientCallerInteractionByPatientId(this.patientId)
             .pipe(take(1))
-            .subscribe((data: PatientCalls) => {this.populatePatientCalls(data);});
+            .subscribe((data: PatientCalls) => {
+                this.populatePatientCalls(data);
+            });
     }
 
     populatePatientCalls(data: PatientCalls) {
@@ -110,7 +112,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
             for (let i = 0; i < length; i++) {
                 this.addPatientCall(false);
             }
-
             this.patientCallForm.patchValue(data);
         }
     }
@@ -118,13 +119,13 @@ export class PatientCallComponent implements OnInit, OnChanges {
     getNewCall(position: number, expanded: boolean) {
         return this.fb.group({
             position: [position, Validators.required],
-            patientCallId: [],
+            patientCallerInteractionId: [],
             patientId: [],
-            positiveCallOutcome: [true],
+            positiveInteraction: [true],
             callDateTime: [''],
             callType: [{}],
-            assignedTo: [{}],
-            PatientCallOutcomeId: [],
+            doneBy: [{}],
+            patientCallerInteractionOutcomeId: [],
             createdDateTime: [''],
             createdBy: [],
             comments: [''],
@@ -146,6 +147,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     }
 
     async savePatientCall() {
+
         // TODO replace this with a filter to return only the touched elements
         this.calls.controls.forEach(element => {
             if (element.touched) {
@@ -162,7 +164,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
         });
 
         await this.patientService
-            .savePatientCalls(this.patientCallForm.value)
+            .savePatientCallerInteractions(this.patientCallForm.value)
             .then((result: PatientCallModifyResponse[]) => {
                let comErrorFlag = false;
                let resErrorFlag = false;
@@ -187,7 +189,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
                         currentPatientCallId.setValue(
                             callResult.position === call.get('position')?.value
-                                ? callResult.results.patientCallId
+                                ? callResult.results.patientCallerInteractionId
                                 : currentPatientCallId.value,
                         );
                     });
