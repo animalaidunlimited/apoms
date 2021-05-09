@@ -302,7 +302,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
         if (result) {
 
-          console.log(result);
           this.endSave(row);
 
         }
