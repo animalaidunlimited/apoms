@@ -100,10 +100,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
-    this.animalType = this.patientForm.get('animalType') as AbstractControl;
+    this.animalType = this.patientForm?.get('animalType') as AbstractControl;
 
 
-    this.filteredAnimalTypes$ = this.animalType.valueChanges.pipe(
+    this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
       startWith(''),
       map(animalType => typeof animalType === 'string'? animalType : animalType.AnimalType),
       switchMap((animalType:string) => animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes)
@@ -116,7 +116,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       switchMap((problem:string) => problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems),
     );
 
-    this.problemsArray = this.patientForm.get('problems') as FormArray;
+    this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
     setTimeout(()=>{
       if(this.chipList.errorState){
