@@ -42,18 +42,11 @@ public async getTreatmentByTreatmentId(treatmentId: number): Promise<any>{
 
 public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
 
-  if(saveData.treatmentId){
-
-    return await this.put(saveData);
-
-  }
-  else{
-
-    return await this.post(saveData);
-
-  }
+  return saveData.treatmentId ? await this.put(saveData) : await this.post(saveData);
 
 }
+
+
 
 deleteTreatmentsByDate(treatmentDate: string | Date){
 

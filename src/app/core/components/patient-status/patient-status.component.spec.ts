@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { PatientStatusComponent } from './patient-status.component';
 
@@ -11,19 +6,20 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
     ReactiveFormsModule,
     FormBuilder,
-    FormsModule,
-    Validators,
+    FormsModule
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientStatusComponent', () => {
     let component: PatientStatusComponent;
     let fixture: ComponentFixture<PatientStatusComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -32,8 +28,9 @@ describe('PatientStatusComponent', () => {
                 MaterialModule,
                 BrowserAnimationsModule,
             ],
-            providers: [DatePipe, MatSnackBar],
+            providers: [DatePipe, Overlay, MatSnackBar],
             declarations: [PatientStatusComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

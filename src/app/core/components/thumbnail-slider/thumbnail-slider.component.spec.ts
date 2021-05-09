@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { BehaviorSubject } from 'rxjs';
 import { MaterialModule } from 'src/app/material-module';
@@ -24,7 +25,8 @@ describe('ThumbnailSliderComponent', () => {
             providers: [
                 DatePipe,
                 TimeAgoPipe
-              ]
+              ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 
@@ -33,7 +35,7 @@ describe('ThumbnailSliderComponent', () => {
         component = fixture.componentInstance;
 
         component.mediaData = new BehaviorSubject<MediaItem[]>([]);
-        
+
 
         fixture.detectChanges();
     });

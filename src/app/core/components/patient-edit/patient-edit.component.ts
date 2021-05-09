@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Inject, Input } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
     patientId: number;
     tagNumber: string;
+    patientStatusId: number;
 }
 
 @Component({
@@ -23,9 +24,22 @@ export class PatientEditDialog {
     constructor(
         public dialogRef: MatDialogRef<PatientEditDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
+        private fb: FormBuilder
     ) {
 
         this.patientId = this.data.patientId;
+
+        if(!this.patientStatusForm){
+
+            this.patientStatusForm = this.fb.group({
+                patientId: this.patientId,
+                patientStatusId: null,
+                patientStatus: null
+            });
+
+        }
+
+
 
     }
 
@@ -35,6 +49,12 @@ export class PatientEditDialog {
 
     setFormValidity($event:boolean){
         this.formInvalid = $event;
+    }
+
+    setPatientStatus($event:any){
+
+        this.patientStatusForm.get('patientStatusId')?.setValue($event.patientStatusId);
+        this.patientStatusForm.get('patientStatus')?.setValue($event.patientStatus);
     }
 
 

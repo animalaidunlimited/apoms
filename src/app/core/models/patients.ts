@@ -1,3 +1,4 @@
+import { CallOutcome } from './emergency-record';
 import { Problem } from './problem';
 
 export interface Patient {
@@ -14,6 +15,23 @@ export interface Patient {
     patientStatusDate: string | Date;
     updated: boolean;
     deleted: boolean;
+    admissionArea: number;
+    admissionAccepted: boolean;
+    callOutcome: CallOutcome;
+}
+
+export interface UpdatePatientDetails{
+    patientId: number;
+    animalTypeId: number;
+    mainProblems: string;
+    description: string;
+    sex: number;
+    treatmentPriority: number;
+    abcStatus: number;
+    releaseStatus: number;
+    temperament: number;
+    age: number;
+    knownAsName: string;
 }
 
 export interface Patients{
@@ -27,13 +45,13 @@ export interface PatientCalls {
 
 export interface PatientCall {
     position: number;
-    patientCallId: number;
+    patientCallerInteractionId: number;
     patientId: number;
     positiveCallOutcome: boolean;
     callDateTime: string | Date;
     assignedTo: number;
     callType: number;
-    patientCallOutcomeId: number;
+    patientCallerInteractionOutcomeId: number;
     createdDateTime: string | Date;
     createdBy: number;
     comments: string;
@@ -42,7 +60,7 @@ export interface PatientCall {
 
 export interface PatientCallResult {
     success: number;
-    patientCallId: number;
+    patientCallerInteractionId: number;
 }
 
 export interface PatientCallModifyResponse {
@@ -96,4 +114,19 @@ export interface IsoReason{
 export interface PatientOutcomeResponse{
     patientOutcomeDetailsId: number;
     success: number;
+}
+
+export interface PriorityObject {
+    patientId: number;
+    priorityValueId: number;
+    updatePriorityFlag: boolean
+}
+export interface TreatmentAreaDropdwn {
+    AreaId: number;
+    Area: string;
+}
+
+export interface PatientStatusObject {
+    patientStatusId: number;
+    patientStatus: string;
 }

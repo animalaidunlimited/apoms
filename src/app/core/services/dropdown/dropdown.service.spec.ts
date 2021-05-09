@@ -7,6 +7,7 @@ import {
     HttpTestingController,
 } from '@angular/common/http/testing';
 import { AnimalType } from '../../models/animal-type';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('DropdownService', () => {
     let injector: TestBed;
@@ -17,6 +18,7 @@ describe('DropdownService', () => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [DropdownService],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         });
 
         injector = getTestBed();

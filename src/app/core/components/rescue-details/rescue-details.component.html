@@ -1,4 +1,4 @@
-<form [formGroup]="rescueDetails" fxLayout.gt-sm="row">
+<form [formGroup]="rescueDetails">
 
     <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
@@ -33,11 +33,11 @@
             (focus)="setInitialTime($event)" (blur)="updateTimes()"
             placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
 
-                <mat-error *ngIf="ambulanceArrivalTime.hasError('ambulanceArrivalBeforeCallDatetime')">
+                <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
                 Ambulance arrival before call!
                 </mat-error>
 
-                <mat-error *ngIf="ambulanceArrivalTime.hasError('ambulanceArrivalAfterRescue')">
+                <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
                 Ambulance arrival after rescue!
                 </mat-error>
         </mat-form-field>
@@ -47,11 +47,11 @@
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
                     (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
 
-                        <mat-error *ngIf="rescueTime.hasError('rescueBeforeCallDatetime')">
+                        <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
                         Rescue before call!
                         </mat-error>
 
-                        <mat-error *ngIf="rescueTime.hasError('rescueAfterAdmission')">
+                        <mat-error *ngIf="rescueTime?.hasError('rescueAfterAdmission')">
                             Rescue after admission!
                         </mat-error>
         </mat-form-field>
@@ -60,11 +60,11 @@
             <mat-form-field>
                     <input tabindex="16" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
 
-                    <mat-error *ngIf="admissionTime.hasError('admissionBeforeCallDatetime')">
+                    <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
                         Admission before call!
                         </mat-error>
 
-                    <mat-error *ngIf="admissionTime.hasError('rescueAfterAdmission')">
+                    <mat-error *ngIf="admissionTime?.hasError('rescueAfterAdmission')">
                         Rescue after admission!
                     </mat-error>
             </mat-form-field>

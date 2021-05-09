@@ -1,21 +1,17 @@
-import { MaterialModule } from 'src/app/material-module';
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { LocationDetailsComponent } from './location-details.component';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('LocationDetailsComponent', () => {
     let component: LocationDetailsComponent;
     let fixture: ComponentFixture<LocationDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -25,6 +21,7 @@ describe('LocationDetailsComponent', () => {
             ],
 
             declarations: [LocationDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

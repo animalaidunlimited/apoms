@@ -127,6 +127,12 @@ mat-radio-button{
   border-color: #c3e6cb !important;
 }
 
+.notif-warning {
+  color: black !important; // gold
+  background-color: rgb(245, 230, 147) !important;
+  border-color: #c3e6cb !important;
+}
+
 @media print {
   .isPrinting > * { display: none;}
   .isPrinting print-wrapper { display: block; }

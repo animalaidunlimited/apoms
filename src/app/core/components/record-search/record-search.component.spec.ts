@@ -1,4 +1,4 @@
-import {async,ComponentFixture, TestBed, inject} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { RecordSearchComponent } from './record-search.component';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
@@ -6,16 +6,20 @@ import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
-
-
+import {
+    MatDialog,
+    MatDialogRef,
+    MAT_DIALOG_DATA,
+    MatDialogModule,
+} from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SearchFieldComponent } from '../search-field/search-field.component';
-import { RouterTestingModule } from '@angular/router/testing';
-
-import { routes } from '../../../app-routing.module';
+import { Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
+import { routes } from 'src/app/app-routing.module';
+import { SearchFieldComponent } from '../search-field/search-field.component';
 
 describe('RecordSearchComponent', () => {
     let component: RecordSearchComponent;
@@ -30,7 +34,7 @@ describe('RecordSearchComponent', () => {
 
     let dialog: MatDialogRef<PatientEditDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -43,6 +47,7 @@ describe('RecordSearchComponent', () => {
             ],
             providers: [
                 MatDialog,
+                Overlay,
                 DatePipe,
                 {
                     provide: MAT_DIALOG_DATA,
@@ -57,6 +62,7 @@ describe('RecordSearchComponent', () => {
                 RecordSearchComponent,
                 SearchFieldComponent
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { EmergencyRecordComponent } from './emergency-record.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { EmergencyCaseOutcomeComponent } from '../emergency-case-outcome/emergency-case-outcome.component';
 
 describe('EmergencyRecordComponent', () => {
@@ -35,10 +36,11 @@ describe('EmergencyRecordComponent', () => {
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
             ],
-            declarations: [ 
+            declarations: [
                 EmergencyRecordComponent,
-                EmergencyCaseOutcomeComponent 
+                EmergencyCaseOutcomeComponent
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

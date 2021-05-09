@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MediaItem } from '../../models/media';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'thumbnail-slider',
     templateUrl: './thumbnail-slider.component.html',
     styleUrls: ['./thumbnail-slider.component.scss'],

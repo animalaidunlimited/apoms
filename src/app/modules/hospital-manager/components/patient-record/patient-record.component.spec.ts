@@ -1,8 +1,4 @@
-import {
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { PatientRecordComponent } from './patient-record.component';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
@@ -13,6 +9,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientRecordComponent', () => {
     let component: PatientRecordComponent;
@@ -45,15 +42,16 @@ describe('PatientRecordComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 MaterialModule,
-                FormsModule,
                 RouterTestingModule,
+                FormsModule,
                 ReactiveFormsModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

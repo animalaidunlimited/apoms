@@ -149,7 +149,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 10,
             inputType: 'dropdown',
             searchValue: 'outcome',
-            databaseField: 'ec.CallOutcomeId',
+            databaseField: 'p.PatientOutcomeId',
             dropdownName: 'calloutcome',
             name: 'Call outcome',
             inNotIn: false
@@ -303,7 +303,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                                 value: Object.values(dropdown)[1]
                             })
                             )),
-                        // tslint:disable-next-line: max-line-length
+                        // eslint-disable-next-line max-len
                         map(dropdowns => dropdowns.filter((dropdown: any) => decodeURIComponent(dropdown.value).toLowerCase() === decodeURIComponent(splitItem[1].trim()).toLowerCase())[0]),
                         map(dropdown => dropdown ? dropdown.id : undefined)
                     ).toPromise().then((id) => {
@@ -327,7 +327,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             this.search.searchString = this.getSearchString();
         } else {
             this.updateSearchArray();
-            // tslint:disable-next-line:no-unused-expression
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             this.searchRows.length === 0 ? this.addRow() : null;
 
         }

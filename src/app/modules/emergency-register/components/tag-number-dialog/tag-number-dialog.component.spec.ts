@@ -1,10 +1,4 @@
-import { MaterialModule } from 'src/app/material-module';
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { TagNumberDialog } from './tag-number-dialog.component';
 
@@ -17,7 +11,9 @@ import {
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('TagNumberDialog', () => {
     let component: TagNumberDialog;
@@ -32,7 +28,7 @@ describe('TagNumberDialog', () => {
 
     let dialog: MatDialogRef<TagNumberDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -54,6 +50,7 @@ describe('TagNumberDialog', () => {
                 },
             ],
             declarations: [TagNumberDialog],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

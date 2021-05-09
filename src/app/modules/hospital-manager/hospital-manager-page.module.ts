@@ -11,8 +11,6 @@ import { RecordSearchModule } from '../../core/components/record-search/record-s
 import { CallerDetailsModule } from '../../core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from '../../core/components/location-details/location-details.module';
 
-import { CensusDetailsComponent } from './components/census-details/census-details.component';
-import { CensusRecordModule } from 'src/app/modules/census/components/census-record/census-record.module';
 import { SurgeryDetailsComponent } from './components/surgery-details/surgery-details.component';
 import { PatientCallComponent } from './components/patient-call/patient-call.component';
 import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-details.component';
@@ -28,7 +26,6 @@ import { PatientCallDialogComponent } from './components/patient-call-dialog/pat
 import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-surgery-dialog.component';
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
-import { UpdateCensusDialogComponent } from './components/update-census-dialog/update-census-dialog.component';
 import { MediaCaptureComponent } from 'src/app/core/components/media/media-capture/media-capture.component';
 import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
@@ -36,6 +33,7 @@ import { PatientVisitDetailsModule} from '../../core/components/patient-visit-de
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
 import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
 import { LogsModule } from 'src/app/core/components/logs/logs.module';
+import { TreatmentAreaHistoryComponent } from './components/treatment-area-history/treatment-area-history.component';
 
 
 
@@ -45,7 +43,6 @@ import { LogsModule } from 'src/app/core/components/logs/logs.module';
         HospitalManagerTabBarComponent,
         PatientRecordComponent,
         PatientDetailsComponent,
-        CensusDetailsComponent,
         SurgeryDetailsComponent,
         PatientCallComponent,
         PatientCallDialogComponent,
@@ -54,9 +51,9 @@ import { LogsModule } from 'src/app/core/components/logs/logs.module';
         ImageUploadDialog,
         SurgeryRecordDialogComponent,
         AddSurgeryDialogComponent,
-        UpdateCensusDialogComponent,
         MediaCaptureComponent,
         TreatmentComponent,
+        TreatmentAreaHistoryComponent,
         ReleaseDetailsDialogComponent,
     ],
     imports: [
@@ -71,7 +68,6 @@ import { LogsModule } from 'src/app/core/components/logs/logs.module';
         RescueDetailsModule,
         EmergencyDetailsModule,
         SurgeryRecordModule,
-        CensusRecordModule,
         NgxGalleryModule,
         CallerDetailsModule,
         PatientVisitDetailsModule,

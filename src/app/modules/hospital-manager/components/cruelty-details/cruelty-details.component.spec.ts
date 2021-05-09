@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -11,12 +6,13 @@ import { CrueltyDetailsComponent } from './cruelty-details.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CrueltyDetailsComponent', () => {
     let component: CrueltyDetailsComponent;
     let fixture: ComponentFixture<CrueltyDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -26,6 +22,7 @@ describe('CrueltyDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [CrueltyDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

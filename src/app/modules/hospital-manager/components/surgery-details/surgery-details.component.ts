@@ -10,7 +10,7 @@ import { take } from 'rxjs/operators';
 const ELEMENT_DATA: SurgeryRecord[] = [];
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'surgery-details',
     templateUrl: './surgery-details.component.html',
     styleUrls: ['./surgery-details.component.scss'],

@@ -7,7 +7,7 @@ import { EmergencyCode } from '../../models/emergency-code';
 import {
     ProblemDropdownResponse,
     CallType,
-    PatientCallOutcome,
+    PatientCallerInteractionOutcome,
     Exclusions,
     PatientStatusResponse,
     StreetTreatMainProblem
@@ -15,7 +15,6 @@ import {
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { User, ReleaseManager } from '../../models/user';
-import { CensusArea } from '../../models/census-details';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
@@ -25,6 +24,7 @@ import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
+import { TreatmentArea } from '../../models/treatment-lists';
 
 
 
@@ -41,12 +41,10 @@ export class DropdownService extends APIService {
 
     animalTypes$!: Observable<AnimalType[]>;
     antibiotics$!: any[];
-
     areas$!: any[];
     callOutcomes$!: Observable<CallOutcomeResponse[]>;
     callStaff$!: Observable<User[]>;
     callTypes$!: Observable<CallType[]>;
-    censusAreas$!: Observable<CensusArea[]>;
     crueltyIspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -56,7 +54,7 @@ export class DropdownService extends APIService {
     nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
-    patientCallOutcome$!: Observable<PatientCallOutcome[]>;
+    patientCallOutcome$!: Observable<PatientCallerInteractionOutcome[]>;
     patientStates$!: Observable<PatientStatusResponse[]>;
     printableElements$!: Observable<PrintElement[]>;
     problems$!: Observable<ProblemDropdownResponse[]>;
@@ -71,6 +69,7 @@ export class DropdownService extends APIService {
 	priority$!:Observable<Priority[]>;
     releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
+    treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
 
 
@@ -551,12 +550,12 @@ export class DropdownService extends APIService {
         return this.surgeryTypes$;
     }
 
-    getPatientCallOutcomes(): Observable<PatientCallOutcome[]> {
-        const request = '/PatientCallOutcomes';
+    getPatientCallerInteractionOutcomes(): Observable<PatientCallerInteractionOutcome[]> {
+        const request = '/PatientCallerInteractionOutcomes';
 
         if (!this.patientCallOutcome$) {
             this.patientCallOutcome$ = this.getObservable(request).pipe(
-                map((response: PatientCallOutcome[]) => {
+                map((response: PatientCallerInteractionOutcome[]) => {
                     return response;
                 }),
             );
@@ -643,6 +642,7 @@ export class DropdownService extends APIService {
 	  }
 	  return this.visitTypes$;
   }
+
   getPriority(): Observable<Priority[]>{
 	  const request = '/GetPriority';
 	  if(!this.priority$){
@@ -685,5 +685,20 @@ export class DropdownService extends APIService {
     return this.streetTreatMainProblem$;
 
   }
+
+  getTreatmentAreas(): Observable<TreatmentArea[]> {
+    const request = '/GetTreatmentAreas';
+
+    if(!this.treatmentAreas$) {
+      this.treatmentAreas$ = this.getObservable(request).pipe(
+          map((response: TreatmentArea[])=>{
+              return response;
+          })
+      );
+  }
+
+  return this.treatmentAreas$;
+
+}
 
 }

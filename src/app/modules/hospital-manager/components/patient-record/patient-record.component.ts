@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'patient-record',
     templateUrl: './patient-record.component.html',
     styleUrls: ['./patient-record.component.scss'],
@@ -41,7 +41,7 @@ export class PatientRecordComponent implements OnInit {
     hasWritePermission = false;
 
     mediaData!: BehaviorSubject<MediaItem[]>;
-    logsData!:LogsData; 
+    logsData!:LogsData;
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
@@ -118,8 +118,8 @@ export class PatientRecordComponent implements OnInit {
             emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,
             patientId: this.recordForm.value.patientDetails.patientId
         };
-        
- 
+
+
     }
 
     tabChanged(event: MatTabChangeEvent) {

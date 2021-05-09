@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { AddSurgeryDialogComponent } from './add-surgery-dialog.component';
 import {
@@ -13,9 +8,10 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SurgeryRecordComponent } from 'src/app/modules/surgery-register/components/surgery-record.component';
-import { MaterialModule } from 'src/app/material-module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
+import { SurgeryRecordComponent } from 'src/app/modules/surgery-register/components/surgery-record.component';
 
 describe('AddSurgeryDialogComponent', () => {
     let component: AddSurgeryDialogComponent;
@@ -29,7 +25,7 @@ describe('AddSurgeryDialogComponent', () => {
 
     let dialog: MatDialogRef<AddSurgeryDialogComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -53,6 +49,7 @@ describe('AddSurgeryDialogComponent', () => {
                 AddSurgeryDialogComponent,
                 SurgeryRecordComponent
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

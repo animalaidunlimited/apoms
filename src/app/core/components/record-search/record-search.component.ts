@@ -20,7 +20,7 @@ export class Search {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'record-search',
     templateUrl: './record-search.component.html',
     styleUrls: ['./record-search.component.scss']

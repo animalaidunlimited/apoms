@@ -1,5 +1,5 @@
 import { MaterialModule } from 'src/app/material-module';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoginPageComponent } from './login-page.component';
 import { LogoModule } from '../../core/components/logo/logo.module';
@@ -10,12 +10,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('LoginPageComponent', () => {
     let component: LoginPageComponent;
     let fixture: ComponentFixture<LoginPageComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [LoginPageComponent],
             imports: [
@@ -29,6 +30,7 @@ describe('LoginPageComponent', () => {
                 RouterTestingModule,
                 MaterialModule
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

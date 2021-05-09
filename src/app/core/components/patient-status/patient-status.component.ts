@@ -5,7 +5,7 @@ import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Patient } from '../../models/patients';
+import { Patient, PatientStatusObject } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { PatientStatusResponse } from '../../models/responses';
@@ -23,6 +23,8 @@ export class PatientStatusComponent implements OnInit {
 
     @Input() patientId!: number;
     @Output() formInvalid: EventEmitter<boolean> = new EventEmitter();
+    @Output() patientStatus: EventEmitter<PatientStatusObject> = new EventEmitter();
+
 
     currentTime = '';
     createdDate = '';
@@ -74,18 +76,31 @@ export class PatientStatusComponent implements OnInit {
         this.currentTime = getCurrentTimeString();
 
         this.patientStatusForm.valueChanges.subscribe(() => {
-            
+
+            this.patientStates$.subscribe(status => {
+
+                const currentStatus = status.find(state => state.PatientStatusId === this.patientStatusForm.get('patientStatusId')?.value);
+
+                const patientStatus:PatientStatusObject = {
+                    patientStatusId: this.patientStatusForm.get('patientStatusId')?.value,
+                    patientStatus: '' + currentStatus?.PatientStatus
+                };
+
+                this.patientStatus.emit(patientStatus);
+
+            });
+
+
             this.formInvalid.emit(this.patientStatusForm.invalid);
         } );
 
     }
 
-    onSave() {
-        
-        this.patientService
+    async onSave() {
+
+        await this.patientService
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {
-                // Add this to the messaging service
 
                 result.success === 1
                 ? this.showSnackBar.successSnackBar(

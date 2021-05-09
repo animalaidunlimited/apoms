@@ -3,7 +3,7 @@
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
     <fieldset class='form-sub-group'>
-        <legend class="legend">User Details</legend>
+        <legend class="legend">User details</legend>
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <mat-form-field>
@@ -37,7 +37,7 @@
                 <mat-label>Pick color</mat-label>
                 <input type="color" formControlName='colour' matInput>
             </mat-form-field>
-            
+
         </div>
 
 
@@ -46,7 +46,7 @@
             <mat-slide-toggle formControlName="isStreetTreatUser" (change)="changed()">StreetTreat user</mat-slide-toggle>
 
         </div>
-            
+
         <div [@openCloseDiv]= streetTreatdropdown [@visibilityDiv]= streetTreatdropdown class= "streetTreatUser" fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row" fxLayoutAlign='start center'>
             <mat-form-field appearance="fill">
                 <mat-label>-Team-</mat-label>
@@ -105,79 +105,79 @@
 
 <div class="example-container mat-elevation-z8">
     <mat-table matSort #table [dataSource]="dataSource">
-  
+
       <ng-container matColumnDef="firstName">
         <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">First Name:</span>
-          {{row.firstName}} 
+          {{row.firstName}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="surName">
         <mat-header-cell *matHeaderCellDef> Surname </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Surname:</span>
-          {{row.surName}} 
+          {{row.surName}}
         </mat-cell>
       </ng-container>
-  
+
       <ng-container matColumnDef="initials">
         <mat-header-cell *matHeaderCellDef> Initials </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Initials:</span>
-          {{row.initials}} 
+          {{row.initials}}
         </mat-cell>
       </ng-container>
-  
+      
       <ng-container matColumnDef="colour">
         <mat-header-cell *matHeaderCellDef> Colour </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Colour:</span>
-          {{row.colour}} 
+          {{row.colour}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="telephone">
         <mat-header-cell *matHeaderCellDef> Phone Number </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Phone Number:</span>
-          {{row.telephone}} 
+          {{row.telephone}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="userName">
         <mat-header-cell *matHeaderCellDef> User Name </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">User Name:</span>
-          {{row.userName}} 
+          {{row.userName}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="team">
         <mat-header-cell *matHeaderCellDef> Team  </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Team :</span>
-          {{row.team}} 
+          {{row.team}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="role">
         <mat-header-cell *matHeaderCellDef> StreetTreat Role </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">StreetTreat Role:</span>
-          {{row.role}} 
+          {{row.role}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="jobTitle">
         <mat-header-cell *matHeaderCellDef> Job Title </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           <span class="mobile-label">Job Title:</span>
-          {{row.jobTitle}} 
+          {{row.jobTitle}}
         </mat-cell>
       </ng-container>
-  
+
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></mat-row>
     </mat-table>

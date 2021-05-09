@@ -264,6 +264,19 @@ export class CaseService extends APIService {
         return this.emergencyResponse.asObservable();
     }
 
+
+    public async insertOrUpdatePatientFromRescueDetailsDialog(patientDetails: any) {
+
+        return await this.put(patientDetails)
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+
     public getConnection() {
 
         this.onlineStatus.connectionChanged.subscribe(async online=>{
