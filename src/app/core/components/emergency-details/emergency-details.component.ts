@@ -65,7 +65,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.dispatcher.nativeElement.focus();
     }
 
-
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
@@ -136,7 +135,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
-        this.emergencyDetails.addControl('code',new FormControl({ EmergencyCodeId: null, EmergencyCode: null }));
+        this.emergencyDetails.addControl('code',new FormControl());
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
@@ -165,20 +164,4 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         });
     }
 
-    openLogsDialog(emergencyCaseId: any,emergencyNumber:any) {
-        const dialogRef = this.dialog.open(LogsComponent, {
-            maxHeight: '100vh',
-            maxWidth: '100vw',
-            data: {
-                emergencyCaseId,
-                emergencyNumber,
-                patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
-            },
-        });
-
-        dialogRef
-            .afterClosed()
-            .subscribe(() => {})
-            .unsubscribe();
-    }
 }

@@ -1,4 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
@@ -34,7 +35,8 @@ let dialog: MatDialogRef<TreatmentListComponent>;
         RouterTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MaterialModule
       ],
       providers: [
         MatDialog,

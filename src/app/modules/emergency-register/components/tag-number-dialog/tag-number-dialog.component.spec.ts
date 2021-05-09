@@ -12,6 +12,8 @@ import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('TagNumberDialog', () => {
     let component: TagNumberDialog;
@@ -31,8 +33,10 @@ describe('TagNumberDialog', () => {
             imports: [
                 HttpClientTestingModule,
                 MatDialogModule,
+                MaterialModule,
                 FormsModule,
                 ReactiveFormsModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 UniqueTagNumberValidator,

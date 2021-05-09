@@ -36,7 +36,7 @@
                 <mat-slide-toggle [checked]="isAdmissionChecked | async" (change)="admissionChecked($event)" formControlName="admission">Admission</mat-slide-toggle>
             </div>
 
-            <mat-form-field style="margin-top: 20px; margin-left: 10px;">
+            <mat-form-field class="dateFields">
                 <mat-label>Select date</mat-label>
                 <input matInput type="date" formControlName="emergencyCaseDate" name = "CaseDate"
                 [errorStateMatcher]="errorMatcher" required>
@@ -70,7 +70,7 @@
         <fieldset class="form-sub-group">
             <legend class="legend">Surgery count by date</legend>
 
-            <mat-form-field >
+            <mat-form-field class="dateFields">
                 <mat-label>Select date</mat-label>
                 <input matInput type="date" formControlName="surgeryDate" name = "SurgeryDate"
                 [errorStateMatcher]="errorMatcher" required>

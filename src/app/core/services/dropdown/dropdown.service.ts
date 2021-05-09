@@ -486,7 +486,7 @@ export class DropdownService extends APIService {
         if (!this.patientStates$) {
             this.patientStates$ = this.getObservable(request).pipe(
                 map((response: PatientStatusResponse[]) => {
-                    return response;
+                    return response.filter(status => status.PatientStatus !=='StreetTreat');
                 }),
             );
         }

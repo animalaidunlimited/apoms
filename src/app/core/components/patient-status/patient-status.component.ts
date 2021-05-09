@@ -1,10 +1,11 @@
+import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Patient, PatientStatusObject } from '../../models/patients';
+import { Patient } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { PatientStatusResponse } from '../../models/responses';
@@ -41,6 +42,7 @@ export class PatientStatusComponent implements OnInit {
         private userOptions: UserOptionsService,
         private fb: FormBuilder,
         private showSnackBar: SnackbarService,
+        private streetTreatService: StreetTreatService
     ) {
 
         this.patientStates$ = this.dropdowns.getPatientStates();
@@ -101,14 +103,14 @@ export class PatientStatusComponent implements OnInit {
             .then(result => {
 
                 result.success === 1
-                    ? this.showSnackBar.successSnackBar(
-                          'Patient status updated successfully',
-                          'OK',
-                      )
-                    : this.showSnackBar.errorSnackBar(
-                          'Error updating patient status',
-                          'OK',
-                      );
+                ? this.showSnackBar.successSnackBar(
+                      'Patient status updated successfully',
+                      'OK',
+                  )
+                : this.showSnackBar.errorSnackBar(
+                      'Error updating patient status',
+                      'OK',
+                  );
             });
     }
 

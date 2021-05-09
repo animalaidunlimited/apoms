@@ -4,9 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SearchFieldComponent } from 'src/app/core/components/search-field/search-field.component';
 import { MaterialModule } from 'src/app/material-module';
-
+import { routes } from 'src/app/app-routing.module';
 import { AddSearchMediaDialogComponent } from './add-search-media-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-search-media-dialog',
@@ -34,13 +37,16 @@ describe('AddSearchMediaDialogComponent', () => {
         HttpClientTestingModule,
         MaterialModule,
         MatDialogModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        RouterTestingModule.withRoutes(routes),
       ],
       declarations: [
-        AddSearchMediaDialogComponent
+        AddSearchMediaDialogComponent,
+        SearchFieldComponent
       ],
       providers: [
         MatSnackBar,
+        DatePipe,
         {
           provide: MAT_DIALOG_DATA,
           useValue: dialogData },

@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoginPageComponent } from './login-page.component';
@@ -26,7 +27,8 @@ describe('LoginPageComponent', () => {
                 BrowserAnimationsModule,
                 FormsModule,
                 HttpClientTestingModule,
-                RouterTestingModule
+                RouterTestingModule,
+                MaterialModule
             ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();

@@ -11,6 +11,7 @@ import {
 } from '@angular/material/dialog';
 import { AddSurgeryDialogComponent } from '../add-surgery-dialog/add-surgery-dialog.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('SurgeryDetailsComponent', () => {
     let component: SurgeryDetailsComponent;
@@ -30,6 +31,7 @@ describe('SurgeryDetailsComponent', () => {
                 MatDialogModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule
             ],
             providers: [
                 {

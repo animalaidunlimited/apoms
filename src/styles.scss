@@ -100,6 +100,8 @@ mat-radio-button{
   max-width: none !important;
 }
 
+
+
 .mat-dialog-container {
   max-width: none !important;
 }
@@ -136,7 +138,29 @@ mat-radio-button{
   .isPrinting print-wrapper { display: block; }
 }
 
+@media only screen and (min-width:767px) and (max-width: 1024px) {
+
+  .mat-raised-button{
+    margin-right: 8px !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    max-width: 120px;
+    font-size: 13px;
+  }
+}
+
 @media(max-width: 600px) {
+
+  .mat-cell {
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .mobile-label[_ngcontent-yue-c345] {
+    width: auto;
+    display: inline-block;
+    font-weight: bold;
+  }
 
   .mat-form-field{
     max-width: 41.9%;

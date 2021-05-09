@@ -89,8 +89,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,
-    private userOptions:UserOptionsService,
-    private mediaObserver: MediaObserver
+    private userOptions:UserOptionsService
     ) {
       if(innerWidth > 786)
       {
@@ -102,13 +101,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     }
 
   ngOnInit(): void {
-
-    this.mediaObserver.asObservable().subscribe((mediaQuerys)=> {
-      mediaQuerys.forEach((mediaQuery) =>
-      {
-
-      });
-    });
 
     this.teamsgroup = this.fb.group({
       teams:[''],
@@ -167,7 +159,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-
+          
           if (streetTreatCaseByVisitDateResponse?.Cases) {
             this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;

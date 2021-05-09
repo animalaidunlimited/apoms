@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -36,7 +37,7 @@ describe('SearchResultCardComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatDialogModule, HttpClientTestingModule,
-        RouterTestingModule],
+        RouterTestingModule, MaterialModule],
 
       providers: [
         {

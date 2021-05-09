@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LocationDetailsComponent } from './location-details.component';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('LocationDetailsComponent', () => {
     let component: LocationDetailsComponent;
@@ -16,6 +17,7 @@ describe('LocationDetailsComponent', () => {
                 HttpClientTestingModule,
                 FormsModule,
                 ReactiveFormsModule,
+                MaterialModule
             ],
 
             declarations: [LocationDetailsComponent],

@@ -1,13 +1,13 @@
 import { Component, OnInit, Inject, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MediaPasteService } from '../../services/navigation/media-paste/media-paste.service';
-import { MediaItem, MediaItemReturnObject } from '../../models/media';
 import { Platform } from '@angular/cdk/platform';
 import { of, BehaviorSubject, Subject } from 'rxjs';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
-import { PatientService } from '../../services/patient/patient.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import { takeUntil } from 'rxjs/operators';
+import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaItem, MediaItemReturnObject } from 'src/app/core/models/media';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface IncomingData {
   tagNumber: string;
@@ -53,30 +53,30 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
 
     this.patientService.getPatientMediaItemsByPatientId(this.data.patientId)
     .pipe(takeUntil(this.ngUnsubscribe))
+    // tslint:disable-next-line: deprecation
     .subscribe(mediaItems => {
 
         if(mediaItems){
 
-        this.mediaItems = mediaItems.map(mediaItem => {
+          this.mediaItems = mediaItems.map(mediaItem => {
 
-         this.newItem  = {
-          mediaItemId: mediaItem.mediaItemId,
-          patientMediaItemId: mediaItem.patientMediaItemId,
-          mediaType: mediaItem.mediaType,
-          localURL: mediaItem.localURL,
-          remoteURL: mediaItem.remoteURL,
-          isPrimary :mediaItem.isPrimary,
-          datetime: mediaItem.datetime,
-          comment: mediaItem.comment,
-          patientId: mediaItem.patientId,
-          heightPX: mediaItem.heightPX,
-          widthPX: mediaItem.widthPX,
-          tags: mediaItem.tags,
-          uploadProgress$: of(100),
-          updated: false,
-          deleted: false
-        };
-        return this.newItem;
+          this.newItem  = {
+            mediaItemId: mediaItem.mediaItemId,
+            patientMediaItemId: mediaItem.patientMediaItemId,
+            mediaType: mediaItem.mediaType,
+            localURL: mediaItem.localURL,
+            remoteURL: mediaItem.remoteURL,
+            isPrimary :mediaItem.isPrimary,
+            datetime: mediaItem.datetime,
+            patientId: mediaItem.patientId,
+            heightPX: mediaItem.heightPX,
+            widthPX: mediaItem.widthPX,
+            tags: mediaItem.tags,
+            uploadProgress$: of(100),
+            updated: false,
+            deleted: false
+          };
+          return this.newItem;
         });
 
       }
@@ -124,6 +124,7 @@ upload(file: File, patientId: number) : MediaItemReturnObject {
   const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
     mediaItem.mediaItemId
     .pipe(takeUntil(this.ngUnsubscribe))
+    // tslint:disable-next-line: deprecation
     .subscribe(result => {
       if(result){
         this.uploading--;
@@ -207,7 +208,7 @@ openMobileMediaCaptureDialog(){
         tagNumber: this.data.tagNumber,
         patientId: this.data.patientId,
     }
-});
+  });
 
 }
 

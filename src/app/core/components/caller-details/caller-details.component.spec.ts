@@ -11,6 +11,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 describe('CallerDetailsComponent', () => {
     let component: CallerDetailsComponent;
@@ -27,7 +28,10 @@ describe('CallerDetailsComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
             ],
-            declarations: [CallerDetailsComponent],
+            declarations: [
+                CallerDetailsComponent,
+                CallerAutocompleteComponent
+            ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));

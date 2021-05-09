@@ -43,21 +43,24 @@ $standard-width: 183px;
 }
 
 .mat-wrapper {
-    max-width:100%;
-}
-
-mat-form-field.mat-form-field.mat-wrapper{
-    width: 96% !important;
+    width:95%;
 }
 
 
 .emergencySyncIcon .mat-icon {
     font-size: 2.5rem;
-    position: absolute !important;
-    right: calc(100% - 60rem) !important;
-    top: 3.2rem !important;
     color: gold;
-    cursor: default
+    cursor: default;
+}
+
+.iconWrapper {
+    position: absolute;
+}
+
+.mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+    font-size: 2.5rem;
+    margin-bottom: 3%;
+    cursor: pointer;
 }
 
 .disable {
@@ -65,22 +68,40 @@ mat-form-field.mat-form-field.mat-wrapper{
 }
 
 
-@media (max-width: 600px) {
+@media(max-width: 600px) {
     .emergencySyncIcon .mat-icon {
         font-size: 1.5rem;
-        position: absolute !important;
-        right: 5% !important;
-        top: 2.5rem !important;
         color: gold;
-        cursor: default
+        cursor: default;
+    }
+
+    .iconWrapper {
+        position: relative;
+        margin-bottom: -20px !important;
+
+    }
+
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+        font-size: 1.5rem;
+        cursor: pointer;
     }
 }
-@media (min-width: 600px) {
-    .form-sub-group {
-        min-width: 62rem;
-        box-sizing:  content-box !important;
+
+@media only screen and (min-width:767px) and (max-width: 1024px) {
+    .emergencySyncIcon .mat-icon {
+        font-size: 1.5rem;
+        color: gold;
+        cursor: default;
     }
-    .emergency_record_wrapper > caller-details{
-        min-width: 63.8rem;
+
+    .iconWrapper {
+        position: relative;
+        margin-bottom: -20px !important;
+
+    }
+
+    .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
+        font-size: 1.5rem;
+        cursor: pointer;
     }
 }

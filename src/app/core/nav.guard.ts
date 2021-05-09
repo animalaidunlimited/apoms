@@ -75,13 +75,13 @@ export class NavGuard implements CanActivateChild {
             }
 
             if(!this.userHasPermission.value) {
-                this.router.navigate(['home'])
+                this.router.navigate(['home']);
             }
 
             return !!this.userHasPermission.value;
 
 
-        })
+        });
 
 
 

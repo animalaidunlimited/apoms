@@ -8,6 +8,8 @@
  import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
  import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MaterialModule } from 'src/app/material-module';
+import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-register/components/emergency-case-outcome/emergency-case-outcome.component';
 
  @Component({
    selector: 'rescue-details',
@@ -38,9 +40,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
    beforeEach(waitForAsync(() => {
      TestBed.configureTestingModule({
-       imports: [MatDialogModule,
-        FormsModule, ReactiveFormsModule, HttpClientTestingModule,
-         BrowserAnimationsModule],
+       imports: [
+          MatDialogModule,
+          FormsModule,
+          ReactiveFormsModule,
+          HttpClientTestingModule,
+          BrowserAnimationsModule,
+          MaterialModule
+      ],
        providers: [
         MatSnackBar,
          {
@@ -51,8 +58,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
          useValue: mockDialogRef
        }],
        declarations: [ RescueDetailsDialogComponent,
-                       MockRescueDetailsComponent ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+                       MockRescueDetailsComponent,
+                       EmergencyCaseOutcomeComponent
+                      ],
+        schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
      })
      .compileComponents();
    }));

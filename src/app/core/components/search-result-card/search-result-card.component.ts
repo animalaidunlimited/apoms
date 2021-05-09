@@ -9,7 +9,7 @@ import { UserOptionsService } from '../../services/user-option/user-options.serv
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
-import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
+import { MediaDialogComponent } from '../media/media-dialog/media-dialog.component';
 import { CallerDetails } from '../../models/emergency-record';
 
 

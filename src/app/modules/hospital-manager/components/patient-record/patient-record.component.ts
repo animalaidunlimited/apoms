@@ -6,9 +6,10 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -22,6 +23,8 @@ export class PatientRecordComponent implements OnInit {
     recordForm: FormGroup = new FormGroup({});
 
     @Input() incomingPatient!: SearchRecordTab;
+
+    private ngUnsubscribe = new Subject();
 
     patientId!:number;
 
@@ -48,7 +51,8 @@ export class PatientRecordComponent implements OnInit {
 
     ngOnInit() {
 
-        this.route.data.subscribe(val=> {
+        // tslint:disable-next-line: deprecation
+        this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
@@ -95,21 +99,20 @@ export class PatientRecordComponent implements OnInit {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
-
         if(this.mediaData){
 
-        this.mediaData.subscribe(media=>{
+            // tslint:disable-next-line: deprecation
+            this.mediaData.subscribe(media=>{
+                if(media.length === 0){
+                    return;
+                }
+                
+                this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
-            if(media.length === 0){
-                return;
-            }
+                this.changeDetector.detectChanges();
 
-            this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
-
-            this.changeDetector.detectChanges();
-
-        });
-    }
+            });
+        }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
             emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,

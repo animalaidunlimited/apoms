@@ -57,13 +57,12 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     disabledDeleteBtn = true;
 
     ngOnInit() {
-        // this.getrefreshTableData();
+        this.getrefreshTableData();
     }
 
     getrefreshTableData() {
         this.teamSubsciption = this.teamDetailService
             .getAllTeams()
-            // .pipe(take(1))
             .subscribe((teamListData: TeamDetails[]) => {
                 this.dataSource = new MatTableDataSource(teamListData);
                 this.dataSource.sort = this.sort;

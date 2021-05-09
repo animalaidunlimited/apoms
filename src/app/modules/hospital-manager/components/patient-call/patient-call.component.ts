@@ -55,7 +55,6 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     ngOnInit() {
 
-
         this.maxDate = getCurrentTimeString();
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 

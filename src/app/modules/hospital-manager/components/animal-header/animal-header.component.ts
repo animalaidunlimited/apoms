@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
-import { MediaDialogComponent } from 'src/app/core/components/media-dialog/media-dialog.component';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -46,7 +46,6 @@ export class AnimalHeaderComponent implements OnInit, OnDestroy {
         this.mediaObject = {
             isPrimary : false,
             tags : [''],
-            comment : '',
             widthPX : 0,
             datetime : '',
             heightPX: 0,

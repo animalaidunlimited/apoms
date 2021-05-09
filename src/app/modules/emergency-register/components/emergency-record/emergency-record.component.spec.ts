@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { EmergencyCaseOutcomeComponent } from '../emergency-case-outcome/emergency-case-outcome.component';
 
 describe('EmergencyRecordComponent', () => {
     let component: EmergencyRecordComponent;
@@ -35,7 +36,10 @@ describe('EmergencyRecordComponent', () => {
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
                 { provide: FormBuilder, useValue: formBuilder }
             ],
-            declarations: [ EmergencyRecordComponent ],
+            declarations: [
+                EmergencyRecordComponent,
+                EmergencyCaseOutcomeComponent
+            ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });

@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -23,7 +24,7 @@ describe('TreatmentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ MatDialogModule, HttpClientTestingModule ],
+      imports: [ MatDialogModule, HttpClientTestingModule, MaterialModule ],
       declarations: [ TreatmentComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })

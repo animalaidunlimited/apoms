@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -38,9 +38,9 @@ describe('AuthGuard', () => {
             ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         });
-        guard = TestBed.get(AuthGuard);
-        service = TestBed.get(AuthService);
-        router = TestBed.get(Router);
+        guard = TestBed.inject(AuthGuard);
+        service = TestBed.inject(AuthService);
+        router = TestBed.inject(Router);
     }));
 
     it('should be created', () => {
@@ -62,7 +62,7 @@ describe('AuthGuard', () => {
             expect(service.redirectUrl).toEqual('');
         });
 
-        it('should set the redirectUrl, call router.navigate, and return false', () => {
+        it('should set the redirectUrl, call router.navigate, and return false', fakeAsync(() => {
             spyOn(router, 'navigate');
             spyOn(service, 'isLogged').and.returnValue(false);
 
@@ -73,7 +73,8 @@ describe('AuthGuard', () => {
                 ),
             ).toEqual(false);
             expect(service.redirectUrl).toEqual('fakeUrl');
-            expect(router.navigate).toHaveBeenCalledWith(['']);
-        });
+            tick(10);
+            expect(router.navigate).toHaveBeenCalledWith(['/nav/home']);
+        }));
     });
 });
