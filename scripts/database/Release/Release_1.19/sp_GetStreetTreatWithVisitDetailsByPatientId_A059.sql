@@ -3,17 +3,22 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTeam!!
 
 DELIMITER $$
-
-
-CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetStreetTreatWithVisitDetailsByPatientId`(IN prm_PatientId INT)
 BEGIN
-
-
+DECLARE vStreetTreatCaseIdExists INT;
 /*
 Created By: Ankit Singh
 Created On: 23/02/2020
 Purpose: Used to fetch streettreat case with visits by patient id
 */
+
+
+
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
+
+
+IF vStreetTreatCaseIdExists > 0 THEN
 SELECT
 	JSON_OBJECT( 
 	"streetTreatForm",
@@ -25,7 +30,7 @@ SELECT
 				    "mainProblem",s.MainProblemId,
 				    "adminNotes",s.AdminComments,
 				    "streetTreatCaseStatus",s.StatusId,
-                    "patientReleaseDate",IF(p.PatientStatusId = 7, p.PatientStatusDate, null),
+                    "patientReleaseDate",IF(p.PatientStatusId = 8, p.PatientStatusDate, null),
 					"visits",
 					JSON_ARRAYAGG(
 						JSON_OBJECT(
@@ -48,4 +53,8 @@ AS Result
 	WHERE 
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;
+ELSE
+	SELECT null AS Result;
+END IF;
 END$$
+DELIMITER ;
