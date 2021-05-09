@@ -134,9 +134,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     }
 
     setInitialTime(element: string, index: number) {
-        console.log('here?');
         const currentCall: FormGroup = this.calls.controls[index] as FormGroup;
-        console.log('here?');
         const currentElement: AbstractControl = currentCall.get(element) as AbstractControl;
 
         const currentTime: string | Date = currentElement.value;
