@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
@@ -13,6 +8,7 @@ import {
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { SurgeryRecordDialogComponent } from './surgery-record-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SurgeryRecordDialogComponent', () => {
     let component: SurgeryRecordDialogComponent;
@@ -27,7 +23,7 @@ describe('SurgeryRecordDialogComponent', () => {
 
     let dialog: MatDialogRef<SurgeryRecordDialogComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -46,6 +42,7 @@ describe('SurgeryRecordDialogComponent', () => {
                 },
             ],
             declarations: [SurgeryRecordDialogComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

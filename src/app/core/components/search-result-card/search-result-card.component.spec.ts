@@ -1,7 +1,7 @@
 import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CallerDetails } from '../../models/emergency-record';
@@ -34,7 +34,7 @@ describe('SearchResultCardComponent', () => {
 
   let dialog: MatDialogRef<MockPatientEditComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatDialogModule, HttpClientTestingModule,
         RouterTestingModule, MaterialModule],
@@ -47,7 +47,8 @@ describe('SearchResultCardComponent', () => {
         provide: MatDialogRef,
         useValue: mockDialogRef
       }],
-      declarations: [ SearchResultCardComponent, MockPatientEditComponent ]
+      declarations: [ SearchResultCardComponent, MockPatientEditComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

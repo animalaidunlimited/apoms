@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { AnimalHeaderComponent } from './animal-header.component';
 
@@ -23,6 +18,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AnimalHeaderComponent', () => {
     let component: AnimalHeaderComponent;
@@ -37,7 +33,7 @@ describe('AnimalHeaderComponent', () => {
 
     let dialog: MatDialogRef<ImageUploadDialog>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -62,6 +58,7 @@ describe('AnimalHeaderComponent', () => {
                 },
             ],
             declarations: [AnimalHeaderComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

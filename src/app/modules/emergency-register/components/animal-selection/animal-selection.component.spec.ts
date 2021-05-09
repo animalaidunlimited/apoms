@@ -1,10 +1,4 @@
-import { MaterialModule } from 'src/app/material-module';
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { AnimalSelectionComponent } from './animal-selection.component';
 import {
@@ -22,8 +16,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { environment } from 'src/environments/environment';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('AnimalSelectionComponent', () => {
     let component: AnimalSelectionComponent;
@@ -38,8 +33,8 @@ describe('AnimalSelectionComponent', () => {
 
     let dialog: MatDialogRef<TagNumberDialog>;
 
-    
-    beforeEach(async(() => {
+
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -66,6 +61,7 @@ describe('AnimalSelectionComponent', () => {
                 },
             ],
             declarations: [AnimalSelectionComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

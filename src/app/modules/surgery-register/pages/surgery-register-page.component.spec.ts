@@ -1,6 +1,6 @@
 import { MaterialModule } from 'src/app/material-module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SurgeryRecordComponent } from '../components/surgery-record.component';
 
 import { SurgeryRegisterPageComponent } from './surgery-register-page.component';
@@ -11,7 +11,7 @@ describe('SurgeryRegisterPageComponent', () => {
     let component: SurgeryRegisterPageComponent;
     let fixture: ComponentFixture<SurgeryRegisterPageComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports:[
                 FormsModule,
@@ -21,7 +21,7 @@ describe('SurgeryRegisterPageComponent', () => {
                 BrowserAnimationsModule
             ],
             declarations: [
-                SurgeryRegisterPageComponent, 
+                SurgeryRegisterPageComponent,
                 SurgeryRecordComponent
             ],
         }).compileComponents();

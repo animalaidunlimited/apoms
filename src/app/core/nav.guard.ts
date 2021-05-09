@@ -6,7 +6,7 @@ import {
     RouterStateSnapshot,
     UrlTree,
 } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { NavigationService } from './services/navigation/navigation.service';
 import { sideNavPath } from '../nav-routing';
 import { EvaluatePermissionService } from './services/permissions/evaluate-permission.service';
@@ -32,13 +32,13 @@ export class NavGuard implements CanActivateChild {
 
         return await this.permissionService.permissionTrueOrFalse(childRoute.data.permissionId).then(val=> {
             this.userHasPermission.next(val);
-   
+
             if (childRoute.data && childRoute.data.title && !!this.userHasPermission.value) {
                 // tslint:disable-next-line:no-non-null-assertion
                 const parentPath: string = childRoute.parent!.url
                     .map(url => url.path)
                     .join('/');
-    
+
                 if (parentPath === sideNavPath) {
                     this.navigationService.selectNavigationItemByPath(
                         childRoute.url.map(url => url.path).join('/'),
@@ -65,8 +65,8 @@ export class NavGuard implements CanActivateChild {
                     childRoute.data.isChild,
                     !!this.userHasPermission.value
                 );
-    
-    
+
+
             }
              // If we're on mobile close the sidenav after navigation
 
@@ -80,12 +80,12 @@ export class NavGuard implements CanActivateChild {
 
             return !!this.userHasPermission.value;
 
-            
+
         });
 
-       
-        
 
-        
+
+
+
     }
 }

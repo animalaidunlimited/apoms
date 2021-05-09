@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RecordSearchModule } from 'src/app/core/components/record-search/record-search.module';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -9,12 +9,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from 'src/app/nav-routing';
 import { DatePipe } from '@angular/common';
 import { MaterialModule } from 'src/app/material-module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HospitalManagerTabBarComponent', () => {
     let component: HospitalManagerTabBarComponent;
     let fixture: ComponentFixture<HospitalManagerTabBarComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule.withRoutes([{
@@ -28,7 +29,8 @@ describe('HospitalManagerTabBarComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [ HospitalManagerTabBarComponent ],
-            providers: [ DatePipe ]
+            providers: [ DatePipe ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

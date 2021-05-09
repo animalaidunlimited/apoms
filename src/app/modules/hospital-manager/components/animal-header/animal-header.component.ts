@@ -10,7 +10,7 @@ import { of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'animal-header',
     templateUrl: './animal-header.component.html',
     styleUrls: ['./animal-header.component.scss'],

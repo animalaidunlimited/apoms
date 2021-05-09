@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'emergency-record',
     templateUrl: './emergency-record.component.html',
     styleUrls: ['./emergency-record.component.scss'],
@@ -89,9 +89,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
-            
+
             if (val.componentPermissionLevel?.value === 2) {
-                
+
                 this.hasWritePermission = true;
             }
 
@@ -104,10 +104,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 guId : [this.guId.value],
                 emergencyCaseId: [this.emergencyCaseId],
                 updateTime: [''],
-            }),
-            callOutcome: this.fb.group({
-                CallOutcome: [],
-                sameAsNumber: []
             }),
             caseComments: [],
         });
@@ -181,6 +177,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
 
+
          const result = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -225,7 +222,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
         resultBody.patients.forEach((patient: PatientResponse) => {
-            if (patient.success === 1) {
+
+            if (patient.success === 1 && patient.admissionSuccess !== -1) {
                 result.message += '';
 
                 const patientFormArray = this.recordForm.get(
@@ -242,7 +240,12 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         currentPatient.get('tagNumber')?.setValue(patient.tagNumber);
                     }
                 });
-            } else {
+            }
+            else if(patient.admissionSuccess === -1) {
+                result.failure = 2;
+            }
+
+            else {
                 result.message +=
                     'Error adding the patient: ' +
                     (patient.success === 2
@@ -288,7 +291,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                         return;
                     }
                 }
-            
+
                 if (this.recordForm.valid) {
                     this.recordForm.get('emergencyDetails.updateTime')?.setValue(getCurrentTimeString());
 
@@ -332,6 +335,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                                 else if (messageResult.failure === -1) {
                                     this.showSnackBar.successSnackBar('Duplicate case, please reload case','OK');
                                 }
+                                else if (messageResult.failure === 2){
+                                    this.showSnackBar.warningSnackBar('Case inserted successfully, but area admission failed: see admin.', 'OK');
+                                }
                                 else if (messageResult.failure === 1) {
                                     this.showSnackBar.errorSnackBar('Case saved offline','OK');
                                     this.syncedToLocalStorage = true;
@@ -371,6 +377,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                                     this.syncedToLocalStorage = true;
                                     this.recordForm.markAsPristine();
                                 }
+                                else if (messageResult.failure === 2){
+                                    this.showSnackBar.warningSnackBar('Case updated successfully, but area admission failed: see admin.', 'OK');
+                                }
                                 else{
                                     this.showSnackBar.errorSnackBar('Unknown error, please see admin.','OK');
                                 }
@@ -383,7 +392,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             }
 
             else {
-                this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
+                this.showSnackBar.errorSnackBar('You do not have permission to save; please see the admin ' , 'OK');
             }
 
     }

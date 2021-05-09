@@ -1,5 +1,4 @@
-import { MaterialModule } from 'src/app/material-module';
- import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
  import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -7,7 +6,9 @@ import { MaterialModule } from 'src/app/material-module';
  import { HttpClientTestingModule } from '@angular/common/http/testing';
  import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
- import { Component } from '@angular/core';
+ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MaterialModule } from 'src/app/material-module';
 import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-register/components/emergency-case-outcome/emergency-case-outcome.component';
 
  @Component({
@@ -37,17 +38,18 @@ import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-registe
 
    let dialog: MatDialogRef<MockRescueDetailsComponent>;
 
-   beforeEach(async(() => {
+   beforeEach(waitForAsync(() => {
      TestBed.configureTestingModule({
        imports: [
           MatDialogModule,
-          FormsModule, 
-          ReactiveFormsModule, 
+          FormsModule,
+          ReactiveFormsModule,
           HttpClientTestingModule,
           BrowserAnimationsModule,
           MaterialModule
       ],
        providers: [
+        MatSnackBar,
          {
            provide: MAT_DIALOG_DATA,
            useValue: dialogData },
@@ -57,7 +59,9 @@ import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-registe
        }],
        declarations: [ RescueDetailsDialogComponent,
                        MockRescueDetailsComponent,
-                       EmergencyCaseOutcomeComponent ]
+                       EmergencyCaseOutcomeComponent
+                      ],
+        schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
      })
      .compileComponents();
    }));

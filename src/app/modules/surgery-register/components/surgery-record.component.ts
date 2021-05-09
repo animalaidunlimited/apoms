@@ -17,7 +17,7 @@ interface Antibiotic {
 }
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'surgery-record',
     templateUrl: './surgery-record.component.html',
     styleUrls: ['./surgery-record.component.scss'],

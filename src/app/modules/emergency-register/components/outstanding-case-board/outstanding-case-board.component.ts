@@ -40,7 +40,7 @@ export interface FilterKeys {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
   styleUrls: ['./outstanding-case-board.component.scss'],
@@ -399,10 +399,9 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
-
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-        width: '500px',
-        height: '500px',
+        maxWidth: 'auto',
+        maxHeight: '100vh',
         data: {
                 emergencyCaseId:outstandingCase.emergencyCaseId,
                 emergencyNumber:outstandingCase.emergencyNumber

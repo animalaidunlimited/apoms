@@ -16,7 +16,7 @@ interface IncomingData {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'media-dialog',
   templateUrl: './media-dialog.component.html',
   styleUrls: ['./media-dialog.component.scss']

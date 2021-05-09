@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {
     MatDialogRef,
@@ -9,7 +9,7 @@ import {
 
 import { OutstandingCaseBoardComponent } from './outstanding-case-board.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,7 +20,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ChipListType } from '../../pipes/chip-list-type';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'rescue-details',
     template: '<p>Mock Rescue Details Component</p>',
 })
@@ -39,7 +39,7 @@ describe('OutstandingCaseBoardComponent', () => {
 
     let dialog: MatDialogRef<MockRescueDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -66,6 +66,7 @@ describe('OutstandingCaseBoardComponent', () => {
                 OutstandingCaseBoardComponent,
                 ChipListType
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

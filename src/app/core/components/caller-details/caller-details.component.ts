@@ -11,7 +11,7 @@ import { QueryList } from '@angular/core';
 import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'caller-details',
     templateUrl: './caller-details.component.html',
     styleUrls: ['./caller-details.component.scss'],

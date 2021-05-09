@@ -236,14 +236,14 @@ private toCamelCase(str:string) : string {
 
   }
 
-  public sendCensusListToPrinter(contentToPrint: string){
+  public sendTreatmentListToPrinter(contentToPrint: string){
 
     this.isPrinting.next(true);
 
     this.router.navigate(['/',
     {
       outlets: {
-      'census-list': ['census-list', 'census-list-content', contentToPrint]
+      'treatment-list': ['treatment-list', 'treatment-list', contentToPrint]
     }}]);
 
   }
@@ -258,8 +258,8 @@ private toCamelCase(str:string) : string {
         this.router.navigate([{ outlets: { print: null }}]);
 
       }
-      else if(printItemName === 'census-list'){
-        this.router.navigate([{ outlets: { 'census-list': null }}]);
+      else if(printItemName === 'treatment-list'){
+        this.router.navigate([{ outlets: { 'treatment-list': null }}]);
       }
 
 

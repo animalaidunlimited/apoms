@@ -203,7 +203,7 @@ export class UsersPageComponent implements OnInit {
         }
         ,{
           groupNameId: 4,
-          groupName: 'Census',
+          groupName: 'Treatment List',
           permissions: [{
             permissionId: 7,
             permissionType: 'Read'
@@ -256,7 +256,7 @@ export class UsersPageComponent implements OnInit {
       });
 
 
-      
+
     }
 
     permissionChanges(permission: MatOptionSelectionChange) {
@@ -264,7 +264,7 @@ export class UsersPageComponent implements OnInit {
       const permissions = this.userDetails.get('permissionArray');
 
       if(permission.isUserInput && permission.source.selected) {
-          const arrayval = permissions?.value?.filter((val: number)=> 
+          const arrayval = permissions?.value?.filter((val: number)=>
           val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
         );
         permissions?.setValue(arrayval,{emitEvent:false});
@@ -330,7 +330,7 @@ export class UsersPageComponent implements OnInit {
         this.snackBar.errorSnackBar('you have no appropriate permissions.','Ok');
       }
 
-      
+
     }
 
     insertSuccess () {

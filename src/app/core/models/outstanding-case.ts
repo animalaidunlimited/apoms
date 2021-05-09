@@ -1,4 +1,4 @@
-import { CallerDetails } from "./emergency-record";
+import { CallerDetails } from './emergency-record';
 
 export interface OutstandingCaseResponse {
     outstandingActions : OutstandingCase[];

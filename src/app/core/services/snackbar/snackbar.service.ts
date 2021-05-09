@@ -16,27 +16,37 @@ export class SnackbarService{
   }
 
   successSnackBar(message: string , action: string){
+
+    this.displaySnackbar(message, action, 'notif-success');
+
+  }
+
+  errorSnackBar(message: string, action: string){
+
+    this.displaySnackbar(message, action, 'notif-error');
+
+  }
+
+  warningSnackBar(message: string, action: string){
+
+    this.displaySnackbar(message, action, 'notif-warning');
+
+  }
+
+  displaySnackbar(message: string, action: string, panelClass: string){
+
     this.zone.run(() => {
 
       this.snackBar.open(message , action , {
         duration: this.notificationDurationSeconds * 1000,
-        panelClass:'notif-success'
-      }) ;
-
-    });
-
-  }
-
-  errorSnackBar(message: string , action: string){
-
-    this.zone.run(() => {
-
-      this.snackBar.open(message , action , {
-        duration: this.notificationDurationSeconds * 1000,
-        panelClass:'notif-error'
+        panelClass
       }) ;
     });
 
   }
+
+  //displaySnackbar(message: string, action: string, class: string) {
+
+
 
 }

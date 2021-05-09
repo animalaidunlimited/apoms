@@ -11,7 +11,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'emergency-case-outcome',
   templateUrl: './emergency-case-outcome.component.html',
   styleUrls: ['./emergency-case-outcome.component.scss']
@@ -20,7 +20,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() recordForm!: FormGroup;
+  @Input() patientForm!: any;
+
+  //patientForm:FormGroup;
+
+  // @Input() patientForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
 
@@ -35,6 +39,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   sameAsId:number | undefined;
 
   callOutcome:FormGroup = new FormGroup({});
+    recordForm: FormGroup | undefined;
 
   constructor(
     private dropdowns: DropdownService,
@@ -42,7 +47,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
-  ) { }
+  ) {
+
+   }
 
 
   @HostListener('document:keydown.control.o', ['$event'])
@@ -53,15 +60,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.callOutcome = this.recordForm.get('callOutcome') as FormGroup;
+    this.callOutcome = this.patientForm.get('callOutcome') as FormGroup;
 
-    if(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value){
+    if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
 
-      this.caseService.getEmergencyCaseById(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+      this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(result =>
 
-        this.recordForm.patchValue(result)
+        this.patientForm.patchValue(result)
 
         );
 
@@ -77,7 +84,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     });
 
-    this.recordForm.get('callOutcome.CallOutcome')?.valueChanges
+    this.patientForm.get('callOutcome.CallOutcome')?.valueChanges
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(() => {
 
@@ -95,15 +102,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   outcomeChanged(){
 
-    const sameAsNumber = this.recordForm.get('callOutcome.sameAsNumber');
-    const callOutcomeId = this.recordForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
+    const sameAsNumber = this.patientForm.get('callOutcome.sameAsNumber');
+    const callOutcomeId = this.patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
 
     // Check if we need to show the same as field.
     this.sameAs = this.sameAsId === callOutcomeId;
 
     if(!sameAsNumber?.value && this.sameAs){
       sameAsNumber?.setValidators(Validators.required);
-      sameAsNumber?.setAsyncValidators([this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value, 0)]);
+      sameAsNumber?.setAsyncValidators([this.emergencyNumberValidator.validate(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value, 0)]);
     }
 
     // We might have selected something other than Same As, so hide the field.
@@ -115,7 +122,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     sameAsNumber?.updateValueAndValidity();
 
-    const patientArray = this.recordForm.get('patients') as FormArray;
+    const patientArray = this.patientForm.get('patients') as FormArray;
 
     if(callOutcomeId === 1){
 
@@ -151,7 +158,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   async save(){
 
     // If we haven't touched the form, don't do anything.
-    if(this.recordForm.get('callOutcome')?.pristine || !this.recordForm.get('callOutcome')?.value){
+    if(this.patientForm.get('callOutcome')?.pristine || !this.patientForm.get('callOutcome')?.value){
 
       const emptyResult:UpdateResponse = {
         success: 1,
@@ -164,11 +171,11 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     const updateTime = getCurrentTimeString();
 
-    (this.recordForm.get('callOutcome') as FormGroup)
+    (this.patientForm.get('callOutcome') as FormGroup)
           .addControl('updateTime', new FormControl(updateTime));
 
     const updateRecord:FormGroup = this.fb.group({
-      emergencyForm: [this.recordForm.value]
+      emergencyForm: [this.patientForm.value]
     });
 
     await this.caseService.updateCaseOutcome(updateRecord.value).then((data:any) => this.result.emit(data));

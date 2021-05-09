@@ -1,6 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -18,7 +19,7 @@ describe('OutstandingCaseMapComponent', () => {
   let mapConstructorSpy: jasmine.Spy;
   let mapSpy: jasmine.SpyObj<google.maps.Map>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -30,7 +31,8 @@ describe('OutstandingCaseMapComponent', () => {
         MatSnackBar,
         Overlay
       ],
-      declarations: [ OutstandingCaseMapComponent ]
+      declarations: [ OutstandingCaseMapComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

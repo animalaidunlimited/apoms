@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { CallerDetailsComponent } from './caller-details.component';
 
@@ -15,13 +10,14 @@ import { MaterialModule } from 'src/app/material-module';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
 
 describe('CallerDetailsComponent', () => {
     let component: CallerDetailsComponent;
     let fixture: ComponentFixture<CallerDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -36,6 +32,7 @@ describe('CallerDetailsComponent', () => {
                 CallerDetailsComponent,
                 CallerAutocompleteComponent
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

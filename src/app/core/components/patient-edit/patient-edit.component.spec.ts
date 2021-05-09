@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PatientEditDialog } from './patient-edit.component';
 
@@ -14,6 +14,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientEditDialog', () => {
     let component: PatientEditDialog;
@@ -28,7 +29,7 @@ describe('PatientEditDialog', () => {
 
     let dialog: MatDialogRef<PatientEditDialog>;
 
-    beforeEach(async () => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
@@ -49,8 +50,9 @@ describe('PatientEditDialog', () => {
                 },
             ],
             declarations: [PatientEditDialog],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
-    });
+    }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PatientEditDialog);

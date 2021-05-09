@@ -9,6 +9,8 @@ import { EmergencyRegisterPatientComponent } from './emergency-register-patient.
 import { routes } from 'src/app/app-routing.module';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EmergencyCaseOutcomeComponent } from '../emergency-case-outcome/emergency-case-outcome.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 
 describe('EmergencyRegisterPatientComponent', () => {
@@ -36,13 +38,14 @@ let dialog: MatDialogRef<MediaDialogComponent>;
         RouterTestingModule.withRoutes(routes),
         BrowserAnimationsModule
       ],
-      declarations: [ EmergencyRegisterPatientComponent ],
+      declarations: [ EmergencyRegisterPatientComponent, EmergencyCaseOutcomeComponent ],
       providers: [
         PrintTemplateService,
         { provide: FormBuilder, useValue: formBuilder },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
         { provide: MatDialogRef, useValue: mockDialogRef }
-      ]
+      ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
@@ -60,11 +63,15 @@ let dialog: MatDialogRef<MediaDialogComponent>;
       tagNumber: 'A378',
       patientId: 230719,
       problems: fb.array([]),
-  });
+      callOutcome: fb.group({
+        CallOutcomeId: 1,
+        CallOutcome: 'Admission'
+      })
+    });
+
+    component.patientIndex = 0;
 
     fixture.detectChanges();
-
-
 
   }));
 

@@ -16,7 +16,7 @@ import { LogsComponent } from '../logs/logs.component';
 
 
 @Component({
-    // tslint:disable-next-line:component-selector
+    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'emergency-details',
     templateUrl: './emergency-details.component.html',
     styleUrls: ['./emergency-details.component.scss'],
@@ -59,13 +59,11 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.callDateTimeField.nativeElement.focus();
     }
 
-    
     @HostListener('document:keydown.control.d', ['$event'])
     focusCallDispatcher(event: KeyboardEvent) {
         event.preventDefault();
         this.dispatcher.nativeElement.focus();
     }
-
 
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();

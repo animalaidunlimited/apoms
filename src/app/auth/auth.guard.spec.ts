@@ -1,4 +1,4 @@
-import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -10,6 +10,7 @@ import {
     ActivatedRouteSnapshot,
     RouterStateSnapshot,
 } from '@angular/router';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockAuthService {
     redirectUrl = '';
@@ -25,7 +26,7 @@ describe('AuthGuard', () => {
     let service: AuthService;
     let router: Router;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -35,6 +36,7 @@ describe('AuthGuard', () => {
                 { provide: AuthService, useClass: MockAuthService },
                 AuthGuard,
             ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         });
         guard = TestBed.inject(AuthGuard);
         service = TestBed.inject(AuthService);

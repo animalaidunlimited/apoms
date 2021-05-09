@@ -30,9 +30,9 @@
 
             <mat-form-field>
                 <mat-label>Call outcome</mat-label>
-                <mat-select formControlName="PatientCallOutcomeId" [errorStateMatcher]="errorMatcher">
-                    <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallOutcomeId">
-                        {{outcome.PatientCallOutcome}}
+                <mat-select formControlName="patientCallerInteractionOutcomeId" [errorStateMatcher]="errorMatcher">
+                    <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome.PatientCallerInteractionOutcomeId">
+                        {{outcome.PatientCallerInteractionOutcome}}
                     </mat-option>
                 </mat-select>
             </mat-form-field >
@@ -49,15 +49,15 @@
 
 
             <mat-form-field>
-                <mat-label>Assigned to</mat-label>
-                <mat-select formControlName="assignedTo" [compareWith]="compareAssignedTo" [errorStateMatcher]="errorMatcher">
+                <mat-label>Done by</mat-label>
+                <mat-select formControlName="doneBy" [compareWith]="compareAssignedTo" [errorStateMatcher]="errorMatcher">
                     <mat-option *ngFor="let asignee of assignedTo$ | async" [value]="asignee">
                         {{asignee.FirstName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <mat-checkbox formControlName="positiveCallOutcome">Positive call outcome</mat-checkbox>
+            <mat-checkbox formControlName="positiveInteraction">Positive interaction</mat-checkbox>
 
             </div>
 

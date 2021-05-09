@@ -192,10 +192,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
 						/**
-						 * Checking if patient already has released status with release date 
-						 * if patient is released user can assign dates 
+						 * Checking if patient already has released status with release date
+						 * if patient is released user can assign dates
 						 * else
-						 * tentative dates like day 0, day 1 
+						 * tentative dates like day 0, day 1
 						 */
 
 						if(!!response.patientReleaseDate){
@@ -217,7 +217,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 								status: visit.visit_status,
 								date: visit.visit_date
 							});
-							
+
 						}
 						this.visitsArray.push(this.getVisitFormGroup());
 					});
@@ -404,7 +404,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
 		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
 
-		// tslint:disable-next-line:prefer-for-of
+		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let i = 0; i < this.visitsArray?.controls.length; i++) {
 			this.visitsArray.removeAt(i);
 		}
@@ -423,7 +423,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.changeDetectorRef.detectChanges();
 
 	}
-
 
 	onSelect(selectedDate: Date | null) {
 

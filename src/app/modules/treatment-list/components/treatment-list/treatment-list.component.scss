@@ -1,0 +1,144 @@
+.mat-table {
+  width: 100%;
+}
+
+  @media print {
+    .isPrinting > * { display: none; }
+    .mat-dialog-container { display: none !important; }
+    .cdk_overlay_pane > * { display: none !important; }
+
+    body {
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+  }
+
+.complete{
+  color: green;
+}
+
+.is-hidden{
+  visibility: hidden;
+}
+
+.saved-icon{
+  color: green;
+}
+
+:host ::ng-deep .mat-select-arrow {
+  border: none;
+}
+
+.header-center{
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+}
+
+.very-small-column{
+  width: 50px;
+}
+
+.moved-out-group {
+  text-align: center;
+  border-radius: 3px 3px 3px 0;
+  border: 1px solid lightgrey;
+}
+
+.checkbox-column{
+  min-width: 85px;
+}
+
+.small-column{
+  width: 85px;
+}
+
+.width-175{
+  width: 175px;
+}
+
+:host ::ng-deep .mat-chip-list-wrapper{
+  margin: 0 !important;
+}
+
+.complete-column{
+  padding-left: 6px;
+}
+
+:host ::ng-deep .center-columnm{
+  text-align: center !important;
+  //justify-content: center;
+}
+
+:host ::ng-deep .flex-start{
+  text-align: start !important;
+}
+
+.mat-column-Other {
+  min-width: 174px;
+}
+
+.mat-column-index{
+  min-width: 50px;
+}
+
+.mat-spinner {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  right: 50%;
+  margin-left: 50%;
+  z-index: 5000;
+  margin: auto;
+}
+
+.add-record-box{
+  height: 300px;
+  margin-right: 7%;
+  border-radius: 4%;
+  bottom: 6%;
+  position: sticky;
+  // background-color: aquamarine;
+}
+
+.add-patient-fab{
+  margin-top:20px;
+  margin-left: 93%;
+  bottom: 2%;
+  position: sticky;
+}
+
+.revert-display{
+  display: revert !important;
+}
+
+:host ::ng-deep .mat-radio-persistent-ripple.mat-ripple-element {
+  right: 0px !important;
+}
+
+// Because we're using the checkboxes without a label we need to get rid of the label itself along with the margin that
+// separates it from the radio-button
+.mat-radio-button{
+  margin-right: 0 !important;
+}
+
+:host ::ng-deep .mat-radio-label-content{
+  display: none;
+}
+
+.saved-spinner{
+  position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 5000;
+    margin: 0 !important;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .add-patient-fab{
+    margin-left: 3%;
+  }
+
+}

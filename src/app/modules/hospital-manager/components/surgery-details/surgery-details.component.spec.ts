@@ -1,10 +1,4 @@
-import { MaterialModule } from 'src/app/material-module';
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { SurgeryDetailsComponent } from './surgery-details.component';
@@ -16,6 +10,8 @@ import {
     MatDialogRef,
 } from '@angular/material/dialog';
 import { AddSurgeryDialogComponent } from '../add-surgery-dialog/add-surgery-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MaterialModule } from 'src/app/material-module';
 
 describe('SurgeryDetailsComponent', () => {
     let component: SurgeryDetailsComponent;
@@ -28,7 +24,7 @@ describe('SurgeryDetailsComponent', () => {
 
     let dialog: MatDialogRef<AddSurgeryDialogComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -48,6 +44,7 @@ describe('SurgeryDetailsComponent', () => {
                 }
             ],
             declarations: [SurgeryDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

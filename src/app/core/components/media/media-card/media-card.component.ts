@@ -12,7 +12,7 @@ import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.com
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'media-card',
   templateUrl: './media-card.component.html',
   styleUrls: ['./media-card.component.scss']

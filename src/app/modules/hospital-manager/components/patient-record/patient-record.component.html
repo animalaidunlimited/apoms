@@ -22,7 +22,7 @@
                 <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
                     <patient-details [recordForm]="recordForm"></patient-details>
 
-                    <census-details [tagNumber]="recordForm.get('patientDetails.tagNumber')?.value"></census-details>
+                    <treatment-area-history [tagNumber]="recordForm.get('patientDetails.tagNumber')?.value"></treatment-area-history>
 
                     <surgery-details
                         [patientId]="recordForm.get('patientDetails.patientId')?.value"
@@ -42,8 +42,8 @@
     <mat-tab label="Emergency details" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
             <div class="emergencyRecordWrapper" fxLayout="column" fxLayout.lt-md="row wrap" fxLayoutGap="15px" fxLayoutAlign="start">
-                <emergency-details 
-                    [recordForm]="recordForm" 
+                <emergency-details
+                    [recordForm]="recordForm"
                     [focusEmergencyNumber]="false"></emergency-details>
                 <caller-details
                     [recordForm]="recordForm"></caller-details>

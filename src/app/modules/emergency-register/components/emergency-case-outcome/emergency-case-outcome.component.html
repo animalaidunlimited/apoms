@@ -4,7 +4,7 @@
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
 
     <mat-form-field class="outcomeWrapper">
-        <mat-label>Call Outcome</mat-label>
+        <mat-label>Call outcome</mat-label>
         <mat-select tabindex="14" #callOutcomeField formControlName="CallOutcome" [compareWith]="compareCallOutcome">
             <mat-option>N/A</mat-option>
             <mat-option *ngFor="let outcome of callOutcomes$ | async" [value]="outcome">
@@ -17,7 +17,7 @@
 
         <input formControlName="sameAsNumber" tabindex="15" #sameAsNumberField type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
-        <mat-error *ngIf="recordForm.get('callOutcome.sameAsNumber')?.errors?.emergencyNumberTaken">
+        <mat-error *ngIf="patientForm.get('callOutcome.sameAsNumber')?.errors?.emergencyNumberTaken">
             The emergency number doesn't exist.
         </mat-error>
     </mat-form-field>

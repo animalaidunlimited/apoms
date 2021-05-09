@@ -1,9 +1,4 @@
-import {
-    async,
-    ComponentFixture,
-    TestBed,
-    inject,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -11,12 +6,13 @@ import { PatientDetailsComponent } from './patient-details.component';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('PatientDetailsComponent', () => {
     let component: PatientDetailsComponent;
     let fixture: ComponentFixture<PatientDetailsComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
@@ -26,6 +22,7 @@ describe('PatientDetailsComponent', () => {
                 BrowserAnimationsModule,
             ],
             declarations: [PatientDetailsComponent],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

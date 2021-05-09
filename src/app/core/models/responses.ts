@@ -26,6 +26,7 @@ export interface PatientResponse {
     tagNumber: string;
     position: number;
     success: number;
+    admissionSuccess: number;
     problems: ProblemResponse[];
 }
 
@@ -148,9 +149,9 @@ export interface CallType {
     CallType: string;
 }
 
-export interface PatientCallOutcome {
-    PatientCallOutcomeId: number;
-    PatientCallOutcome: string;
+export interface PatientCallerInteractionOutcome {
+    PatientCallerInteractionOutcomeId: number;
+    PatientCallerInteractionOutcome: string;
 }
 
 export interface StreetTreatMainProblem {

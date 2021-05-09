@@ -14,7 +14,7 @@ import { CallerDetails } from '../../models/emergency-record';
 
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'search-result-card',
   templateUrl: './search-result-card.component.html',
   styleUrls: ['./search-result-card.component.scss']

@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,7 +52,7 @@ describe('MediaCardComponent', () => {
 
   let dialog: MatDialogRef<MockConformationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
@@ -70,7 +70,8 @@ describe('MediaCardComponent', () => {
       provide: MatDialogRef,
       useValue: mockDialogRef
     }],
-      declarations: [ MediaCardComponent, MockConformationComponent ]
+      declarations: [ MediaCardComponent, MockConformationComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

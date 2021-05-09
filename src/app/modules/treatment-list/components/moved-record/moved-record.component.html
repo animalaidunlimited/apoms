@@ -1,0 +1,80 @@
+    <fieldset class="form-sub-group" *ngIf="movedRecords.length > 0" [formGroup]="movedRecordsGroup">
+
+     <legend class="legend">{{listType | titlecase}}</legend>
+
+       <div *ngFor="let item of movedRecords.controls; let index = index" formArrayName="movedList">
+
+
+         <div [formGroupName]="index"
+          class="unaccepted-item"
+          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px">
+
+        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px"
+            class="unaccepted-form-fields">
+
+
+
+            <button mat-button class="action-button"
+            [ngStyle]="{ 'border-color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white',
+            'color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white'}"
+            >
+              {{item.get('Actioned by area')?.value || 'Admission'}}
+              <mat-icon *ngIf="listType === 'admissions'" >plus_one</mat-icon>
+              <mat-icon *ngIf="listType === 'rejected from'">error</mat-icon>
+              <mat-icon *ngIf="listType === 'moved in from'">swap_horiz</mat-icon>
+            </button>
+
+
+              <mat-form-field >
+                <input matInput disabled="true" placeholder="Tag number" [value]="item.get('Tag number')?.value">
+              </mat-form-field>
+
+              <mat-form-field >
+                <mat-select disabled="true" [value]="item.get('Treatment priority')?.value"  placeholder="Treatment priority">
+                  <mat-option [value]="2">High</mat-option>
+                  <mat-option [value]="3">Medium</mat-option>
+                  <mat-option [value]="4">Low</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+
+          </div>
+
+            <button mat-button class="accept-button" (click)="acceptMove(item)">
+              <mat-icon>check_circle</mat-icon>
+              Accept
+            </button>
+
+            <button *ngIf="listType === 'moved in from' || listType === 'admissions'" mat-button class="reject-button" (click)="rejectMove(item)">
+              <mat-icon>highlight_off</mat-icon>
+              Reject
+            </button>
+
+
+        <!--<div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;" *ngIf="listType === 'rejected from' || listType === 'admission'">-->
+        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
+
+
+          <mat-form-field>
+          <mat-select
+          (selectionChange)="areaChanged(item, index)"
+          [placeholder]="movedAction"
+          formControlName="Moved to">
+
+            <mat-option>N/A</mat-option>
+            <mat-option [value]="area.areaId" *ngFor="let area of allAreas">{{ area.areaName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-spinner *ngIf="item.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
+        <mat-icon [@fadeSavedIcon]="item.get('saved')?.value" *ngIf="item.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
+
+        <!--<mat-icon *ngIf="!row.get('saved')?.value && !row.get('saving')?.value" class="saved-icon"></mat-icon>-->
+
+      </div>
+
+        </div>
+
+      </div>
+
+    </fieldset>
