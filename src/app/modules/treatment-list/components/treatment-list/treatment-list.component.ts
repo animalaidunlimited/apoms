@@ -303,6 +303,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
         if (result) {
 
           console.log(result);
+          this.endSave(row);
 
         }
      });
@@ -387,8 +388,6 @@ moveOut(currentPatient: AbstractControl) : void {
   this.startSave(currentPatient);
 
   this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
-
-    console.log(result);
 
     if(result.success === -1){
       this.snackbar.errorSnackBar('Error moving patient: please see admin', 'OK');
