@@ -27,8 +27,8 @@ describe('PatientEditDialog', () => {
     const dialogData = {};
 
     let dialog: MatDialogRef<PatientEditDialog>;
-    
-    beforeEach(async(() => {
+
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
@@ -50,7 +50,7 @@ describe('PatientEditDialog', () => {
             ],
             declarations: [PatientEditDialog],
         }).compileComponents();
-    }));
+    });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PatientEditDialog);
