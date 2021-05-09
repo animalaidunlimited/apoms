@@ -19,7 +19,6 @@ import { ConfirmationDialog } from './core/components/confirm-dialog/confirmatio
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { MediaModule } from './core/components/media/media.module';
-import { TimeAgoPipe } from './core/components/media/media-preview/time-ago.pipe';
 import { SharedPipesModule } from './shared-pipes.module';
 
 registerLocaleData(localeIt);
