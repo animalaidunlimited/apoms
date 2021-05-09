@@ -1,6 +1,6 @@
 import { LogsData } from './../../../../core/models/logs-data';
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
@@ -27,6 +27,8 @@ export class PatientRecordComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
     patientId!:number;
+
+    patientArrayForRescueDetails!: FormGroup;
 
     patientLoaded = true;
 
@@ -93,6 +95,11 @@ export class PatientRecordComponent implements OnInit {
             }),
         });
 
+        this.patientArrayForRescueDetails = this.fb.group({
+            patients: this.fb.array([this.recordForm])
+        });
+
+
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
 
@@ -106,7 +113,7 @@ export class PatientRecordComponent implements OnInit {
                 if(media.length === 0){
                     return;
                 }
-                
+
                 this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
                 this.changeDetector.detectChanges();
