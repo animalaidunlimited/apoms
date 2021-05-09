@@ -4,7 +4,7 @@ import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { CallType, PatientCallerInteractionOutcome, SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { CallType, PatientCallerInteractionOutcome } from 'src/app/core/models/responses';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/models/user';
 import {
@@ -134,8 +134,9 @@ export class PatientCallComponent implements OnInit, OnChanges {
     }
 
     setInitialTime(element: string, index: number) {
+        console.log('here?');
         const currentCall: FormGroup = this.calls.controls[index] as FormGroup;
-
+        console.log('here?');
         const currentElement: AbstractControl = currentCall.get(element) as AbstractControl;
 
         const currentTime: string | Date = currentElement.value;

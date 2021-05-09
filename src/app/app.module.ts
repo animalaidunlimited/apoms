@@ -15,11 +15,9 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireStorageModule } from '@angular/fire/storage';
-import { ConfirmationDialog } from './core/components/confirm-dialog/confirmation-dialog.component';
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
-import { MediaModule } from './core/components/media/media.module';
-import { SharedPipesModule } from './shared-pipes.module';
+import { MediaModule } from 'src/app/core/components/media/media.module';
 
 registerLocaleData(localeIt);
 
@@ -34,7 +32,7 @@ export class UIErrorHandler extends ErrorHandler {
   handleError(error:any) {
     super.handleError(error);
     // TODO Style these errors properly and provide them in a dialog with more info about what to do.
-    console.log(`Error occurred:${error.message}`);
+    console.log(`Error occurred:${error}`);
   }
 }
 
