@@ -1,11 +1,10 @@
-/* import { ChangeDetectorRef, Injector } from '@angular/core';
-import { TimeAgoPipe } from './time-ago.pipe'; */
+import { ChangeDetectorRef } from '@angular/core';
+import { TimeAgoPipe } from './time-ago.pipe';
 
 describe('TimeAgoPipe', () => {
- /*  let injector:Injector;
-  const cdr = injector.get(ChangeDetectorRef);
+  let ref!:ChangeDetectorRef;
   it('create an instance', () => {
-    const pipe = new TimeAgoPipe();
+    const pipe = new TimeAgoPipe(ref);
     expect(pipe).toBeTruthy();
-  }); */
+  });
 });
