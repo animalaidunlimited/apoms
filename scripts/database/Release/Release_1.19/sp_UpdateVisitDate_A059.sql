@@ -1,9 +1,12 @@
+
 DELIMITER !!
 DROP procedure IF EXISTS AAU.sp_UpdateVisitDate!!
+DELIMITER !!
+DROP procedure IF EXISTS AAU.sp_UpdateVisitDateByReleaseDetailsId!!
 
 DELIMITER $$
 
-CREATE PROCEDURE AAU.sp_UpdateVisitDateByReleaseDetailsId(
+CREATE PROCEDURE AAU.sp_UpdateVisitDate(
 	IN prm_ReleaseDetailsId INT
 )
 BEGIN
@@ -52,3 +55,5 @@ END IF;
 
 SELECT vSuccess AS success;
 END$$
+
+DELIMITER ;
