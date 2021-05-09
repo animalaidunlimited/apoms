@@ -12,7 +12,6 @@ import {
     MAT_DIALOG_DATA,
     MatDialogModule,
 } from '@angular/material/dialog';
-
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Overlay } from '@angular/cdk/overlay';

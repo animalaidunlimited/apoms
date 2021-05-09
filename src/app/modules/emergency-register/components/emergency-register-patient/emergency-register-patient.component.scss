@@ -42,6 +42,10 @@
     }
 }
 
+.patientOutcomeWrapper {
+    width: 50%;
+}
+
 @media only screen and (max-width:767px)
 {
     .deletePatientButton {
@@ -53,5 +57,17 @@
             left: 1px;
             font-size: 1rem;
         }
+    }
+}
+
+@media(max-width: 600px) {
+    .patientOutcomeWrapper {
+        min-width: 49.9%;
+    }
+    .admissionAreaDivWrapper{
+        max-width: 46%;
+    }
+    .admissionAreaWrapper{
+        min-width: 100%;
     }
 }

@@ -153,10 +153,10 @@ export class PatientService extends APIService {
 
     }
 
-    public getPatientCallsByPatientId(
+    public getPatientCallerInteractionByPatientId(
         patientId: number,
     ): Observable<PatientCalls> {
-        const request = '/PatientCalls?patientId=' + patientId;
+        const request = '/PatientCallerInteractions?patientId=' + patientId;
 
         return this.getObservable(request).pipe(
             map((response: PatientCalls) => {
@@ -165,13 +165,16 @@ export class PatientService extends APIService {
         );
     }
 
-    public async savePatientCalls(
+    public async savePatientCallerInteractions(
         patientCalls: PatientCalls,
     ): Promise<PatientCallModifyResponse[]> {
+
+        console.log(patientCalls);
+
         const response:PatientCallModifyResponse[] = [];
 
         for (const call of patientCalls.calls) {
-            if (call.patientCallId && call.updated) {
+            if (call.patientCallerInteractionId && call.updated) {
                 call.patientId = patientCalls.patientId;
 
                 await this.put(call)
@@ -180,7 +183,7 @@ export class PatientService extends APIService {
                             response.push(
                                 {position: 0,
                                 results: {
-                                    patientCallId: 0,
+                                    patientCallerInteractionId: 0,
                                     success: 0
                                 },
                                 success: -1});
@@ -197,7 +200,7 @@ export class PatientService extends APIService {
                         console.log(error);
 
                     });
-            } else if (!call.patientCallId && call.updated) {
+            } else if (!call.patientCallerInteractionId && call.updated) {
                 call.patientId = patientCalls.patientId;
 
                 await this.post(call)
@@ -206,7 +209,7 @@ export class PatientService extends APIService {
                             response.push(
                                 {position: 0,
                                 results: {
-                                    patientCallId: 0,
+                                    patientCallerInteractionId: 0,
                                     success: 0
                                 },
                                 success: -1});
