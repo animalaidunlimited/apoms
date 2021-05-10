@@ -914,7 +914,7 @@ INNER JOIN (
 	JSON_OBJECT('callerNumber', c.Number)
 	)) AS callerDetails
 	FROM AAU.Caller c
-	INNER JOIN AAU.Emergencycaller ecr ON ecr.CallerId = c.CallerId
+	INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
     WHERE ecr.IsDeleted = 0
     AND ecr.EmergencyCaseId = prm_EmergencyCaseId
 	GROUP BY ecr.EmergencyCaseId
