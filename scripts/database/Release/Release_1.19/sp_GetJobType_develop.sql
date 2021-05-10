@@ -18,7 +18,8 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User
 WHERE Username = prm_Username;
 
 
-SELECT DISTINCT jt.JobTypeId , jt.Title FROM aau.JobType jt
+SELECT DISTINCT jt.JobTypeId , jt.Title
+FROM AAU.JobType jt
 WHERE jt.OrganisationId = vOrganisationId ;
 
 END$$

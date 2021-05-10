@@ -154,7 +154,7 @@ export class PatientRecordComponent implements OnInit {
             });
         }
         else {
-            this.snackbar.errorSnackBar('You have no appropriate permissions' , 'OK');
+            this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
         }
 
     }

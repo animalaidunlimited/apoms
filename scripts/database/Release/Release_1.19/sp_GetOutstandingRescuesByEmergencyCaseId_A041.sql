@@ -71,7 +71,7 @@ Purpose: Altering status based upon whether the admission area has been added
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM BastPatientsCTE)
     GROUP BY p.EmergencyCaseId,
-    rd.ReleaseDetailsId
+        p.PatientCallOutcomeId
 )
 
 
