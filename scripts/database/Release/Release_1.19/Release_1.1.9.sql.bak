@@ -914,7 +914,7 @@ INNER JOIN (
 	JSON_OBJECT('callerNumber', c.Number)
 	)) AS callerDetails
 	FROM AAU.Caller c
-	INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
+	INNER JOIN AAU.Emergencycaller ecr ON ecr.CallerId = c.CallerId
     WHERE ecr.IsDeleted = 0
     AND ecr.EmergencyCaseId = prm_EmergencyCaseId
 	GROUP BY ecr.EmergencyCaseId
@@ -965,8 +965,9 @@ WHERE UserName = prm_Username LIMIT 1;
 WITH RescuesReleases AS
 (
 SELECT PatientId
-FROM  AAU.Patient p
-WHERE p.OrganisationId = 1
+FROM AAU.EmergencyCase ec
+INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
+WHERE ec.OrganisationId = 1
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0
 
@@ -1008,8 +1009,8 @@ PatientsCTE AS
 (
     SELECT
 		p.EmergencyCaseId,
-        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
-        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        p.PatientCallOutcomeId,
+        IFNULL(rd.PatientId, p.PatientId) AS `PatientId`,
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -1042,7 +1043,8 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescuesReleases)
     GROUP BY p.EmergencyCaseId,
-    IFNULL(rd.PatientId, p.EmergencyCaseId)
+    p.PatientCallOutcomeId,
+    IFNULL(rd.PatientId, p.PatientId)
 ),
 
 ReleaseRescueCTE AS
