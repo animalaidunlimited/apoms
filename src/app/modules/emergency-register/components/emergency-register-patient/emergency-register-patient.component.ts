@@ -4,7 +4,8 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
@@ -23,19 +24,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
   @Input() patientFormInput!: any;
-
-  patientForm!: FormGroup;
+  @Input()
+  set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
+  get callOutcome(): string { return this._callOutcome; }
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
-
-  private _callOutcome = '';
-
-  @Input()
-  set callOutcome(callOutcome: string) {
-    this._callOutcome = callOutcome;
-  }
-
-  get callOutcome(): string { return this._callOutcome; }
 
   @ViewChild('problemRef') problemRef!: ElementRef;
   @ViewChild('chipList', {static: false}) chipList!: MatChipList;
@@ -43,24 +36,23 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @ViewChild('tagNumber') tagNumber!: ElementRef;
   @ViewChild('animalTypeInput', { read: MatAutocompleteTrigger }) animalAutoComplete! : MatAutocompleteTrigger;
   @ViewChild('problemRef', { read: MatAutocompleteTrigger }) problemAutoComplete!: MatAutocompleteTrigger;
-  problemInput = new FormControl();
-
-  errorMatcher = new CrossFieldErrorMatcher();
-
-  currentPatientSpecies: string | undefined;
 
   animalType!: AbstractControl;
-
+  private _callOutcome = '';
+  currentPatientSpecies: string | undefined;
+  errorMatcher = new CrossFieldErrorMatcher();
   exclusions: Exclusions[] = [] as Exclusions[];
-  problemsExclusions!: string[];
 
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
+  patientForm!: FormGroup;
+  problemInput = new FormControl();
   problemsArray!: FormArray;
+  problemsExclusions!: string[];
 
-  treatmentAreaNames$!: Observable<TreatmentArea[]>;
-
+  removable = true;
+  selectable = true;
 
   sortedAnimalTypes = this.dropdown.getAnimalTypes().pipe(
     map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0))),
@@ -77,8 +69,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
   );
 
-  selectable = true;
-  removable = true;
+  treatmentAreaNames$!: Observable<TreatmentArea[]>;
+
+
 
   constructor(
     private dropdown: DropdownService,
@@ -123,6 +116,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       }
     },1);
 
+
+
   }
 
   ngAfterViewInit(): void{
@@ -132,6 +127,26 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         this.chipList.errorState = false ;
       }
     });
+
+    // When the animal selection panel closes, if no animal has been selected, then clear the value
+    this.animalAutoComplete.panelClosingActions.subscribe(selection => {
+      if(!selection){
+          this.animalType?.setValue('');
+          this.animalTypeInput.nativeElement.value = '';
+          this.animalTypeInput.nativeElement.focus();
+      }
+
+    });
+
+    this.problemAutoComplete.panelClosingActions.subscribe(selection => {
+
+      if(!selection){
+        this.problemRef.nativeElement.value = '';
+        this.problemRef.nativeElement.focus();
+      }
+
+    });
+
   }
 
   animalFilter(fitlerValue: string){
@@ -221,33 +236,41 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
+
    setTimeout(() =>{
+
       if(this.animalType?.value === '')
       {
-        alert('Please select an animal');
-        $event.preventDefault();
-        this.animalTypeInput.nativeElement.focus();
-        this.problemAutoComplete.closePanel();
+
+        const dialogRef = this.dialog.open(ConfirmationDialog,{
+          data:{
+            message: 'Please select an animal',
+            title: 'Invalid selection',
+            icon: 'warning',
+            buttonText: {
+              ok: 'OK',
+              cancel: 'hide-cancel'
+            }
+          }
+        });
+
+        dialogRef.afterClosed()
+        // .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((confirmed: boolean) => {
+
+          console.log(confirmed);
+          $event.preventDefault();
+          this.animalTypeInput.nativeElement.focus();
+          this.problemAutoComplete.closePanel();
+
+          });
+
+
       }
-   });
+   },0);
   }
 
-  checkAnimalType(animalType:string){
-    if(animalType !== '')
-    { 
-      
-      this.sortedAnimalTypes.forEach(animals =>{
-        const matchAnimal = animals.filter(animal => animal.AnimalType === animalType);
-        if(matchAnimal.length === 0)
-        { 
-          // tslint:disable-next-line: no-unused-expression
-          this.animalType?.setValue('');
-          this.animalTypeInput.nativeElement.value = '';
-          this.animalTypeInput.nativeElement.focus();
-        }
-      });
-    }
-  }
+
   checkMainProblem(){
     if(this.problemsArray.length === 0){
       this.problemRef.nativeElement.value = '';
