@@ -327,7 +327,7 @@ export class UsersPageComponent implements OnInit {
       }
 
       else {
-        this.snackBar.errorSnackBar('you have no appropriate permissions.','Ok');
+        this.snackBar.errorSnackBar('You do not have permission to save; please see the admin','Ok');
       }
 
 

@@ -146,29 +146,29 @@ export class StreetTreatRecordComponent implements OnInit {
     if(this.hasWritePermission) {
      this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
        if(response.success === 1)
-         { 
+         {
            this.showSnackBar.successSnackBar('Street Treat updated successfully','OK');
            this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
            .pipe(takeUntil(this.ngUnsubscribe))
            .subscribe((response) => {
              this.recordForm.get('streatTreatForm.visits')?.patchValue(response.visits);
            });
-           
+
          }
          else {
            this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
          }
- 
+
        if(response?.success === -1){
          this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
          return;
        }
-       
+
      });
     }
     else {
-      this.showSnackBar.errorSnackBar('You have no appropriate permissions' , 'OK');
-    } 
+      this.showSnackBar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+    }
    }
 
 }
