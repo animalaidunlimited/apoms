@@ -38,8 +38,6 @@ export class ConfirmationDialog {
 
         if(data){
 
-          console.log(this.vals);
-
           this.message = data.message || this.message;
           this.confirmButtonText = data.buttonText.ok || this.confirmButtonText;
           this.cancelButtonText = data.buttonText.cancel || this.cancelButtonText;

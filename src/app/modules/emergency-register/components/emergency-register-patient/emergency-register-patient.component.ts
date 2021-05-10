@@ -258,7 +258,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         // .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((confirmed: boolean) => {
 
-          console.log(confirmed);
           $event.preventDefault();
           this.animalTypeInput.nativeElement.focus();
           this.problemAutoComplete.closePanel();
