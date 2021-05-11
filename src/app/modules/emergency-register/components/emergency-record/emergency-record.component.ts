@@ -154,9 +154,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     resetForm() {
+        
 
         this.recordForm.reset({});
 
+        this.resetPatientFormArray();
 
         this.guId.next(this.caseService.generateUUID());
 
@@ -170,9 +172,15 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         this.recordForm.get('emergencyDetails.callDateTime')?.setValue(getCurrentTimeString(),{emitEvent:false});
 
+    }
 
-
-        // this.changeDetectorRef.detectChanges();
+    private resetPatientFormArray() {
+        const patientArray = this.recordForm.get('patients') as FormArray;
+        const firstPatient = patientArray.at(0);
+        const firstProblems = firstPatient.get('problems') as FormArray;
+        firstProblems.clear();
+        patientArray.clear();
+        patientArray.push(firstPatient);
     }
 
     getCaseSaveMessage(resultBody: EmergencyResponse) {
