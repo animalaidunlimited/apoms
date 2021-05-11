@@ -36,7 +36,7 @@ export class SettingsPageComponent implements OnInit {
 
     ngOnInit() {
         this.emergencyRecord = {
-            
+
             emergencyForm: {
                 emergencyDetails: {
                     callDateTime: "2021-03-19T10:01",
@@ -45,7 +45,7 @@ export class SettingsPageComponent implements OnInit {
                         EmergencyCodeId: 2
                     },
                     dispatcher: 195,
-                    emergencyCaseId: 0,  
+                    emergencyCaseId: 0,
                     emergencyNumber: -1,
                     guId: '',
                     updateTime: '2021-03-19T11:30'
@@ -76,22 +76,22 @@ export class SettingsPageComponent implements OnInit {
                     location: "Badi Lake Rd, Bari, Rajasthan 313011, India",
                     longitude: 73.64295849999999
                 },
-        
+
                 callerDetails: {
                     callerArray:[
                         {callerId: undefined, callerName: "Dummy Caller", callerNumber: "7894561237", callerAlternativeNumber: "", primaryCaller: true}]
                 },
-        
+
                 callOutcome:{
                     CallOutcome: {CallOutcomeId: 1, CallOutcome: "Admission"},
                     sameAsNumber: null
                 }
             }
-    
-    
-        }
 
-        this.releaseVersion = '1.0.18';
+
+        };
+
+        this.releaseVersion = '1.0.19';
     }
 
     refreshApp(){
@@ -111,7 +111,7 @@ export class SettingsPageComponent implements OnInit {
             if(val.success === 0) {
                 this.emergencyRecord.emergencyForm.patients[0].tagNumber = tagNumber;
                 this.emergencyRecord.emergencyForm.emergencyDetails.guId = guid;
-        
+
                 if(this.emergencyRecord.emergencyForm.patients[0].tagNumber !== '') {
                     this.caseService
                     .insertCase(this.emergencyRecord)
@@ -126,27 +126,27 @@ export class SettingsPageComponent implements OnInit {
                         this.dummyRecordTags.push({tagNumber});
                     }
                 }
-            
+
                 // Add our fruit
-                
+
             }
 
             else {
                 this.snackBar.errorSnackBar('Tag already exists.','OK');
             }
         })
-        
-        
-    
+
+
+
         // Reset the input value
         if (input) {
           input.value = '';
         }
       }
-    
+
       remove(tag: DummyRecordTag): void {
         const index = this.dummyRecordTags.indexOf(tag);
-    
+
         if (index >= 0) {
           this.dummyRecordTags.splice(index, 1);
         }

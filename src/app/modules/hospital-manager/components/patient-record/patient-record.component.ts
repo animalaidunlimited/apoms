@@ -56,8 +56,6 @@ export class PatientRecordComponent implements OnInit {
         // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
-            console.log(val);
-
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
