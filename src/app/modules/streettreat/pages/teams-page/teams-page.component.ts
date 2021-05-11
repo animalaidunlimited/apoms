@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { take } from 'rxjs/operators';
+
 @Component({
     selector: 'app-teams-page',
     templateUrl: './teams-page.component.html',
@@ -133,6 +133,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
                 },
             },
         });
+
         dialogRef.afterClosed().subscribe((confirmed: boolean) => {
             if (confirmed) {
                 this.teamDetails.get('IsDeleted')?.setValue(true);

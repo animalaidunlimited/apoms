@@ -1,10 +1,30 @@
+<h1 mat-dialog-title>
+	{{title}}
+  </h1>
+
 <div mat-dialog-content>
-	<p *ngFor="let subVal of vals">
-		{{subVal}}
-		<br/>
-	</p>
+
+
+
+	<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+
+		<mat-icon style="color:gold; font-size:34px; height: 34px; width: 34px;">warning</mat-icon>
+		<div >
+			<p *ngFor="let subVal of vals">
+				{{subVal}}
+				<br/>
+			</p>
+		</div>
+
+	</div>
+
 </div>
+
+
+
 <div mat-dialog-actions fxLayoutAlign="center">
-	<button mat-button (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
-	<button mat-button mat-dialog-close (click)="onCancel()" tabindex="-1">{{cancelButtonText}}</button>
+	<button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+	<button mat-raised-button *ngIf="cancelButtonText !== 'hide-cancel'" mat-dialog-close  (click)="onCancel()" tabindex="-1">{{cancelButtonText}}</button>
 </div>
+
+<!--*ngIf="cancelButtonText !== 'hide-cancel'"-->

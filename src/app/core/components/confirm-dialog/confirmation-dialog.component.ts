@@ -3,8 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
 export interface DialogData {
+  title: string;
   message: string;
   buttonText: ButtonText;
+  icon: string;
 }
 
 interface ButtonText {
@@ -19,10 +21,12 @@ interface ButtonText {
 })
 
 export class ConfirmationDialog {
-  
+
   message = 'Are you sure?';
   confirmButtonText = 'Yes';
   cancelButtonText = 'Cancel';
+  title = 'Confirm action';
+  icon = 'warn';
 
   get vals() {
     return this.message.split('\n');
@@ -31,11 +35,15 @@ export class ConfirmationDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private dialogRef: MatDialogRef<ConfirmationDialog>) {
-      if(data){
-        this.message = data.message || this.message;
-        this.confirmButtonText = data.buttonText.ok || this.confirmButtonText;
-        this.cancelButtonText = data.buttonText.cancel || this.cancelButtonText;
-      }
+
+        if(data){
+
+          this.message = data.message || this.message;
+          this.confirmButtonText = data.buttonText.ok || this.confirmButtonText;
+          this.cancelButtonText = data.buttonText.cancel || this.cancelButtonText;
+          this.title = data.title || this.title;
+          this.icon = data.icon || this.icon;
+        }
   }
 
   onConfirmClick(): void {

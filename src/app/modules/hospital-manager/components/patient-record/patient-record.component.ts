@@ -56,6 +56,8 @@ export class PatientRecordComponent implements OnInit {
         // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
+            console.log(val);
+
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
@@ -154,7 +156,7 @@ export class PatientRecordComponent implements OnInit {
             });
         }
         else {
-            this.snackbar.errorSnackBar('You have no appropriate permissions' , 'OK');
+            this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
         }
 
     }

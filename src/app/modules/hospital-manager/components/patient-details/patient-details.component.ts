@@ -15,6 +15,7 @@ import { take } from 'rxjs/operators';
 export class PatientDetailsComponent implements OnInit {
     animalTypes$:AnimalType[] = [];
     @Input() recordForm!: FormGroup;
+
     dialog: any;
     maxDate = '';
 

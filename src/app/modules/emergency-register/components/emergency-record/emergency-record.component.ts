@@ -392,7 +392,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             }
 
             else {
-                this.showSnackBar.errorSnackBar('You do not have permission to save; please see the admin ' , 'OK');
+                this.showSnackBar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
             }
 
     }
