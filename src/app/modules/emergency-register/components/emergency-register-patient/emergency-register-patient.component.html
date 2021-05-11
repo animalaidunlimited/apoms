@@ -3,7 +3,7 @@
     <mat-form-field fxFlexOrder.gt-sm="1">
         <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
         matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
-        (keydown.Tab)="isSpeciesBlank($event)">
+        (keydown.Tab)="isSpeciesBlank($event)" (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
 
         <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
 
