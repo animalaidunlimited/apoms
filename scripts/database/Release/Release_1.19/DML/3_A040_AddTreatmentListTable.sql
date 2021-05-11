@@ -11,19 +11,19 @@ CREATE TABLE IF NOT EXISTS `AAU`.`TreatmentList` (
   `OutOfHospital` TINYINT NULL,
   PRIMARY KEY (`TreatmentListId`),
   INDEX `FK_TreatmentListPatientId_PatientPatiendId_idx` (`PatientId` ASC) VISIBLE,
-  INDEX `FK_TreatmentListInTreatmentAreaId_TreatmentAreaTreatmentAreaId_idx` (`InTreatmentAreaId` ASC) VISIBLE,
-  INDEX `FK_TreatmentListOutTreatmentAreaId_TreatmentAreaTreatmentAreaId_idx` (`OutTreatmentAreaId` ASC) VISIBLE,
+  INDEX `FK_InTreatmentAreaId_TreatmentAreaTreatmentAreaId_idx` (`InTreatmentAreaId` ASC) VISIBLE,
+  INDEX `FK_OutTreatmentAreaId_TreatmentAreaTreatmentAreaId_idx` (`OutTreatmentAreaId` ASC) VISIBLE,
   CONSTRAINT `FK_TreatmentListPatientId_PatientPatiendId`
     FOREIGN KEY (`PatientId`)
     REFERENCES `AAU`.`Patient` (`PatientId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `FK_TreatmentListInTreatmentAreaId_TreatmentAreaTreatmentAreaId`
+  CONSTRAINT `FK_InTreatmentAreaId_TreatmentAreaTreatmentAreaId`
     FOREIGN KEY (`InTreatmentAreaId`)
     REFERENCES `AAU`.`TreatmentArea` (`AreaId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `FK_TreatmentListOutTreatmentAreaId_TreatmentAreaTreatmentAreaId`
+  CONSTRAINT `FK_OutTreatmentAreaId_TreatmentAreaTreatmentAreaId`
     FOREIGN KEY (`OutTreatmentAreaId`)
     REFERENCES `AAU`.`TreatmentArea` (`AreaId`)
     ON DELETE NO ACTION

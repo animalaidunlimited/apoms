@@ -15,7 +15,7 @@
                     <fieldset class="form-sub-group" autocomplete=false>
                         <legend class="legend" i18n>Status</legend>
 
-                        <patient-status [patientId]="recordForm.get('patientDetails.patientId')?.value" #patient></patient-status>
+                        <patient-status [hasPermission]="hasWritePermission" [patientId]="recordForm.get('patientDetails.patientId')?.value" #patient></patient-status>
                     </fieldset>
                 </div>
 

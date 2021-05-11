@@ -23,12 +23,6 @@ JSON_OBJECT("dispatcher", ec.DispatcherId),
 JSON_OBJECT("code", ec.EmergencyCodeId),
 JSON_OBJECT("updateTime", DATE_FORMAT(ec.UpdateTime, "%Y-%m-%dT%H:%i:%s"))
 )),
-JSON_OBJECT("callOutcome",
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("CallOutcomeId", p.PatientCallOutcomeId),
-JSON_OBJECT("callOutcome", c.CallOutcome)
-)
-),
 JSON_OBJECT("rescueDetails",
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("rescuer1Id", ec.Rescuer1Id),

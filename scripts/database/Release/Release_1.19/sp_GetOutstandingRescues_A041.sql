@@ -33,9 +33,8 @@ WHERE UserName = prm_Username LIMIT 1;
 WITH RescuesReleases AS
 (
 SELECT PatientId
-FROM AAU.EmergencyCase ec
-INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE ec.OrganisationId = 1
+FROM  AAU.Patient p
+WHERE p.OrganisationId = 1
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0
 
@@ -77,17 +76,18 @@ PatientsCTE AS
 (
     SELECT
 		p.EmergencyCaseId,
-        p.PatientCallOutcomeId,
-        MAX(p.PatientId) AS PatientId,
+        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
+        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("patientId", p.PatientId),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
+            JSON_OBJECT("PatientCallOutcomeId", p.PatientCallOutcomeId),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
-		)) AS Patients     
+		)) AS Patients
     FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
@@ -109,7 +109,8 @@ PatientsCTE AS
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescuesReleases)
-    GROUP BY p.EmergencyCaseId
+    GROUP BY p.EmergencyCaseId,
+    IFNULL(rd.PatientId, p.EmergencyCaseId)
 ),
 
 ReleaseRescueCTE AS
@@ -127,8 +128,8 @@ SELECT AAU.fn_GetRescueStatus(
 				ec.Rescuer2Id, 
 				ec.AmbulanceArrivalTime, 
 				ec.RescueTime, 
-				ec.AdmissionTime, 
-				p.PatientCallOutcomeId,
+				ec.AdmissionTime,
+                p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
             ) AS ActionStatus,
             IF(rd.ReleaseDetailsId IS NULL,'Rescue','Release') AS AmbulanceAction,
@@ -149,7 +150,6 @@ SELECT AAU.fn_GetRescueStatus(
             ec.EmergencyCodeId,
             ecd.EmergencyCode,
             ec.CallDateTime,
-            p.PatientCallOutcomeId,
             ec.Location,			
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
@@ -192,7 +192,6 @@ SELECT
 	JSON_OBJECT("emergencyCodeId", r.EmergencyCodeId),
     JSON_OBJECT("emergencyCode", r.EmergencyCode),
 	JSON_OBJECT("callDateTime", IFNULL(r.CallDateTime,'')),
-	JSON_OBJECT("callOutcomeId", IFNULL(r.PatientCallOutcomeId,'')),
 	JSON_OBJECT("location", IFNULL(r.Location,'')),
 	JSON_OBJECT("latLngLiteral", r.latLngLiteral),
 	r.callerDetails,

@@ -3,7 +3,7 @@
     <mat-form-field fxFlexOrder.gt-sm="1">
         <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
         matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
-        (keydown.Tab)="isSpeciesBlank($event);false;" (focusout)="checkAnimalType(animalTypeInput.value);false;">
+        (keydown.Tab)="isSpeciesBlank($event)">
 
         <mat-autocomplete autoActiveFirstOption #animalAuto="matAutocomplete" (optionSelected)="animalSelected($event)">
 
@@ -14,10 +14,11 @@
         </mat-autocomplete>
 
     </mat-form-field>
-    <mat-form-field   fxFlex.gt-md="1 1 100"  fxFlexOrder.gt-sm="3" ngStyle.lt-md="min-width: 86%;" fxFlexOrder.lt-md="1"  >
-        <mat-chip-list #chipList [disabled]="animalType.value === ''"  (click)="isSpeciesBlank($event)">
+    <mat-form-field fxFlex.gt-md="1 1 100" fxFlexOrder.gt-sm="3" ngStyle.lt-md="min-width: 86%;" fxFlexOrder.lt-md="1"  >
+        <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
           <mat-chip
             *ngFor="let problem of problemsArray?.value"
+            style="margin-right: 5px"
             [selectable]="selectable"
             [removable]="removable"
             (removed)="remove(problem.problemId)">

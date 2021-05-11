@@ -22,6 +22,7 @@ import { take } from 'rxjs/operators';
 export class PatientStatusComponent implements OnInit {
 
     @Input() patientId!: number;
+    @Input() hasPermission!: boolean;
     @Output() formInvalid: EventEmitter<boolean> = new EventEmitter();
     @Output() patientStatus: EventEmitter<PatientStatusObject> = new EventEmitter();
 
@@ -98,7 +99,8 @@ export class PatientStatusComponent implements OnInit {
 
     async onSave() {
 
-        await this.patientService
+        if(this.hasPermission) {
+            await this.patientService
             .updatePatientStatus(this.patientStatusForm.value)
             .then(result => {
 
@@ -112,6 +114,8 @@ export class PatientStatusComponent implements OnInit {
                       'OK',
                   );
             });
+        }
+
     }
 
     onStatusChange() {
