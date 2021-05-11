@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, HostListener, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
@@ -13,6 +13,7 @@ interface ButtonText {
   ok: string;
   cancel: string;
 }
+
 
 
 @Component({
@@ -32,6 +33,11 @@ export class ConfirmationDialog {
     return this.message.split('\n');
   }
 
+  @HostListener('document:keydown.enter', ['$event'])
+  closeConfirmationDailog(event: KeyboardEvent){
+    event.preventDefault();
+    this.onConfirmClick();
+  }
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private dialogRef: MatDialogRef<ConfirmationDialog>) {
