@@ -149,9 +149,9 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 10,
             inputType: 'dropdown',
             searchValue: 'outcome',
-            databaseField: 'p.PatientOutcomeId',
+            databaseField: 'p.PatientCallOutcomeId',
             dropdownName: 'calloutcome',
-            name: 'Call outcome',
+            name: 'Patient call outcome',
             inNotIn: false
         },
         {

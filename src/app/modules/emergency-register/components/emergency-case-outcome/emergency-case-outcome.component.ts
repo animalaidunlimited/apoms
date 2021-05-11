@@ -74,6 +74,8 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     }
 
+
+
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
     this.callOutcomes$
@@ -81,6 +83,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     .subscribe(callOutcome => {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;
+      this.outcomeChanged();
 
     });
 
