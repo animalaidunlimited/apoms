@@ -22,7 +22,7 @@ import { take } from 'rxjs/operators';
 export class PatientStatusComponent implements OnInit {
 
     @Input() patientId!: number;
-    @Input() hasPermission!: boolean;
+    @Input() hasPermission: boolean = true;
     @Output() formInvalid: EventEmitter<boolean> = new EventEmitter();
     @Output() patientStatus: EventEmitter<PatientStatusObject> = new EventEmitter();
 

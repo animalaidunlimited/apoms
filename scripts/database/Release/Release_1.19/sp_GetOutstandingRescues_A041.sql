@@ -121,7 +121,7 @@ SELECT AAU.fn_GetRescueStatus(
 				rd.RequestedDate, 
 				rd.Releaser1Id, 
 				rd.Releaser2Id, 
-                rd.PickupDate,
+        rd.PickupDate,
 				rd.BeginDate, 
 				rd.EndDate, 
 				ec.Rescuer1Id, 
