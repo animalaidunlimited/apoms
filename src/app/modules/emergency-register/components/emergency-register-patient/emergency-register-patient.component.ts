@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormG
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
@@ -39,6 +39,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   animalType!: AbstractControl;
   private _callOutcome = '';
+
+  private animalTypeValueChangesUnsubscribe = new Subject();
   currentPatientSpecies: string | undefined;
   errorMatcher = new CrossFieldErrorMatcher();
   exclusions: Exclusions[] = [] as Exclusions[];
@@ -62,7 +64,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     map( problems =>
       {
         const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
-        const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
+        const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem?.trim());
         return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
       }
     ),
@@ -97,7 +99,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
       startWith(''),
-      map(animalType => typeof animalType === 'string'? animalType : animalType.AnimalType),
+      map(animalType => typeof animalType === 'string'? animalType : animalType?.AnimalType),
       switchMap((animalType:string) => animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes)
     );
 
@@ -116,10 +118,24 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       }
     },1);
 
-
+    
 
   }
 
+
+
+  animalTypeChangessub(){
+    this.animalType.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
+      if(animalType === ''){
+        this.problemsArray.clear();
+      }
+    });
+  }
+
+  animalTypeChangesUnsub(){
+    this.animalTypeValueChangesUnsubscribe.next();
+    this.animalTypeValueChangesUnsubscribe.complete();
+  }
   ngAfterViewInit(): void{
 
     this.patientForm.get('problems')?.valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
@@ -190,7 +206,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientForm.get('updated')?.setValue(true);
 
     this.hideIrrelevantProblems($event.option.viewValue);
-
+    this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
   }
 
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
