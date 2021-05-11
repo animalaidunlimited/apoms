@@ -130,7 +130,9 @@ BEGIN
 	-- return the rescue status
 	RETURN (rescueReleaseStatus);
 END$$
+DELIMITER ;
 DELIMITER !!
+DROP DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_ETL_DailyStats_Full !!
 
@@ -733,6 +735,61 @@ GROUP BY ec.EmergencyCaseId;
 
 END$$
 DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetJobType !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetJobType(IN prm_UserName VARCHAR(45))
+BEGIN
+
+/*
+Created By: Arpit Trivedi
+Created On: 27/10/2020
+Purpose: To get the UserjobType data for dropdown.
+*/
+
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User
+WHERE Username = prm_Username;
+
+
+SELECT DISTINCT jt.JobTypeId , jt.Title
+FROM AAU.JobType jt
+WHERE jt.OrganisationId = vOrganisationId ;
+
+END$$
+DELIMITER ;
+
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetMainProblem !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetMainProblem(IN prm_UserName VARCHAR(45))
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 08/05/2019
+Purpose: Used to return list of main problems for cases.
+*/
+
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User
+WHERE Username = prm_Username;
+
+SELECT MainProblemId, MainProblem
+FROM AAU.MainProblem
+WHERE OrganisationId = vOrganisationId ;
+
+END$$
+DELIMITER ;
+
 DROP procedure IF EXISTS AAU.sp_GetMediaItemsByPatientId;
 
 DELIMITER $$
@@ -850,7 +907,7 @@ Purpose: Altering status based upon whether the admission area has been added
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM BastPatientsCTE)
     GROUP BY p.EmergencyCaseId,
-    rd.ReleaseDetailsId
+        p.PatientCallOutcomeId
 )
 
 
@@ -1019,7 +1076,7 @@ PatientsCTE AS
             JSON_OBJECT("PatientCallOutcomeId", p.PatientCallOutcomeId),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
-		)) AS Patients     
+		)) AS Patients
     FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
@@ -1053,15 +1110,15 @@ SELECT AAU.fn_GetRescueStatus(
 				rd.RequestedDate, 
 				rd.Releaser1Id, 
 				rd.Releaser2Id, 
-                rd.PickupDate,
+        rd.PickupDate,
 				rd.BeginDate, 
 				rd.EndDate, 
 				ec.Rescuer1Id, 
 				ec.Rescuer2Id, 
 				ec.AmbulanceArrivalTime, 
 				ec.RescueTime, 
-				ec.AdmissionTime, 
-				p.PatientCallOutcomeId,
+				ec.AdmissionTime,
+                p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
             ) AS ActionStatus,
             IF(rd.ReleaseDetailsId IS NULL,'Rescue','Release') AS AmbulanceAction,
@@ -1379,87 +1436,6 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetPatientsByEmergencyCaseId !!
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetPatientsByEmergencyCaseId( IN prm_EmergencyCaseId INT)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 23/02/2020
-Purpose: Used to return all patients for a case by EmergencyCaseId
-
-Modified By: Jim Mackenzie
-Modified On: 27/04/2021
-Purpose: Moving the check for call outcome to patient and adding in admission acceptance flag.
-
-
-*/
-
-
-With PatientCTE AS (
-	SELECT PatientId FROM AAU.Patient WHERE EmergencyCaseId = prm_emergencyCaseId AND IsDeleted = 0
-)
-
-SELECT 
-JSON_OBJECT(
-	"patients",
-	 JSON_ARRAYAGG(
-		JSON_MERGE_PRESERVE(
-			JSON_OBJECT("patientId", p.PatientId),
-			JSON_OBJECT("position", p.Position),
-			JSON_OBJECT("tagNumber", p.TagNumber),
-			JSON_OBJECT("animalTypeId", p.AnimalTypeId),
-			JSON_OBJECT("animalType", at.AnimalType),
-			JSON_OBJECT("updated", false),
-			JSON_OBJECT("deleted", p.IsDeleted),
-			JSON_OBJECT("duplicateTag", false),
-            JSON_OBJECT("admissionAccepted", tl.InAccepted),
-            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
-            JSON_OBJECT("callOutcome",
-				JSON_MERGE_PRESERVE(
-					JSON_OBJECT("CallOutcome",
-						JSON_MERGE_PRESERVE(
-						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
-						JSON_OBJECT("CallOutcome",co.CallOutcome))
-					),
-					JSON_OBJECT("sameAsNumber",p.SameAsNumber)
-                )
-            ),
-            pp.problemsJSON,
-            pp.problemsString				
-			)
-		 )
-) AS Result
-			
-FROM  AAU.Patient p
-INNER JOIN
-	(
-	SELECT pp.patientId, JSON_OBJECT("problems",
-		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(                    
-				JSON_OBJECT("problemId", pp.ProblemId),                        
-				JSON_OBJECT("problem", pr.Problem) 
-				)
-			 )
-		) AS problemsJSON,
-        JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS ProblemsString
-	FROM AAU.PatientProblem pp
-	INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
-    WHERE pp.PatientId IN (SELECT PatientId FROM PatientCTE)
-	GROUP BY pp.patientId
-	) pp ON pp.patientId = p.patientId
-INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-GROUP BY p.EmergencyCaseId;
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetRescueDetailsByEmergencyCaseId !!
 
 DELIMITER $$
@@ -1510,6 +1486,89 @@ GROUP BY ec.EmergencyCaseId;
 END$$
 DELIMITER ;
 DELIMITER !!
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetPatientsByEmergencyCaseId !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetPatientsByEmergencyCaseId( IN prm_EmergencyCaseId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to return all patients for a case by EmergencyCaseId
+
+Modified By: Jim Mackenzie
+Modified On: 27/04/2021
+Purpose: Moving the check for call outcome to patient and adding in admission acceptance flag.
+
+
+*/
+
+
+With PatientCTE AS (
+	SELECT PatientId FROM AAU.Patient WHERE EmergencyCaseId = prm_emergencyCaseId AND IsDeleted = 0
+)
+
+SELECT 
+JSON_OBJECT(
+	"patients",
+	 JSON_ARRAYAGG(
+		JSON_MERGE_PRESERVE(
+			JSON_OBJECT("patientId", p.PatientId),
+			JSON_OBJECT("position", p.Position),
+			JSON_OBJECT("tagNumber", p.TagNumber),
+			JSON_OBJECT("animalTypeId", p.AnimalTypeId),
+			JSON_OBJECT("animalType", at.AnimalType),
+			JSON_OBJECT("updated", false),
+			JSON_OBJECT("deleted", p.IsDeleted),
+			JSON_OBJECT("duplicateTag", false),
+            JSON_OBJECT("admissionAccepted", tl.InAccepted),
+            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
+            JSON_OBJECT("callOutcome",
+				JSON_MERGE_PRESERVE(
+					JSON_OBJECT("CallOutcome",
+						JSON_MERGE_PRESERVE(
+						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
+						JSON_OBJECT("CallOutcome",co.CallOutcome))
+					),
+					JSON_OBJECT("sameAsNumber",saec.EmergencyNumber)
+                )
+            ),
+            pp.problemsJSON,
+            pp.problemsString				
+			)
+		 )
+) AS Result
+			
+FROM  AAU.Patient p
+INNER JOIN
+	(
+	SELECT pp.patientId, JSON_OBJECT("problems",
+		 JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(                    
+				JSON_OBJECT("problemId", pp.ProblemId),                        
+				JSON_OBJECT("problem", pr.Problem) 
+				)
+			 )
+		) AS problemsJSON,
+        JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS ProblemsString
+	FROM AAU.PatientProblem pp
+	INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
+    WHERE pp.PatientId IN (SELECT PatientId FROM PatientCTE)
+	GROUP BY pp.patientId
+	) pp ON pp.patientId = p.patientId
+INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.EmergencyCaseId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
+LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
+GROUP BY p.EmergencyCaseId;
+
+END$$
+DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById !!
 
@@ -1890,6 +1949,65 @@ JSON_OBJECT("treatmentList",patientDetails)
 FROM RecordSplitCTE;
 
 END $$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetUsersByIdRange()
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 22/08/2018
+Purpose: Used to return a single user from the database. Initially
+		 for edit purposes.
+*/
+
+SELECT 
+
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE( 
+JSON_OBJECT("userId",UserDetails.UserId),
+JSON_OBJECT("firstName",UserDetails.FirstName),
+JSON_OBJECT("surName",UserDetails.Surname),
+JSON_OBJECT("initials",UserDetails.Initials),
+JSON_OBJECT("colour",UserDetails.Colour),
+JSON_OBJECT("telephone",UserDetails.Telephone),
+JSON_OBJECT("userName",UserDetails.UserName),
+JSON_OBJECT("teamId",UserDetails.TeamId),
+JSON_OBJECT("team",UserDetails.TeamName),
+JSON_OBJECT("roleId",UserDetails.RoleId),
+JSON_OBJECT("role",UserDetails.RoleName),
+JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
+JSON_OBJECT("jobTitle",UserDetails.JobTitle),
+JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
+JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
+))  AS userDetails
+FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
+			u.UserName, u.Password, t.TeamId, t.TeamName, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
+            AS IsDeleted
+		FROM AAU.User u
+		LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
+		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
+		LEFT JOIN (SELECT 
+					ujt.UserId,
+					GROUP_CONCAT(jt.JobTypeId) AS JobTypeId,
+					GROUP_CONCAT(jt.Title) AS JobTitle
+					FROM AAU.UserJobType ujt
+					INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId
+					Where ujt.IsDeleted = 0
+                    GROUP BY ujt.UserId
+					ORDER BY UserId ASC) jobTitle
+	ON jobTitle.UserId = u.UserId
+    WHERE u.UserId <> -1
+    ORDER BY u.UserId ASC) UserDetails;
+        
+-- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
+
+
+END$$
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
@@ -2911,6 +3029,99 @@ UPDATE AAU.TreatmentList SET OutOfHospital = prm_OutOfHospital WHERE PatientId =
 SELECT IF(ROW_COUNT() > 0, 1, 0) AS `success`;
 
 END $$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
+										IN prm_FirstName NVARCHAR(64),
+										IN prm_Surname NVARCHAR(64),
+                                        IN prm_Initials NVARCHAR(64),
+                                        IN prm_Colour NVARCHAR(64),
+										IN prm_Telephone NVARCHAR(64),
+                                        IN prm_UserName NVARCHAR(64),
+                                        IN prm_Password NVARCHAR(255),
+										IN prm_TeamId INTEGER,
+										IN prm_RoleId INTEGER,
+                                        IN prm_PermissionArray JSON
+										)
+BEGIN                                    
+
+/*
+Created By: Jim Mackenzie
+Created On: 22/08/2018
+Purpose: Used to update a user by id.
+*/
+
+DECLARE vUserCount INT;
+DECLARE vPassword NVARCHAR(255);
+DECLARE vUsernameCount INT;
+DECLARE vComboKeyCount INT;
+DECLARE vUpdateSuccess INT;
+SET vUserCount = 0;
+SET vUsernameCount = 0;
+SET vComboKeyCount = 0;
+SET vUpdateSuccess = 0;
+
+-- Check that the user exists
+SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
+
+-- Check that the incoming username doesn't exist
+SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
+
+-- Check that the incoming first name, surname and telephone don't already exist
+SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
+																				AND	Surname		= prm_Surname
+																				AND	Telephone	= prm_Telephone;
+
+
+IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
+
+	UPDATE AAU.User
+		SET	FirstName	= prm_FirstName,
+			Surname		= prm_Surname,
+            Initials    = prm_Initials,
+            Colour      = prm_Colour,
+			Telephone	= prm_Telephone,
+            UserName	= prm_UserName,
+            Password	= IFNULL(prm_Password , vPassword),
+			TeamId		= prm_TeamId,
+			RoleId		= prm_RoleId,
+            PermissionArray = prm_PermissionArray
+	WHERE UserId = prm_UserId;
+
+
+SELECT 1 INTO vUpdateSuccess; -- User update OK.
+
+ELSEIF vUserCount = 0 THEN
+
+SELECT 2 INTO vUpdateSuccess; -- User Doesn't exist
+
+ELSEIF vUserCount > 1 THEN
+
+SELECT 3 INTO vUpdateSuccess; -- Multiple records, we have duplicates
+
+ELSEIF vUsernameCount >= 1 THEN
+
+SELECT 4 INTO vUpdateSuccess; -- The username already exists
+
+ELSEIF vComboKeyCount >= 1 THEN
+
+SELECT 5 INTO vUpdateSuccess; -- The first name + surname + telephone number already exists
+
+ELSE
+
+SELECT 6 INTO vUpdateSuccess; -- Return misc 
+
+END IF;
+
+SELECT vUpdateSuccess;
+
+
+
+END$$
+DELIMITER ;
 
 DELIMITER !!
 DROP procedure IF EXISTS AAU.sp_UpdateVisitDate!!
@@ -3133,9 +3344,7 @@ DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertVisit!!
-
-DELIMITER !!
-DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateVisit!!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateStreetTreatCase!!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertVisit(
@@ -3227,213 +3436,6 @@ ELSE
 END IF;
 
 SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
-
-END$$
-DELIMITER ;
-
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetJobType !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetJobType(IN prm_UserName VARCHAR(45))
-BEGIN
-
-/*
-Created By: Arpit Trivedi
-Created On: 27/10/2020
-Purpose: To get the UserjobType data for dropdown.
-*/
-
-DECLARE vOrganisationId INT;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User
-WHERE Username = prm_Username;
-
-
-SELECT DISTINCT jt.JobTypeId , jt.Title
-FROM AAU.JobType jt
-WHERE jt.OrganisationId = vOrganisationId ;
-
-END$$
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetUsersByIdRange()
-BEGIN
-/*
-Created By: Jim Mackenzie
-Created On: 22/08/2018
-Purpose: Used to return a single user from the database. Initially
-		 for edit purposes.
-*/
-
-SELECT 
-
-JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE( 
-JSON_OBJECT("userId",UserDetails.UserId),
-JSON_OBJECT("firstName",UserDetails.FirstName),
-JSON_OBJECT("surName",UserDetails.Surname),
-JSON_OBJECT("initials",UserDetails.Initials),
-JSON_OBJECT("colour",UserDetails.Colour),
-JSON_OBJECT("telephone",UserDetails.Telephone),
-JSON_OBJECT("userName",UserDetails.UserName),
-JSON_OBJECT("teamId",UserDetails.TeamId),
-JSON_OBJECT("team",UserDetails.TeamName),
-JSON_OBJECT("roleId",UserDetails.RoleId),
-JSON_OBJECT("role",UserDetails.RoleName),
-JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
-JSON_OBJECT("jobTitle",UserDetails.JobTitle),
-JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
-JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
-))  AS userDetails
-FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
-			u.UserName, u.Password, t.TeamId, t.TeamName, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
-            AS IsDeleted
-		FROM AAU.User u
-		LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
-		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
-		LEFT JOIN (SELECT 
-					ujt.UserId,
-					GROUP_CONCAT(jt.JobTypeId) AS JobTypeId,
-					GROUP_CONCAT(jt.Title) AS JobTitle
-					FROM AAU.UserJobType ujt
-					INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId
-					Where ujt.IsDeleted = 0
-                    GROUP BY ujt.UserId
-					ORDER BY UserId ASC) jobTitle
-	ON jobTitle.UserId = u.UserId
-    WHERE u.UserId <> -1
-    ORDER BY u.UserId ASC) UserDetails;
-        
--- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
-
-
-END$$
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
-										IN prm_FirstName NVARCHAR(64),
-										IN prm_Surname NVARCHAR(64),
-                                        IN prm_Initials NVARCHAR(64),
-                                        IN prm_Colour NVARCHAR(64),
-										IN prm_Telephone NVARCHAR(64),
-                                        IN prm_UserName NVARCHAR(64),
-                                        IN prm_Password NVARCHAR(255),
-										IN prm_TeamId INTEGER,
-										IN prm_RoleId INTEGER,
-                                        IN prm_PermissionArray JSON
-										)
-BEGIN                                    
-
-/*
-Created By: Jim Mackenzie
-Created On: 22/08/2018
-Purpose: Used to update a user by id.
-*/
-
-DECLARE vUserCount INT;
-DECLARE vPassword NVARCHAR(255);
-DECLARE vUsernameCount INT;
-DECLARE vComboKeyCount INT;
-DECLARE vUpdateSuccess INT;
-SET vUserCount = 0;
-SET vUsernameCount = 0;
-SET vComboKeyCount = 0;
-SET vUpdateSuccess = 0;
-
--- Check that the user exists
-SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
-
--- Check that the incoming username doesn't exist
-SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
-
--- Check that the incoming first name, surname and telephone don't already exist
-SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
-																				AND	Surname		= prm_Surname
-																				AND	Telephone	= prm_Telephone;
-
-
-IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
-
-	UPDATE AAU.User
-		SET	FirstName	= prm_FirstName,
-			Surname		= prm_Surname,
-            Initials    = prm_Initials,
-            Colour      = prm_Colour,
-			Telephone	= prm_Telephone,
-            UserName	= prm_UserName,
-            Password	= IFNULL(prm_Password , vPassword),
-			TeamId		= prm_TeamId,
-			RoleId		= prm_RoleId,
-            PermissionArray = prm_PermissionArray
-	WHERE UserId = prm_UserId;
-
-
-SELECT 1 INTO vUpdateSuccess; -- User update OK.
-
-ELSEIF vUserCount = 0 THEN
-
-SELECT 2 INTO vUpdateSuccess; -- User Doesn't exist
-
-ELSEIF vUserCount > 1 THEN
-
-SELECT 3 INTO vUpdateSuccess; -- Multiple records, we have duplicates
-
-ELSEIF vUsernameCount >= 1 THEN
-
-SELECT 4 INTO vUpdateSuccess; -- The username already exists
-
-ELSEIF vComboKeyCount >= 1 THEN
-
-SELECT 5 INTO vUpdateSuccess; -- The first name + surname + telephone number already exists
-
-ELSE
-
-SELECT 6 INTO vUpdateSuccess; -- Return misc 
-
-END IF;
-
-SELECT vUpdateSuccess;
-
-
-
-END$$
-DELIMITER ;
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetMainProblem !!
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetMainProblem(IN prm_UserName VARCHAR(45))
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 08/05/2019
-Purpose: Used to return list of main problems for cases.
-*/
-
-DECLARE vOrganisationId INT;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User
-WHERE Username = prm_Username;
-
-SELECT MainProblemId, MainProblem
-FROM AAU.MainProblem
-WHERE OrganisationId = vOrganisationId ;
 
 END$$
 DELIMITER ;
