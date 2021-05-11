@@ -179,7 +179,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
-
+    
     const problemsGroup = this.fb.group({
         problemId: [event.option?.value, Validators.required],
         problem: [event.option.viewValue, Validators.required],
@@ -221,15 +221,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-   setTimeout(() =>{
-      if(this.animalType?.value === '')
-      {
-        alert('Please select an animal');
-        $event.preventDefault();
-        this.animalTypeInput.nativeElement.focus();
-        this.problemAutoComplete.closePanel();
-      }
-   });
+    $event.preventDefault();
+    if(this.animalType?.value === '')
+    {
+      alert('Please select an animal');
+      this.animalTypeInput.nativeElement.focus();
+    }
+    else{
+      this.checkAnimalType(this.animalType?.value);
+    }
   }
 
   checkAnimalType(animalType:string){
@@ -245,13 +245,24 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
           this.animalTypeInput.nativeElement.value = '';
           this.animalTypeInput.nativeElement.focus();
         }
+        else{
+          this.problemRef.nativeElement.focus();
+        }
       });
     }
   }
   checkMainProblem(){
+    const problemRefElement = this.problemRef.nativeElement;
     if(this.problemsArray.length === 0){
-      this.problemRef.nativeElement.value = '';
+      problemRefElement.value = '';
       this.chipList.errorState = true;
+    }else{
+      this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
+        const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
+        if(matchProblem.length === 0){
+          problemRefElement.value = '';
+        }
+      });
     }
   }
   openMediaDialog(patientForm:FormGroup){
