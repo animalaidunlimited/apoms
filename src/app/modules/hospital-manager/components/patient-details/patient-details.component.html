@@ -16,9 +16,7 @@
             <mat-label>Treatment priority</mat-label>
             <mat-select  formControlName="treatmentPriority" aria-labelledby="treatmentPriority-label">
                 <mat-option>N/A</mat-option>
-                <mat-option [value]="2">High</mat-option>
-                <mat-option [value]="3">Medium</mat-option>
-                <mat-option [value]="4">Low</mat-option>
+                <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">{{priority.Priority}}</mat-option>
             </mat-select>
         </mat-form-field>
 

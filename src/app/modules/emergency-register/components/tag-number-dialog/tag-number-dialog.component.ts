@@ -22,14 +22,14 @@ interface DialogData {
 export class TagNumberDialog implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
-    
+
     errorMatcher = new CrossFieldErrorMatcher();
 
     constructor(
         public dialogRef: MatDialogRef<TagNumberDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         private fb: FormBuilder,
-        private uniqueTagNumberValidator: UniqueTagNumberValidator,
+        private uniqueTagNumberValidator: UniqueTagNumberValidator
     ) {}
 
     tagForm: FormGroup = new FormGroup({});

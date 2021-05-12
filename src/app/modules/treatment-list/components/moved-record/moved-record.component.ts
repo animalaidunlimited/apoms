@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { Priority } from 'src/app/core/models/priority';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -25,6 +27,7 @@ export class MovedRecordComponent implements OnInit, OnChanges {
   movedRecordsGroup!: FormGroup;
   listType = '';
   movedAction = '';
+  treatmentPriorities!:Observable<Priority[]>;
 
   constructor(
     private ts: TreatmentListService,
@@ -53,6 +56,8 @@ export class MovedRecordComponent implements OnInit, OnChanges {
         this.allAreas = areaList.filter(area => area.areaName !== this.area.areaName);
 
       });
+
+    this.treatmentPriorities = this.dropdown.getPriority();
 
   }
 

@@ -6,6 +6,8 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Priority } from 'src/app/core/models/priority';
 
 @Component({
     selector: 'patient-details',
@@ -21,6 +23,8 @@ export class PatientDetailsComponent implements OnInit {
 
     errorMatcher = new CrossFieldErrorMatcher();
 
+    treatmentPriorities!:Observable<Priority[]>;
+
     constructor(
         private dropdown: DropdownService,
 		private patientService: PatientService
@@ -28,6 +32,8 @@ export class PatientDetailsComponent implements OnInit {
 
     ngOnInit() {
         this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes);
+
+        this.treatmentPriorities = this.dropdown.getPriority();
 
         const initialNumber = -1;
 

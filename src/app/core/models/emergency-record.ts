@@ -4,10 +4,11 @@ import { CallOutcomeResponse } from './call-outcome';
 export interface EmergencyDetails {
     emergencyCaseId: number;
     guId:string;
-    emergencyNumber: string;
+    emergencyNumber: number;
     callDateTime: string | Date;
     dispatcher: number;
     code: EmergencyCode;
+    updateTime: string | Date;
 }
 
 export interface EmergencyCode {
