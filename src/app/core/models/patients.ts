@@ -15,8 +15,10 @@ export interface Patient {
     patientStatusDate: string | Date;
     updated: boolean;
     deleted: boolean;
+    isAdmission: boolean;
     admissionArea: number;
     admissionAccepted: boolean;
+    treatmentPriority: number;
     callOutcome: CallOutcome;
 }
 
@@ -119,7 +121,7 @@ export interface PatientOutcomeResponse{
 export interface PriorityObject {
     patientId: number;
     priorityValueId: number;
-    updatePriorityFlag: boolean
+    updatePriorityFlag: boolean;
 }
 export interface TreatmentAreaDropdwn {
     AreaId: number;

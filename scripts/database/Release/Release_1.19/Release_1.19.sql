@@ -727,8 +727,6 @@ JSON_OBJECT("caseComments", ec.Comments)
 			
 FROM AAU.EmergencyCase ec
 LEFT JOIN AAU.EmergencyCode c ON c.EmergencyCodeId = ec.EmergencyCodeId
--- LEFT JOIN AAU.CallOutcome o ON o.CallOutcomeId = ec.CallOutcomeId
-LEFT JOIN AAU.EmergencyCase sa ON sa.EmergencyCaseId = ec.SameAsEmergencyCaseId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
 
@@ -1567,8 +1565,9 @@ LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 GROUP BY p.EmergencyCaseId;
 
 END$$
-DELIMITER ;
 
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById !!
 
@@ -2013,15 +2012,14 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
 
 DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
-									IN prm_UserName VARCHAR(64),
+																		IN prm_UserName VARCHAR(64),
                                     IN prm_GUID VARCHAR(128),
                                     IN prm_EmergencyNumber INT,
 									IN prm_CallDateTime DATETIME,
 									IN prm_DispatcherId INT,
 									IN prm_EmergencyCodeId INT,
-									-- IN prm_CallOutcomeId INT,
-                                    -- IN prm_SameAsNumber INT,
                                     IN prm_Comments NVARCHAR(650),
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DECIMAL(11,8),
@@ -2052,13 +2050,10 @@ DECLARE vSuccess INT;
 SET vEmNoExists = 0;
 SET vOrganisationId = 0;
 
-IF Prm_EmergencyNumber = -1 THEN
+IF prm_EmergencyNumber = -1 THEN
 
-	SELECT (MIN(EmergencyNumber) - 1) INTO DummyEmNo 
-    FROM AAU.EmergencyCase WHERE EmergencyNumber < 0;
-    
-ELSE 
-	SELECT Prm_EmergencyNumber INTO DummyEmNo;
+	SELECT (MIN(EmergencyNumber) - 1) INTO prm_EmergencyNumber 
+    FROM AAU.EmergencyCase;
 
 END IF;
 
@@ -2075,8 +2070,6 @@ START TRANSACTION ;
 
 IF vEmNoExists = 0 THEN
 
--- SELECT MAX(EmergencyCaseId) INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsNumber;
-
 -- LOCK TABLES AAU.EmergencyCase WRITE;
 
 -- SELECT MAX(EmergencyNumber + 1) INTO vEmergencyNumber FROM AAU.EmergencyCase
@@ -2089,8 +2082,6 @@ INSERT INTO AAU.EmergencyCase
 	CallDateTime,
 	DispatcherId,
 	EmergencyCodeId,
-	-- CallOutcomeId,
-    -- SameAsEmergencyCaseId,
 	Location,
 	Latitude,
 	Longitude,
@@ -2106,13 +2097,10 @@ INSERT INTO AAU.EmergencyCase
 VALUES
 (
 	vOrganisationId,
-	-- prm_EmergencyNumber,
-    DummyEmNo,
+	prm_EmergencyNumber,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
-	-- prm_CallOutcomeId,
-    -- vSameAsEmergencyCaseId,
 	prm_Location,
 	prm_Latitude,
 	prm_Longitude,
@@ -2154,6 +2142,7 @@ SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyN
 
 END$$
 DELIMITER ;
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient !!

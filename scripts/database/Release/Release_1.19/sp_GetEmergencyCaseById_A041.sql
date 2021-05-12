@@ -36,8 +36,6 @@ JSON_OBJECT("caseComments", ec.Comments)
 			
 FROM AAU.EmergencyCase ec
 LEFT JOIN AAU.EmergencyCode c ON c.EmergencyCodeId = ec.EmergencyCodeId
--- LEFT JOIN AAU.CallOutcome o ON o.CallOutcomeId = ec.CallOutcomeId
-LEFT JOIN AAU.EmergencyCase sa ON sa.EmergencyCaseId = ec.SameAsEmergencyCaseId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 
@@ -12,12 +12,12 @@ export class UniqueTagNumberValidator {
         return (
             control: AbstractControl,
         ): Observable<any | null> => {
-            
+
             if(!control.value){
                 return  of(null);
             }
             else
-            { 
+            {
                 return this.patientService
                 .checkTagNumberExists(control.value, emergencyCaseId, patientId.value)
                 .pipe(
