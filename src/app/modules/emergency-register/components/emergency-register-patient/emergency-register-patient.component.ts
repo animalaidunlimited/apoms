@@ -254,10 +254,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   isSpeciesBlank($event:Event){
 
    setTimeout(() =>{
-
       if(this.animalType?.value === '')
       {
-
         const dialogRef = this.dialog.open(ConfirmationDialog,{
           data:{
             message: 'Please select an animal',
@@ -279,8 +277,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
           this.problemAutoComplete.closePanel();
 
           });
-
-
+      }
+      else{
+        $event.preventDefault();
+        this.problemRef.nativeElement.focus();
       }
    },0);
   }
