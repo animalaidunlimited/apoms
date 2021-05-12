@@ -136,7 +136,6 @@ export class CaseService extends APIService {
 
     public async insertCase(emergencyCase: EmergencyCase): Promise<any> {
 
-        console.log(emergencyCase);
         return await this.baseInsertCase(emergencyCase)
             .then(result => {
 
