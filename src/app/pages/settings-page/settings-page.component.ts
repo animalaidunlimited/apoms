@@ -118,6 +118,8 @@ export class SettingsPageComponent implements OnInit {
 
     getEmptyEmergencyCaseRecord(tagNumber:string, treatmentPriority: number, admissionArea: number) : any{
 
+        const guid = this.caseService.generateUUID();
+
         return {
 
             emergencyForm: {
@@ -130,7 +132,7 @@ export class SettingsPageComponent implements OnInit {
                     dispatcher: 7,
                     emergencyCaseId: 0,
                     emergencyNumber: -1,
-                    guId: '',
+                    guId: guid,
                     updateTime: '2021-03-19T10:01'
                 },
                 patients: [{
@@ -144,7 +146,7 @@ export class SettingsPageComponent implements OnInit {
                         {problemId: 42, problem: 'Wound'}
                     ],
                     problemsString: 'Wound',
-                    tagNumber,
+                    tagNumber: tagNumber.trim().toUpperCase(),
                     isAdmission: false,
                     admissionArea,
                     admissionAccepted: false,
