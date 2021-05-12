@@ -27,3 +27,5 @@ INNER JOIN AAU.Priority pr ON pr.PriorityId = p.TreatmentPriority
 WHERE p.TagNumber = 'V237';
 
 ROLLBACK
+
+-- COMMIT
