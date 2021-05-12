@@ -2153,7 +2153,8 @@ IN prm_Position INT,
 IN prm_AnimalTypeId INT,
 IN prm_TagNumber VARCHAR(45),
 IN prm_PatientCallOutcomeId  INT,
-IN prm_SameAsEmergencyCaseId INT
+IN prm_SameAsEmergencyCaseId INT,
+IN prm_TreatmentPriority INT
 )
 BEGIN
 
@@ -2185,7 +2186,8 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			AnimalTypeId,
 			TagNumber,
             PatientCallOutcomeId,
-            SameAsNumber
+            SameAsEmergencyCaseId,
+            TreatmentPriority
 		)
 		VALUES
 		(
@@ -2195,7 +2197,8 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			prm_AnimalTypeId,
 			UPPER(prm_TagNumber),
             prm_PatientCallOutcomeId,
-            prm_SameAsEmergencyCaseId
+            prm_SameAsEmergencyCaseId,
+            prm_TreatmentPriority
 		);
           
 	SELECT 1 INTO vSuccess;
@@ -2227,6 +2230,7 @@ SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
 
 END$$
 DELIMITER ;
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatientCallerInteraction !!
