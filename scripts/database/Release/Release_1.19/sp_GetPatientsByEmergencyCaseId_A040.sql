@@ -73,7 +73,7 @@ INNER JOIN
 	GROUP BY pp.patientId
 	) pp ON pp.patientId = p.patientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.EmergencyCaseId
+LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.SameAsEmergencyCaseId
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
 LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 GROUP BY p.EmergencyCaseId;
