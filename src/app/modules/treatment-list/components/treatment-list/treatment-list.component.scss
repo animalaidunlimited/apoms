@@ -147,14 +147,19 @@
 
   .select-width{
     width: 110px;
+    min-width: 110px !important;
   }
 
   th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type {
     padding-left: 0px;
-}
+  }
 
   th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type {
     padding-right: 0px;
+  }
+
+  .small-font{
+    font-size: 9px;
   }
 
 }
