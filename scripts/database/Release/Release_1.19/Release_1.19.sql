@@ -2151,7 +2151,9 @@ IN prm_AnimalTypeId INT,
 IN prm_TagNumber VARCHAR(45),
 IN prm_PatientCallOutcomeId  INT,
 IN prm_SameAsEmergencyNumber INT,
-IN prm_TreatmentPriority INT
+IN prm_TreatmentPriority INT,
+IN prm_PatientStatusId INT,
+IN prm_PatientStatusDate DATETIME
 )
 BEGIN
 
@@ -2188,7 +2190,9 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			TagNumber,
             PatientCallOutcomeId,
             SameAsEmergencyCaseId,
-            TreatmentPriority
+            TreatmentPriority,
+			PatientStatusId,
+            PatientStatusDate
 		)
 		VALUES
 		(
@@ -2199,7 +2203,9 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 			UPPER(prm_TagNumber),
             prm_PatientCallOutcomeId,
             vSameAsEmergencyCaseId,
-            prm_TreatmentPriority
+            prm_TreatmentPriority,
+			prm_PatientStatusId,
+            prm_PatientStatusDate 
 		);
 
 	SELECT 1 INTO vSuccess;
@@ -3371,7 +3377,8 @@ CREATE PROCEDURE AAU.sp_UpdatePatient(
                                     IN prm_IsDeleted INT,
                                     IN prm_TagNumber VARCHAR(45),
                                     IN prm_PatientCallOutcomeId INT,
-                                    IN prm_SameAsEmergencyNumber INT
+                                    IN prm_SameAsEmergencyNumber INT,
+									IN prm_PatientStatusDate DATETIME
 )
 BEGIN
 
@@ -3405,6 +3412,7 @@ IF vPatientExists = 0 THEN
             PatientCallOutcomeId = prm_PatientCallOutcomeId,
             SameAsEmergencyCaseId = vSameAsEmergencyCaseId,
             IsDeleted		= prm_IsDeleted,
+            PatientStatusDate = prm_PatientStatusDate,
             DeletedDate		= CASE
 								WHEN prm_IsDeleted = FALSE THEN NULL
                                 WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
