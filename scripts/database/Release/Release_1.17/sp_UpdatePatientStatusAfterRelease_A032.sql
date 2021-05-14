@@ -19,7 +19,7 @@ end date as we know with certainty that the patient has been released.
 UPDATE AAU.Patient p
 INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 SET p.PatientStatusDate = prm_ReleaseEndDate, p.PatientStatusId = 2
-WHERE rd.ReleaseDetailsId = prm_ReleaseId;
+WHERE rd.ReleaseDetailsId = prm_ReleaseDetailsId;
 
 
 END
