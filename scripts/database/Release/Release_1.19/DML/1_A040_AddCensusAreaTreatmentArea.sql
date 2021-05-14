@@ -24,7 +24,7 @@ DROP PROCEDURE `?`;
 
 UPDATE AAU.CensusArea 
 	SET TreatmentListMain = 1 
-WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation') AND AreaId <> 0;
+WHERE Area IN ('A-Kennel','B-Kennel','Isolation','Pre-Isolation','Puppy') AND AreaId <> 0;
 
 
 

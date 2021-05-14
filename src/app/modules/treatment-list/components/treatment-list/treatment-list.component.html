@@ -18,7 +18,7 @@
   <ng-container matColumnDef="header-row-patient-details-group">
     <th mat-header-cell *matHeaderCellDef
         style="text-align: center"
-        [attr.colspan]="5">
+        [attr.colspan]="columnCountPatientDetails">
       Patient details
     </th>
   </ng-container>
@@ -26,7 +26,7 @@
   <!-- Header row second group -->
   <ng-container matColumnDef="header-row-moved-out-group">
     <th mat-header-cell *matHeaderCellDef
-    class="moved-out-group" [attr.colspan]="5"> Move out to</th>
+    class="moved-out-group" [attr.colspan]="columnCountOther"> Move out to</th>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']"></tr>
@@ -66,7 +66,7 @@
           <th mat-header-cell *matHeaderCellDef
           [class.small-column]="column.name !== 'Treatment priority'"
           [class.center-columnm]="column.name !== 'Tag number'"
-          [class.width-175]="column.name == 'Treatment priority'">
+          [class.select-width]="column.name == 'Treatment priority'">
             {{column.abbreviation || column.name}}
           </th>
 
@@ -74,14 +74,14 @@
           [formGroupName]="index"
           [class.small-column]="column.name !== 'Treatment priority'"
           [class.center-columnm]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
-          [class.width-175]="column.name == 'Treatment priority'"
+          [class.select-width]="column.name == 'Treatment priority'"
           [class.link]="column.name === 'Tag number'">
 
           <div *ngIf="column.type === 'text'" (click)="cellClicked(column.name, row.get(column.name).value)">
             {{row.get(column.name).value}}
           </div>
 
-          <div *ngIf="column.type === 'select'" class="width-175 start">
+          <div *ngIf="column.type === 'select'" class="select-width start">
             <mat-form-field>
             <mat-select
             [formControlName]="column.name">
