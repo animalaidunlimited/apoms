@@ -100,7 +100,7 @@
             (click)="quickUpdate(row)">
 
                 <mat-icon *ngIf="row.get('PatientStatusId')?.value < 2">event</mat-icon>
-                <div *ngIf="row.get('PatientStatusId')?.value > 1">{{row.get('PatientStatus')?.value}}</div>
+                <div *ngIf="row.get('PatientStatusId')?.value > 1" class="small-font">{{row.get('PatientStatus')?.value}}</div>
 
             </button>
 
@@ -128,12 +128,13 @@
     <!--DYNAMIC FIELDS END-->
 
     <ng-container matColumnDef="Other">
-      <th mat-header-cell *matHeaderCellDef> Other </th>
+      <th mat-header-cell *matHeaderCellDef class="select-width center-columnm"> Other </th>
 
       <td mat-cell *matCellDef="let row; let index = index;"
+      class="select-width"
       [formGroupName]="index">
 
-      <div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="select-width">
 
         <mat-form-field>
           <mat-select
