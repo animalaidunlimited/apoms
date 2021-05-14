@@ -12,7 +12,7 @@ Created On: 23/02/2020
 Purpose: Used to return a case by ID.
 */
 
-SELECT 
+SELECT
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("emergencyDetails",
 JSON_MERGE_PRESERVE(
@@ -42,7 +42,6 @@ FROM AAU.EmergencyCase ec
 LEFT JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
--- LEFT JOIN AAU.CallOutcome c ON c.CallOutcomeId = ec.CallOutcomeId
 LEFT JOIN AAU.CallOutcome c ON c.CallOutcomeId = p.PatientCallOutcomeId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;

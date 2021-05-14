@@ -25,16 +25,16 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 WITH TotalAreaCount
 AS
 (
-SELECT 
+SELECT
 DataCount.Area,
 SUM(LowPriority) AS LowPriority,
 SUM(NormalPriority) AS NormalPriority,
 SUM(HighPriority) AS HighPriority,
 SUM(Infants) AS Infants,
 SUM(Adults) AS Adults,
-COUNT(1) AS TotalCount 
+COUNT(1) AS TotalCount
 FROM
-(SELECT 
+(SELECT
 COALESCE(LatestArea.Area, AAU.fn_GetAreaForAnimalType(vOrganisationId, p.AnimalTypeId), 'Other') AS Area,
 IF(p.TreatmentPriority = 4,1,0) AS LowPriority,
 IF(p.TreatmentPriority = 3,1,0) AS NormalPriority,
@@ -52,16 +52,16 @@ LEFT JOIN
 	FROM AAU.TreatmentList tl
 	INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
     WHERE OutOfHospital IS NULL
-    AND OutDate IS NULL    
+    AND OutDate IS NULL
 ) LatestArea ON LatestArea.PatientId = p.PatientId
 WHERE p.PatientStatusId IN (1,7)
 AND p.IsDeleted = 0
-AND ec.CallOutcomeId = 1
+AND p.PatientCallOutcomeId = 1
  )
 DataCount
 GROUP BY DataCount.Area)
 
-SELECT 
+SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("area" , data.Area),
