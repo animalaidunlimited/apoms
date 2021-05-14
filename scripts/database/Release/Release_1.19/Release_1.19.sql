@@ -11,7 +11,7 @@ CREATE FUNCTION AAU.fn_GetRescueStatus(
     PickupDate DATE,
     BeginDate DATE,
     EndDate DATE,
-	Rescuer1Id INT,
+	  Rescuer1Id INT,
     Rescuer2Id INT,
     AmbulanceArrivalTime DATETIME,
     RescueTime DATETIME,
@@ -29,7 +29,7 @@ BEGIN
             CallOutcomeId IS NULL AND
             ReleaseDetailsId IS NULL AND
             RequestedUser IS NULL AND
-            RequestedDate IS NULL) 
+            RequestedDate IS NULL)
             OR
             (Rescuer1Id IS NOT NULL AND
 			Rescuer2Id IS NOT NULL AND
@@ -39,13 +39,13 @@ BEGIN
             RequestedDate IS NOT NULL AND
             Releaser1Id IS NULL)
 			THEN SET rescueReleaseStatus = 1;
-            
+
         ELSEIF
 			(Rescuer1Id IS NOT NULL AND
 			Rescuer2Id IS NOT NULL AND
 			AmbulanceArrivalTime IS NULL AND
             RescueTime IS NULL AND
-            ReleaseDetailsId IS NULL) 
+            ReleaseDetailsId IS NULL)
             OR
             (Rescuer1Id IS NOT NULL AND
 			Rescuer2Id IS NOT NULL AND
@@ -53,13 +53,13 @@ BEGIN
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
-            RequestedUser IS NOT NULL AND 
+            RequestedUser IS NOT NULL AND
             Releaser1Id IS NOT NULL AND
             PickupDate IS NULL
             -- EndDate IS NULL
             )
 			THEN SET rescueReleaseStatus = 2;
-            
+
 		ELSEIF
 			(Rescuer1Id IS NOT NULL AND
             Rescuer2Id IS NOT NULL AND
@@ -73,7 +73,7 @@ BEGIN
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
-            RequestedUser IS NOT NULL AND 
+            RequestedUser IS NOT NULL AND
             Releaser1Id IS NOT NULL AND
             PickupDate IS NOT NULL AND
             BeginDate IS NULL
@@ -92,13 +92,13 @@ BEGIN
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
-            RequestedUser IS NOT NULL AND 
+            RequestedUser IS NOT NULL AND
             Releaser1Id IS NOT NULL AND
-            PickupDate IS NOT NULL AND 
+            PickupDate IS NOT NULL AND
             BeginDate IS NOT NULL AND
             EndDate IS NULL)
 			THEN SET rescueReleaseStatus = 4;
-            
+
 		ELSEIF
 			(Rescuer1Id IS NOT NULL AND
 			Rescuer2Id IS NOT NULL AND
@@ -109,7 +109,7 @@ BEGIN
 				CallOutcomeId IS NULL OR
 				InTreatmentAreaId IS NULL
 				)
-            ) 
+            )
             OR
             (Rescuer1Id IS NOT NULL AND
 			Rescuer2Id IS NOT NULL AND
@@ -117,16 +117,16 @@ BEGIN
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
-            RequestedUser IS NOT NULL AND 
+            RequestedUser IS NOT NULL AND
             Releaser1Id IS NOT NULL AND
-            PickupDate IS NOT NULL AND 
-            BeginDate IS NOT NULL AND 
+            PickupDate IS NOT NULL AND
+            BeginDate IS NOT NULL AND
             EndDate IS NULL)
 			THEN SET rescueReleaseStatus = 5;
-        
-        
+
+
         END IF;
-        
+
 	-- return the rescue status
 	RETURN (rescueReleaseStatus);
 END$$
@@ -146,7 +146,7 @@ Created On: 02/02/2021
 Purpose: Used to load the full history of metrics
 */
 
-SELECT c.OrganisationId, c.AnimalType, c.Date, c.Calls, c.Admissions, c.`ReferredToStreetTreat`, 
+SELECT c.OrganisationId, c.AnimalType, c.Date, c.Calls, c.Admissions, c.`ReferredToStreetTreat`,
 c.`RescueNotNeeded`,
 c.`AnimalDied`,
 c.`RescuedResolvedOnSite`,
@@ -169,7 +169,7 @@ SELECT	ec.OrganisationId,
 		CAST(ec.CallDateTime AS DATE) AS `Date`,
         COUNT(DISTINCT ec.EmergencyNumber) AS `Calls`,
         SUM(CASE WHEN p.PatientCallOutcomeId = 1 THEN 1 ELSE 0 END) AS `Admissions`,
-        SUM(CASE WHEN p.PatientCallOutcomeId = 18 THEN 1 ELSE 0 END) AS `ReferredToStreetTreat`,        
+        SUM(CASE WHEN p.PatientCallOutcomeId = 18 THEN 1 ELSE 0 END) AS `ReferredToStreetTreat`,
 		SUM(CASE WHEN p.PatientCallOutcomeId IN (3,4,7,14) THEN 1 ELSE 0 END) AS `RescueNotNeeded`,
 		SUM(CASE WHEN p.PatientCallOutcomeId IN (2,11) THEN 1 ELSE 0 END) AS `AnimalDied`,
 		SUM(CASE WHEN p.PatientCallOutcomeId IN (15,6,13,9,5,19) THEN 1 ELSE 0 END) AS `RescuedResolvedOnSite`,
@@ -179,7 +179,7 @@ SELECT	ec.OrganisationId,
 		SUM(CASE WHEN p.PatientCallOutcomeId IN (20) THEN 1 ELSE 0 END) AS `NotComplete`,
 		SUM(CASE WHEN p.PatientCallOutcomeId IN (10) THEN 1 ELSE 0 END) AS `DiedInAmbulance`,
         SUM(CASE WHEN co.IsRescue = 1 THEN 1 ELSE 0 END) AS `Rescues`
-FROM AAU.EmergencyCase ec 
+FROM AAU.EmergencyCase ec
         INNER JOIN AAU.Patient p		ON p.EmergencyCaseId	= ec.EmergencyCaseId
         INNER JOIN AAU.AnimalType aty	ON aty.AnimalTypeId		= p.AnimalTypeId
         LEFT JOIN AAU.CallOutcome co	ON co.CallOutcomeId		= p.PatientCallOutcomeId
@@ -189,9 +189,9 @@ CAST(ec.CallDateTime AS DATE),
 p.AnimalTypeId,
 aty.AnimalType
 ) c
-LEFT JOIN 
+LEFT JOIN
 (
-			SELECT	p.OrganisationId, 
+			SELECT	p.OrganisationId,
 					p.AnimalTypeId,
 					p.PatientStatusDate AS `Date`,
 					SUM(CASE WHEN p.PatientStatusId = 2 THEN 1 ELSE 0 END) AS `Released`,
@@ -201,7 +201,7 @@ LEFT JOIN
 ) p ON p.AnimalTypeId = c.AnimalTypeId
 AND p.Date = c.Date
 AND p.OrganisationId = c.OrganisationId
-LEFT JOIN 
+LEFT JOIN
 (
 SELECT p.OrganisationId, p.AnimalTypeId, CAST(s.SurgeryDate AS DATE) AS `Date`,
 SUM(CASE WHEN s.SurgeryTypeId = 1 THEN 1 ELSE 0 END) AS `Spays`,
@@ -227,7 +227,7 @@ BEGIN
 DECLARE vOrganisationId INT;
 
 SELECT o.OrganisationId INTO vOrganisationId
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
@@ -393,13 +393,13 @@ SELECT	c.StreetTreatCaseId AS CaseId,
 FROM AAU.StreetTreatCase c
     INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
     INNER JOIN (
-		SELECT ec.EmergencyCaseId, 
-        c.Name, 
-        c.Number, 
-        ec.Latitude, 
-        ec.Longitude, 
-        ec.Location, 
-        ec.EmergencyNumber 
+		SELECT ec.EmergencyCaseId,
+        c.Name,
+        c.Number,
+        ec.Latitude,
+        ec.Longitude,
+        ec.Location,
+        ec.EmergencyNumber
         FROM AAU.Emergencycase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
@@ -477,13 +477,13 @@ CREATE PROCEDURE AAU.sp_GetCensusErrorRecords(IN prm_UserName VARCHAR(45))
 BEGIN
 
 
-/* 
+/*
 Created by: Arpit Trivedi
 Created Date: 09/02/2021
 Purpose: To show census errors.
 */
 
-SELECT  
+SELECT
 ErrorRecords.PatientId AS "PatientId",
 ErrorRecords.TagNumber AS "TagNumber",
 DATE_FORMAT(ec.CallDateTime, "%Y-%m-%d") AS "CallDateTime",
@@ -514,7 +514,7 @@ FROM
 		census.PatientId, census.Area, census.Action, census.TagNumber, census.PreArea,census.PreAction,census.PreCensusDate, census.PostAction,
 		(
 			CASE
-			WHEN census.Action = 'Admission' AND census.PreArea IS NULL THEN 0  
+			WHEN census.Action = 'Admission' AND census.PreArea IS NULL THEN 0
 			WHEN census.Action = 'Moved Out' AND census.PreArea = census.Area AND census.PreAction IN ('Admission','Moved In') AND census.PostAction IS NOT NULL THEN 0
 			WHEN census.Action = 'Moved In' AND census.PreArea <> census.Area AND census.PreAction = 'Moved Out' AND census.CensusDate = census.PreCensusDate THEN 0
 			ELSE 1
@@ -594,9 +594,9 @@ Purpose: Get the total count of animals in each area.
 
 WITH TotalAreaCount
 AS
-(SELECT 
+(SELECT
 DataCount.Area,
-COUNT(1) AS TotalCount 
+COUNT(1) AS TotalCount
 FROM
 (SELECT CASE  WHEN at.AnimalTypeId IN (5,10) THEN LatestArea.Area
 			WHEN at.AnimalTypeId IN (3,8) THEN 'Cat area'
@@ -604,7 +604,7 @@ FROM
 			WHEN at.AnimalTypeId IN (7,11,17,27) THEN 'Sheep area'
 			WHEN at.AnimalTypeId IN (14,16,22,23,25) THEN 'Bird treatment area'
 			ELSE 'Other'
-            END AS Area			
+            END AS Area
 FROM AAU.Patient p
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
@@ -621,12 +621,12 @@ LEFT JOIN
 ) LatestArea ON LatestArea.TagNumber = p.TagNumber AND LatestArea.RNum = 1
 WHERE p.PatientStatusId IN (1,7)
 AND p.PatientCallOutcomeId = 1
- ) 
+ )
 DataCount
 GROUP BY DataCount.Area),
 TotalAnimalCount AS (SELECT SUM(totalCount) as TotalCount from TotalAreaCount)
 
-SELECT 
+SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("area" , data.Area),
@@ -658,11 +658,11 @@ Purpose: To get the emergencycase count on date
 DECLARE vOrganisationId INT;
 
 SELECT o.OrganisationId INTO vOrganisationId
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT 
+SELECT
 ec.EmergencyNumber as "emergencyNumber",
 DATE_Format(ec.CallDateTime,"%Y-%m-%dT%H:%i:%s") as "callDateTime",
 at.AnimalType as "animalType",
@@ -677,13 +677,12 @@ INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 INNER JOIN AAU.User u ON u.UserId = ec.DispatcherId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = ec.CallOutcomeId
+LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 INNER JOIN AAU.PatientProblem pp ON pp.PatientId = p.PatientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 WHERE CAST(ec.CallDateTime AS DATE) = prm_Date
 AND ec.OrganisationId = vOrganisationId
 AND (p.PatientCallOutcomeId = prm_Outcome OR prm_Outcome IS NULL);
--- ec.CallOutcomeId = IFNULL(prm_Outcome,ec.CallOutcomeId)
 
 
 
@@ -703,7 +702,7 @@ Created On: 23/02/2020
 Purpose: Used to return a case by ID.
 */
 
-SELECT 
+SELECT
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("emergencyDetails",
 JSON_MERGE_PRESERVE(
@@ -724,7 +723,7 @@ JSON_OBJECT("updateTime", DATE_FORMAT(ec.UpdateTime, "%Y-%m-%dT%H:%i:%s"))
 JSON_OBJECT("caseComments", ec.Comments)
 
 ) AS Result
-			
+
 FROM AAU.EmergencyCase ec
 LEFT JOIN AAU.EmergencyCode c ON c.EmergencyCodeId = ec.EmergencyCodeId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
@@ -813,7 +812,7 @@ Date: 9-11-20
 Purpose: Added the date format in the datetime field.
 */
 
-SELECT 
+SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("mediaItemId", PatientMediaItemId),
@@ -883,7 +882,7 @@ Purpose: Altering status based upon whether the admission area has been added
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
             )
-		)) AS Patients     
+		)) AS Patients
     FROM AAU.Patient p
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
@@ -910,19 +909,19 @@ Purpose: Altering status based upon whether the admission area has been added
 
 
 SELECT JSON_MERGE_PRESERVE(
-JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId, 
-																rd.RequestedUser, 
-																rd.RequestedDate, 
-																rd.Releaser1Id, 
-																rd.Releaser2Id, 
-																rd.PickupDate, 
-																rd.BeginDate, 
+JSON_OBJECT("actionStatus", AAU.fn_GetRescueStatus(rd.ReleaseDetailsId,
+																rd.RequestedUser,
+																rd.RequestedDate,
+																rd.Releaser1Id,
+																rd.Releaser2Id,
+																rd.PickupDate,
+																rd.BeginDate,
 																rd.EndDate,
 																ec.Rescuer1Id,
-																ec.Rescuer2Id, 
-																ec.AmbulanceArrivalTime, 
-																ec.RescueTime, 
-																ec.AdmissionTime, 
+																ec.Rescuer2Id,
+																ec.AmbulanceArrivalTime,
+																ec.RescueTime,
+																ec.AdmissionTime,
 																p.PatientCallOutcomeId,
                                                                 tl.InTreatmentAreaId
 																)),
@@ -1039,7 +1038,7 @@ SELECT EmergencyCaseId
 FROM AAU.Patient
 WHERE PatientId IN (SELECT PatientId FROM RescuesReleases)
 ),
-CallerCTE AS 
+CallerCTE AS
 (
 SELECT ecr.EmergencyCaseId,
 	JSON_ARRAYAGG(
@@ -1075,7 +1074,7 @@ PatientsCTE AS
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
 		)) AS Patients
-    FROM AAU.Patient p    
+    FROM AAU.Patient p
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
 		SELECT pp.PatientId,
@@ -1103,18 +1102,18 @@ PatientsCTE AS
 ReleaseRescueCTE AS
 (
 SELECT AAU.fn_GetRescueStatus(
-				rd.ReleaseDetailsId, 
-				rd.RequestedUser, 
-				rd.RequestedDate, 
-				rd.Releaser1Id, 
-				rd.Releaser2Id, 
+				rd.ReleaseDetailsId,
+				rd.RequestedUser,
+				rd.RequestedDate,
+				rd.Releaser1Id,
+				rd.Releaser2Id,
         rd.PickupDate,
-				rd.BeginDate, 
-				rd.EndDate, 
-				ec.Rescuer1Id, 
-				ec.Rescuer2Id, 
-				ec.AmbulanceArrivalTime, 
-				ec.RescueTime, 
+				rd.BeginDate,
+				rd.EndDate,
+				ec.Rescuer1Id,
+				ec.Rescuer2Id,
+				ec.AmbulanceArrivalTime,
+				ec.RescueTime,
 				ec.AdmissionTime,
                 p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
@@ -1131,17 +1130,17 @@ SELECT AAU.fn_GetRescueStatus(
             IF(rd.ReleaseDetailsId IS NULL,ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
 			IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer2Id, rd.Releaser2Id) AS Staff2Id,
             ec.AmbulanceArrivalTime,
-            ec.RescueTime,            
+            ec.RescueTime,
 			ec.EmergencyCaseId,
             ec.EmergencyNumber,
             ec.EmergencyCodeId,
             ecd.EmergencyCode,
             ec.CallDateTime,
-            ec.Location,			
+            ec.Location,
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            ) AS latLngLiteral,            
+            ) AS latLngLiteral,
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
             JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
@@ -1152,9 +1151,9 @@ LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
 ),
-actionsCTE AS 
+actionsCTE AS
 (
-SELECT	
+SELECT
 	r.ActionStatus,
     r.Staff1Id,
     r.Staff2Id,
@@ -1163,7 +1162,7 @@ SELECT
     JSON_ARRAYAGG(
     JSON_MERGE_PRESERVE(
     JSON_OBJECT("actionStatus", IFNULL(r.ActionStatus,'')),
-    JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),    
+    JSON_OBJECT("ambulanceAction", IFNULL(r.AmbulanceAction,'')),
 	JSON_OBJECT("releaseId", r.ReleaseDetailsId),
     JSON_OBJECT("requestedDate", DATE_FORMAT(r.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseType", CONCAT(IF(r.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(r.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(r.Releaser1Id IS NULL,""," + Specific staff"), IF(r.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
@@ -1173,7 +1172,7 @@ SELECT
 	JSON_OBJECT("staff1", r.Staff1Id),
 	JSON_OBJECT("staff2", r.Staff2Id),
 	JSON_OBJECT("ambulanceArrivalTime", IFNULL(r.AmbulanceArrivalTime,'')),
-	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),            
+	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),
 	JSON_OBJECT("emergencyCaseId", r.EmergencyCaseId),
 	JSON_OBJECT("emergencyNumber", r.EmergencyNumber),
 	JSON_OBJECT("emergencyCodeId", r.EmergencyCodeId),
@@ -1199,7 +1198,7 @@ JSON_OBJECT("staff1", ag.Staff1Id) AS Staff1Id,
 JSON_OBJECT("staff1Abbreviation", s1.Initials) AS Staff1Initials,
 JSON_OBJECT("staff2", ag.Staff2Id) AS Staff2Id,
 JSON_OBJECT("staff2Abbreviation", s2.Initials) AS Staff2Initials,
-JSON_OBJECT("actions", 
+JSON_OBJECT("actions",
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 ag.AmbulanceAction,
@@ -1240,15 +1239,15 @@ FROM ActionGroupsCTE ag
 GROUP BY ag.ActionStatus
 )
 
-SELECT 
+SELECT
 
-JSON_OBJECT("outstandingActions", 
+JSON_OBJECT("outstandingActions",
 JSON_ARRAYAGG(
 stat.ActionStatusGroups)
 ) AS Result
 
 FROM StatusGroupCTE stat;
- 
+
 END$$
 DELIMITER ;
 DELIMITER !!
@@ -1282,7 +1281,7 @@ JSON_OBJECT("CallType", ct.CallType)
 JSON_OBJECT("doneBy",JSON_MERGE_PRESERVE(
 JSON_OBJECT("UserId", pc.DoneByUserId),
 JSON_OBJECT("FirstName", u.Firstname)
-)), 
+)),
 JSON_OBJECT("callDateTime", DATE_FORMAT(pc.CallDateTime, "%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("patientCallerInteractionOutcomeId", pc.PatientCallerInteractionOutcomeId),
 JSON_OBJECT("positiveInteraction", pc.PositiveInteraction),
@@ -1347,12 +1346,12 @@ CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release"
 FROM AAU.Patient p
 WHERE p.PatientStatusId IN (1,7)
 AND p.IsDeleted = 0
+AND p.PatientCallOutcomeId = 1
 ),
 EmergencyCaseCTE AS (
 SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
 FROM AAU.EmergencyCase ec
 WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
-AND ec.CallOutcomeId = 1
 )
 
 SELECT
@@ -1372,7 +1371,7 @@ JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
 JSON_OBJECT("Release ready", p.ReleaseReady),
 JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
-))patientDetails		
+))patientDetails
 FROM PatientCTE p
 INNER JOIN EmergencyCaseCTE ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
@@ -1392,7 +1391,7 @@ LEFT JOIN
 	FROM AAU.TreatmentList tl
 	INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
     WHERE OutOfHospital IS NULL
-    AND OutDate IS NULL    
+    AND OutDate IS NULL
 ) LatestArea ON LatestArea.PatientId = p.PatientId
 WHERE COALESCE(LatestArea.Area, AAU.fn_GetAreaForAnimalType(vOrganisationId, p.AnimalTypeId), 'Other') = prm_Area;
 
@@ -1427,7 +1426,7 @@ SELECT
 			"timestamp",pmc.timestamp
 		)
 	) AS Result
-FROM AAU.PatientMediaComments pmc 
+FROM AAU.PatientMediaComments pmc
 LEFT JOIN AAU.User u ON u.UserId = pmc.UserId
 WHERE pmc.PatientMediaItemId = prm_PatientMediaItemId;
 END$$
@@ -1446,7 +1445,7 @@ Created On: 23/02/2020
 Purpose: Used to return a case by ID.
 */
 
-SELECT 
+SELECT
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("emergencyDetails",
 JSON_MERGE_PRESERVE(
@@ -1476,7 +1475,6 @@ FROM AAU.EmergencyCase ec
 LEFT JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
--- LEFT JOIN AAU.CallOutcome c ON c.CallOutcomeId = ec.CallOutcomeId
 LEFT JOIN AAU.CallOutcome c ON c.CallOutcomeId = p.PatientCallOutcomeId
 WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
@@ -1510,7 +1508,7 @@ With PatientCTE AS (
 	SELECT PatientId FROM AAU.Patient WHERE EmergencyCaseId = prm_emergencyCaseId AND IsDeleted = 0
 )
 
-SELECT 
+SELECT
 JSON_OBJECT(
 	"patients",
 	 JSON_ARRAYAGG(
@@ -1536,19 +1534,19 @@ JSON_OBJECT(
                 )
             ),
             pp.problemsJSON,
-            pp.problemsString				
+            pp.problemsString
 			)
 		 )
 ) AS Result
-			
+
 FROM  AAU.Patient p
 INNER JOIN
 	(
 	SELECT pp.patientId, JSON_OBJECT("problems",
 		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(                    
-				JSON_OBJECT("problemId", pp.ProblemId),                        
-				JSON_OBJECT("problem", pr.Problem) 
+			JSON_MERGE_PRESERVE(
+				JSON_OBJECT("problemId", pp.ProblemId),
+				JSON_OBJECT("problem", pr.Problem)
 				)
 			 )
 		) AS problemsJSON,
@@ -1559,7 +1557,7 @@ INNER JOIN
 	GROUP BY pp.patientId
 	) pp ON pp.patientId = p.patientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.EmergencyCaseId
+LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.SameAsEmergencyCaseId
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
 LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 GROUP BY p.EmergencyCaseId;
@@ -1586,11 +1584,11 @@ Description: Adding Main Problem Id.
 
 Modified By: Ankit Singh
 Modified On: 23/12/2020
-Description: Adding Primary Caller Name and Number. 
+Description: Adding Primary Caller Name and Number.
 
 Modified By: Ankit Singh
 Modified On: 28/01/2021
-Description: Adding Case END and Begin Date. 
+Description: Adding Case END and Begin Date.
 */
 
 
@@ -1612,8 +1610,8 @@ SELECT	c.StreetTreatCaseId AS CaseId,
 		ec.Longitude,
 		c.AdminComments AS AdminNotes,
 		c.OperatorNotes,
-        DATE_FORMAT(CAST( 
-        ( CASE 
+        DATE_FORMAT(CAST(
+        ( CASE
 			WHEN p.PatientCallOutcomeId = 18 THEN
 				ec.CallDateTime
             ELSE
@@ -1629,15 +1627,15 @@ FROM AAU.StreetTreatCase c
     INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
     INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     INNER JOIN AAU.EmergencyCaller ecall ON ecall.EmergencyCaseId = ec.EmergencyCaseId AND ecall.PrimaryCaller = 1
-    INNER JOIN AAU.Caller caller ON caller.CallerId = ecall.CallerId 
+    INNER JOIN AAU.Caller caller ON caller.CallerId = ecall.CallerId
     INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
     LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN
 		(
 		SELECT TagNumber, TRUE AS IsIsolation
 		FROM AAU.TreatmentList tl
-        INNER JOIN AAU.Patient p ON p.PatientId = tl.PatientId        
-		INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.TreatmentAreaId
+        INNER JOIN AAU.Patient p ON p.PatientId = tl.PatientId
+		INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
 		WHERE ta.Area LIKE '%ISO%'
 		) ce ON ce.TagNumber = p.TagNumber
 LEFT JOIN
@@ -1683,7 +1681,7 @@ SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTre
 
 IF vStreetTreatCaseIdExists > 0 THEN
 SELECT
-	JSON_OBJECT( 
+	JSON_OBJECT(
 	"streetTreatForm",
 				JSON_OBJECT(
 					"streetTreatCaseId", s.StreetTreatCaseId,
@@ -1707,13 +1705,13 @@ SELECT
 						 )
 					)
 				)
-		) 
+		)
 AS Result
 	FROM
         AAU.StreetTreatCase s
         LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
         LEFT JOIN AAU.Patient p ON p.PatientId = s.PatientId
-	WHERE 
+	WHERE
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;
 ELSE
@@ -1748,16 +1746,16 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 WITH TotalAreaCount
 AS
 (
-SELECT 
+SELECT
 DataCount.Area,
 SUM(LowPriority) AS LowPriority,
 SUM(NormalPriority) AS NormalPriority,
 SUM(HighPriority) AS HighPriority,
 SUM(Infants) AS Infants,
 SUM(Adults) AS Adults,
-COUNT(1) AS TotalCount 
+COUNT(1) AS TotalCount
 FROM
-(SELECT 
+(SELECT
 COALESCE(LatestArea.Area, AAU.fn_GetAreaForAnimalType(vOrganisationId, p.AnimalTypeId), 'Other') AS Area,
 IF(p.TreatmentPriority = 4,1,0) AS LowPriority,
 IF(p.TreatmentPriority = 3,1,0) AS NormalPriority,
@@ -1775,16 +1773,16 @@ LEFT JOIN
 	FROM AAU.TreatmentList tl
 	INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
     WHERE OutOfHospital IS NULL
-    AND OutDate IS NULL    
+    AND OutDate IS NULL
 ) LatestArea ON LatestArea.PatientId = p.PatientId
 WHERE p.PatientStatusId IN (1,7)
 AND p.IsDeleted = 0
-AND ec.CallOutcomeId = 1
+AND p.PatientCallOutcomeId = 1
  )
 DataCount
 GROUP BY DataCount.Area)
 
-SELECT 
+SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("area" , data.Area),
@@ -1818,7 +1816,7 @@ BEGIN
 /*
 Developer: Jim Mackenzie
 Development Date: 28/Mar/2021
-Purpose: This procedure brings back the Treatment areas for the treatment list. The lists 
+Purpose: This procedure brings back the Treatment areas for the treatment list. The lists
 		 are split into main areas and areas that will display in the 'other' section.
 */
 
@@ -1834,7 +1832,7 @@ SELECT
 	JSON_OBJECT("areaName", Area),
     JSON_OBJECT("sortArea", SortArea),
     JSON_OBJECT("abbreviation", Abbreviation),
-    JSON_OBJECT("mainArea", TreatmentListMain)    
+    JSON_OBJECT("mainArea", TreatmentListMain)
 	)) TreatmentAreas
 FROM AAU.TreatmentArea
 WHERE OrganisationId = vOrganisationId;
@@ -1908,8 +1906,8 @@ JSON_OBJECT("Moved to", IF(tl.OutAccepted IS NULL AND tl.OutTreatmentAreaId IS N
 JSON_OBJECT("Admission", IF(tl.Admission = 1 AND InAccepted IS NULL, 1, 0)), -- This prevents records showing up in new admissions the first move.
 JSON_OBJECT("Move accepted", tl.InAccepted),
 JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
-))patientDetails		
-FROM PatientCTE p	
+))patientDetails
+FROM PatientCTE p
 	INNER JOIN EmergencyCaseCTE ec ON ec.EmergencyCaseId = p.EmergencyCaseId
     INNER JOIN
     (
@@ -1961,10 +1959,10 @@ Purpose: Used to return a single user from the database. Initially
 		 for edit purposes.
 */
 
-SELECT 
+SELECT
 
 JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE( 
+JSON_MERGE_PRESERVE(
 JSON_OBJECT("userId",UserDetails.UserId),
 JSON_OBJECT("firstName",UserDetails.FirstName),
 JSON_OBJECT("surName",UserDetails.Surname),
@@ -1982,12 +1980,12 @@ JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
-			u.UserName, u.Password, t.TeamId, t.TeamName, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
+			u.UserName, u.Password, t.TeamId, t.TeamName, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No')
             AS IsDeleted
 		FROM AAU.User u
 		LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
 		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
-		LEFT JOIN (SELECT 
+		LEFT JOIN (SELECT
 					ujt.UserId,
 					GROUP_CONCAT(jt.JobTypeId) AS JobTypeId,
 					GROUP_CONCAT(jt.Title) AS JobTitle
@@ -1999,7 +1997,7 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 	ON jobTitle.UserId = u.UserId
     WHERE u.UserId <> -1
     ORDER BY u.UserId ASC) UserDetails;
-        
+
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
@@ -2050,17 +2048,17 @@ SET vOrganisationId = 0;
 
 IF prm_EmergencyNumber = -1 THEN
 
-	SELECT (MIN(EmergencyNumber) - 1) INTO prm_EmergencyNumber 
+	SELECT (MIN(EmergencyNumber) - 1) INTO prm_EmergencyNumber
     FROM AAU.EmergencyCase;
 
 END IF;
 
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO
 vEmNoExists, vUpdateTime, vCurrentCaseId
 FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
@@ -2115,34 +2113,33 @@ VALUES
 -- UNLOCK TABLES;
 
 COMMIT;
-	
+
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
-    
+
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId,ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId,prm_Username,vEmergencyCaseId,'EmergencyCase','Insert', NOW());
-    
+
 ELSEIF vEmNoExists >= 1 THEN
 
 	SELECT 2, vCurrentCaseId INTO vSuccess, vEmergencyCaseId; -- Duplicate
     -- SELECT MAX(EmergencyNumber) INTO vEmergencyNumber FROM AAU.EmergencyCase;
-    
+
 ELSEIF prm_UpdateTime < vUpdateTime THEN
 
 	SELECT 3, vCurrentCaseId INTO vSuccess, vEmergencyCaseId; -- Already updated
 
-ELSE 
+ELSE
 	SELECT 4 INTO vSuccess; -- Other error
     SELECT vCurrentCaseId INTO vEmergencyCaseId;
 END IF;
 
 
-SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;  
+SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;
 
 END$$
 DELIMITER ;
 
 DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient !!
 
 DELIMITER $$
@@ -2153,7 +2150,7 @@ IN prm_Position INT,
 IN prm_AnimalTypeId INT,
 IN prm_TagNumber VARCHAR(45),
 IN prm_PatientCallOutcomeId  INT,
-IN prm_SameAsEmergencyCaseId INT,
+IN prm_SameAsEmergencyNumber INT,
 IN prm_TreatmentPriority INT
 )
 BEGIN
@@ -2164,15 +2161,19 @@ DECLARE vPatientId INT;
 DECLARE vTagExists INT;
 DECLARE vSuccess INT;
 DECLARE vTagNumber VARCHAR(20);
+DECLARE vSameAsEmergencyCaseId INT;
 
 SET vPatientExists = 0;
 SET vTagExists = 0;
 SET vTagNumber = NULL;
+SET vSameAsEmergencyCaseId = NULL;
 
 
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND Position = prm_Position AND IsDeleted = 0;
 
 SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
+
+SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
@@ -2180,7 +2181,7 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 
 	INSERT INTO AAU.Patient
 		(
-			OrganisationId,        
+			OrganisationId,
 			EmergencyCaseId,
 			Position,
 			AnimalTypeId,
@@ -2191,24 +2192,24 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 		)
 		VALUES
 		(
-			vOrganisationId,        
+			vOrganisationId,
 			prm_EmergencyCaseId,
 			prm_Position,
 			prm_AnimalTypeId,
 			UPPER(prm_TagNumber),
             prm_PatientCallOutcomeId,
-            prm_SameAsEmergencyCaseId,
+            vSameAsEmergencyCaseId,
             prm_TreatmentPriority
 		);
-          
+
 	SELECT 1 INTO vSuccess;
     SELECT LAST_INSERT_ID(),prm_TagNumber INTO vPatientId,vTagNumber;
-    
-    IF IFNULL(prm_TagNumber,'') <> '' THEN    
-		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;    
+
+    IF IFNULL(prm_TagNumber,'') <> '' THEN
+		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;
     END IF;
-    
-    
+
+
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username,vPatientId,'Patient','Insert', NOW());
@@ -2218,9 +2219,9 @@ ELSEIF vPatientExists > 0 THEN
 	SELECT 2 INTO vSuccess;
 
 ELSEIF vTagExists > 0 THEN
-    
+
 	SELECT 3 INTO vSuccess;
-    
+
 ELSE
 
 	SELECT 4 INTO vSuccess;
@@ -2275,7 +2276,7 @@ START TRANSACTION;
 
 	INSERT INTO AAU.PatientCallerInteraction
 		(
-        OrganisationId,        
+        OrganisationId,
 		PatientId,
 		PositiveInteraction,
 		CallDateTime,
@@ -2299,29 +2300,29 @@ START TRANSACTION;
 		vCreatedUserId,
 		prm_Comments
 		);
-        
+
 COMMIT;
 
 	SELECT 1 INTO vSuccess;
-    SELECT LAST_INSERT_ID() INTO vPatientCallerInteractionId;      
+    SELECT LAST_INSERT_ID() INTO vPatientCallerInteractionId;
 
-	INSERT INTO AAU.Logging (OrganisationId, 
-    UserName, 
-    RecordId, 
-    ChangeTable, 
-    LoggedAction, 
+	INSERT INTO AAU.Logging (OrganisationId,
+    UserName,
+    RecordId,
+    ChangeTable,
+    LoggedAction,
     DateTime)
-	VALUES (vOrganisationId, 
-    prm_Username, 
-    vPatientCallerInteractionId, 
-    'PatientCall', 
-    'Insert', 
+	VALUES (vOrganisationId,
+    prm_Username,
+    vPatientCallerInteractionId,
+    'PatientCall',
+    'Insert',
     NOW());
 
 ELSEIF vPatientCallExists > 0 THEN
 
 	SELECT 2 INTO vSuccess;
-    
+
 ELSE
 
 	SELECT 3 INTO vSuccess;
@@ -2350,9 +2351,9 @@ DECLARE vSuccess INT;
 DECLARE vCommentId INT;
 
 SELECT UserId, OrganisationId INTO vUserId, vOrganisationId FROM AAU.User WHERE UserName = prm_Username;
-SELECT COUNT(*) INTO vCommentExists FROM AAU.PatientMediaComments 
-WHERE 
-UserId = vUserId AND 
+SELECT COUNT(*) INTO vCommentExists FROM AAU.PatientMediaComments
+WHERE
+UserId = vUserId AND
 Comment = prm_Comment AND
 PatientMediaItemId = prm_PatientMediaItemId;
 IF vCommentExists = 0 THEN
@@ -2360,7 +2361,7 @@ INSERT INTO AAU.PatientMediaComments(
 	UserId,
     Comment,
     PatientMediaItemId
-) VALUES 
+) VALUES
 (
 	vUserId,
     prm_Comment,
@@ -2432,25 +2433,25 @@ START TRANSACTION;
         HeightPX,
         WidthPX,
         Tags,
-        MediaType   
+        MediaType
 		)
 		VALUES
 		(
         vOrganisationId,
         prm_PatientId,
-        STR_TO_DATE(LEFT(prm_DateTime,19), '%Y-%m-%dT%H:%i:%s'),        
+        STR_TO_DATE(LEFT(prm_DateTime,19), '%Y-%m-%dT%H:%i:%s'),
         prm_URL,
-        prm_IsPrimary, 
+        prm_IsPrimary,
         prm_HeightPX,
 		prm_WidthPX,
 		prm_Tags,
 		prm_MediaType
 		);
-        
+
 COMMIT;
 
 	SELECT 1 INTO prm_Success;
-    SELECT LAST_INSERT_ID() INTO prm_MediaItemItemId;	
+    SELECT LAST_INSERT_ID() INTO prm_MediaItemItemId;
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username,prm_MediaItemItemId,'Media Item','Insert', NOW());
@@ -2504,7 +2505,7 @@ IF prm_InTreatmentAreaId IS NOT NULL AND NOT (prm_Admission = 1 AND vTotalRecord
 	INSERT INTO AAU.TreatmentList	(PatientId, Admission, InTreatmentAreaId, InDate)
 									VALUES
 									(prm_PatientId, prm_Admission, prm_InTreatmentAreaId, prm_InDate);
-                                    
+
 	SELECT LAST_INSERT_ID() AS `TreatmentListId`, 1 AS `success`;
 
 -- ELSEIF vAdmissionExists = 0 AND prm_InTreatmentAreaId IS NOT NULL THEN
@@ -2514,21 +2515,21 @@ IF prm_InTreatmentAreaId IS NOT NULL AND NOT (prm_Admission = 1 AND vTotalRecord
 
 -- We can't insert an admission for a patient that already has one.
 ELSEIF prm_InTreatmentAreaId IS NOT NULL AND prm_Admission = 1 AND vTotalRecords > 0 THEN
- 
+
 	UPDATE AAU.TreatmentList SET InTreatmentAreaId = prm_InTreatmentAreaId WHERE PatientId = prm_PatientId AND Admission = 1;
 
  	SELECT -1 AS `TreatmentListId`, 0 AS `success`;
-    
+
 ELSEIF prm_InTreatmentAreaId IS NULL THEN
 
 	DELETE FROM AAU.TreatmentList WHERE PatientId = prm_PatientId AND OutAccepted IS NULL AND InAccepted IS NULL;
     UPDATE AAU.TreatmentList SET OutTreatmentAreaId = NULL, OutDate = NULL WHERE PatientId = prm_PatientId AND OutAccepted IS NULL;
     SELECT -1 AS `TreatmentListId`, 2 AS `success`;
-    
+
 ELSEIF vUnaccepted > 0 THEN
 
 		SELECT -1 AS `TreatmentListId`, 0 AS `success`;
-		
+
 ELSE
 
 	SELECT -1 AS `TreatmentListId`, -1 AS `success`;
@@ -2596,8 +2597,6 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_CallDateTime DATETIME,
 									IN prm_DispatcherId INT,
 									IN prm_EmergencyCodeId INT,
-									-- IN prm_CallOutcomeId INT,
-                                    -- IN prm_SameAsNumber INT,
                                     IN prm_Comments NVARCHAR(650),
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DOUBLE(11,8),
@@ -2635,10 +2634,8 @@ SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyCaseId <>
 
 SELECT IFNULL(MAX(UpdateTime), '1901-01-01') INTO vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
--- SELECT MAX(EmergencyCaseId) INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsNumber;
-
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
@@ -2651,8 +2648,6 @@ START TRANSACTION;
 						CallDateTime           = prm_CallDateTime,
 						DispatcherId           = prm_DispatcherId,
 						EmergencyCodeId        = prm_EmergencyCodeId,
-						-- CallOutcomeId          = prm_CallOutcomeId,
-                        -- SameAsEmergencyCaseId  = vSameAsEmergencyCaseId,
 						Location               = prm_Location,
 						Latitude               = prm_Latitude,
 						Longitude              = prm_Longitude,
@@ -2672,8 +2667,8 @@ COMMIT;
     SELECT 1 INTO prm_Success;
 
     INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());  
-	
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());
+
 
 ELSEIF vEmNoExists >= 1 THEN
 
@@ -2685,9 +2680,9 @@ ELSEIF prm_UpdateTime < vUpdateTime THEN
 
 ELSEIF prm_UpdateTime > vUpdateTime THEN
 	SELECT 4 INTO prm_Success; -- Emergency record already updated another time.
-    
+
 ELSE
-	SELECT 5 INTO prm_Success; -- Other error   
+	SELECT 5 INTO prm_Success; -- Other error
 END IF;
 
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL);
@@ -2736,7 +2731,7 @@ IF vPatientCallExists = 1 THEN
 START TRANSACTION;
 
 	UPDATE AAU.PatientCallerInteraction
-		SET 
+		SET
 			PatientId             = prm_PatientId,
 			PositiveInteraction   = prm_PositiveInteraction,
 			CallDateTime          = prm_CallTime,
@@ -2745,10 +2740,10 @@ START TRANSACTION;
 			PatientCallerInteractionOutcomeId  = prm_PatientCallerInteractionOutcome,
 			Comments              = prm_Comments
 		WHERE PatientCallerInteractionId = prm_PatientCallerInteractionId;
-        
+
 COMMIT;
 
-	SELECT 1 INTO vSuccess; 
+	SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientCallerInteractionId, 'PatientCall', 'Update', NOW());
@@ -2756,11 +2751,11 @@ COMMIT;
 ELSEIF vPatientCallExists = 0 THEN
 
 	SELECT 2 INTO vSuccess;
-    
+
 ELSEIF vPatientCallExists > 1 THEN
 
 	SELECT 3 INTO vSuccess;
-    
+
 ELSE
 
 	SELECT 4 INTO vSuccess;
@@ -2810,7 +2805,7 @@ IF vPatientMediaItemExists = 1 THEN
 
 START TRANSACTION;
 	  UPDATE AAU.PatientMediaItem
-			SET 
+			SET
 			DateTime  = DATE_FORMAT(prm_DateTime,'%Y-%m-%dT%H:%i:%s'),
 			IsPrimary = prm_IsPrimary,
 			HeightPX  = prm_HeightPX,
@@ -2822,7 +2817,7 @@ START TRANSACTION;
 			WHERE PatientMediaItemId = prm_PatientMediaItemId;
 COMMIT;
 
-	SELECT 1 INTO prm_Success; 
+	SELECT 1 INTO prm_Success;
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientMediaItemId, 'PatientMediaItem', 'Update', NOW());
@@ -2830,11 +2825,11 @@ COMMIT;
 ELSEIF vPatientMediaItemExists = 0 THEN
 
 	SELECT 2 INTO prm_Success;
-    
+
 ELSEIF vPatientMediaItemExists > 1 THEN
 
 	SELECT 3 INTO prm_Success;
-    
+
 ELSE
 
 	SELECT 4 INTO prm_Success;
@@ -2966,7 +2961,7 @@ CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
 										IN prm_RoleId INTEGER,
                                         IN prm_PermissionArray JSON
 										)
-BEGIN                                    
+BEGIN
 
 /*
 Created By: Jim Mackenzie
@@ -3032,7 +3027,7 @@ SELECT 5 INTO vUpdateSuccess; -- The first name + surname + telephone number alr
 
 ELSE
 
-SELECT 6 INTO vUpdateSuccess; -- Return misc 
+SELECT 6 INTO vUpdateSuccess; -- Return misc
 
 END IF;
 
@@ -3065,25 +3060,25 @@ DECLARE vDate DATETIME;
 DECLARE vSuccess INT;
 DECLARE vVisitExists INT;
 
-SELECT 
+SELECT
 	StreetTreatCaseId,
     1
-    INTO 
-    vStreetTreatCaseId, 
+    INTO
+    vStreetTreatCaseId,
 	vVisitExists
 FROM AAU.StreetTreatCase stc
-INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = stc.PatientId AND rd.ReleaseDetailsId = prm_ReleaseDetailsId;		
-    
+INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = stc.PatientId AND rd.ReleaseDetailsId = prm_ReleaseDetailsId;
+
 IF vVisitExists > 0 THEN
 
 UPDATE AAU.Visit
 SET Date = ( SELECT DATE_ADD(CURRENT_DATE(), INTERVAL (`Day`) DAY )  )
-WHERE 
-	StreetTreatCaseId =  vStreetTreatCaseId 
-	AND 
+WHERE
+	StreetTreatCaseId =  vStreetTreatCaseId
+	AND
     Date IS NULL;
     SELECT 1 INTO vSuccess;
-    
+
 ELSEIF vVisitExists = 1 THEN
 
 	SELECT 1 INTO vSuccess;
@@ -3091,10 +3086,10 @@ ELSEIF vVisitExists = 1 THEN
 ELSEIF vVisitExists > 1 THEN
 
 	SELECT 2 INTO vSuccess;
-    
+
 ELSE
 	SELECT 3 INTO vSuccess;
-    
+
 END IF;
 
 SELECT vSuccess AS success;
@@ -3172,13 +3167,13 @@ INSERT INTO AAU.StreetTreatCase(
 						OperatorNotes		= prm_OperatorNotes,
 						ClosedDate			= prm_ClosedDate,
 						EarlyReleaseFlag	= prm_EarlyReleaseFlag;
-                        
+
 	SELECT 1 INTO vSuccess;
-    
+
 	SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
 
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
-    
+
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
@@ -3214,45 +3209,45 @@ SET vStreetTreatCaseExists = 0;
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 IF prm_AddToStreetTreat = 1 THEN
-    
-    
+
+
 		SELECT TeamId INTO vTeamId FROM AAU.Team WHERE TeamName = 'Team Vinod';
-		
+
 		SELECT CONCAT('ST',CONVERT(IFNULL(MAX(CONVERT(REPLACE(UPPER(TagNumber), 'ST',''), SIGNED)), 0) + 1, CHAR)) INTO stTagNumber
 		FROM AAU.Patient
 		WHERE TagNumber LIKE 'ST%';
-		
-		SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.Patient WHERE TagNumber = stTagNumber;        
+
+		SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.Patient WHERE TagNumber = stTagNumber;
 		SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient p LEFT JOIN AAU.StreetTreatCase st ON st.PatientId = p.PatientId WHERE st.PatientId = prm_PatientId;
-        
+
 		IF vStreetTreatCaseExists = 0 AND vPatientExists < 1 THEN
-        
+
         INSERT INTO AAU.StreetTreatCase (PatientId,PriorityId,StatusId,TeamId,MainProblemId,AdminComments,OrganisationId)
 			VALUES(prm_PatientId, 4, 1, vTeamId, 6, 'Added by Apoms',vOrganisationId);
-            
+
 			SELECT LAST_INSERT_ID(),stTagNumber INTO vCaseId,vTagNumber;
-            
+
 			INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 			VALUES (vOrganisationId, prm_Username, vCaseId,'Case','Insert - Via ER', NOW());
-            
+
             UPDATE AAU.Patient SET TagNumber = vTagNumber WHERE PatientId = prm_PatientId;
-			
+
 		END IF;
 
 ELSEIF prm_AddToStreetTreat = 0 THEN
 
-	SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;  
- 
+	SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
+
 	IF vStreetTreatCaseExists = 1 THEN
 		UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = now() WHERE PatientId = prm_PatientId;
-		
-		DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId 
+
+		DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId
 		AND StreetTreatCaseId NOT IN (
 			SELECT StreetTreatCaseId FROM AAU.Visit
 		);
-	
+
 	END IF;
-    
+
 	SELECT NULL,0 INTO vTagNumber,vCaseId;
 
 END IF;
@@ -3289,18 +3284,18 @@ SET vVisitExisits = 0;
 SET vVisitDateExists = 0;
 SET vSuccess = -1;
 
-SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit WHERE 
-VisitId = prm_VisitId 
+SELECT COUNT(1) INTO vVisitExisits FROM AAU.Visit WHERE
+VisitId = prm_VisitId
 AND StreetTreatCaseId = prm_StreetTreatCaseId
 AND (IsDeleted = 0 OR IsDeleted IS NULL);
-    
-SELECT COUNT(1) INTO vVisitDateExists FROM AAU.Visit WHERE 
-StreetTreatCaseId = prm_StreetTreatCaseId AND 
+
+SELECT COUNT(1) INTO vVisitDateExists FROM AAU.Visit WHERE
+StreetTreatCaseId = prm_StreetTreatCaseId AND
 VisitId = prm_VisitId AND
 Date = prm_VisitDate AND
 isDeleted = 0;
 
-IF prm_VisitId IS NULL THEN 
+IF prm_VisitId IS NULL THEN
 
 	INSERT INTO AAU.Visit(
 			StreetTreatCaseId,
@@ -3314,24 +3309,24 @@ IF prm_VisitId IS NULL THEN
 		) VALUES (
 			prm_StreetTreatCaseId,
 			prm_VisitTypeId,
-			prm_VisitDate,							
+			prm_VisitDate,
 			prm_StatusId,
 			prm_AdminNotes,
 			prm_OperatorNotes,
 			prm_IsDeleted,
 			prm_Day
 		);
-                            
-    SELECT LAST_INSERT_ID() INTO prm_VisitId;    
+
+    SELECT LAST_INSERT_ID() INTO prm_VisitId;
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,prm_VisitId,'Visit','Insert', NOW());
-        
-           
+
+
 ELSEIF vVisitExisits = 1 AND vVisitDateExists = 0 THEN
-	
-	UPDATE AAU.Visit 
+
+	UPDATE AAU.Visit
 		SET
 			VisitTypeId		= prm_VisitTypeId,
             Date			= prm_VisitDate,
@@ -3342,7 +3337,7 @@ ELSEIF vVisitExisits = 1 AND vVisitDateExists = 0 THEN
             Day				= prm_Day
 		WHERE
 			VisitId = prm_VisitId;
-	
+
     INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,prm_VisitId,'Visit','Update', NOW());
 
@@ -3352,7 +3347,7 @@ ELSEIF vVisitDateExists > 0 THEN
     SELECT 3 INTO vSuccess;
 ELSE
 	SELECT 4 INTO vSuccess;
-    
+
 END IF;
 
 SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
@@ -3361,91 +3356,7 @@ END$$
 DELIMITER ;
 
 
-DELIMITER !!
-DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient!!
 
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_InsertPatient(
-IN prm_Username VARCHAR(128),
-IN prm_EmergencyCaseId INT,
-IN prm_Position INT,
-IN prm_AnimalTypeId INT,
-IN prm_TagNumber VARCHAR(45),
-IN prm_PatientCallOutcomeId  INT,
-IN prm_SameAsEmergencyCaseId INT
-)
-BEGIN
-
-DECLARE vOrganisationId INT;
-DECLARE vPatientExists INT;
-DECLARE vPatientId INT;
-DECLARE vTagExists INT;
-DECLARE vSuccess INT;
-DECLARE vTagNumber VARCHAR(20);
-
-SET vPatientExists = 0;
-SET vTagExists = 0;
-SET vTagNumber = NULL;
-
-
-SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND Position = prm_Position AND IsDeleted = 0;
-
-SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
-
-IF vPatientExists = 0 AND vTagExists = 0 THEN
-
-	INSERT INTO AAU.Patient
-		(
-			OrganisationId,        
-			EmergencyCaseId,
-			Position,
-			AnimalTypeId,
-			TagNumber,
-            PatientCallOutcomeId,
-            SameAsEmergencyCaseId
-		)
-		VALUES
-		(
-			vOrganisationId,        
-			prm_EmergencyCaseId,
-			prm_Position,
-			prm_AnimalTypeId,
-			UPPER(prm_TagNumber),
-            prm_PatientCallOutcomeId,
-            prm_SameAsEmergencyCaseId
-		);
-          
-	SELECT 1 INTO vSuccess;
-    SELECT LAST_INSERT_ID(),prm_TagNumber INTO vPatientId,vTagNumber;
-    
-    IF IFNULL(prm_TagNumber,'') <> '' THEN    
-		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;    
-    END IF;
-    
-    
-
-	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username,vPatientId,'Patient','Insert', NOW());
-
-ELSEIF vPatientExists > 0 THEN
-
-	SELECT 2 INTO vSuccess;
-
-ELSEIF vTagExists > 0 THEN
-    
-	SELECT 3 INTO vSuccess;
-    
-ELSE
-
-	SELECT 4 INTO vSuccess;
-END IF;
-
-SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
-
-END$$
-DELIMITER ;
 
 
 DELIMITER !!
@@ -3456,11 +3367,11 @@ CREATE PROCEDURE AAU.sp_UpdatePatient(
 									IN prm_PatientId INT,
 									IN prm_EmergencyCaseId INT,
 									IN prm_Position INT,
-									IN prm_AnimalTypeId INT,									
+									IN prm_AnimalTypeId INT,
                                     IN prm_IsDeleted INT,
                                     IN prm_TagNumber VARCHAR(45),
                                     IN prm_PatientCallOutcomeId INT,
-                                    IN prm_SameAsEmergencyCaseId INT
+                                    IN prm_SameAsEmergencyNumber INT
 )
 BEGIN
 
@@ -3469,14 +3380,19 @@ DECLARE vPatientExists INT;
 DECLARE vPatientId INT;
 DECLARE vTagNumber VARCHAR(45);
 DECLARE vExistingTagNumber VARCHAR(45);
+DECLARE vSameAsEmergencyCaseId INT;
 DECLARE vSuccess INT;
+
 SET vTagNumber = NULL;
+SET vSameAsEmergencyCaseId = NULL;
 
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE PatientId <> prm_PatientId
 AND EmergencyCaseId = prm_EmergencyCaseId
 AND Position = prm_Position AND IsDeleted = 0;
 
 SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+
+SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
@@ -3487,24 +3403,24 @@ IF vPatientExists = 0 THEN
 			AnimalTypeId	= prm_AnimalTypeId,
 			TagNumber		= IF(prm_IsDeleted = 1, NULL, UPPER(prm_TagNumber)),
             PatientCallOutcomeId = prm_PatientCallOutcomeId,
-            SameAsEmergencyCaseId = prm_SameAsEmergencyCaseId,
+            SameAsEmergencyCaseId = vSameAsEmergencyCaseId,
             IsDeleted		= prm_IsDeleted,
             DeletedDate		= CASE
 								WHEN prm_IsDeleted = FALSE THEN NULL
                                 WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
-							  END								
+							  END
 	WHERE PatientId = prm_PatientId;
-    
+
     -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN     
+    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
 		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
     END IF;
-    
+
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
-               
-    SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;  
-    
+
+    SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
+
 ELSEIF vPatientExists >= 1 THEN
 
 	SELECT 2 INTO vSuccess;
@@ -3518,3 +3434,86 @@ SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
 
 END$$
 DELIMITER ;
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateRescueDetails !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
+									IN prm_UserName VARCHAR(64),
+									IN prm_EmergencyCaseId INT,
+                                    IN prm_Rescuer1Id INT,
+                                    IN prm_Rescuer2Id INT,
+                                    IN prm_AmbulanceArrivalTime DATETIME,
+									IN prm_RescueTime DATETIME,
+									IN prm_AdmissionTime DATETIME,
+                                    IN prm_UpdateTime DATETIME)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 29/03/2020
+Purpose: Used to update the status of a patient.
+*/
+
+DECLARE vUpdateTime DATETIME;
+DECLARE vOrganisationId INT;
+DECLARE vSuccess INT;
+DECLARE vSocketEndPoint VARCHAR(3);
+
+DECLARE vEmNoExists INT;
+SET vEmNoExists = 0;
+
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime
+FROM AAU.EmergencyCase 
+WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+IF vEmNoExists = 1 AND prm_UpdateTime >= vUpdateTime THEN
+
+START TRANSACTION;
+
+	UPDATE AAU.EmergencyCase SET						
+						Rescuer1Id             = prm_Rescuer1Id,
+						Rescuer2Id             = prm_Rescuer2Id,
+						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
+						RescueTime             = prm_RescueTime,
+						AdmissionTime          = prm_AdmissionTime,						
+                        UpdateTime			   = prm_UpdateTime
+			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+COMMIT;
+
+    SELECT 1 INTO vSuccess;
+    
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, null);
+
+    INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails',CONCAT('Update ', prm_UpdateTime, ' ', vUpdateTime), NOW());    
+       
+
+ELSEIF vEmNoExists > 1 THEN
+
+	SELECT 2 INTO vSuccess;
+
+ELSEIF prm_UpdateTime < vUpdateTime THEN
+
+	SELECT 3 INTO vSuccess; -- Already updated
+
+ELSEIF vUpdateTime > prm_UpdateTime THEN
+	SELECT 4 INTO vSuccess; -- Emergency record already updated another time.
+    
+ELSE
+	SELECT 5 INTO vSuccess; -- Other error   
+END IF;
+
+SELECT vSocketEndPoint AS socketEndPoint, vSuccess AS success; 
+
+
+END

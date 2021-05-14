@@ -17,11 +17,11 @@ Purpose: To get the emergencycase count on date
 DECLARE vOrganisationId INT;
 
 SELECT o.OrganisationId INTO vOrganisationId
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT 
+SELECT
 ec.EmergencyNumber as "emergencyNumber",
 DATE_Format(ec.CallDateTime,"%Y-%m-%dT%H:%i:%s") as "callDateTime",
 at.AnimalType as "animalType",
@@ -36,15 +36,12 @@ INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 INNER JOIN AAU.User u ON u.UserId = ec.DispatcherId
 LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = ec.CallOutcomeId
+LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 INNER JOIN AAU.PatientProblem pp ON pp.PatientId = p.PatientId
 INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 WHERE CAST(ec.CallDateTime AS DATE) = prm_Date
 AND ec.OrganisationId = vOrganisationId
 AND (p.PatientCallOutcomeId = prm_Outcome OR prm_Outcome IS NULL);
--- ec.CallOutcomeId = IFNULL(prm_Outcome,ec.CallOutcomeId)
-
-
 
 END$$
 DELIMITER ;
