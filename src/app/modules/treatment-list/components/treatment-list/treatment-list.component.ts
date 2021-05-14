@@ -60,6 +60,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
                                         {name: 'Other', type: 'select'}
                                       ]);
 
+  columnCountPatientDetails = 5;
+  columnCountOther = 5;
+
   displayedColumns: Observable<string[]>;
   filteredColumns:Observable<Column[]>;
 
@@ -253,7 +256,20 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
           mainAreas.push(...areas);
 
-          mainAreas.push({name: 'Other', type: 'checkbox'});
+          mainAreas.push({name: 'Other', type: 'select'});
+
+          this.columnCountPatientDetails = 5;
+          this.columnCountOther = 5;
+      }
+      else {
+
+        this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName);
+
+        mainAreas.push({name: 'Other', type: 'select'});
+
+        this.columnCountPatientDetails = 3;
+        this.columnCountOther = 1;
+
       }
 
       this.columns.next(mainAreas);
