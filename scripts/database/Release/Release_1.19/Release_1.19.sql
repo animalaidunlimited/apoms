@@ -2771,6 +2771,7 @@ SELECT vSuccess AS success;
 
 END$$
 DELIMITER ;
+
 DELIMITER !!
 DROP PROCEDURE AAU.sp_UpdatePatientMedia!!
 
