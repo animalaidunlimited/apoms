@@ -1,4 +1,4 @@
-<div [formGroup]="callerForm" class="callerForm" fxLayout="row" fxLayoutGap="20px">
+<div [formGroup]="callerForm" class="callerForm" fxLayout="row wrap" fxLayoutGap="20px">
 
     <mat-form-field >
         <input tabindex="3" #callerNumberRef formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
