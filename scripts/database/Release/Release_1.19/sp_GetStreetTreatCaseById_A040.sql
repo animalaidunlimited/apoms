@@ -68,7 +68,7 @@ LEFT JOIN
 		SELECT TagNumber, TRUE AS IsIsolation
 		FROM AAU.TreatmentList tl
         INNER JOIN AAU.Patient p ON p.PatientId = tl.PatientId        
-		INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.TreatmentAreaId
+		INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
 		WHERE ta.Area LIKE '%ISO%'
 		) ce ON ce.TagNumber = p.TagNumber
 LEFT JOIN

@@ -153,8 +153,12 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         });
     }
 
+    showForm(){
+        console.log(this.recordForm);
+    }
+
     resetForm() {
-        
+
 
         this.recordForm.reset({});
 
@@ -178,6 +182,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         const patientArray = this.recordForm.get('patients') as FormArray;
         const firstPatient = patientArray.at(0);
         const firstProblems = firstPatient.get('problems') as FormArray;
+
+        firstPatient.get('deleted')?.setValue(false);
+        firstPatient.get('duplicateTag')?.setValue(false);
+
         firstProblems.clear();
         patientArray.clear();
         patientArray.push(firstPatient);
