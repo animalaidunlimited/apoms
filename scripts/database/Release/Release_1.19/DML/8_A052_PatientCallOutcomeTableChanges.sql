@@ -12,3 +12,18 @@ END //
 DELIMITER ;
 CALL `?`();
 DROP PROCEDURE `?`;	
+
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+  ALTER TABLE AAU.PatientCallerInteractionOutcome 
+  CHANGE COLUMN `PatientCallerInteractionOutcomeId` `PatientCallerInteractionOutcomeId` INT(11) NOT NULL AUTO_INCREMENT ,
+  CHANGE COLUMN `PatientCallerInteractionOutcome` `PatientCallerInteractionOutcome` VARCHAR(64) NULL DEFAULT NULL ;
+
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;	
