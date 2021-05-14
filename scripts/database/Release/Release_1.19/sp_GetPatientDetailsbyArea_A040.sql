@@ -25,12 +25,13 @@ CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release"
 FROM AAU.Patient p
 WHERE p.PatientStatusId IN (1,7)
 AND p.IsDeleted = 0
+AND p.PatientCallOutcomeId = 1
 ),
 EmergencyCaseCTE AS (
 SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
 FROM AAU.EmergencyCase ec
 WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
-AND ec.CallOutcomeId = 1
+
 )
 
 SELECT
@@ -50,7 +51,7 @@ JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Temperament", p.Temperament),
 JSON_OBJECT("Release ready", p.ReleaseReady),
 JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
-))patientDetails		
+))patientDetails
 FROM PatientCTE p
 INNER JOIN EmergencyCaseCTE ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
@@ -70,7 +71,7 @@ LEFT JOIN
 	FROM AAU.TreatmentList tl
 	INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId
     WHERE OutOfHospital IS NULL
-    AND OutDate IS NULL    
+    AND OutDate IS NULL
 ) LatestArea ON LatestArea.PatientId = p.PatientId
 WHERE COALESCE(LatestArea.Area, AAU.fn_GetAreaForAnimalType(vOrganisationId, p.AnimalTypeId), 'Other') = prm_Area;
 
