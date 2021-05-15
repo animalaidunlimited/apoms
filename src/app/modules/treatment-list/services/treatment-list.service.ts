@@ -64,7 +64,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
     // Let's get the treatment list and sort it before we send it to the component
     this.get(request).then((unknownResponse:any) => {
-      
+
       if(!unknownResponse){
         this.refreshing.next(false);
       }
@@ -143,7 +143,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
         }
         else {
 
-          sortResult = (a['Treatment priority'] || 999) > (b['Treatment priority'] || 999) ? 1 : -1;
+          sortResult = (a['Treatment priority'] || 999) < (b['Treatment priority'] || 999) ? 1 : -1;
         }
 
         return sortResult;

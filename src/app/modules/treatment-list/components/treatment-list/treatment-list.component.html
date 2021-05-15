@@ -86,7 +86,6 @@
             <mat-select
             [formControlName]="column.name">
                 <mat-option>N/A</mat-option>
-                <mat-option>N/A</mat-option>
                 <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">{{priority.Priority}}</mat-option>
             </mat-select>
           </mat-form-field>
