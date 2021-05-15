@@ -49,7 +49,7 @@ IF prm_AddToStreetTreat = 1 THEN
 			INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 			VALUES (vOrganisationId, prm_Username, vCaseId,'Case','Insert - Via ER', NOW());
             
-            UPDATE AAU.Patient SET TagNumber = vTagNumber WHERE PatientId = prm_PatientId;
+            UPDATE AAU.Patient SET TagNumber = vTagNumber, PatientStatusId = 8, PatientStatusDate = CURDATE() WHERE PatientId = prm_PatientId;
 			
 		END IF;
 
@@ -58,7 +58,7 @@ ELSEIF prm_AddToStreetTreat = 0 THEN
 	SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;  
  
 	IF vStreetTreatCaseExists = 1 THEN
-		UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = now() WHERE PatientId = prm_PatientId;
+		UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = NOW(), PatientStatusId = 1 WHERE PatientId = prm_PatientId;
 		
 		DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId 
 		AND StreetTreatCaseId NOT IN (
