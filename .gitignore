@@ -51,3 +51,5 @@ settings.json
 #Read more here: https://stackoverflow.com/questions/936249/how-to-stop-tracking-and-ignore-changes-to-a-file-in-git
 #/src/environments/environment.ts
 #index.html
+package-lock.json
+package.json
