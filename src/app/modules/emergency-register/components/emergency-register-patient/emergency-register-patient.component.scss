@@ -10,8 +10,6 @@
     .mat-icon:not(:last-child){
         margin: 0 0.3rem;
     }
-    // display: flex;
-    // right: 10%;
 }
 .patientForm{
     border-radius: 0.5rem;
@@ -19,6 +17,7 @@
     box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
     padding: 9px 5px 0 5px;
     position: relative;
+    display:block !important;
     ::ng-deep .mainProblemDirty .mat-form-field-infix{
         padding: 0;
     } 
@@ -69,5 +68,21 @@
     }
     .admissionAreaWrapper{
         min-width: 100%;
+        margin-left: 11px;
+    }
+    .patientForm{
+        > .mat-form-field{
+            &:first-child, &:nth-child(3) {
+                width: 43% !important;
+            }
+        }
+    }
+    ::ng-deep .mat-autocomplete-panel{
+        &.speciesAutocomplete{
+            width:max-content;
+        }
+        &.problemAutocomplete{
+            width:max-content;
+        }
     }
 }

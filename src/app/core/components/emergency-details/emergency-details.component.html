@@ -1,8 +1,7 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" ngStyle.gt-md="min-width: 61.5rem;" fxLayoutGap="20px" fxLayoutAlign="center end">
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="baseline">
 
         <mat-form-field>
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
