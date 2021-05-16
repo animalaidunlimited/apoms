@@ -6,18 +6,24 @@
 }
 .patients_icons{
     height: 3rem;
-    display: inherit;
     .mat-icon:not(:last-child){
         margin: 0 0.3rem;
     }
 }
 .patientForm{
-    border-radius: 0.5rem;
+    border-radius: .5rem;
     margin-bottom: 1rem;
-    box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
-    padding: 9px 5px 0 5px;
+    box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 #fff;
+    padding: 9px 5px 0;
     position: relative;
-    display:block !important;
+    display: grid;
+    grid-template-columns: 7.5rem 15rem 11rem 5rem;
+    grid-template-rows: 1fr 1fr;
+    align-items: flex-end;
+    grid-template-areas:
+        "species problem problem problem"
+        "tagnumber outcome area buttons";
+    gap: 0 20px;
     ::ng-deep .mainProblemDirty .mat-form-field-infix{
         padding: 0;
     } 
@@ -41,9 +47,6 @@
     }
 }
 
-.patientOutcomeWrapper {
-    width: 50%;
-}
 
 @media only screen and (max-width:767px)
 {
@@ -61,7 +64,7 @@
 
 @media(max-width: 600px) {
     .patientOutcomeWrapper {
-        min-width: 49.9%;
+        max-width: 43.9%;
     }
     .admissionAreaDivWrapper{
         max-width: 46%;
@@ -71,11 +74,12 @@
         margin-left: 11px;
     }
     .patientForm{
-        > .mat-form-field{
-            &:first-child, &:nth-child(3) {
-                width: 43% !important;
-            }
-        }
+        display:flex;
+        flex-wrap: wrap;
+    }
+    .patients_icons{
+        width:100%;
+        display: flex;
     }
     ::ng-deep .mat-autocomplete-panel{
         &.speciesAutocomplete{
