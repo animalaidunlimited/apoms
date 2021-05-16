@@ -1,7 +1,8 @@
-<div [formGroup]="patientForm" class="patientForm" >
+<div [formGroup]="patientForm" class="patientForm">
 
-    <div fxLayout="row wrap" class="patientDescription" fxLayoutGap="20px">
-      <mat-form-field fxFlex.gt-xs="20">
+    <!-- <div fxLayout="row wrap" class="patientDescription" fxLayoutGap="20px"> -->
+     <!--  fxFlex.gt-xs="20" -->
+      <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
           matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
           (keydown.Tab)="isSpeciesBlank($event);false;" (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
@@ -12,15 +13,8 @@
           </mat-autocomplete>
       </mat-form-field>
 
-      <mat-form-field fxFlex.gt-xs="20">
-        <mat-label>Tag number</mat-label>
-        <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
-        <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
-          The tag number already exists.
-        </mat-error>
-        </mat-form-field>
-
-      <mat-form-field fxFlex.gt-xs ngStyle.xs="max-width:100%;">
+ 
+      <mat-form-field gdArea.gt-sm="problem" fxFlexOrder.xs="2"  ngStyle.xs="width:100%;max-width:92.5%;">
           <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
             <mat-chip
               *ngFor="let problem of problemsArray?.value"
@@ -45,29 +39,42 @@
             </mat-option>
           </mat-autocomplete>
       </mat-form-field>
-    </div>
+
 
     
 
-    <div fxFlex fxLayout="row" fxLayoutAlign="center end">
-      <div style="width: 90%;" fxLayout="row wrap" fxLayoutGap="20px" >
-        <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
-        <div *ngIf="patientForm.get('isAdmission')?.value" class="admissionAreaDivWrapper">
-          <mat-form-field class="admissionAreaWrapper">
-            <mat-label>Admission area</mat-label>
-            <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
-              <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
-                {{areaName.areaName}}
-              </mat-option>
-            </mat-select>
+    
+      
+        <mat-form-field   gdArea.gt-xs="tagnumber" fxFlexOrder.xs="1">
+          <mat-label>Tag number</mat-label>
+          <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+          <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
+            The tag number already exists.
+          </mat-error>
           </mat-form-field>
+
+        <emergency-case-outcome  gdArea.gt-xs="outcome"  fxFlexOrder.xs="3" class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
+
+     
+          <div *ngIf="patientForm.get('isAdmission')?.value" class="admissionAreaDivWrapper" gdArea.gt-xs="area" fxFlexOrder.xs="4">
+            <mat-form-field class="admissionAreaWrapper">
+              <mat-label>Admission area</mat-label>
+              <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
+                  {{areaName.areaName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+
+        <div class="patients_icons" gdArea.gt-xs="buttons" fxFlexOrder.xs="5">
+          <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
+          <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
         </div>
-      </div>
-      <div class="patients_icons" >
-        <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
-        <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
-      </div>
-    </div>
+ 
+    
+
     <button class="deletePatientButton" type="button"  (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
       <mat-icon>delete</mat-icon>
   </button>
