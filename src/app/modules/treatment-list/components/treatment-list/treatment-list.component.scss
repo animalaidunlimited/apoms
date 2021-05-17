@@ -135,6 +135,27 @@
     margin: 0 !important;
 }
 
+tr.patient-detail-row {
+  height: 0;
+}
+
+.patient-detail-element {
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+.patient-element-row td {
+  border-bottom-width: 0;
+}
+
+tr.patient-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.patient-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
 @media only screen and (max-width: 600px) {
 
   .add-patient-fab{
@@ -162,13 +183,6 @@
     font-size: 9px;
   }
 
-
-
-
-
-  tr.example-detail-row {
-    height: 0;
-  }
 
 }
 

@@ -419,6 +419,12 @@ moveOut(currentPatient: AbstractControl) : void {
 
 }
 
+getEmptyForm(currentPatient:FormGroup){
+
+  return this.ts.getPatientDetailsForm(currentPatient);
+
+}
+
 
 }
 

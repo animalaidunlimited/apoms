@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, SimpleChange, OnChanges, SimpleChanges } from '@angular/core';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
@@ -14,9 +14,11 @@ import { Priority } from 'src/app/core/models/priority';
     templateUrl: './patient-details.component.html',
     styleUrls: ['./patient-details.component.scss'],
 })
-export class PatientDetailsComponent implements OnInit {
+export class PatientDetailsComponent implements OnInit, OnChanges {
     animalTypes$:AnimalType[] = [];
-    @Input() recordForm!: FormGroup;
+    @Input() recordFormInput!: FormGroup;
+
+    recordForm!: FormGroup;
 
     dialog: any;
     maxDate = '';
@@ -31,6 +33,10 @@ export class PatientDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+
+        // This can change so we need to just load it once
+        this.recordForm = this.recordFormInput;
+
         this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
         this.treatmentPriorities = this.dropdown.getPriority();
@@ -54,10 +60,12 @@ export class PatientDetailsComponent implements OnInit {
 
         this.maxDate = getCurrentTimeString();
 
+
         this.patientService
             .getPatientByPatientId(this.recordForm.get('patientDetails.patientId')?.value)
             .pipe(take(1))
             .subscribe(result => {
+
                 this.recordForm.patchValue(result);
 
                 const patientDetailsControl = this.recordForm.get('patientDetails');
@@ -72,5 +80,11 @@ export class PatientDetailsComponent implements OnInit {
 
 
             });
+    }
+
+    ngOnChanges(changes:SimpleChanges){
+
+        console.log(changes);
+
     }
 }

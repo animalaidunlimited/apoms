@@ -31,7 +31,7 @@
 
     <ng-container matColumnDef="index">
       <th mat-header-cell *matHeaderCellDef class="very-small-column"> Count </th>
-      <td mat-cell *matCellDef="let index = index" class="very-small-column"> {{index + 1}} </td>
+      <td mat-cell *matCellDef="let i = dataIndex" class="very-small-column"> {{i + 1}} </td>
     </ng-container>
 
     <ng-container matColumnDef="complete">
@@ -60,7 +60,7 @@
             {{column.abbreviation || column.name}}
           </th>
 
-          <td mat-cell *matCellDef="let row; let index = index;"
+          <td mat-cell *matCellDef="let row; let index = dataIndex;"
           [formGroupName]="index"
           [class.small-column]="column.name !== 'Treatment priority'"
           [class.center-columnm]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
@@ -119,7 +119,7 @@
     <ng-container matColumnDef="Other">
       <th mat-header-cell *matHeaderCellDef class="select-width center-columnm"> Other </th>
 
-      <td mat-cell *matCellDef="let row; let index = index;"
+      <td mat-cell *matCellDef="let row; let index = dataIndex;"
       class="select-width"
       [formGroupName]="index">
 
@@ -145,26 +145,31 @@
     </ng-container>
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <!--<ng-container matColumnDef="expandedDetail">
+    <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let element" [attr.colspan]="columnCountOther + columnCountPatientDetails">
-        <div class="example-element-detail"
-            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-            <div>
-            Here's some expanded data
+        <div class="patient-detail-element"
+            [@detailExpand]="element == expandedElement  ? 'expanded' : 'collapsed'">
 
-          </div>
+            <patient-details style="padding-bottom: 20px;" *ngIf="element == expandedElement" [recordFormInput]="getEmptyForm(element)"></patient-details>
+
         </div>
       </td>
-    </ng-container>-->
+    </ng-container>
+
+
 
     <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']"></tr>
 
     <tr mat-header-row *matHeaderRowDef="(displayedColumns | async)"></tr>
 
-    <tr mat-row *matRowDef="let element; let i = index; columns: (displayedColumns | async);"
+    <tr mat-row *matRowDef="let element; columns: (displayedColumns | async);"
+      class="patient-element-row"
+      [class.example-expanded-row]="expandedElement === element"
       (click)="expandedElement = expandedElement === element ? null : element"></tr>
 
-    <tr mat-row *matRowDef="let element; columns: ['expandedDetail']"></tr>
+    <tr mat-row *matRowDef="let element; columns: ['expandedDetail']" class="patient-detail-row"></tr>
+
+
 
 
 
