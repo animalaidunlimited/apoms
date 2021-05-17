@@ -210,7 +210,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       Temperament: '',
       'Treatment priority': 0,
       treatmentListId: 0,
-      treatedToday: false,
+      treatedToday: false
     });
 
     return returnGroup;
@@ -325,6 +325,14 @@ private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accept
     admission: currentPatient.get('admission')?.value,
     accepted
   };
+}
+
+public getPatientDetailsForm(currentPatient:FormGroup){
+
+  return this.fb.group({
+    patientDetails: this.fb.group({patientId: currentPatient.get('PatientId')?.value})
+  });
+
 }
 
 
