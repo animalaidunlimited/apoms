@@ -11,7 +11,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -36,6 +36,11 @@ interface Column{
         animate(2000, style({opacity: 0}))
       ])
     ]),
+      trigger('detailExpand', [
+        state('collapsed', style({ height: '0px', minHeight: '0' })),
+        state('expanded', style({ height: '*' })),
+        transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      ])
   ]
 })
 
@@ -69,6 +74,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   incomingList:string|undefined;
   isPrinting = false;
 
+  expandedElement: AbstractControl | null = null;
+
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
 
@@ -80,9 +87,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   treatmentListForm: FormGroup;
   treatmentPriorities: Observable<Priority[]>;
 
-  constructor(
-    // public dialogRef: MatDialogRef<TreatmentListComponent>,
-    // @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  constructor (
     private dialog: MatDialog,
     private router: Router,
     route: ActivatedRoute,
