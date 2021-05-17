@@ -1,15 +1,49 @@
-<fieldset class="form-sub-group">
-    <legend class="legend">Vehicle List</legend>
+<form [formGroup]='vehicleListForm' (ngSubmit)='Submit(vehicleListForm)'>
 
-    <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-        <mat-form-field appearance='fill'>
-            <input type= 'text' placeholder='Registration number' matInput>
-        </mat-form-field>
+    <fieldset class="form-sub-group">
+        <legend class="legend">Vehicle List
+            <mat-icon></mat-icon>
+        </legend>
 
-        <mat-form-field appearance='fill'>
-            <input type= 'text' placeholder='Vehicle type' matInput>
-        </mat-form-field>
+        <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+            <mat-form-field appearance='fill'>
+                <input type= 'text' formControlName="registrationNumber" placeholder='Registration number' matInput>
+            </mat-form-field>
 
-    </div>
+            <mat-form-field appearance='fill'>
+                <input type= 'text'formControlName="vehicleNumber" placeholder='Vehicle number' matInput>
+            </mat-form-field>
 
-</fieldset>
+            <mat-form-field appearance="fill">
+                <mat-label>Vehicle type</mat-label>
+                <mat-select formControlName="vehicleTypeId">
+                <mat-option *ngFor="let type of vehicleType$ | async" [value]="type.VehicleTypeId">
+                    {{type.VehicleType}}
+                </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start">
+
+            <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+                <mat-form-field appearance='fill'>
+                    <input type= 'number' formControlName="smallAnimalCapacity" placeholder='Small animal capacity' matInput>
+                </mat-form-field>
+        
+                <mat-form-field appearance='fill'>
+                    <input type= 'number' formControlName="largeAnimalCapacity" placeholder='Large animal capacity' matInput>
+                </mat-form-field>
+            </div>    
+        </div>
+
+        <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+            <button type='submit' mat-raised-button color='primary'>Save</button>
+
+            <button type='button' mat-raised-button color='white'>Reset</button>
+        </div>
+        
+
+    </fieldset>
+</form>
