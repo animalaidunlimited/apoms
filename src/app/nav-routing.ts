@@ -75,6 +75,18 @@ export const navRoutes: NavRoute[] = [
             import('./modules/streettreat/pages/teams-page/teams-page.module')
             .then(m => m.TeamsPageModule)
     },
+
+    {
+        data: { title: 'Vehicle List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'vehicle-list',
+        loadChildren: () =>
+            import('./modules/driver-view/pages/vehile-list-page/vehicle-list-page.module')
+            .then(m => m.VehicleListPageModule)
+    },
+
+
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
