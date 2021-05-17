@@ -3,6 +3,8 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetCensusPatientCount !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentAreaPatientCount !!
 
+-- CALL AAU.sp_GetTreatmentAreaPatientCount('Jim')
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetTreatmentAreaPatientCount(IN prm_UserName VARCHAR(45))
 BEGIN
@@ -65,6 +67,7 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("area" , data.Area),
+JSON_OBJECT("sortArea" , data.SortArea),
 JSON_OBJECT("lowPriority" , LowPriority),
 JSON_OBJECT("normalPriority" , NormalPriority),
 JSON_OBJECT("highPriority" , HighPriority),
@@ -73,9 +76,11 @@ JSON_OBJECT("adults" , Adults),
 JSON_OBJECT("count" , data.TotalCount))) as PatientCountData
 FROM
 (
-SELECT Area, LowPriority, NormalPriority, HighPriority, Infants, Adults, TotalCount FROM TotalAreaCount tc
+SELECT tc.Area, IFNULL(ta.SortArea,999) AS `SortArea`, tc.LowPriority, tc.NormalPriority, tc.HighPriority, tc.Infants, tc.Adults, tc.TotalCount
+FROM TotalAreaCount tc
+LEFT JOIN AAU.TreatmentArea ta ON ta.Area = tc.Area
 UNION ALL
-SELECT "Total", 0, 0, 0, 0, 0, SUM(TotalCount) FROM TotalAreaCount
+SELECT "Total", 999, 0, 0, 0, 0, 0, SUM(TotalCount) FROM TotalAreaCount
 ) data;
 
 
