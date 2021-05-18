@@ -48,21 +48,15 @@ table {
         font-size:1rem;
     }
 }
-@media only screen and (max-width:767px){
-    .addPatientButton{
-        width: 25px;
-        height: 25px;
-        margin-top: -2rem;
-        .mat-icon{
-            font-size: 1rem;
-            position: relative;
-            top: -3px;
-            left:1px;
-        }
+
+
+.patientsForm {
+    margin-bottom: 1rem;
+    &.lastPatientInArray {
+        margin-bottom: 0;
     }
 }
-@media only screen and (min-width:767px){
-    .form-sub-group{
-        min-height: 96.5%;
-    }
-}
+
+
+
+  
