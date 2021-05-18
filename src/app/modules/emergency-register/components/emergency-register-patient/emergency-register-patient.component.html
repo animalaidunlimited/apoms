@@ -1,7 +1,4 @@
 <div [formGroup]="patientForm" class="patientForm">
-
-    <!-- <div fxLayout="row wrap" class="patientDescription" fxLayoutGap="20px"> -->
-     <!--  fxFlex.gt-xs="20" -->
       <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
           matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
