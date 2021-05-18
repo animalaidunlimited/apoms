@@ -6,11 +6,16 @@
 
       <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
-      <div *ngFor="let movedRecords of movedLists.controls">
+      <div *ngIf="movedLists?.controls">
 
-        <app-moved-treatment-record [movedRecordsInput]="movedRecords" [area]="area"></app-moved-treatment-record>
+        <div *ngFor="let movedRecords of movedLists?.controls">
+
+          <app-moved-treatment-record [movedRecordsInput]="movedRecords" [area]="area"></app-moved-treatment-record>
+
+        </div>
 
       </div>
+
 
   <table mat-table [dataSource]="accepted" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
 
@@ -31,7 +36,10 @@
 
     <ng-container matColumnDef="index">
       <th mat-header-cell *matHeaderCellDef class="very-small-column"> Count </th>
-      <td mat-cell *matCellDef="let i = dataIndex" class="very-small-column"> {{i + 1}} </td>
+      <td mat-cell *matCellDef="let element; let i = dataIndex" class="very-small-column pointer"
+      (click)="expandedElement = expandedElement === element ? null : element">
+       {{i + 1}}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="complete">
@@ -74,6 +82,7 @@
           <div *ngIf="column.type === 'select'" class="select-width start">
             <mat-form-field>
             <mat-select
+            (selectionChange)="updateTreatmentPriority(row)"
             [formControlName]="column.name">
                 <mat-option>N/A</mat-option>
                 <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">{{priority.Priority}}</mat-option>
@@ -135,6 +144,8 @@
           </mat-select>
         </mat-form-field>
 
+        {{row.get('saved')?.value}}
+
         <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
         <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
 
@@ -150,7 +161,8 @@
         <div class="patient-detail-element"
             [@detailExpand]="element == expandedElement  ? 'expanded' : 'collapsed'">
 
-            <patient-details style="padding-bottom: 20px;" *ngIf="element == expandedElement" [recordFormInput]="getEmptyForm(element)"></patient-details>
+            <patient-details (saving)="savingPatientDetails($event, element)" *ngIf="element == expandedElement"
+            [recordForm]="element"></patient-details>
 
         </div>
       </td>
@@ -164,8 +176,7 @@
 
     <tr mat-row *matRowDef="let element; columns: (displayedColumns | async);"
       class="patient-element-row"
-      [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element"></tr>
+      [class.example-expanded-row]="expandedElement === element"></tr>
 
     <tr mat-row *matRowDef="let element; columns: ['expandedDetail']" class="patient-detail-row"></tr>
 

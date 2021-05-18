@@ -32,9 +32,16 @@ mat-radio-button {
     margin-left: 120px;
 }
 
-@media(max-width: 600px) { 
+.save-icon {
+    position: relative;
+    bottom: 0;
+    left: 95%;
+    cursor: pointer;
+}
+
+@media(max-width: 600px) {
     .extra-wide {
         max-width: 100% !important;
         margin-left: 20px;
-    } 
+    }
 }

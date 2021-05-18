@@ -16,6 +16,7 @@ import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { MatSelectChange } from '@angular/material/select';
 
 interface Column{
   name: string;
@@ -38,7 +39,7 @@ interface Column{
     ]),
       trigger('detailExpand', [
         state('collapsed', style({ height: '0px', minHeight: '0' })),
-        state('expanded', style({ height: '*' })),
+        state('expanded', style({ height: '*', paddingBottom: '20px' })),
         transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
       ])
   ]
@@ -123,6 +124,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.treatmentPriorities = this.dropdown.getPriority();
 
+    console.log(1);
+
     this.populateColumnList();
 
     this.treatmentListForm = this.fb.group({});
@@ -142,51 +145,47 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.populateColumnList();
     });
 
+    console.log(5);
+
     this.ts.getTreatmentList().subscribe(treatmentListObject => {
+
+      console.log(2);
 
       this.treatmentListForm = treatmentListObject;
       this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
 
       this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
-      this.accepted.next(this.acceptedFormArray.controls);
+      console.log(this.movedLists)
 
+      this.accepted.next(this.acceptedFormArray.controls);
+      console.log(3);
 
       // Here we're getting the changes from each form in the array, so that we can update the patient details
       // in future releases.
-      merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
-      control.valueChanges.pipe(
-          take(1),
-          map(value => ({ rowIndex: index, control })))
-      )).subscribe(changes => {
+      //merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
+      //control.get('Treatment priority').valueChanges.pipe(
+      //    take(1),
+      //    map(value => ({ rowIndex: index, control })))
+      //)).subscribe(changes => {
 
-        const updatePatient = {
-          patientId: changes.control.get('PatientId')?.value,
-          treatmentPriority: changes.control.get('Treatment priority')?.value || null,
-          temperament: changes.control.get('Temperament')?.value || null,
-          age: changes.control.get('Age')?.value || null,
-          releaseStatus: changes.control.get('Release status')?.value || null,
-          abcStatus: changes.control.get('ABC status')?.value || null,
-          knownAsName: changes.control.get('Known as name')?.value,
-          sex: changes.control.get('Sex')?.value,
-          description: changes.control.get('Description')?.value || null,
-          mainProblems: changes.control.get('Main Problems')?.value || null,
-          animalTypeId: changes.control.get('animalTypeId')?.value
-        };
+      //  console.log(changes);
 
-        this.startSave(changes.control);
+      //  const updatePatient = this.patientService.getUpdatePatientObject(changes.control);
 
-        this.patientService.updatePatientDetails(updatePatient).then(result => {
+      //  this.startSave(changes.control);
 
-          if(result.success === 1){
+      //  this.patientService.updatePatientDetails(updatePatient.value).then(result => {
 
-            this.endSave(changes.control);
-            this.ts.sortTreatmentList();
-          }
+      //    if(result.success === 1){
 
-        });
+      //      this.endSave(changes.control);
+      //      this.ts.sortTreatmentList();
+      //    }
 
-        });
+      //  });
+
+      //  });
 
       this.changeDetector.detectChanges();
 
@@ -197,23 +196,60 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
    }
 
+   updateTreatmentPriority(patient: AbstractControl){
+
+    this.startSave(patient);
+
+    const updatePatient = this.patientService.getUpdatePatientObject(patient);
+
+    this.patientService.updatePatientDetails(updatePatient.value).then(result => {
+
+      console.log(result);
+
+          this.endSave(patient);
+
+          if(result.success === 1){
+
+            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+
+
+            this.ts.sortTreatmentList();
+          }
+
+    });
+
+   }
+
+
+
   ngOnChanges(change:SimpleChanges) : void {
+
+  console.log(change);
+
+  console.log(4);
 
     if(change.hasOwnProperty('area')){
       this.area = change.area.currentValue as TreatmentArea;
     }
 
+    console.log(41);
+
     if(change.hasOwnProperty('selectedDate')){
       this.selectedDate = change.selectedDate.currentValue;
     }
 
+    console.log(42);
+
     if(this.area && this.selectedDate){
 
       this.smallScreen = window.innerWidth > 840 ? false : true;
-
+      console.log(43);
       this.populateColumnList();
-
+      console.log(44);
       this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
+      console.log(45);
+      //this.changeDetector.detectChanges();
+      console.log(46);
 
     }
     else{
@@ -221,6 +257,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     }
 
 
+
+
+    console.log(4.5);
   }
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -330,18 +369,25 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 }
 
   private startSave(row: AbstractControl) {
+
+    console.log('startSave');
+
     row.get('saving')?.setValue(true, {emitEvent: false});
     row.get('saved')?.setValue(false, {emitEvent: false});
     this.changeDetector.detectChanges();
   }
 
   private endSave(row: AbstractControl) {
+
+    console.log('endSave');
+
     row.get('saving')?.setValue(false, {emitEvent: false});
     row.get('saved')?.setValue(true, {emitEvent: false});
-
     this.changeDetector.detectChanges();
 
     setTimeout(() => {
+
+      console.log('endSave: setTimeout');
       row.get('saved')?.setValue(false, {emitEvent: false});
       this.changeDetector.detectChanges();
     }, 2500 );
@@ -419,11 +465,43 @@ moveOut(currentPatient: AbstractControl) : void {
 
 }
 
-getEmptyForm(currentPatient:FormGroup){
+getUpdatePatientObject(element: AbstractControl) : any{
 
-  return this.ts.getPatientDetailsForm(currentPatient);
+  return this.patientService.getUpdatePatientObject(element);
 
 }
+
+getUpdatePatientControl(element: AbstractControl) : FormGroup {
+
+  const patientDetails = this.getUpdatePatientObject(element);
+
+  const val =  this.fb.group({patientDetails});
+
+  console.log(val);
+
+  return val;
+
+}
+
+savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
+
+  currentPatient.get('Treatment priority')?.setValue(currentPatient.get('patientDetails.treatmentPriority')?.value);
+
+  saving ? this.startSave(currentPatient) : this.endSave(currentPatient);
+
+}
+
+// getEmptyForm(currentPatient:FormGroup){
+
+//  const
+
+//  return this.fb.group({
+//    patientDetails: this.fb.group({patientId: currentPatient.get('PatientId')?.value})
+//  });
+
+//  return this.ts.getPatientDetailsForm(currentPatient);
+
+//}
 
 
 }
