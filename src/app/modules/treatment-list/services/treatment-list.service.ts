@@ -6,6 +6,7 @@ import { ABCStatus, ReleaseStatus, Temperament, Age } from 'src/app/core/enums/p
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Injectable({
@@ -25,6 +26,7 @@ export class TreatmentListService extends APIService {
 
   constructor(public http: HttpClient,
     private snackbar: SnackbarService,
+    private patientService: PatientService,
     private fb: FormBuilder) {
     super(http);
 
@@ -173,6 +175,19 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     response.forEach(() => returnArray.push(this.getEmptyPatient()));
 
     returnArray.patchValue(response);
+
+    // We need to build a similar array for sending to the patient details update. The first patient details array
+    // is named so that we can dynamically add columns to a table. Hence the namings are like 'Release status'
+    // Whereas the patient service requires them like releaseStatus
+    returnArray.controls.forEach(patient => {
+
+      const patientFormGroup = patient as FormGroup;
+
+      const patientDetails = this.patientService.getUpdatePatientObject(patient);
+
+      patientFormGroup.addControl('patientDetails', patientDetails);
+
+    });
 
     return returnArray;
 
@@ -325,14 +340,6 @@ private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accept
     admission: currentPatient.get('admission')?.value,
     accepted
   };
-}
-
-public getPatientDetailsForm(currentPatient:FormGroup){
-
-  return this.fb.group({
-    patientDetails: this.fb.group({patientId: currentPatient.get('PatientId')?.value})
-  });
-
 }
 
 

@@ -139,9 +139,12 @@ tr.patient-detail-row {
   height: 0;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .patient-detail-element {
   overflow: hidden;
-  padding-bottom: 20px;
 }
 
 .patient-element-row td {
