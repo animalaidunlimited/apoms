@@ -43,18 +43,6 @@ export class PatientDetailsComponent implements OnInit {
 
     ngOnInit() {
 
-        console.log(this.recordForm);
-
-        // if(this.recordForm?.get('patientDetails.animalTypeId')) {
-
-        //    const patientDetailsResponse = this.patientService.getUpdatePatientObject(this.recordForm.value);
-
-        //    this.recordForm.setValue(this.fb.group({patientDetails: patientDetailsResponse}));
-
-        // }
-
-
-
         this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes);
 
         this.treatmentPriorities = this.dropdown.getPriority();
@@ -68,8 +56,6 @@ export class PatientDetailsComponent implements OnInit {
 
         // If empty it means we're loading from the treatment list
         if(this.recordForm.get('patientDetails') && !patientDetails?.get('animalTypeId')) {
-
-            console.log('here');
 
             patientDetails.addControl('animalTypeId',new FormControl(initialNumber, Validators.required));
             patientDetails.addControl('mainProblems',new FormControl('', Validators.required));
@@ -119,11 +105,7 @@ export class PatientDetailsComponent implements OnInit {
 
         const updatePatient: UpdatePatientDetails = this.recordForm.get('patientDetails')?.value;
 
-        console.log(updatePatient);
-
         this.patientService.updatePatientDetails(updatePatient).then(result => {
-
-            console.log(result);
 
             if(result.success === 1){
 

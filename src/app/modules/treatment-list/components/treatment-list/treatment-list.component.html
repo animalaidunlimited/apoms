@@ -2,7 +2,7 @@
 
 <fieldset class="form-sub-group">
 
-      <mat-spinner *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>
+      <mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>
 
       <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
@@ -143,8 +143,6 @@
             <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
           </mat-select>
         </mat-form-field>
-
-        {{row.get('saved')?.value}}
 
         <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
         <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>

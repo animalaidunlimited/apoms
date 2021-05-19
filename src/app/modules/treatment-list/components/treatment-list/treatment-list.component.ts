@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { BehaviorSubject, fromEvent, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,6 @@ import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatSelectChange } from '@angular/material/select';
 
 interface Column{
   name: string;
@@ -34,9 +33,17 @@ interface Column{
     trigger('fadeSavedIcon', [
       transition('* => void', [
         style({ opacity: 1 }),
-        animate(2000, style({opacity: 0}))
+        animate(2500, style({opacity: 0}))
       ])
     ]),
+
+  //  trigger('fadeSavedIcon', [
+  //    state( 'void', style({ opacity: 0 }) ),
+  //    state( 'show', style({ opacity: 1 }) ),
+  //    state( 'hide', style({ opacity: 0 }) ),
+  //    transition('show <=> hide', animate(2000)),
+  //]),
+
       trigger('detailExpand', [
         state('collapsed', style({ height: '0px', minHeight: '0' })),
         state('expanded', style({ height: '*', paddingBottom: '20px' })),
@@ -44,6 +51,12 @@ interface Column{
       ])
   ]
 })
+
+// trigger('fadeSavedIcon', [
+//  state('show', style({ opacity: 1 })),
+//  state('hide', style({ opacity: 0 })),
+//  state('void', style({ opacity: 0 })),
+//  transition('false => true', [animate(2000)])
 
 export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -124,8 +137,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.treatmentPriorities = this.dropdown.getPriority();
 
-    console.log(1);
-
     this.populateColumnList();
 
     this.treatmentListForm = this.fb.group({});
@@ -145,126 +156,73 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.populateColumnList();
     });
 
-    console.log(5);
-
     this.ts.getTreatmentList().subscribe(treatmentListObject => {
-
-      console.log(2);
 
       this.treatmentListForm = treatmentListObject;
       this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
 
       this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
-      console.log(this.movedLists)
-
       this.accepted.next(this.acceptedFormArray.controls);
-      console.log(3);
-
-      // Here we're getting the changes from each form in the array, so that we can update the patient details
-      // in future releases.
-      //merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
-      //control.get('Treatment priority').valueChanges.pipe(
-      //    take(1),
-      //    map(value => ({ rowIndex: index, control })))
-      //)).subscribe(changes => {
-
-      //  console.log(changes);
-
-      //  const updatePatient = this.patientService.getUpdatePatientObject(changes.control);
-
-      //  this.startSave(changes.control);
-
-      //  this.patientService.updatePatientDetails(updatePatient.value).then(result => {
-
-      //    if(result.success === 1){
-
-      //      this.endSave(changes.control);
-      //      this.ts.sortTreatmentList();
-      //    }
-
-      //  });
-
-      //  });
 
       this.changeDetector.detectChanges();
 
     });
 
-
-
-
    }
-
-   updateTreatmentPriority(patient: AbstractControl){
-
-    this.startSave(patient);
-
-    const updatePatient = this.patientService.getUpdatePatientObject(patient);
-
-    this.patientService.updatePatientDetails(updatePatient.value).then(result => {
-
-      console.log(result);
-
-          this.endSave(patient);
-
-          if(result.success === 1){
-
-            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
-
-
-            this.ts.sortTreatmentList();
-          }
-
-    });
-
-   }
-
-
 
   ngOnChanges(change:SimpleChanges) : void {
-
-  console.log(change);
-
-  console.log(4);
 
     if(change.hasOwnProperty('area')){
       this.area = change.area.currentValue as TreatmentArea;
     }
 
-    console.log(41);
-
     if(change.hasOwnProperty('selectedDate')){
       this.selectedDate = change.selectedDate.currentValue;
     }
 
-    console.log(42);
-
     if(this.area && this.selectedDate){
 
       this.smallScreen = window.innerWidth > 840 ? false : true;
-      console.log(43);
+
       this.populateColumnList();
-      console.log(44);
+
       this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
-      console.log(45);
-      //this.changeDetector.detectChanges();
-      console.log(46);
 
     }
     else{
       this.ts.resetTreatmentList();
     }
 
-
-
-
-    console.log(4.5);
   }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-}
+  }
+
+  updateTreatmentPriority(patient: AbstractControl){
+
+    this.startSave(patient);
+
+    const updatePatient = this.patientService.getUpdatePatientObject(patient);
+    this.changeDetector.detectChanges();
+
+    this.patientService.updatePatientDetails(updatePatient.value).then(result => {
+
+          if(result.success === 1){
+
+            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+
+            this.ts.sortTreatmentList();
+
+          }
+
+          this.endSave(patient);
+
+    });
+
+   }
 
 
 
@@ -370,8 +328,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   private startSave(row: AbstractControl) {
 
-    console.log('startSave');
-
     row.get('saving')?.setValue(true, {emitEvent: false});
     row.get('saved')?.setValue(false, {emitEvent: false});
     this.changeDetector.detectChanges();
@@ -379,19 +335,14 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   private endSave(row: AbstractControl) {
 
-    console.log('endSave');
-
+    // Here we want to show the saved icon, but only for a short amount of time.
     row.get('saving')?.setValue(false, {emitEvent: false});
     row.get('saved')?.setValue(true, {emitEvent: false});
     this.changeDetector.detectChanges();
 
-    setTimeout(() => {
 
-      console.log('endSave: setTimeout');
-      row.get('saved')?.setValue(false, {emitEvent: false});
-      this.changeDetector.detectChanges();
-    }, 2500 );
-
+    row.get('saved')?.setValue(false, {emitEvent: false});
+    this.changeDetector.detectChanges();
 
   }
 
@@ -475,11 +426,7 @@ getUpdatePatientControl(element: AbstractControl) : FormGroup {
 
   const patientDetails = this.getUpdatePatientObject(element);
 
-  const val =  this.fb.group({patientDetails});
-
-  console.log(val);
-
-  return val;
+  return this.fb.group({patientDetails});
 
 }
 
