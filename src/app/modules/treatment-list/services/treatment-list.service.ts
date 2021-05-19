@@ -104,6 +104,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       if(list.treatmentListType === 'accepted'){
         this.treatmentListForm.removeControl('accepted');
         this.treatmentListForm.addControl('accepted', treatmentListArray);
+        this.sortTreatmentList();
       }
       else {
 
@@ -145,7 +146,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
         }
         else {
 
-          sortResult = (a['Treatment priority'] || 999) < (b['Treatment priority'] || 999) ? 1 : -1;
+          sortResult = (a['Treatment priority'] || 999) > (b['Treatment priority'] || 999) ? 1 : -1;
         }
 
         return sortResult;
@@ -324,7 +325,7 @@ private sortTreatmentAbstractControls(a: AbstractControl, b: AbstractControl){
       }
       else {
 
-        sortResult = (a.get('Treatment priority')?.value || 999) > (b.get('Treatment priority')?.value || 999) ? 1 : -1;
+        sortResult = (a.get('Treatment priority')?.value || 999) < (b.get('Treatment priority')?.value || 999) ? 1 : -1;
       }
 
       return sortResult;

@@ -127,12 +127,9 @@
 }
 
 .saved-spinner{
-  position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 5000;
-    margin: 0 !important;
+    position: relative;
+    left: 0;
+    overflow: unset;
 }
 
 tr.patient-detail-row {
