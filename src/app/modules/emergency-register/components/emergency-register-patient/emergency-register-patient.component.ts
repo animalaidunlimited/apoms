@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeLast, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -15,11 +15,17 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
+
+interface Problem {
+  problemId: number;
+  problem: string;
+}
 @Component({
   selector: 'app-emergency-register-patient',
   templateUrl: './emergency-register-patient.component.html',
   styleUrls: ['./emergency-register-patient.component.scss']
 })
+
 export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
@@ -63,8 +69,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   sortedProblems = this.dropdown.getProblems().pipe(
     map( problems =>
       {
-        const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
-        const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem?.trim());
+        const selectedProblems =  this.problemsArray?.value as Problem[];
+        const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
         return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
       }
     ),
@@ -138,21 +144,12 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
   ngAfterViewInit(): void{
 
-    this.patientForm.get('problems')?.valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
+    this.patientForm.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
       if(this.chipList.errorState){
         this.chipList.errorState = false ;
       }
     });
 
-    // When the animal selection panel closes, if no animal has been selected, then clear the value
-    this.animalAutoComplete.panelClosingActions.subscribe(selection => {
-      if(!selection){
-          this.animalType?.setValue('');
-          this.animalTypeInput.nativeElement.value = '';
-          this.animalTypeInput.nativeElement.focus();
-      }
-
-    });
 
     this.problemAutoComplete.panelClosingActions.subscribe(selection => {
 
@@ -179,11 +176,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue) === 0)),
       map(problems => {
 
-        const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
+        const selectedProblems =  this.problemsArray?.value as Problem[];
 
          if(selectedProblems.length > 0){
 
-            const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
+            const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem.trim());
             const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
             return filteredProblemsArray;
 
@@ -269,18 +266,28 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         });
 
         dialogRef.afterClosed()
-        // .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((confirmed: boolean) => {
+        .pipe(takeUntil(this.animalTypeValueChangesUnsubscribe))
+        .subscribe(() => {
 
           $event.preventDefault();
           this.animalTypeInput.nativeElement.focus();
           this.problemAutoComplete.closePanel();
 
-          });
+        });
       }
       else{
         $event.preventDefault();
-        this.problemRef.nativeElement.focus();
+        this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).subscribe(animalType => {
+          const matchAnimalType =  animalType.length;
+          // if no animal has been selected, then clear the value
+          if(matchAnimalType === 0){
+            this.animalType?.setValue('');
+            this.animalTypeInput.nativeElement.value = '';
+          }
+          else{
+            this.problemRef.nativeElement.focus();
+          }
+        });
       }
    },0);
   }

@@ -13,7 +13,7 @@ CREATE TABLE AAU.PatientMediaComments (
   PRIMARY KEY (CommentId),
   KEY FK_PatientMediaCommentsUserId_UserUserId (UserId),
   KEY FK_PMCommentsPatientMediaItemId_PMItemPatientMediaItemId (PatientMediaItemId),
-  CONSTRAINT FK_PatientMediaCommentsUserId_UserUserId FOREIGN KEY (UserId) REFERENCES user (UserId),
+  CONSTRAINT FK_PatientMediaCommentsUserId_UserUserId FOREIGN KEY (UserId) REFERENCES AAU.User (UserId),
   CONSTRAINT FK_PMCommentsPatientMediaItemId_PMItemPatientMediaItemId FOREIGN KEY (PatientMediaItemId) REFERENCES PatientMediaItem (PatientMediaItemId)
 );
 

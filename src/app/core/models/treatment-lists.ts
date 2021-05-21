@@ -79,7 +79,8 @@ export interface TreatmentListPrintContent{
 }
 
 export interface PatientCountInArea{
-    area : string;
+    area: string;
+    sortArea: number;
     lowPriority: number;
     normalPriority: number;
     highPriority: number;
