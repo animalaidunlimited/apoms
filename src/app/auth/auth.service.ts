@@ -5,6 +5,7 @@ import { StorageService } from '../core/services/storage/storage.service';
 import { StorageKey } from '../core/services/storage/storage.model';
 import { BootController } from '../../boot-controller';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { BehaviorSubject } from 'rxjs';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response {
@@ -19,10 +20,11 @@ export interface Response {
 })
 export class AuthService extends APIService {
     endpoint = 'Auth';
-    token: string;
-    response!: Response;
+    loggedIn: BehaviorSubject<boolean>;
     redirectUrl: string | null = null;
+    response!: Response;
     socketEndPoint!: string;
+    token: string;
 
     constructor(
         http: HttpClient,
@@ -32,6 +34,9 @@ export class AuthService extends APIService {
     ) {
         super(http);
         this.token = this.storage.read(AUTH_TOKEN) || '';
+
+        this.loggedIn = new BehaviorSubject<boolean>(this.token.length > 0);
+
     }
 
     public async login(username: string, password: string) {
@@ -48,6 +53,7 @@ export class AuthService extends APIService {
             }
             this.userService.userName = username;
 
+            this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
 
@@ -78,16 +84,15 @@ export class AuthService extends APIService {
     }
 
     public logout() {
+
+        this.loggedIn.next(false);
+
         this.token = '';
         this.storage.remove(AUTH_TOKEN);
 
         this.ngZone.runOutsideAngular(() =>
             BootController.getbootControl().restart(),
         );
-    }
-
-    public isLogged(): boolean {
-        return this.token.length > 0;
     }
 
     public getOrganisationSocketEndPoint() {
