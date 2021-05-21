@@ -5,6 +5,7 @@ import { take, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { MessagingService } from '../../emergency-register/services/messaging.service';
 import { PrintTemplateService } from '../../print-templates/services/print-template.service';
 import { TreatmentListService } from '../services/treatment-list.service';
 
@@ -27,6 +28,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   constructor(
     private dropdown: DropdownService,
     private treatmentList: TreatmentListService,
+    private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
     private fb: FormBuilder) {
@@ -45,6 +47,8 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.messagingService.requestPermission();
 
     this.treatmentList.refreshing
         .pipe(takeUntil(this.ngUnsubscribe))

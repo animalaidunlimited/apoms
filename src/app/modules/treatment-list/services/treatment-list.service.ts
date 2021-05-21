@@ -2,16 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { ABCStatus, ReleaseStatus, Temperament, Age } from 'src/app/core/enums/patient-details';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
+interface AcceptRejectMove{
+  messageType: string;
+  action: string;
+  patientId: number;
+  actionedByArea: string;
+  accepted: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 
 export class TreatmentListService extends APIService {
 
@@ -35,6 +43,59 @@ export class TreatmentListService extends APIService {
     this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
 
     this.treatmentListObject = new BehaviorSubject<FormGroup>(this.treatmentListForm);
+
+}
+
+public receiveUpdatedRescueMessage(message:any){
+
+    if(message?.action === 'accept/reject'){
+
+      const acceptReject: AcceptRejectMove = message;
+
+      // Find it in the accepted list
+      const removeIndex = this.acceptedFormArray.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === acceptReject.patientId);
+
+      const patientToMove = this.acceptedFormArray.at(removeIndex);
+
+      // Move it from the accepted list to the rejected list if we need to
+      if(!acceptReject.accepted){
+
+        patientToMove.get('Actioned by area')?.setValue(acceptReject.actionedByArea);
+        patientToMove.get('Moved to')?.setValue(null);
+
+        const movedLists = this.treatmentListForm.get('movedLists') as FormArray;
+
+        const movedListIndex = movedLists.controls.findIndex(currentList => currentList.get('listType')?.value === 'rejected from');
+
+        if(movedListIndex === -1){
+
+          const rejectedList = this.fb.group({
+            listType: 'rejected from',
+            movedList: this.fb.array([patientToMove])
+          });
+
+          movedLists.push(rejectedList);
+
+        }
+        else {
+
+          ((movedLists.at(movedListIndex) as FormArray).get('movedList') as FormArray).push(patientToMove);
+
+        }
+
+      }
+
+      if(patientToMove.get('Actioned by area')?.value === acceptReject.actionedByArea || patientToMove.get('Moved to')?.value){
+        // Remove it from the accepted list
+        this.acceptedFormArray.removeAt(removeIndex);
+
+      }
+
+      this.sortTreatmentList();
+      this.emitTreatmentObject();
+
+    }
+
 
 }
 
@@ -155,6 +216,8 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   private emitTreatmentObject(){
 
+    this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+
     this.treatmentListObject.next(this.treatmentListForm);
     this.refreshing.next(false);
 
@@ -272,6 +335,7 @@ public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:bo
             const movedPatient = currentList.at(index);
 
             movedPatient.get('Move accepted')?.setValue(true);
+            movedPatient.get('Actioned by area')?.reset();
             movedPatient.get('Moved to')?.reset();
             movedPatient.get('Admission')?.setValue(false);
 
