@@ -7,11 +7,14 @@
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
             <mat-form-field appearance='fill'>
-                <input type= 'text' formControlName="registrationNumber" placeholder='Registration number' matInput>
+                <mat-label>Registration number</mat-label>
+                <input type= 'text' formControlName="registrationNumber" matInput>
             </mat-form-field>
 
             <mat-form-field appearance='fill'>
-                <input type= 'text'formControlName="vehicleNumber" placeholder='Vehicle number' matInput>
+                <mat-label>Vehicle number</mat-label>
+                
+                <input type= 'text'formControlName="vehicleNumber" matInput>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
@@ -29,21 +32,110 @@
 
             <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
                 <mat-form-field appearance='fill'>
-                    <input type= 'number' formControlName="smallAnimalCapacity" placeholder='Small animal capacity' matInput>
+                    <mat-label>Small Animal Capacity</mat-label>
+                    <input type= 'number' formControlName="smallAnimalCapacity" matInput>
                 </mat-form-field>
         
                 <mat-form-field appearance='fill'>
-                    <input type= 'number' formControlName="largeAnimalCapacity" placeholder='Large animal capacity' matInput>
+                    <mat-label>Large Animal Capacity</mat-label>
+
+                    <input type= 'number' formControlName="largeAnimalCapacity" matInput>
                 </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="vehicleStatusId">
+                      <mat-option *ngFor="let status of vehicleStatus" [value]="status.VehicleStatusId">
+                        {{status.VehicleStatus}}
+                        <mat-icon *ngIf="status.VehicleStatusId === 1">check_box</mat-icon>
+                        <mat-icon *ngIf="status.VehicleStatusId === 2">cancel</mat-icon>
+                        <mat-icon *ngIf="status.VehicleStatusId === 3">build</mat-icon>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
             </div>    
         </div>
+
+        <input
+            hidden
+            type="file"
+            #uploader
+            multiple
+            accept="image/*,video/*"
+        />
+
+        <label class="legend1">
+            <button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
+                <mat-icon>add_a_photo</mat-icon>
+            </button>
+            Upload Image
+        </label>
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
             <button type='submit' mat-raised-button color='primary'>Save</button>
 
-            <button type='button' mat-raised-button color='white'>Reset</button>
+            <button type='button'(click)="vehicleListForm.reset()" mat-raised-button color='white'>Reset</button>
         </div>
         
 
     </fieldset>
 </form>
+
+<div class="example-container mat-elevation-z8">
+    <mat-table matSort #table [dataSource]="dataSource">
+
+      <ng-container matColumnDef="vehicleType">
+        <mat-header-cell *matHeaderCellDef> Vehicle </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Vehicle:</span>
+          {{row.vehicleType}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="registrationNumber">
+        <mat-header-cell *matHeaderCellDef> Registration Number </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Registration Number</span>
+          {{row.registrationNumber}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="vehicleNumber">
+        <mat-header-cell *matHeaderCellDef> Vehicle Number </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Vehicle Number:</span>
+          {{row.vehicleNumber}}
+        </mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="largeAnimalCapacity">
+        <mat-header-cell *matHeaderCellDef> Capacity(Large Animal) </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Capacity(Large Animal):</span>
+          {{row.largeAnimalCapacity}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="smallAnimalCapacity">
+        <mat-header-cell *matHeaderCellDef> Capacity(Small Animal) </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Capacity(Small Animal):</span>
+          {{row.smallAnimalCapacity}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="vehicleStatus">
+        <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Status:</span>
+          {{row.vehicleStatus}}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
+  </div>
