@@ -30,8 +30,11 @@ export class DriverViewService extends APIService {
   }
 
   public async deleteVehicleListItem(vehicleId : number) : Promise<SuccessOnlyResponse> {
-    console.log('called')
-    return await this.deleteById(vehicleId).then((output)=>{
+    let deleteobject = {
+      vehicleId:vehicleId,
+      isDeleted: true
+    }
+    return await this.put(deleteobject).then((output)=>{
       return output;
     }).catch((error:any)=>{
         console.log(error);
