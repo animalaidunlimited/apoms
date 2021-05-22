@@ -61,7 +61,6 @@ export class VehileListPageComponent implements OnInit {
   ngOnInit(): void {
     this.vehicleType$ = this.dropdown.getVehicleType();
     this.refreshVehicleTable();
-    this.deleteVehicle(1);
   }
 
   Submit(vehicleForm: FormGroup) {
@@ -71,7 +70,14 @@ export class VehileListPageComponent implements OnInit {
         this.snackBar.errorSnackBar('Communication error see adim', 'Ok');
       }
       else {
-        response.success === 1 ?  this.snackBar.successSnackBar('Saved Successfully', 'Ok') :  this.snackBar.errorSnackBar('Duplicate entry', 'Ok');
+        if(response.success === 1) {
+          this.snackBar.successSnackBar('Saved Successfully', 'Ok');
+          this.refreshVehicleTable();
+        }
+        else {
+          this.snackBar.errorSnackBar('Duplicate entry', 'Ok');
+        }   
+        
       }
     });
     
@@ -92,9 +98,23 @@ export class VehileListPageComponent implements OnInit {
 
   deleteVehicle(vehicleId : number) {
 
+    console.log(vehicleId);
     if(vehicleId) {
-      this.driverViewService.deleteVehicleListItem(vehicleId).then(val=> {
-        console.log(val);
+      this.driverViewService.deleteVehicleListItem(vehicleId).then(successResponse=> {
+
+        if(successResponse.success === -1) {
+          this.snackBar.errorSnackBar('Communication error see adim', 'Ok');
+        }
+        else {
+          if(successResponse.success === 1) {
+            this.snackBar.successSnackBar('Deleted Successfully', 'Ok');
+            this.refreshVehicleTable();
+          }
+          else {
+            this.snackBar.errorSnackBar('Unable to delete', 'Ok');
+          }
+        }
+
       });
     }
 

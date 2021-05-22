@@ -75,6 +75,8 @@
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
             <button type='submit' mat-raised-button color='primary'>Save</button>
 
+            <button type='button' (click)="deleteVehicle(vehicleListForm.get('vehicleId')?.value)" mat-raised-button color='primary'>Delete</button>
+
             <button type='button'(click)="vehicleListForm.reset()" mat-raised-button color='white'>Reset</button>
         </div>
         
