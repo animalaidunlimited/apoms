@@ -2,7 +2,7 @@
     border: 2px solid;
     border-radius: 5px;
     border-color: #a9abad;
-    padding: 0 5px 5px 5px;
+    padding: 5px;
 }
 table {
     width: 100%;
@@ -54,4 +54,8 @@ table {
     &.lastPatientInArray {
         margin-bottom: 0;
     }
+}
+.legend{
+    z-index: 9;
+    position: relative;
 }
