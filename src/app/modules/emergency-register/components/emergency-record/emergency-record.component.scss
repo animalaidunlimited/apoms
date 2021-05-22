@@ -71,10 +71,13 @@ $standard-width: 183px;
 
 
 @media(max-width: 600px) {
-    .emergencySyncIcon .mat-icon {
-        font-size: 1.5rem;
-        color: gold;
-        cursor: default;
+    .emergencySyncIcon {
+        margin-right: 0.3rem !important;
+        .mat-icon {
+            font-size: 1.5rem;
+            color: gold;
+            cursor: default;
+        }
     }
 
     .iconWrapper {
@@ -86,7 +89,6 @@ $standard-width: 183px;
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         font-size: 1.5rem;
         cursor: pointer;
-        margin-right: 0.3rem !important;
     }
 
     .mat-icon.comment-icon{
