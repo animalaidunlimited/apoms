@@ -32,26 +32,7 @@
 
               </fieldset>
 
-              <mat-expansion-panel [expanded]="hasComments">
-
-                <mat-expansion-panel-header>
-
-                  <mat-panel-title>
-                    <p class="legend">Comments</p>
-                  </mat-panel-title>
-
-                  <mat-panel-description>
-                    <p>Add Comment</p>
-                  </mat-panel-description>
-
-                </mat-expansion-panel-header>
-
-                <mat-form-field class="mat-wrapper">
-                  <mat-label>Comments</mat-label>
-                  <textarea matInput  formControlName="caseComments"></textarea>
-                </mat-form-field>
-
-              </mat-expansion-panel>
+             
 
                 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
 
@@ -69,6 +50,11 @@
                   (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm?.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
                     description
                   </mat-icon>
+                  <div class="comment-box"  (click)="openCommentDialog(); $event.preventDefault();">
+                    <div class="comment-badge">{{hasComments ? 1 : 0}}</div>
+                    <mat-icon role="img" mattooltip="Add/Edit comment" color="primary" 
+                    class="comment-icon "> comment </mat-icon>
+                  </div>
                 </div>
 
           </div>

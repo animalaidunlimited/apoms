@@ -59,8 +59,10 @@ $standard-width: 183px;
 
 .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     font-size: 2.5rem;
-    margin-bottom: 3%;
     cursor: pointer;
+    width: auto;
+    height: auto;
+    margin-right: 0.25rem !important;
 }
 
 .disable {
@@ -84,6 +86,14 @@ $standard-width: 183px;
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         font-size: 1.5rem;
         cursor: pointer;
+        margin-right: 0.3rem !important;
+    }
+
+    .mat-icon.comment-icon{
+        font-size:1.5rem;
+    }
+    .comment-box{
+        margin-top:0.5rem;
     }
 }
 
@@ -104,6 +114,39 @@ $standard-width: 183px;
         font-size: 1.5rem;
         cursor: pointer;
     }
+    .mat-icon.comment-icon{
+        font-size:1.5rem;
+    }
 }
 
 
+.comment-icon{
+    font-size: 2.5rem;
+    height: auto;
+    width: auto;
+    display: flex;
+}
+
+.comment-box{
+    position: relative;
+    margin-top: 0.7rem;
+    display: flex;
+
+}
+.comment-badge{
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(45%, -30%);
+    background: #f44336;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: -2px 1px 2px 0 rgb(0 0 0 / 2%), -3px 4px 2px 0 rgb(1 1 1 / 25%);
+    font-weight: 600;
+}

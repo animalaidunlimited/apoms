@@ -17,11 +17,12 @@ export class EmergencyRecordCommentDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.data);
     this.caseComment.setValue(this.data.caseComment);
   }
 
   saveComment():void{
-    this.dialogRef.close({ caseComment: this.caseComment.value });
+    this.dialogRef.close(this.caseComment.value);
   }
 
   onCancel(): void {
