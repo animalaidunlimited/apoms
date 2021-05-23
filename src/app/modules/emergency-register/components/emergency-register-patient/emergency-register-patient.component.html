@@ -1,4 +1,4 @@
-<div [formGroup]="patientForm" class="patientForm">
+<div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm">
   <div class="patientFormIndex">{{patientIndex + 1}}</div>
       <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
