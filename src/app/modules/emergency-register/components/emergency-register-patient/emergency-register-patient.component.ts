@@ -118,7 +118,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
     setTimeout(()=>{
-      if(this.chipList.errorState){
+      if(this.chipList?.errorState){
         this.chipList.errorState = this.problemsArray.length > 0 ? false : true;
       }
     },1);
@@ -143,14 +143,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
   ngAfterViewInit(): void{
 
-    this.patientForm.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
-      if(this.chipList.errorState){
+    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+      if(this.chipList?.errorState){
         this.chipList.errorState = false ;
       }
     });
 
 
-    this.problemAutoComplete.panelClosingActions.subscribe(selection => {
+    this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
       if(!selection){
         this.problemRef.nativeElement.value = '';
