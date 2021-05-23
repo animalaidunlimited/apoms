@@ -1,4 +1,5 @@
 <div [formGroup]="patientForm" class="patientForm">
+  <div class="patientFormIndex">{{patientIndex + 1}}</div>
       <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
           matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
@@ -42,7 +43,7 @@
 
     
       
-        <mat-form-field   gdArea.gt-xs="tagnumber" fxFlexOrder.xs="1">
+        <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18"  gdArea.gt-xs="tagnumber" fxFlexOrder.xs="1">
           <mat-label>Tag number</mat-label>
           <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
           <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
