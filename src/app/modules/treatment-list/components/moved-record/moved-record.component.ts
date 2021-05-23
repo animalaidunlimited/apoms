@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { Priority } from 'src/app/core/models/priority';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { TreatmentListService } from '../../services/treatment-list.service';
 
 @Component({
@@ -23,6 +24,8 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
 
   allAreas!: TreatmentArea[];
+  errorMatcher = new CrossFieldErrorMatcher();
+  moveOut = false;
   movedRecords!:FormArray;
   movedRecordsGroup!: FormGroup;
   listType = '';
@@ -142,5 +145,15 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   }
 
+  toggleMoveOut(item: AbstractControl){
+
+    this.moveOut = !this.moveOut;
+
+    this.moveOut ?
+      item.get('Moved to')?.setValidators(Validators.required)
+      :
+      item.get('Moved to')?.clearValidators();
+
+  }
 
 }

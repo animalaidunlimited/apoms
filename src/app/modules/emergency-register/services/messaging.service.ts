@@ -47,11 +47,8 @@ constructor(
             return;
         }
 
-        console.log(payload.data?.messageData);
 
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
-
-
 
         // This is a rescue message, so pass this on to the outstanding-case service
         if(message.hasOwnProperty('actionStatus')){
@@ -60,10 +57,14 @@ constructor(
 
         }
 
+        // This is an accept/reject message for treatment list records
         if(message.hasOwnProperty('messageType')){
-            this.treatmentList.receiveUpdatedRescueMessage(message);
-            // this.zone.run(() => this.currentMessage.next(payload.data));
+            this.treatmentList.receiveAcceptRejectMessage(message);
+        }
 
+        // This is a admission/movement message for treatment list records
+        if(Array.isArray(message)){
+            this.treatmentList.receiveMovementMessage(message);
         }
 
     }

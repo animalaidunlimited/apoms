@@ -5,6 +5,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_UpdateTreatmentList_MoveOut !!
 DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_UpdateTreatmentList_MoveOut (
+													IN prm_Username VARCHAR(45),		
 													IN prm_PatientId INT,
 													IN prm_TreatmentListId INT,
 													IN prm_OutTreatmentAreaId INT,
@@ -31,5 +32,7 @@ WHERE TreatmentListId = prm_TreatmentListId;
 UPDATE AAU.TreatmentList SET InTreatmentAreaId = prm_OutTreatmentAreaId WHERE PatientId = prm_PatientId AND InAccepted IS NULL;
 
 SELECT IF(ROW_COUNT() > 0, 1, 0) AS `success`;
+
+CALL AAU.sp_GetTreatmentListByPatientId(prm_Username, prm_PatientId);
 
 END $$

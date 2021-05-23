@@ -36,14 +36,6 @@ interface Column{
         animate(2500, style({opacity: 0}))
       ])
     ]),
-
-  //  trigger('fadeSavedIcon', [
-  //    state( 'void', style({ opacity: 0 }) ),
-  //    state( 'show', style({ opacity: 1 }) ),
-  //    state( 'hide', style({ opacity: 0 }) ),
-  //    transition('show <=> hide', animate(2000)),
-  //]),
-
       trigger('detailExpand', [
         state('collapsed', style({ height: '0px', minHeight: '0' })),
         state('expanded', style({ height: '*', paddingBottom: '20px' })),
@@ -51,12 +43,6 @@ interface Column{
       ])
   ]
 })
-
-// trigger('fadeSavedIcon', [
-//  state('show', style({ opacity: 1 })),
-//  state('hide', style({ opacity: 0 })),
-//  state('void', style({ opacity: 0 })),
-//  transition('false => true', [animate(2000)])
 
 export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -437,18 +423,6 @@ savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
   saving ? this.startSave(currentPatient) : this.endSave(currentPatient);
 
 }
-
-// getEmptyForm(currentPatient:FormGroup){
-
-//  const
-
-//  return this.fb.group({
-//    patientDetails: this.fb.group({patientId: currentPatient.get('PatientId')?.value})
-//  });
-
-//  return this.ts.getPatientDetailsForm(currentPatient);
-
-//}
 
 
 }
