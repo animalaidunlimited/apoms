@@ -21,13 +21,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   @Input() patientForm!: any;
-
-  //patientForm:FormGroup;
-
-  // @Input() patientForm!: FormGroup;
   @Output() public result = new EventEmitter<UpdateResponse>();
-  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
 
+  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
   @ViewChild('callOutcomeField',{ read: ElementRef, static:false }) callOutcomeField!: ElementRef;
 
   callOutcomes$!:Observable<CallOutcomeResponse[]>;

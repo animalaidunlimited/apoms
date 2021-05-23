@@ -27,7 +27,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private dropdown: DropdownService,
-    private treatmentList: TreatmentListService,
+    private treatmentListService: TreatmentListService,
     private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
@@ -50,7 +50,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
     this.messagingService.requestPermission();
 
-    this.treatmentList.refreshing
+    this.treatmentListService.refreshing
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(val => {
           this.refreshing = val;
@@ -61,6 +61,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(value => {
           this.currentArea = value;
+          this.treatmentListService.setCurrentArea(this.currentArea.areaId);
         });
 
     this.areas.get('date')?.valueChanges
@@ -86,7 +87,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   refreshTreatmentList(){
 
-    this.treatmentList.populateTreatmentList(this.currentArea.areaId, this.selectedDate);
+    this.treatmentListService.populateTreatmentList(this.currentArea.areaId, this.selectedDate);
     this.changeDetector.detectChanges();
 
   }

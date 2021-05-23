@@ -59,8 +59,6 @@ export class AppComponent implements OnInit{
                         this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
                     }
 
-                    console.log(event?.data?.messageData);
-
                  });
 
             }
@@ -69,7 +67,7 @@ export class AppComponent implements OnInit{
             }
 
 
-        })
+        });
 
     }
 

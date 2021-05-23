@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
@@ -16,12 +16,20 @@ interface AcceptRejectMove{
   accepted: boolean;
 }
 
+interface TreatmentListMovement {
+  recordType: string;
+  currentAreaId: number;
+  treatmentPatient: ReportPatientRecord;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 
 
 export class TreatmentListService extends APIService {
+
+  currentAreaId:number | undefined;
 
   endpoint = 'TreatmentList';
 
@@ -31,29 +39,36 @@ export class TreatmentListService extends APIService {
   treatmentListForm:FormGroup;
 
   acceptedFormArray: FormArray;
+  movedListFormArray: FormArray;
 
   constructor(public http: HttpClient,
     private snackbar: SnackbarService,
     private patientService: PatientService,
+    private zone: NgZone,
     private fb: FormBuilder) {
     super(http);
 
     this.treatmentListForm = this.getEmptyTreatmentForm();
 
     this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+    this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
 
     this.treatmentListObject = new BehaviorSubject<FormGroup>(this.treatmentListForm);
 
 }
 
-public receiveUpdatedRescueMessage(message:any){
+public setCurrentArea(areaId:number){
+  this.currentAreaId = areaId;
+}
 
-    if(message?.action === 'accept/reject'){
-
-      const acceptReject: AcceptRejectMove = message;
+public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
       // Find it in the accepted list
       const removeIndex = this.acceptedFormArray.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === acceptReject.patientId);
+
+      if(removeIndex === -1){
+        return;
+      }
 
       const patientToMove = this.acceptedFormArray.at(removeIndex);
 
@@ -67,37 +82,97 @@ public receiveUpdatedRescueMessage(message:any){
 
         const movedListIndex = movedLists.controls.findIndex(currentList => currentList.get('listType')?.value === 'rejected from');
 
-        if(movedListIndex === -1){
-
-          const rejectedList = this.fb.group({
-            listType: 'rejected from',
-            movedList: this.fb.array([patientToMove])
-          });
-
-          movedLists.push(rejectedList);
-
-        }
-        else {
-
+        // If the list exists then push the new patient, otherwise create a new list
+        movedListIndex === -1 ?
+          movedLists.push(this.getEmptyMovedList('rejected from', this.fb.array([patientToMove])))
+          :
           ((movedLists.at(movedListIndex) as FormArray).get('movedList') as FormArray).push(patientToMove);
-
-        }
 
       }
 
       if(patientToMove.get('Actioned by area')?.value === acceptReject.actionedByArea || patientToMove.get('Moved to')?.value){
-        // Remove it from the accepted list
+        // Remove it from the accepted list if we need to
         this.acceptedFormArray.removeAt(removeIndex);
+
+      }
+
+    this.sortTreatmentList();
+    this.emitTreatmentObject();
+
+}
+
+  public receiveMovementMessage(movementRecord: TreatmentListMovement[]) {
+
+    movementRecord.forEach(patient => {
+
+      // We only need to worry about messages for the area we're looking at already.
+      if (patient.currentAreaId !== this.currentAreaId) {
+        return;
+      }
+
+      // Try and find the patient in the accepted array, if it doesn't exist, add it in, if it does exist update it
+      if (patient.recordType === 'accepted') {
+
+        const patientFoundIndex = this.acceptedFormArray.controls.findIndex(existingPatient => existingPatient.get('PatientId')?.value
+          ===
+          patient.treatmentPatient.PatientId);
+
+        patientFoundIndex === -1 ?
+          this.addAcceptedRecord(patient.treatmentPatient) :
+          this.updateAcceptedRecord(patient.treatmentPatient, patientFoundIndex);
+
+      }
+      else {
+
+
+        // Now we need to search through the lists to find a home for the incoming record. We may already have it because multiple people
+        // could be working on the same list at the same time.
+        const listParent = this.movedListFormArray.controls.find(movedList => movedList.get('listType')?.value === patient.recordType);
+
+        if(listParent){
+
+          const foundList = (listParent?.get('movedList') as FormArray);
+
+          const patientFound = foundList.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === patient.treatmentPatient.PatientId);
+
+          foundList.controls.splice(patientFound, patientFound > -1 ? 1 : 0, this.hydrateEmptyPatient(patient.treatmentPatient));
+
+        }
+        else {
+
+          const newList = this.fb.array([this.hydrateEmptyPatient(patient.treatmentPatient)]);
+
+          this.movedListFormArray.push(this.getEmptyMovedList(patient.recordType, newList));
+
+        }
 
       }
 
       this.sortTreatmentList();
       this.emitTreatmentObject();
 
-    }
+
+    });
+  }
+
+  private addAcceptedRecord(patient: ReportPatientRecord) {
+      this.acceptedFormArray.push(this.hydrateEmptyPatient(patient));
+  }
 
 
-}
+  private updateAcceptedRecord(patient: ReportPatientRecord, index: number) {
+
+    this.acceptedFormArray.controls.splice(index, 1, this.hydrateEmptyPatient(patient));
+  }
+
+  private hydrateEmptyPatient(patient: ReportPatientRecord) {
+
+    const newRecord = this.getEmptyPatient();
+
+    newRecord.patchValue(patient);
+    return newRecord;
+  }
+
 
 public async getTreatmentListPatientCount(): Promise<PatientCountInArea[] | null>{
   const request = '?CountPatient';
@@ -169,13 +244,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       }
       else {
 
-        // movedLists.removeControl(list.treatmentListType);
-        const newList = this.fb.group({
-          listType: list.treatmentListType
-        });
-        newList.addControl('movedList', treatmentListArray);
-
-        movedLists.push(newList);
+        movedLists.push(this.getEmptyMovedList(list.treatmentListType, treatmentListArray));
 
       }
 
@@ -186,6 +255,14 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
     this.emitTreatmentObject();
 
+  }
+
+  private getEmptyMovedList(listType: string, treatmentListArray: FormArray) {
+
+    const newList = this.fb.group({listType});
+
+    newList.addControl('movedList', treatmentListArray);
+    return newList;
   }
 
   getEmptyTreatmentForm(): FormGroup {
@@ -217,9 +294,10 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
   private emitTreatmentObject(){
 
     this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+    this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
 
-    this.treatmentListObject.next(this.treatmentListForm);
-    this.refreshing.next(false);
+    this.zone.run(() => this.treatmentListObject.next(this.treatmentListForm));
+    this.zone.run(() => this.refreshing.next(false));
 
   }
 
