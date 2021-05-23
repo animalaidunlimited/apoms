@@ -54,7 +54,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
-  patientForm!: FormGroup;
+  patientForm: FormGroup = new FormGroup({}); 
   problemInput = new FormControl();
   problemsArray!: FormArray;
   problemsExclusions!: string[];
@@ -89,11 +89,12 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private userOptions: UserOptionsService,
   ) {
 
-    this.patientForm = this.patientFormInput as FormGroup;
+    
    }
 
   ngOnInit(): void {
 
+    this.patientForm = this.patientFormInput as FormGroup;
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -247,7 +248,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-
+    
    setTimeout(() =>{
       if(this.animalType?.value === '')
       {

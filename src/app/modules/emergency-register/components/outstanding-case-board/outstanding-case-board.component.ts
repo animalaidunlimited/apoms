@@ -128,7 +128,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   refreshColour:ThemePalette = 'primary';
   refreshColour$!:BehaviorSubject<ThemePalette>;
 
-  refreshForm:FormGroup = new FormGroup({});
+ /*  refreshForm:FormGroup = new FormGroup({}); */
   removable = true;
 
   outstandingCases!:OutstandingCase[];
@@ -214,10 +214,10 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       searchTerm: ['']
     });
 
-    this.refreshForm = this.fb.group({
+/*     this.refreshForm = this.fb.group({
       autoRefreshEnabled: [false, Validators.requiredTrue],
       updateRequired: [false, Validators.requiredTrue]
-    });
+    }); */
 
     this.initialiseBoard();
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
