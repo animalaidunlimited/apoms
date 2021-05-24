@@ -50,7 +50,7 @@ describe('AuthGuard', () => {
     describe('canActivate', () => {
         it('set the redirectUrl to null and return true', () => {
 
-            spyOn(service, 'isLogged').and.returnValue(true);
+            spyOnProperty(service.loggedIn, 'value', 'get').and.returnValue(true);
 
             expect(
                 guard.canActivate(
@@ -64,7 +64,7 @@ describe('AuthGuard', () => {
 
         it('should set the redirectUrl, call router.navigate, and return false', fakeAsync(() => {
             spyOn(router, 'navigate');
-            spyOn(service, 'isLogged').and.returnValue(false);
+            spyOnProperty(service.loggedIn, 'value', 'get').and.returnValue(false);
 
             expect(
                 guard.canActivate(
