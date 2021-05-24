@@ -7,7 +7,9 @@ DELIMITER $$
 -- CALL AAU.sp_InsertTreatmentListRecord(98820, 1, 10, '2021-04-27', NULL, NULL);
 -- ROLLBACK TRANSACTION
 
-CREATE PROCEDURE AAU.sp_InsertTreatmentListRecord (	IN prm_PatientId INT,
+CREATE PROCEDURE AAU.sp_InsertTreatmentListRecord (
+													IN prm_Username VARCHAR(45),
+													IN prm_PatientId INT,
 													IN prm_Admission TINYINT,
 													IN prm_InTreatmentAreaId INT,
 													IN prm_InDate DATETIME,
@@ -66,7 +68,7 @@ ELSE
 
 END IF;
 
-CALL AAU.sp_GetTreatmentListByPatientId(prm_PatientId);
+CALL AAU.sp_GetTreatmentListByPatientId(prm_Username, prm_PatientId);
 
 END $$
 
