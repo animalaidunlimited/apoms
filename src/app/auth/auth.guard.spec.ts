@@ -74,7 +74,7 @@ describe('AuthGuard', () => {
             ).toEqual(false);
             expect(service.redirectUrl).toEqual('fakeUrl');
             tick(10);
-            expect(router.navigate).toHaveBeenCalledWith(['/nav/home']);
+            expect(router.navigate).toHaveBeenCalledWith([ '' ]);
         }));
     });
 });

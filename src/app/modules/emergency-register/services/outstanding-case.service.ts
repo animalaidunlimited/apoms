@@ -1,12 +1,10 @@
-import { Injectable, NgZone, ComponentFactoryResolver } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { map } from 'rxjs/operators';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
-import { Caller } from 'src/app/core/models/responses';
-import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 @Injectable({
   providedIn: 'root'
