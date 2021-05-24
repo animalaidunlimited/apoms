@@ -54,7 +54,6 @@ constructor(
         if(message.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
-
         }
 
         // This is an accept/reject message for treatment list records

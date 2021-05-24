@@ -13,6 +13,7 @@ interface AcceptRejectMove{
   action: string;
   patientId: number;
   actionedByArea: string;
+  actionedByAreaId: number;
   accepted: boolean;
 }
 
@@ -66,17 +67,13 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
       // Find it in the accepted list
       const removeIndex = this.acceptedFormArray.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === acceptReject.patientId);
 
-      if(removeIndex === -1){
-        return;
-      }
-
       const patientToMove = this.acceptedFormArray.at(removeIndex);
 
       // Move it from the accepted list to the rejected list if we need to
-      if(!acceptReject.accepted){
+      if(!acceptReject.accepted && this.currentAreaId !== acceptReject.actionedByAreaId){
 
-        patientToMove.get('Actioned by area')?.setValue(acceptReject.actionedByArea);
-        patientToMove.get('Moved to')?.setValue(null);
+        patientToMove?.get('Actioned by area')?.setValue(acceptReject.actionedByArea);
+        patientToMove?.get('Moved to')?.setValue(null);
 
         const movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
@@ -89,8 +86,30 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
           ((movedLists.at(movedListIndex) as FormArray).get('movedList') as FormArray).push(patientToMove);
 
       }
+      else {
+        // It's an acceptance so let's find it in the movement records and then shift it to the correct location
 
-      if(patientToMove.get('Actioned by area')?.value === acceptReject.actionedByArea || patientToMove.get('Moved to')?.value){
+        this.movedListFormArray.controls.forEach(movedList => {
+
+          const currentList = movedList.get('movedList') as FormArray;
+
+          const foundPatient = currentList.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === acceptReject.patientId);
+
+          if(foundPatient > -1) {
+            const movedPatient = currentList.at(foundPatient);
+
+            if(removeIndex === -1) {
+
+              this.acceptedFormArray.push(movedPatient);
+            }
+            currentList.removeAt(foundPatient);
+          }
+
+        });
+
+      }
+
+      if((patientToMove?.get('Actioned by area')?.value === acceptReject.actionedByArea || patientToMove?.get('Moved to')?.value) && removeIndex > -1){
         // Remove it from the accepted list if we need to
         this.acceptedFormArray.removeAt(removeIndex);
 
@@ -105,11 +124,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
     movementRecord.forEach(patient => {
 
-      // We only need to worry about messages for the area we're looking at already.
-      if (patient.currentAreaId !== this.currentAreaId) {
-        return;
-      }
-
       // Try and find the patient in the accepted array, if it doesn't exist, add it in, if it does exist update it
       if (patient.recordType === 'accepted') {
 
@@ -117,9 +131,16 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
           ===
           patient.treatmentPatient.PatientId);
 
-        patientFoundIndex === -1 ?
-          this.addAcceptedRecord(patient.treatmentPatient) :
-          this.updateAcceptedRecord(patient.treatmentPatient, patientFoundIndex);
+        if (patient.currentAreaId !== this.currentAreaId && patientFoundIndex > -1) {
+          this.acceptedFormArray.removeAt(patientFoundIndex);
+        }
+        else if(patient.currentAreaId === this.currentAreaId) {
+
+          patientFoundIndex === -1 ?
+            this.addAcceptedRecord(patient.treatmentPatient) :
+            this.updateAcceptedRecord(patient.treatmentPatient, patientFoundIndex);
+        }
+
 
       }
       else {
@@ -135,10 +156,21 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
           const patientFound = foundList.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === patient.treatmentPatient.PatientId);
 
-          foundList.controls.splice(patientFound, patientFound > -1 ? 1 : 0, this.hydrateEmptyPatient(patient.treatmentPatient));
+          if (patient.currentAreaId !== this.currentAreaId) {
+
+            if(patientFound > -1) {
+              foundList.removeAt(patientFound);
+            }
+
+          }
+          else {
+
+            foundList.controls.splice(patientFound, patientFound > -1 ? 1 : 0, this.hydrateEmptyPatient(patient.treatmentPatient));
+
+          }
 
         }
-        else {
+        else if(patient.currentAreaId === this.currentAreaId) {
 
           const newList = this.fb.array([this.hydrateEmptyPatient(patient.treatmentPatient)]);
 

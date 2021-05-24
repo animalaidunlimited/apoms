@@ -21,6 +21,7 @@ Purpose: Procedure for updating accepting a moved in record from another area. T
 DECLARE vSuccess INT;
 DECLARE vSocketEndpoint VARCHAR(64);
 DECLARE vRejectedFrom VARCHAR(100);
+DECLARE vRejectedFromTreatmentAreaId INT;
 SET vSuccess = 0;
 
 SELECT SocketEndPoint INTO vSocketEndPoint
@@ -28,7 +29,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT ta.Area INTO vRejectedFrom FROM AAU.TreatmentList tl
+SELECT ta.AreaId, ta.Area INTO vRejectedFromTreatmentAreaId, vRejectedFrom FROM AAU.TreatmentList tl
 INNER JOIN AAU.TreatmentArea ta ON ta.AreaId = tl.InTreatmentAreaId WHERE tl.TreatmentListId = prm_TreatmentListId;
 
 IF prm_Accepted = TRUE THEN
@@ -58,6 +59,6 @@ WHERE	PatientId = prm_PatientId AND
         
 
 
-SELECT vSuccess AS success, vSocketEndPoint as socketEndPoint, vRejectedFrom as actionedByArea;
+SELECT vSuccess AS success, vSocketEndPoint as socketEndPoint, vRejectedFrom as actionedByArea, vRejectedFromTreatmentAreaId as actionedByAreaId;
 
 END $$
