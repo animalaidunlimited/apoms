@@ -3,13 +3,15 @@
         width:unset;
     }
 }
-
+.legend{
+    position: relative;
+    z-index: 9;
+}
 .form-sub-group{
-    padding:10px;
+    padding:5px 10px 5px;
 }
 
 .addCallerButton{
-    margin-left: calc(50% - 15px);
     margin-top: -7px;
     width: 30px;
     height: 30px;
@@ -17,10 +19,14 @@
         font-size:1rem;
     }
 }
-
+.callerArray {
+    margin-bottom: 1rem;
+    &.lastCallerInArray {
+        margin-bottom: 0;
+    }
+}
 @media (max-width:600px){
     .addCallerButton{
-        margin-left: calc(50% - 15px);
         margin-top: -7px;
         width: 30px;
         height: 30px;

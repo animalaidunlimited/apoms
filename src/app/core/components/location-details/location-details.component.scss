@@ -5,3 +5,12 @@
     }
 
 }
+@media(min-width: 600px) {
+
+    .locationWrapper {
+        max-height: 3rem;
+    }
+    ::ng-deep google-map#googlemap .map-container{
+        height: 7rem !important;
+    }
+}
