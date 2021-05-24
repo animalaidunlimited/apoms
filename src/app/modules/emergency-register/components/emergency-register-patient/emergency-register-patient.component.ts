@@ -54,7 +54,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
-  patientForm!: FormGroup;
+  patientForm: FormGroup = new FormGroup({}); 
   problemInput = new FormControl();
   problemsArray!: FormArray;
   problemsExclusions!: string[];
@@ -89,13 +89,12 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private userOptions: UserOptionsService,
   ) {
 
-
+    
    }
 
   ngOnInit(): void {
 
     this.patientForm = this.patientFormInput as FormGroup;
-
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -119,7 +118,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
     setTimeout(()=>{
-      if(this.chipList.errorState){
+      if(this.chipList?.errorState){
         this.chipList.errorState = this.problemsArray.length > 0 ? false : true;
       }
     },1);
@@ -144,14 +143,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
   ngAfterViewInit(): void{
 
-    this.patientForm.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
-      if(this.chipList.errorState){
+    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+      if(this.chipList?.errorState){
         this.chipList.errorState = false ;
       }
     });
 
 
-    this.problemAutoComplete.panelClosingActions.subscribe(selection => {
+    this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
       if(!selection){
         this.problemRef.nativeElement.value = '';
@@ -249,7 +248,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-
+    
    setTimeout(() =>{
       if(this.animalType?.value === '')
       {

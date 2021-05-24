@@ -1,7 +1,7 @@
-<fieldset [formGroup]="recordForm" class="form-sub-group" fxLayout="column" >
+<fieldset [formGroup]="recordForm" class="form-sub-group" >
     <legend class="legend">Patient details</legend>
 
-        <div style="width: auto;" fxFlex formArrayName="patients" *ngFor="let patient of patients?.controls; let patientIndex = index">
+        <div formArrayName="patients" class="patientsForm" *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;"  [ngClass]="{'lastPatientInArray': last}">
             <app-emergency-register-patient
                 [patientFormInput]="patient"
                 [patientIndex]="patientIndex"

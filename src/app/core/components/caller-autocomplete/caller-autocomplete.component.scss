@@ -16,10 +16,10 @@
 {
     .callerForm {
         border-radius: 0.5rem;
-        margin-bottom: 1rem;
         box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
         padding: 0 25px 0 5px;
         position: relative;
+        align-items: baseline;
         width: auto;
         .mat-form-field{
             flex-grow: 1;
@@ -42,15 +42,18 @@
     .callerForm {
         border-radius: 0.5rem;
         box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
-        margin-bottom: 20px;
+        align-items: baseline;
+        position: relative;
         padding: 5px;
     }
     button.mat-focus-indicator.deleteCallerButton {
         width: 25px;
         height: 25px;
-        position: relative;
-        top: -87px;
-        left: 8px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(34%, -50%);
+        margin-top:0;
 
         .mat-icon {
             position: absolute;

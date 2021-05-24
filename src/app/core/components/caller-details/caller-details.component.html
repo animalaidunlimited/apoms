@@ -4,7 +4,7 @@
 
     <div>
 
-      <div formArrayName="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index">
+      <div formArrayName="callerArray" class="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index;let last = last;" [ngClass]="{'lastCallerInArray': last}">
 
         <app-caller-autocomplete
         [incomingCallerForm]="caller"
@@ -13,9 +13,11 @@
         (isPrimary)="primaryCaller($event)"></app-caller-autocomplete>
     </div>
 
-    <button class="addCallerButton" type="button" (click)="addCaller($event)" mat-mini-fab color="primary">
-      <mat-icon>add</mat-icon>
-    </button>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <button class="addCallerButton" type="button" (click)="addCaller($event)" mat-mini-fab color="primary">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
   </div>
 
   </fieldset>

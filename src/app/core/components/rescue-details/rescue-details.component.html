@@ -1,9 +1,9 @@
-<form [formGroup]="rescueDetails">
+<form [formGroup]="rescueDetails" fxLayout.gt-sm="row" fxLayoutGap="20">
 
     <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
             <mat-form-field>
-                <mat-label>Driver</mat-label>
+                <mat-label>Rescuer 1</mat-label>
                     <mat-select tabindex="12" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
                     <mat-option>N/A</mat-option>
                         <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
@@ -13,7 +13,7 @@
             </mat-form-field>
 
             <mat-form-field>
-                    <mat-label>Worker</mat-label>
+                    <mat-label>Rescuer 2</mat-label>
                         <mat-select tabindex="13" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
                             <mat-option>N/A</mat-option>
                             <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
