@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { MaterialModule } from 'src/app/material-module';
+import { environment } from 'src/environments/environment';
 
 import { TreatmentListService } from './treatment-list.service';
 
