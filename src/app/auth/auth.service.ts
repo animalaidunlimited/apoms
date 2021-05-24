@@ -95,6 +95,10 @@ export class AuthService extends APIService {
         );
     }
 
+    public isLogged() : boolean {
+        return false;
+    }
+
     public getOrganisationSocketEndPoint() {
         return this.storage.read('SOCKET_END_POINT');
     }

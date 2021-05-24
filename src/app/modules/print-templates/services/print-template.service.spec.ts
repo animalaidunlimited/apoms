@@ -24,16 +24,19 @@ describe('PrintTemplatesService', () => {
           },
       ])
       ],
+      providers: [
+        { provide: FormBuilder, useValue: formBuilder }
+      ]
 
     });
 
+  });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-      service = TestBed.inject(PrintTemplateService);
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    service = TestBed.inject(PrintTemplateService);
 
   }));
 
-  });
 
   it('should be created', () => {
     expect(service).toBeTruthy();

@@ -11,10 +11,12 @@ import {
     RouterStateSnapshot,
 } from '@angular/router';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 class MockAuthService {
     redirectUrl = '';
     token = '';
+    loggedIn = new BehaviorSubject(true);
 
     isLogged() {
         return '';
@@ -72,9 +74,13 @@ describe('AuthGuard', () => {
                     { url: 'fakeUrl' } as RouterStateSnapshot,
                 ),
             ).toEqual(false);
+
             expect(service.redirectUrl).toEqual('fakeUrl');
+
             tick(10);
+
             expect(router.navigate).toHaveBeenCalledWith([ '' ]);
+
         }));
     });
 });

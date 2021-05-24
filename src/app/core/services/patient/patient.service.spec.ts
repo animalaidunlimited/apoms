@@ -17,7 +17,10 @@ describe('PatientService', () => {
                 FormsModule,
                 ReactiveFormsModule
             ],
-            providers: [PatientService],
+            providers: [
+                PatientService,
+                { provide: FormBuilder, useValue: formBuilder }
+            ],
         }),
     );
 
