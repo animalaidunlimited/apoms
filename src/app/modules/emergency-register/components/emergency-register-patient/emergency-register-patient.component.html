@@ -1,6 +1,6 @@
 <div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm">
   <div class="patientFormIndex">{{patientIndex + 1}}</div>
-      <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
+      <mat-form-field gdArea.gt-sm="species" ngStyle.gt-sm="margin-top: 1.2em; min-height: 4.1em;" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
           matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
           (keydown.Tab)="isSpeciesBlank($event);false;" (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
