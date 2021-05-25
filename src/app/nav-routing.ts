@@ -154,13 +154,14 @@ export class NavRouteService {
                 }
                 this.navRoutes.next(this.getNavRouteList() || []);
             });
-            
+
         });
 
 
     }
 
     getNavRouteList() {
+       
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 
@@ -188,7 +189,7 @@ export class NavRouteService {
             }, []);
     }
 
-    
+
     getNavRoutes(): BehaviorSubject<NavRoute[]>{
         return this.navRoutes;
     }

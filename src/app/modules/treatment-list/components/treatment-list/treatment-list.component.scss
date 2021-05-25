@@ -156,6 +156,15 @@ tr.patient-element-row:not(.example-expanded-row):active {
   background: #efefef;
 }
 
+.mat-table-sticky {
+  top:56px !important;
+}
+
+.expand {
+  color: darkGray;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 600px) {
 
   .add-patient-fab{

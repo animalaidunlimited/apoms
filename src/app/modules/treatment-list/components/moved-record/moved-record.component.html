@@ -7,9 +7,9 @@
 
          <div [formGroupName]="index"
           class="unaccepted-item"
-          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px">
+          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px">
 
-        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px"
+        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
             class="unaccepted-form-fields">
 
 
@@ -24,6 +24,11 @@
               <mat-icon *ngIf="listType === 'moved in from'">swap_horiz</mat-icon>
             </button>
 
+          </div>
+
+            <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
+            class="unaccepted-form-fields">
+
 
               <mat-form-field >
                 <input matInput disabled="true" placeholder="Tag number" [value]="item.get('Tag number')?.value">
@@ -37,7 +42,11 @@
               </mat-form-field>
 
 
+
           </div>
+
+          <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+          class="button-container">
 
             <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>
@@ -48,6 +57,8 @@
               <mat-icon>highlight_off</mat-icon>
               Reject
             </button>
+
+          </div>
 
 
        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">

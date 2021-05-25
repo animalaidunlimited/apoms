@@ -19,15 +19,15 @@ export class EvaluatePermissionService {
       if(!componentPermissionArray?.length) {
         this.componentPermissionLayer = 1;
       }
-      
+
       if(componentPermissionArray?.length) {
 
         if(userPermissions) {
-          
+
           this.permissionGivenToUser = componentPermissionArray.filter((id)=>{ return userPermissions.indexOf(id) > -1; }) ;
 
         }
-        
+
         if(this.permissionGivenToUser.length && this.permissionGivenToUser[0] % 2 === 0) {
           this.componentPermissionLayer = 2;
         }
@@ -38,11 +38,10 @@ export class EvaluatePermissionService {
           this.componentPermissionLayer = 0;
         }
       }
-
       return this.componentPermissionLayer;
-      
+
     });
 
-        
+
   }
 }

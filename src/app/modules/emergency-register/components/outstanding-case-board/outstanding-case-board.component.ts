@@ -267,7 +267,6 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       });
 
         this.loading = false;
-        console.log("Detecting changes");
         this.changeDetector.detectChanges();
     });
 

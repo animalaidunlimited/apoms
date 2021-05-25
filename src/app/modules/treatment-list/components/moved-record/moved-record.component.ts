@@ -8,6 +8,7 @@ import { Priority } from 'src/app/core/models/priority';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { TreatmentListService } from '../../services/treatment-list.service';
 
@@ -35,6 +36,7 @@ export class MovedRecordComponent implements OnInit, OnChanges {
   constructor(
     private ts: TreatmentListService,
     private dropdown: DropdownService,
+    private snackbar: SnackbarService,
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -73,6 +75,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   acceptMove(currentPatient: AbstractControl) : void {
 
+    if(!this.ts.hasPermission.value){
+      this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+      return;
+    }
+
       this.ts.acceptRejectMoveIn(currentPatient, true).then(() => {
         this.changeDetector.detectChanges();
       });
@@ -97,6 +104,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
     .pipe(take(1))
     .subscribe((confirmed: boolean) => {
     if (confirmed) {
+
+      if(!this.ts.hasPermission.value){
+        this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+        return;
+      }
 
       this.ts.acceptRejectMoveIn(currentPatient, false).then(() => {
         this.changeDetector.detectChanges();
@@ -125,6 +137,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
     .pipe(take(1))
     .subscribe((confirmed: boolean) => {
     if (confirmed) {
+
+      if(!this.ts.hasPermission.value){
+        this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+        return;
+      }
 
       this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then((result:SuccessOnlyResponse) => {
 

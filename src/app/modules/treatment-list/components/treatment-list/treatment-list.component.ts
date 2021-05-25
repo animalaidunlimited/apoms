@@ -189,6 +189,11 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   updateTreatmentPriority(patient: AbstractControl){
 
+    if(!this.ts.hasPermission.value){
+      this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+      return;
+    }
+
     this.startSave(patient);
 
     const updatePatient = this.patientService.getUpdatePatientObject(patient);
@@ -351,6 +356,11 @@ openHospitalManagerRecord(tagNumber: string){
 
 quickUpdate(row:AbstractControl) {
 
+  if(!this.ts.hasPermission.value){
+    this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+    return;
+  }
+
 
 
   const dialogRef = this.dialog.open(PatientEditDialog, {
@@ -387,6 +397,11 @@ areaChanged(areaId:number|undefined, index: number){
 }
 
 moveOut(currentPatient: AbstractControl) : void {
+
+  if(!this.ts.hasPermission.value){
+    this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+    return;
+  }
 
   this.startSave(currentPatient);
 

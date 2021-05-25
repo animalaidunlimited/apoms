@@ -30,17 +30,17 @@ interface TreatmentListMovement {
 
 export class TreatmentListService extends APIService {
 
+  acceptedFormArray: FormArray;
   currentAreaId:number | undefined;
 
   endpoint = 'TreatmentList';
 
-  treatmentListObject: BehaviorSubject<FormGroup>;
-  refreshing = new BehaviorSubject<boolean>(false);
-
-  treatmentListForm:FormGroup;
-
-  acceptedFormArray: FormArray;
+  hasPermission = new BehaviorSubject<boolean>(false);
   movedListFormArray: FormArray;
+
+  refreshing = new BehaviorSubject<boolean>(false);
+  treatmentListForm:FormGroup;
+  treatmentListObject: BehaviorSubject<FormGroup>;
 
   constructor(public http: HttpClient,
     private snackbar: SnackbarService,
@@ -60,6 +60,10 @@ export class TreatmentListService extends APIService {
 
 public setCurrentArea(areaId:number){
   this.currentAreaId = areaId;
+}
+
+public setHasPermission(hasPermission: boolean){
+  this.hasPermission.next(hasPermission);
 }
 
 public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
@@ -407,6 +411,10 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
 
 public async movePatientOutOfArea(currentPatient:AbstractControl, areaId: number){
+
+  if(!this.hasPermission){
+
+  }
 
   const updatedPatient:TreatmentAreaChange = {
     treatmentListId: currentPatient.get('treatmentListId')?.value,
