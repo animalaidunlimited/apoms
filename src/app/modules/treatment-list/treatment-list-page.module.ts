@@ -7,6 +7,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { TreatmentListComponent } from './components/treatment-list/treatment-list.component';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { MovedRecordComponent } from './components/moved-record/moved-record.component';
+import { PatientDetailsModule } from '../hospital-manager/components/patient-details/patient-details.module';
 
 
 
@@ -20,6 +21,7 @@ import { MovedRecordComponent } from './components/moved-record/moved-record.com
   imports: [
     CommonModule,
     TreatmentListPageRoutingModule,
+    PatientDetailsModule,
     MaterialModule
   ]
 })

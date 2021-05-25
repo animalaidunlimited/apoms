@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { MediaPasteService } from './media-paste.service';
 
@@ -15,6 +16,8 @@ describe('MediaPasteService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase)
       ],

@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from 'src/app/nav-routing';
 
@@ -8,10 +9,14 @@ import { PrintTemplateService } from './print-template.service';
 describe('PrintTemplatesService', () => {
   let service: PrintTemplateService;
 
+  const formBuilder: FormBuilder = new FormBuilder();
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {
               path: sideNavPath,
@@ -19,10 +24,19 @@ describe('PrintTemplatesService', () => {
           },
       ])
       ],
+      providers: [
+        { provide: FormBuilder, useValue: formBuilder }
+      ]
 
     });
-    service = TestBed.inject(PrintTemplateService);
+
   });
+
+  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    service = TestBed.inject(PrintTemplateService);
+
+  }));
+
 
   it('should be created', () => {
     expect(service).toBeTruthy();

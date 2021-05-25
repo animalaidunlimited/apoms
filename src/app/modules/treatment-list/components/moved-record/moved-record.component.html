@@ -39,7 +39,7 @@
 
           </div>
 
-            <button mat-button class="accept-button" (click)="acceptMove(item)">
+            <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>
               Accept
             </button>
@@ -50,12 +50,17 @@
             </button>
 
 
-        <!--<div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;" *ngIf="listType === 'rejected from' || listType === 'admission'">-->
-        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
+       <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
+
+        <button mat-button class="moveout-button" (click)="toggleMoveOut(item)">
+          <mat-icon>arrow_right_alt</mat-icon>
+          Move out
+        </button>
 
 
-          <mat-form-field>
+        <mat-form-field *ngIf="moveOut">
           <mat-select
+          [errorStateMatcher]="errorMatcher"
           (selectionChange)="areaChanged(item, index)"
           [placeholder]="movedAction"
           formControlName="Moved to">
@@ -67,8 +72,6 @@
 
         <mat-spinner *ngIf="item.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
         <mat-icon [@fadeSavedIcon]="item.get('saved')?.value" *ngIf="item.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
-
-        <!--<mat-icon *ngIf="!row.get('saved')?.value && !row.get('saving')?.value" class="saved-icon"></mat-icon>-->
 
       </div>
 

@@ -154,10 +154,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         });
     }
 
-    showForm(){
-        console.log(this.recordForm);
-    }
-
     resetForm() {
 
 
