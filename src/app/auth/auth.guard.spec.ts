@@ -79,7 +79,7 @@ describe('AuthGuard', () => {
 
             tick(10);
 
-            expect(router.navigate).toHaveBeenCalledWith([ '' ]);
+            expect(router.navigate).toHaveBeenCalledWith(['']);
 
         }));
     });
