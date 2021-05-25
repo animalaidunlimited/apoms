@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
+import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +23,7 @@ constructor(
     private angularFireMessaging: AngularFireMessaging,
     private authService: AuthService,
     private zone: NgZone,
+    private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
     http: HttpClient) {
         super(http);
@@ -48,10 +50,19 @@ constructor(
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
 
         // This is a rescue message, so pass this on to the outstanding-case service
-        if(message.hasOwnProperty('actionStatus')){
+        if(message?.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
+        }
 
+        // This is an accept/reject message for treatment list records
+        if(message?.hasOwnProperty('messageType')){
+            this.treatmentList.receiveAcceptRejectMessage(message);
+        }
+
+        // This is a admission/movement message for treatment list records
+        if(Array.isArray(message)){
+            this.treatmentList.receiveMovementMessage(message);
         }
 
     }
@@ -96,14 +107,21 @@ constructor(
         // send the token to the server and subscribe it to the relevant topics
         const organisation = this.authService.getOrganisationSocketEndPoint();
 
-        const subscriptionBody = {
+        const subscriptionBodyAssignment = {
             token,
             topic: `${organisation}_UPDATING_ASSIGNMENT`
         };
 
-        const result = await this.post(subscriptionBody);
+        const assignmentResult = await this.post(subscriptionBodyAssignment);
 
-        return result;
+        const subscriptionBodyTreatmentList = {
+            token,
+            topic: `${organisation}_UPDATING_TREATMENT_LIST`
+        };
+
+        const treatmentListResult = await this.post(subscriptionBodyTreatmentList);
+
+        return [assignmentResult, treatmentListResult];
 
     }
 
@@ -115,15 +133,23 @@ constructor(
 
         const organisation = this.authService.getOrganisationSocketEndPoint();
 
-        const unsubscribe = {
+        const unsubscribeAssignment = {
                             unsubscribe: 'true',
                             token:  this.token,
                             topic: `${organisation}_UPDATING_ASSIGNMENT`
                         };
 
-        const result = await this.post(unsubscribe);
+        const assignmentResult = await this.post(unsubscribeAssignment);
 
-        return result;
+        const unsubscribeTreatmentList = {
+            unsubscribe: 'true',
+            token:  this.token,
+            topic: `${organisation}_UPDATING_ASSIGNMENT`
+        };
+
+        const treatmentListResult = await this.post(unsubscribeTreatmentList);
+
+        return [assignmentResult, treatmentListResult];
 
     }
 }

@@ -33,7 +33,7 @@ export class UIErrorHandler extends ErrorHandler {
   handleError(error:any) {
     super.handleError(error);
     // TODO Style these errors properly and provide them in a dialog with more info about what to do.
-    console.log(`Error occurred:${error}`);
+    console.log(`Error occurred: ${error}`);
   }
 }
 

@@ -5,6 +5,7 @@ import { take, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { MessagingService } from '../../emergency-register/services/messaging.service';
 import { PrintTemplateService } from '../../print-templates/services/print-template.service';
 import { TreatmentListService } from '../services/treatment-list.service';
 
@@ -26,7 +27,8 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private dropdown: DropdownService,
-    private treatmentList: TreatmentListService,
+    private treatmentListService: TreatmentListService,
+    private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
     private fb: FormBuilder) {
@@ -46,7 +48,9 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.treatmentList.refreshing
+    this.messagingService.requestPermission();
+
+    this.treatmentListService.refreshing
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(val => {
           this.refreshing = val;
@@ -57,6 +61,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(value => {
           this.currentArea = value;
+          this.treatmentListService.setCurrentArea(this.currentArea.areaId);
         });
 
     this.areas.get('date')?.valueChanges
@@ -82,7 +87,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   refreshTreatmentList(){
 
-    this.treatmentList.populateTreatmentList(this.currentArea.areaId, this.selectedDate);
+    this.treatmentListService.populateTreatmentList(this.currentArea.areaId, this.selectedDate);
     this.changeDetector.detectChanges();
 
   }

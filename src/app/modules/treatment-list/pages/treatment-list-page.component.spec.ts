@@ -2,12 +2,15 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
 import { sideNavPath } from 'src/app/nav-routing';
+import { environment } from 'src/environments/environment';
 
 import { TreatmentListPageComponent } from './treatment-list-page.component';
 
@@ -25,6 +28,8 @@ describe('TreatmentListPageComponent', () => {
       MaterialModule,
       ReactiveFormsModule,
       BrowserAnimationsModule,
+      AngularFireMessagingModule,
+      AngularFireModule.initializeApp(environment.firebase),
       RouterTestingModule.withRoutes([
         {
             path: sideNavPath,
