@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil, map } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -20,16 +21,19 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   areas!:FormGroup;
   currentArea:TreatmentArea = {areaId: 0, areaName: ''};
+  hasWritePermission = false;
   isPrinting: BehaviorSubject<boolean>;
   refreshing = false;
   selectedDate: string | Date = getCurrentDateString();
   treatmentAreas:Observable<TreatmentArea[]>;
+
 
   constructor(
     private dropdown: DropdownService,
     private treatmentListService: TreatmentListService,
     private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
+    private route: ActivatedRoute,
     private printService: PrintTemplateService,
     private fb: FormBuilder) {
 
@@ -47,6 +51,15 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
+
+      if (val.componentPermissionLevel?.value === 2) {
+
+          this.treatmentListService.setHasPermission(true);
+      }
+
+    });
 
     this.messagingService.requestPermission();
 

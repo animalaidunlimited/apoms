@@ -33,3 +33,13 @@
     width: 125px;
     cursor: default;
 }
+
+.button-container{
+  padding-bottom: 10px;
+  margin-right: 10px;
+}
+
+:host ::ng-deep .form-sub-group {
+    padding-left: 10px !important;
+    padding-right: 5px !important;
+  }

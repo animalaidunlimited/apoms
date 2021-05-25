@@ -3,3 +3,12 @@
     padding-top: 56px;
 }
 
+@media only screen and (max-width: 600px) {
+    .area-wrapper {
+        padding-top: 10px;
+        padding-left: 15px;
+        padding-bottom: 10px;
+    }
+
+
+}

@@ -146,6 +146,8 @@
 
         <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
         <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
+        <mat-icon *ngIf="expandedElement !== row" (click)="expandedElement = expandedElement === row ? null : row" class="expand">expand_more</mat-icon>
+        <mat-icon *ngIf="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row" class="expand">expand_less</mat-icon>
 
       </div>
 
@@ -168,9 +170,9 @@
 
 
 
-    <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']"></tr>
+    <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group'];"></tr>
 
-    <tr mat-header-row *matHeaderRowDef="(displayedColumns | async)"></tr>
+    <tr mat-header-row *matHeaderRowDef="(displayedColumns | async); sticky: true"></tr>
 
     <tr mat-row *matRowDef="let element; columns: (displayedColumns | async);"
       class="patient-element-row"

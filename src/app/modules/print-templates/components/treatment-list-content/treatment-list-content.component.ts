@@ -37,7 +37,7 @@ export class TreatmentListContentComponent implements OnInit {
     if(this.treatmentList?.displayColumns){
       this.displayedColumns = this.treatmentList.displayColumns;
     }
-    
+
     this.columnsExcludingIndex = this.displayedColumns.filter(column => column !== 'index');
     this.tableData.sort = this.sort;
     this.printService.onDataReady('treatment-list');

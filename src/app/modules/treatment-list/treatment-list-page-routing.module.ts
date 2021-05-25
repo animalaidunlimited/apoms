@@ -3,7 +3,13 @@ import { TreatmentListPageComponent } from './pages/treatment-list-page.componen
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [ {path:'',component:TreatmentListPageComponent,data:{shouldReuse:true,key:'treatment-list'}},  ];
+const routes: Routes = [
+  {
+    path: '',
+    data: { shouldReuse: true, key: 'treatment-list' },
+    component: TreatmentListPageComponent
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
