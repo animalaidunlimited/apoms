@@ -18,9 +18,7 @@ export class EmergencyRegisterPageComponent implements OnInit {
 
     constructor(
         private messagingService: MessagingService,
-        private emergencyTabBar: EmergencyRegisterTabBarService,
-        private outstandingCaseService: OutstandingCaseService,
-        private printService: PrintTemplateService
+        private outstandingCaseService: OutstandingCaseService
         ) {
 
             this.message = this.messagingService.currentMessage;
