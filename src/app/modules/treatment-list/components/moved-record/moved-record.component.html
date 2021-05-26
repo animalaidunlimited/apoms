@@ -61,7 +61,8 @@
           </div>
 
 
-       <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
+       <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+       class="moved-out" *ngIf="listType === 'rejected from'">
 
         <button mat-button class="moveout-button" (click)="toggleMoveOut(item)">
           <mat-icon>arrow_right_alt</mat-icon>
