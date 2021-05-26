@@ -85,8 +85,7 @@
 .mat-spinner {
   position: absolute;
   top: 25%;
-  left: 50%;
-  right: 50%;
+  right: calc(50% - 50px);
   margin-left: 50%;
   z-index: 5000;
   margin: auto;
