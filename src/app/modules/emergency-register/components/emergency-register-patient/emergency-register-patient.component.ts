@@ -77,16 +77,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
   );
 
-  treatmentAreaNames$!: Observable<TreatmentArea[]>;
-
-
-
+  
   constructor(
     private dropdown: DropdownService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private printService: PrintTemplateService,
-    private userOptions: UserOptionsService,
   ) {
 
     
@@ -97,10 +92,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientForm = this.patientFormInput as FormGroup;
     this.exclusions = this.dropdown.getExclusions();
 
-    this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
-
     this.animalType = this.patientForm?.get('animalType') as AbstractControl;
-
 
     this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
       startWith(''),
@@ -133,6 +125,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.animalTypeValueChangesUnsubscribe.next();
     this.animalTypeValueChangesUnsubscribe.complete();
   }
+  
   ngAfterViewInit(): void{
 
     this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
@@ -315,27 +308,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     }
   }
 
-  openMediaDialog(patientForm:FormGroup){
-    // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
-    const dialogRef = this.dialog.open(MediaDialogComponent, {
-      minWidth: '50%',
-      data: {
-          tagNumber: patientForm.get('tagNumber')?.value,
-          patientId: patientForm.get('patientId')?.value,
-          mediaItem: undefined
-      }
-    });
-  }
-
-  printEmergencyCard(patientForm:FormGroup){
-
-    const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
-
-    if(patientForm.get('patientId')?.value){
-      this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
-    }
-
-  }
+  
 
   deletePatient(event: Event, patientIndex: number){
     this.patientDeleted.emit(patientIndex);

@@ -1,3 +1,27 @@
+
+
+
+.elevatedFormsRepeaterFields, ::ng-deep .elevatedFormsRepeaterFields{
+    border-radius: .5rem;
+    box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 #fff;
+    position: relative;
+    padding:5px;
+}
+.elevatedFormsIndex , ::ng-deep .elevatedFormsIndex{
+    width: 1.3rem;
+    height: 1.3rem;
+    border-bottom-right-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    border-right: 1px solid #607d8bbf;
+    border-bottom: 1px solid #607d8bbf;
+    color: rgba(0, 0, 0, 0.68);
+    transform: translate(-5px, -5px);
+    margin-right: 0.5em;
+}
+
 .form-sub-group {
     border: 2px solid;
     border-radius: 5px;
@@ -39,7 +63,7 @@ table {
         width: 75%;
     }
 }
-.addPatientButton{
+.addButton{
     margin-top: -7px;
     width: 30px;
     height: 30px;
@@ -48,7 +72,12 @@ table {
     }
 }
 
-
+.patients_icons{
+    height: 2.5rem;
+    .mat-icon:not(:last-child){
+        margin: 0 0.3rem;
+    }
+}
 .patientsForm {
     margin-bottom: 1rem;
     &.lastPatientInArray {
@@ -58,4 +87,52 @@ table {
 .legend{
     z-index: 9;
     position: relative;
+}
+
+.deleteButton, ::ng-deep .deleteButton{
+    margin-top:1rem;
+    position: absolute;
+    top: -1.5rem;
+    right: -0.5rem;
+    width: 30px;
+    height: 30px;
+    .mat-icon{
+        font-size:1rem;
+    }
+}
+.patientOutcomeWrapper {
+    width: 33.3%;
+}
+.admissionAreaDivWrapper {
+    width: 33.3%;
+    
+}
+.admissionAreaWrapper.mat-form-field{
+    width:100%;
+}
+@media only screen and (max-width:767px)
+{
+    .deleteButton {
+        width:25px;
+        height: 25px;
+        .mat-icon{
+            position: absolute;
+            top: 4px;
+            left: 1px;
+            font-size: 1rem;
+        }
+    }
+}
+
+@media(max-width: 600px) {
+  
+    .patientOutcomeWrapper {
+        width: 43.9%;
+    }
+    .admissionAreaDivWrapper{
+        width: 46%;
+    }
+    .admissionAreaWrapper{
+        min-width: 100%;
+    }
 }
