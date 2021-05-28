@@ -1,7 +1,7 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutGap="20px">
 
         <mat-form-field >
             <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no."
@@ -60,6 +60,11 @@
                 </mat-option>
             </mat-select>
         </mat-form-field> -->
+        <div class="emergencyDetailsCode" [ngClass]="{
+            'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
+            'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
+            'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
+            'yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}"></div>
 
     </div>
 

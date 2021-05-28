@@ -1,6 +1,13 @@
 $colour-border: #a9abad;
 $primary-font-colour: #626262;
 
+
+@mixin dot-color($color){
+    color: $color;
+    font-size: 17px !important;
+    height: 17px !important;
+    width: 17px !important;
+  }
 .mat-radio-group {
     display: flex;
     color: $primary-font-colour;
@@ -11,4 +18,18 @@ $primary-font-colour: #626262;
 
 mat-radio-button {
     margin-right: 15px;
+}
+.dot {
+    &-red{
+        @include dot-color(red);
+    }
+    &-green {
+        @include dot-color(green);
+    }
+    &-yellow {
+        @include dot-color(gold);
+    }
+    &-grey {
+        @include dot-color(grey);
+    }
 }

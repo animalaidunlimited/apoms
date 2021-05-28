@@ -98,13 +98,14 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     ngOnInit() {
-
+        
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
+        
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.patients = this.recordForm.get('patients') as FormArray;
-
+        
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
@@ -131,9 +132,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     deletePatient(patientIndex:number) {
 
         this.patients.removeAt(patientIndex);
-    }
-    deleteCallOutcome(event: Event, patientIndex: number){
-
     }
 
     addPatientRow(){
@@ -180,7 +178,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     populatePatient(isUpdate: boolean, patient: Patient) {
 
         const problems = this.fb.array([]);
-
         patient.problems.forEach(() => {
 
             problems.push(this.fb.group({
@@ -198,7 +195,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         if(newPatient.get('admissionAccepted')?.value){
             newPatient.get('admissionArea')?.disable();
         }
-
+        
         return newPatient;
 
     }
@@ -302,22 +299,24 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe((patients: Patients) => {
-
+            
             patients.patients.forEach(patient => {
-                        // We get a 0 or 1 from the database, so need to convert to a boolean.
-                        patient.deleted = !!+patient.deleted;
+                // We get a 0 or 1 from the database, so need to convert to a boolean.
+                patient.deleted = !!+patient.deleted;
 
-                        const newPatient = this.populatePatient(true, patient);
-                        this.patients.push(newPatient);
-                    });
+                const newPatient = this.populatePatient(true, patient);
 
-                    this.recordForm.patchValue(patients);
+                this.patients.push(newPatient);
+                
+            });
+            
+            this.recordForm.patchValue(patients);
 
-                    this.setChildOutcomeAsParentPatient(this.patients);
-
-                },
-                err => console.error(err),
-                );
+            this.setChildOutcomeAsParentPatient(this.patients);
+        
+        },
+            err => console.error(err),
+        );
     }
 
 
