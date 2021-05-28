@@ -27,11 +27,11 @@
     <legend class="legend">Outcome details</legend>
     <ng-container formArrayName="patients"
     *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;">
-
       <div class="elevatedFormsRepeaterFields" fxLayout.gt-xs="row" style="margin-bottom: 1rem;">
         <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
         <div fxLayout="row wrap" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
+          {{patient.get('tagNumber')?.value}}
           <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patient"></emergency-case-outcome>
           <mat-form-field
           *ngIf="patient.get('isAdmission')?.value || patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
@@ -60,7 +60,7 @@
 
 
 
-        <button class="deleteButton" type="button" (click)="deleteCallOutcome($event, patientIndex)" mat-mini-fab
+        <button class="deleteButton" type="button" (click)="deletePatient(patientIndex)" mat-mini-fab
           color="warn">
           <mat-icon>delete</mat-icon>
         </button>

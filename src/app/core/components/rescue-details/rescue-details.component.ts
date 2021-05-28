@@ -9,6 +9,7 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
+import { EmergencyCode } from '../../models/emergency-record';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -25,6 +26,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('rescueTimeField', { read: ElementRef, static: true })
     rescueTimeField!: ElementRef;
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true })
+
+    emergencyCodes$!: Observable<EmergencyCode[]>;
     ambulanceArrivalTimeField!: ElementRef;
 
     admissionTime: AbstractControl | undefined | null;
@@ -69,6 +72,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
+        this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+
         this.recordForm.addControl(
             'rescueDetails',
             this.fb.group({
@@ -88,6 +93,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
+                console.log(rescueDetails);
                 this.zone.run(() => {
                     this.recordForm.patchValue(rescueDetails);
                 });
@@ -326,4 +332,28 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 this.result.emit(data);
             });
     }
+
+
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {
+        return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
+    }
+
+    selectEmergencyCode($event: any) {
+        // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
+        this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+            const selectedCode = codes.find((code:EmergencyCode) => {
+
+                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
+
+            });
+
+            if (selectedCode) {
+                this.recordForm
+                    .get('emergencyDetails.code')
+                    ?.setValue(selectedCode);
+            }
+        });
+    }
+
 }
