@@ -1,10 +1,11 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="baseline">
+    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutGap="20px">
 
-        <mat-form-field>
-            <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
+        <mat-form-field >
+            <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no."
+                [errorStateMatcher]="errorMatcher" matInput>
 
             <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
                 The emergency number already exists.
@@ -16,25 +17,25 @@
 
         </mat-form-field>
 
-    <mat-form-field>
-            <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
-            [max]="callDateTime"
-            [min]="minimumDate"
-            [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>Dispatcher</mat-label>
-        <mat-select tabindex="11" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
-                {{dispatcher.FirstName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field >
+        <mat-form-field fxFlex.gt-sm="1 1 100%">
+            <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime"
+                type="datetime-local" [max]="callDateTime" [min]="minimumDate" [errorStateMatcher]="errorMatcher"
+                placeholder="Call time" matInput>
+        </mat-form-field>
 
         <mat-form-field>
+            <mat-label>Dispatcher</mat-label>
+            <mat-select tabindex="11" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
+                    {{dispatcher.FirstName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- <mat-form-field>
             <mat-label>Code</mat-label>
-            <mat-select tabindex="10" formControlName="code" [errorStateMatcher]="errorMatcher" [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
+            <mat-select tabindex="10" formControlName="code" [errorStateMatcher]="errorMatcher"
+                [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
                 <mat-select-trigger *ngIf="recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId">
 
@@ -42,19 +43,23 @@
                         'dot-grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
                         'dot-red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
                         'dot-green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
-                        'dot-yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{recordForm.get('emergencyDetails.code')?.value?.EmergencyCode}}</mat-select-trigger>
+                        'dot-yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}"
+                        matSuffix>fiber_manual_record</mat-icon>
+                    {{recordForm.get('emergencyDetails.code')?.value?.EmergencyCode}}
+                </mat-select-trigger>
 
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
 
-                        <mat-icon [ngClass]="{
+                    <mat-icon [ngClass]="{
                             'dot-grey' : code.EmergencyCodeId == 4,
                             'dot-red' : code.EmergencyCodeId == 1,
                             'dot-green' : code.EmergencyCodeId == 2,
-                            'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>{{code.EmergencyCode}}
+                            'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
+                    {{code.EmergencyCode}}
 
                 </mat-option>
             </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
 
     </div>
 

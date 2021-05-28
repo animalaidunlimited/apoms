@@ -5,22 +5,39 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { Exclusions } from 'src/app/core/models/responses';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
-
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { TreatmentArea } from 'src/app/core/models/treatment-lists';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
+    // tslint:disable-next-line: component-selector
     selector: 'animal-selection',
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit,OnDestroy{
+
+    constructor(
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private cdr: ChangeDetectorRef,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private dialog: MatDialog,
+        private dropdown: DropdownService,
+    ) {}
 
     private ngUnsubscribe = new Subject();
 
@@ -58,6 +75,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     emergencyCardHTML = '';
 
+    errorMatcher = new CrossFieldErrorMatcher();
+    
+    treatmentAreaNames$!: Observable<TreatmentArea[]>;
+
     @HostListener('document:keydown.control.p', ['$event'])
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
@@ -76,15 +97,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             this.emergencyRegisterPatients.first.tagNumber.nativeElement.focus();
     }
 
-    constructor(
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private cdr: ChangeDetectorRef
-    ) {}
-
     ngOnInit() {
 
+        this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
         this.recordForm.addControl('patients', this.fb.array([]));
 
@@ -116,6 +131,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     deletePatient(patientIndex:number) {
 
         this.patients.removeAt(patientIndex);
+    }
+    deleteCallOutcome(event: Event, patientIndex: number){
+
     }
 
     addPatientRow(){
@@ -352,6 +370,26 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             });
 
     }
-
+    openMediaDialog(patientForm:FormGroup | AbstractControl){
+        // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
+        const dialogRef = this.dialog.open(MediaDialogComponent, {
+          minWidth: '50%',
+          data: {
+              tagNumber: patientForm.get('tagNumber')?.value,
+              patientId: patientForm.get('patientId')?.value,
+              mediaItem: undefined
+          }
+        });
+      }
+    
+      printEmergencyCard(patientForm:FormGroup | AbstractControl){
+    
+        const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+    
+        if(patientForm.get('patientId')?.value){
+          this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
+        }
+    
+      }
 
 }

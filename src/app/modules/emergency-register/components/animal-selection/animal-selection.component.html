@@ -1,23 +1,70 @@
-<fieldset [formGroup]="recordForm" class="form-sub-group" >
+<ng-container [formGroup]="recordForm">
+
+  <fieldset class="form-sub-group">
+
     <legend class="legend">Patient details</legend>
 
-        <div formArrayName="patients" class="patientsForm" *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;"  [ngClass]="{'lastPatientInArray': last}">
-            <app-emergency-register-patient
-                [patientFormInput]="patient"
-                [patientIndex]="patientIndex"
-                (patientDeleted)="deletePatient($event)"
-            ></app-emergency-register-patient>
-        </div>
+    <ng-container formArrayName="patients" 
+    *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;">
+      <div class="patientsForm" [ngClass]="{'lastPatientInArray': last}">
+        <app-emergency-register-patient 
+          [patientFormInput]="patient" 
+          [patientIndex]="patientIndex" 
+          (patientDeleted)="deletePatient($event)">
+        </app-emergency-register-patient>
+      </div>
+    </ng-container>
+
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button
-            #addPatientBtn
-            class="addPatientButton"
-            type="button"
-            (click)="addPatientRow()"
-            mat-mini-fab
-            color="primary"
-        >
-            <mat-icon>add</mat-icon>
-        </button>
+      <button #addPatientBtn class="addButton" type="button" (click)="addPatientRow()" mat-mini-fab color="primary">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
-</fieldset>
+
+  </fieldset>
+
+  <fieldset class="form-sub-group">
+    <legend class="legend">Outcome details</legend>
+    <ng-container formArrayName="patients"
+    *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;">
+
+      <div class="elevatedFormsRepeaterFields" fxLayout.gt-xs="row" style="margin-bottom: 1rem;">
+        <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
+
+        <div fxLayout="row wrap" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
+          <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patient"></emergency-case-outcome>
+          <mat-form-field
+          *ngIf="patient.get('isAdmission')?.value || patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
+            <mat-label>Tag number</mat-label>
+            <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+            <mat-error *ngIf="patient.get('tagNumber')?.hasError('tagNumberTaken')">
+              The tag number already exists.
+            </mat-error>
+          </mat-form-field>
+          
+          <div *ngIf="patient.get('isAdmission')?.value" class="admissionAreaDivWrapper">
+            <mat-form-field class="admissionAreaWrapper">
+              <mat-label>Admission area</mat-label>
+              <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+                <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
+                  {{areaName.areaName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="patients_icons">
+            <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patient)">add_photo_alternate</mat-icon>
+            <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patient)">print</mat-icon>
+          </div>
+        </div>
+
+
+
+        <button class="deleteButton" type="button" (click)="deleteCallOutcome($event, patientIndex)" mat-mini-fab
+          color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </fieldset>
+</ng-container>
