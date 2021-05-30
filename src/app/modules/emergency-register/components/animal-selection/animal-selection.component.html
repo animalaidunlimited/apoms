@@ -31,13 +31,12 @@
         <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
         <div fxLayout="row wrap" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
-          {{patient.get('tagNumber')?.value}}
           <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patient"></emergency-case-outcome>
-          <mat-form-field
-          *ngIf="patient.get('isAdmission')?.value || patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
+          <!-- *ngIf="patient.get('isAdmission')?.value || patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18" -->
+          <mat-form-field >
             <mat-label>Tag number</mat-label>
             <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
-            <mat-error *ngIf="patient.get('tagNumber')?.hasError('tagNumberTaken')">
+            <mat-error *ngIf="patient?.get('tagNumber')?.hasError('tagNumberTaken')">
               The tag number already exists.
             </mat-error>
           </mat-form-field>
