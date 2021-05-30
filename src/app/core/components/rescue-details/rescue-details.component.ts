@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy} from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray} from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
@@ -52,6 +52,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuer2Id: AbstractControl | undefined | null;
     rescuers$!: Observable<User[]>;
 
+    code = new FormControl();
+
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
@@ -94,6 +96,17 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 console.log(rescueDetails);
+
+
+                this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails.code as any);
+        
+                    if (selectedCode) {
+                        this.code?.setValue(selectedCode);
+                    }
+                });
+
                 this.zone.run(() => {
                     this.recordForm.patchValue(rescueDetails);
                 });
@@ -138,6 +151,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         // if (callOutcome) {
         //     this.callOutcome = callOutcome;
         // }
+        
+
+        this.code.valueChanges.subscribe(code =>{
+            this.recordForm.get('emergencyDetails.code')?.setValue(code);
+        });
 
         this.updateTimes();
 

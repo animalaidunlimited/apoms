@@ -60,13 +60,15 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.callOutcome = this.patientForm.get('callOutcome') as FormGroup;
+    
     if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
 
       this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(result =>
- 
+
         this.patientForm.patchValue(result)
+
       );
 
     }

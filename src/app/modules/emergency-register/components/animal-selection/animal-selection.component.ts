@@ -49,7 +49,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
-
+    @ViewChild('tagNumber') tagNumber!: QueryList<ElementRef>;
 
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
@@ -70,7 +70,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
-    tagNumber: string | undefined;
+
     validRow = true;
 
     emergencyCardHTML = '';
@@ -94,7 +94,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-            this.emergencyRegisterPatients.first.tagNumber.nativeElement.focus();
+        this.tagNumber.toArray()[0].nativeElement.focus();
     }
 
     ngOnInit() {
@@ -178,19 +178,20 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     populatePatient(isUpdate: boolean, patient: Patient) {
 
         const problems = this.fb.array([]);
-        patient.problems.forEach(() => {
+        
+        patient.problems.forEach(problem => {
 
             problems.push(this.fb.group({
                 problemId: [],
                 problem: [],
             }));
+
         });
 
-        const newPatient = this.getPatient(
-            problems
-        );
-
+        const newPatient = this.getPatient(problems);
+        
         newPatient.patchValue(patient);
+        
 
         if(newPatient.get('admissionAccepted')?.value){
             newPatient.get('admissionArea')?.disable();
@@ -305,14 +306,14 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
-
+                console.log(newPatient.get('tagNumber'));
                 this.patients.push(newPatient);
-                
+                this.patients.at(0)?.patchValue(newPatient.get('tagNumber')?.value);
             });
-            
-            this.recordForm.patchValue(patients);
+            // console.log(this.recordForm);
+            // this.recordForm.patchValue(patients);
 
-            this.setChildOutcomeAsParentPatient(this.patients);
+            // this.setChildOutcomeAsParentPatient(this.patients);
         
         },
             err => console.error(err),
