@@ -32,7 +32,7 @@
 
               </fieldset>
 
-             
+
 
                 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
 
@@ -50,11 +50,13 @@
                   (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm?.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
                     description
                   </mat-icon>
-                  <div class="comment-box"  (click)="openCommentDialog(); $event.preventDefault();">
-                    <div class="comment-badge">{{hasComments ? 1 : 0}}</div>
-                    <mat-icon role="img" mattooltip="Add/Edit comment" color="primary" 
-                    class="comment-icon "> comment </mat-icon>
-                  </div>
+
+                  <mat-icon
+                  (click)="openCommentDialog(); $event.preventDefault();"
+                  [matBadge]="hasComments ? 1 : 0" matBadgeColor="primary"
+                  role="img" mattooltip="Add/Edit comment" color="primary"
+                  class="comment-icon "> comment </mat-icon>
+
                 </div>
 
           </div>
