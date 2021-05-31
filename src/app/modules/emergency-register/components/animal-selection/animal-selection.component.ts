@@ -306,14 +306,14 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
-                console.log(newPatient.get('tagNumber'));
+                
                 this.patients.push(newPatient);
-                this.patients.at(0)?.patchValue(newPatient.get('tagNumber')?.value);
+                
             });
-            // console.log(this.recordForm);
-            // this.recordForm.patchValue(patients);
+            
+            this.recordForm.patchValue(patients);
 
-            // this.setChildOutcomeAsParentPatient(this.patients);
+            this.setChildOutcomeAsParentPatient(this.patients);
         
         },
             err => console.error(err),
