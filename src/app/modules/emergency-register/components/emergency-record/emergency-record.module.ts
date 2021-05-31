@@ -8,7 +8,6 @@ import { EmergencyRecordComponent } from './emergency-record.component';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
-import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
@@ -31,7 +30,6 @@ import { AnimalSelectionModule } from '../animal-selection/animal-selection.modu
         MaterialModule,
         CallerDetailsModule,
         LocationDetailsModule,
-        RescueDetailsModule,
         EmergencyDetailsModule,
         EmergencyCaseOutcomeModule,
         PatientVisitDetailsModule,

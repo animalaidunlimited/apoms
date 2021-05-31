@@ -95,12 +95,10 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
-                console.log(rescueDetails);
-
-
+                
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails.code as any);
+                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails?.code as any);
         
                     if (selectedCode) {
                         this.code?.setValue(selectedCode);
