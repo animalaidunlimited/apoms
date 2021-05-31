@@ -108,7 +108,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
 
-
+  /**
+   * Subsribe to animal type field value changes till the field has focus
+   */
   animalTypeChangessub(){
     this.animalType.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
       if(animalType === ''){
@@ -117,6 +119,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     });
   }
 
+   /**
+   * unSubsribe to animal type field value changes till the field has focus
+   */
   animalTypeChangesUnsub(){
     this.animalTypeValueChangesUnsubscribe.next();
     this.animalTypeValueChangesUnsubscribe.complete();
