@@ -59,19 +59,6 @@
 }
 
 
-@media only screen and (max-width:767px)
-{
-    .deletePatientButton {
-        width:25px;
-        height: 25px;
-        .mat-icon{
-            position: absolute;
-            top: 4px;
-            left: 1px;
-            font-size: 1rem;
-        }
-    }
-}
 
 .patientOutcomeWrapper {
     width: 33.3%;
@@ -85,24 +72,7 @@
 }
 
 @media(max-width: 600px) {
-    .patientOutcomeWrapper {
-        max-width: 43.9%;
-    }
-    .admissionAreaDivWrapper{
-        max-width: 46%;
-    }
-    .admissionAreaWrapper{
-        min-width: 100%;
-        margin-left: 11px;
-    }
-    .patientForm{
-        display:flex;
-        flex-wrap: wrap;
-    }
-    .patients_icons{
-        width:100%;
-        display: flex;
-    }
+    
     ::ng-deep .mat-autocomplete-panel{
         &.speciesAutocomplete{
             width:max-content;
@@ -110,5 +80,32 @@
         &.problemAutocomplete{
             width:max-content;
         }
+    }
+}
+
+@media only screen and (max-width:767px)
+{
+    .deleteButton {
+        width:25px;
+        height: 25px;
+        .mat-icon{
+            position: absolute;
+            top: 4px;
+            left: 1px;
+            font-size: 1rem;
+        }
+    }
+}
+
+@media(max-width: 600px) {
+  
+    .patientOutcomeWrapper {
+        width: 43.9%;
+    }
+    .admissionAreaDivWrapper{
+        width: 46%;
+    }
+    .admissionAreaWrapper{
+        min-width: 100%;
     }
 }

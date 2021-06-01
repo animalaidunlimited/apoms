@@ -26,6 +26,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('rescueTimeField', { read: ElementRef, static: true })
     rescueTimeField!: ElementRef;
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true })
+
+
     ambulanceArrivalTimeField!: ElementRef;
 
     emergencyCodes$!: Observable<EmergencyCode[]>;
@@ -55,7 +57,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuers$!: Observable<User[]>;
 
 
-
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
@@ -76,7 +77,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-
         this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
         this.recordForm.addControl(
@@ -150,6 +150,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         // if (callOutcome) {
         //     this.callOutcome = callOutcome;
         // }
+        
+
+        this.code.valueChanges.subscribe(code =>{
+            this.recordForm.get('emergencyDetails.code')?.setValue(code);
+        });
 
         this.code.valueChanges.subscribe(code =>{
             this.recordForm.get('emergencyDetails.code')?.setValue(code);

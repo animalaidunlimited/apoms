@@ -1,5 +1,9 @@
-<fieldset [formGroup]="recordForm" class="form-sub-group" >
-    <legend class="legend">Patient details</legend>
+<ng-container [formGroup]="recordForm">
+
+  <fieldset class="form-sub-group">
+
+    <legend class="legend" *ngIf="!outcome">Patient details</legend>
+    <legend class="legend" *ngIf="outcome">Outcome details</legend>
 
         <div formArrayName="patients" class="patientsForm" *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;"  [ngClass]="{'lastPatientInArray': last}">
             <app-emergency-register-patient [outcome]="outcome"
@@ -11,7 +15,7 @@
     <div *ngIf="!outcome" fxLayout="row" fxLayoutAlign="center center">
         <button
             #addPatientBtn
-            class="addPatientButton"
+            class="addButton"
             type="button"
             (click)="addPatientRow()"
             mat-mini-fab
@@ -20,4 +24,5 @@
             <mat-icon>add</mat-icon>
         </button>
     </div>
-</fieldset>
+
+  </fieldset>
