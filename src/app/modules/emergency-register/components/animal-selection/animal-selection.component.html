@@ -2,13 +2,13 @@
     <legend class="legend">Patient details</legend>
 
         <div formArrayName="patients" class="patientsForm" *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;"  [ngClass]="{'lastPatientInArray': last}">
-            <app-emergency-register-patient
+            <app-emergency-register-patient [outcome]="outcome"
                 [patientFormInput]="patient"
                 [patientIndex]="patientIndex"
                 (patientDeleted)="deletePatient($event)"
             ></app-emergency-register-patient>
         </div>
-    <div fxLayout="row" fxLayoutAlign="center center">
+    <div *ngIf="!outcome" fxLayout="row" fxLayoutAlign="center center">
         <button
             #addPatientBtn
             class="addPatientButton"

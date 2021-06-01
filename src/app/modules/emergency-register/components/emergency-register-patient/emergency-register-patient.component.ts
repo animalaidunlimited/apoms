@@ -34,6 +34,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
   get callOutcome(): string { return this._callOutcome; }
 
+  @Input() outcome!: boolean;
+
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
   @ViewChild('problemRef') problemRef!: ElementRef;

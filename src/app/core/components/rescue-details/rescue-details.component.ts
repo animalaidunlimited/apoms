@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy} from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray} from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
@@ -9,6 +9,7 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
+import { EmergencyCode } from '../../models/emergency-record';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -27,6 +28,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true })
     ambulanceArrivalTimeField!: ElementRef;
 
+    emergencyCodes$!: Observable<EmergencyCode[]>;
+
     admissionTime: AbstractControl | undefined | null;
     ambulanceArrivalTime: AbstractControl | undefined | null;
 
@@ -44,10 +47,14 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     rescueDetails: FormGroup = new FormGroup({});
     rescueDetails$: FormGroup = new FormGroup({});
+    code = new FormControl();
+    
     rescueTime: AbstractControl | undefined | null;
     rescuer1Id: AbstractControl | undefined | null;
     rescuer2Id: AbstractControl | undefined | null;
     rescuers$!: Observable<User[]>;
+
+
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
@@ -69,6 +76,9 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
+
+        this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
+
         this.recordForm.addControl(
             'rescueDetails',
             this.fb.group({
@@ -88,6 +98,14 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
+                this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails.code as any);
+
+                    if (selectedCode) {
+                        this.code?.setValue(selectedCode);
+                    }
+                });
                 this.zone.run(() => {
                     this.recordForm.patchValue(rescueDetails);
                 });
@@ -132,6 +150,10 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         // if (callOutcome) {
         //     this.callOutcome = callOutcome;
         // }
+
+        this.code.valueChanges.subscribe(code =>{
+            this.recordForm.get('emergencyDetails.code')?.setValue(code);
+        });
 
         this.updateTimes();
 
@@ -325,5 +347,27 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .then((data: UpdateResponse) => {
                 this.result.emit(data);
             });
+    }
+
+    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {
+        return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
+    }
+
+    selectEmergencyCode($event: any) {
+        // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
+        this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+            const selectedCode = codes.find((code:EmergencyCode) => {
+
+                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
+
+            });
+
+            if (selectedCode) {
+                this.recordForm
+                    .get('emergencyDetails.code')
+                    ?.setValue(selectedCode);
+            }
+        });
     }
 }

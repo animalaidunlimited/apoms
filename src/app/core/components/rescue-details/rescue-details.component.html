@@ -1,4 +1,4 @@
-<form [formGroup]="rescueDetails" fxLayout.gt-sm="row" fxLayoutGap="20">
+<form [formGroup]="rescueDetails" fxLayout.gt-sm="column" fxLayoutAlign.gt-sm="center center" fxLayoutGap="20">
 
     <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
@@ -20,6 +20,36 @@
                             {{rescuer.FirstName}}
                         </mat-option>
                     </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Code</mat-label>
+                <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
+                    [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
+
+                    <!-- -->
+                    <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
+
+                        <mat-icon [ngClass]="{
+                            'dot-grey' : code?.value?.EmergencyCodeId == 4,
+                            'dot-red' : code?.value?.EmergencyCodeId == 1,
+                            'dot-green' : code?.value?.EmergencyCodeId == 2,
+                            'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
+                            matSuffix>fiber_manual_record</mat-icon>
+                        {{code?.value?.EmergencyCode}}
+                    </mat-select-trigger>
+
+                    <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
+
+                        <mat-icon [ngClass]="{
+                                'dot-grey' : code.EmergencyCodeId == 4,
+                                'dot-red' : code.EmergencyCodeId == 1,
+                                'dot-green' : code.EmergencyCodeId == 2,
+                                'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
+                        {{code.EmergencyCode}}
+
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
 
 
