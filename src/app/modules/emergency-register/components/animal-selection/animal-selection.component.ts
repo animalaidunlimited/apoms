@@ -26,6 +26,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     @Input() recordForm!: FormGroup;
+
+    @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
