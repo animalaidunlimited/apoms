@@ -33,7 +33,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     @ViewChild('dispatcher',{ read: ElementRef, static:true }) dispatcher!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
-
     callDateTime: string = getCurrentTimeString();
     minimumDate = '2018-02-14T00:00';
 
