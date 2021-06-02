@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
-import { FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -35,7 +35,6 @@ export class PatientDetailsComponent implements OnInit {
 
     constructor(
         private dropdown: DropdownService,
-        private fb: FormBuilder,
         private snackBar: SnackbarService,
 		private patientService: PatientService
     ) {
@@ -49,10 +48,7 @@ export class PatientDetailsComponent implements OnInit {
 
         const initialNumber = -1;
 
-        const patientDetails = this.recordForm?.get(
-            'patientDetails',
-        ) as FormGroup;
-
+        const patientDetails = this.recordForm?.get('patientDetails') as FormGroup;
 
         // If empty it means we're loading from the treatment list
         if(this.recordForm.get('patientDetails') && !patientDetails?.get('animalTypeId')) {
@@ -77,7 +73,8 @@ export class PatientDetailsComponent implements OnInit {
 
                 if(patientDetailsControl){
                     patientDetailsControl.patchValue(result);
-                    this.recordForm.get('patientDetails')?.setValue(patientDetailsControl);
+
+                    this.recordForm.get('patientDetails')?.patchValue(patientDetailsControl);
 
                 }
                 else

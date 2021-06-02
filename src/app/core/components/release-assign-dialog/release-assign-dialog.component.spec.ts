@@ -5,19 +5,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
-import { AssignReleaseComponent } from '../assign-release/assign-release.component';
+import { ReleaseAssignComponent } from '../release-assign/release-assign.component';
 
-import { AssignReleaseDialogComponent } from './assign-release-dialog.component';
+import { ReleaseAssignDialogComponent } from './release-assign-dialog.component';
 
 @Component({
-  selector: 'app-assign-release-dialog',
-  template: '<p>Mock assign-release Component</p>'
+  selector: 'app-release-assign-dialog',
+  template: '<p>Mock release-assign Component</p>'
 })
-class MockAssignReleaseDialogComponent {}
+class MockReleaseAssignDialogComponent {}
 
-describe('AssignReleaseDialogComponent', () => {
-  let component: AssignReleaseDialogComponent;
-  let fixture: ComponentFixture<AssignReleaseDialogComponent>;
+describe('ReleaseAssignDialogComponent', () => {
+  let component: ReleaseAssignDialogComponent;
+  let fixture: ComponentFixture<ReleaseAssignDialogComponent>;
 
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
@@ -35,14 +35,14 @@ describe('AssignReleaseDialogComponent', () => {
     pickupDate: ''}
   };
 
-  let dialog: MatDialogRef<MockAssignReleaseDialogComponent>;
+  let dialog: MatDialogRef<MockReleaseAssignDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        AssignReleaseDialogComponent,
-        AssignReleaseComponent,
-        MockAssignReleaseDialogComponent
+        ReleaseAssignDialogComponent,
+        ReleaseAssignComponent,
+        MockReleaseAssignDialogComponent
        ],
       imports: [
         MatDialogModule,
@@ -65,7 +65,7 @@ describe('AssignReleaseDialogComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AssignReleaseDialogComponent);
+    fixture = TestBed.createComponent(ReleaseAssignDialogComponent);
     component = fixture.componentInstance;
 
 
