@@ -35,7 +35,9 @@ export class UIErrorHandler extends ErrorHandler {
     super.handleError(error);
     // TODO Style these errors properly and provide them in a dialog with more info about what to do.
     console.log(`Error occurred: ${error}`);
+    //console.trace();
    }
+
 
 }
 
