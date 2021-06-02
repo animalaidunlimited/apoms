@@ -147,7 +147,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         this.caseService.getEmergencyCaseById(this.emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(result => {
-
+            
             this.recordForm.patchValue(result);
 
             this.hasComments = this.recordForm.get('caseComments')?.value ? true : false;

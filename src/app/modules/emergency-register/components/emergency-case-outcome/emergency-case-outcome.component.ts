@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -20,7 +20,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() patientForm!: any;
+  @Input() patientForm!: FormGroup | AbstractControl;
+
+  
   @Output() public result = new EventEmitter<UpdateResponse>();
 
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
@@ -35,7 +37,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   sameAsId:number | undefined;
 
   callOutcome:FormGroup = new FormGroup({});
-    recordForm: FormGroup | undefined;
 
   constructor(
     private dropdowns: DropdownService,
@@ -55,9 +56,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    
     this.callOutcome = this.patientForm.get('callOutcome') as FormGroup;
-
+    
     if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
 
       this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
@@ -66,7 +67,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
         this.patientForm.patchValue(result)
 
-        );
+      );
 
     }
 
@@ -120,14 +121,14 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     }
 
     sameAsNumber?.updateValueAndValidity();
-
-    const patientArray = this.patientForm.get('patients') as FormArray;
+   
+    const patientArray = (this.patientForm.parent as FormGroup).parent?.get('patients') as FormArray;
 
     if(callOutcomeId === 1){
 
       // If we're selecting admission, check to make sure all of the animals have a TagNumber
       patientArray?.controls.forEach(patient => {
-
+        
         patient?.get('tagNumber')?.setValidators(Validators.required);
         patient?.get('tagNumber')?.updateValueAndValidity();
       });

@@ -34,6 +34,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
   get callOutcome(): string { return this._callOutcome; }
 
+  @Input() outcome!: boolean;
+
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
   @ViewChild('problemRef') problemRef!: ElementRef;
@@ -117,14 +119,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
-    setTimeout(()=>{
-      if(this.chipList?.errorState){
-        this.chipList.errorState = this.problemsArray.length > 0 ? false : true;
-      }
-    },1);
-
-    
-
   }
 
 
@@ -145,8 +139,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
       if(this.chipList?.errorState){
-        this.chipList.errorState = false ;
+        this.chipList.errorState = this.problemsArray.length === 0;
       }
+      this.patientFormProblemSetError();
     });
 
 
@@ -203,6 +198,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.hideIrrelevantProblems($event.option.viewValue);
     this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
+    this.patientFormProblemSetError();
   }
 
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
@@ -297,6 +293,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     if(this.problemsArray.length === 0){
       problemRefElement.value = '';
       this.chipList.errorState = true;
+      this.patientFormProblemSetError();
     }else{
       this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
         const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
@@ -306,6 +303,20 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       });
     }
   }
+
+  private patientFormProblemSetError() {
+    if (this.chipList?.errorState === true) {
+      this.patientForm.setErrors({
+        problemsRequired: true
+      });
+    }
+    else {
+      this.patientForm.setErrors({
+        problemsRequired: false
+      });
+    }
+  }
+
   openMediaDialog(patientForm:FormGroup){
     // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
     const dialogRef = this.dialog.open(MediaDialogComponent, {

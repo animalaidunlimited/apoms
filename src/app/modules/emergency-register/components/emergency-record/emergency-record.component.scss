@@ -70,6 +70,7 @@ $standard-width: 183px;
 }
 
 
+
 @media(max-width: 600px) {
     .emergencySyncIcon {
         margin-right: 0.3rem !important;
@@ -96,6 +97,12 @@ $standard-width: 183px;
     }
     .comment-box{
         margin-top:0.5rem;
+    }
+    .mat-form-field:nth-child(even), ::ng-deep .mat-form-field:nth-child(even){
+        margin-right:0 !important;
+    }
+    .mat-form-field, ::ng-deep .mat-form-field {
+        max-width: 44.7% !important;
     }
 }
 

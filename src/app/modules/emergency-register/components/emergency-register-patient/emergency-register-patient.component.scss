@@ -5,39 +5,39 @@
     }
 }
 .patients_icons{
-    height: 3rem;
+    height: 3em;
+    min-width:3.6em;
     .mat-icon:not(:last-child){
         margin: 0 0.3rem;
     }
 }
-.patientFormIndex{	
-	width: 1.3rem;
+
+
+.elevatedFormsRepeaterFields{
+    border-radius: .5rem;
+    box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 #fff;
+    position: relative;
+    padding:5px;
+}
+
+
+.elevatedFormsIndex {
+    min-width: 1.3rem;
     height: 1.3rem;
-    position: absolute;
-    top: 0;
-    border-bottom-right-radius: .5rem;
+    border-bottom-right-radius: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    left: 0;
     border-right: 1px solid #607d8bbf;
     border-bottom: 1px solid #607d8bbf;
-    color: rgb(0 0 0 / 68%);
+    color: rgba(0, 0, 0, 0.68);
+    transform: translate(-5px, -5px);
+    margin-right: 0.3em;
 }
 
 .patientForm{
-    border-radius: .5rem;
-    box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 #fff;
-    padding: 0.6rem 5px 0 0;
-    position: relative;
-    display: grid;
-    grid-template-columns: 7.5rem 10rem 11.3rem 13rem 3.6rem;
-    align-items: flex-end;
-    grid-template-areas:
-    "species problem problem problem problem"
-    "outcome outcome tagnumber area buttons";
-    gap: 0 20px;
+
     ::ng-deep .mainProblemDirty .mat-form-field-infix{
         padding: 0;
     } 
@@ -45,12 +45,9 @@
         margin: 2px 0 3px 0;
     }
 }
-.deletePatientButton {
-    float : right;
-    margin-top:1rem;
-}
 
-.deletePatientButton {
+.deleteButton{
+    margin-top:1rem;
     position: absolute;
     top: -1.5rem;
     right: -0.5rem;
@@ -62,9 +59,33 @@
 }
 
 
+
+.patientOutcomeWrapper {
+    width: 33.3%;
+}
+.admissionAreaDivWrapper {
+    width: 33.3%;
+
+}
+.admissionAreaWrapper.mat-form-field{
+    width:100%;
+}
+
+@media(max-width: 600px) {
+    
+    ::ng-deep .mat-autocomplete-panel{
+        &.speciesAutocomplete{
+            width:max-content;
+        }
+        &.problemAutocomplete{
+            width:max-content;
+        }
+    }
+}
+
 @media only screen and (max-width:767px)
 {
-    .deletePatientButton {
+    .deleteButton {
         width:25px;
         height: 25px;
         .mat-icon{
@@ -77,30 +98,14 @@
 }
 
 @media(max-width: 600px) {
+  
     .patientOutcomeWrapper {
-        max-width: 43.9%;
+        width: 43.9%;
     }
     .admissionAreaDivWrapper{
-        max-width: 46%;
+        width: 46%;
     }
     .admissionAreaWrapper{
         min-width: 100%;
-        margin-left: 11px;
-    }
-    .patientForm{
-        display:flex;
-        flex-wrap: wrap;
-    }
-    .patients_icons{
-        width:100%;
-        display: flex;
-    }
-    ::ng-deep .mat-autocomplete-panel{
-        &.speciesAutocomplete{
-            width:max-content;
-        }
-        &.problemAutocomplete{
-            width:max-content;
-        }
     }
 }
