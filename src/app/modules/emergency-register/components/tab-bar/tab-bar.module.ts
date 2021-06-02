@@ -6,7 +6,6 @@ import { RecordSearchModule } from 'src/app/core/components/record-search/record
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { MaterialModule } from 'src/app/material-module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
-import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
@@ -17,7 +16,6 @@ import { ReleaseAssignModule } from 'src/app/core/components/release-assign/rele
 @NgModule({
     declarations: [
         TabBarComponent,
-        RescueDetailsDialogComponent,
         ReleaseAssignDialogComponent
     ],
     imports: [
