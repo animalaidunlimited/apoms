@@ -59,6 +59,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     emergencyCardHTML = '';
 
     @HostListener('document:keydown.control.p', ['$event'])
+
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         this.addPatientRow();
@@ -85,17 +86,16 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     ngOnInit() {
 
-
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.patients = this.recordForm.get('patients') as FormArray;
-
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe(newValue => this.emergencyCaseId = newValue);
+
 
         this.emergencyCaseId
         ? this.loadPatientArray(this.emergencyCaseId)
@@ -108,10 +108,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
 
 
-
     }
-
-
 
     deletePatient(patientIndex:number) {
 
@@ -131,10 +128,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     getEmptyPatient() {
+
         const patient =
             this.fb.group({
                 patientId: [],
-                position: [this.patients?.length ? this.patients.length + 1: 1],
+                position: [(this.patients?.length || 0) + 1],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
                 problems: this.fb.array([]),
@@ -151,7 +149,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 }),
             });
 
-            this.setValidators(patient);
+            //this.setValidators(patient);
 
         return patient;
     }
@@ -171,9 +169,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             }));
         });
 
-        const newPatient = this.getPatient(
-            problems
-        );
+        const newPatient = this.getPatient(problems);
+
+        this.setValidators(newPatient);
 
         newPatient.patchValue(patient);
 
@@ -182,10 +180,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
 
         return newPatient;
+        //return newPatient;
 
     }
 
-        getPatient(problems: FormArray) : FormGroup {
+    getPatient(problems: FormArray) : FormGroup {
 
         const newPatient = this.fb.group({
             patientId: [],
@@ -206,8 +205,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             }),
         });
 
-        this.setValidators(newPatient);
-
         return newPatient;
     }
 
@@ -225,6 +222,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             }
 
         });
+
 
         patient.valueChanges.subscribe((patientVal)=> {
 
@@ -269,6 +267,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 }
 
         });
+
     }
 
 
@@ -295,10 +294,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                         patient.deleted = !!+patient.deleted;
 
                         const newPatient = this.populatePatient(true, patient);
+
                         this.patients.push(newPatient);
                     });
 
-                    this.recordForm.patchValue(patients);
+                    //this.recordForm.patchValue(patients);
 
                     this.setChildOutcomeAsParentPatient(this.patients);
 
@@ -335,10 +335,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
                         patient.get('isAdmission')?.setValue(true, {emitEvent: false});
 
-                        patient.get('tagNumber')?.setValidators(Validators.required);
+                        //patient.get('tagNumber')?.setValidators(Validators.required);
                         patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
-                        patient.get('admissionArea')?.setValidators(Validators.required);
+                        //patient.get('admissionArea')?.setValidators(Validators.required);
                         patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
                     });
 

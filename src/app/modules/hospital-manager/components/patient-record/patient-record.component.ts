@@ -1,6 +1,6 @@
 import { LogsData } from './../../../../core/models/logs-data';
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
@@ -10,6 +10,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
+import { ReleaseDetails } from 'src/app/core/models/release';
 
 
 @Component({
@@ -18,38 +19,37 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './patient-record.component.html',
     styleUrls: ['./patient-record.component.scss'],
 })
-export class PatientRecordComponent implements OnInit {
-
-    recordForm: FormGroup = new FormGroup({});
+export class PatientRecordComponent implements OnInit, OnDestroy {
 
     @Input() incomingPatient!: SearchRecordTab;
 
-    private ngUnsubscribe = new Subject();
+    hasWritePermission = false;
+    hideMenu = false;
+
+    loading = false;
+    logsData!:LogsData;
+    mediaData!: BehaviorSubject<MediaItem[]>;
+    recordForm: FormGroup = new FormGroup({});
 
     patientId!:number;
 
-    patientArrayForRescueDetails!: FormGroup;
-
     patientLoaded = true;
-
-    hideMenu = false;
 
     profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
 
-    loading = false;
-
     permissionType!: number[];
 
-    hasWritePermission = false;
+    releaseDetails!: ReleaseDetails;
 
-    mediaData!: BehaviorSubject<MediaItem[]>;
-    logsData!:LogsData;
+    private ngUnsubscribe = new Subject();
 
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
         private changeDetector: ChangeDetectorRef,
         private patientService: PatientService,
-        private route : ActivatedRoute) {}
+        private route : ActivatedRoute) {
+
+        }
 
     ngOnInit() {
 
@@ -59,7 +59,6 @@ export class PatientRecordComponent implements OnInit {
             if (val.componentPermissionLevel?.value === 2) {
                 this.hasWritePermission = true;
             }
-
         });
 
         this.hideMenu = window.innerWidth > 840 ? false : true;
@@ -95,10 +94,6 @@ export class PatientRecordComponent implements OnInit {
             }),
         });
 
-        this.patientArrayForRescueDetails = this.fb.group({
-            patients: this.fb.array([this.recordForm])
-        });
-
 
         // Use this to disable tabs before we've got a patient.
         this.patientLoaded = !(this.incomingPatient?.patientId > 0);
@@ -129,6 +124,11 @@ export class PatientRecordComponent implements OnInit {
 
     }
 
+    ngOnDestroy(){
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
+
     tabChanged(event: MatTabChangeEvent) {
         // Only populate the ids when we want to load the data
         if (event.tab.textLabel === 'Patient Calls') {
@@ -147,10 +147,7 @@ export class PatientRecordComponent implements OnInit {
 
             this.patientService.updatePatientDetails(this.recordForm.get('patientDetails')?.value).then(result => {
                 this.loading = false;
-                result.success === 1 ?
-                    this.snackbar.successSnackBar('Update successful','OK')
-                    :
-                    this.snackbar.errorSnackBar('Update failed','OK');
+                result.success === 1 ? this.snackbar.successSnackBar('Update successful','OK') : this.snackbar.errorSnackBar('Update failed','OK');
             });
         }
         else {

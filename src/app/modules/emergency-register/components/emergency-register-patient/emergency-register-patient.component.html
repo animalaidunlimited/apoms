@@ -1,5 +1,6 @@
 <div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm">
   <div class="patientFormIndex">{{patientIndex + 1}}</div>
+
       <mat-form-field gdArea.gt-sm="species" fxFlexOrder.sm="0">
           <input tabindex="8" #animalTypeInput type="text" placeholder="Species"
           matInput formControlName="animalType" [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
@@ -11,7 +12,6 @@
           </mat-autocomplete>
       </mat-form-field>
 
- 
       <mat-form-field gdArea.gt-sm="problem" fxFlexOrder.xs="2"  ngStyle.xs="width:100%;max-width:92.5%;">
           <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
             <mat-chip
@@ -39,10 +39,10 @@
       </mat-form-field>
 
 
-    
 
-    
-      
+
+
+
         <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18"  gdArea.gt-xs="tagnumber" fxFlexOrder.xs="1">
           <mat-label>Tag number</mat-label>
           <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
@@ -53,7 +53,7 @@
 
         <emergency-case-outcome  gdArea.gt-xs="outcome"  fxFlexOrder.xs="3" class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-     
+
           <div *ngIf="patientForm.get('isAdmission')?.value" class="admissionAreaDivWrapper" gdArea.gt-xs="area" fxFlexOrder.xs="4">
             <mat-form-field class="admissionAreaWrapper">
               <mat-label>Admission area</mat-label>
@@ -70,8 +70,8 @@
           <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
           <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
         </div>
- 
-    
+
+
 
     <button class="deletePatientButton" type="button"  (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
       <mat-icon>delete</mat-icon>
