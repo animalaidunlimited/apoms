@@ -9,15 +9,14 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 })
 export class EmergencyRecordCommentDialogComponent implements OnInit {
 
-  caseComment = new FormControl("");
-  constructor( 
+  caseComment = new FormControl('');
+  constructor(
     public dialogRef: MatDialogRef<EmergencyRecordCommentDialogComponent>,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: {caseComment: string}
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data);
     this.caseComment.setValue(this.data.caseComment);
   }
 

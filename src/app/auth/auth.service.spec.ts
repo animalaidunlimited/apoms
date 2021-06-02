@@ -89,12 +89,14 @@ describe('AuthService', () => {
     describe('isLogged', () => {
         it('should return true if the token length is greater than 0', () => {
             authService.token = 'fakeTokenValue';
-            expect(authService.isLogged()).toEqual(true);
+            authService.loggedIn.next(true);
+            expect(authService.loggedIn.value).toEqual(true);
         });
 
         it('should return false if the token length is not greater than 0', () => {
             authService.token = '';
-            expect(authService.isLogged()).toEqual(false);
+            authService.loggedIn.next(false);
+            expect(authService.loggedIn.value).toEqual(false);
         });
     });
 });
