@@ -34,6 +34,8 @@ import { AnimalHeaderModule } from './components/animal-header/animal-header.mod
 import { LogsModule } from 'src/app/core/components/logs/logs.module';
 import { TreatmentAreaHistoryComponent } from './components/treatment-area-history/treatment-area-history.component';
 import { PatientDetailsModule } from './components/patient-details/patient-details.module';
+import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
+import { ReleaseDetailsComponent } from './components/release-details/release-details.component';
 
 
 
@@ -54,6 +56,7 @@ import { PatientDetailsModule } from './components/patient-details/patient-detai
         TreatmentComponent,
         TreatmentAreaHistoryComponent,
         ReleaseDetailsDialogComponent,
+        ReleaseDetailsComponent,
     ],
     imports: [
         CommonModule,
@@ -70,6 +73,7 @@ import { PatientDetailsModule } from './components/patient-details/patient-detai
         SurgeryRecordModule,
         NgxGalleryModule,
         CallerDetailsModule,
+        ReleaseAssignModule,
         PatientVisitDetailsModule,
         AnimalHeaderModule,
         LogsModule
