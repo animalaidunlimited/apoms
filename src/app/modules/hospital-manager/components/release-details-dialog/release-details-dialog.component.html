@@ -1,97 +1,13 @@
-<h2 mat-dialog-title>Release form - {{data.tagNumber}}</h2>
-
-<form [formGroup]="recordForm" (ngSubmit)="onReleaseSubmit(recordForm)">
+<h2 mat-dialog-title>Release form - {{data?.tagNumber}}</h2>
 
 <div mat-dialog-content>
 
-    <div formGroupName="releaseRequestForm" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-        <mat-form-field appearance="fill">
-            <mat-label>Requested user</mat-label>
-            <mat-select formControlName="requestedUser">
-
-                <mat-option>None</mat-option>
-
-                <mat-option *ngFor="let manager of releaseManagers" [value]="manager.FirstName">
-                    {{manager.FirstName}}
-                </mat-option>
-
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Request time</mat-label>
-            <input matInput formControlName="requestedDate" type="date" name="RequestedDate">
-        </mat-form-field>
-
-    </div>
-
-    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px">
-        <mat-slide-toggle [checked]="isCommented" (change)="valueChages($event,2)" class="mat-slider">Complainer special instruction</mat-slide-toggle>
-
-        <mat-form-field appearance="fill" class="select">
-            <mat-label>Notes for complainer</mat-label>
-            <textarea matInput  formControlName="complainerNotes" class="select"></textarea>
-        </mat-form-field>
-    </div>
-
-
-    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px">
-
-        <mat-slide-toggle [checked]="specificStaff" class="toggleDiv" (change)="valueChages($event,3)" class="mat-slider">Specific staff</mat-slide-toggle>
-
-        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
-            <div [@openCloseDiv]= specificStaff [@visibilityDiv]= specificStaff>
-                <mat-form-field appearance="fill">
-                    <mat-label>Releaser 1</mat-label>
-                        <mat-select formControlName="Releaser1">
-                            <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                                {{releaser.FirstName}}
-                            </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                    <mat-label>Releaser 2</mat-label>
-                        <mat-select formControlName="Releaser2">
-                            <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                                {{releaser.FirstName}}
-                            </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-    </div>
-
-    <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px">
-
-        <mat-slide-toggle [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
-
-        <div [@openCloseDiv]="isStreetTreatRelease" [@visibilityDiv]="isStreetTreatRelease">
-            <app-patient-visit-details 
-                [isStreetTreatTrue]="isStreetTreatRelease" 
-                [hidden]="!isStreetTreatRelease" 
-                (streetTreatCaseIdEmit)="streetTreatCaseIdEventHandler($event)" 
-                [recordForm]="recordForm">
-            </app-patient-visit-details>
-        </div>
-
-    </div>
-
-    <div class="disable">
-        <caller-details [recordForm]="recordForm"></caller-details>
-    </div>
-
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end">
-        <mat-slide-toggle formControlName="complainerInformed" class="mat-slider">Complainer informed</mat-slide-toggle>
-    </div>
+<app-release-details [emergencyCaseId]="data.emergencyCaseId" [patientId]="data.patientId" (formValidity)="setFormValidity($event)"></app-release-details>
 
 </div>
 
 <div mat-dialog-actions fxLayoutAlign="center center">
-    <button type="submit" [disabled]="recordForm.invalid" mat-raised-button color="primary">Save</button>
+    <button type="submit" [disabled]="formInvalid" mat-raised-button color="primary">Save</button>
 
 	<button type="reset" color="white" mat-raised-button >Reset</button>
 </div>
-
-</form>

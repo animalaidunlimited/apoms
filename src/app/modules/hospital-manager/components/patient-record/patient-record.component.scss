@@ -62,10 +62,11 @@ mat-tab-body {
 
 .emergencyRecordWrapper {
     width: 70%;
+    padding-bottom: 20px;
 }
 
 
-@media(max-width: 600px) { 
+@media(max-width: 600px) {
 
     .locationContainer {
         width: 100%;

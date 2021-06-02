@@ -5,7 +5,7 @@
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
         <mat-form-field formGroupName="patientDetails">
             <mat-label>Animal type</mat-label>
-            <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
+            <mat-select formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
                 <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
                     {{type.AnimalType}}
                 </mat-option>

@@ -247,7 +247,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     if (
                         currentPatient.get('position')?.value === patient.position
                     ) {
-
                         currentPatient.get('patientId')?.setValue(patient.patientId);
 
                         currentPatient.get('tagNumber')?.setValue(patient.tagNumber);
