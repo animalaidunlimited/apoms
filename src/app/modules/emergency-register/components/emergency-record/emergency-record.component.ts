@@ -96,7 +96,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 this.hasWritePermission = true;
             }
 
-        }) ;
+        });
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -153,10 +153,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             this.hasComments = this.recordForm.get('caseComments')?.value ? true : false;
         });
     }
-
-  /*   showForm(){
-        console.log(this.recordForm);
-    } */
 
     resetForm() {
 
@@ -438,7 +434,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     openCommentDialog(){
         const dialogRef = this.dialog.open(EmergencyRecordCommentDialogComponent, {
-           
+
             data:{
                 caseComment:this.recordForm.get('caseComments')?.value
             }

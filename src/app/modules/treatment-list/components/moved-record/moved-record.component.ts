@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -8,6 +8,8 @@ import { Priority } from 'src/app/core/models/priority';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { TreatmentListService } from '../../services/treatment-list.service';
 
 @Component({
@@ -23,6 +25,8 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
 
   allAreas!: TreatmentArea[];
+  errorMatcher = new CrossFieldErrorMatcher();
+  moveOut = false;
   movedRecords!:FormArray;
   movedRecordsGroup!: FormGroup;
   listType = '';
@@ -32,6 +36,7 @@ export class MovedRecordComponent implements OnInit, OnChanges {
   constructor(
     private ts: TreatmentListService,
     private dropdown: DropdownService,
+    private snackbar: SnackbarService,
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -70,6 +75,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   acceptMove(currentPatient: AbstractControl) : void {
 
+    if(!this.ts.hasPermission.value){
+      this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+      return;
+    }
+
       this.ts.acceptRejectMoveIn(currentPatient, true).then(() => {
         this.changeDetector.detectChanges();
       });
@@ -94,6 +104,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
     .pipe(take(1))
     .subscribe((confirmed: boolean) => {
     if (confirmed) {
+
+      if(!this.ts.hasPermission.value){
+        this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+        return;
+      }
 
       this.ts.acceptRejectMoveIn(currentPatient, false).then(() => {
         this.changeDetector.detectChanges();
@@ -123,6 +138,11 @@ export class MovedRecordComponent implements OnInit, OnChanges {
     .subscribe((confirmed: boolean) => {
     if (confirmed) {
 
+      if(!this.ts.hasPermission.value){
+        this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+        return;
+      }
+
       this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then((result:SuccessOnlyResponse) => {
 
         if(result.success === 1){
@@ -142,5 +162,15 @@ export class MovedRecordComponent implements OnInit, OnChanges {
 
   }
 
+  toggleMoveOut(item: AbstractControl){
+
+    this.moveOut = !this.moveOut;
+
+    this.moveOut ?
+      item.get('Moved to')?.setValidators(Validators.required)
+      :
+      item.get('Moved to')?.clearValidators();
+
+  }
 
 }

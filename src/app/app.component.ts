@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth/auth.service';
+import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
+import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
 
 @Component({
@@ -14,18 +17,57 @@ import { PrintTemplateService } from './modules/print-templates/services/print-t
 })
 export class AppComponent implements OnInit{
 
-    isPrinting:BehaviorSubject<boolean>;
+    isPrinting!:BehaviorSubject<boolean>;
     title = 'apoms';
 
     constructor(
-        private printService: PrintTemplateService
+        private printService: PrintTemplateService,
+        private authService: AuthService,
+        private messagingService: MessagingService,
+        private emergencyTabBar: EmergencyRegisterTabBarService
     ) {
 
-        this.isPrinting = this.printService.getIsPrinting();
+
 
     }
 
     ngOnInit() {
+
+        this.authService.loggedIn.subscribe(loggedIn => {
+
+            if(loggedIn){
+
+                this.isPrinting = this.printService.getIsPrinting();
+
+                window.addEventListener('beforeunload', () => {
+                    this.messagingService.unsubscribe();
+                 });
+
+                 this.printService.initialisePrintTemplates();
+
+                 this.messagingService.requestPermission();
+
+                 // Set up to receive messages from the service worker when the app is in the background.
+                 navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
+
+                    if(event.data?.image || event.data?.video){
+
+                        this.emergencyTabBar.receiveSharedMediaItem(event.data);
+                    }
+
+                    if(event?.data?.messageData?.staff1){
+                        this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
+                    }
+
+                 });
+
+            }
+            else {
+
+            }
+
+
+        });
 
     }
 

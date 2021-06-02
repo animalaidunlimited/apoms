@@ -253,7 +253,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
                 if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
 
-                    patient.get('isAdmission')?.setValue(true,{ emitEvent: false });
+                    patient.get('isAdmission')?.setValue(true ,{ emitEvent: false });
                     patient.get('tagNumber')?.setValidators(Validators.required);
                     patient.get('admissionArea')?.setValidators(Validators.required);
 
@@ -268,7 +268,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
                 else {
 
-                    patient.get('admissionArea')?.setValue(null, {emitEvent:false});
+                    const admissionArea = patient.get('admissionArea');
+
+                    if(!admissionArea?.value){
+                        admissionArea?.setValue(null, {emitEvent:false});
+                    }
+
                     patient.get('isAdmission')?.setValue(false, { emitEvent: false });
                     patient.get('tagNumber')?.clearValidators();
                     patient.get('admissionArea')?.clearValidators();

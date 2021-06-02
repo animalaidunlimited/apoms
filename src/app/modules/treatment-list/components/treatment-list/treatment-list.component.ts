@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { BehaviorSubject, fromEvent, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -33,9 +33,14 @@ interface Column{
     trigger('fadeSavedIcon', [
       transition('* => void', [
         style({ opacity: 1 }),
-        animate(2000, style({opacity: 0}))
+        animate(2500, style({opacity: 0}))
       ])
     ]),
+      trigger('detailExpand', [
+        state('collapsed', style({ height: '0px', minHeight: '0' })),
+        state('expanded', style({ height: '*', paddingBottom: '20px' })),
+        transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      ])
   ]
 })
 
@@ -69,6 +74,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   incomingList:string|undefined;
   isPrinting = false;
 
+  expandedElement: AbstractControl | null = null;
+
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
 
@@ -80,9 +87,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   treatmentListForm: FormGroup;
   treatmentPriorities: Observable<Priority[]>;
 
-  constructor(
-    // public dialogRef: MatDialogRef<TreatmentListComponent>,
-    // @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  constructor (
     private dialog: MatDialog,
     private router: Router,
     route: ActivatedRoute,
@@ -146,49 +151,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.accepted.next(this.acceptedFormArray.controls);
 
-
-      // Here we're getting the changes from each form in the array, so that we can update the patient details
-      // in future releases.
-      merge(...this.acceptedFormArray.controls.map((control: AbstractControl, index: number) =>
-      control.valueChanges.pipe(
-          take(1),
-          map(value => ({ rowIndex: index, control })))
-      )).subscribe(changes => {
-
-        const updatePatient = {
-          patientId: changes.control.get('PatientId')?.value,
-          treatmentPriority: changes.control.get('Treatment priority')?.value || null,
-          temperament: changes.control.get('Temperament')?.value || null,
-          age: changes.control.get('Age')?.value || null,
-          releaseStatus: changes.control.get('Release status')?.value || null,
-          abcStatus: changes.control.get('ABC status')?.value || null,
-          knownAsName: changes.control.get('Known as name')?.value,
-          sex: changes.control.get('Sex')?.value,
-          description: changes.control.get('Description')?.value || null,
-          mainProblems: changes.control.get('Main Problems')?.value || null,
-          animalTypeId: changes.control.get('animalTypeId')?.value
-        };
-
-        this.startSave(changes.control);
-
-        this.patientService.updatePatientDetails(updatePatient).then(result => {
-
-          if(result.success === 1){
-
-            this.endSave(changes.control);
-            this.ts.sortTreatmentList();
-          }
-
-        });
-
-        });
-
       this.changeDetector.detectChanges();
 
     });
-
-
-
 
    }
 
@@ -215,12 +180,40 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.ts.resetTreatmentList();
     }
 
-
   }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-}
+  }
+
+  updateTreatmentPriority(patient: AbstractControl){
+
+    if(!this.ts.hasPermission.value){
+      this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+      return;
+    }
+
+    this.startSave(patient);
+
+    const updatePatient = this.patientService.getUpdatePatientObject(patient);
+    this.changeDetector.detectChanges();
+
+    this.patientService.updatePatientDetails(updatePatient.value).then(result => {
+
+          if(result.success === 1){
+
+            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+
+            this.ts.sortTreatmentList();
+
+          }
+
+          this.endSave(patient);
+
+    });
+
+   }
 
 
 
@@ -325,22 +318,22 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 }
 
   private startSave(row: AbstractControl) {
+
     row.get('saving')?.setValue(true, {emitEvent: false});
     row.get('saved')?.setValue(false, {emitEvent: false});
     this.changeDetector.detectChanges();
   }
 
   private endSave(row: AbstractControl) {
+
+    // Here we want to show the saved icon, but only for a short amount of time.
     row.get('saving')?.setValue(false, {emitEvent: false});
     row.get('saved')?.setValue(true, {emitEvent: false});
-
     this.changeDetector.detectChanges();
 
-    setTimeout(() => {
-      row.get('saved')?.setValue(false, {emitEvent: false});
-      this.changeDetector.detectChanges();
-    }, 2500 );
 
+    row.get('saved')?.setValue(false, {emitEvent: false});
+    this.changeDetector.detectChanges();
 
   }
 
@@ -362,6 +355,11 @@ openHospitalManagerRecord(tagNumber: string){
 }
 
 quickUpdate(row:AbstractControl) {
+
+  if(!this.ts.hasPermission.value){
+    this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+    return;
+  }
 
 
 
@@ -400,6 +398,11 @@ areaChanged(areaId:number|undefined, index: number){
 
 moveOut(currentPatient: AbstractControl) : void {
 
+  if(!this.ts.hasPermission.value){
+    this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
+    return;
+  }
+
   this.startSave(currentPatient);
 
   this.ts.movePatientOutOfArea(currentPatient, this.area.areaId).then(result => {
@@ -411,6 +414,28 @@ moveOut(currentPatient: AbstractControl) : void {
     this.endSave(currentPatient);
 
   });
+
+}
+
+getUpdatePatientObject(element: AbstractControl) : any{
+
+  return this.patientService.getUpdatePatientObject(element);
+
+}
+
+getUpdatePatientControl(element: AbstractControl) : FormGroup {
+
+  const patientDetails = this.getUpdatePatientObject(element);
+
+  return this.fb.group({patientDetails});
+
+}
+
+savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
+
+  currentPatient.get('Treatment priority')?.setValue(currentPatient.get('patientDetails.treatmentPriority')?.value);
+
+  saving ? this.startSave(currentPatient) : this.endSave(currentPatient);
 
 }
 

@@ -2,7 +2,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MaterialModule } from 'src/app/material-module';
 import { environment } from 'src/environments/environment';
 
 import { EmergencyRegisterPageComponent } from './emergency-register-page.component';
@@ -13,14 +15,18 @@ describe('EmergencyRegisterPageComponent', () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [
-                EmergencyRegisterPageComponent
-            ],
             imports: [
                 HttpClientTestingModule,
                 RouterTestingModule,
+                MaterialModule,
                 AngularFireModule.initializeApp(environment.firebase)],
-                schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+            declarations: [
+                EmergencyRegisterPageComponent
+            ],
+            providers: [
+                MatSnackBar
+            ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 

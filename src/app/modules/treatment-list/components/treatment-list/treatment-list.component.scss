@@ -85,8 +85,7 @@
 .mat-spinner {
   position: absolute;
   top: 25%;
-  left: 50%;
-  right: 50%;
+  right: calc(50% - 50px);
   margin-left: 50%;
   z-index: 5000;
   margin: auto;
@@ -127,12 +126,42 @@
 }
 
 .saved-spinner{
-  position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 5000;
-    margin: 0 !important;
+    position: relative;
+    left: 0;
+    overflow: unset;
+}
+
+tr.patient-detail-row {
+  height: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.patient-detail-element {
+  overflow: hidden;
+}
+
+.patient-element-row td {
+  border-bottom-width: 0;
+}
+
+tr.patient-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.patient-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.mat-table-sticky {
+  top:56px !important;
+}
+
+.expand {
+  color: darkGray;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 600px) {
@@ -161,6 +190,7 @@
   .small-font{
     font-size: 9px;
   }
+
 
 }
 

@@ -14,12 +14,21 @@
     background-color: red;
     border-radius: 8px;
     color: white;
+    min-width: 118px;
 }
 
 .accept-button{
     background-color: green;
     border-radius: 8px;
     color: white;
+    min-width: 118px;
+}
+
+.moveout-button{
+  background-color: orange;
+  border-radius: 8px;
+  color: white;
+  min-width: 118px;
 }
 
 .action-button{
@@ -27,3 +36,26 @@
     width: 125px;
     cursor: default;
 }
+
+.moved-out{
+  min-width: 215px !important;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .moved-out{
+    padding-bottom: 10px;
+    min-width: 215px !important;
+  }
+
+  .button-container{
+    padding-bottom: 10px;
+    margin-right: 0px !important;
+  }
+
+}
+
+:host ::ng-deep .form-sub-group {
+    padding-left: 10px !important;
+    padding-right: 5px !important;
+  }

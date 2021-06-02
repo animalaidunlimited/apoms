@@ -24,8 +24,8 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   
   @Output() public result = new EventEmitter<UpdateResponse>();
-  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
 
+  @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
   @ViewChild('callOutcomeField',{ read: ElementRef, static:false }) callOutcomeField!: ElementRef;
 
   callOutcomes$!:Observable<CallOutcomeResponse[]>;
