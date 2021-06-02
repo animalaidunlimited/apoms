@@ -1,26 +1,19 @@
-.dot-red {
-    color: red;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-green {
-    color: green;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-yellow {
-    color: gold;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-grey {
-    color: grey;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
+.emergencyDetailsCode {
+    min-width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    &.red{
+        background: red;
+    }
+    &.green{
+        background: green;
+    }
+    &.yellow{
+        background: gold;
+    }
+    &.grey{
+        background: grey;
+    }
 }
 
 
