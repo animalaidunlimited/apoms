@@ -46,6 +46,7 @@
     border-radius: 0.3rem ;
     background: rgba(240, 240, 243, 0.73);
     display: flex;
+    flex-direction:column;
     align-items: baseline;
     width: 100%;
     .commentSection{ 

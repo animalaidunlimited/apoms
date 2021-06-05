@@ -1,5 +1,5 @@
 import { Image, MediaItem,  Gallery} from 'src/app/core/models/media';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -8,6 +8,7 @@ import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -57,16 +58,16 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
   }
 
   openMediaDialog(): void{
-      const dialogRef = this.dialog.open(MediaDialogComponent, {
+      /* const dialogRef = this.dialog.open(MediaDialogComponent, {
           minWidth: '50%',
           data: {
               tagNumber: this.galleryData?.get('tagNumber')?.value,
               patientId: this.galleryData?.get('patientId')?.value,
           }
-      });
+      }); */
 
       // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-      dialogRef.afterClosed()
+     /*  dialogRef.afterClosed()
       .pipe(takeUntil(this.ngUnsubscribe))
       // tslint:disable-next-line: deprecation
       .subscribe(updatedMedia => {
@@ -77,8 +78,14 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
                   // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
               }
           }
-      });
-
+      }); */
+      const dialogRef = this.dialog.open(MediaPreviewComponent, {
+        minWidth: '75vw',
+        panelClass: 'media-preview-dialog',
+        data: {
+          upload:true
+        }
+    });
   }
 
   ngOnDestroy() {
