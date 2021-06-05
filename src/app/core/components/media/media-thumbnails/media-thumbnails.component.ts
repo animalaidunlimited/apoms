@@ -35,19 +35,36 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             },
             autoFocus: false
         });
-        const sub = dialogRef.componentInstance.onArrowKey.subscribe(() => {
+        const sub = dialogRef.componentInstance.onArrowKey.subscribe(key => {
+          
             // tslint:disable-next-line: max-line-length
-            const mediaDataIndex = this.mediaPatientItems.value.findIndex(mediaPatientItem => mediaPatientItem.patientMediaItemId === dialogRef.componentInstance.data.mediaData.patientMediaItemId);
-            const imageIndex = this.gallery.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.image.patientMediaItemId);
-
-            if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
-               
-                const dialogData = {
-                    image : this.gallery[imageIndex - 1],
-                    mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems.value[mediaDataIndex -1]
-                };
-                dialogRef.componentInstance.updateDialog(dialogData);
-            }
+            const mediaDataIndex = this.mediaPatientItems.value.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
+            const imageIndex = this.gallery.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
+          
+          
+             if(key === 37){
+                if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
+                   
+                    const dialogData = {
+                        image : this.gallery[imageIndex - 1],
+                        mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems.value[mediaDataIndex - 1]
+                    };
+                    dialogRef.componentInstance.updateDialog(dialogData);
+                    
+                }
+           }
+            
+             if(key === 39){
+                
+                if(imageIndex + 1 <= this.gallery.length - 1 && mediaDataIndex + 1 <= this.mediaPatientItems.value.length - 1) {
+                   
+                    const dialogData = {
+                        image : this.gallery[imageIndex + 1],
+                        mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems.value[mediaDataIndex + 1]
+                    };
+                    dialogRef.componentInstance.updateDialog(dialogData);
+                } 
+            } 
            
             
         });

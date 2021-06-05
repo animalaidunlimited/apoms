@@ -24,7 +24,7 @@ export class MediaPreviewComponent implements OnInit {
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  onArrowKey = new EventEmitter();
+  onArrowKey = new EventEmitter<number>();
 
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
 
@@ -32,16 +32,20 @@ export class MediaPreviewComponent implements OnInit {
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
   
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    // tslint:disable-next-line: deprecation
-    if (event.keyCode === 37) {
-        this.onArrowKey.emit(37);
-    }
+  onDialog(event: KeyboardEvent): void {
 
-    // tslint:disable-next-line: deprecation
-    if (event.keyCode === 39) {
-      this.onArrowKey.emit(39);
+    if((event.composedPath()[0] as HTMLElement).classList[0] as string === 'mat-dialog-container'){
+      // tslint:disable-next-line: deprecation
+      if (event.keyCode === 37) {
+        this.onArrowKey.emit(37);
+      }
+
+      // tslint:disable-next-line: deprecation
+      if (event.keyCode === 39) {
+        this.onArrowKey.emit(39);
+      }
     }
+    
 }
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -208,7 +212,7 @@ export class MediaPreviewComponent implements OnInit {
         this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
         : ''
       ],
-      imageTags:[this.imageData ? dialogData.mediaData.tags?.map((tag:any) => tag.tag) : []],
+      imageTags:[this.imageData ? dialogData.mediaData?.tags?.map((tag:any) => tag.tag) : []],
       imageTagsChips: ''
     });
   }
