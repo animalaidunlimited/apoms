@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
-import { delay } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
-import { LocationTrackingService } from './core/services/location-tracking/location-tracking.service';
+import { LocationService } from './core/services/location/location.service';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
@@ -26,7 +25,7 @@ export class AppComponent implements OnInit{
         private printService: PrintTemplateService,
         private authService: AuthService,
         private messagingService: MessagingService,
-        private locationTracker: LocationTrackingService,
+        private locationTracker: LocationService,
         private emergencyTabBar: EmergencyRegisterTabBarService
     ) {
 
@@ -37,7 +36,7 @@ export class AppComponent implements OnInit{
     ngOnInit() {
 
 
-        // this.locationTracker.logLocation();
+        this.locationTracker.logLocation();
 
 
 
