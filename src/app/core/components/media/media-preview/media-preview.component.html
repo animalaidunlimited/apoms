@@ -1,10 +1,10 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
-<div fxLayout="row" style="background: #F0F0F0;">
+<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
     <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage"></div>
     <div style="
-        width: 100%;
+        width: -webkit-fill-available;
         padding: 0.5rem;
     " [formGroup]="recordForm">
         <div class="imagePreviewSidePanel" >

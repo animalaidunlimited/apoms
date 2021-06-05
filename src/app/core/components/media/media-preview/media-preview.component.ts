@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem } from './../../../models/media';
-import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnInit,SimpleChanges,ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -24,21 +24,36 @@ export class MediaPreviewComponent implements OnInit {
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  onArrowKey = new EventEmitter();
+
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
 
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
+  
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // tslint:disable-next-line: deprecation
+    if (event.keyCode === 37) {
+        this.onArrowKey.emit(37);
+    }
 
-   
+    // tslint:disable-next-line: deprecation
+    if (event.keyCode === 39) {
+      this.onArrowKey.emit(39);
+    }
+}
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public datePipe:DatePipe,
     private patientService:PatientService,
-    private showSnackBar: SnackbarService
+    private showSnackBar: SnackbarService,
+    private cdr: ChangeDetectorRef
   ) {
 
-    if(this.data.image){
+    if(this.data?.image){
+      
       this.imageData = this.data.image;
       // tslint:disable-next-line: deprecation
       this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
@@ -49,17 +64,23 @@ export class MediaPreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    if(!this.data?.upload){
+      this.recordForm = this.fb.group({
+        imageDate: [ this.imageData ?
+          this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
+          : ''
+        ],
+        imageTags:[this.imageData ? this.data.mediaData.tags?.map((tag:any) => tag.tag) : []],
+        imageTagsChips: ''
+      });
+    }else{
 
-    this.recordForm = this.fb.group({
-      imageDate: [ this.imageData ?
-        this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
-        : ''
-      ],
-      imageTags:[this.imageData ? this.data.mediaData.tags?.map((tag:any) => tag.tag) : []],
-      imageTagsChips: ''
-    });
+    }
+    
   }
 
+ 
   remove(tags:string): void {
 
     const index = this.recordForm.get('imageTags')?.value.indexOf(tags);
@@ -176,6 +197,20 @@ export class MediaPreviewComponent implements OnInit {
       event.preventDefault();
       this.tagsControl.nativeElement.focus();
     }
+  }
+
+
+  updateDialog(dialogData: any){
+    this.imageData = dialogData.image;
+
+    this.recordForm = this.fb.group({
+      imageDate: [ this.imageData ?
+        this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
+        : ''
+      ],
+      imageTags:[this.imageData ? dialogData.mediaData.tags?.map((tag:any) => tag.tag) : []],
+      imageTagsChips: ''
+    });
   }
 
 }
