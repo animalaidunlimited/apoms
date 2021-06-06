@@ -101,7 +101,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails.code as any);
+                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);
 
                     if (selectedCode) {
                         this.code?.setValue(selectedCode);

@@ -136,6 +136,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     addPatientRow(){
         const patient = this.getEmptyPatient();
+        if(this.patients.at(0).get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1){
+            patient.get('callOutcome.CallOutcome')?.setValue({
+                CallOutcomeId : 1,
+                CallOutcome: 'Admission'
+            }, {emitEvent: false});
+        }
         this.patients.push(patient);
     }
 
@@ -250,40 +256,26 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
             const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
 
-                if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
+            if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
 
-                    patient.get('isAdmission')?.setValue(true ,{ emitEvent: false });
-                    patient.get('tagNumber')?.setValidators(Validators.required);
-                    patient.get('admissionArea')?.setValidators(Validators.required);
+                rescuer2Id?.setValidators([Validators.required]);
+                rescuer1Id?.setValidators([Validators.required]);
+                rescueTime?.setValidators([Validators.required]);
+                admissionTime?.setValidators([Validators.required]);
 
-                    rescuer2Id?.setValidators([Validators.required]);
-                    rescuer1Id?.setValidators([Validators.required]);
-                    rescueTime?.setValidators([Validators.required]);
-                    admissionTime?.setValidators([Validators.required]);
+                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
 
-                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
+            }
 
-                }
+            else {
 
-                else {
+                rescuer2Id?.clearValidators();
+                rescuer1Id?.clearValidators();
+                rescueTime?.clearValidators();
+                admissionTime?.clearValidators();
 
-                    const admissionArea = patient.get('admissionArea');
-
-                    if(!admissionArea?.value){
-                        admissionArea?.setValue(null, {emitEvent:false});
-                    }
-
-                    patient.get('isAdmission')?.setValue(false, { emitEvent: false });
-                    patient.get('tagNumber')?.clearValidators();
-                    patient.get('admissionArea')?.clearValidators();
-
-                    rescuer2Id?.clearValidators();
-                    rescuer1Id?.clearValidators();
-                    rescueTime?.clearValidators();
-                    admissionTime?.clearValidators();
-
-                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
-                }
+                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
+            }
 
         });
 
@@ -293,8 +285,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     private updateValueAndValidity(patient: FormGroup, rescuer2Id: AbstractControl | null, rescuer1Id: AbstractControl | null,
         rescueTime: AbstractControl | null, admissionTime: AbstractControl | null) {
 
-        patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-        patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+        
         rescuer2Id?.updateValueAndValidity({ emitEvent: false });
         rescuer1Id?.updateValueAndValidity({ emitEvent: false });
         rescueTime?.updateValueAndValidity({ emitEvent: false });
@@ -302,7 +293,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     loadPatientArray(emergencyCaseId: number) {
-        console.log('called times');
+ 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
@@ -342,7 +333,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients.push(patient);
 
     }
-
+    /**
+     * Same as inside call outcome value changes 
+     *  it is used for when fetching the data from api
+     * if api has call outcome admission because valuechanges will not run inside call outcome compoment on
+     * ngOnIt
+     */
     setChildOutcomeAsParentPatient(patients: FormArray) {
 
         patients.controls[0].valueChanges.subscribe(val=> {
@@ -352,19 +348,21 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
 
                     patients.controls.forEach((patient)=> {
+                        if(isNaN(patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId)){
+                            patient.get('callOutcome.CallOutcome')?.setValue({
+                                CallOutcomeId : val.callOutcome.CallOutcome.CallOutcomeId,
+                                CallOutcome: val.callOutcome.CallOutcome.CallOutcome
+                            }, {emitEvent: false});
 
-                        patient.get('callOutcome.CallOutcome')?.setValue({
-                            CallOutcomeId : val.callOutcome.CallOutcome.CallOutcomeId,
-                            CallOutcome: val.callOutcome.CallOutcome.CallOutcome
-                        }, {emitEvent: false});
+                            patient.get('isAdmission')?.setValue(true, {emitEvent: false});
+                            patient.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
 
-                        patient.get('isAdmission')?.setValue(true, {emitEvent: false});
+                            patient.get('tagNumber')?.setValidators(Validators.required);
+                            patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
-                        // patient.get('tagNumber')?.setValidators(Validators.required);
-                        patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-
-                        // patient.get('admissionArea')?.setValidators(Validators.required);
-                        patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+                            patient.get('admissionArea')?.setValidators(Validators.required);
+                            patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+                        }
                     });
 
                 }

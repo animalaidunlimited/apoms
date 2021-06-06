@@ -102,7 +102,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     const sameAsNumber = this.patientForm.get('callOutcome.sameAsNumber');
     const callOutcomeId = this.patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
-
+    const patientArray = (this.patientForm.parent as FormGroup).parent?.get('patients') as FormArray;
     // Check if we need to show the same as field.
     this.sameAs = this.sameAsId === callOutcomeId;
 
@@ -120,26 +120,49 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     sameAsNumber?.updateValueAndValidity();
 
-    const patientArray = (this.patientForm.parent as FormGroup).parent?.get('patients') as FormArray;
-
+    /**
+     * At current index if patient outcome is admissions
+     * change only outcome which is blank in outcome array to admission
+     */
     if(callOutcomeId === 1){
-
-      // If we're selecting admission, check to make sure all of the animals have a TagNumber
       patientArray?.controls.forEach(patient => {
+        /**
+         * check for call outcome number
+         * if blank then set them to admission
+         */
+        if(isNaN(patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId) || patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1){
+          patient.get('callOutcome.CallOutcome')?.setValue({
+              CallOutcomeId : callOutcomeId,
+              CallOutcome: 'Admission'
+          }, {emitEvent: false});
+          patient?.get('tagNumber')?.setValidators(Validators.required);
+          patient?.get('tagNumber')?.updateValueAndValidity();
 
-        patient?.get('tagNumber')?.setValidators(Validators.required);
-        patient?.get('tagNumber')?.updateValueAndValidity();
+          patient?.get('isAdmission')?.setValue(true ,{ emitEvent: false });
+          patient?.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
+
+          patient?.get('admissionArea')?.setValidators(Validators.required); 
+          patient?.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+        }
+        
+
       });
+      
 
     }
     else {
+      /**
+       * At current index if patient outcome is not admisson
+       * reset only current outcome form not even those who has been updated 
+       * previously programmatically  
+       */
+      this.patientForm?.get('isAdmission')?.setValue(false, { emitEvent: false });
+      this.patientForm?.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
+      
+      this.patientForm?.get('tagNumber')?.clearValidators();
 
-      patientArray?.controls.forEach(patient => {
-
-        patient?.get('tagNumber')?.clearValidators();
-        patient?.get('tagNumber')?.updateValueAndValidity();
-      });
-
+      this.patientForm?.get('admissionArea')?.clearValidators(); 
+          
     }
 
 
