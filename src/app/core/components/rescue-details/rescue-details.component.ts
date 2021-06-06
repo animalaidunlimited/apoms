@@ -124,10 +124,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.rescueTime = this.recordForm.get('rescueDetails.rescueTime');
         this.admissionTime = this.recordForm.get('rescueDetails.admissionTime');
         this.callDateTime = this.recordForm.get('emergencyDetails.callDateTime');
-        
-        this.recordForm.get('emergencyDetails')?.statusChanges.subscribe(() => {
-            console.log(this.recordForm);
-        })
 
         this.updateTimes();
 

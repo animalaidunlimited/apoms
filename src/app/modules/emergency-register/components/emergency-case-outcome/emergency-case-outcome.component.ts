@@ -162,8 +162,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
       this.patientForm?.get('tagNumber')?.clearValidators();
       this.patientForm?.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
-      this.patientForm?.get('admissionArea')?.clearValidators(); 
-      this.patientForm?.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
+      this.patientForm?.get('admissionArea')?.clearValidators();
+      this.patientForm?.get('admissionArea')?.updateValueAndValidity({ emitEvent: false }); 
+
     }
 
 
