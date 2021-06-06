@@ -135,6 +135,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.animalTypeValueChangesUnsubscribe.next();
     this.animalTypeValueChangesUnsubscribe.complete();
   }
+
+
+
   ngAfterViewInit(): void{
 
     this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
@@ -148,8 +151,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
       if(!selection){
+
         this.problemRef.nativeElement.value = '';
         this.problemRef.nativeElement.focus();
+
       }
 
     });
@@ -172,15 +177,16 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
         const selectedProblems =  this.problemsArray?.value as Problem[];
 
-         if(selectedProblems.length > 0){
+        if(selectedProblems.length > 0){
 
-            const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem.trim());
-            const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
-            return filteredProblemsArray;
+          const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem.trim());
+          const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
+          return filteredProblemsArray;
 
         }else{
-            return problems;
+          return problems;
         }
+
       }),
       map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0))),
       map(problems => this.problemsExclusions ? problems.filter(problem => !this.problemsExclusions.includes(problem.Problem.trim())):problems)
@@ -197,6 +203,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientForm.get('updated')?.setValue(true);
 
     this.hideIrrelevantProblems($event.option.viewValue);
+
     this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
     this.patientFormProblemSetError();
   }
@@ -234,10 +241,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
     // two for the new patient type, followed by an unset for the old patient type
 
-
     if(!(this.patientForm.get('animalType')?.value === animal)){
         return;
     }
+
     this.problemsExclusions = currentExclusions[0]?.exclusionList;
 
   }
@@ -280,7 +287,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
             this.animalTypeInput.nativeElement.value = '';
           }
           else{
+
+            this.filteredProblems$ = this.problemFilter('');
             this.problemRef.nativeElement.focus();
+
           }
         });
       }
