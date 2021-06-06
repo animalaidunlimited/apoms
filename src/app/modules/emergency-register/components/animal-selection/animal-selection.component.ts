@@ -302,7 +302,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     loadPatientArray(emergencyCaseId: number) {
-
+        console.log('called times');
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
@@ -313,11 +313,16 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
-
-                this.patients.push(newPatient);
+                /* 
+                * loadPatientArray running multiple times on ngOnInit 
+                * animal-selection HTML tag will instantiate ng on init 
+                * Rstrict length of patients array to length of incoming patients 
+                */
+                if(this.patients.length < patients.patients.length )
+                {
+                    this.patients.push(newPatient);
+                }
             });
-
-            // this.recordForm.patchValue(patients);
 
             this.setChildOutcomeAsParentPatient(this.patients);
             
