@@ -56,7 +56,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
-  patientForm: FormGroup = new FormGroup({}); 
+  patientForm: FormGroup = new FormGroup({});
   problemInput = new FormControl();
   problemsArray!: FormArray;
   problemsExclusions!: string[];
@@ -91,7 +91,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private userOptions: UserOptionsService,
   ) {
 
-    
+
    }
 
   ngOnInit(): void {
@@ -202,7 +202,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
-    
+
     const problemsGroup = this.fb.group({
         problemId: [event.option?.value, Validators.required],
         problem: [event.option.viewValue, Validators.required],
@@ -244,7 +244,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   isSpeciesBlank($event:Event){
-    
+
    setTimeout(() =>{
       if(this.animalType?.value === '')
       {
@@ -290,16 +290,24 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   checkMainProblem(){
     const problemRefElement = this.problemRef.nativeElement;
+
     if(this.problemsArray.length === 0){
+
       problemRefElement.value = '';
       this.chipList.errorState = true;
+      
       this.patientFormProblemSetError();
-    }else{
+
+    }
+    else {
       this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
+
         const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
+
         if(matchProblem.length === 0){
           problemRefElement.value = '';
         }
+
       });
     }
   }
