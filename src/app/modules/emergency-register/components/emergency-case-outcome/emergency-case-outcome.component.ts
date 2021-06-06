@@ -22,7 +22,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   @Input() patientForm!: FormGroup | AbstractControl;
 
-  
+
   @Output() public result = new EventEmitter<UpdateResponse>();
 
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
@@ -56,9 +56,9 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    
+
     this.callOutcome = this.patientForm.get('callOutcome') as FormGroup;
-    
+
     if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
 
       this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
@@ -70,8 +70,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
       );
 
     }
-
-
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();
 
@@ -121,14 +119,14 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     }
 
     sameAsNumber?.updateValueAndValidity();
-   
+
     const patientArray = (this.patientForm.parent as FormGroup).parent?.get('patients') as FormArray;
 
     if(callOutcomeId === 1){
 
       // If we're selecting admission, check to make sure all of the animals have a TagNumber
       patientArray?.controls.forEach(patient => {
-        
+
         patient?.get('tagNumber')?.setValidators(Validators.required);
         patient?.get('tagNumber')?.updateValueAndValidity();
       });
