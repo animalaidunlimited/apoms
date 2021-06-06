@@ -86,7 +86,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
                     this.initialiseLocation(location.locationDetails);
                     this.updateLocation(
                         location.locationDetails.latitude,
-                        location.locationDetails.longitude,
+                        location.locationDetails.longitude
                     );
                 }
 
@@ -209,6 +209,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         };
 
         addressSearcher.findPlaceFromQuery(searchRequest, (results, status) => {
+
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 for (const result of results) {
 

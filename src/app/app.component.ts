@@ -36,7 +36,7 @@ export class AppComponent implements OnInit{
     ngOnInit() {
 
 
-        this.locationTracker.logLocation();
+        // this.locationTracker.logLocation();
 
 
 
