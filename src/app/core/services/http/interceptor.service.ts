@@ -20,7 +20,6 @@ export class HttpConfigInterceptor implements HttpInterceptor {
         next: HttpHandler,
     ): Observable<HttpEvent<any>> {
 
-        console.log(req);
         const token: string = this.authService.getToken();
 
         if (token) {

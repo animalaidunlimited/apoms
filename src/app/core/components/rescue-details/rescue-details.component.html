@@ -2,7 +2,26 @@
 
     <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
-            <mat-form-field>
+        <mat-form-field>
+            <mat-label>Assign Vehicle</mat-label>
+                <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+                <mat-option>N/A</mat-option>
+                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.VehicleId">
+                    {{vehicle.VehicleNumber}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+
+            <input #ambulanceAssignmentTimeField formControlName="assignedDate" type="datetime-local"
+            name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
+            placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
+
+        </mat-form-field>
+       
+
+            <!-- <mat-form-field>
                 <mat-label>Driver</mat-label>
                     <mat-select tabindex="12" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
                     <mat-option>N/A</mat-option>
@@ -20,7 +39,7 @@
                             {{rescuer.FirstName}}
                         </mat-option>
                     </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
 
     </div>

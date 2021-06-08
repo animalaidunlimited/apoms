@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
+import { VehicleList } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DriverViewService } from '../../services/driver-view.service';
@@ -35,10 +36,12 @@ export class VehileListPageComponent implements OnInit {
     'vehicleNumber',
     'largeAnimalCapacity',
     'smallAnimalCapacity',
+    'minRescuerCapacity',
+    'maxRescuerCapacity',
     'vehicleStatus'
   ];
 
-  dataSource!: MatTableDataSource<any> ;
+  dataSource!: MatTableDataSource<VehicleList[]> ;
 
   vehicleType$!: Observable<VehicleType[]>;
 
@@ -49,7 +52,9 @@ export class VehileListPageComponent implements OnInit {
     vehicleTypeId: [],
     largeAnimalCapacity:[],
     smallAnimalCapacity: [],
-    vehicleStatusId:[]
+    vehicleStatusId:[],
+    minRescuerCapacity:[],
+    maxRescuerCapacity:[]
   });
 
 
@@ -84,7 +89,7 @@ export class VehileListPageComponent implements OnInit {
   }
 
   refreshVehicleTable() {
-    this.driverViewService.getVehicleListTableData().then((vehicleListTabledata:any)=> {
+    this.driverViewService.getVehicleListTableData().then((vehicleListTabledata)=> {
       this.dataSource = vehicleListTabledata;
     })
   }

@@ -1,9 +1,15 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-body {
+@media screen and (min-width:600px) {
+
+  body {
     margin: 0 !important;
     font-family: Roboto, Arial, sans-serif;
+  }
+
 }
+
+
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
@@ -191,11 +197,13 @@ mat-radio-button{
   }
 
   body {
-    margin: 0 !important;
+    // margin: 0 !important;
     font-family: Roboto, Arial, sans-serif;
     font-size: 13px;
+    margin-top: calc(100vh/13);
+    margin-left: 0;
 
-    & .body:nth-child(1) {
+    .body:nth-child(1) {
       font-size: 13px;
     }
   }

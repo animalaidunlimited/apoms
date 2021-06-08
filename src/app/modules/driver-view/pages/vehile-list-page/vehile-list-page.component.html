@@ -47,9 +47,6 @@
                     <mat-select formControlName="vehicleStatusId">
                       <mat-option *ngFor="let status of vehicleStatus" [value]="status.VehicleStatusId">
                         {{status.VehicleStatus}}
-                        <mat-icon *ngIf="status.VehicleStatusId === 1">check_box</mat-icon>
-                        <mat-icon *ngIf="status.VehicleStatusId === 2">cancel</mat-icon>
-                        <mat-icon *ngIf="status.VehicleStatusId === 3">build</mat-icon>
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -57,20 +54,37 @@
             </div>    
         </div>
 
-        <input
-            hidden
-            type="file"
-            #uploader
-            multiple
-            accept="image/*,video/*"
-        />
+        <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start">
 
-        <label class="legend1">
-            <button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
-                <mat-icon>add_a_photo</mat-icon>
-            </button>
-            Upload Image
-        </label>
+          <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+              <mat-form-field appearance='fill'>
+                  <mat-label>Min. Rescuer Capacity</mat-label>
+                  <input type= 'number' formControlName="minRescuerCapacity" matInput>
+              </mat-form-field>
+      
+              <mat-form-field appearance='fill'>
+                  <mat-label>Max. Rescuer Capacity</mat-label>
+
+                  <input type= 'number' formControlName="maxRescuerCapacity" matInput>
+              </mat-form-field>
+
+              <input
+                hidden
+                type="file"
+                #uploader
+                multiple
+                accept="image/*,video/*"
+              />
+
+              <label class="legend1">
+                <button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
+                    <mat-icon>add_a_photo</mat-icon>
+                </button>
+                Upload Image
+              </label>
+          </div> 
+
+        </div>
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
             <button type='submit' mat-raised-button color='primary'>Save</button>
@@ -124,6 +138,22 @@
         <mat-cell *matCellDef="let row">
           <span class="mobile-label">Capacity(Small Animal):</span>
           {{row.smallAnimalCapacity}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="minRescuerCapacity">
+        <mat-header-cell *matHeaderCellDef> Min. Capacity(Rescuer) </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label"> Min. Capacity(Rescuer):</span>
+          {{row.minRescuerCapacity}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="maxRescuerCapacity">
+        <mat-header-cell *matHeaderCellDef> Max. Capacity(Rescuer) </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Max. Capacity(Rescuer):</span>
+          {{row.maxRescuerCapacity}}
         </mat-cell>
       </ng-container>
 

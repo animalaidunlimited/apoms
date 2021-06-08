@@ -86,6 +86,15 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.VehicleListPageModule)
     },
 
+    {
+        data: { title: 'Driver View', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'driver-view',
+        loadChildren: () =>
+            import('./modules/driver-view/components/driver-view/driver-view.module')
+            .then(m => m.DriverViewModule)
+    },
 
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},

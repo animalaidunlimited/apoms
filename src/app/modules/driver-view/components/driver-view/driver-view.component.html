@@ -1,0 +1,20 @@
+
+<div [formGroup]="driverViewDetails">
+
+    <mat-form-field class="dateField">
+        <mat-label>Date</mat-label>
+        <input matInput type="datetime-local" formControlName="assignmentDate" name = "AssignmentDate">
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Secondary Rescuer</mat-label>
+            <mat-select formControlName="rescuer1Id">
+            <mat-option>N/A</mat-option>
+                <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
+                {{rescuer.FirstName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+</div>
