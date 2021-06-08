@@ -18,14 +18,14 @@ export class AuthGuard implements CanActivate {
         | boolean
         | UrlTree {
 
-        
-        if (this.authService.isLogged()) {
+
+        if (this.authService.loggedIn.value) {
             this.authService.redirectUrl = '';
             return true;
         }
 
         this.authService.redirectUrl = state.url;
-        this.router.navigate(['/nav/home']);
+        this.router.navigate(['']);
         return false;
     }
 }

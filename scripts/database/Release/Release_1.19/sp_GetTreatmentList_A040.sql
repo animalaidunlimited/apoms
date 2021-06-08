@@ -16,19 +16,19 @@ Purpose: Procedure for inserting admission and moved in records to the treatment
 */
 
 WITH PatientCTE AS (
-SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
-p.Sex, p.Description, p.KnownAsName, p.MainProblems,
-CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
-FROM AAU.Patient p
-INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
-WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
-AND p.PatientCallOutcomeId = 1
+	SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.PatientStatusDate, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
+	p.Sex, p.Description, p.KnownAsName, p.MainProblems,
+	CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
+	FROM AAU.Patient p
+	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
+	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND p.PatientCallOutcomeId = 1
 ),
 EmergencyCaseCTE AS (
-SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
-FROM AAU.EmergencyCase ec
-WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
+	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
+	FROM AAU.EmergencyCase ec
+	WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
 ),
 RecordSplitCTE AS
 (
@@ -77,7 +77,15 @@ FROM PatientCTE p
 		FROM AAU.TreatmentList tld
         WHERE (prm_TreatmentListDate <= IFNULL(CAST(IF(OutAccepted IS NULL, NULL, OutDate) AS DATE), prm_TreatmentListDate)
         AND CAST(InDate AS DATE) <= prm_TreatmentListDate)
-    ) tl ON tl.PatientId = p.PatientId AND NULLIF(OutAccepted, 0) IS NULL AND OutOfHospital IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId
+    ) tl ON tl.PatientId = p.PatientId
+    AND NULLIF(OutAccepted, 0) IS NULL
+    AND InTreatmentAreaId = prm_TreatmentAreaId
+    AND
+		(
+			OutOfHospital IS NULL
+			OR
+			CAST(p.PatientStatusDate AS DATE) = prm_TreatmentListDate
+		)
 	INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
 	INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
 	INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId

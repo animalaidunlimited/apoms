@@ -6,8 +6,8 @@ const routes: Routes = [
     {
         path: '',
         data: { shouldReuse: true, key: 'emergency-register' },
-        component: EmergencyRegisterPageComponent,
-    },
+        component: EmergencyRegisterPageComponent
+    }
 ];
 
 @NgModule({

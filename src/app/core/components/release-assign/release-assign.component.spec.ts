@@ -5,11 +5,11 @@ import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
 
-import { AssignReleaseComponent } from './assign-release.component';
+import { ReleaseAssignComponent } from './release-assign.component';
 
-describe('AssignReleaseComponent', () => {
-  let component: AssignReleaseComponent;
-  let fixture: ComponentFixture<AssignReleaseComponent>;
+describe('ReleaseAssignComponent', () => {
+  let component: ReleaseAssignComponent;
+  let fixture: ComponentFixture<ReleaseAssignComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -20,14 +20,14 @@ describe('AssignReleaseComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule
       ],
-      declarations: [ AssignReleaseComponent ],
+      declarations: [ ReleaseAssignComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
 
   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(AssignReleaseComponent);
+    fixture = TestBed.createComponent(ReleaseAssignComponent);
     component = fixture.componentInstance;
 
     component.formData = {

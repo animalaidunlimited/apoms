@@ -5,7 +5,7 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { PatientResponse } from '../../models/responses';
 
-export interface DialogData {
+interface DialogData {
     emergencyCaseId: number;
     emergencyNumber: number;
     CallOutcomeId: number;

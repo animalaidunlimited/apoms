@@ -695,7 +695,7 @@ export class DropdownService extends APIService {
 
     if(!this.treatmentAreas$) {
       this.treatmentAreas$ = this.getObservable(request).pipe(
-          map((response: TreatmentArea[])=>{
+          map((response: TreatmentArea[])=> {
               return response;
           })
       );

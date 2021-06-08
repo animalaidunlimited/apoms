@@ -9,6 +9,7 @@ import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import { MediaItemsDataObject, Comment } from 'src/app/core/models/media';
 import { SuccessOnlyResponse } from '../../models/responses';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 interface SuccessResult{
     success: number;
@@ -25,7 +26,9 @@ export class PatientService extends APIService {
 
     returnMediaItem : BehaviorSubject<MediaItem[]> = new BehaviorSubject<MediaItem[]>([]);
 
-    constructor(http: HttpClient) {
+    constructor(
+        http: HttpClient,
+        private fb: FormBuilder) {
         super(http);
     }
 
@@ -299,7 +302,7 @@ export class PatientService extends APIService {
 
         // tslint:disable-next-line: deprecation
         this.getObservable(request).pipe(
-            map(mediaItems => mediaItems.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
+            map(mediaItems => mediaItems?.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
         ).subscribe((media : MediaResponse[])=>{
 
             if(!media){
@@ -424,6 +427,24 @@ export class PatientService extends APIService {
                 console.log(error);
             });
     }
+
+    public getUpdatePatientObject(control: AbstractControl) : FormGroup {
+
+
+        return this.fb.group({
+          patientId: control.get('PatientId')?.value,
+          treatmentPriority: control.get('Treatment priority')?.value || null,
+          temperament: control.get('Temperament')?.value || null,
+          age: control.get('Age')?.value || null,
+          releaseStatus: control.get('Release status')?.value || null,
+          abcStatus: control.get('ABC status')?.value || null,
+          knownAsName: control.get('Known as name')?.value,
+          sex: control.get('Sex')?.value,
+          description: control.get('Description')?.value || null,
+          mainProblems: control.get('Main Problems')?.value || null,
+          animalTypeId: control.get('animalTypeId')?.value
+        });
+      }
 
 
 

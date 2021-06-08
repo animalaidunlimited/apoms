@@ -188,7 +188,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
-			if (response.streetTreatCaseId) {
+
+			if (response?.streetTreatCaseId) {
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
 						/**
@@ -370,7 +371,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.recordForm.get('streatTreatForm.visits')?.clearValidators();
 			this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
-
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
 		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
 		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({ emitEvent: false });

@@ -19,7 +19,6 @@ import { OutcomeComponent } from './components/outcome/outcome.component';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
 import { PatientStatusModule } from 'src/app/core/components/patient-status/patient-status.module';
-import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { PatientCallDialogComponent } from './components/patient-call-dialog/patient-call-dialog.component';
@@ -34,6 +33,9 @@ import { ReleaseDetailsDialogComponent } from './components/release-details-dial
 import { AnimalHeaderModule } from './components/animal-header/animal-header.module';
 import { LogsModule } from 'src/app/core/components/logs/logs.module';
 import { TreatmentAreaHistoryComponent } from './components/treatment-area-history/treatment-area-history.component';
+import { PatientDetailsModule } from './components/patient-details/patient-details.module';
+import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
+import { ReleaseDetailsComponent } from './components/release-details/release-details.component';
 
 
 
@@ -42,7 +44,6 @@ import { TreatmentAreaHistoryComponent } from './components/treatment-area-histo
         HospitalManagerPageComponent,
         HospitalManagerTabBarComponent,
         PatientRecordComponent,
-        PatientDetailsComponent,
         SurgeryDetailsComponent,
         PatientCallComponent,
         PatientCallDialogComponent,
@@ -55,6 +56,7 @@ import { TreatmentAreaHistoryComponent } from './components/treatment-area-histo
         TreatmentComponent,
         TreatmentAreaHistoryComponent,
         ReleaseDetailsDialogComponent,
+        ReleaseDetailsComponent,
     ],
     imports: [
         CommonModule,
@@ -66,10 +68,12 @@ import { TreatmentAreaHistoryComponent } from './components/treatment-area-histo
         ThumbnailSliderModule,
         PatientStatusModule,
         RescueDetailsModule,
+        PatientDetailsModule,
         EmergencyDetailsModule,
         SurgeryRecordModule,
         NgxGalleryModule,
         CallerDetailsModule,
+        ReleaseAssignModule,
         PatientVisitDetailsModule,
         AnimalHeaderModule,
         LogsModule

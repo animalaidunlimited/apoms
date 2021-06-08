@@ -8,15 +8,15 @@ interface IncomingCaseDetails {
 }
 
 @Component({
-  selector: 'app-assign-release-dialog',
-  templateUrl: './assign-release-dialog.component.html',
-  styleUrls: ['./assign-release-dialog.component.scss']
+  selector: 'app-release-assign-dialog',
+  templateUrl: './release-assign-dialog.component.html',
+  styleUrls: ['./release-assign-dialog.component.scss']
 })
-export class AssignReleaseDialogComponent implements OnInit {
+export class ReleaseAssignDialogComponent implements OnInit {
 
   formData!: ReleaseDetails;
 
-  constructor(public dialogRef: MatDialogRef<AssignReleaseDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
 
 
