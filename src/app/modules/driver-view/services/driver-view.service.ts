@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { Observable } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { VehicleList } from 'src/app/core/models/driver-view';
 
 @Injectable({
   providedIn: 'root'

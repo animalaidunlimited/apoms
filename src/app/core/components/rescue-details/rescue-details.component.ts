@@ -9,6 +9,7 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
+import { VehicleList } from '../../models/vehicle';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -26,9 +27,12 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescueTimeField!: ElementRef;
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true })
     ambulanceArrivalTimeField!: ElementRef;
+    @ViewChild('ambulanceAssignmentTimeField', { read: ElementRef, static: true })
+    ambulanceAssignmentTimeField!: ElementRef;
 
     admissionTime: AbstractControl | undefined | null;
     ambulanceArrivalTime: AbstractControl | undefined | null;
+    ambulanceAssignmentTime: AbstractControl | undefined | null;
 
     callDateTimeForm!: AbstractControl;
     callOutcome!: AbstractControl;
@@ -38,7 +42,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     currentAdmissionTime!: AbstractControl;
     currentAmbulanceArrivalTime!: AbstractControl;
     currentRescueTime!: AbstractControl;
-    currentTime!: string;
+    currentTime!: string;   
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -48,6 +52,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuer1Id: AbstractControl | undefined | null;
     rescuer2Id: AbstractControl | undefined | null;
     rescuers$!: Observable<User[]>;
+    vehicleList$!: Observable<VehicleList[]>
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
@@ -72,14 +77,17 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.recordForm.addControl(
             'rescueDetails',
             this.fb.group({
-                rescuer1Id: [],
-                rescuer2Id: [],
+                // rescuer1Id: [],
+                // rescuer2Id: [],
+                assignedVehicleId:[],
+                assignedDate:[''],
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
             }),
         );
 
+        this.vehicleList$ = this.dropdowns.getVehicleListDropdown();
         this.rescuers$ = this.dropdowns.getRescuers();
         this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 
@@ -250,6 +258,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.rescueTime?.value > this.admissionTime?.value &&
             this.admissionTime?.value !== ''
         ) {
+
+            console.log('Hi');  
             this.rescueTime?.setErrors({ rescueAfterAdmission: true });
             this.admissionTime?.setErrors({ rescueAfterAdmission: true });
         }
@@ -281,7 +291,10 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         this.currentCallDateTime = this.callDateTime;
 
+
         const currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
+
+        console.log(currentTime);
 
         if (!currentTime) {
             this.recordForm
