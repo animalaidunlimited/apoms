@@ -1,3 +1,4 @@
+import { EmergencyRecordCommentDialogComponent } from './emergency-record-comment-dialog/emergency-record-comment-dialog.component';
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
@@ -95,7 +96,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 this.hasWritePermission = true;
             }
 
-        }) ;
+        });
 
         this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
 
@@ -146,15 +147,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         this.caseService.getEmergencyCaseById(this.emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe(result => {
-
+            
             this.recordForm.patchValue(result);
 
             this.hasComments = this.recordForm.get('caseComments')?.value ? true : false;
         });
-    }
-
-    showForm(){
-        console.log(this.recordForm);
     }
 
     resetForm() {
@@ -250,7 +247,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     if (
                         currentPatient.get('position')?.value === patient.position
                     ) {
-
                         currentPatient.get('patientId')?.setValue(patient.patientId);
 
                         currentPatient.get('tagNumber')?.setValue(patient.tagNumber);
@@ -433,6 +429,27 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             .afterClosed()
             .subscribe(() => {})
             .unsubscribe();
+    }
+
+    openCommentDialog(){
+        const dialogRef = this.dialog.open(EmergencyRecordCommentDialogComponent, {
+
+            data:{
+                caseComment:this.recordForm.get('caseComments')?.value
+            }
+        });
+
+        dialogRef
+            .afterClosed().pipe(
+                takeUntil(this.ngUnsubscribe)
+            )
+            .subscribe((caseComment) => {
+                if(caseComment)
+                {
+                    this.hasComments = true;
+                    this.recordForm.get('caseComments')?.setValue(caseComment);
+                }
+            });
     }
 
 }

@@ -39,8 +39,6 @@ $standard-width: 180px;
   border-radius: 5px;
   margin-top: 10px;
   border-color: $colour-border;
-  padding-left:15px;
-  padding-right:15px;
 }
 
 .mat-raised-button{
@@ -179,8 +177,9 @@ mat-radio-button{
     border-radius: 5px;
     margin-top: 10px;
     border-color: $colour-border;
-    padding-left:15px;
-    padding-right:15px;
+    // JM: Getting rid of this for the moment as it's squashing the form group in the treatment list on mobile.
+    //padding-left:15px;
+    //padding-right:15px;
     margin-top: auto;
   }
 

@@ -51,6 +51,9 @@ $standard-width: 183px;
     font-size: 2.5rem;
     color: gold;
     cursor: default;
+    position: relative;
+    margin-bottom: 0;
+    padding-right: .35rem;
 }
 
 .iconWrapper {
@@ -59,8 +62,10 @@ $standard-width: 183px;
 
 .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     font-size: 2.5rem;
-    margin-bottom: 3%;
     cursor: pointer;
+    width: auto;
+    height: auto;
+    margin-right: 0.25rem !important;
 }
 
 .disable {
@@ -68,11 +73,15 @@ $standard-width: 183px;
 }
 
 
+
 @media(max-width: 600px) {
-    .emergencySyncIcon .mat-icon {
-        font-size: 1.5rem;
-        color: gold;
-        cursor: default;
+    .emergencySyncIcon {
+        margin-right: 0.3rem !important;
+        .mat-icon {
+            font-size: 1.5rem;
+            color: gold;
+            cursor: default;
+        }
     }
 
     .iconWrapper {
@@ -84,6 +93,19 @@ $standard-width: 183px;
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         font-size: 1.5rem;
         cursor: pointer;
+    }
+
+    .mat-icon.comment-icon{
+        font-size:1.5rem;
+    }
+    .comment-box{
+        margin-top:0.5rem;
+    }
+    .mat-form-field:nth-child(even), ::ng-deep .mat-form-field:nth-child(even){
+        margin-right:0 !important;
+    }
+    .mat-form-field, ::ng-deep .mat-form-field {
+        max-width: 44.7% !important;
     }
 }
 
@@ -104,4 +126,15 @@ $standard-width: 183px;
         font-size: 1.5rem;
         cursor: pointer;
     }
+    .mat-icon.comment-icon{
+        font-size:1.5rem;
+    }
+}
+
+.comment-icon {
+    font-size: 2.5rem;
+    height: auto;
+    width: auto;
+    display: flex;
+    margin-top: 9px;
 }

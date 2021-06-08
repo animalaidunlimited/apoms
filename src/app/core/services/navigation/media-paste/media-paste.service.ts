@@ -133,7 +133,9 @@ export class MediaPasteService {
 
 
 
-      }).catch(error => console.log(error));
+      }).catch(error =>
+        console.log(error)
+        );
 
 return returnObject;
 

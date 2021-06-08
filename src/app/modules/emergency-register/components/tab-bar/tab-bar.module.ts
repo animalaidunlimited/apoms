@@ -10,15 +10,15 @@ import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-det
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
-import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
-import { AssignReleaseComponent } from 'src/app/core/components/assign-release/assign-release.component';
+import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
+import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
+
 
 @NgModule({
     declarations: [
         TabBarComponent,
         RescueDetailsDialogComponent,
-        AssignReleaseDialogComponent,
-        AssignReleaseComponent
+        ReleaseAssignDialogComponent
     ],
     imports: [
         CommonModule,
@@ -29,8 +29,9 @@ import { AssignReleaseComponent } from 'src/app/core/components/assign-release/a
         MaterialModule,
         FlexLayoutModule,
         EmergencyCaseOutcomeModule,
+        ReleaseAssignModule,
         OutstandingCaseBoardModule
     ],
-    exports: [TabBarComponent],
+    exports: [TabBarComponent]
 })
 export class TabBarModule {}

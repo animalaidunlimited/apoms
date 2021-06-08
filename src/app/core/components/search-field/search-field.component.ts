@@ -41,7 +41,7 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
                 }),
             ),
             transition('open <=> closed', [animate('.2s')]),
-        ]),
+        ])
     ]
 })
 export class SearchFieldComponent implements OnInit, OnDestroy {

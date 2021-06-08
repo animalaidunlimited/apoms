@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeLast, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -15,11 +15,17 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
+
+interface Problem {
+  problemId: number;
+  problem: string;
+}
 @Component({
   selector: 'app-emergency-register-patient',
   templateUrl: './emergency-register-patient.component.html',
   styleUrls: ['./emergency-register-patient.component.scss']
 })
+
 export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
@@ -27,6 +33,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @Input()
   set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
   get callOutcome(): string { return this._callOutcome; }
+
+  @Input() outcome!: boolean;
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
 
@@ -48,7 +56,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
-  patientForm!: FormGroup;
+  patientForm: FormGroup = new FormGroup({});
   problemInput = new FormControl();
   problemsArray!: FormArray;
   problemsExclusions!: string[];
@@ -63,8 +71,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   sortedProblems = this.dropdown.getProblems().pipe(
     map( problems =>
       {
-        const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
-        const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem?.trim());
+        const selectedProblems =  this.problemsArray?.value as Problem[];
+        const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
         return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
       }
     ),
@@ -89,7 +97,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   ngOnInit(): void {
 
     this.patientForm = this.patientFormInput as FormGroup;
-
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -112,14 +119,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
-    setTimeout(()=>{
-      if(this.chipList.errorState){
-        this.chipList.errorState = this.problemsArray.length > 0 ? false : true;
-      }
-    },1);
-
-    
-
   }
 
 
@@ -136,29 +135,26 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.animalTypeValueChangesUnsubscribe.next();
     this.animalTypeValueChangesUnsubscribe.complete();
   }
+
+
+
   ngAfterViewInit(): void{
 
-    this.patientForm.get('problems')?.valueChanges.subscribe((problems:{problemId: 1, problem: 'Abdominal swelling'}[]) => {
-      if(this.chipList.errorState){
-        this.chipList.errorState = false ;
+    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+      if(this.chipList?.errorState){
+        this.chipList.errorState = this.problemsArray.length === 0;
       }
+      this.patientFormProblemSetError();
     });
 
-    // When the animal selection panel closes, if no animal has been selected, then clear the value
-    this.animalAutoComplete.panelClosingActions.subscribe(selection => {
-      if(!selection){
-          this.animalType?.setValue('');
-          this.animalTypeInput.nativeElement.value = '';
-          this.animalTypeInput.nativeElement.focus();
-      }
 
-    });
-
-    this.problemAutoComplete.panelClosingActions.subscribe(selection => {
+    this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
       if(!selection){
+
         this.problemRef.nativeElement.value = '';
         this.problemRef.nativeElement.focus();
+
       }
 
     });
@@ -179,17 +175,18 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue) === 0)),
       map(problems => {
 
-        const selectedProblems =  this.problemsArray?.value as {problemId: number, problem: string}[];
+        const selectedProblems =  this.problemsArray?.value as Problem[];
 
-         if(selectedProblems.length > 0){
+        if(selectedProblems.length > 0){
 
-            const problemsArray = selectedProblems.map((problemOption:{problemId: number, problem: string}) => problemOption.problem.trim());
-            const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
-            return filteredProblemsArray;
+          const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem.trim());
+          const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
+          return filteredProblemsArray;
 
         }else{
-            return problems;
+          return problems;
         }
+
       }),
       map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0))),
       map(problems => this.problemsExclusions ? problems.filter(problem => !this.problemsExclusions.includes(problem.Problem.trim())):problems)
@@ -206,11 +203,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientForm.get('updated')?.setValue(true);
 
     this.hideIrrelevantProblems($event.option.viewValue);
+
     this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
+    this.patientFormProblemSetError();
   }
 
   updatePatientProblemArray(event :MatAutocompleteSelectedEvent): void {
-    
+
     const problemsGroup = this.fb.group({
         problemId: [event.option?.value, Validators.required],
         problem: [event.option.viewValue, Validators.required],
@@ -242,10 +241,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
     // two for the new patient type, followed by an unset for the old patient type
 
-
     if(!(this.patientForm.get('animalType')?.value === animal)){
         return;
     }
+
     this.problemsExclusions = currentExclusions[0]?.exclusionList;
 
   }
@@ -269,18 +268,31 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         });
 
         dialogRef.afterClosed()
-        // .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((confirmed: boolean) => {
+        .pipe(takeUntil(this.animalTypeValueChangesUnsubscribe))
+        .subscribe(() => {
 
           $event.preventDefault();
           this.animalTypeInput.nativeElement.focus();
           this.problemAutoComplete.closePanel();
 
-          });
+        });
       }
       else{
         $event.preventDefault();
-        this.problemRef.nativeElement.focus();
+        this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).subscribe(animalType => {
+          const matchAnimalType =  animalType.length;
+          // if no animal has been selected, then clear the value
+          if(matchAnimalType === 0){
+            this.animalType?.setValue('');
+            this.animalTypeInput.nativeElement.value = '';
+          }
+          else{
+
+            this.filteredProblems$ = this.problemFilter('');
+            this.problemRef.nativeElement.focus();
+
+          }
+        });
       }
    },0);
   }
@@ -288,18 +300,41 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   checkMainProblem(){
     const problemRefElement = this.problemRef.nativeElement;
+
     if(this.problemsArray.length === 0){
+
       problemRefElement.value = '';
       this.chipList.errorState = true;
-    }else{
+      
+      this.patientFormProblemSetError();
+
+    }
+    else {
       this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
+
         const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
+
         if(matchProblem.length === 0){
           problemRefElement.value = '';
         }
+
       });
     }
   }
+
+  private patientFormProblemSetError() {
+    if (this.chipList?.errorState === true) {
+      this.patientForm.setErrors({
+        problemsRequired: true
+      });
+    }
+    else {
+      this.patientForm.setErrors({
+        problemsRequired: false
+      });
+    }
+  }
+
   openMediaDialog(patientForm:FormGroup){
     // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
     const dialogRef = this.dialog.open(MediaDialogComponent, {

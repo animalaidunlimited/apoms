@@ -1,42 +1,57 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { pipe, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Patient, Patients } from 'src/app/core/models/patients';
 import { Exclusions } from 'src/app/core/models/responses';
-import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { TreatmentArea } from 'src/app/core/models/treatment-lists';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { MatDialog } from '@angular/material/dialog';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
-
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
+    // tslint:disable-next-line: component-selector
     selector: 'animal-selection',
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
 export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
+    constructor(
+        private fb: FormBuilder,
+        private patientService: PatientService,
+        private tagNumberValidator: UniqueTagNumberValidator,
+        private cdr: ChangeDetectorRef,
+        private printService: PrintTemplateService,
+        private userOptions: UserOptionsService,
+        private dialog: MatDialog,
+        private dropdown: DropdownService,
+    ) {}
+
     private ngUnsubscribe = new Subject();
 
 
     @Input() recordForm!: FormGroup;
+
+    @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
     @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
-
+    @ViewChild('tagNumber') tagNumber!: QueryList<ElementRef>;
 
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
@@ -57,12 +72,17 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     patientDataSource: MatTableDataSource<FormGroup> = new MatTableDataSource([this.form]);
 
     selection: SelectionModel<FormGroup> = new SelectionModel<FormGroup>(true, []);
-    tagNumber: string | undefined;
+
     validRow = true;
 
     emergencyCardHTML = '';
 
+    errorMatcher = new CrossFieldErrorMatcher();
+    
+    treatmentAreaNames$!: Observable<TreatmentArea[]>;
+
     @HostListener('document:keydown.control.p', ['$event'])
+
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         this.addPatientRow();
@@ -77,29 +97,24 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-            this.emergencyRegisterPatients.first.tagNumber.nativeElement.focus();
+        this.tagNumber.toArray()[0].nativeElement.focus();
     }
 
-    constructor(
-        private fb: FormBuilder,
-        private patientService: PatientService,
-        private tagNumberValidator: UniqueTagNumberValidator,
-        private cdr: ChangeDetectorRef
-    ) {}
-
     ngOnInit() {
-
-
+        
+        this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
+        
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.patients = this.recordForm.get('patients') as FormArray;
-
+        
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe(newValue => this.emergencyCaseId = newValue);
+
 
         this.emergencyCaseId
         ? this.loadPatientArray(this.emergencyCaseId)
@@ -112,10 +127,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
 
 
-
     }
-
-
 
     deletePatient(patientIndex:number) {
 
@@ -124,6 +136,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     addPatientRow(){
         const patient = this.getEmptyPatient();
+        if(this.patients.at(0).get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1){
+            patient.get('callOutcome.CallOutcome')?.setValue({
+                CallOutcomeId : 1,
+                CallOutcome: 'Admission'
+            }, {emitEvent: false});
+        }
         this.patients.push(patient);
     }
 
@@ -135,10 +153,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     getEmptyPatient() {
+
         const patient =
             this.fb.group({
                 patientId: [],
-                position: [this.patients?.length ? this.patients.length + 1: 1],
+                position: [(this.patients?.length || 0) + 1],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
                 problems: this.fb.array([]),
@@ -166,30 +185,31 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     populatePatient(isUpdate: boolean, patient: Patient) {
 
         const problems = this.fb.array([]);
-
-        patient.problems.forEach(() => {
+        
+        patient.problems.forEach(problem => {
 
             problems.push(this.fb.group({
                 problemId: [],
                 problem: [],
             }));
+
         });
 
-        const newPatient = this.getPatient(
-            problems
-        );
+        const newPatient = this.getPatient(problems);
 
+        this.setValidators(newPatient);
+        
         newPatient.patchValue(patient);
-
+        
         if(newPatient.get('admissionAccepted')?.value){
             newPatient.get('admissionArea')?.disable();
         }
-
+        
         return newPatient;
 
     }
 
-        getPatient(problems: FormArray) : FormGroup {
+    getPatient(problems: FormArray) : FormGroup {
 
         const newPatient = this.fb.group({
             patientId: [],
@@ -210,8 +230,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             }),
         });
 
-        this.setValidators(newPatient);
-
         return newPatient;
     }
 
@@ -230,6 +248,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         });
 
+
         patient.valueChanges.subscribe((patientVal)=> {
 
             const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
@@ -237,45 +256,36 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
             const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
 
-                if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
+            if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
 
-                    patient.get('isAdmission')?.setValue(true,{ emitEvent: false });
-                    patient.get('tagNumber')?.setValidators(Validators.required);
-                    patient.get('admissionArea')?.setValidators(Validators.required);
+                rescuer2Id?.setValidators([Validators.required]);
+                rescuer1Id?.setValidators([Validators.required]);
+                rescueTime?.setValidators([Validators.required]);
+                admissionTime?.setValidators([Validators.required]);
 
-                    rescuer2Id?.setValidators([Validators.required]);
-                    rescuer1Id?.setValidators([Validators.required]);
-                    rescueTime?.setValidators([Validators.required]);
-                    admissionTime?.setValidators([Validators.required]);
+                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
 
-                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
+            }
 
-                }
+            else {
 
-                else {
+                rescuer2Id?.clearValidators();
+                rescuer1Id?.clearValidators();
+                rescueTime?.clearValidators();
+                admissionTime?.clearValidators();
 
-                    patient.get('admissionArea')?.setValue(null, {emitEvent:false});
-                    patient.get('isAdmission')?.setValue(false, { emitEvent: false });
-                    patient.get('tagNumber')?.clearValidators();
-                    patient.get('admissionArea')?.clearValidators();
-
-                    rescuer2Id?.clearValidators();
-                    rescuer1Id?.clearValidators();
-                    rescueTime?.clearValidators();
-                    admissionTime?.clearValidators();
-
-                    this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
-                }
+                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
+            }
 
         });
+
     }
 
 
     private updateValueAndValidity(patient: FormGroup, rescuer2Id: AbstractControl | null, rescuer1Id: AbstractControl | null,
         rescueTime: AbstractControl | null, admissionTime: AbstractControl | null) {
 
-        patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-        patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+        
         rescuer2Id?.updateValueAndValidity({ emitEvent: false });
         rescuer1Id?.updateValueAndValidity({ emitEvent: false });
         rescueTime?.updateValueAndValidity({ emitEvent: false });
@@ -283,27 +293,34 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     loadPatientArray(emergencyCaseId: number) {
-
+ 
         this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
         .subscribe((patients: Patients) => {
-
+            
             patients.patients.forEach(patient => {
-                        // We get a 0 or 1 from the database, so need to convert to a boolean.
-                        patient.deleted = !!+patient.deleted;
+                // We get a 0 or 1 from the database, so need to convert to a boolean.
+                patient.deleted = !!+patient.deleted;
 
-                        const newPatient = this.populatePatient(true, patient);
-                        this.patients.push(newPatient);
-                    });
+                const newPatient = this.populatePatient(true, patient);
+                /* 
+                * loadPatientArray running multiple times on ngOnInit 
+                * animal-selection HTML tag will instantiate ng on init 
+                * Rstrict length of patients array to length of incoming patients 
+                */
+                if(this.patients.length < patients.patients.length )
+                {
+                    this.patients.push(newPatient);
+                }
+            });
 
-                    this.recordForm.patchValue(patients);
-
-                    this.setChildOutcomeAsParentPatient(this.patients);
-
-                },
-                err => console.error(err),
-                );
+            this.setChildOutcomeAsParentPatient(this.patients);
+            
+        
+        },
+            err => console.error(err),
+        );
     }
 
 
@@ -316,7 +333,12 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients.push(patient);
 
     }
-
+    /**
+     * Same as inside call outcome value changes 
+     *  it is used for when fetching the data from api
+     * if api has call outcome admission because valuechanges will not run inside call outcome compoment on
+     * ngOnIt
+     */
     setChildOutcomeAsParentPatient(patients: FormArray) {
 
         patients.controls[0].valueChanges.subscribe(val=> {
@@ -326,19 +348,21 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 if(val.callOutcome.CallOutcome.CallOutcomeId === 1 && !val.admissionArea) {
 
                     patients.controls.forEach((patient)=> {
+                        if(isNaN(patient.get('callOutcome.CallOutcome')?.value?.CallOutcomeId)){
+                            patient.get('callOutcome.CallOutcome')?.setValue({
+                                CallOutcomeId : val.callOutcome.CallOutcome.CallOutcomeId,
+                                CallOutcome: val.callOutcome.CallOutcome.CallOutcome
+                            }, {emitEvent: false});
 
-                        patient.get('callOutcome.CallOutcome')?.setValue({
-                            CallOutcomeId : val.callOutcome.CallOutcome.CallOutcomeId,
-                            CallOutcome: val.callOutcome.CallOutcome.CallOutcome
-                        }, {emitEvent: false});
+                            patient.get('isAdmission')?.setValue(true, {emitEvent: false});
+                            patient.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
 
-                        patient.get('isAdmission')?.setValue(true, {emitEvent: false});
+                            patient.get('tagNumber')?.setValidators(Validators.required);
+                            patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
-                        patient.get('tagNumber')?.setValidators(Validators.required);
-                        patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
-
-                        patient.get('admissionArea')?.setValidators(Validators.required);
-                        patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+                            patient.get('admissionArea')?.setValidators(Validators.required);
+                            patient.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
+                        }
                     });
 
                 }
@@ -356,6 +380,26 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             });
 
     }
-
+    openMediaDialog(patientForm:FormGroup | AbstractControl){
+        // this is never going to work where is MediaItem and even typescript take it as mediaItem idiot their is no mediaItem
+        const dialogRef = this.dialog.open(MediaDialogComponent, {
+          minWidth: '50%',
+          data: {
+              tagNumber: patientForm.get('tagNumber')?.value,
+              patientId: patientForm.get('patientId')?.value,
+              mediaItem: undefined
+          }
+        });
+      }
+    
+      printEmergencyCard(patientForm:FormGroup | AbstractControl){
+    
+        const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+    
+        if(patientForm.get('patientId')?.value){
+          this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
+        }
+    
+      }
 
 }

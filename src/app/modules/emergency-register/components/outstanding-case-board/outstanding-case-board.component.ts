@@ -13,7 +13,7 @@ import { OutstandingCaseService } from '../../services/outstanding-case.service'
 import { SearchResponse } from 'src/app/core/models/responses';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { AssignReleaseDialogComponent } from 'src/app/core/components/assign-release-dialog/assign-release-dialog.component';
+import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 
@@ -72,12 +72,12 @@ changeDetection: ChangeDetectionStrategy.OnPush
 
 export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
-  private ngUnsubscribe = new Subject();
-
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
   @ViewChildren('filterChips') filterChips!: MatChipList[];
   @ViewChild('filterDiv') filterDiv!: ElementRef;
   @ViewChild('chipsDiv') chipsDiv!: ElementRef;
+
+  ngUnsubscribe = new Subject();
 
   actionStatus: ActionStatus[] = [{actionStatus:1 , actionStatusName: 'Recieved'},
     {actionStatus: 2, actionStatusName: 'Assigned'},
@@ -128,7 +128,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   refreshColour:ThemePalette = 'primary';
   refreshColour$!:BehaviorSubject<ThemePalette>;
 
-  refreshForm:FormGroup = new FormGroup({});
+ /*  refreshForm:FormGroup = new FormGroup({}); */
   removable = true;
 
   outstandingCases!:OutstandingCase[];
@@ -141,7 +141,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   constructor(
     public rescueDialog: MatDialog,
-    public assignReleaseDialog: MatDialog,
+    public releaseAssignDialog: MatDialog,
     private fb: FormBuilder,
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
@@ -214,10 +214,10 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       searchTerm: ['']
     });
 
-    this.refreshForm = this.fb.group({
+/*     this.refreshForm = this.fb.group({
       autoRefreshEnabled: [false, Validators.requiredTrue],
       updateRequired: [false, Validators.requiredTrue]
-    });
+    }); */
 
     this.initialiseBoard();
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
@@ -476,8 +476,8 @@ printEmergencyCard(emergencyCaseId: number){
 
 }
 
-openAssignReleaseDialog(caseDetails: OutstandingAssignment) {
-  const dialogRef = this.assignReleaseDialog.open(AssignReleaseDialogComponent, {
+openReleaseAssignDialog(caseDetails: OutstandingAssignment) {
+  const dialogRef = this.releaseAssignDialog.open(ReleaseAssignDialogComponent, {
     maxWidth: '100vw',
     maxHeight: '100vh',
     data: {

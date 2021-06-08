@@ -1,3 +1,4 @@
+import { EmergencyRecordCommentDialogComponent } from './emergency-record-comment-dialog/emergency-record-comment-dialog.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -21,6 +22,7 @@ import { AnimalSelectionModule } from '../animal-selection/animal-selection.modu
         TagNumberDialog,
         MediaDialogComponent,
         MediaCardComponent,
+        EmergencyRecordCommentDialogComponent
     ],
     providers: [
     ],

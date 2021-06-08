@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
@@ -7,12 +7,10 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { UniqueEmergencyNumberValidator } from '../../validators/emergency-number.validator';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { DatePipe } from '@angular/common';
-import { EmergencyCode } from '../../models/emergency-record';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { LogsComponent } from '../logs/logs.component';
 
 
 @Component({
@@ -35,7 +33,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     @ViewChild('dispatcher',{ read: ElementRef, static:true }) dispatcher!: ElementRef;
 
     dispatchers$!: Observable<User[]>;
-    emergencyCodes$!: Observable<EmergencyCode[]>;
     callDateTime: string = getCurrentTimeString();
     minimumDate = '2018-02-14T00:00';
 
@@ -67,7 +64,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
-        this.emergencyCodes$ = this.dropdowns.getEmergencyCodes();
 
         this.minimumDate =
             this.datePipe.transform(
@@ -140,28 +136,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
     updateEmergencyNumber(emergencyNumber: number) {
         this.loadEmergencyNumber.emit(emergencyNumber);
-    }
-
-    compareEmergencyCodes(o1: EmergencyCode, o2: EmergencyCode): boolean {
-        return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
-    }
-
-    selectEmergencyCode($event: any) {
-        // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
-        this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
-
-            const selectedCode = codes.find((code:EmergencyCode) => {
-
-                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
-
-            });
-
-            if (selectedCode) {
-                this.recordForm
-                    .get('emergencyDetails.code')
-                    ?.setValue(selectedCode);
-            }
-        });
     }
 
 }

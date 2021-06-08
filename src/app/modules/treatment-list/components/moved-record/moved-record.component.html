@@ -7,9 +7,9 @@
 
          <div [formGroupName]="index"
           class="unaccepted-item"
-          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px">
+          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px">
 
-        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px"
+        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
             class="unaccepted-form-fields">
 
 
@@ -24,6 +24,11 @@
               <mat-icon *ngIf="listType === 'moved in from'">swap_horiz</mat-icon>
             </button>
 
+          </div>
+
+            <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
+            class="unaccepted-form-fields">
+
 
               <mat-form-field >
                 <input matInput disabled="true" placeholder="Tag number" [value]="item.get('Tag number')?.value">
@@ -37,9 +42,13 @@
               </mat-form-field>
 
 
+
           </div>
 
-            <button mat-button class="accept-button" (click)="acceptMove(item)">
+          <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+          class="button-container">
+
+            <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>
               Accept
             </button>
@@ -49,13 +58,21 @@
               Reject
             </button>
 
-
-        <!--<div fxLayout="row" fxLayoutAlign="space-between center" style="min-width: 215px !important;" *ngIf="listType === 'rejected from' || listType === 'admission'">-->
-        <div style="min-width: 215px !important;" *ngIf="listType === 'rejected from'">
+          </div>
 
 
-          <mat-form-field>
+       <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+       class="moved-out" *ngIf="listType === 'rejected from'">
+
+        <button mat-button class="moveout-button" (click)="toggleMoveOut(item)">
+          <mat-icon>arrow_right_alt</mat-icon>
+          Move out
+        </button>
+
+
+        <mat-form-field *ngIf="moveOut">
           <mat-select
+          [errorStateMatcher]="errorMatcher"
           (selectionChange)="areaChanged(item, index)"
           [placeholder]="movedAction"
           formControlName="Moved to">
@@ -67,8 +84,6 @@
 
         <mat-spinner *ngIf="item.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
         <mat-icon [@fadeSavedIcon]="item.get('saved')?.value" *ngIf="item.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
-
-        <!--<mat-icon *ngIf="!row.get('saved')?.value && !row.get('saving')?.value" class="saved-icon"></mat-icon>-->
 
       </div>
 

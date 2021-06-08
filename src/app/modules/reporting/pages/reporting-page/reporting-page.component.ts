@@ -64,7 +64,7 @@ export class ReportingPageComponent implements OnInit {
         this.treatmentList.getTreatmentListPatientCount().then(response => {
 
             if(response){
-                response.sort((a,b) => a.area < b.area ? -1 : 1);
+                response.sort((a,b) => a.sortArea - b.sortArea);
             }
 
             this.patientCountData = response;

@@ -8,7 +8,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { EmergencyCaseDialogComponent } from './emergency-case-dialog.component';
 
 @Component({
-  selector: 'app-assign-release-dialog',
+  selector: 'app-release-assign-dialog',
   template: '<p>Mock emergency-case Component</p>'
 })
 class MockEmergencyCaseDialogComponent {}

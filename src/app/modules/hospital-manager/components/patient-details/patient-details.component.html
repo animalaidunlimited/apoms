@@ -5,7 +5,7 @@
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
         <mat-form-field formGroupName="patientDetails">
             <mat-label>Animal type</mat-label>
-            <mat-select  formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
+            <mat-select formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
                 <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
                     {{type.AnimalType}}
                 </mat-option>
@@ -111,8 +111,9 @@
         </div>
 
 
-
-
+        <button mat-mini-fab *ngIf="showSaveButton" (click)="savePatientDetails()" color="primary" class="save-icon" aria-label="Update patient details">
+            <mat-icon >save</mat-icon>
+        </button>
 
 
 
