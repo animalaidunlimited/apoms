@@ -101,6 +101,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
+        
         if(this.mediaData){
 
             // tslint:disable-next-line: deprecation
@@ -114,6 +115,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
                 this.changeDetector.detectChanges();
 
             });
+    
         }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
