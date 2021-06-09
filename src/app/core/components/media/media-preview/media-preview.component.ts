@@ -52,7 +52,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
         this.onArrowKey.emit(event.keyCode);
 
       }
-      
+
     }
     
 }
@@ -140,6 +140,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           this.data.upload = false;
         }
       });
+      
       if(mediaItem.result === 'nomedia'){
         
         this.showSnackBar.errorSnackBar('Upload images or video only','OK');

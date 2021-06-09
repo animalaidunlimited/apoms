@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { MediaPasteService } from './media-paste.service';
 
-
 describe('MediaPasteService', () => {
   let service: MediaPasteService;
   let httpMock: HttpTestingController;
@@ -21,7 +20,9 @@ describe('MediaPasteService', () => {
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase)
       ],
-      providers: [DatePipe]
+      providers: [
+        DatePipe
+      ]
     });
     service = TestBed.inject(MediaPasteService);
     httpMock = TestBed.inject(HttpTestingController);

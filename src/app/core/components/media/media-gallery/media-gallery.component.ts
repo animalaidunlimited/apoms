@@ -35,6 +35,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    
     this.initMedaiaGallery();
 
     this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
@@ -54,39 +55,43 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
             mediaPatientItems: this.mediaData
         }
     });
+
   }
 
   openMediaDialog(): void{
-      /* const dialogRef = this.dialog.open(MediaDialogComponent, {
-          minWidth: '50%',
-          data: {
-              tagNumber: this.galleryData?.get('tagNumber')?.value,
-              patientId: this.galleryData?.get('patientId')?.value,
-          }
-      }); */
 
-      // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-     /*  dialogRef.afterClosed()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      // tslint:disable-next-line: deprecation
-      .subscribe(updatedMedia => {
-
-          if(updatedMedia){
-              if(updatedMedia.isPrimary === true){
-
-                  // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
-              }
-          }
-      }); */
+    // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
+     
     
-      const dialogRef = this.dialog.open(MediaPreviewComponent, {
-        minWidth: '75vw',
-        panelClass: 'media-preview-dialog',
-        data: {
-          upload:true,
-          patientId: this.galleryData?.get('patientId')?.value
-        }
+    const dialogRef = this.dialog.open(MediaPreviewComponent, {
+
+      minWidth: '75vw',
+      panelClass: 'media-preview-dialog',
+      data: {
+        upload:true,
+        patientId: this.galleryData?.get('patientId')?.value
+
+      }
+
     });
+
+    dialogRef.afterClosed()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(updatedMedia => {
+
+      // this.mediaData?.subscribe(mediaItems => console.log(mediaItems));
+
+      if(updatedMedia){
+      
+          if(updatedMedia.isPrimary === true){
+            
+            // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
+
+          }
+      }
+
+    });
+
   }
 
   ngOnDestroy() {

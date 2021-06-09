@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MediaItem, MediaItemReturnObject } from '../../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, of } from 'rxjs';
+import { Observable, from, BehaviorSubject} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -11,7 +11,6 @@ import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { isImageFile, isVideoFile } from '../../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
-
 interface IResizeImageOptions {
   maxSize: number;
   file: File;
@@ -93,13 +92,12 @@ export class MediaPasteService {
 
             newMediaItem.remoteURL = url;
 
-            const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
-
-            newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
-
-            newMediaItem.mediaItemId.subscribe(id => {
-              returnObject.mediaItemId.next(id);
-
+            this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
+              
+              if(mediaItems.success) {
+                returnObject.mediaItemId.next(mediaItems.mediaItemId);
+              }
+              
             });
 
           });
