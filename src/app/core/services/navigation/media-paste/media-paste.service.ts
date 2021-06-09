@@ -49,19 +49,19 @@ export class MediaPasteService {
         mediaItem: undefined,
         mediaItemId: new BehaviorSubject<number | undefined>(undefined),
         result: 'nonmedia'
-    };
+      };
     }
 
-      const newMediaItem:MediaItem = this.createMediaItem(file, patientId);
+    const newMediaItem:MediaItem = this.createMediaItem(file, patientId);
 
-      const returnObject:MediaItemReturnObject = {
-          mediaItem: newMediaItem,
-          mediaItemId: new BehaviorSubject<number | undefined>(undefined),
-          result: 'success'
-      };
+    const returnObject:MediaItemReturnObject = {
+        mediaItem: newMediaItem,
+        mediaItemId: new BehaviorSubject<number | undefined>(undefined),
+        result: 'success'
+    };
 
 
-      this.checkAuthenticated().then(async () => {
+    this.checkAuthenticated().then(async () => {
 
       // upload the file and return its progress for display
 
@@ -69,75 +69,80 @@ export class MediaPasteService {
 
       const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
 
-              const options: IResizeImageOptions = {
-                maxSize: 5000,
-                file
-              };
+      const options: IResizeImageOptions = {
+        maxSize: 5000,
+        file
+      };
+     
+      if(newMediaItem.mediaType.indexOf('image') > -1){
 
-              if(newMediaItem.mediaType === 'image'){
+        const resizedImage = await this.resizeImage(options);
 
-                const resizedImage = await this.resizeImage(options);
+        newMediaItem.widthPX = resizedImage.width;
+        newMediaItem.heightPX = resizedImage.height;
 
-                  newMediaItem.widthPX = resizedImage.width;
-                  newMediaItem.heightPX = resizedImage.height;
+        const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
 
-                  const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+        newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
-                  newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
+        // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
-                  uploadResult.then((result) => {
+        uploadResult.then((result) => {
 
-                    result.ref.getDownloadURL().then(url => {
+          result.ref.getDownloadURL().then((url:any) => {
 
-                      newMediaItem.remoteURL = url;
+            newMediaItem.remoteURL = url;
+
+            const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
+
+            newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
+
+            newMediaItem.mediaItemId.subscribe(id => {
+              returnObject.mediaItemId.next(id);
+
+            });
+
+          });
+
+        });
+
+      }
+      else{
+
+        const uploadResult = this.uploadFile(uploadLocation, file);
+
+        newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
+
+        // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
+
+        uploadResult.then((result) => {
+
+          result.ref.getDownloadURL().then((url:any) => {
+
+            newMediaItem.remoteURL = url;
+
+            const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
+
+            newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
+
+            newMediaItem.mediaItemId.subscribe(id => {
+              returnObject.mediaItemId.next(id);
+
+            });
+
+          });
+
+        });
+
+      }
 
 
-                      newMediaItem.mediaItemId.subscribe(id => {
-                        returnObject.mediaItemId.next(id);
 
-                      });
+    }).catch(error =>
+      console.log(error)
+      );
 
-                    });
-
-                  });
-
-              }
-              else{
-
-                const uploadResult = this.uploadFile(uploadLocation, file);
-
-                newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
-
-                // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
-
-                uploadResult.then((result) => {
-
-                  result.ref.getDownloadURL().then((url:any) => {
-
-                    newMediaItem.remoteURL = url;
-
-                    const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
-
-                    newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
-
-                    newMediaItem.mediaItemId.subscribe(id => {
-                      returnObject.mediaItemId.next(id);
-
-                    });
-
-                  });
-
-                });
-
-              }
-
-
-
-      }).catch(error =>
-        console.log(error)
-        );
-
-return returnObject;
+    return returnObject;
 
   }
 
@@ -177,27 +182,27 @@ return returnObject;
       deleted: false
     };
 
-      const uploadImage = {
-        url: lastObjectUrl,
-        context: '',
-        height: 0,
-        width: 0
-      };
+    const uploadImage = {
+      url: lastObjectUrl,
+      context: '',
+      height: 0,
+      width: 0
+    };
 
-      if(isImage || isVideo){
+    if(isImage || isVideo){
 
-        const mediaObservable = isImage ? this.getImageDimension(uploadImage) :
-        this.getVideoDimension(uploadImage);
+      const mediaObservable = isImage ? this.getImageDimension(uploadImage) :
+      this.getVideoDimension(uploadImage);
 
-        // Get the dimensions of the image
-        mediaObservable.subscribe((image) => {
+      // Get the dimensions of the image
+      mediaObservable.subscribe((image) => {
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;
 
       });
 
-      }
+    }
 
     return newMediaItem;
 
@@ -250,9 +255,9 @@ getVideoDimension(video:any): Observable<any> {
 
     return newMediaItem;
 
-}
+  }
 
-getPastedImage(event: ClipboardEvent): File | undefined {
+  getPastedImage(event: ClipboardEvent): File | undefined {
 
     if (
         event.clipboardData &&
@@ -264,123 +269,122 @@ getPastedImage(event: ClipboardEvent): File | undefined {
     }
 
     return undefined;
-}
-
-uploadFile(url:string, file:Blob) : AngularFireUploadTask
-{
-
-  if(!url){
-    throw new Error ('No image URL provided');
   }
 
-  return this.storage.upload(url, file);
+  uploadFile(url:string, file:Blob) : AngularFireUploadTask
+  {
 
-}
-
-async checkAuthenticated(){
-
-  if(!this.user){
-    await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( user => {
-      this.user = user;
-    });
-  }
-
-}
-
-getFileUploadLocation(filename: string, timestamp: string) : string{
-
-  // Make sure we only save files in the folder for the organisation.
-  const organisationFolder = this.authService.getOrganisationSocketEndPoint();
-
-  return `${organisationFolder}/patient-media/${timestamp}_${filename}`;
-
-}
-
-async getRemoteURL(localURL: SafeUrl){
-
-  let remoteURL;
-
-  await this.checkAuthenticated();
-
-
-  const localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL);
-
-  if(!localURLString){
-    throw new Error('No local URL provided');
-  }
-
-  this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
-    remoteURL = url;
-  });
-
-return remoteURL;
-
-}
-
-
-resizeImage(settings: IResizeImageOptions) : Promise<ResizedImage>  {
-  const file = settings.file;
-  const maxSize = settings.maxSize;
-  const reader = new FileReader();
-  const image = new Image();
-  const canvas = document.createElement('canvas');
-
-  const dataURItoBlob = (dataURI: string) => {
-    const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
-        atob(dataURI.split(',')[1]) :
-        unescape(dataURI.split(',')[1]);
-    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const max = bytes.length;
-    const ia = new Uint8Array(max);
-    for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
-    return new Blob([ia], {type:mime});
-  };
-
-  const resize = () => {
-    let width = image.width;
-    let height = image.height;
-
-    if (width > height) {
-        if (width > maxSize) {
-            height *= maxSize / width;
-            width = maxSize;
-        }
-    } else {
-        if (height > maxSize) {
-            width *= maxSize / height;
-            height = maxSize;
-        }
+    if(!url){
+      throw new Error ('No image URL provided');
     }
 
-    canvas.width = width;
-    canvas.height = height;
-    canvas.getContext('2d')?.drawImage(image, 0, 0, width, height);
-    const dataUrl = canvas.toDataURL('image/jpeg');
+    return this.storage.upload(url, file);
 
-    const resizedImage:ResizedImage = {
-        image: dataURItoBlob(dataUrl),
-        width,
-        height
+  }
+
+  async checkAuthenticated(){
+
+    if(!this.user){
+      await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( user => {
+        this.user = user;
+      });
+    }
+
+  }
+
+  getFileUploadLocation(filename: string, timestamp: string) : string{
+
+    // Make sure we only save files in the folder for the organisation.
+    const organisationFolder = this.authService.getOrganisationSocketEndPoint();
+
+    return `${organisationFolder}/patient-media/${timestamp}_${filename}`;
+
+  }
+
+  async getRemoteURL(localURL: SafeUrl){
+
+    let remoteURL;
+
+    await this.checkAuthenticated();
+
+    const localURLString = this.sanitizer.sanitize(SecurityContext.URL, localURL);
+
+    if(!localURLString){
+      throw new Error('No local URL provided');
+    }
+
+    this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
+      remoteURL = url;
+    });
+
+    return remoteURL;
+
+  }
+
+
+  resizeImage(settings: IResizeImageOptions) : Promise<ResizedImage>  {
+    const file = settings.file;
+    const maxSize = settings.maxSize;
+    const reader = new FileReader();
+    const image = new Image();
+    const canvas = document.createElement('canvas');
+
+    const dataURItoBlob = (dataURI: string) => {
+      const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
+          atob(dataURI.split(',')[1]) :
+          unescape(dataURI.split(',')[1]);
+      const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      const max = bytes.length;
+      const ia = new Uint8Array(max);
+      for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
+      return new Blob([ia], {type:mime});
     };
 
-    return resizedImage;
-  };
+    const resize = () => {
+      let width = image.width;
+      let height = image.height;
 
-  return new Promise<ResizedImage>((resolve, reject) => {
-
-      if (!file.type.match(/image.*|video.*/)) {
-        reject(new Error('Not an image or video'));
-        return;
+      if (width > height) {
+          if (width > maxSize) {
+              height *= maxSize / width;
+              width = maxSize;
+          }
+      } else {
+          if (height > maxSize) {
+              width *= maxSize / height;
+              height = maxSize;
+          }
       }
 
-      reader.onload = (readerEvent: any) => {
-        image.onload = () => resolve(resize());
-        image.src = readerEvent.target.result;
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d')?.drawImage(image, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg');
+
+      const resizedImage:ResizedImage = {
+          image: dataURItoBlob(dataUrl),
+          width,
+          height
       };
 
-      reader.readAsDataURL(file);
-  });
-}
+      return resizedImage;
+    };
+
+    return new Promise<ResizedImage>((resolve, reject) => {
+
+        if (!file.type.match(/image.*|video.*/)) {
+          reject(new Error('Not an image or video'));
+          return;
+        }
+
+        reader.onload = (readerEvent: any) => {
+          image.onload = () => resolve(resize());
+          image.src = readerEvent.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+  }
 
 
 

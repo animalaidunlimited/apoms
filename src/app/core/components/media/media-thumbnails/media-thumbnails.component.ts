@@ -1,4 +1,4 @@
-import {  Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {  Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Image, MediaItem } from 'src/app/core/models/media';
@@ -14,7 +14,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     @Input() gallery!:Image[];
     @Input() mediaPatientItems!:BehaviorSubject<MediaItem[]>;
 
-   
+    @Output() arrowUpAndDown: EventEmitter<{key:number,datetime:string}> = new EventEmitter();
     private ngUnsubscribe = new Subject();
 
     constructor (
@@ -40,7 +40,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             // tslint:disable-next-line: max-line-length
             const mediaDataIndex = this.mediaPatientItems.value.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
             const imageIndex = this.gallery.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-          
+            const datetime = dialogRef.componentInstance.data.mediaData.datetime.substring(0,10);
           
              if(key === 37){
                 if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
@@ -52,7 +52,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
                     dialogRef.componentInstance.updateDialog(dialogData);
                     
                 }
-           }
+            }
             
              if(key === 39){
                 
@@ -65,6 +65,9 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
                     dialogRef.componentInstance.updateDialog(dialogData);
                 } 
             } 
+            if(key === 38 || key === 39) {
+                this.arrowUpAndDown.emit({key,datetime});
+            }
            
             
         });
