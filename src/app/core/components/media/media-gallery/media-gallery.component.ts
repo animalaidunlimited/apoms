@@ -1,10 +1,9 @@
 import { Image, MediaItem,  Gallery} from 'src/app/core/models/media';
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MediaDialogComponent } from '../media-dialog/media-dialog.component';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -79,11 +78,13 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
               }
           }
       }); */
+    
       const dialogRef = this.dialog.open(MediaPreviewComponent, {
         minWidth: '75vw',
         panelClass: 'media-preview-dialog',
         data: {
-          upload:true
+          upload:true,
+          patientId: this.galleryData?.get('patientId')?.value
         }
     });
   }

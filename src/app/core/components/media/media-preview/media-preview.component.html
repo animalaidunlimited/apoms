@@ -2,12 +2,32 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage"></div>
+    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage">
+        <ng-container *ngIf="data.upload">
+
+            <input
+                hidden
+                type="file"
+                #uploader
+                multiple
+                accept="image/*,video/*"
+                (change)="uploadFile($event)"
+            />
+            <div class='uploadMediaIcon'>
+                <mat-icon aria-label="Upload new image" (click)="uploader.click()" >add_a_photo</mat-icon>
+            
+                <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+            </div>
+
+        </ng-container>
+        
+
+    </div>
     <div style="
-        width: -webkit-fill-available;
+        width: 100%;
         padding: 0.5rem;
     " [formGroup]="recordForm">
-        <div class="imagePreviewSidePanel" >
+        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
             <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
                 <mat-label >Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;

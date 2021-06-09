@@ -6,7 +6,7 @@
         <div style="width:max-content;">
             {{ gallery.date}}
             <div fxLayout="row" fxLayoutGap="0.5rem">
-                <media-thumbnails [gallery]="gallery.images" [mediaPatientItems]="data.mediaPatientItems"  ></media-thumbnails>
+                <media-thumbnails (arrowUpAndDown)="arrowKeyBindings($event)" [gallery]="gallery.images" [mediaPatientItems]="data.mediaPatientItems"  ></media-thumbnails>
             </div>
         </div>
     </ng-container>
