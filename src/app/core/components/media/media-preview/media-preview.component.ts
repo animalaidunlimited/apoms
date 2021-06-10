@@ -39,7 +39,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
-  
+  @ViewChild('uploadMediaIcon') uploadMediaIcon!:ElementRef<HTMLElement>;
+
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
     const lisitenKeys = [37, 38, 39, 40];
@@ -53,9 +54,16 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       }
 
-    }
-    
-}
+    }  
+  }
+
+
+  @HostListener('dragover', ['$event']) 
+  onDragOver(evt:DragEvent) {
+    evt.preventDefault();
+  }
+
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
@@ -124,7 +132,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     // We're uploading a file
     this.uploading++;
   
-    for(const file of $event.target.files)
+    for(const file of $event?.target?.files ? $event.target.files : $event)
     {
       const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
       mediaItem.mediaItemId.subscribe(media => {
@@ -306,6 +314,22 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       }
     });
   
+  }
+
+  mediaDrag($event:DragEvent){
+    $event.preventDefault();
+    this.uploadMediaIcon.nativeElement.classList.add('fileDragHover');
+  }
+
+  onDragLeave($event:DragEvent){
+    this.uploadMediaIcon.nativeElement.classList.remove('fileDragHover');
+  }
+
+  mediaDrop($event:DragEvent){
+    $event.preventDefault();
+    const files = $event?.dataTransfer?.files;
+    this.uploadFile(files);
+    this.uploadMediaIcon.nativeElement.classList.remove('fileDragHover');
   }
 
 }
