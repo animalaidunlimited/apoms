@@ -66,31 +66,6 @@ export class AnimalHeaderComponent implements OnInit, OnDestroy {
         this.ngUnsubscribe.complete();
     }
 
-    openMediaDialog(): void{
-
-        const dialogRef = this.dialog.open(MediaDialogComponent, {
-            minWidth: '50%',
-            data: {
-                tagNumber: this.recordForm.get('patientDetails.tagNumber')?.value,
-                patientId: this.recordForm.get('patientDetails.patientId')?.value,
-            }
-        });
-
-        // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-        dialogRef.afterClosed()
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(updatedMedia => {
-
-            if(updatedMedia){
-                if(updatedMedia.isPrimary === true){
-
-                    this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
-                }
-            }
-        });
-
-    }
-
     getcurrentPatient() {
         return this.selection.selected[0];
     }
