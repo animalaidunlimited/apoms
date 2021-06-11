@@ -1,3 +1,4 @@
+import { MaterialModule } from './../../../../material-module';
 import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -16,6 +17,7 @@ describe('MediaPasteService', () => {
       imports: [
         HttpClientTestingModule,
         FormsModule,
+        MaterialModule,
         ReactiveFormsModule,
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase)
