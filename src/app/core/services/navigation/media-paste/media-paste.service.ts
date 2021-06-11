@@ -1,3 +1,4 @@
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MediaItem, MediaItemReturnObject } from '../../../models/media';
@@ -11,6 +12,8 @@ import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { isImageFile, isVideoFile } from '../../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+import { OnlineStatusService } from '../../online-status/online-status.service';
+import { StorageService } from '../../storage/storage.service';
 interface IResizeImageOptions {
   maxSize: number;
   file: File;
@@ -35,7 +38,10 @@ export class MediaPasteService {
     private authService: AuthService,
     private datepipe: DatePipe,
     private patientService: PatientService,
-    private fireAuth: AngularFireAuth) { }
+    private fireAuth: AngularFireAuth,
+    private onlineStatus: OnlineStatusService,
+    private snackbarService:SnackbarService,
+    protected storageService: StorageService,) { }
 
     user!: firebase.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
@@ -72,6 +78,7 @@ export class MediaPasteService {
         maxSize: 5000,
         file
       };
+      
      
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
@@ -94,6 +101,8 @@ export class MediaPasteService {
 
             this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
               
+              this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+
               if(mediaItems.success) {
                 returnObject.mediaItemId.next(mediaItems.mediaItemId);
               }
@@ -102,6 +111,9 @@ export class MediaPasteService {
 
           });
 
+        }).catch(async error => {
+          console.log(error);
+          
         });
 
       }
@@ -136,13 +148,53 @@ export class MediaPasteService {
 
 
 
-    }).catch(error =>
-      console.log(error)
-      );
+    }).catch(async error => {
+        if(!this.onlineStatus.connectionChanged.value){
+
+          this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
+
+          this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+          
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          
+          reader.onload = () => { 
+            
+            this.saveToLocalDatabase(
+              'POST'+ patientId,reader.result
+            );
+          };
+        
+
+
+        }
+        else{
+
+          return console.log(error);
+
+        }
+    });
 
     return returnObject;
 
   }
+
+  private async saveToLocalDatabase(key:any, body:any) {
+    // Make a unique identified so we don't overwrite anything in local storage.
+
+    try {
+        this.storageService.save(key , body);
+        return Promise.resolve({
+            status: 'saved',
+            message: 'Record successfully saved to offline storage.',
+        });
+    } catch (error) {
+        return Promise.reject({
+            status: 'error',
+            message: 'An error occured saving to offline storage: ' + error,
+        });
+    }
+}
 
   getUploadProgress(uploadResult:AngularFireUploadTask) : Observable<number>{
 
