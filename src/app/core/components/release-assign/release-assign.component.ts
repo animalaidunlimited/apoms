@@ -8,6 +8,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 import { takeUntil } from 'rxjs/operators';
+import { VehicleList } from '../../models/vehicle';
 
 @Component({
   selector: 'app-release-assign',
@@ -22,6 +23,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
+  vehicleList$!: Observable<VehicleList[]>
 
   private ngUnsubscribe = new Subject();
 
@@ -34,16 +36,19 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.releasers$ = this.dropdown.getRescuers();
+    this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 
     this.recordForm = this.fb.group({
       releaseId: [],
       emergencyCaseId:[],
       releaseType: [{value: '', disabled: true}],
-      Releaser1: [],
-      Releaser2: [],
+      // Releaser1: [],
+      // Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
-      pickupDate: []
+      pickupDate: [],
+      assignedVehicleId:[],
+      assignedDate:['']
     });
 
     if(!this.formData){

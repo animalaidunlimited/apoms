@@ -13,7 +13,7 @@
         </mat-form-field>
 
         <mat-form-field>
-
+            <mat-label>Assigned Date</mat-label>
             <input #ambulanceAssignmentTimeField formControlName="assignedDate" type="datetime-local"
             name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
             placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
