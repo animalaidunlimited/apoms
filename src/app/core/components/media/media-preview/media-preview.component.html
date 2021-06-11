@@ -2,7 +2,10 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage">
+    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage"
+    [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
+    (swipeleft)="onSwipeLeft($event)"
+    (swiperight)="onSwipeRight($event)">
         <ng-container *ngIf="data.upload">
 
             <input
@@ -29,11 +32,12 @@
         
 
     </div>
-    <div style="
-        width: 100%;
+    <div 
+    ngStyle.gt-xs="width:100%;"
+    style="
         padding: 0.5rem;
     " [formGroup]="recordForm">
-        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
+        <div class="imagePreviewSidePanel" fxLayout="row" >
             <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
                 <mat-label >Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;
@@ -74,7 +78,7 @@
         </div>
         <div class="imagePreviewSidePanel imageChatSidePanel" fxLayout="column">
             <h3>Comments</h3>
-            <div class="commentSection">
+            <div class="commentSection"  [ngStyle.lt-md]="(patientMediaComments$ | async) ? 'min-height: 12em;' : 'min-height:2em;'">
                 <ng-container *ngFor="let comment of (patientMediaComments$ | async); trackBy:trackComment">
                     <div class="imageChatPanel">
                         <div class="imageChatUser">

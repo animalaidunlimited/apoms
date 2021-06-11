@@ -52,7 +52,6 @@
     .commentSection{ 
         width:100%;
         max-height: 12rem;
-        min-height: 12rem;
         overflow-y: scroll;
         scroll-behavior: smooth;
         display:flex;
@@ -262,3 +261,10 @@
       transform: translate3d(4px, 0, 0);
     }
   }
+
+
+@media (max-width: 600px){
+    .mat-form-field {
+        max-width: unset !important;   
+    }
+}

@@ -59,6 +59,7 @@
     "core-js": "^2.6.11",
     "cross-env": "^7.0.3",
     "firebase": "^7.24.0",
+    "hammerjs": "^2.0.8",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
@@ -75,6 +76,7 @@
     "@angular/compiler-cli": "^11.2.14",
     "@angular/language-service": "^11.2.14",
     "@schematics/angular": "^11.2.6",
+    "@types/hammerjs": "^2.0.39",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.11.1",

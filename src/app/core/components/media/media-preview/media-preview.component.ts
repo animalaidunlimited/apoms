@@ -26,6 +26,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   addOnBlur = true;
   selectable = false;
   uploading = 0;
+ 
+  imageHeight = 0;
+
+
 
   mediaItems: MediaItem [] = [];
   
@@ -90,6 +94,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     if(!this.data?.upload){
+      
       this.recordForm = this.fb.group({
         imageDate: [ this.imageData ?
           this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
@@ -98,6 +103,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
         imageTags:[this.imageData ? this.data.mediaData.tags?.map((tag:any) => tag.tag) : []],
         imageTagsChips: ''
       });
+
+     this.checkHeight();
+
     }else{
       this.recordForm = this.fb.group({
         imageDate: [''],
@@ -108,6 +116,16 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     
   }
 
+  checkHeight(dialogDataHeight = null){
+    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
+
+    if(height > 900){
+      this.imageHeight = 50;
+    }
+    else{
+      this.imageHeight = 25;
+    }
+  }
 
   upload(file: File, patientId: number) : MediaItemReturnObject {
 
@@ -294,6 +312,12 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       imageTags:[this.imageData ? dialogData.mediaData?.tags?.map((tag:any) => tag.tag) : []],
       imageTagsChips: ''
     });
+
+    this.checkHeight(dialogData.image.height);
+
+    this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+      this.patientMediaComments$.next(comments);
+    });
   }
 
   ngOnDestroy() {
@@ -332,5 +356,12 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     this.uploadMediaIcon.nativeElement.classList.remove('fileDragHover');
   }
 
+  onSwipeLeft($event:Event){
+    this.onArrowKey.emit(39);
+  }
+
+  onSwipeRight($event:Event){
+    this.onArrowKey.emit(37);
+  }
 }
 
