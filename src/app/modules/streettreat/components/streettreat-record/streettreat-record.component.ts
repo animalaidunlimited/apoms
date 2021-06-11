@@ -12,6 +12,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, take, takeUntil } from 'rxjs/operators';
+import { VehicleList } from 'src/app/core/models/vehicle';
 
 
 
@@ -21,6 +22,8 @@ import { map, take, takeUntil } from 'rxjs/operators';
   styleUrls: ['./streettreat-record.component.scss']
 })
 export class StreetTreatRecordComponent implements OnInit {
+
+  vehicleList$!: Observable<VehicleList[]>
 
   permissionType!: number[];
 
@@ -63,6 +66,8 @@ export class StreetTreatRecordComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.vehicleList$ = this.dropdown.getVehicleListDropdown();
+
     this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
       if (val.componentPermissionLevel.value === 2) {
           this.hasWritePermission = true;
@@ -93,6 +98,9 @@ export class StreetTreatRecordComponent implements OnInit {
         }
       ),
       patientId:[this.patientId,Validators.required],
+      // assignedVehicleId: [],
+      // assignedDate:['']
+
     });
 
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
@@ -109,6 +117,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.animalTypes$ = this.dropdown.getAnimalTypes();
 
+    console.log(this.inputStreetTreatCase);
     this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId)
     .pipe(
       map(item => {
