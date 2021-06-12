@@ -1,10 +1,10 @@
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { MediaItem, MediaItemReturnObject } from '../../../models/media';
+import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject} from 'rxjs';
+import { Observable, from, BehaviorSubject, Observer} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -14,6 +14,7 @@ import { isImageFile, isVideoFile } from '../../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 import { OnlineStatusService } from '../../online-status/online-status.service';
 import { StorageService } from '../../storage/storage.service';
+import { HttpClient } from '@angular/common/http';
 interface IResizeImageOptions {
   maxSize: number;
   file: File;
@@ -23,6 +24,7 @@ interface ResizedImage{
   image: Blob;
   width: number;
   height: number;
+  dataUrl: string;
 }
 
 
@@ -41,10 +43,14 @@ export class MediaPasteService {
     private fireAuth: AngularFireAuth,
     private onlineStatus: OnlineStatusService,
     private snackbarService:SnackbarService,
-    protected storageService: StorageService,) { }
+    protected storageService: StorageService,
+    private httpClient:HttpClient) { }
 
     user!: firebase.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
+
+
+    
 
 
   handleUpload(file: File, patientId: number): MediaItemReturnObject {
@@ -84,38 +90,44 @@ export class MediaPasteService {
 
         const resizedImage = await this.resizeImage(options);
 
-        newMediaItem.widthPX = resizedImage.width;
-        newMediaItem.heightPX = resizedImage.height;
+        if(!this.duplicateImage(file.name, patientId)){
 
-        const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+       
+       
+          newMediaItem.widthPX = resizedImage.width;
+          newMediaItem.heightPX = resizedImage.height;
+      
+          const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
 
-        newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
+          newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
-        // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
+          // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
-        uploadResult.then((result) => {
+          uploadResult.then((result) => {
 
-          result.ref.getDownloadURL().then((url:any) => {
+            result.ref.getDownloadURL().then((url:any) => {
 
-            newMediaItem.remoteURL = url;
+              newMediaItem.remoteURL = url;
 
-            this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
-              
-              this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+              this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
+                
+                this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
 
-              if(mediaItems.success) {
-                returnObject.mediaItemId.next(mediaItems.mediaItemId);
-              }
-              
+                if(mediaItems.success) {
+                  returnObject.mediaItemId.next(mediaItems.mediaItemId);
+                }
+                
+              });
+
             });
 
+          }).catch(async error => {
+            console.log(error);
           });
-
-        }).catch(async error => {
-          console.log(error);
-          
-        });
-
+        }
+        else{
+          this.snackbarService.errorSnackBar('Duplicate Image upload are not allowed', 'OK');
+        }
       }
       else{
 
@@ -147,7 +159,6 @@ export class MediaPasteService {
       }
 
 
-
     }).catch(async error => {
         if(!this.onlineStatus.connectionChanged.value){
 
@@ -161,12 +172,10 @@ export class MediaPasteService {
           reader.onload = () => { 
             
             this.saveToLocalDatabase(
-              'POST'+ patientId,reader.result
+              'MEDIA', JSON.stringify({headerType:'POST',patientId, media:reader.result})
             );
           };
         
-
-
         }
         else{
 
@@ -179,6 +188,11 @@ export class MediaPasteService {
 
   }
 
+  duplicateImage(filename:string,patientId:number){
+   let duplicate = false;
+   this.patientService.getPatientMediaItemsByPatientId(patientId)?.value.forEach(async mediaItem => duplicate = mediaItem.remoteURL.includes(filename));
+   return duplicate;
+  }
   private async saveToLocalDatabase(key:any, body:any) {
     // Make a unique identified so we don't overwrite anything in local storage.
 
@@ -271,28 +285,28 @@ export class MediaPasteService {
         };
         img.src = image.url;
     });
-}
+  }
 
-getVideoDimension(video:any): Observable<any> {
+  getVideoDimension(video:any): Observable<any> {
 
-  return new Observable(observer => {
-      const vid = document.createElement('video');
+    return new Observable(observer => {
+        const vid = document.createElement('video');
 
-      vid.onload = (event) => {
-          const loadedVideo: any = event.currentTarget;
-          video.width = loadedVideo.width;
-          video.height = loadedVideo.height;
-          observer.next(video);
-          observer.complete();
-      };
+        vid.onload = (event) => {
+            const loadedVideo: any = event.currentTarget;
+            video.width = loadedVideo.width;
+            video.height = loadedVideo.height;
+            observer.next(video);
+            observer.complete();
+        };
 
-      vid.src = video.url;
-      vid.load();
-  });
-}
+        vid.src = video.url;
+        vid.load();
+    });
+  }
 
 
-  handlePaste(event: ClipboardEvent, patientId: number): MediaItem {
+  handlePaste(event: ClipboardEvent, patientId: number, base64:string): MediaItem {
 
     const pastedImage:File|undefined = this.getPastedImage(event);
 
@@ -414,9 +428,9 @@ getVideoDimension(video:any): Observable<any> {
       const resizedImage:ResizedImage = {
           image: dataURItoBlob(dataUrl),
           width,
-          height
+          height,
+          dataUrl
       };
-
       return resizedImage;
     };
 
@@ -437,5 +451,16 @@ getVideoDimension(video:any): Observable<any> {
   }
 
 
+  imageExsistInLocalStorage(patientId:number){
+    this.onlineStatus.connectionChanged.subscribe(async online=>{
+      if(online){
+        const localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem => 
+          JSON.parse(JSON.parse(mediaItem.value as string))
+        ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId);
+
+        // console.log(localMediaItems[0].media.split(',')[0].split(';')[0].split(':')[1]);
+      }
+    });
+  }
 
 }
