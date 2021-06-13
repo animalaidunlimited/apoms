@@ -16,11 +16,13 @@
         </mat-form-field>
 
       <div fxFlex >
-        <google-map [zoom]="zoom"
-                    [center]="center"
-                    height="174px"
-                    width="100%"
-                    id="googlemap">
+        <google-map 
+                [zoom]="zoom"
+                [center]="center"
+                height="174px"
+                width="100%"
+                id="googlemap"
+                [options]="options">
           <map-marker
               *ngFor="let marker of markers"
               [position]="marker.position"
