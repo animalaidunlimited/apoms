@@ -101,6 +101,8 @@ export class MediaPasteService {
 
           newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
+          console.log(this.getUploadProgress(uploadResult));
+
           // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
           uploadResult.then((result) => {
@@ -135,6 +137,7 @@ export class MediaPasteService {
 
         newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
+        
         // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
         uploadResult.then((result) => {

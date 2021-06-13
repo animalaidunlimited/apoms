@@ -2,11 +2,11 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage"
+    <div [style.backgroundImage]="'url('+ imageData?.full +')'" *ngIf="imageData.type !== 'video'" class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)">
-        <ng-container *ngIf="data.upload">
+        <ng-container *ngIf="data.upload && (!platform.ANDROID || !platform.IOS)">
 
             <input
                 hidden
@@ -21,8 +21,8 @@
             (drop)="mediaDrop($event)"
             (dragleave)="onDragLeave($event)">
                 <mat-icon aria-label="Upload new image"  >add_a_photo</mat-icon>
-                
-                <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                <!-- *ngIf="platform.ANDROID || platform.IOS" -->
+                <mat-icon  aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
                 <p>Drag and drop files here</p>
                 <button  mat-raised-button
                 color="primary" (click)="uploader.click()">Browse for file</button>
@@ -32,6 +32,12 @@
         
 
     </div>
+    
+    
+    <video autoplay *ngIf="imageData.type === 'video'" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
+        <source src="{{imageData?.full}}" type="video/mp4" />
+        Browser not supported
+    </video>
     <div 
     ngStyle.gt-xs="width:100%;"
     style="
