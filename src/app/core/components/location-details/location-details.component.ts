@@ -48,6 +48,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     latitude!: AbstractControl;
     longitude!: AbstractControl;
 
+    options : google.maps.MapOptions = {};
+
     locationDetails!: FormGroup;
 
     location$!: Location;
@@ -61,6 +63,17 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnInit() {
+        this.options = {
+            streetViewControl: false,
+            center: this.center,
+            styles: [
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{visibility: 'off'}]
+            }
+          ]};
+
         this.recordForm.addControl(
             'locationDetails',
             this.fb.group({
