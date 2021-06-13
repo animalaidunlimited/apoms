@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,SimpleChanges,ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -45,6 +45,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadMediaIcon') uploadMediaIcon!:ElementRef<HTMLElement>;
 
+  @ViewChild('videoPlayer', { static: true }) videoplayer!: ElementRef;
+  
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
     const lisitenKeys = [37, 38, 39, 40];
@@ -77,7 +79,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     public platform: Platform,
     private mediaPaster: MediaPasteService,
     public dialog: MatDialog,
-    public cdr:ChangeDetectorRef
+    public cdr:ChangeDetectorRef,
+    private renderer: Renderer2
   ) {
 
     if(this.data?.image){
@@ -140,7 +143,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         }
       });
-   
+      mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => console.log(progress));
       return mediaItem;
   
   }
@@ -363,5 +366,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   onSwipeRight($event:Event){
     this.onArrowKey.emit(37);
   }
+
+  toggleVideo(event: any) {
+    this.videoplayer.nativeElement.play();
+}
 }
 
