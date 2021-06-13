@@ -48,7 +48,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     latitude!: AbstractControl;
     longitude!: AbstractControl;
 
-    options : google.maps.MapOptions = {};
+    mapOptions : google.maps.MapOptions = {};
 
     locationDetails!: FormGroup;
 
@@ -56,7 +56,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     markers: Marker[] = [];
 
-    options = {mapId: "587b2567d44623c"}
 
     @HostListener('document:keydown.control.l', ['$event'])
     focusLocation(event: KeyboardEvent) {
@@ -65,7 +64,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnInit() {
-        this.options = {
+        this.mapOptions = {
             streetViewControl: false,
             center: this.center,
             styles: [
