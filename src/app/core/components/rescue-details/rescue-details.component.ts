@@ -101,7 +101,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails.emergencyDetails.code as any);
+                    const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);
 
                     if (selectedCode) {
                         this.code?.setValue(selectedCode);
@@ -113,7 +113,9 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             });
 
         this.code.valueChanges.subscribe(code =>{
+            
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
+
         });
 
         this.rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
@@ -167,11 +169,18 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         if (this.rescuer1Id?.value > 0 || this.rescuer2Id?.value > 0) {
             this.rescuer2Id?.setValidators([Validators.required]);
             this.rescuer1Id?.setValidators([Validators.required]);
+
             this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
             this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
+
+            this.code?.setValidators([Validators.required]);
+            this.code?.updateValueAndValidity({ emitEvent: false });
         } else {
             this.recordForm.get('emergencyDetails.code')?.clearValidators();
             this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
+            this.code?.clearValidators();
+            this.code?.updateValueAndValidity({ emitEvent: false });
+
         }
 
         // if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required
