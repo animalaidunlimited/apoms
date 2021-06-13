@@ -1,20 +1,27 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutAlign="baseline">
+    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutAlign="baseline center">
 
-        <mat-form-field>
-            <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
+    <div class="emergencyDetailsCode" [ngClass]="{
+        'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
+        'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
+        'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
+        'yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}">
+    </div>
 
-            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
-                The emergency number already exists.
-            </mat-error>
+    <mat-form-field>
+        <input tabindex="1" #emergencyNumber formControlName="emergencyNumber" type="number" placeholder="Em no." [errorStateMatcher]="errorMatcher" matInput>
 
-            <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.stuckInPending">
-                Connectivity lost, please recheck
-            </mat-error>
+        <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.emergencyNumberTaken">
+            The emergency number already exists.
+        </mat-error>
 
-        </mat-form-field>
+        <mat-error *ngIf="recordForm.get('emergencyDetails.emergencyNumber')?.errors?.stuckInPending">
+            Connectivity lost, please recheck
+        </mat-error>
+
+    </mat-form-field>
 
     <mat-form-field fxFlex.gt-sm="1 1 100%">
             <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
@@ -32,11 +39,7 @@
         </mat-select>
     </mat-form-field >
 
-    <div class="emergencyDetailsCode" [ngClass]="{
-        'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
-        'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
-        'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
-        'yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}"></div>
+
 
     </div>
 
