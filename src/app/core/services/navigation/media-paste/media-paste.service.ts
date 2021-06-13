@@ -14,7 +14,7 @@ import { isImageFile, isVideoFile } from '../../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 import { OnlineStatusService } from '../../online-status/online-status.service';
 import { StorageService } from '../../storage/storage.service';
-import { HttpClient } from '@angular/common/http';
+
 interface IResizeImageOptions {
   maxSize: number;
   file: File;
@@ -43,10 +43,9 @@ export class MediaPasteService {
     private fireAuth: AngularFireAuth,
     private onlineStatus: OnlineStatusService,
     private snackbarService:SnackbarService,
-    protected storageService: StorageService,
-    private httpClient:HttpClient) { }
+    protected storageService: StorageService) { }
 
-    user!: firebase.auth.UserCredential;
+    user!: firebase.default.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
 
 
