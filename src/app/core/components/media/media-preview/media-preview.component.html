@@ -8,8 +8,9 @@
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
-    *ngIf="imageData?.type === 'image' || data.upload">
-        <ng-container *ngIf="data.upload">
+    *ngIf="imageData?.type?.includes('image') || data.upload">
+    <mat-spinner style="position: absolute;left: 23.5em;top: 11em;" [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+        <ng-container *ngIf="data.upload && !loading" >
 
             <input
                 hidden
@@ -35,7 +36,7 @@
     </div>
 
 
-    <video autoplay *ngIf="imageData?.type === 'video' && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
+    <video autoplay *ngIf="imageData?.type?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
         <source src="{{imageData?.full}}" type="video/mp4" />
         Browser not supported
     </video>

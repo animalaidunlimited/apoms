@@ -28,7 +28,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   uploading = 0;
  
   imageHeight = 0;
-
+  
+  loading = false;
 
 
   mediaItems: MediaItem [] = [];
@@ -133,6 +134,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   upload(file: File, patientId: number) : MediaItemReturnObject {
 
     const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
+    console.log(mediaItem);
       mediaItem.mediaItemId
       .pipe(takeUntil(this.ngUnsubscribe))
       // tslint:disable-next-line: deprecation
@@ -143,7 +145,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         }
       });
-      mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => console.log(progress));
+      
       return mediaItem;
   
   }
@@ -152,10 +154,11 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   
     // We're uploading a file
     this.uploading++;
-  
+    this.loading = true;
     for(const file of $event?.target?.files ? $event.target.files : $event)
     {
       const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
+
       mediaItem.mediaItemId.subscribe(media => {
         if(media){
           this.imageData = { 
@@ -167,6 +170,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddThh:mm'));
           this.showSnackBar.successSnackBar('Uploaded','OK');
           this.data.upload = false;
+          mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
+
         }
       });
       
@@ -178,6 +183,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         mediaItem.mediaItem.updated = true;
 
+      }
+      else{
+        console.log('hello');
       }
   
     }
@@ -321,6 +329,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
       this.patientMediaComments$.next(comments);
     });
+    
   }
 
   ngOnDestroy() {

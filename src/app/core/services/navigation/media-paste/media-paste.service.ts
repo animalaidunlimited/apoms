@@ -80,19 +80,13 @@ export class MediaPasteService {
 
       const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
 
-      const options: IResizeImageOptions = {
-        maxSize: 5000,
-        file
-      };
-      
      
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
-        const resizedImage = await this.resizeImage(options);
+        const resizedImage = await this.cropedImage(file);
 
         if(!this.duplicateImage(file.name, patientId)){
 
-       
        
           newMediaItem.widthPX = resizedImage.width;
           newMediaItem.heightPX = resizedImage.height;
@@ -101,7 +95,6 @@ export class MediaPasteService {
 
           newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
-          console.log(this.getUploadProgress(uploadResult));
 
           // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
@@ -116,7 +109,9 @@ export class MediaPasteService {
                 this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
 
                 if(mediaItems.success) {
+
                   returnObject.mediaItemId.next(mediaItems.mediaItemId);
+
                 }
                 
               });
@@ -128,7 +123,9 @@ export class MediaPasteService {
           });
         }
         else{
+
           this.snackbarService.errorSnackBar('Duplicate Image upload are not allowed', 'OK');
+
         }
       }
       else{
@@ -167,18 +164,14 @@ export class MediaPasteService {
 
           this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
 
+          const resizedImage = await this.cropedImage(file);
           this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
           
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
+          this.saveToLocalDatabase(
+            'MEDIA', JSON.stringify({headerType:'POST',patientId, media:[resizedImage.dataUrl]})
+          );
           
-          reader.onload = () => { 
-            
-            this.saveToLocalDatabase(
-              'MEDIA', JSON.stringify({headerType:'POST',patientId, media:reader.result})
-            );
-          };
-        
+          
         }
         else{
 
@@ -191,11 +184,22 @@ export class MediaPasteService {
 
   }
 
+  private async cropedImage(file: File) {
+    const options: IResizeImageOptions = {
+      maxSize: 5000,
+      file
+    };
+
+    return await this.resizeImage(options);
+    
+  }
+
   duplicateImage(filename:string,patientId:number){
    let duplicate = false;
    this.patientService.getPatientMediaItemsByPatientId(patientId)?.value.forEach(async mediaItem => duplicate = mediaItem.remoteURL.includes(filename));
    return duplicate;
   }
+
   private async saveToLocalDatabase(key:any, body:any) {
     // Make a unique identified so we don't overwrite anything in local storage.
 
@@ -211,7 +215,7 @@ export class MediaPasteService {
             message: 'An error occured saving to offline storage: ' + error,
         });
     }
-}
+  }
 
   getUploadProgress(uploadResult:AngularFireUploadTask) : Observable<number>{
 
