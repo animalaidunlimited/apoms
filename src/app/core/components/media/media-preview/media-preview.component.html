@@ -2,11 +2,14 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div [style.backgroundImage]="'url('+ imageData?.full +')'" *ngIf="imageData.type !== 'video'" class="mediaPreviewBackgroundImage"
+    <div 
+    [style.backgroundImage]="'url('+ imageData?.full +')'" 
+    class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
-    (swiperight)="onSwipeRight($event)">
-        <ng-container *ngIf="data.upload && (!platform.ANDROID || !platform.IOS)">
+    (swiperight)="onSwipeRight($event)"
+    *ngIf="imageData?.type === 'image' || data.upload">
+        <ng-container *ngIf="data.upload">
 
             <input
                 hidden
@@ -21,29 +24,27 @@
             (drop)="mediaDrop($event)"
             (dragleave)="onDragLeave($event)">
                 <mat-icon aria-label="Upload new image"  >add_a_photo</mat-icon>
-                <!-- *ngIf="platform.ANDROID || platform.IOS" -->
-                <mat-icon  aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                
+                <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
                 <p>Drag and drop files here</p>
                 <button  mat-raised-button
                 color="primary" (click)="uploader.click()">Browse for file</button>
             </div>
 
         </ng-container>
-        
-
     </div>
-    
-    
-    <video autoplay *ngIf="imageData.type === 'video'" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
+
+
+    <video autoplay *ngIf="imageData?.type === 'video' && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
         <source src="{{imageData?.full}}" type="video/mp4" />
         Browser not supported
     </video>
-    <div 
-    ngStyle.gt-xs="width:100%;"
-    style="
+    
+    <div style="
+        width: 100%;
         padding: 0.5rem;
     " [formGroup]="recordForm">
-        <div class="imagePreviewSidePanel" fxLayout="row" >
+        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
             <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
                 <mat-label >Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;
@@ -84,7 +85,7 @@
         </div>
         <div class="imagePreviewSidePanel imageChatSidePanel" fxLayout="column">
             <h3>Comments</h3>
-            <div class="commentSection"  [ngStyle.lt-md]="(patientMediaComments$ | async) ? 'min-height: 12em;' : 'min-height:2em;'">
+            <div class="commentSection">
                 <ng-container *ngFor="let comment of (patientMediaComments$ | async); trackBy:trackComment">
                     <div class="imageChatPanel">
                         <div class="imageChatUser">
