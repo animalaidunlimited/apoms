@@ -53,6 +53,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     this.options = {
       streetViewControl: false,
       center: this.center,
+      mapId: "8d1aafbf6e08cdb2",
       styles: [
       {
         featureType: 'poi',
