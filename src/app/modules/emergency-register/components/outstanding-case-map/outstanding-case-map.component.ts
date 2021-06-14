@@ -29,7 +29,10 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
-  options : google.maps.MapOptions = {};
+  //TODO: Put this back when Angular Google Maps has the typings upgraded.
+  //options : google.maps.MapOptions = {};
+  options : any = {};
+
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]>;
 

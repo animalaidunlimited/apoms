@@ -54,7 +54,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     markers: Marker[] = [];
 
-    options = {mapId: "587b2567d44623c"}
+    mapOptions = {mapId: "587b2567d44623c"}
 
     @HostListener('document:keydown.control.l', ['$event'])
     focusLocation(event: KeyboardEvent) {
