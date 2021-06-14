@@ -43,7 +43,7 @@ export class LocationService extends APIService {
   }
   logLocation(){
 
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 2; i++){
       setTimeout(() => this.getLocation(),i * 2000);
   }
 

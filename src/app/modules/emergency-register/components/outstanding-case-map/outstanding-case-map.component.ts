@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, ActionGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
@@ -22,7 +22,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   @ViewChild('googlemap') googlemap: any;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<any>;
+  ambulanceLocations$!:Observable<RescuerGroup[]>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
@@ -173,13 +173,13 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     return toCheck >= min && toCheck <= max;
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, rescues: RescuerGroup){
+  openAmbulanceInfoWindow(marker: MapMarker, actions: ActionGroup[]){
 
     let searchQuery = ' ec.EmergencyCaseId IN (';
 
     let assignments:OutstandingAssignment[] = [];
 
-    rescues.actions.forEach(action => {
+    actions.forEach(action => {
 
       action.ambulanceAssignment.forEach(ambulanceAssignments => {
         assignments = assignments.concat(ambulanceAssignments);

@@ -264,14 +264,19 @@ $standard-width: 180px;
 }
 }
 
-// .filter_Btn {
-//     position: relative;
-//     right: 10vw;
-// }
+.ambulance-icon {
+    width: 77px;
+    height: 74px;
+    user-select: none;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    max-width: none;
+}
 
-// .mat-focus-indicator:focus {
-//     background-color: #607d8b;
-// }
+.show-ambulance-paths{
+
+}
 
 @media (max-width: 812px) {
 
