@@ -74,7 +74,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
               elementType: 'labels',
               stylers: [{visibility: 'off'}]
             }
-          ]};
+          ]} as google.maps.MapOptions;
 
         this.recordForm.addControl(
             'locationDetails',
