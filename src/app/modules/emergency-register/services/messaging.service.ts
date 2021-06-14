@@ -60,6 +60,10 @@ constructor(
             this.treatmentList.receiveAcceptRejectMessage(message);
         }
 
+        if(message?.hasOwnProperty('vehicleLocation')){
+            this.outstandingCase.receiveAmbulanceLocationMessage(message);
+        }
+
         // This is a admission/movement message for treatment list records
         if(Array.isArray(message)){
             this.treatmentList.receiveMovementMessage(message);
@@ -104,24 +108,38 @@ constructor(
 
     async subscribeToTopics(token:string){
 
+        //TODO save this config against each user so we can allow them to turn the messages on and off.
+        //There's no need to have them turned on for everyone
+
+
+        //TODO here we should call the database and get the list of topics the user wants to subscribe to.
+
+        const topics = [
+            "_UPDATING_ASSIGNMENT",
+            "_UPDATING_TREATMENT_LIST",
+            "_UPDATING_VEHICLE_LOCATION"
+        ]
+
         // send the token to the server and subscribe it to the relevant topics
         const organisation = this.authService.getOrganisationSocketEndPoint();
 
-        const subscriptionBodyAssignment = {
-            token,
-            topic: `${organisation}_UPDATING_ASSIGNMENT`
-        };
+        let result = [];
 
-        const assignmentResult = await this.post(subscriptionBodyAssignment);
+        //Go through the list of topics and subscribe to them all
+        for(let topic of topics){
 
-        const subscriptionBodyTreatmentList = {
-            token,
-            topic: `${organisation}_UPDATING_TREATMENT_LIST`
-        };
+            const subscriptionBodyAssignment = {
+                token,
+                topic: `${organisation}${topic}`
+            };
 
-        const treatmentListResult = await this.post(subscriptionBodyTreatmentList);
+            const subscriptionResult = await this.post(subscriptionBodyAssignment);
 
-        return [assignmentResult, treatmentListResult];
+            result.push(subscriptionResult);
+
+        }
+
+        return [result];
 
     }
 

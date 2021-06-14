@@ -4,8 +4,8 @@ import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { OutstandingCase, UpdatedRescue, OutstandingAssignment, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
@@ -85,6 +85,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
 
+    ambulanceLocations$!:Observable<RescuerGroup[]>;
+
     autoRefresh = false;
 
     caseFilter = [{
@@ -137,6 +139,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   searchForm:FormGroup = new FormGroup({});
   searchValue!: string;
+
+  showAmbulancePaths = false;
 
 
   constructor(
@@ -241,6 +245,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   initialiseBoard() {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
+    this.ambulanceLocations$ = this.outstandingCaseService.ambulanceLocations$;
+
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$
@@ -248,6 +254,11 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     .subscribe((assignments) => {
 
       this.outstandingCasesArray = assignments;
+
+      if(assignments.length > 0){
+        this.ambulanceLocations$ = this.outstandingCaseService.getAmbulanceLocations();
+        this.ambulanceLocations$.subscribe(val => console.log(val));
+      }
 
       this.actionStatus.forEach(status=> {
         const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);

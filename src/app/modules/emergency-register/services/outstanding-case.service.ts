@@ -331,7 +331,7 @@ export class OutstandingCaseService {
                   const key = keyObject.group;
                   if(assignment1[key]===keyObject.value) {
                     filterSuccess++;
-                    
+
                   }
                   else if(key==='animalType') {
                     assignment.patients.forEach((patient:ActionPatient)=>{
@@ -426,6 +426,12 @@ export class OutstandingCaseService {
       });
 
     this.zone.run(() => this.outstandingCases$.next(outstandingCases));
+
+  }
+
+  receiveAmbulanceLocationMessage(locationRecord: any){
+
+    console.log(locationRecord);
 
   }
 

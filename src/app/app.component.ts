@@ -36,7 +36,9 @@ export class AppComponent implements OnInit{
     ngOnInit() {
 
 
-        // this.locationTracker.logLocation();
+        setTimeout(() => {
+            this.locationTracker.logLocation();
+        }, 5000);
 
 
 
@@ -57,6 +59,8 @@ export class AppComponent implements OnInit{
                  // Set up to receive messages from the service worker when the app is in the background.
                  navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
+                    console.log(event);
+
                     if(event.data?.image || event.data?.video){
 
                         this.emergencyTabBar.receiveSharedMediaItem(event.data);
@@ -66,10 +70,11 @@ export class AppComponent implements OnInit{
                         this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
                     }
 
-                 });
+                    if(event.data?.vehicleId){
 
-            }
-            else {
+                    }
+
+                 });
 
             }
 
