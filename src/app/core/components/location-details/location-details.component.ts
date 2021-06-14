@@ -67,6 +67,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.mapOptions = {
             streetViewControl: false,
             center: this.center,
+			mapId: "587b2567d44623c",
             styles: [
             {
               featureType: 'poi',
