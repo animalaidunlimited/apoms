@@ -125,12 +125,13 @@ export class StreetTreatService extends APIService {
     const request = '/scorecards';
     return this.getObservable(request).pipe(
       map((scoreCards)=>{
+        console.log(scoreCards)
         return scoreCards;
       })
     );
   }
 
- 
 
-  
+
+
 }
