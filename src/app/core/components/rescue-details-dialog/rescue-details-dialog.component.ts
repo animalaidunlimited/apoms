@@ -67,8 +67,6 @@ export class RescueDetailsDialogComponent implements OnInit {
 
     this.canExit.valueChanges.subscribe((values:CanExitChange) => {
 
-      console.log(values)
-
       // TODO update this to handle any errors and display them to a toast.
       if(values.rescueDetailsUpdateComplete !== 0){
 
@@ -92,8 +90,6 @@ export class RescueDetailsDialogComponent implements OnInit {
   }
 
   // saveRescueUpdate() {
-
-  //   console.log('Hi I was called');
 
   //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and its the part of the emergency outstanding board.
   //   this.caseService.insertOrUpdatePatientFromRescueDetailsDialog(this.data.recordForm.value)
