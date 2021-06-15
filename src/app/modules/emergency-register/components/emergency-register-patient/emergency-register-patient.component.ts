@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeLast, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeLast, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -120,6 +120,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
       }),
     );
+
+
 
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
@@ -291,10 +293,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
           if(matchAnimalType === 0){
             this.animalType?.setValue('');
             this.animalTypeInput.nativeElement.value = '';
+            this.filteredProblems$ = this.problemFilter('');
           }
           else{
-
-            this.filteredProblems$ = this.problemFilter('');
             this.problemRef.nativeElement.focus();
 
           }
