@@ -67,8 +67,10 @@ export class RescueDetailsDialogComponent implements OnInit {
 
     this.canExit.valueChanges.subscribe((values:CanExitChange) => {
 
+      console.log(values)
+
       // TODO update this to handle any errors and display them to a toast.
-      if(values.outcomeUpdateComplete !== 0 && values.rescueDetailsUpdateComplete !== 0){
+      if(values.rescueDetailsUpdateComplete !== 0){
 
         this.result.success = 1;
 
@@ -89,25 +91,27 @@ export class RescueDetailsDialogComponent implements OnInit {
     this.canExit.get('rescueDetailsUpdateComplete')?.setValue(result.success);
   }
 
-  saveRescueUpdate() {
+  // saveRescueUpdate() {
 
-    // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and its the part of the emergency outstanding board.
-    this.caseService.insertOrUpdatePatientFromRescueDetailsDialog(this.data.recordForm.value)
-    .then(output=> {
+  //   console.log('Hi I was called');
 
-      let success = 0;
+  //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and its the part of the emergency outstanding board.
+  //   this.caseService.insertOrUpdatePatientFromRescueDetailsDialog(this.data.recordForm.value)
+  //   .then(output=> {
 
-      output.forEach((patient: PatientResponse)=> {
+  //     let success = 0;
 
-        if(patient.success) {
-          success = patient.success
-        }
+  //     output.forEach((patient: PatientResponse)=> {
 
-      });
+  //       if(patient.success) {
+  //         success = patient.success
+  //       }
 
-    this.canExit.get('outcomeUpdateComplete')?.setValue(success);
+  //     });
+
+  //   this.canExit.get('outcomeUpdateComplete')?.setValue(success);
 
 
-    });
-  }
+  //   });
+  // }
 }
