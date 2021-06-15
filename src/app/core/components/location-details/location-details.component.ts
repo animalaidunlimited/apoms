@@ -145,7 +145,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         });
 
     }
-
+    
     invokeEvent(place: any) {
         this.setAddress.emit(place);
 
