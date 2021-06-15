@@ -202,8 +202,7 @@
 @media only screen and (min-width: 1000px) {
     .add-visits-fab-btn {
         display:flex !important;
-        flex-direction: row-reverse;
-        margin:0 calc(50% - 12px) 30px 0;
+        width:100%;
     }
 }
 .full-width {
