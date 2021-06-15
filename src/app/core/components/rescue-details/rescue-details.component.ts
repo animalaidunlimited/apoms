@@ -88,6 +88,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
+                code:[this.code]
             }),
         );
 
@@ -113,8 +114,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             });
 
         this.code.valueChanges.subscribe(code =>{
+
+            console.log(this.recordForm.get('emergencyDetails.code')?.value);
             
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
+            this.recordForm.get('rescueDetails.code')?.setValue(code);
 
         });
 
