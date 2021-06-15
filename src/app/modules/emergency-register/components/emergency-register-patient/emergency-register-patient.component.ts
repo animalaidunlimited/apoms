@@ -117,7 +117,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       startWith(''),
       map(problem => typeof problem === 'string' ? problem : problem.Problem),
       switchMap((problem:string) => {
-        console.log(problem);
         return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
       }),
     );
