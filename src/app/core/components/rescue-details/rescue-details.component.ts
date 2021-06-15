@@ -50,7 +50,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescueDetails: FormGroup = new FormGroup({});
     rescueDetails$: FormGroup = new FormGroup({});
     code = new FormControl();
-    
+
     rescueTime: AbstractControl | undefined | null;
     rescuer1Id: AbstractControl | undefined | null;
     rescuer2Id: AbstractControl | undefined | null;
@@ -115,8 +115,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         this.code.valueChanges.subscribe(code =>{
 
-            console.log(this.recordForm.get('emergencyDetails.code')?.value);
-            
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
             this.recordForm.get('rescueDetails.code')?.setValue(code);
 

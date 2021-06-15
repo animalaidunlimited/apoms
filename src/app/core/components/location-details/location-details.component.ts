@@ -138,7 +138,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
-            console.log('adding listener')
 
             if(place?.formatted_address){
                 this.invokeEvent(place);
@@ -149,9 +148,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     invokeEvent(place: any) {
         this.setAddress.emit(place);
-
-        console.log('invoking event');
-
 
         const result = place as google.maps.places.PlaceResult;
 
