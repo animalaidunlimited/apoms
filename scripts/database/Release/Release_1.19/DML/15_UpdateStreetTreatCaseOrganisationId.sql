@@ -1,0 +1,1 @@
+UPDATE AAU.StreetTreatCase SET OrganisationId = 1 WHERE OrganisationId IS NULL;
