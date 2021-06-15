@@ -19,6 +19,7 @@ export interface Marker {
 }
 
 @Component({
+    // tslint:disable-next-line: component-selector
     selector: 'location-details',
     templateUrl: './location-details.component.html',
     styleUrls: ['./location-details.component.scss'],
@@ -56,7 +57,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     markers: Marker[] = [];
 
-
     @HostListener('document:keydown.control.l', ['$event'])
     focusLocation(event: KeyboardEvent) {
         event.preventDefault();
@@ -67,7 +67,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.mapOptions = {
             streetViewControl: false,
             center: this.center,
-			mapId: "587b2567d44623c",
+			mapId: '587b2567d44623c',
             styles: [
             {
               featureType: 'poi',
@@ -151,7 +151,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
-            console.log('adding listener')
 
             if(place?.formatted_address){
                 this.invokeEvent(place);
@@ -162,9 +161,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     invokeEvent(place: any) {
         this.setAddress.emit(place);
-
-        console.log('invoking event');
-
 
         const result = place as google.maps.places.PlaceResult;
 
