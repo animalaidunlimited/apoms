@@ -185,6 +185,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 
+		console.log('Hi I was called');
+
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
