@@ -88,7 +88,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
-                code:[this.code]
+                code: this.code
             }),
         );
 

@@ -107,14 +107,19 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
       startWith(''),
       map(animalType => typeof animalType === 'string'? animalType : animalType?.AnimalType),
-      switchMap((animalType:string) => animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes)
+      switchMap((animalType:string) =>
+        animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes
+      )
     );
 
 
     this.filteredProblems$ = this.problemInput.valueChanges.pipe(
       startWith(''),
       map(problem => typeof problem === 'string' ? problem : problem.Problem),
-      switchMap((problem:string) => problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems),
+      switchMap((problem:string) => {
+        console.log(problem);
+        return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
+      }),
     );
 
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
@@ -170,6 +175,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   problemFilter(filterValue:string) {
+
+    console.log(filterValue);
 
     return this.dropdown.getProblems().pipe(
       map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue) === 0)),
@@ -305,7 +312,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
       problemRefElement.value = '';
       this.chipList.errorState = true;
-      
+
       this.patientFormProblemSetError();
 
     }
