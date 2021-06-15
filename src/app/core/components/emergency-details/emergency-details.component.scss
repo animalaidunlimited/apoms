@@ -41,6 +41,11 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         top: 6rem !important;
         cursor: pointer;
     }
+
+    .dispatcherWrapper {
+        position: relative;
+        right:13rem;
+    }
 }
 
 @media(max-width: 1024px) {

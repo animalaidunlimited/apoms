@@ -68,20 +68,20 @@ export class StreetTreatRecordComponent implements OnInit {
           this.hasWritePermission = true;
       }
 
-  });
+    });
 
     this.recordForm = this.fb.group({
       EmergencyNumber: [{value: '', disabled: true}, Validators.required],
       TagNumber: [{value: '', disabled: true}, Validators.required],
       NextVisit: [{value: '', disabled: true}],
       PercentComplete: [{value: '', disabled: true}, Validators.required],
-      AnimalTypeId: ['', Validators.required],
+      AnimalTypeId: [''],
       AnimalName:[''],
       BeginDate:[{value: '', disabled: true}, Validators.required],
       EndDate:[],
       EarlyReleaseFlag:[],
       IsIsolation:[],
-      PriorityId: ['', Validators.required],
+      PriorityId: [''],
       emergencyDetails: this.fb.group({
         emergencyCaseId: [this.emergencyCaseId, Validators.required]
       }),
@@ -138,6 +138,11 @@ export class StreetTreatRecordComponent implements OnInit {
         this.recordForm.get('EndDate')?.updateValueAndValidity();
       }
     }),100);
+
+
+
+
+    
 
   }
 
