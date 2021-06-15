@@ -1,7 +1,7 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutAlign="baseline center">
+    <div fxLayout="row" fxLayout.xs="row-reverse wrap"  fxLayoutAlign="baseline center"  fxLayoutAlign.xs="space-between center" >
 
     <div class="emergencyDetailsCode" [ngClass]="{
         'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
