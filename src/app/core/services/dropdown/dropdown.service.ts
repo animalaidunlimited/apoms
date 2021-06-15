@@ -445,7 +445,7 @@ export class DropdownService extends APIService {
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
                 map((response: CallOutcomeResponse[]) => {
-                    return response;
+                    return response.sort((a,b) => a.SortOrder - b.SortOrder);
                 }),
             );
         }
