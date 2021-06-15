@@ -177,8 +177,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   problemFilter(filterValue:string) {
 
-    console.log(filterValue);
-
     return this.dropdown.getProblems().pipe(
       map(problems => problems.filter(option => option.Problem.toLowerCase().indexOf(filterValue) === 0)),
       map(problems => {
