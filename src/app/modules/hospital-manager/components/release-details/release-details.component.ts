@@ -109,6 +109,13 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.initReleaseDetailsForm();
 
+    
+    this.recordForm.statusChanges.subscribe(status => {
+      
+      setTimeout(() => this.formValidity.next(this.recordForm.status === 'VALID' ? false : true),1);
+    
+    });
+
   }
 
   initReleaseDetailsForm(){
@@ -123,6 +130,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
+        
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -135,15 +143,15 @@ export class ReleaseDetailsComponent implements OnInit {
       });
     }
 
-    }
+  }
 
-    streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
 
-      if(streetTreatCaseId)
-      {
-        this.streetTreatReleaseTrue();
-      }
+    if(streetTreatCaseId)
+    {
+      this.streetTreatReleaseTrue();
     }
+  }
 
   setRequired(name: string) {
     // eslint-disable-next-line @typescript-eslint/dot-notation
