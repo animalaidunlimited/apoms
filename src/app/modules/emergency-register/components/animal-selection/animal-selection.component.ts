@@ -1,6 +1,6 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
@@ -51,8 +51,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
-  
-
+    @Output() problemTabPressed:EventEmitter<boolean> = new EventEmitter();
+    
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
     @ViewChildren(EmergencyRegisterPatientComponent) emergencyRegisterPatients!: QueryList<EmergencyRegisterPatientComponent>;
@@ -140,6 +140,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     deletePatient(patientIndex:number) {
 
         this.patients.removeAt(patientIndex);
+    }
+
+    problemTab($event:boolean){
+        this.problemTabPressed.emit($event);
     }
 
     addPatientRow(){

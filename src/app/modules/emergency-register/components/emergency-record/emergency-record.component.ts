@@ -1,5 +1,5 @@
 import { EmergencyRecordCommentDialogComponent } from './emergency-record-comment-dialog/emergency-record-comment-dialog.component';
-import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef, ViewChildren, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute} from '@angular/router';
 import { LogsComponent } from 'src/app/core/components/logs/logs.component';
 import { MatDialog } from '@angular/material/dialog';
+import { EmergencyDetailsComponent } from 'src/app/core/components/emergency-details/emergency-details.component';
 
 
 @Component({
@@ -29,6 +30,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     @Input() emergencyCaseId: number | undefined;
     @Input() guId!: BehaviorSubject<string>;
     @Output() public loadEmergencyNumber = new EventEmitter<any>();
+
+    @ViewChild(EmergencyDetailsComponent) emergencyDetailsComponent!:EmergencyDetailsComponent;
 
     currentTime = '';
     errorMatcher = new CrossFieldErrorMatcher();
@@ -451,6 +454,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                     this.recordForm.get('caseComments')?.setValue(caseComment);
                 }
             });
+    }
+
+    tabPresses($event:boolean){
+        this.emergencyDetailsComponent.dispatcher.nativeElement.focus();
     }
 
 }
