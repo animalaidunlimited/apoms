@@ -63,7 +63,7 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": true,
+              "sourceMap": false,
               "vendorChunk": false
             },
             "stage": {
@@ -91,7 +91,7 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": true,
+              "sourceMap": false,
               "vendorChunk": false
             }
           }
