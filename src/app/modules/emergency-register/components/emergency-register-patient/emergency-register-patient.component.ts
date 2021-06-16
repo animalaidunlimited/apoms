@@ -366,4 +366,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientDeleted.emit(patientIndex);
   }
 
+  tabPressed($event:Event, patientIndex: number) {
+    $event.preventDefault();
+
+    this.tagNumber.nativeElement.focus();   
+
+  }
+
 }
