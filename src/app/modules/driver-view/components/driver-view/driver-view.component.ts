@@ -18,8 +18,8 @@ export class DriverViewComponent implements OnInit {
   driverViewList$!: Observable<any>;
   inProgressStatusList: any;
   inAmbulaneStatusList: any;
-  isAssigned: any;
-  isComplete: any;
+  assignedList: any;
+  completeList: any;
 
   constructor( private fb: FormBuilder,
     private dropdowns: DropdownService,
@@ -50,10 +50,10 @@ export class DriverViewComponent implements OnInit {
       this.driverViewList$ = this.driverView.getDriverViewDetails(date);
       this.driverViewList$.subscribe(item=> {
         console.log(item);
-        this.inProgressStatusList = item.filter((dataItem: any)=> dataItem.ActionStatus === 'In Progress');
-        this.inAmbulaneStatusList = item.filter((dataItem: any)=> dataItem.ActionStatus === 'In Ambulance');
-        this.isAssigned = item.filter((dataItem: any)=> dataItem.ActionStatus === 'Assigned');
-        this.isComplete = item.filter((dataItem: any)=> dataItem.ActionStatus === 'Complete');
+        this.inProgressStatusList = item.filter((dataItem: any)=> dataItem.actionStatus === 'In Progress');
+        this.inAmbulaneStatusList = item.filter((dataItem: any)=> dataItem.actionStatus === 'In Ambulance');
+        this.assignedList = item.filter((dataItem: any)=> dataItem.actionStatus === 'Assigned');
+        this.completeList = item.filter((dataItem: any)=> dataItem.actionStatus === 'Complete');
       })
     });
     
