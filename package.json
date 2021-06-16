@@ -46,7 +46,6 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@angular/service-worker": "^11.2.14",
-    "@animalaidunlimited/ngx-gallery-aau": "^1.2.6",
     "@firebase/messaging": "^0.7.3",
     "@swimlane/ngx-charts": "^16.0.0",
     "@types/dom-mediacapture-record": "^1.0.7",

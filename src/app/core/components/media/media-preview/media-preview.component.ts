@@ -97,25 +97,22 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    this.recordForm = this.fb.group({
+      imageDate: '',
+      imageTags:[],
+      imageTagsChips: ''
+    });
+
     if(!this.data?.upload){
-      
-      this.recordForm = this.fb.group({
-        imageDate: [ this.imageData ?
-          this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')
-          : ''
-        ],
-        imageTags:[this.imageData ? this.data.mediaData.tags?.map((tag:any) => tag.tag) : []],
-        imageTagsChips: ''
-      });
+     
+
+      if(this.imageData){
+        this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')),
+        this.recordForm.get('imageTags')?.setValue(this.data.mediaData.tags?.map((tag:any) => tag.tag));
+      }
 
      this.checkHeight();
 
-    }else{
-      this.recordForm = this.fb.group({
-        imageDate: [''],
-        imageTags:[[]],
-        imageTagsChips: ''
-      });
     }
     
   }
