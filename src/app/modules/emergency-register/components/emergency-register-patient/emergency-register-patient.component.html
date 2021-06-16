@@ -33,7 +33,7 @@
         </mat-chip>
 
         <input placeholder="Main problem(s)" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
-          [matChipInputFor]="chipList" (focusout)="checkMainProblem()">
+          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)">
 
       </mat-chip-list>
 

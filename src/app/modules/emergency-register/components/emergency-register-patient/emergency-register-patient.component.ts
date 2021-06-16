@@ -34,9 +34,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
   get callOutcome(): string { return this._callOutcome; }
 
+  private _callOutcome = '';
+
   @Input() outcome!: boolean;
 
   @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
+
+  @Output() problemTab:EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('problemRef') problemRef!: ElementRef;
   @ViewChild('chipList', {static: false}) chipList!: MatChipList;
@@ -46,9 +50,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @ViewChild('problemRef', { read: MatAutocompleteTrigger }) problemAutoComplete!: MatAutocompleteTrigger;
 
   animalType!: AbstractControl;
-  private _callOutcome = '';
-
+  
   private animalTypeValueChangesUnsubscribe = new Subject();
+
   currentPatientSpecies: string | undefined;
   errorMatcher = new CrossFieldErrorMatcher();
   exclusions: Exclusions[] = [] as Exclusions[];
@@ -370,6 +374,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     $event.preventDefault();
 
     this.tagNumber.nativeElement.focus();   
+
+  }
+
+  problemTabPressed($event:Event){
+    $event.preventDefault();
+
+    this.problemTab.emit(true);
 
   }
 
