@@ -51,7 +51,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
-    @ViewChild('tagNumber') tagNumber!: QueryList<ElementRef>;
+  
 
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
@@ -91,6 +91,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.addPatientRow();
         this.cdr.detectChanges();
 
+        
         const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput.nativeElement.focus();
@@ -100,7 +101,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-        this.tagNumber.toArray()[0].nativeElement.focus();
+        if(this.outcome)
+        {
+            this.emergencyRegisterPatients.first.tagNumber?.nativeElement.focus();
+        }
+        
     }
 
     ngOnInit() {
