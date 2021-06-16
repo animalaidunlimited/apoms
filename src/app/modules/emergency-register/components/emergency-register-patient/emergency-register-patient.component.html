@@ -56,13 +56,13 @@
   <!-- Calloutcome details-->
   <div *ngIf="outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
 
-    <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
+    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
     <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
 
       <mat-label>Tag number</mat-label>
 
-      <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+      <input matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
 
       <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
         The tag number already exists.
