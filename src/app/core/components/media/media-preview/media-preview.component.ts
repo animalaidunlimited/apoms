@@ -97,6 +97,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+
     this.recordForm = this.fb.group({
       imageDate: '',
       imageTags:[],

@@ -25,12 +25,17 @@
             (drop)="mediaDrop($event)"
             (dragleave)="onDragLeave($event)">
                 <!--camera -->
-                <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
-                <p *ngIf="platform.ANDROID || platform.IOS">Click here to upload capture video or image</p>
-
-                <!--From gallery-->
-                <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
-                <p *ngIf="!platform.ANDROID || !platform.IOS">Drag and drop files here</p>
+                <div fxLayout="row" ngStyle.xs="margin-top:0.5em;">
+                    <div fxLayout="column" fxLayoutAlign="center center">
+                        <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                        <p style="text-align:center;" *ngIf="platform.ANDROID || platform.IOS">Click here to capture video/image</p>
+                    </div>
+                    <!--From gallery-->
+                    <div fxLayout="column" fxLayoutAlign="center center">
+                        <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
+                        <p style="text-align:center;">Drag and drop files here</p>
+                    </div>
+                </div>
 
                 <button  mat-raised-button color="primary" (click)="uploader.click()">Browse for file</button>
             </div>
