@@ -28,17 +28,58 @@
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
-                        <p>EmNo:{{progressAssignment.EmergencyNumber}}</p>
+                        <p>EmNo:{{progressAssignment.emergencyNumber}}</p>
 
                         <p></p>
 
                     </div>
 
+                </div>
 
+            </div>
+        </fieldset>
+    </div>
+
+    <div *ngIf='inAmbulaneStatusList'>
+        <fieldset class="form-sub-group">
+            <legend class="legend">In Ambulance</legend>
+    
+            <div *ngFor="let ambulanceAssignment of inAmbulaneStatusList">
+                
+                <div style="background-color: green; width: 100%; height: max-content; margin-top: 10px;"> 
+
+                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
+
+                        <p>EmNo:{{ambulanceAssignment.emergencyNumber}}</p>
+
+                        <p></p>
+
+                    </div>
 
                 </div>
 
+            </div>
+        </fieldset>
+    </div>
+
+    <div *ngIf='assignedList'>
+        <fieldset class="form-sub-group">
+            <legend class="legend">Assigned</legend>
     
+            <div *ngFor="let assignments of assignedList">
+                
+                <div style="background-color: pink; width: 100%; height: max-content; margin-top: 10px;"> 
+
+                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
+
+                        <p>EmNo:{{assignments.emergencyNumber}}</p>
+
+                        <p></p>
+
+                    </div>
+
+                </div>
+
             </div>
         </fieldset>
     </div>
