@@ -85,6 +85,9 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
+        if(this.outcome){
+            return;
+        }
         this.addPatientRow();
         this.cdr.detectChanges();
 
@@ -142,6 +145,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 CallOutcome: 'Admission'
             }, {emitEvent: false});
         }
+        
         this.patients.push(patient);
     }
 
