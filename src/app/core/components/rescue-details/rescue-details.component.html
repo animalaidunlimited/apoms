@@ -24,7 +24,7 @@
 
             <mat-form-field>
                 <mat-label>Code</mat-label>
-                <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
+                <mat-select #emergencyCode tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
                     [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
                     <!-- -->

@@ -30,6 +30,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     ambulanceArrivalTimeField!: ElementRef;
 
+    @ViewChild('emergencyCode', { read: ElementRef, static: true })
+
+
+    emergencyCode!: ElementRef;
+
     emergencyCodes$!: Observable<EmergencyCode[]>;
 
     admissionTime: AbstractControl | undefined | null;
@@ -61,6 +66,12 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescueTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
         this.rescueTimeField.nativeElement.focus();
+    }
+
+    @HostListener('document:keydown.control.e', ['$event'])
+    emergencyCodeFocus(event: KeyboardEvent) {
+        event.preventDefault();
+        this.emergencyCode.nativeElement.focus();
     }
 
     @HostListener('document:keydown.control.shift.a', ['$event'])
