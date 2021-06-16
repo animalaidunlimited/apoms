@@ -116,7 +116,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.code.valueChanges.subscribe(code =>{
 
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
-            this.recordForm.get('rescueDetails.code')?.setValue(code);
+            this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
         });
 
