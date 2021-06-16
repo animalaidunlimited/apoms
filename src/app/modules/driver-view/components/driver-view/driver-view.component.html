@@ -24,13 +24,26 @@
     
             <div *ngFor="let progressAssignment of inProgressStatusList">
                 
-                <div style="background-color: blue; width: 100%; height: max-content; margin-top: 10px;"> 
+                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
                         <p>EmNo:{{progressAssignment.emergencyNumber}}</p>
 
-                        <p></p>
+                        <p>Priority:</p>
+                        <div *ngIf="progressAssignment.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : progressAssignment.emergencyCodeId == 4,
+                            'red' : progressAssignment.emergencyCodeId == 1,
+                            'green' : progressAssignment.emergencyCodeId == 2,
+                            'yellow' : progressAssignment.emergencyCodeId == 3}">
+                        </div>
+
+                        <div *ngIf="progressAssignment.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : progressAssignment.streetTreatPriorityId == 4,
+                            'red' : progressAssignment.streetTreatPriorityId == 1,
+                            'green' : progressAssignment.streetTreatPriorityId == 2,
+                            'yellow' : progressAssignment.streetTreatPriorityId == 3}">
+                        </div>
 
                     </div>
 
@@ -46,13 +59,26 @@
     
             <div *ngFor="let ambulanceAssignment of inAmbulaneStatusList">
                 
-                <div style="background-color: green; width: 100%; height: max-content; margin-top: 10px;"> 
+                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
                         <p>EmNo:{{ambulanceAssignment.emergencyNumber}}</p>
 
-                        <p></p>
+                        <p>Priority:</p>
+                        <div *ngIf="ambulanceAssignment.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : ambulanceAssignment.emergencyCodeId == 4,
+                            'red' : ambulanceAssignment.emergencyCodeId == 1,
+                            'green' : ambulanceAssignment.emergencyCodeId == 2,
+                            'yellow' : ambulanceAssignment.emergencyCodeId == 3}">
+                        </div>
+
+                        <div *ngIf="ambulanceAssignment.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : ambulanceAssignment.streetTreatPriorityId == 4,
+                            'red' : ambulanceAssignment.streetTreatPriorityId == 1,
+                            'green' : ambulanceAssignment.streetTreatPriorityId == 2,
+                            'yellow' : ambulanceAssignment.streetTreatPriorityId == 3}">
+                        </div>
 
                     </div>
 
@@ -68,13 +94,26 @@
     
             <div *ngFor="let assignments of assignedList">
                 
-                <div style="background-color: pink; width: 100%; height: max-content; margin-top: 10px;"> 
+                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
                         <p>EmNo:{{assignments.emergencyNumber}}</p>
 
-                        <p></p>
+                        <p>Priority:</p>
+                        <div *ngIf="assignments.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : assignments.emergencyCodeId == 4,
+                            'red' : assignments.emergencyCodeId == 1,
+                            'green' : assignments.emergencyCodeId == 2,
+                            'yellow' : assignments.emergencyCodeId == 3}">
+                        </div>
+
+                        <div *ngIf="assignments.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : assignments.streetTreatPriorityId == 4,
+                            'red' : assignments.streetTreatPriorityId == 1,
+                            'green' : assignments.streetTreatPriorityId == 2,
+                            'yellow' : assignments.streetTreatPriorityId == 3}">
+                        </div>
 
                     </div>
 

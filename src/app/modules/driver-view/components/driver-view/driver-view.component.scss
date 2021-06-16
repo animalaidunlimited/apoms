@@ -2,3 +2,23 @@
 .selectionDivWrapper {
     margin-top: 10px;
 }
+
+.emergencyDetailsCode {
+    min-width: 1em;
+    height: 1em;
+    margin-left: -1em;
+    margin-bottom: 1em;
+    border-radius: 50%;
+    &.red{
+        background: red;
+    }
+    &.green{
+        background: green;
+    }
+    &.yellow{
+        background: gold;
+    }
+    &.grey{
+        background: grey;
+    }
+}
