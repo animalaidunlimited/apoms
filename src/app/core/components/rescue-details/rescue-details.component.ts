@@ -338,20 +338,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
     }
 
-    selectEmergencyCode($event: any) {
+    selectEmergencyCode($event: KeyboardEvent) {
+ 
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
         this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-            const selectedCode = codes.find((code:EmergencyCode) => {
-
-                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
-
-            });
+            const selectedCode = codes.find((code:EmergencyCode) => 
+                code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase()
+            );
 
             if (selectedCode) {
-                this.recordForm
-                    .get('emergencyDetails.code')
-                    ?.setValue(selectedCode);
+                this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
+                
+                this.code?.setValue(selectedCode,{emitEvent: false});
             }
         });
     }
