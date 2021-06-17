@@ -23,16 +23,6 @@ export class MediaGalleryDialogComponent implements OnInit {
   ngOnInit(): void {
 
   }
-  /* arrowKeyBindings($event:{key:number, datetime:string}, index:number){
-    const galleryIndex = this.data.mediaGallery.findIndex(gal => gal.date   === $event.datetime);
-    console.log(index);
-    console.log($event);
-    console.log(galleryIndex);
-    console.log(this.data.mediaGallery);
-    if($event.key === 38){
-      console.log( this.data.mediaGallery[galleryIndex - 1].images[0]);
-    }
-    
-  } */
+
 }
 

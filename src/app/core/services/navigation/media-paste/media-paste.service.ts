@@ -53,7 +53,7 @@ export class MediaPasteService {
 
 
   handleUpload(file: File, patientId: number): MediaItemReturnObject {
-
+    
     if(!file.type.match(/image.*|video.*/)){
       return {
         mediaItem: undefined,
@@ -83,8 +83,8 @@ export class MediaPasteService {
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
         const resizedImage = await this.cropedImage(file);
-
-        if(!this.duplicateImage(file.name, patientId)){
+        
+        if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
 
        
           newMediaItem.widthPX = resizedImage.width;
