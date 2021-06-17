@@ -270,7 +270,9 @@
     .uploadMediaIcon{
         .mat-icon{
             font-size:2em;
-        }
-        
+        }   
+    }
+    .imagePreviewSidePanel{
+        flex-direction: row;
     }
 }
