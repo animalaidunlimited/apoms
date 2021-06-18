@@ -311,7 +311,7 @@ export class DropdownService extends APIService {
         if (!this.animalTypes$) {
             this.animalTypes$ = this.getObservable(request).pipe(
                 map(response => {
-                    return response;
+                    return response.sort((a: AnimalType,b: AnimalType) => a.Sort- b.Sort);
                 }),
             );
         }
