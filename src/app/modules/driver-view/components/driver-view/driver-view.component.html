@@ -24,27 +24,57 @@
     
             <div *ngFor="let progressAssignment of inProgressStatusList">
                 
-                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
+                <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
-                        <p>EmNo:{{progressAssignment.emergencyNumber}}</p>
-
-                        <p>Priority:</p>
-                        <div *ngIf="progressAssignment.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                        <div *ngIf="progressAssignment.ambulanceAction === 'Rescue'" class="emergencyDetailsCode" [ngClass]="{
                             'grey' : progressAssignment.emergencyCodeId == 4,
                             'red' : progressAssignment.emergencyCodeId == 1,
                             'green' : progressAssignment.emergencyCodeId == 2,
                             'yellow' : progressAssignment.emergencyCodeId == 3}">
                         </div>
 
-                        <div *ngIf="progressAssignment.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                        <div *ngIf="progressAssignment.ambulanceAction === 'STRelease' || progressAssignment.ambulanceAction ==='StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
                             'grey' : progressAssignment.streetTreatPriorityId == 4,
                             'red' : progressAssignment.streetTreatPriorityId == 1,
                             'green' : progressAssignment.streetTreatPriorityId == 2,
                             'yellow' : progressAssignment.streetTreatPriorityId == 3}">
                         </div>
 
+
+                        <p>EmNo:{{progressAssignment.emergencyNumber}}</p>
+
+                    </div>
+
+                    <div>
+                        <p>Address: {{progressAssignment.location}}</p>
+                    </div>
+
+                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start'>
+
+                        <div fxLayout='row'>
+                            <p>Description: </p>
+                            <p style="min-width: 30px;">{{progressAssignment.animalDescription}}</p>
+                        </div>
+    
+                        <div fxLayout='row'>
+                            <p>Main Problem:</p>
+                            <p *ngIf="progressAssignment.ambulanceAction === 'STRelease' || progressAssignment.ambulanceAction ==='StreetTreat'"> {{progressAssignment.streetTreatMainProblem}} </p>
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="actionWrapper" [ngClass]="{
+                        'STRelease' : progressAssignment.ambulanceAction === 'STRelease',
+                        'StreetTreat' : progressAssignment.ambulanceAction === 'StreetTreat',
+                        'Rescue' : progressAssignment.ambulanceAction === 'Rescue',
+                        'Release' : progressAssignment.ambulanceAction === 'Release'}">
+                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'STRelease'">STRelease</p>
+                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Rescue'">Rescue</p>
+                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Release'">Release</p>
                     </div>
 
                 </div>
@@ -59,27 +89,56 @@
     
             <div *ngFor="let ambulanceAssignment of inAmbulaneStatusList">
                 
-                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
+                <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
-                        <p>EmNo:{{ambulanceAssignment.emergencyNumber}}</p>
-
-                        <p>Priority:</p>
-                        <div *ngIf="ambulanceAssignment.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                        <div *ngIf="ambulanceAssignment.ambulanceAction === 'Rescue'" class="emergencyDetailsCode" [ngClass]="{
                             'grey' : ambulanceAssignment.emergencyCodeId == 4,
                             'red' : ambulanceAssignment.emergencyCodeId == 1,
                             'green' : ambulanceAssignment.emergencyCodeId == 2,
                             'yellow' : ambulanceAssignment.emergencyCodeId == 3}">
                         </div>
 
-                        <div *ngIf="ambulanceAssignment.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                        <div *ngIf="ambulanceAssignment.ambulanceAction=='STRelease' || ambulanceAssignment.ambulanceAction=='StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
                             'grey' : ambulanceAssignment.streetTreatPriorityId == 4,
                             'red' : ambulanceAssignment.streetTreatPriorityId == 1,
                             'green' : ambulanceAssignment.streetTreatPriorityId == 2,
                             'yellow' : ambulanceAssignment.streetTreatPriorityId == 3}">
                         </div>
 
+                        <p>EmNo:{{ambulanceAssignment.emergencyNumber}}</p>
+
+                    </div>
+
+                    <div>
+                        <p>Address: {{ambulanceAssignment.location}}</p>
+                    </div>
+
+                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start'>
+
+                        <div fxLayout='row'>
+                            <p>Description: </p>
+                            <p style="min-width: 30px;">{{ambulanceAssignment.animalDescription}}</p>
+                        </div>
+    
+                        <div fxLayout='row'>
+                            <p>Main Problem:</p>
+                            <p *ngIf="ambulanceAssignment.ambulanceAction === 'STRelease' || ambulanceAssignment.ambulanceAction ==='StreetTreat'"> {{ambulanceAssignment.streetTreatMainProblem}} </p>
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="actionWrapper" [ngClass]="{
+                        'STRelease' : ambulanceAssignment.ambulanceAction === 'STRelease',
+                        'StreetTreat' : ambulanceAssignment.ambulanceAction === 'StreetTreat',
+                        'Rescue' : ambulanceAssignment.ambulanceAction === 'Rescue',
+                        'Release' : ambulanceAssignment.ambulanceAction === 'Release'}">
+                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'STRelease'">STRelease</p>
+                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Rescue'">Rescue</p>
+                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Release'">Release</p>
                     </div>
 
                 </div>
@@ -94,27 +153,56 @@
     
             <div *ngFor="let assignments of assignedList">
                 
-                <div style="width: 100%; height: max-content; margin-top: 10px;"> 
+                <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
                     <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
 
-                        <p>EmNo:{{assignments.emergencyNumber}}</p>
-
-                        <p>Priority:</p>
-                        <div *ngIf="assignments.actionStatus=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
-                            'grey' : assignments.emergencyCodeId == 4,
+                        <div *ngIf="assignments.ambulanceAction=='Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                            'grey' : assignments.streetTreatPriorityId == 4,
                             'red' : assignments.emergencyCodeId == 1,
                             'green' : assignments.emergencyCodeId == 2,
                             'yellow' : assignments.emergencyCodeId == 3}">
                         </div>
 
-                        <div *ngIf="assignments.actionStatus=='STRelease' || 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                        <div *ngIf="assignments.ambulanceAction=='STRelease' || assignments.ambulanceAction=='StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
                             'grey' : assignments.streetTreatPriorityId == 4,
                             'red' : assignments.streetTreatPriorityId == 1,
                             'green' : assignments.streetTreatPriorityId == 2,
                             'yellow' : assignments.streetTreatPriorityId == 3}">
                         </div>
 
+                        <p>EmNo:{{assignments.emergencyNumber}}</p>
+
+                    </div>
+
+                    <div>
+                        <p>Address: {{assignments.location}}</p>
+                    </div>
+
+                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start'>
+
+                        <div fxLayout='row'>
+                            <p>Description: </p>
+                            <p style="min-width: 30px;">{{assignments.animalDescription}}</p>
+                        </div>
+    
+                        <div fxLayout='row'>
+                            <p>Main Problem:</p>
+                            <p *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction ==='StreetTreat'"> {{assignments.streetTreatMainProblem}} </p>
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="actionWrapper" [ngClass]="{
+                        'STRelease' : assignments.ambulanceAction === 'STRelease',
+                        'StreetTreat' : assignments.ambulanceAction === 'StreetTreat',
+                        'Rescue' : assignments.ambulanceAction === 'Rescue',
+                        'Release' : assignments.ambulanceAction === 'Release'}">
+                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'STRelease'">STRelease</p>
+                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Rescue'">Rescue</p>
+                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Release'">Release</p>
                     </div>
 
                 </div>
