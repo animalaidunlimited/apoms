@@ -201,7 +201,7 @@ uploadAndAddToGallery(newFile:any, type:string){
 }
 
   closeDialog($event:Event) {
-    console.log('Hi');
+   
     $event.preventDefault();
     
     this.closeMediaDialog.emit(true);

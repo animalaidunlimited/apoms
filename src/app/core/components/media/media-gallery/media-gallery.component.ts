@@ -1,4 +1,4 @@
-import { Image, MediaItem,  Gallery} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery, LocalMediaItem} from 'src/app/core/models/media';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { StorageService } from 'src/app/core/services/storage/storage.service';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -40,7 +41,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     public datepipe: DatePipe,
     private patientService:PatientService,
     private onlineStatus: OnlineStatusService,
-    private mediaPasteService: MediaPasteService
+    private mediaPasteService: MediaPasteService,
+    private storageService: StorageService
+
   ) { }
 
 
@@ -48,20 +51,46 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
 
-    console.log(this.mediaPasteService.imageExsistInLocalStorage(this.patientId));
     
 
     this.checkConnection = timer(0,3000).pipe(
       takeUntil(this.connectionStateSubs),
       switchMap(() => this.onlineStatus.connectionChanged));
 
-    this.checkConnection.subscribe(connectionState => {
+    this.checkConnection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connectionState => {
       if(connectionState){
+
         if(!this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
+          console.log('image not in LS');
           this.connectionStateSubs.next();
           this.connectionStateSubs.complete();
         }
         else{
+          const mediaString:LocalMediaItem = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
+
+          console.log(mediaString);
+
+          /*const nmediaString = mediaString.map(media =>{
+            if(media.patientId === this.patientId){
+              media.media = [];
+              return media;
+            }
+            else{
+              return media;
+            }
+          }); */
+
+          /* console.log(nmediaString); */
+
+          const localImages:string[] = this.mediaPasteService.imagesFromLocalStorage(this.patientId);
+
+          /* localImages.forEach(localImage => {
+            const mime = localImage.split(',')[0].split(':')[1].split(';')[0];
+            const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage)], `${this.patientId},{22}`, { type: mime});
+            this.mediaPasteService.handleUpload(imageFile,this.patientId);
+          }); */
+          
+          
           
         }
       }
