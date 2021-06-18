@@ -10,6 +10,7 @@
                 [patientFormInput]="patient"
                 [patientIndex]="patientIndex"
                 (patientDeleted)="deletePatient($event)"
+                (problemTab)="problemTab($event)"
             ></app-emergency-register-patient>
         </div>
     <div *ngIf="!outcome" fxLayout="row" fxLayoutAlign="center center">
