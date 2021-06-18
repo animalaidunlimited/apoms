@@ -176,9 +176,30 @@ export class MediaPasteService {
             
           }
           else{
-            this.saveToLocalDatabase(
-              'MEDIA', JSON.stringify({headerType:'POST',patientId, media:[resizedImage.dataUrl]})
-            );
+            
+            
+            
+            if(this.storageService.getItemArray('MEDIA').length > 0){
+              
+              const localMedia = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
+              localMedia.push({headerType:'POST',patientId, media:[resizedImage.dataUrl]});
+
+              
+
+              this.saveToLocalDatabase(
+                'MEDIA', JSON.stringify([localMedia])
+              );
+            }
+            else{
+              this.saveToLocalDatabase(
+                'MEDIA', JSON.stringify([{headerType:'POST',patientId, media:[resizedImage.dataUrl]}])
+              );
+            }
+
+
+            console.log(JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)));
+
+            
           }
           (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
           returnObject.mediaItemId.next(1);
@@ -403,6 +424,17 @@ export class MediaPasteService {
 
   }
 
+  dataURItoBlob = (dataURI: string) => {
+    
+    const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
+        atob(dataURI.split(',')[1]) :
+        unescape(dataURI.split(',')[1]);
+    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const max = bytes.length;
+    const ia = new Uint8Array(max);
+    for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
+    return new Blob([ia], {type:mime});
+  };
 
   resizeImage(settings: IResizeImageOptions) : Promise<ResizedImage>  {
     const file = settings.file;
@@ -411,16 +443,6 @@ export class MediaPasteService {
     const image = new Image();
     const canvas = document.createElement('canvas');
 
-    const dataURItoBlob = (dataURI: string) => {
-      const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
-          atob(dataURI.split(',')[1]) :
-          unescape(dataURI.split(',')[1]);
-      const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-      const max = bytes.length;
-      const ia = new Uint8Array(max);
-      for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
-      return new Blob([ia], {type:mime});
-    };
 
     const resize = () => {
       let width = image.width;
@@ -444,7 +466,7 @@ export class MediaPasteService {
       const dataUrl = canvas.toDataURL('image/jpeg');
 
       const resizedImage:ResizedImage = {
-          image: dataURItoBlob(dataUrl),
+          image: this.dataURItoBlob(dataUrl),
           width,
           height,
           dataUrl
@@ -474,9 +496,19 @@ export class MediaPasteService {
     const localMediaItems:LocalMediaItem = this.storageService.getItemArray('MEDIA').map(mediaItem => 
       JSON.parse(JSON.parse(mediaItem.value as string))
     ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
-
+ 
     return localMediaItems ? true : false;
       
+  }
+
+  imagesFromLocalStorage(patientId:number){
+
+    const localMediaItems:LocalMediaItem = this.storageService.getItemArray('MEDIA').map(mediaItem => 
+      JSON.parse(JSON.parse(mediaItem.value as string))
+    ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
+
+    return localMediaItems.media;
+
   }
 
 }

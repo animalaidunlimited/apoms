@@ -19,7 +19,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
   }
   export interface LocalMediaItem{
     patientId: number;
-    media: string;
+    headerType: string;
+    media: string[];
   }
 
   export interface MediaItemReturnObject{
