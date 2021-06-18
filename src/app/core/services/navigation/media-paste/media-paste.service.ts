@@ -4,7 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, Observer} from 'rxjs';
+import { Observable, from, BehaviorSubject, Observer, of} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -159,17 +159,29 @@ export class MediaPasteService {
 
 
     }).catch(async error => {
+
         if(!this.onlineStatus.connectionChanged.value){
 
           this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
 
           const resizedImage = await this.cropedImage(file);
           this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+
           
-          this.saveToLocalDatabase(
-            'MEDIA', JSON.stringify({headerType:'POST',patientId, media:[resizedImage.dataUrl]})
-          );
-          
+          if(this.imageExsistInLocalStorage(patientId))
+          {
+            const mediaString = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
+            
+            mediaString.media.push(resizedImage.dataUrl);
+            
+          }
+          else{
+            this.saveToLocalDatabase(
+              'MEDIA', JSON.stringify({headerType:'POST',patientId, media:[resizedImage.dataUrl]})
+            );
+          }
+          (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
+          returnObject.mediaItemId.next(1);
           
         }
         else{
@@ -458,15 +470,13 @@ export class MediaPasteService {
 
 
   imageExsistInLocalStorage(patientId:number){
-    this.onlineStatus.connectionChanged.subscribe(async online=>{
-      if(online){
-        const localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem => 
-          JSON.parse(JSON.parse(mediaItem.value as string))
-        ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId);
+    
+    const localMediaItems:LocalMediaItem = this.storageService.getItemArray('MEDIA').map(mediaItem => 
+      JSON.parse(JSON.parse(mediaItem.value as string))
+    ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
 
-        // console.log(localMediaItems[0].media.split(',')[0].split(';')[0].split(':')[1]);
-      }
-    });
+    return localMediaItems ? true : false;
+      
   }
 
 }

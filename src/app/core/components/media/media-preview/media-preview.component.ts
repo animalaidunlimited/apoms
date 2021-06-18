@@ -12,6 +12,9 @@ import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { takeUntil } from 'rxjs/operators';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
+import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
+
+import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -25,7 +28,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   removable = true;
   addOnBlur = true;
   selectable = false;
-  uploading = 0;
  
   imageHeight = 0;
   
@@ -81,7 +83,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     private mediaPaster: MediaPasteService,
     public dialog: MatDialog,
     public cdr:ChangeDetectorRef,
-    private renderer: Renderer2
+    private sanitizer: DomSanitizer
   ) {
 
     if(this.data?.image){
@@ -129,41 +131,27 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  upload(file: File, patientId: number) : MediaItemReturnObject {
-
-    const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, patientId);
-    console.log(mediaItem);
-      mediaItem.mediaItemId
-      .pipe(takeUntil(this.ngUnsubscribe))
-      // tslint:disable-next-line: deprecation
-      .subscribe(result => {
-        if(result){
-
-          this.uploading--;
-
-        }
-      });
-      
-      return mediaItem;
-  
-  }
+ 
   
   uploadFile($event:any) : void {
   
-    // We're uploading a file
-    this.uploading++;
     this.loading = true;
+
     for(const file of $event?.target?.files ? $event.target.files : $event)
     {
-      const mediaItem:MediaItemReturnObject = this.upload(file, this.data.patientId);
 
+      const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
       mediaItem.mediaItemId.subscribe(media => {
+        
         if(media){
+
           this.imageData = { 
-           full: mediaItem.mediaItem?.remoteURL as string,
+           full: mediaItem.mediaItem?.remoteURL !== '' ? mediaItem.mediaItem?.remoteURL as string :  unwrapSafeValue(mediaItem.mediaItem?.localURL) ,
            thumbnail:  mediaItem?.mediaItem?.remoteURL as string,
            type:  mediaItem?.mediaItem?.mediaType as string
           };
+
+          
 
           this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddThh:mm'));
           this.showSnackBar.successSnackBar('Uploaded','OK');
@@ -183,7 +171,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       }
       else{
-        console.log('hello');
+        console.log('Upload Images');
       }
   
     }

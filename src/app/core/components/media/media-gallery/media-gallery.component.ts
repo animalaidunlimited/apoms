@@ -2,12 +2,14 @@ import { Image, MediaItem,  Gallery} from 'src/app/core/models/media';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
+import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -17,6 +19,8 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 export class MediaGalleryComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
+
+  private connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
 
   @Input() mediaData!:BehaviorSubject<MediaItem[]>;
@@ -27,14 +31,42 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
 
   galleries!:Gallery[];
 
+  patientId!:number;
+
+  checkConnection!:Observable<boolean>;
+
   constructor(
     public dialog: MatDialog,
     public datepipe: DatePipe,
-    private patientService:PatientService
+    private patientService:PatientService,
+    private onlineStatus: OnlineStatusService,
+    private mediaPasteService: MediaPasteService
   ) { }
 
 
   ngOnInit(): void {
+
+    this.patientId = this.galleryData?.get('patientId')?.value;
+
+    console.log(this.mediaPasteService.imageExsistInLocalStorage(this.patientId));
+    
+
+    this.checkConnection = timer(0,3000).pipe(
+      takeUntil(this.connectionStateSubs),
+      switchMap(() => this.onlineStatus.connectionChanged));
+
+    this.checkConnection.subscribe(connectionState => {
+      if(connectionState){
+        if(!this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
+          this.connectionStateSubs.next();
+          this.connectionStateSubs.complete();
+        }
+        else{
+          
+        }
+      }
+    });
+    
     
     this.initMedaiaGallery();
 
