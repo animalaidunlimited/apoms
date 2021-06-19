@@ -59,7 +59,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     @HostListener('document:keydown.control.l', ['$event'])
     focusLocation(event: KeyboardEvent) {
         event.preventDefault();
-        this.addresstext.nativeElement.focus();
+        this.addresstext?.nativeElement.focus();
     }
 
     ngOnInit() {
@@ -128,7 +128,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     getPlaceAutocomplete() {
         const autocomplete = new google.maps.places.Autocomplete(
-            this.addresstext.nativeElement,
+            this.addresstext?.nativeElement,
             {
                 // TODO update this based on the settings of the user
                 componentRestrictions: { country: 'IN' },
@@ -202,7 +202,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     performSearch() {
 
         const addressSearcher = new google.maps.places.PlacesService(
-            this.addresstext.nativeElement,
+            this.addresstext?.nativeElement,
         );
 
         const searchRequest = {

@@ -159,9 +159,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
       if(!selection){
-
-        this.problemRef.nativeElement.value = '';
-        this.problemRef.nativeElement.focus();
+        if(this.problemRef.nativeElement.value ){
+          this.problemRef.nativeElement.value = '';
+        }
+        
+        this.problemRef?.nativeElement.focus();
 
       }
 
@@ -232,7 +234,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       this.problemsArray.push(problemsGroup);
       this.patientForm.get('updated')?.setValue(true);
     }
-    this.problemRef.nativeElement.value = '';
+    if(this.problemRef.nativeElement.value){
+      this.problemRef.nativeElement.value = '';
+    }
+    
   }
 
   remove(removeProblem:number){
@@ -280,14 +285,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         .subscribe(() => {
 
           $event.preventDefault();
-          this.animalTypeInput.nativeElement.focus();
+          this.animalTypeInput?.nativeElement.focus();
           this.problemAutoComplete.closePanel();
 
         });
       }
       else{
         $event.preventDefault();
-        this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).subscribe(animalType => {
+        this.animalFilter(this.animalTypeInput?.nativeElement.value.toLowerCase()).subscribe(animalType => {
           const matchAnimalType =  animalType.length;
           // if no animal has been selected, then clear the value
           if(matchAnimalType === 0){
@@ -296,7 +301,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
             this.filteredProblems$ = this.problemFilter('');
           }
           else{
-            this.problemRef.nativeElement.focus();
+            this.problemRef?.nativeElement.focus();
 
           }
         });
@@ -306,7 +311,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   checkMainProblem(){
-    const problemRefElement = this.problemRef.nativeElement;
+    const problemRefElement = this.problemRef?.nativeElement;
 
     if(this.problemsArray.length === 0){
 
@@ -371,7 +376,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   tabPressed($event:Event, patientIndex: number) {
     $event.preventDefault();
 
-    this.tagNumber.nativeElement.focus();   
+    this.tagNumber?.nativeElement.focus();   
 
   }
 

@@ -95,7 +95,9 @@ export class MediaPreviewComponent implements OnInit {
   addTagByBtn(event: string){
     if (event.trim()) {
       this.insertPatientTags(event);
-      this.tagsControl.nativeElement.value = '';
+      if(this.tagsControl.nativeElement.value ){
+        this.tagsControl.nativeElement.value = '';
+      }
     }
   }
 
@@ -113,7 +115,10 @@ export class MediaPreviewComponent implements OnInit {
 
     mediaCommentResponse.then((response:{success:number}) => {
       if(response.success === 1){
-        this.commentInput.nativeElement.value = '';
+        if(this.commentInput.nativeElement.value){
+          this.commentInput.nativeElement.value = '';
+        }
+        
         // tslint:disable-next-line: deprecation
         this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
           this.patientMediaComments$.next(comments);
@@ -174,7 +179,7 @@ export class MediaPreviewComponent implements OnInit {
     if(tagInputValue === '')
     {
       event.preventDefault();
-      this.tagsControl.nativeElement.focus();
+      this.tagsControl?.nativeElement.focus();
     }
   }
 

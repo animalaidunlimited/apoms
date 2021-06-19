@@ -139,7 +139,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
     if(this.mediaItem.mediaType.includes('video') && this.mediaItem.heightPX === 0){
 
-      const video: HTMLVideoElement = this.videoplayer.nativeElement;
+      const video: HTMLVideoElement = this.videoplayer?.nativeElement;
 
       video.addEventListener('loadeddata', () => {
         this.mediaItem.heightPX = video.videoHeight;
@@ -178,7 +178,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
 toggleVideo() {
-    this.videoplayer.nativeElement.play();
+    this.videoplayer?.nativeElement.play();
 }
 
 add(event: MatChipInputEvent): void {

@@ -157,9 +157,9 @@ attachVideo(stream:MediaStream) {
   });
 
   this.renderer.setProperty(this.videoElement.nativeElement, 'srcObject', stream);
-  this.renderer.listen(this.videoElement.nativeElement, 'play', (event) => {
-      this.videoHeight = this.videoElement.nativeElement.videoHeight;
-      this.videoWidth = this.videoElement.nativeElement.videoWidth;
+  this.renderer.listen(this.videoElement?.nativeElement, 'play', (event) => {
+      this.videoHeight = this.videoElement?.nativeElement.videoHeight;
+      this.videoWidth = this.videoElement?.nativeElement.videoWidth;
 
   });
 
@@ -201,11 +201,11 @@ stopCapture(state:string){
 
 captureImage() {
 
-    this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
-    this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
-    this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
+    this.renderer.setProperty(this.canvas?.nativeElement, 'width', this.videoWidth);
+    this.renderer.setProperty(this.canvas?.nativeElement, 'height', this.videoHeight);
+    this.canvas?.nativeElement.getContext('2d').drawImage(this.videoElement?.nativeElement, 0, 0);
 
-    this.canvas.nativeElement.toBlob((blob:Blob) => {
+    this.canvas?.nativeElement.toBlob((blob:Blob) => {
 
       this.uploadAndAddToGallery(blob,'image');
 

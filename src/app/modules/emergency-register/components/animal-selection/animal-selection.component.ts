@@ -94,7 +94,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         
         const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
-        this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput.nativeElement.focus();
+        this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput?.nativeElement.focus();
     }
 
 

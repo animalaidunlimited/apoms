@@ -52,7 +52,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   @HostListener('document:keydown.control.o', ['$event'])
   focusCallOutcome(event: KeyboardEvent) {
       event.preventDefault();
-      this.callOutcomeField.nativeElement.focus();
+      this.callOutcomeField?.nativeElement.focus();
   }
 
   ngOnInit(): void {

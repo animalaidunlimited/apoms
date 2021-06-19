@@ -215,7 +215,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.navigationService.isSearchClicked.subscribe((clicked) => {
             if (clicked && this.searchBox) {
-                this.searchBox.nativeElement.focus();
+                this.searchBox?.nativeElement.focus();
             }
         });
         this.searchForm = this.formBuilder.group({
@@ -226,7 +226,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((clicked)=> {
         if(clicked && this.searchBox){
-                this.searchBox.nativeElement.focus();
+                this.searchBox?.nativeElement.focus();
         }
     });
 

@@ -52,7 +52,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         event.preventDefault();
 
-        const element = this.elementRef.nativeElement;
+        const element = this.elementRef?.nativeElement;
 
         if(element.offsetParent){
             this.resetForm();
@@ -63,7 +63,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     saveFormShortcut(event: KeyboardEvent) {
         event.preventDefault();
 
-        const element = this.elementRef.nativeElement;
+        const element = this.elementRef?.nativeElement;
 
         if(this.recordForm.valid && element.offsetParent){
             this.saveForm();
@@ -238,6 +238,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
         resultBody.patients.forEach((patient: PatientResponse) => {
+          
 
             if (patient.success === 1 && patient.admissionSuccess !== -1) {
                 result.message += '';
@@ -457,7 +458,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     tabPresses($event:boolean){
-        this.emergencyDetailsComponent.dispatcher.nativeElement.focus();
+        this.emergencyDetailsComponent.dispatcher?.nativeElement.focus();
     }
 
 }

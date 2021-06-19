@@ -106,8 +106,8 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   drop(event: CdkDragDrop<FormArray>) {
 
-    const printNativeElement = event.item.element.nativeElement.getBoundingClientRect();
-    const dropContainer = event.container.element.nativeElement.getBoundingClientRect();
+    const printNativeElement = event.item.element?.nativeElement.getBoundingClientRect();
+    const dropContainer = event.container.element?.nativeElement.getBoundingClientRect();
 
     const top = Math.max(
       0,

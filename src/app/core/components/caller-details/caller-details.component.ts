@@ -38,7 +38,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     setMacFocusNumber(event: KeyboardEvent){
         event.preventDefault();
         if(navigator.platform.match('Mac')){
-            this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+            this.callerAutoComplete.last.callerNumberRef?.nativeElement.focus();
         }
     }
 
@@ -54,7 +54,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown.alt.shift.n', ['$event'])
     setFocusNumber(event: KeyboardEvent) {
         event.preventDefault();
-        this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+        this.callerAutoComplete.last.callerNumberRef?.nativeElement.focus();
     }
 
 

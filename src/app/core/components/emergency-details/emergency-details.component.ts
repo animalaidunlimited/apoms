@@ -53,13 +53,13 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     @HostListener('document:keydown.control.shift.c', ['$event'])
     focusCallDateTime(event: KeyboardEvent) {
         event.preventDefault();
-        this.callDateTimeField.nativeElement.focus();
+        this.callDateTimeField?.nativeElement.focus();
     }
 
     @HostListener('document:keydown.control.d', ['$event'])
     focusCallDispatcher(event: KeyboardEvent) {
         event.preventDefault();
-        this.dispatcher.nativeElement.focus();
+        this.dispatcher?.nativeElement.focus();
     }
 
     ngOnInit(): void {
@@ -101,7 +101,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
-                    this.emergencyNumberField.nativeElement.focus();
+                    this.emergencyNumberField?.nativeElement.focus();
                 }
 
                 this.updateEmergencyNumber(val);
@@ -116,7 +116,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     ngAfterViewInit(){
 
         if(this.focusEmergencyNumber) {
-        setTimeout(() => this.emergencyNumberField.nativeElement.focus(), 0);
+        setTimeout(() => this.emergencyNumberField?.nativeElement.focus(), 0);
         }
     }
 

@@ -65,19 +65,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown.control.shift.q', ['$event'])
     rescueTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
-        this.rescueTimeField.nativeElement.focus();
+        this.rescueTimeField?.nativeElement.focus();
     }
 
     @HostListener('document:keydown.control.e', ['$event'])
     emergencyCodeFocus(event: KeyboardEvent) {
         event.preventDefault();
-        this.emergencyCode.nativeElement.focus();
+        this.emergencyCode?.nativeElement.focus();
     }
 
     @HostListener('document:keydown.control.shift.a', ['$event'])
     ambulanceArrivalTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
-        this.ambulanceArrivalTimeField.nativeElement.focus();
+        this.ambulanceArrivalTimeField?.nativeElement.focus();
     }
 
     constructor(

@@ -201,7 +201,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     this.chartData = datesRange;
 
     setTimeout(() => {
-      this.elementRef.nativeElement.querySelectorAll('g.tick').forEach((chartDate: any) => {
+      this.elementRef?.nativeElement.querySelectorAll('g.tick').forEach((chartDate: any) => {
       // Renderer2 Angular Dosen't work with innerHTML it just pass to View it dosen't hold the html value
         chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
