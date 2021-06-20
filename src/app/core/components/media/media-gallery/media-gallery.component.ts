@@ -61,36 +61,19 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
       if(connectionState){
 
         if(!this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
-          console.log('image not in LS');
           this.connectionStateSubs.next();
           this.connectionStateSubs.complete();
         }
         else{
-          const mediaString:LocalMediaItem = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
+          const localImages:string[] = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
 
-          console.log(mediaString);
-
-          /*const nmediaString = mediaString.map(media =>{
-            if(media.patientId === this.patientId){
-              media.media = [];
-              return media;
-            }
-            else{
-              return media;
-            }
-          }); */
-
-          /* console.log(nmediaString); */
-
-          const localImages:string[] = this.mediaPasteService.imagesFromLocalStorage(this.patientId);
-
-          /* localImages.forEach(localImage => {
+          localImages.forEach(localImage => {
             const mime = localImage.split(',')[0].split(':')[1].split(';')[0];
             const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage)], `${this.patientId},{22}`, { type: mime});
             this.mediaPasteService.handleUpload(imageFile,this.patientId);
-          }); */
+          });
           
-          
+          this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
           
         }
       }

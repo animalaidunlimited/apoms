@@ -167,28 +167,36 @@ export class MediaPasteService {
           const resizedImage = await this.cropedImage(file);
           this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
 
-          
+         
           if(this.imageExsistInLocalStorage(patientId))
           {
-            const mediaString = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
             
-            mediaString.media.push(resizedImage.dataUrl);
+            let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
+              JSON.parse(JSON.parse(mediaItem.value as string))[0]
+            );
             
+            localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
+              if(mediaItem.patientId === patientId){
+                mediaItem.media.push(resizedImage.dataUrl);
+              }
+              return mediaItem;
+            });
+
+            this.saveToLocalDatabase('MEDIA', JSON.stringify(localMediaItems));
+
           }
           else{
             
-            
-            
             if(this.storageService.getItemArray('MEDIA').length > 0){
               
-              const localMedia = JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string));
+              const localMedia = this.getParseMediaObject();
+
               localMedia.push({headerType:'POST',patientId, media:[resizedImage.dataUrl]});
 
-              
-
               this.saveToLocalDatabase(
-                'MEDIA', JSON.stringify([localMedia])
+                'MEDIA', JSON.stringify(localMedia)
               );
+
             }
             else{
               this.saveToLocalDatabase(
@@ -196,12 +204,11 @@ export class MediaPasteService {
               );
             }
 
-
-            console.log(JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)));
-
             
           }
+          
           (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
+
           returnObject.mediaItemId.next(1);
           
         }
@@ -490,25 +497,36 @@ export class MediaPasteService {
     });
   }
 
+  
+  getParseMediaObject() {
+    return JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)) as LocalMediaItem[];
+  }
+
+  getMediaItemsFromLocalStoargeByPatientId(patientId:number){
+    return this.getParseMediaObject().filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
+  }
 
   imageExsistInLocalStorage(patientId:number){
     
-    const localMediaItems:LocalMediaItem = this.storageService.getItemArray('MEDIA').map(mediaItem => 
-      JSON.parse(JSON.parse(mediaItem.value as string))
-    ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
- 
-    return localMediaItems ? true : false;
+    return this.getMediaItemsFromLocalStoargeByPatientId(patientId)  ? true : false;
       
   }
 
-  imagesFromLocalStorage(patientId:number){
+  getPatientMediaImagesFromLocalStorage(patientId:number){
 
-    const localMediaItems:LocalMediaItem = this.storageService.getItemArray('MEDIA').map(mediaItem => 
-      JSON.parse(JSON.parse(mediaItem.value as string))
-    ).filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
+    return this.getMediaItemsFromLocalStoargeByPatientId(patientId).media;
 
-    return localMediaItems.media;
+  }
 
+
+  deletePatientMediaByPatientId(patientId:number){
+    
+    const index = this.getParseMediaObject().findIndex((media:any) => media.patientId === patientId);
+    const mediaArray = this.getParseMediaObject();
+    
+    mediaArray.splice(index,1);
+
+    this.saveToLocalDatabase('MEDIA',JSON.stringify(mediaArray));
   }
 
 }
