@@ -30,6 +30,7 @@
               "src/apoms-sw.js",
               "src/manifest.webmanifest"
             ],
+            "sourceMap": true,
             "styles": [
               "src/styles.scss",
               "src/theme.scss",
