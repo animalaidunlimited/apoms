@@ -147,8 +147,9 @@ export class MediaPasteService {
             newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
 
             newMediaItem.mediaItemId.subscribe(id => {
-              returnObject.mediaItemId.next(id);
 
+              returnObject.mediaItemId.next(id);
+              
             });
 
           });
@@ -527,6 +528,7 @@ export class MediaPasteService {
     mediaArray.splice(index,1);
 
     this.saveToLocalDatabase('MEDIA',JSON.stringify(mediaArray));
+    
   }
 
 }
