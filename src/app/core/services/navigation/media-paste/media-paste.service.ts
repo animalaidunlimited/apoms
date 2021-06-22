@@ -500,7 +500,12 @@ export class MediaPasteService {
 
   
   getParseMediaObject() {
-    return JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)) as LocalMediaItem[];
+    if(this.storageService.getItemArray('MEDIA')[0]){
+      return JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)) as LocalMediaItem[];
+    }else {
+      return [];
+    }
+    
   }
 
   getMediaItemsFromLocalStoargeByPatientId(patientId:number){
