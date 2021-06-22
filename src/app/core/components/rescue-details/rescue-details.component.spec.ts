@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { RescueDetailsComponent } from './rescue-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray, AbstractControl, FormGroup } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -90,15 +90,41 @@ describe('RescueDetailsComponent', () => {
 
         expect(component.recordForm.valid).toEqual(false);
     });
+    it('Patient Form to Valid',() => {
+        const patientForm = (component.recordForm.get('patients') as FormArray).at(0) as FormGroup;
+
+        setTimeout(() => {
+            patientForm.get('animalType')?.setValue('Puppy');
+            patientForm.get('animalTypeId')?.setValue(1);
+            patientForm.get('deleted')?.setValue(false);
+            patientForm.get('duplicateTag')?.setValue(false);
+            patientForm.get('updated')?.setValue(true);
+
+            component.updateValidators();
+        
+            expect(component.recordForm.valid).toEqual(true);
+        });
+    });
     it('Valid form - driver and worker', () => {
 
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.recordForm.get('rescueDetails.rescuer2Id')?.setValue(2);
-        console.log(component.recordForm);
-        component.updateValidators();
+    
+        setTimeout(() => {
+            const patientForm = (component.recordForm.get('patients') as FormArray).at(0) as FormGroup;
 
-        console.log(component.recordForm.valid === true);
-        expect(component.recordForm.valid).toEqual(true);
+            
+            patientForm.get('animalType')?.setValue('Puppy');
+            patientForm.get('animalTypeId')?.setValue(1);
+            patientForm.get('deleted')?.setValue(false);
+            patientForm.get('duplicateTag')?.setValue(false);
+            patientForm.get('updated')?.setValue(true); 
+
+            component.updateValidators();
+        
+            expect(component.recordForm.valid).toEqual(true);
+        });
+        
     });
 
     it('Invalid form - Ambulance arrival time only', () => {
