@@ -7,8 +7,6 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { MediaPasteService } from './media-paste.service';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-
 
 describe('MediaPasteService', () => {
   let service: MediaPasteService;
@@ -18,18 +16,14 @@ describe('MediaPasteService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-       
         FormsModule,
         MaterialModule,
         ReactiveFormsModule,
         AngularFireMessagingModule,
-        AngularFireAuthModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        
+        AngularFireModule.initializeApp(environment.firebase)
       ],
       providers: [
-        DatePipe,
-      
+        DatePipe
       ]
     });
     service = TestBed.inject(MediaPasteService);
