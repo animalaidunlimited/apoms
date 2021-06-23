@@ -30,12 +30,7 @@
               "src/apoms-sw.js",
               "src/manifest.webmanifest"
             ],
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true,
+            "sourceMap": false,
             "styles": [
               "src/styles.scss",
               "src/theme.scss",

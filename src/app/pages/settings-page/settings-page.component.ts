@@ -65,7 +65,7 @@ export class SettingsPageComponent implements OnInit {
 
         this.dummyArray.push(this.getEmptyRecord());
 
-        this.releaseVersion = '1.0.20';
+        this.releaseVersion = '1.0.20.1';
     }
 
     refreshApp(){

@@ -4,7 +4,7 @@ import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -55,6 +55,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
 
   accepted = new BehaviorSubject<AbstractControl[]>([]);
+
+  acceptedFiltered = new BehaviorSubject<AbstractControl[]>([]);
   acceptedFormArray!: FormArray;
 
   columns: BehaviorSubject<Column[]> = new BehaviorSubject<Column[]>([
@@ -69,6 +71,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   columnCountOther = 5;
 
   displayedColumns: Observable<string[]>;
+
+  filterValue = '';
+
   filteredColumns:Observable<Column[]>;
   filteredMovedInColumns:Observable<Column[]>;
 
@@ -172,6 +177,7 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
       this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
       this.accepted.next(this.acceptedFormArray.controls);
+      this.acceptedFiltered.next(this.accepted.value);
 
       this.changeDetector.detectChanges();
 
@@ -331,6 +337,21 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
       .map(area => ({ name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox' }));
   }
 
+  applyFilter(event: Event) : void {
+
+    //Get the incoming value from the filtre input
+    const filterValue = (event.target as HTMLInputElement).value;
+
+    //Get the value from the accepted list (AbstractControl[]), then filter it down to tjhe matching values
+    const filteredArray = this.accepted.value
+                                        .filter(patient =>
+                                            (patient.get('Tag number')?.value as string).toLowerCase().includes(filterValue.toLowerCase())
+                                        );
+
+    //Emit the newly filtered list
+    this.acceptedFiltered.next(filteredArray);
+
+  }
 
   receiveMessage(){
   // TODO On incoming message, search through the treatment lists, find any existing records and remove it. Then add the new one.
