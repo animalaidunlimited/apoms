@@ -70,11 +70,23 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   displayedColumns: Observable<string[]>;
   filteredColumns:Observable<Column[]>;
+  filteredMovedInColumns:Observable<Column[]>;
 
   incomingList:string|undefined;
   isPrinting = false;
 
   expandedElement: AbstractControl | null = null;
+
+  movedInArray = new BehaviorSubject<AbstractControl[]>([]);
+
+  movedInColumns: BehaviorSubject<Column[]> = new BehaviorSubject<Column[]>([
+    {name: 'index', type: 'text'},
+    {name: 'complete', type: 'button'},
+    {name: 'Tag number', type: 'text'},
+    {name: 'Treatment priority', type: 'select'},
+    {name: 'Other', type: 'select'}
+  ]);
+  movedInDisplayColumns:Observable<string[]>;;
 
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
@@ -113,6 +125,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.area = incomingDetails?.area;
       this.selectedDate = incomingDetails?.selectedDate;
 
+      this.movedInArray.next(this.ts.getMovedInArray());
+
     }
 
     this.filteredColumns = this.columns.pipe(map(columns =>
@@ -121,6 +135,13 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
                                                                     column.name !== 'complete' &&
                                                                     column.name !== 'Other')));
 
+this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
+  columns.filter(column =>  column.name !== 'index' &&
+                            column.name !== this.area.areaName &&
+                            column.name !== 'complete' &&
+                            column.name !== 'Moved to' &&
+                            column.name !== 'Other')));
+
     this.treatmentPriorities = this.dropdown.getPriority();
 
     this.populateColumnList();
@@ -128,6 +149,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     this.treatmentListForm = this.fb.group({});
 
     this.displayedColumns = this.columns.pipe(map(columns => columns.map(column => column.name)));
+    this.movedInDisplayColumns = this.movedInColumns.pipe(map(columns => columns.map(column => column.name)));
 
     }
 
@@ -226,6 +248,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName && !area.mainArea);
 
+      this.populatemovedInColumns(areaList);
+
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
       // And finally just return the list of area names
@@ -244,8 +268,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       if(!this.smallScreen){
 
-          const areas = areaList.filter(area => area.areaName !== this.area?.areaName && area.mainArea)
-          .map(area => ({name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox'}));
+          const areas = this.filterAreaList(areaList);
 
           mainAreas.push(...areas);
 
@@ -274,6 +297,38 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     });
 
+  }
+
+
+
+  populatemovedInColumns(areaList: TreatmentArea[]) : void {
+
+    const movedInColumns:Column[] = [];
+
+    movedInColumns.push({name: 'index', type: 'text'});
+    movedInColumns.push({name: 'complete', type: 'button'});
+
+    movedInColumns.push({name: 'Tag number', type: 'text'});
+    movedInColumns.push({name: 'Treatment priority', type: 'select'});
+    movedInColumns.push({name: 'Rel./Died', type: 'button'});
+
+    movedInColumns.push({name: 'Admission', type: 'checkbox'});
+
+    const areas = this.filterAreaList(areaList);
+
+    movedInColumns.push(...areas);
+
+    movedInColumns.push({name: 'Other', type: 'select'});
+    movedInColumns.push({name: 'Moved to', type: 'select'});
+
+    this.movedInColumns.next(movedInColumns);
+
+
+  }
+
+  private filterAreaList(areaList: TreatmentArea[]) {
+    return areaList.filter(area => area.areaName !== this.area?.areaName && area.mainArea)
+      .map(area => ({ name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox' }));
   }
 
 
@@ -436,6 +491,16 @@ savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
   currentPatient.get('Treatment priority')?.setValue(currentPatient.get('patientDetails.treatmentPriority')?.value);
 
   saving ? this.startSave(currentPatient) : this.endSave(currentPatient);
+
+}
+
+getTreatmntPriority(element: number) : string {
+
+  const treatmentPriorities = ["Low","Medium","High","Urgent"];
+
+  return treatmentPriorities[element - 1];
+
+
 
 }
 
