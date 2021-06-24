@@ -30,6 +30,7 @@
               "src/apoms-sw.js",
               "src/manifest.webmanifest"
             ],
+            "sourceMap": false,
             "styles": [
               "src/styles.scss",
               "src/theme.scss",
@@ -63,7 +64,12 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "hidden": true,
+                "vendor": false
+              },
               "vendorChunk": false
             },
             "stage": {
@@ -91,7 +97,12 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "hidden": true,
+                "vendor": false
+              },
               "vendorChunk": false
             }
           }

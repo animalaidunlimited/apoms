@@ -68,9 +68,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   removable = true;
   selectable = true;
 
-  sortedAnimalTypes = this.dropdown.getAnimalTypes().pipe(
-    map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0))),
-  );
+  sortedAnimalTypes = this.dropdown.getAnimalTypes();
 
   sortedProblems = this.dropdown.getProblems().pipe(
     map( problems =>
@@ -175,7 +173,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     return this.dropdown.getAnimalTypes().pipe(
       map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(fitlerValue) === 0)),
-      map(animalTypes => animalTypes.sort((a,b) => (a.AnimalType > b.AnimalType) ? 1 : ((b.AnimalType > a.AnimalType) ? -1 : 0)))
+      map(animalTypes => animalTypes.sort((a,b) => a.Sort - b.Sort))
     );
   }
 

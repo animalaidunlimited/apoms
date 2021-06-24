@@ -3,12 +3,13 @@
 <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
 <div>
+    <div *ngIf="noResults" class="result-count">No results</div>
 
     <div *ngIf="(searchResults$ | async) as searchResults;">
 
         <div *ngIf="searchResultArray?.length !== 0;" class="result-count">{{searchResultArray?.length}} results</div>
 
-        <div *ngIf="searchResultArray?.length === 0;" class="result-count">No results</div>
+
 
         <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign.gt-sm="start" fxLayoutAlign.lt-md="center" class="search-results">
 
