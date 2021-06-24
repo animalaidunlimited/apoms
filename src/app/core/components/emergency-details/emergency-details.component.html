@@ -5,7 +5,7 @@
 
     <!-- <div fxLayout="row wrap" fxLayoutGap='10px' fxLayoutAlign='start' > -->
 
-    <div *ngIf="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
+    <div fxShow="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
         'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
         'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
         'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
