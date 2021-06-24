@@ -347,6 +347,19 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   }
 
+  public getMovedInArray() : AbstractControl[]{
+
+    const returnArray = [];
+
+    for(let i = 0; i < 10; i++){
+
+      returnArray.push(this.getEmptyPatient());
+    }
+
+    return returnArray as AbstractControl[];
+
+  }
+
   private getTreatmentListForm(response: ReportPatientRecord[]) : FormArray {
 
     const returnArray = this.fb.array([]);
