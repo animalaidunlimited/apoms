@@ -10,11 +10,11 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
-import { takeUntil } from 'rxjs/operators';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
 
 import { DomSanitizer } from '@angular/platform-browser';
+import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -83,7 +83,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     private mediaPaster: MediaPasteService,
     public dialog: MatDialog,
     public cdr:ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private onlineStatus: OnlineStatusService,
   ) {
 
     if(this.data?.image){
@@ -141,6 +141,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     {
 
       const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
+
       mediaItem.mediaItemId.subscribe(media => {
         
         if(media){
@@ -151,14 +152,16 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
            type:  mediaItem?.mediaItem?.mediaType as string
           };
 
-          
-
           this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddThh:mm'));
-          this.showSnackBar.successSnackBar('Uploaded','OK');
+          if(this.onlineStatus.connectionChanged.value){
+            this.showSnackBar.successSnackBar('Uploaded','OK');
+          }
+          
           this.data.upload = false;
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
 
         }
+
       });
       
       if(mediaItem.result === 'nomedia'){
@@ -168,10 +171,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       else if(mediaItem.mediaItem){
 
         mediaItem.mediaItem.updated = true;
-
       }
       else{
-        console.log('Upload Images');
+        console.log('Upload media');
       }
   
     }
