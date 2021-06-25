@@ -160,7 +160,9 @@ export class MediaPasteService {
 
 
     }).catch(async error => {
-
+        /**
+         * Offline Mode
+         */
         if(!this.onlineStatus.connectionChanged.value){
 
           this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
@@ -168,13 +170,17 @@ export class MediaPasteService {
           const resizedImage = await this.cropedImage(file);
           this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
 
-         
+         /**
+          * Patient already exist in local storage
+          * add more images to patient
+          */
           if(this.imageExsistInLocalStorage(patientId))
           {
-            
+
             let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
               JSON.parse(JSON.parse(mediaItem.value as string))[0]
             );
+
             
             localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
               if(mediaItem.patientId === patientId){
@@ -182,13 +188,23 @@ export class MediaPasteService {
               }
               return mediaItem;
             });
-
+            
             this.saveToLocalDatabase('MEDIA', JSON.stringify(localMediaItems));
-
+            
+            
           }
           else{
-            
-            if(this.storageService.getItemArray('MEDIA').length > 0){
+            /**
+             * New patient entry
+             */
+
+            /** 
+             * Local Storage media object exists
+             * fetch previous media storage and push new patient entry
+             * convert to string for storage
+             */
+         
+            if(this.storageService.getItemArray('MEDIA').length >= 0){
               
               const localMedia = this.getParseMediaObject();
 
@@ -199,13 +215,8 @@ export class MediaPasteService {
               );
 
             }
-            else{
-              this.saveToLocalDatabase(
-                'MEDIA', JSON.stringify([{headerType:'POST',patientId, media:[resizedImage.dataUrl]}])
-              );
-            }
 
-            
+            this.onlineStatus.connectionChanged.next(false);
           }
           
           (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
@@ -442,7 +453,7 @@ export class MediaPasteService {
     const ia = new Uint8Array(max);
     for (let i = 0; i < max; i++) { ia[i] = bytes.charCodeAt(i); }
     return new Blob([ia], {type:mime});
-  };
+  }
 
   resizeImage(settings: IResizeImageOptions) : Promise<ResizedImage>  {
     const file = settings.file;

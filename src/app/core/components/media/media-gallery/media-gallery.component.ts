@@ -1,9 +1,9 @@
 import { Image, MediaItem,  Gallery, LocalMediaItem} from 'src/app/core/models/media';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { delay, retryWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -17,7 +17,7 @@ import { StorageService } from 'src/app/core/services/storage/storage.service';
   templateUrl: './media-gallery.component.html',
   styleUrls: ['./media-gallery.component.scss']
 })
-export class MediaGalleryComponent implements OnInit, OnDestroy {
+export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
@@ -52,12 +52,41 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     this.patientId = this.galleryData?.get('patientId')?.value;
 
     
+  
+    if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
+      
+      setTimeout(() =>{
+        
+        const patientImages = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
+
+        patientImages.forEach(patientImage => {
+          this.galleryImages.push({
+            thumbnail:patientImage,
+            full:patientImage,
+            type: 'image',
+          });
+        });
+
+      });
+      
+    }
+     
 
     this.checkConnection = timer(0,3000).pipe(
       takeUntil(this.connectionStateSubs),
-      switchMap(() => this.onlineStatus.connectionChanged));
+      switchMap(() => this.onlineStatus.connectionChanged),
+      takeUntil(this.ngUnsubscribe),
+      retryWhen(errors =>
+        errors.pipe(
+          // log error message
+          tap(error => console.log(error)),
+          // restart after 5 seconds
+          delay(5000)
+        )
+      )
+    );
 
-    this.checkConnection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connectionState => {
+    this.checkConnection.subscribe(connectionState => {
       if(connectionState){
 
         if(!this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
@@ -79,10 +108,34 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
       }
     });
     
-    
     this.initMedaiaGallery();
 
     this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+
+  }
+
+  ngAfterViewInit() {
+    this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
+      if(!connectionStatus){
+     
+        if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
+
+          setTimeout(() => {
+
+            const patientImages = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
+            const patientImagesLength = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId).length;
+
+            this.galleryImages.push({
+              thumbnail:patientImages[patientImagesLength-1],
+              full:patientImages[patientImagesLength-1],
+              type: 'image',
+            });
+
+          }); 
+            
+        }
+      }
+    });
 
   }
 
@@ -122,8 +175,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed()
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(updatedMedia => {
-
-      // this.mediaData?.subscribe(mediaItems => console.log(mediaItems));
 
       if(updatedMedia){
       
