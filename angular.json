@@ -18,6 +18,12 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true,
             "outputPath": "dist/apoms",
             "index": "src/index.html",
             "main": "src/main.ts",
