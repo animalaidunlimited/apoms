@@ -38,8 +38,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() outcome!: boolean;
 
-  @Output() patientDeleted: EventEmitter<number> = new EventEmitter();
-
   @Output() problemTab:EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('problemRef') problemRef!: ElementRef;
@@ -67,7 +65,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   removable = true;
   selectable = true;
-
+  patientDeletedFlag = false; 
   sortedAnimalTypes = this.dropdown.getAnimalTypes();
 
   sortedProblems = this.dropdown.getProblems().pipe(
@@ -98,7 +96,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   ngOnInit(): void {
 
+    
     this.patientForm = this.patientFormInput as FormGroup;
+    
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -130,7 +130,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
 
-
+ 
   animalTypeChangessub(){
     this.animalType.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
       if(animalType === ''){
@@ -166,6 +166,15 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
       }
 
     });
+
+    this.patientForm.valueChanges.subscribe(patient => {
+     /** 
+      * Hide deleted patient
+      */
+      this.patientDeletedFlag = patient.deleted;
+      
+    });
+    
 
   }
 
@@ -364,8 +373,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   }
 
-  deletePatient(event: Event, patientIndex: number){
-    this.patientDeleted.emit(patientIndex);
+  deletePatient(){
+    this.patientForm.get('deleted')?.setValue(true);
   }
 
   tabPressed($event:Event, patientIndex: number) {
@@ -380,6 +389,10 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     this.problemTab.emit(true);
 
+  }
+
+  redoPatient(){
+    this.patientForm.get('deleted')?.setValue(false);
   }
 
 }
