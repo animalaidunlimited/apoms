@@ -1,5 +1,5 @@
 <div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
-  fxLayout.gt-xs="row">
+  fxLayout.gt-xs="row" >
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
@@ -48,9 +48,14 @@
   </div>
 
 
-  <button class="deleteButton" type="button" (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
+  <button *ngIf="!patientDeletedFlag" class="deleteButton" type="button" (click)="deletePatient()" mat-mini-fab color="warn">
     <mat-icon>delete</mat-icon>
   </button>
+
+  <button *ngIf="patientDeletedFlag" class="undoButton" type="button" (click)="redoPatient()" mat-mini-fab color="warn">
+    <mat-icon>undo</mat-icon>
+  </button>
+  
 
 
   <!-- Calloutcome details-->
