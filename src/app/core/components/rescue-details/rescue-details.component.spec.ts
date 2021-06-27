@@ -31,6 +31,9 @@ describe('RescueDetailsComponent', () => {
         component = fixture.componentInstance;
 
         component.emergencyCaseId = 1;
+        
+
+       
 
         component.recordForm = fb.group({
             emergencyDetails: fb.group({
@@ -40,31 +43,34 @@ describe('RescueDetailsComponent', () => {
             patients: fb.array([])
         });
 
-        const patient =
-        fb.group({
-            patientId: [],
-            position: [0],
-            animalTypeId: [5, Validators.required],
-            animalType: ['Puppy', Validators.required],
-            problems: fb.array([]),
-            tagNumber: [''],
-            duplicateTag: [false, Validators.required],
-            updated: [false, Validators.required],
-            deleted: [false, Validators.required],
-            isAdmission:[false],
-            admissionArea: [],
-            admissionAccepted: [false],
-            callOutcome: fb.group({
-                CallOutcome: [],
-                sameAsNumber: []
-            }),
-        });
+        
 
         const patientArray = component.recordForm.get('patients') as FormArray;
 
+       const patient =
+       fb.group({
+           patientId: [],
+           position: [0],
+           animalTypeId: [5, Validators.required],
+           animalType: ['Puppy', Validators.required],
+           problems: fb.array([]),
+           tagNumber: [''],
+           duplicateTag: [false, Validators.required],
+           updated: [false, Validators.required],
+           deleted: [false, Validators.required],
+           isAdmission:[false],
+           admissionArea: [],
+           admissionAccepted: [false],
+           callOutcome: fb.group({
+               CallOutcome: [],
+               sameAsNumber: []
+           }),
+       });
+        
         patientArray.push(patient);
 
         fixture.detectChanges();
+        
     }));
 
     afterEach(function(done) {
@@ -81,6 +87,8 @@ describe('RescueDetailsComponent', () => {
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.updateValidators();
 
+        // console.log(patientArray.at(0));
+        
         expect(component.recordForm.valid).toEqual(false);
     });
 
@@ -95,8 +103,13 @@ describe('RescueDetailsComponent', () => {
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.recordForm.get('rescueDetails.rescuer2Id')?.setValue(2);
         component.updateValidators();
+        
+        const patientArray = (component.recordForm.get('patients') as FormArray).at(0);
+        patientArray.get('animalType')?.setValue('Puppy');
+        patientArray.get('animalTypeId')?.setValue(5);
+        patientArray.get('deleted')?.setValue(false);
 
-        expect(component.recordForm.get('rescueDetails')?.valid).toEqual(true);
+        expect(component.recordForm.valid).toEqual(true);
     });
 
     it('Invalid form - Ambulance arrival time only', () => {
