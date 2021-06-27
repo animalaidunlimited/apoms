@@ -1,4 +1,4 @@
-import { Image, MediaItem,  Gallery, LocalMediaItem} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery, LocalMediaItem, LocalMedia} from 'src/app/core/models/media';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -71,12 +71,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
 
-          const localImages:string[] = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
+          const localImages:LocalMedia[] = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
 
           localImages.forEach(localImage => {
-            const mime = localImage.split(',')[0].split(':')[1].split(';')[0];
-            const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage)], `${this.patientId},{22}`, { type: mime});
-            this.mediaPasteService.handleUpload(imageFile,this.patientId);
+            const mime = localImage.imageBase64.split(',')[0].split(':')[1].split(';')[0];
+            const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage.imageBase64)], `${this.patientId},{22}`, { type: mime});
+            this.mediaPasteService.handleUpload(imageFile,this.patientId, localImage.date as string);
           });
           
           this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
@@ -104,8 +104,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
      
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
 
-          
-
           setTimeout(() => {
             
             this.galleryImages = [];
@@ -114,18 +112,17 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
             .forEach((patientImage)=> {
 
               this.galleryImages.push({
-                thumbnail:patientImage,
-                full:patientImage,
+                thumbnail:patientImage.imageBase64,
+                full:patientImage.imageBase64,
                 type: 'image',
+                time: this.datepipe.transform(patientImage.date, 'HH:mm'),
+                date: patientImage.date?.toString().replace('T',' ').slice(0,10),
               });
 
             });
 
           });
         }
-      }
-      else{
-        // this.galleryImages = [];
       }
     });
 
