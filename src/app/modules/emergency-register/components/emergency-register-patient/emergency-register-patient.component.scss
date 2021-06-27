@@ -72,6 +72,11 @@
     width:100%;
 }
 
+.undoButton{
+    @extend .deleteButton;
+    background-color: rgb(224, 178, 178);
+}
+
 @media(max-width: 600px) {
     
     ::ng-deep .mat-autocomplete-panel{
