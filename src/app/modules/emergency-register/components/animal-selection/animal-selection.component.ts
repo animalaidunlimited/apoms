@@ -109,6 +109,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     }
 
     ngOnInit() {
+
+
         
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
         
@@ -116,6 +118,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         this.patients = this.recordForm.get('patients') as FormArray;
         
+
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
@@ -134,12 +137,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             this.setChildOutcomeAsParentPatient(this.patients);
         }
 
-
-    }
-
-    deletePatient(patientIndex:number) {
-
-        this.patients.removeAt(patientIndex);
+        
     }
 
     problemTab($event:boolean){
@@ -158,7 +156,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients.push(patient);
     }
 
-
+   
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
