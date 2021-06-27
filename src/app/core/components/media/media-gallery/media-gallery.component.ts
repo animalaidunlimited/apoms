@@ -50,28 +50,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
-
-    
-  
-    if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
-      
-      setTimeout(() =>{
-        
-        const patientImages = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
-
-        patientImages.forEach(patientImage => {
-          this.galleryImages.push({
-            thumbnail:patientImage,
-            full:patientImage,
-            type: 'image',
-          });
-        });
-
-      });
-      
-    }
      
-
+ 
     this.checkConnection = timer(0,3000).pipe(
       takeUntil(this.connectionStateSubs),
       switchMap(() => this.onlineStatus.connectionChanged),
@@ -89,11 +69,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.checkConnection.subscribe(connectionState => {
       if(connectionState){
 
-        if(!this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
-          this.connectionStateSubs.next();
-          this.connectionStateSubs.complete();
-        }
-        else{
+        if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
+
           const localImages:string[] = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
 
           localImages.forEach(localImage => {
@@ -105,9 +82,15 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
           this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
           
         }
+        else{
+
+          this.connectionStateSubs.next();
+          this.connectionStateSubs.complete();
+          
+        }
       }
     });
-    
+
     this.initMedaiaGallery();
 
     this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
@@ -116,24 +99,33 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
+
       if(!connectionStatus){
      
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
 
+          
+
           setTimeout(() => {
+            
+            this.galleryImages = [];
 
-            const patientImages = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
-            const patientImagesLength = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId).length;
+            this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId)
+            .forEach((patientImage)=> {
 
-            this.galleryImages.push({
-              thumbnail:patientImages[patientImagesLength-1],
-              full:patientImages[patientImagesLength-1],
-              type: 'image',
+              this.galleryImages.push({
+                thumbnail:patientImage,
+                full:patientImage,
+                type: 'image',
+              });
+
             });
 
-          }); 
-            
+          });
         }
+      }
+      else{
+        // this.galleryImages = [];
       }
     });
 

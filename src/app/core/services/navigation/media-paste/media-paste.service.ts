@@ -85,7 +85,6 @@ export class MediaPasteService {
         const resizedImage = await this.cropedImage(file);
         
         if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
-
        
           newMediaItem.widthPX = resizedImage.width;
           newMediaItem.heightPX = resizedImage.height;
@@ -93,7 +92,6 @@ export class MediaPasteService {
           const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
 
           newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
-
 
           // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
@@ -160,75 +158,79 @@ export class MediaPasteService {
 
 
     }).catch(async error => {
+
+      /**
+       * Offline Mode
+       */
+
+      if(!this.onlineStatus.connectionChanged.value){
+
+        this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
+
+        const resizedImage = await this.cropedImage(file);
+        this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+
         /**
-         * Offline Mode
-         */
-        if(!this.onlineStatus.connectionChanged.value){
+        * Patient already exist in local storage
+        * add more images to patient
+        */
 
-          this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
+        if(this.imageExsistInLocalStorage(patientId))
+        {
 
-          const resizedImage = await this.cropedImage(file);
-          this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+          let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
+            JSON.parse(JSON.parse(mediaItem.value as string))[0]
+          );
 
-         /**
-          * Patient already exist in local storage
-          * add more images to patient
-          */
-          if(this.imageExsistInLocalStorage(patientId))
-          {
-
-            let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
-              JSON.parse(JSON.parse(mediaItem.value as string))[0]
-            );
-
-            
-            localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
-              if(mediaItem.patientId === patientId){
-                mediaItem.media.push(resizedImage.dataUrl);
-              }
-              return mediaItem;
-            });
-            
-            this.saveToLocalDatabase('MEDIA', JSON.stringify(localMediaItems));
-            
-            
-          }
-          else{
-            /**
-             * New patient entry
-             */
-
-            /** 
-             * Local Storage media object exists
-             * fetch previous media storage and push new patient entry
-             * convert to string for storage
-             */
-         
-            if(this.storageService.getItemArray('MEDIA').length >= 0){
-              
-              const localMedia = this.getParseMediaObject();
-
-              localMedia.push({headerType:'POST',patientId, media:[resizedImage.dataUrl]});
-
-              this.saveToLocalDatabase(
-                'MEDIA', JSON.stringify(localMedia)
-              );
-
-            }
-
-            this.onlineStatus.connectionChanged.next(false);
-          }
           
-          (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
-
-          returnObject.mediaItemId.next(1);
+          localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
+            if(mediaItem.patientId === patientId){
+              mediaItem.media.push(resizedImage.dataUrl);
+            }
+            return mediaItem;
+          });
+          
+          this.saveToLocalDatabase('MEDIA', JSON.stringify(localMediaItems));
+          
           
         }
         else{
+          /**
+           * New patient entry
+           */
 
-          return console.log(error);
+          /** 
+           * Local Storage media object exists
+           * fetch previous media storage and push new patient entry
+           * convert to string for storage
+           */
+        
+          if(this.storageService.getItemArray('MEDIA').length >= 0){
+            
+            const localMedia = this.getParseMediaObject();
 
+            localMedia.push({headerType:'POST',patientId, media:[resizedImage.dataUrl]});
+
+            this.saveToLocalDatabase(
+              'MEDIA', JSON.stringify(localMedia)
+            );
+
+          }
+
+          this.onlineStatus.connectionChanged.next(false);
         }
+        
+        (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
+
+        returnObject.mediaItemId.next(1);
+        
+      }
+      else{
+
+        return console.log(error);
+
+      }
+
     });
 
     return returnObject;
