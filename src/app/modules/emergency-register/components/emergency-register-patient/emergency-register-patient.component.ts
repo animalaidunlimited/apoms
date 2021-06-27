@@ -142,7 +142,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   ngAfterViewInit(): void{
 
-    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+    this.patientForm.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
       if(this.chipList?.errorState){
         this.chipList.errorState = this.problemsArray.length === 0;
       }
