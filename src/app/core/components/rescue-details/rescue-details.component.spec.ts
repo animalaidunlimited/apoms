@@ -69,6 +69,16 @@ describe('RescueDetailsComponent', () => {
         
         patientArray.push(patient);
 
+        
+        
+        setTimeout(() =>{
+            patientArray.at(0).get('animalType')?.setValue('Puppy');
+            patientArray.at(0).get('duplicateTag')?.setValue(false);
+            patientArray.at(0).get('updated')?.setValue(false);
+            patientArray.at(0).get('deleted')?.setValue(false);
+            patientArray.at(0).get('animalTypeId')?.setValue(5);
+        });
+
         fixture.detectChanges();
         
     }));
@@ -103,13 +113,10 @@ describe('RescueDetailsComponent', () => {
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.recordForm.get('rescueDetails.rescuer2Id')?.setValue(2);
         component.updateValidators();
-        
-        const patientArray = (component.recordForm.get('patients') as FormArray).at(0);
-        patientArray.get('animalType')?.setValue('Puppy');
-        patientArray.get('animalTypeId')?.setValue(5);
-        patientArray.get('deleted')?.setValue(false);
 
         expect(component.recordForm.valid).toEqual(true);
+        
+        
     });
 
     it('Invalid form - Ambulance arrival time only', () => {
