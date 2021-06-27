@@ -4,7 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, Observer, of} from 'rxjs';
+import { Observable, from, BehaviorSubject, of} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -43,6 +43,7 @@ export class MediaPasteService {
     private fireAuth: AngularFireAuth,
     private onlineStatus: OnlineStatusService,
     private snackbarService:SnackbarService,
+    public datePipe:DatePipe,
     protected storageService: StorageService) { }
 
     user!: firebase.default.auth.UserCredential;
@@ -52,7 +53,7 @@ export class MediaPasteService {
     
 
 
-  handleUpload(file: File, patientId: number): MediaItemReturnObject {
+  handleUpload(file: File, patientId: number, offlineUploadDate?:string): MediaItemReturnObject {
     
     if(!file.type.match(/image.*|video.*/)){
       return {
@@ -69,7 +70,12 @@ export class MediaPasteService {
         mediaItemId: new BehaviorSubject<number | undefined>(undefined),
         result: 'success'
     };
+    if(offlineUploadDate){
 
+      newMediaItem.datetime = offlineUploadDate;
+
+    }
+    
 
     this.checkAuthenticated().then(async () => {
 
@@ -171,9 +177,9 @@ export class MediaPasteService {
         this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
 
         /**
-        * Patient already exist in local storage
-        * add more images to patient
-        */
+         * Patient already exist in local storage
+         * add more images to patient
+         */
 
         if(this.imageExsistInLocalStorage(patientId))
         {
@@ -185,7 +191,9 @@ export class MediaPasteService {
           
           localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
             if(mediaItem.patientId === patientId){
-              mediaItem.media.push(resizedImage.dataUrl);
+
+             
+              mediaItem.media.push({date:  this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl});
             }
             return mediaItem;
           });
@@ -209,7 +217,7 @@ export class MediaPasteService {
             
             const localMedia = this.getParseMediaObject();
 
-            localMedia.push({headerType:'POST',patientId, media:[resizedImage.dataUrl]});
+            localMedia.push({headerType:'POST',patientId, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl}]});
 
             this.saveToLocalDatabase(
               'MEDIA', JSON.stringify(localMedia)
@@ -223,7 +231,7 @@ export class MediaPasteService {
         (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
 
         returnObject.mediaItemId.next(1);
-        
+        console.log(this.getMediaItemsFromLocalStoargeByPatientId(patientId));
       }
       else{
 
