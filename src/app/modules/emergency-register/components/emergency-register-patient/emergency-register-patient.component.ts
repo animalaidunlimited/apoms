@@ -141,7 +141,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   ngAfterViewInit(): void{
-    if(this.patientForm)
+   /*  if(this.patientForm)
     { 
       const patientForm = (this.patientForm as FormGroup).get('problems') as AbstractControl;
       patientForm.valueChanges.subscribe((problems:Problem[]) => {
@@ -150,7 +150,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
         }
         this.patientFormProblemSetError();
       });
-    }
+    } */
     
     
 
