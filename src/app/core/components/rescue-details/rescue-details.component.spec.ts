@@ -125,12 +125,7 @@ describe('RescueDetailsComponent', () => {
         const ambulanceArrivalTime = new Date();
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(ambulanceArrivalTime);
         component.updateValidators();
-
-        setTimeout(() =>{
-        
-            expect(component.recordForm.valid).toEqual(false);
-
-        });
+        expect(component.recordForm.valid).toEqual(false);
     });
 
     it('Valid form - Ambulance arrival time only - with driver/worker', () => {
@@ -259,12 +254,8 @@ describe('RescueDetailsComponent', () => {
 
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(currentTime);
         component.updateValidators();
-
-        setTimeout(() =>{
         
-            expect(component.recordForm.valid).toEqual(false);
-            
-        });
+        expect(component.recordForm.valid).toEqual(false);
     });
 
     it('Invalid form - Ambulance arrival, Rescue, and Admission time only', () => {
@@ -278,11 +269,7 @@ describe('RescueDetailsComponent', () => {
 
         component.updateValidators();
 
-        setTimeout(() =>{
-        
-            expect(component.recordForm.valid).toEqual(false);
-            
-        });
+        expect(component.recordForm.valid).toEqual(false);
     });
 
     it('Valid form - Ambulance arrival, Rescue, and Admission time only', () => {
@@ -319,11 +306,8 @@ describe('RescueDetailsComponent', () => {
 
         component.updateValidators();
 
-        setTimeout(() =>{
-        
-            expect(component.recordForm.valid).toEqual(false);
+        expect(component.recordForm.valid).toEqual(false);
             
-        });
     });
 
     it('Invalid form - Ambulance arrival time after Admission time', () => {
@@ -339,11 +323,11 @@ describe('RescueDetailsComponent', () => {
 
         component.updateValidators();
 
-        setTimeout(() =>{
         
-            expect(component.recordForm.valid).toEqual(false);
+        
+        expect(component.recordForm.valid).toEqual(false);
             
-        });
+        
     });
 
     it('Invalid form - Rescue time after Admission time', () => {
@@ -359,11 +343,9 @@ describe('RescueDetailsComponent', () => {
 
         component.updateValidators();
 
-        setTimeout(() =>{
-        
-            expect(component.recordForm.valid).toEqual(false);
+        expect(component.recordForm.valid).toEqual(false);
             
-        });
+        
     });
 
     it('Valid form - Ambulance arrival time before, Rescue time before Admission time', () => {
