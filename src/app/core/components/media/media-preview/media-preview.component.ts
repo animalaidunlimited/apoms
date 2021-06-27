@@ -287,7 +287,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     return {
       ...this.data.mediaData,
       datetime: this.recordForm.get('imageDate')?.value,
-      tags: this.recordForm.get('imageTags')?.value.map((tag: { tag: string; }) => ({ tag }))
+      tags: this.recordForm.get('imageTags')?.value?.map((tag: { tag: string; }) => ({ tag }))
     };
   }
 
