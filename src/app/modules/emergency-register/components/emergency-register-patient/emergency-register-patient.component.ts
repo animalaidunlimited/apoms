@@ -111,7 +111,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     );
 
 
-    this.filteredProblems$ = this.problemInput.valueChanges.pipe(
+    this.filteredProblems$ = this.problemInput?.valueChanges.pipe(
       startWith(''),
       map(problem => typeof problem === 'string' ? problem : problem.Problem),
       switchMap((problem:string) => problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems),
@@ -126,7 +126,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   animalTypeChangessub(){
-    this.animalType.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
+    this.animalType?.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
       if(animalType === ''){
         this.problemsArray.clear();
       }
@@ -141,17 +141,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   ngAfterViewInit(): void{
-   /*  if(this.patientForm)
-    { 
-      const patientForm = (this.patientForm as FormGroup).get('problems') as AbstractControl;
-      patientForm.valueChanges.subscribe((problems:Problem[]) => {
-        if(this.chipList?.errorState){
-          this.chipList.errorState = this.problemsArray.length === 0;
-        }
-        this.patientFormProblemSetError();
-      });
-    } */
     
+    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+      if(this.chipList?.errorState){
+        this.chipList.errorState = this.problemsArray.length === 0;
+      }
+      this.patientFormProblemSetError();
+    });
     
 
     this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
