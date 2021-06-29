@@ -26,13 +26,14 @@ DECLARE	vVehicleCount INT;
 DECLARE vSuccess INT;
 DECLARE vVehicleId INT;
 
-SELECT COUNT(1) INTO vVehicleCount FROM AAU.VehicleList 
+SELECT COUNT(1) INTO vVehicleCount
+FROM AAU.Vehicle
 WHERE VehicleNumber = prm_VehicleNumber 
 AND VehicleRegistrationNumber = prm_VehicleRegistrationNumber;
 
 IF vVehicleCount = 0 THEN
 	
-    INSERT INTO AAU.VehicleList (
+    INSERT INTO AAU.Vehicle (
 		VehicleRegistrationNumber,
 		VehicleNumber,
 		VehicleTypeId,

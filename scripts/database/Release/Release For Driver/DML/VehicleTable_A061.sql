@@ -1,4 +1,7 @@
-CREATE TABLE IF NOT EXISTS AAU.VehicleList (
+
+
+
+CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `VehicleId` int NOT NULL AUTO_INCREMENT,
   `VehicleRegistrationNumber` varchar(100) DEFAULT NULL,
   `VehicleNumber` varchar(100) NOT NULL,

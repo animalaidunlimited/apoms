@@ -20,6 +20,8 @@ CREATE FUNCTION AAU.fn_GetRescueReleaseStStatusForDriverView(
 	VisitBeginDate DATETIME,
 	VisitEndDate DATETIME	
 ) RETURNS varchar(25) CHARSET utf8mb4
+    DETERMINISTIC
+
 BEGIN
 
 DECLARE AssignmentStatus VARCHAR(25);
@@ -48,8 +50,7 @@ DECLARE AssignmentStatus VARCHAR(25);
 		VisitEndDate IS NULL 
     )
     
-    THEN SET AssignmentStatus = 'Assigned';
-    
+    THEN SET AssignmentStatus = 'Assigned';    
     
 ELSEIF
 	(
