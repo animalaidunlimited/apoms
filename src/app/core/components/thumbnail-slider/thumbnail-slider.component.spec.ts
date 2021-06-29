@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { BehaviorSubject } from 'rxjs';
 import { MaterialModule } from 'src/app/material-module';
 import { MediaItem } from '../../models/media';
@@ -16,7 +15,6 @@ describe('ThumbnailSliderComponent', () => {
     beforeEach(async() => {
         TestBed.configureTestingModule({
             imports: [
-                NgxGalleryModule,
                 MaterialModule
             ],
             declarations: [

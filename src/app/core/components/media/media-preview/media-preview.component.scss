@@ -46,12 +46,12 @@
     border-radius: 0.3rem ;
     background: rgba(240, 240, 243, 0.73);
     display: flex;
+    flex-direction:column;
     align-items: baseline;
     width: 100%;
     .commentSection{ 
         width:100%;
         max-height: 12rem;
-        min-height: 12rem;
         overflow-y: scroll;
         scroll-behavior: smooth;
         display:flex;
@@ -212,3 +212,67 @@
     width:calc(100% - 1rem)
 }
 
+
+
+.uploadMediaIcon{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    .mat-icon{
+        width:auto;
+        height:auto;
+        font-size:8em;
+        color: #BDBDBD;
+        border: 0.05em solid;
+        padding: 0.1em;
+        &:hover{
+            cursor: pointer;
+            
+        }
+    }
+    &.fileDragHover{
+        animation: shake 0.82s infinite;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+    
+}
+
+
+
+@keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+
+
+@media (max-width: 600px){
+    .mat-form-field {
+        max-width: unset !important;   
+    }
+    .uploadMediaIcon{
+        .mat-icon{
+            font-size:2em;
+        }   
+    }
+    .imagePreviewSidePanel{
+        flex-direction: row;
+    }
+}

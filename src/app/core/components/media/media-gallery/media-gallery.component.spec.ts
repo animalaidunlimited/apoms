@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material-module';
-
+import { environment } from 'src/environments/environment';
 import { MediaGalleryComponent } from './media-gallery.component';
 
 describe('MediaGalleryComponent', () => {
@@ -14,7 +15,8 @@ describe('MediaGalleryComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MaterialModule,
-        HttpClientModule 
+        HttpClientModule ,
+        AngularFireModule.initializeApp(environment.firebase)
       ],
       declarations: [ MediaGalleryComponent ],
       providers: [
