@@ -102,7 +102,7 @@ export class StreetTreatRecordComponent implements OnInit {
         if (media.length === 0) {
           return;
         }
-        console.log(media);
+		  
         this.profileUrl = media.find(item => Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
         this.changeDetector.detectChanges();
       });
