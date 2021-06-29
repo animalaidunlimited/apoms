@@ -22,7 +22,7 @@
 
     </mat-form-field>
     <!-- Main Problem -->
-    <mat-form-field fxFlex.gt-xs="1 1 100%">
+    <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
 
       <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
 
