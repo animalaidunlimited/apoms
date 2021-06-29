@@ -1,13 +1,11 @@
 <div class="container">
-
+    <button mat-icon-button class="close-button" (click)="closeDialog($event)"[mat-dialog-close]="true">
+        <mat-icon class="close-icon" >close</mat-icon>
+    </button>
+    
     <div class="video-item"></div>
-        <video #video class="vid" autoplay></video>
-
-    <div *ngIf="galleryImages.length > 0" class="slider">
-
-        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
-
-    </div>
+    
+    <video #video class="vid" autoplay></video>
 
     <canvas #canvas class="canvas"></canvas>
 
@@ -15,19 +13,17 @@
 
     <div class='timer' [ngClass]="timer > 24000 ? 'alert' : timer > 14000 ? 'warning' : 'no-warning'" *ngIf="capturing">00:{{timer | date:'ss'}}</div>
 
-    <button mat-fab aria-label="Upload new image" (click)="toggleVideoCapture()" class="video-capture-button">
-
-        <mat-icon *ngIf="!capturing" [inline]="true" class="stop-circle">stop_circle</mat-icon>
-        <mat-icon *ngIf="capturing" [inline]="true" class="stop-circle">stop</mat-icon>
-
-    </button>
+    
 
     <button mat-mini-fab aria-label="Upload new image" (click)="captureImage()" class="image-capture-button">
         <mat-icon [inline]="true" class="seconday-icon">camera</mat-icon>
     </button>
 
-    <button mat-mini-fab aria-label="Complete" (click)="closeDialog()" class="complete-button" [disabled]="uploading > 0">
-        <mat-icon [inline]="true" class="seconday-icon">check_circle_outline</mat-icon>
+    <button mat-fab aria-label="Upload new image" (click)="toggleVideoCapture()" class="video-capture-button">
+
+        <mat-icon *ngIf="!capturing" [inline]="true" class="stop-circle">stop_circle</mat-icon>
+        <mat-icon *ngIf="capturing" [inline]="true" class="stop-circle">stop</mat-icon>
+
     </button>
 
   </div>

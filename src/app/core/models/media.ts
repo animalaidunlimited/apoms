@@ -1,7 +1,8 @@
 import { SafeUrl } from '@angular/platform-browser';
+
 import { Observable, BehaviorSubject } from 'rxjs';
 
-export interface MediaItem{
+  export interface MediaItem{
     mediaItemId: Observable<number>;
     patientMediaItemId: number;
     mediaType: string;
@@ -16,6 +17,16 @@ export interface MediaItem{
     tags: Tag[] | string[];
     uploadProgress$: Observable<number> | null;
     updated: boolean;
+  }
+  export interface LocalMediaItem{
+    patientId: number;
+    headerType: string;
+    media: LocalMedia[];
+  }
+
+  export interface LocalMedia{
+    date: string | null;
+    imageBase64 : string;
   }
 
   export interface MediaItemReturnObject{

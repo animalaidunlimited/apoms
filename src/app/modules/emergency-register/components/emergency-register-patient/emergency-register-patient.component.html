@@ -5,8 +5,8 @@
 
   <!-- patient details-->
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
-
-    <mat-form-field style="margin-top: 1.4rem;">
+    <!-- Animal Dropdown-->
+    <mat-form-field fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher" (keydown.Tab)="isSpeciesBlank($event);false;"

@@ -21,6 +21,7 @@ export class ThumbnailSliderComponent implements OnInit{
     constructor(public datepipe: DatePipe) {}
 
     ngOnInit() {
+        
     }
     
 }

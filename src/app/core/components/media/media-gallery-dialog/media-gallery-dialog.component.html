@@ -2,10 +2,11 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="column" fxLayoutGap="2rem">
-    <ng-container *ngFor="let gallery of data.mediaGallery">
-        <div style="width:max-content;">
-            {{ gallery.date}}
+    <ng-container *ngFor="let gallery of data.mediaGallery; let index = index">
+        <div style="width:max-content; ">
+            <p style="margin: 0 0 0.5em 0;">{{ gallery.date}} </p>
             <div fxLayout="row" fxLayoutGap="0.5rem">
+               
                 <media-thumbnails [gallery]="gallery.images" [mediaPatientItems]="data.mediaPatientItems"  ></media-thumbnails>
             </div>
         </div>

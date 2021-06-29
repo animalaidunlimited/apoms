@@ -26,7 +26,6 @@ import { AddSurgeryDialogComponent } from './components/add-surgery-dialog/add-s
 import { SurgeryRecordModule } from '../surgery-register/components/surgery-record.module';
 import { SurgeryRecordDialogComponent } from './components/surgery-record-dialog/surgery-record-dialog.component';
 import { MediaCaptureComponent } from 'src/app/core/components/media/media-capture/media-capture.component';
-import { NgxGalleryModule } from '@animalaidunlimited/ngx-gallery-aau';
 import { TreatmentComponent } from './components/treatment/treatment.component';
 import { PatientVisitDetailsModule} from '../../core/components/patient-visit-details/patient-visit-details.module';
 import { ReleaseDetailsDialogComponent } from './components/release-details-dialog/release-details-dialog.component';
@@ -71,7 +70,6 @@ import { ReleaseDetailsComponent } from './components/release-details/release-de
         PatientDetailsModule,
         EmergencyDetailsModule,
         SurgeryRecordModule,
-        NgxGalleryModule,
         CallerDetailsModule,
         ReleaseAssignModule,
         PatientVisitDetailsModule,
