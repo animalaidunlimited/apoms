@@ -16,8 +16,8 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DOUBLE(11,8),
 									IN prm_Longitude DECIMAL(11,8),
-									IN prm_Rescuer1Id INT,
-									IN prm_Rescuer2Id INT,
+									-- IN prm_Rescuer1Id INT,
+									-- IN prm_Rescuer2Id INT,
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
@@ -72,8 +72,8 @@ START TRANSACTION;
 						Location               = prm_Location,
 						Latitude               = prm_Latitude,
 						Longitude              = prm_Longitude,
-						Rescuer1Id             = prm_Rescuer1Id,
-						Rescuer2Id             = prm_Rescuer2Id,
+						-- Rescuer1Id             = prm_Rescuer1Id,
+						-- Rescuer2Id             = prm_Rescuer2Id,
 						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
 						RescueTime             = prm_RescueTime,
 						AdmissionTime          = prm_AdmissionTime,
@@ -81,7 +81,7 @@ START TRANSACTION;
                         DeletedDate			   = prm_DeletedDate,
                         UpdateTime			   = prm_UpdateTime,
                         Comments			   = prm_Comments,
-                        AssignedAmbulanceId    = prm_AssignedAmbulanceId,
+                        AssignedVehicleId    = prm_AssignedAmbulanceId,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 

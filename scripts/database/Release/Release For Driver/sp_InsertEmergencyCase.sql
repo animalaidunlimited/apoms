@@ -17,8 +17,8 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DECIMAL(11,8),
 									IN prm_Longitude DECIMAL(11,8),
-									IN prm_Rescuer1Id INT,
-									IN prm_Rescuer2Id INT,
+									-- IN prm_Rescuer1Id INT,
+									-- IN prm_Rescuer2Id INT,
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
@@ -95,7 +95,7 @@ INSERT INTO AAU.EmergencyCase
     UpdateTime,
     Comments,
     GUID,
-    AssignedAmbulanceId,
+    AssignedVehicleId,
     AmbulanceAssignmentTime
 )
 VALUES

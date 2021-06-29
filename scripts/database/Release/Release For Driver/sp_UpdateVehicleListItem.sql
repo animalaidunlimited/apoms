@@ -27,12 +27,12 @@ DECLARE vVehicleCount INT;
 SET vSuccess = 0;
 SET vVehicleCount = 0;
 
-SELECT COUNT(1) INTO vVehicleCount FROM AAU.VehicleList
+SELECT COUNT(1) INTO vVehicleCount FROM AAU.Vehicle
 WHERE VehicleId = prm_VehicleId;
 
 IF vVehicleCount = 1 THEN
 
-	UPDATE AAU.VehicleList SET
+	UPDATE AAU.Vehicle SET
 		VehicleRegistrationNumber = prm_VehicleRegistrationNumber,
 		VehicleNumber = prm_VehicleNumber,
 		VehicletypeId = prm_VehicleTypeId,

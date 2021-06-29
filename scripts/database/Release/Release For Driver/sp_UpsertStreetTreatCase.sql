@@ -34,7 +34,9 @@ DECLARE vStreetTreatCaseId INT;
 DECLARE vSuccess INT;
 DECLARE vOrganisationId INT;
 
-SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE UserName = prm_Username LIMIT 1;
+SELECT u.OrganisationId INTO vOrganisationId
+FROM AAU.User u
+WHERE UserName = prm_Username LIMIT 1;
 
 INSERT INTO AAU.StreetTreatCase(
                         PatientId,
@@ -47,7 +49,7 @@ INSERT INTO AAU.StreetTreatCase(
                         ClosedDate,
                         EarlyReleaseFlag,
                         OrganisationId,
-                        AssignedAmbulanceId,
+                        AssignedVehicleId,
                         AmbulanceAssignmentTime
 					) VALUES (
                         prm_PatientId,

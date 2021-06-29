@@ -14,19 +14,23 @@ Purpose: To get the cases for driver view
 */
 
 WITH RescueReleaseST AS
-(SELECT p.PatientId FROM AAU.EmergencyCase ec
+(
+SELECT p.PatientId
+FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE prm_Date >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (prm_Date <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
 AND p.PatientCallOutcomeId IS NULL
 
 UNION 
 
-SELECT rd.PatientId FROM AAU.ReleaseDetails rd
+SELECT rd.PatientId
+FROM AAU.ReleaseDetails rd
 WHERE prm_Date >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND prm_Date <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
 
 UNION
 
-SELECT st.PatientId FROM AAU.StreetTreatCase st
+SELECT st.PatientId
+FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
 WHERE CAST(v.Date AS DATE) = prm_Date AND st.AmbulanceAssignmentTime IS NOT NULL
 ),

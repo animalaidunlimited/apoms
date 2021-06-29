@@ -40,11 +40,11 @@ FROM
     vl.MaxRescuerCapacity,
 	vl.VehicleStatusId,
 	vs.VehicleStatus
-FROM AAU.VehicleList vl
+FROM AAU.Vehicle vl
 INNER JOIN AAU.VehicleType vt ON vt.VehicleTypeId = vl.VehicleTypeId
 INNER JOIN AAU.VehicleStatus vs ON vs.VehicleStatusId = vl.VehicleStatusId
-WHERE isDeleted = 0
-)vehicleDetails;
+WHERE vl.isDeleted = 0
+) vehicleDetails;
 
 END$$
 DELIMITER ;
