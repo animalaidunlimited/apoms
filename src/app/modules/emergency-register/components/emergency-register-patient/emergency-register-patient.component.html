@@ -63,7 +63,7 @@
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
+    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
 
       <mat-label>Tag number</mat-label>
 
