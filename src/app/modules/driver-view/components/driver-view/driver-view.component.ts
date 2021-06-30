@@ -1,5 +1,7 @@
+import { state } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
@@ -20,10 +22,12 @@ export class DriverViewComponent implements OnInit {
   inAmbulaneStatusList: any;
   assignedList: any;
   completeList: any;
+  showComplete = false;
 
   constructor( private fb: FormBuilder,
     private dropdowns: DropdownService,
-    private driverView: DriverViewService) { }
+    private driverView: DriverViewService,
+    private router: Router) { }
 
   ngOnInit(): void {
 
@@ -40,10 +44,7 @@ export class DriverViewComponent implements OnInit {
   }
 
   loadDriverDetails() {
-    console.log('Hi')
     this.driverViewDetails.get('assignmentDate')?.setValue(getCurrentTimeString());
-
-    console.log(this.driverViewDetails.get('assignmentDate')?.value);
 
     this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
 
@@ -56,8 +57,11 @@ export class DriverViewComponent implements OnInit {
         this.completeList = item.filter((dataItem: any)=> dataItem.actionStatus === 'Complete');
       })
     });
-    
-   
+
+  }
+
+  changeRoute(completeList: any) {
+    this.router.navigate(['/nav/completed-assignments'], {state: {data: completeList}});
 
   }
   

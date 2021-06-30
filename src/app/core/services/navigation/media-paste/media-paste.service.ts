@@ -38,7 +38,7 @@ export class MediaPasteService {
     private patientService: PatientService,
     private fireAuth: AngularFireAuth) { }
 
-    user!: firebase.default.auth.UserCredential;
+    user!: firebase.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
 
 
