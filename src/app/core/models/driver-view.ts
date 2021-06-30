@@ -1,4 +1,4 @@
-export interface VehicleList {
+export interface Vehicle {
     vehicleId: number;
     vehicleType: string;
     vehicleNumber: string;
@@ -11,3 +11,13 @@ export interface VehicleList {
     minRescuerCapacity: number;
     maxRescuerCapacity: number;
 }
+
+export interface VehicleType {
+    VehicleTypeId : number;
+    VehicleType: string;
+  }
+
+  export interface VehicleStatus {
+    VehicleStatusId: number;
+    VehicleStatus: string;
+  }

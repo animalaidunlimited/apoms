@@ -2,20 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import { VehicleList } from 'src/app/core/models/driver-view';
+import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
-export interface VehicleType {
-  VehicleTypeId : number;
-  VehicleType: string;
-}
 
-interface VehicleStatus {
-  VehicleStatusId: number;
-  VehicleStatus: string;
-}
 
 @Component({
   selector: 'app-vehile-list-page',
@@ -41,7 +33,7 @@ export class VehileListPageComponent implements OnInit {
     'vehicleStatus'
   ];
 
-  dataSource!: MatTableDataSource<VehicleList[]> ;
+  dataSource!: MatTableDataSource<Vehicle[]> ;
 
   vehicleType$!: Observable<VehicleType[]>;
 
@@ -81,11 +73,11 @@ export class VehileListPageComponent implements OnInit {
         }
         else {
           this.snackBar.errorSnackBar('Duplicate entry', 'Ok');
-        }   
-        
+        }
+
       }
     });
-    
+
   }
 
   refreshVehicleTable() {

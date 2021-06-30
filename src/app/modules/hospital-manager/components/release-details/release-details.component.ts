@@ -109,6 +109,10 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.initReleaseDetailsForm();
 
+    this.recordForm.valueChanges.subscribe(() => {
+      this.formValidity.emit(this.recordForm.invalid);
+    });
+
   }
 
   initReleaseDetailsForm(){

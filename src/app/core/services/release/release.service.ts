@@ -17,10 +17,15 @@ export class ReleaseService extends APIService {
   }
 
   public async saveRelease(releaseDetails: ReleaseDetails) : Promise<any> {
+
+    console.log(releaseDetails);
+
     if(releaseDetails.releaseId) {
+      console.log('PUT');
       return this.put(releaseDetails);
     }
     else {
+      console.log('POST');
       return this.post(releaseDetails);
     }
   }

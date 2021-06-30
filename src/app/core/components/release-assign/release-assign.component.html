@@ -16,8 +16,8 @@
             <mat-label>Assign Vehicle</mat-label>
                 <mat-select tabindex="12" formControlName="assignedVehicleId">
                 <mat-option>N/A</mat-option>
-                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.VehicleId">
-                    {{vehicle.VehicleNumber}}
+                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+                    {{vehicle.vehicleNumber}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
