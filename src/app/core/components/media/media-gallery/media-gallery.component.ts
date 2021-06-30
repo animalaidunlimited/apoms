@@ -238,7 +238,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
             full:item.remoteURL,
             type: item.mediaType.includes('video') ? 'video' : 'image',
             time: this.datepipe.transform(item.datetime, 'HH:mm'),
-            date: item.datetime.toString().replace('T',' ').slice(0,10),
+            date: this.datepipe.transform( new Date(item.datetime) , 'yyyy-MM-dd'),
             tags: item.tags,
             patientMediaItemId: item.patientMediaItemId,
             width: item.widthPX,

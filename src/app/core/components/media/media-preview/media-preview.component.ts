@@ -158,7 +158,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           }
           
           this.data.upload = false;
+          
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
+
+          this.imageData.patientMediaItemId = media;
 
         }
 
@@ -222,6 +225,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   submitComment(Event:Event | null): void {
 
+ 
     Event?.preventDefault();
     const comment = Event?.target;
 
@@ -230,9 +234,12 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       comment: (comment as HTMLInputElement).value
     });
 
-    const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
+    console.log(commentObject);
 
+    const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
+    
     mediaCommentResponse.then((response:{success:number}) => {
+      console.log(response);
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
@@ -255,12 +262,20 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   private insertPatientTags(value: string) {
 
+    if(!this.recordForm.get('imageTags')?.value){
+
+      this.recordForm.get('imageTags')?.setValue([]);
+     
+    }
+
     const imageTags = this.recordForm.get('imageTags')?.value;
+
     imageTags.push(value);
 
     const mediaItem = this.getUpdatedPatientMediaItem();
 
     this.savePatientMediaItem(mediaItem);
+    
   }
 
 
