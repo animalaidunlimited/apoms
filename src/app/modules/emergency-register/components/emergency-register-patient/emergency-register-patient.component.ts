@@ -395,4 +395,9 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     this.patientForm.get('deleted')?.setValue(false);
   }
 
+  focusAnimalType(event:Event){
+    event.preventDefault();
+    this.animalTypeInput.nativeElement.focus();
+  }
+
 }
