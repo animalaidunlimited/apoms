@@ -18,6 +18,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
+            "namedChunks": true,
             "outputPath": "dist/apoms",
             "index": "src/index.html",
             "main": "src/main.ts",
