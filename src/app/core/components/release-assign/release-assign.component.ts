@@ -8,7 +8,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 import { takeUntil } from 'rxjs/operators';
-import { VehicleList } from '../../models/vehicle';
+import { Vehicle } from '../../models/driver-view';
 
 @Component({
   selector: 'app-release-assign',
@@ -23,7 +23,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
-  vehicleList$!: Observable<VehicleList[]>
+  vehicleList$!: Observable<Vehicle[]>
 
   private ngUnsubscribe = new Subject();
 

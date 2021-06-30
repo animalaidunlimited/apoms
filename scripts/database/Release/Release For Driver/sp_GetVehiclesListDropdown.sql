@@ -12,7 +12,7 @@ CreatedDate: 07/06/2021
 Purpose: To get the list of vehicle for dropdown
 */
 
-SELECT VehicleId, VehicleRegistrationNumber, VehicleNumber FROM AAU.Vehicle;
+SELECT VehicleId AS vehicleId, VehicleRegistrationNumber AS vehicleRegistrationNumber, VehicleNumber AS vehicleNumber FROM AAU.Vehicle;
 
 END$$
 DELIMITER ;

@@ -25,8 +25,9 @@ import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
-import { VehicleType } from 'src/app/modules/driver-view/pages/vehile-list-page/vehile-list-page.component';
-import { VehicleList } from '../../models/vehicle';
+import { VehicleType, Vehicle } from '../../models/driver-view';
+
+
 
 
 
@@ -74,7 +75,7 @@ export class DropdownService extends APIService {
     treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
     vehicleTypes$!: Observable<VehicleType[]>;
-    vehicleList$!: Observable<VehicleList[]>
+    vehicleList$!: Observable<Vehicle[]>
 
 
 
@@ -706,7 +707,7 @@ export class DropdownService extends APIService {
 }
 
 getVehicleType(): Observable<VehicleType[]> {
-    
+
     const request = '/GetVehicleTypes';
 
     if(!this.vehicleTypes$) {
@@ -721,13 +722,13 @@ return this.vehicleTypes$;
 
 }
 
-getVehicleListDropdown(): Observable<VehicleList[]> {
-    
+getVehicleListDropdown(): Observable<Vehicle[]> {
+
     const request = '/GetVehicleList';
 
     if(!this.vehicleList$) {
         this.vehicleList$ = this.getObservable(request).pipe(
-            map((response: VehicleList[])=>{
+            map((response: Vehicle[])=>{
                 return response;
             })
         );

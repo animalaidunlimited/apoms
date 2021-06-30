@@ -36,8 +36,8 @@
             <mat-label>Assigned vehicle</mat-label>
                 <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
                 <mat-option>N/A</mat-option>
-                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.VehicleId">
-                    {{vehicle.VehicleNumber}}
+                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+                    {{vehicle.vehicleNumber}}
                 </mat-option>
             </mat-select>
         </mat-form-field>

@@ -9,8 +9,8 @@ import { UpdateResponse } from '../../models/outstanding-case';
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
-import { VehicleList } from '../../models/vehicle';
 import { EmergencyCode } from '../../models/emergency-record';
+import { Vehicle } from '../../models/driver-view';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -57,7 +57,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuerArray!: FormArray;
 
     rescuers$!: Observable<User[]>;
-    vehicleList$!: Observable<VehicleList[]>
+    vehicleList$!: Observable<Vehicle[]>
 
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
