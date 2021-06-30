@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -12,8 +12,7 @@ import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
-
-import { DomSanitizer } from '@angular/platform-browser';
+import * as Hammer from 'hammerjs';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 @Component({
   // tslint:disable-next-line: component-selector
@@ -21,7 +20,7 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
   templateUrl: './media-preview.component.html',
   styleUrls: ['./media-preview.component.scss']
 })
-export class MediaPreviewComponent implements OnInit, OnDestroy {
+export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   imageData!:Image;
   recordForm!: FormGroup;
   visible = true;
@@ -49,6 +48,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   @ViewChild('uploadMediaIcon') uploadMediaIcon!:ElementRef<HTMLElement>;
 
   @ViewChild('videoPlayer', { static: true }) videoplayer!: ElementRef;
+
+  @ViewChild('imgElement') imgElement!: ElementRef;
   
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
@@ -120,6 +121,14 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     
   }
 
+  ngAfterViewInit(): void {
+    
+    const hammer = new Hammer(this.imgElement.nativeElement);
+
+    hammer.get('pinch').set({ enable: true });
+
+  }
+
   checkHeight(dialogDataHeight = null){
     const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
 
@@ -158,7 +167,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           }
           
           this.data.upload = false;
-          
+
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
 
           this.imageData.patientMediaItemId = media;
@@ -234,12 +243,11 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       comment: (comment as HTMLInputElement).value
     });
 
-    console.log(commentObject);
 
     const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
     
     mediaCommentResponse.then((response:{success:number}) => {
-      console.log(response);
+      
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation

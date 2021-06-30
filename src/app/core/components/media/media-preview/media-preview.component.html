@@ -2,7 +2,7 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div 
+    <div #imgElement
     [style.backgroundImage]="'url('+ imageData?.full +')'" 
     class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 

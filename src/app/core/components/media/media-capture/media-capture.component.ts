@@ -23,6 +23,7 @@ export class MediaCaptureComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
 
   @Output() closeMediaDialog!: EventEmitter<boolean>;
+  
 constraints = {
   video: {
       facingMode: 'environment',
