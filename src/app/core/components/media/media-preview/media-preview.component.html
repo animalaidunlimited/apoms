@@ -26,12 +26,12 @@
             (dragleave)="onDragLeave($event)">
                 <!--camera -->
                 <div fxLayout="row" ngStyle.xs="margin-top:1.5em;">
-                    <div fxLayout="column" fxLayoutAlign="center center">
-                        <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
-                        <p style="text-align:center;" *ngIf="platform.ANDROID || platform.IOS">Click here to capture video/image</p>
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="platform.ANDROID || platform.IOS" >
+                        <mat-icon aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                        <p style="text-align:center;">Click here to capture video/image</p>
                     </div>
                     <!--From gallery-->
-                    <div fxLayout="column" fxLayoutAlign="center center">
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!platform.ANDROID && !platform.IOS" >
                         <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
                         <p style="text-align:center;">Drag and drop files here</p>
                     </div>
