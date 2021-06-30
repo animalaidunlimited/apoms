@@ -2,12 +2,13 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div #imgElement
+    <div #imgElement 
     [style.backgroundImage]="'url('+ imageData?.full +')'" 
     class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
+    (zoom)="onZoom($event)"
     *ngIf="imageData?.type?.includes('image') || data.upload">
     <mat-spinner style="position: absolute;left: 23.5em;top: 11em;" [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
         <ng-container *ngIf="data.upload && !loading" >

@@ -5,6 +5,7 @@
 
   <!-- patient details-->
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
+    
     <!-- Animal Dropdown-->
     <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;" fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
@@ -21,6 +22,7 @@
       </mat-autocomplete>
 
     </mat-form-field>
+
     <!-- Main Problem -->
     <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
 
@@ -78,12 +80,17 @@
     <div *ngIf="patientForm.get('isAdmission')?.value" class="admissionAreaDivWrapper">
 
       <mat-form-field class="admissionAreaWrapper">
+
         <mat-label>Admission area</mat-label>
+
         <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+
           <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
             {{areaName.areaName}}
           </mat-option>
+
         </mat-select>
+
       </mat-form-field>
       
     </div>
