@@ -2,6 +2,8 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
+import { CompletedAssignmentComponent } from './modules/driver-view/components/completed-assignment/completed-assignment.component';
+import { CompletedAssignmentModule } from './modules/driver-view/components/completed-assignment/completed-assignment.module';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -97,6 +99,14 @@ export const navRoutes: NavRoute[] = [
     },
 
     {
+        data:{ title: 'Completed assignments'},
+        path: 'completed-assignments',
+        loadChildren: () =>
+            import('./modules/driver-view/components/completed-assignment/completed-assignment.module')
+            .then(m => m.CompletedAssignmentModule)
+    },
+
+    {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
@@ -142,7 +152,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.PrintTemplatesPageModule)
     }
 
-                ];
+];
 
 @Injectable({
     providedIn: 'root',

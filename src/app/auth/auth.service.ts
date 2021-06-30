@@ -46,6 +46,8 @@ export class AuthService extends APIService {
                 password,
             })) as Response;
 
+            console.log(this.response)
+
             this.token = this.response.token || '';
 
             if (!this.response.success) {
