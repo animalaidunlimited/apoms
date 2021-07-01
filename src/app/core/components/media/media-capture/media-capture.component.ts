@@ -23,6 +23,8 @@ export class MediaCaptureComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
 
   @Output() closeMediaDialog!: EventEmitter<boolean>;
+
+  capturedImages:string[] = [];
   
 constraints = {
   video: {
@@ -184,15 +186,17 @@ uploadAndAddToGallery(newFile:any, type:string){
 
   if(returnObject.mediaItem){
 
+   
     returnObject.mediaItem.heightPX = this.videoHeight;
     returnObject.mediaItem.widthPX = this.videoWidth;
-
-
+   
     returnObject.mediaItemId
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((result) => {
-
+     
       if(returnObject.mediaItem && result){
+
+        this.capturedImages.push( returnObject.mediaItem?.remoteURL );
         this.uploading--;
         this.changeDetector.detectChanges();
 
@@ -205,7 +209,7 @@ uploadAndAddToGallery(newFile:any, type:string){
    
     $event.preventDefault();
     
-    this.closeMediaDialog.emit(true);
+    this.closeMediaDialog?.emit(true);
   }
 
 }
