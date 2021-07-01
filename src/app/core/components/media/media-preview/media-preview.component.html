@@ -1,3 +1,9 @@
+<meta *ngIf="fullImageView" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=9.0, user-scalable=yes" />
+<meta *ngIf="!fullImageView"name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<button *ngIf="fullImageView" mat-icon-button class="close-button imageCloseBtn" (click)="removeFullView($event)" >
+    <mat-icon class="close-icon" >close</mat-icon>
+</button>
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
@@ -8,8 +14,10 @@
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
-    (zoom)="onZoom($event)"
-    *ngIf="imageData?.type?.includes('image') || data.upload">
+    *ngIf="imageData?.type?.includes('image') || data.upload"
+   
+    (click)="onImageClick($event)">
+    
     <mat-spinner style="position: absolute;left: 23.5em;top: 11em;" [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
         <ng-container *ngIf="data.upload && !loading" >
 

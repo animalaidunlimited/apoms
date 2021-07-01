@@ -42,6 +42,7 @@
     border: 0.3rem solid white;
     touch-action: pinch-zoom !important;
     user-select: auto !important;
+    z-index: 9;
 }
 .imagePreviewSidePanel{
     box-shadow: -1px -1px 3px #FFFFFF, 1.5px 1.5px 2px rgba(174, 174, 192, 0.4);
@@ -276,5 +277,28 @@
     }
     .imagePreviewSidePanel{
         flex-direction: row;
+    }
+    
+}
+@media (max-width: 900px){
+    
+    .fullImageView{
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index:9;
+        border: none;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+    }
+    .imageCloseBtn{
+        z-index: 99;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 3em;
+        height: 3em;
+        transform: translate(-0.5em, 0.5em);
     }
 }

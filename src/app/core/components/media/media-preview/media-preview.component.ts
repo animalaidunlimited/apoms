@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -13,14 +13,13 @@ import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-import hammertime from 'hammerjs';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
   templateUrl: './media-preview.component.html',
   styleUrls: ['./media-preview.component.scss']
 })
-export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   imageData!:Image;
   recordForm!: FormGroup;
@@ -28,12 +27,15 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   removable = true;
   addOnBlur = true;
   selectable = false;
- 
+  fullImageView = false;
   imageHeight = 0;
   
   loading = false;
 
   mediaItems: MediaItem [] = [];
+
+  innerWidth = 0;
+  innerHeight = 0;
   
   private ngUnsubscribe = new Subject();
 
@@ -42,6 +44,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   onArrowKey = new EventEmitter<number>();
 
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
+
+
+  onPinch$: Subject<number> = new Subject<number>();
 
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
@@ -87,6 +92,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     public cdr:ChangeDetectorRef,
     private onlineStatus: OnlineStatusService,
+    private renderer: Renderer2
   ) {
 
     if(this.data?.image){
@@ -101,8 +107,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-
-
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
     this.recordForm = this.fb.group({
       imageDate: '',
       imageTags:[],
@@ -120,14 +126,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
      this.checkHeight();
 
     }
-    
-  }
-
-  ngAfterViewInit(): void {
-    
-    const hammer = new Hammer(this.imgElement.nativeElement);
-
-    hammer.get('pinch').set({ enable: true });
     
   }
 
@@ -393,8 +391,31 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
     this.videoplayer.nativeElement.play();
   }
 
-  onZoom($event: Event) {
-    console.log($event);
+  onImageClick($event:Event){
+
+    
+    if(($event.composedPath()[0] as HTMLElement).classList[0] as string === 'mediaPreviewBackgroundImage'){
+
+      console.log('Hi');
+      $event.preventDefault();
+      this.fullImageView = true;
+      this.renderer.addClass(this.imgElement.nativeElement ,'fullImageView');
+    }
+    
+
   }
+
+  removeFullView($event:Event){
+    $event.preventDefault();
+    this.fullImageView = false;
+    this.renderer.removeClass(this.imgElement.nativeElement ,'fullImageView');
+    Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: this.innerWidth});
+    Object.defineProperty(window, 'innerHeight', {writable: true, configurable: true, value: this.innerHeight});
+
+
+  }
+
+
+
 } 
 
