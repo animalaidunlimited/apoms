@@ -12,8 +12,8 @@ import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
-import * as Hammer from 'hammerjs';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import hammertime from 'hammerjs';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -21,6 +21,7 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
   styleUrls: ['./media-preview.component.scss']
 })
 export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
+
   imageData!:Image;
   recordForm!: FormGroup;
   visible = true;
@@ -31,7 +32,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   imageHeight = 0;
   
   loading = false;
-
 
   mediaItems: MediaItem [] = [];
   
@@ -53,7 +53,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
+
     const lisitenKeys = [37, 38, 39, 40];
+    
     if((event.composedPath()[0] as HTMLElement).classList[0] as string === 'mat-dialog-container'){
 
       // tslint:disable-next-line: deprecation
@@ -126,7 +128,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
     const hammer = new Hammer(this.imgElement.nativeElement);
 
     hammer.get('pinch').set({ enable: true });
-
+    
   }
 
   checkHeight(dialogDataHeight = null){
@@ -389,6 +391,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleVideo(event: any) {
     this.videoplayer.nativeElement.play();
-}
-}
+  }
+
+  onZoom($event: Event) {
+    console.log($event);
+  }
+} 
 
