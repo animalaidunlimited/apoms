@@ -129,14 +129,19 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     
   }
 
-  checkHeight(dialogDataHeight = null){
-    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
+  checkHeight(dialogDataHeight?:number , dialogDataWidth?:number){
 
-    if(height > 900){
+    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
+    const width = dialogDataWidth ? dialogDataWidth :  this.data.image?.width;
+    
+    if(height > 2000 && width > 3000){
+      this.imageHeight = 24;
+    }
+    else if(height > 900 && width > 700){
       this.imageHeight = 50;
     }
     else{
-      this.imageHeight = 25;
+      this.imageHeight = 24;
     }
   }
 
@@ -171,6 +176,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
 
           this.imageData.patientMediaItemId = media;
+
+  
+
+          this.checkHeight(mediaItem.mediaItem?.heightPX, mediaItem.mediaItem?.widthPX);
 
         }
 
@@ -395,8 +404,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     
     if(($event.composedPath()[0] as HTMLElement).classList[0] as string === 'mediaPreviewBackgroundImage'){
-
-      console.log('Hi');
       $event.preventDefault();
       this.fullImageView = true;
       this.renderer.addClass(this.imgElement.nativeElement ,'fullImageView');

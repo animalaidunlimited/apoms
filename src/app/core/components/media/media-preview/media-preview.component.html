@@ -7,7 +7,7 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
-<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
+<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0; border-radius: 0.5em;">
     <div #imgElement 
     [style.backgroundImage]="'url('+ imageData?.full +')'" 
     class="mediaPreviewBackgroundImage"
@@ -18,7 +18,7 @@
    
     (click)="onImageClick($event)">
     
-    <mat-spinner style="position: absolute;left: 23.5em;top: 11em;" [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+    <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
         <ng-container *ngIf="data.upload && !loading" >
 
             <input

@@ -16,9 +16,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 99;
 	.mat-icon{
 		font-size:1.2rem;
 	}
+}
+
+
+.mat-spinner{
+
+    position: absolute;
+    left: 23.5em;
+    top: 11em;
+    
 }
 
 ::ng-deep .mat-form-field-appearance-fill 
@@ -43,6 +53,8 @@
     touch-action: pinch-zoom !important;
     user-select: auto !important;
     z-index: 9;
+    border-top-left-radius: 0.5em;
+    border-bottom-left-radius: 0.5em;
 }
 .imagePreviewSidePanel{
     box-shadow: -1px -1px 3px #FFFFFF, 1.5px 1.5px 2px rgba(174, 174, 192, 0.4);
@@ -245,6 +257,14 @@
     
 }
 
+.classLoader{
+    
+    position: absolute;
+    left: 23.5em;
+    top: 11em;
+
+}
+
 
 
 @keyframes shake {
@@ -278,6 +298,20 @@
     .imagePreviewSidePanel{
         flex-direction: row;
     }
+    .mediaPreviewBackgroundImage{
+        border-top-left-radius: 0.5em;
+        border-bottom-left-radius: 0;
+    }
+    .mat-spinner{
+        position: absolute;
+        left: 40%;
+        top: 20%;
+        ::ng-deep svg{
+            width: 4em !important;
+            height:4em !important;
+        }
+        
+    }
     
 }
 @media (max-width: 900px){
@@ -286,14 +320,14 @@
         position: fixed;
         left: 0;
         top: 0;
-        z-index:9;
+        z-index:99;
         border: none;
         width: 100%;
         height: 100%;
         background-color: black;
     }
     .imageCloseBtn{
-        z-index: 99;
+        z-index: 999;
         position: fixed;
         right: 0;
         top: 0;
