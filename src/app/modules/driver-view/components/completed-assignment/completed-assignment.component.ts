@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
+import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
   selector: 'app-completed-assignment',
@@ -11,17 +12,22 @@ export class CompletedAssignmentComponent implements OnInit {
 
   completeList: any;
 
-  constructor(
-    private router: ActivatedRoute
-  ) 
+  constructor(private driverView: DriverViewService,
+    private router: Router) 
   {
     
   }
 
   ngOnInit(): void {
-    this.completeList =  history.state.data;
+    
+    this.driverView.completedAssignments.subscribe(val=> {
+      this.completeList = val;
+    })
 
-    console.log(this.completeList)
+  }
+
+  changeRoute() {
+    this.router.navigate(['/nav/driver-view']);
   }
 
 }

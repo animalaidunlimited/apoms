@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { map } from 'rxjs/operators';
+import { DriverAssignments } from 'src/app/core/models/driver-view';
+// import { DriverAssignments } from "../../../core/models/driver-view";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,11 @@ import { map } from 'rxjs/operators';
 export class DriverViewService extends APIService {
 
   endpoint = 'DriverView';
+  driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  inAmbulanceAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  inProgressAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  assignedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  completedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
 
   constructor(public http: HttpClient) {
     super(http);
@@ -43,15 +50,24 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getDriverViewDetails(driverViewDate: Date) : Observable<any> {
+  public getDriverViewDetails(driverViewDate: Date) {
 
     let request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).pipe(
       map((response: any) => {
-          return response;
+        console.log(response);
+        this.driverViewDetails.next(response);
+
+        this.driverViewDetails.subscribe((assignments)=> {
+
+          this.inAmbulanceAssignment.next(assignments.filter(data=> data.actionStatus === 'In Ambulance'));
+          this.inProgressAssignment.next(assignments.filter(data=> data.actionStatus === 'In Progress'));
+          this.assignedAssignments.next(assignments.filter(data=> data.actionStatus === 'Assigned'));
+          this.completedAssignments.next(assignments.filter(data=> data.actionStatus === 'Complete'));
+        })
       })
-  );
+    );
 
   }
 
