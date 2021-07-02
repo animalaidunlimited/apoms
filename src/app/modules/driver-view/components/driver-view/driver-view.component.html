@@ -18,11 +18,11 @@
         </mat-form-field>
    </div>
 
-    <div *ngIf='inProgressStatusList && !showComplete'>
+    <div *ngIf='inProgressStatusList'>
         <fieldset class="form-sub-group">
             <legend class="legend">In Progress</legend>
     
-            <div *ngFor="let progressAssignment of inProgressStatusList">
+            <div *ngFor="let progressAssignment of inProgressStatusList" >
                 
                 <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
@@ -77,15 +77,78 @@
 
                     </div>
 
-                    <div class="actionWrapper" [ngClass]="{
-                        'STRelease' : progressAssignment.ambulanceAction === 'STRelease',
-                        'StreetTreat' : progressAssignment.ambulanceAction === 'StreetTreat',
-                        'Rescue' : progressAssignment.ambulanceAction === 'Rescue',
-                        'Release' : progressAssignment.ambulanceAction === 'Release'}">
-                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'STRelease'">STRelease</p>
-                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
-                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Rescue'">Rescue</p>
-                        <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Release'">Release</p>
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="progressAssignment.ambulanceAction === 'Rescue'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "progressAssignment.ambulanceArrivalTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Rescued
+                            <mat-icon *ngIf = "progressAssignment.rescueTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Admitted
+                            <mat-icon *ngIf="progressAssignment.patientCallOutcomeId == 1" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="progressAssignment.ambulanceAction === 'Release'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "progressAssignment.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "progressAssignment.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="progressAssignment.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="progressAssignment.ambulanceAction === 'StreetTreat'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "progressAssignment.visitBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="progressAssignment.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="progressAssignment.ambulanceAction === 'STRelease'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "progressAssignment.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "progressAssignment.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Released
+                            <mat-icon *ngIf="progressAssignment.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Treated
+                            <mat-icon *ngIf="progressAssignment.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <div fxLayout="row-reverse" style="margin:1em 1em 0 0">
+                        <div class="actionWrapper" [ngClass]="{
+                            'STRelease' : progressAssignment.ambulanceAction === 'STRelease',
+                            'StreetTreat' : progressAssignment.ambulanceAction === 'StreetTreat',
+                            'Rescue' : progressAssignment.ambulanceAction === 'Rescue',
+                            'Release' : progressAssignment.ambulanceAction === 'Release'}">
+                            <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'STRelease'">STRelease</p>
+                            <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                            <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Rescue'">Rescue</p>
+                            <p class="textWrapper" *ngIf="progressAssignment.ambulanceAction === 'Release'">Release</p>
+                        </div>
                     </div>
 
                 </div>
@@ -94,11 +157,11 @@
         </fieldset>
     </div>
 
-    <div *ngIf='inAmbulaneStatusList && !showComplete'>
+    <div *ngIf='inAmbulaneStatusList'>
         <fieldset class="form-sub-group">
             <legend class="legend">In Ambulance</legend>
     
-            <div *ngFor="let ambulanceAssignment of inAmbulaneStatusList">
+            <div *ngFor="let ambulanceAssignment of inAmbulaneStatusList" >
                 
                 <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
@@ -153,15 +216,80 @@
 
                     </div>
 
-                    <div class="actionWrapper" [ngClass]="{
-                        'STRelease' : ambulanceAssignment.ambulanceAction === 'STRelease',
-                        'StreetTreat' : ambulanceAssignment.ambulanceAction === 'StreetTreat',
-                        'Rescue' : ambulanceAssignment.ambulanceAction === 'Rescue',
-                        'Release' : ambulanceAssignment.ambulanceAction === 'Release'}">
-                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'STRelease'">STRelease</p>
-                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
-                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Rescue'">Rescue</p>
-                        <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Release'">Release</p>
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="ambulanceAssignment.ambulanceAction === 'Rescue'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "ambulanceAssignment.ambulanceArrivalTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Rescued
+                            <mat-icon *ngIf = "ambulanceAssignment.rescueTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Admitted
+                            <mat-icon *ngIf="ambulanceAssignment.patientCallOutcomeId == 1" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="ambulanceAssignment.ambulanceAction === 'Release'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "ambulanceAssignment.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "ambulanceAssignment.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="ambulanceAssignment.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="ambulanceAssignment.ambulanceAction === 'StreetTreat'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "ambulanceAssignment.visitBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="ambulanceAssignment.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="ambulanceAssignment.ambulanceAction === 'STRelease'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "ambulanceAssignment.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "ambulanceAssignment.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+
+                        <mat-button-toggle>
+                            Released
+                            <mat-icon *ngIf="ambulanceAssignment.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+
+                        <mat-button-toggle>
+                            Treated
+                            <mat-icon *ngIf="ambulanceAssignment.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <div fxLayout="row-reverse" style="margin:1em 1em 0 0">
+                        <div class="actionWrapper" [ngClass]="{
+                            'STRelease' : ambulanceAssignment.ambulanceAction === 'STRelease',
+                            'StreetTreat' : ambulanceAssignment.ambulanceAction === 'StreetTreat',
+                            'Rescue' : ambulanceAssignment.ambulanceAction === 'Rescue',
+                            'Release' : ambulanceAssignment.ambulanceAction === 'Release'}">
+                            <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'STRelease'">STRelease</p>
+                            <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                            <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Rescue'">Rescue</p>
+                            <p class="textWrapper" *ngIf="ambulanceAssignment.ambulanceAction === 'Release'">Release</p>
+                        </div>
                     </div>
 
                 </div>
@@ -170,11 +298,11 @@
         </fieldset>
     </div>
 
-    <div *ngIf='assignedList && !showComplete'>
+    <div *ngIf='assignedList'>
         <fieldset class="form-sub-group">
             <legend class="legend">Assigned</legend>
     
-            <div *ngFor="let assignments of assignedList">
+            <div *ngFor="let assignments of assignedList" >
                 
                 <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
 
@@ -229,15 +357,78 @@
 
                     </div>
 
-                    <div class="actionWrapper" [ngClass]="{
-                        'STRelease' : assignments.ambulanceAction === 'STRelease',
-                        'StreetTreat' : assignments.ambulanceAction === 'StreetTreat',
-                        'Rescue' : assignments.ambulanceAction === 'Rescue',
-                        'Release' : assignments.ambulanceAction === 'Release'}">
-                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'STRelease'">STRelease</p>
-                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'StreetTreat'">StreetTreat</p>
-                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Rescue'">Rescue</p>
-                        <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Release'">Release</p>
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'Rescue'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "assignments.ambulanceArrivalTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Rescued
+                            <mat-icon *ngIf = "assignments.rescueTime" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Admitted
+                            <mat-icon *ngIf="assignments.patientCallOutcomeId == 1" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'Release'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "assignments.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "assignments.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="assignments.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "assignments.visitBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Complete
+                            <mat-icon *ngIf="assignments.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+
+                    <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'STRelease'">
+                        <mat-button-toggle>
+                            Pickedup
+                            <mat-icon *ngIf = "assignments.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Arrived
+                            <mat-icon *ngIf = "assignments.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Released
+                            <mat-icon *ngIf="assignments.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle>
+                            Treated
+                            <mat-icon *ngIf="assignments.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <div fxLayout="row-reverse" style="margin:1em 1em 0 0">
+                        <div class="actionWrapper" [ngClass]="{
+                            'STRelease' : assignments.ambulanceAction === 'STRelease',
+                            'StreetTreat' : assignments.ambulanceAction === 'StreetTreat',
+                            'Rescue' : assignments.ambulanceAction === 'Rescue',
+                            'Release' : assignments.ambulanceAction === 'Release'}">
+                            <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'STRelease'">STRelease</p>
+                            <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'StreetTreat'">StreetTreat</p>
+                            <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Rescue'">Rescue</p>
+                            <p class="textWrapper" *ngIf="assignments.ambulanceAction === 'Release'">Release</p>
+                        </div>
                     </div>
 
                 </div>
@@ -245,89 +436,6 @@
             </div>
         </fieldset>
     </div>
-
-    <div *ngIf='completeList && showComplete'>
-        <fieldset class="form-sub-group">
-            <legend class="legend">Complete</legend>
-    
-            <div *ngFor="let completeAssignment of completeList">
-                
-                <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'> 
-
-                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
-
-                        <div *ngIf="completeAssignment.ambulanceAction === 'Rescue'" class="emergencyDetailsCode" [ngClass]="{
-                            'grey' : completeAssignment.emergencyCodeId == 4,
-                            'red' : completeAssignment.emergencyCodeId == 1,
-                            'green' : completeAssignment.emergencyCodeId == 2,
-                            'yellow' : completeAssignment.emergencyCodeId == 3}">
-                        </div>
-
-                        <div *ngIf="completeAssignment.ambulanceAction === 'STRelease' || completeAssignment.ambulanceAction ==='StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
-                            'grey' : completeAssignment.streetTreatPriorityId == 4,
-                            'red' : completeAssignment.streetTreatPriorityId == 1,
-                            'green' : completeAssignment.streetTreatPriorityId == 2,
-                            'yellow' : completeAssignment.streetTreatPriorityId == 3}">
-                        </div>
-
-
-                        <p>EmNo:{{completeAssignment.emergencyNumber}}</p>
-
-                        <div fxLayout='row wrap' fxLayoutAlign='start'>
-                            <p>AnimalType: {{completeAssignment.patients[0].animalType}}</p> 
-                            <p class="countWrapper" *ngIf="completeAssignment.patients.length > 1">+{{completeAssignment.patients.length - 1}}</p>
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <p>Address: {{completeAssignment.location}}</p>
-                    </div>
-
-                    <div fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start'>
-
-                        <!-- <div fxLayout='row'>
-                            <p>Description: </p>
-                            <p style="min-width: 30px;">{{completeAssignment.animalDescription}}</p>
-                        </div> -->
-    
-                        <div fxLayout='row'>
-                            <p>Main Problem:</p>
-                            <p *ngIf="completeAssignment.ambulanceAction === 'STRelease' || completeAssignment.ambulanceAction ==='StreetTreat'"> {{completeAssignment.streetTreatMainProblem}} </p>
-                            <div fxLayout='row wrap' fxLayoutAlign='start'>
-                                <p *ngIf="completeAssignment.ambulanceAction === 'Rescue' || completeAssignment.ambulanceAction ==='Release'"> {{completeAssignment.patients[0].problems}} </p>
-                                <p class="countWrapper" *ngIf="completeAssignment.ambulanceAction === 'Rescue' && completeAssignment.patients.length > 1">
-                                    + {{completeAssignment.patients.length - 1}} 
-                                </p>
-                            </div>
-                            
-                        </div>
-
-                    </div>
-
-                    <div class="actionWrapper" [ngClass]="{
-                        'STRelease' : completeAssignment.ambulanceAction === 'STRelease',
-                        'StreetTreat' : completeAssignment.ambulanceAction === 'StreetTreat',
-                        'Rescue' : completeAssignment.ambulanceAction === 'Rescue',
-                        'Release' : completeAssignment.ambulanceAction === 'Release'}">
-                        <p class="textWrapper" *ngIf="completeAssignment.ambulanceAction === 'STRelease'">STRelease</p>
-                        <p class="textWrapper" *ngIf="completeAssignment.ambulanceAction === 'StreetTreat'">StreetTreat</p>
-                        <p class="textWrapper" *ngIf="completeAssignment.ambulanceAction === 'Rescue'">Rescue</p>
-                        <p class="textWrapper" *ngIf="completeAssignment.ambulanceAction === 'Release'">Release</p>
-                    </div>
-
-                </div>
-
-            </div>
-        </fieldset>
-    </div>
-
-
-    <!-- <div class="horizontalTab" fxLayout='row' fxLayoutGap='20px' fxLayoutAlign='start'>
-       <div style="border-radius: 50%; background-color: white; width: 40px; height: 40px;">
-            <mat-icon style="font-size: 40px;">check_circle</mat-icon>
-       </div>
-    </div> -->
 
     <mat-toolbar-row class="horizontalTab">
 
@@ -347,7 +455,7 @@
             <p class="iconText">Map</p>
         </div>
 
-        <div fxLayout='column' class="iconDiv" (click)='changeRoute(completeList)'>
+        <div fxLayout='column' class="iconDiv" (click)='changeRoute()'>
             <mat-icon aria-label="Complete" style="font-size: 30px;">check_circle</mat-icon>
             <p class="iconText">Complete</p>
         </div>

@@ -14,25 +14,21 @@ Purpose: To get the cases for driver view
 */
 
 WITH RescueReleaseST AS
-(
-SELECT p.PatientId
-FROM AAU.EmergencyCase ec
+(SELECT p.PatientId FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE prm_Date >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (prm_Date <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
+WHERE CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
 AND p.PatientCallOutcomeId IS NULL
 
 UNION 
 
-SELECT rd.PatientId
-FROM AAU.ReleaseDetails rd
-WHERE prm_Date >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND prm_Date <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
+SELECT rd.PatientId FROM AAU.ReleaseDetails rd
+WHERE CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
 
 UNION
 
-SELECT st.PatientId
-FROM AAU.StreetTreatCase st
+SELECT st.PatientId FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
-WHERE CAST(v.Date AS DATE) = prm_Date AND st.AmbulanceAssignmentTime IS NOT NULL
+WHERE CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL
 ),
 EmergencyCaseIds AS
 (
@@ -101,7 +97,9 @@ PatientsCTE AS
     GROUP BY p.EmergencyCaseId,
     IFNULL(rd.PatientId, p.EmergencyCaseId)
 )
-
+,
+DriverViewCTE AS
+(
 SELECT 
 				AAU.fn_GetRescueReleaseStStatusForDriverView(
 				rd.ReleaseDetailsId, 
@@ -165,7 +163,45 @@ LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId
-LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId;
+LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
+
+SELECT
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE( 
+JSON_OBJECT("actionStatus", ActionStatus),
+JSON_OBJECT("ambulanceAction", AmbulanceAction),
+JSON_OBJECT("releaseDetailsId", ReleaseDetailsId),
+JSON_OBJECT("releaseRequestDate", RequestedDate),
+JSON_OBJECT("releaseComplainerNotes", ComplainerNotes),
+JSON_OBJECT("streetTreatCaseId", StreetTreatCaseId),
+JSON_OBJECT("streetTreatMainProblemId", MainProblemId),
+JSON_OBJECT("streetTreatMainProblem", MainProblem),
+JSON_OBJECT("streetTreatPriorityId", PriorityId),
+JSON_OBJECT("streetTreatPriority", Priority),
+JSON_OBJECT("patientCallOutcomeId", PatientCallOutcomeId),
+JSON_OBJECT("releasePickupDate", PickupDate),
+JSON_OBJECT("patientId", PatientId),
+JSON_OBJECT("releaseBeginDate", BeginDate),
+JSON_OBJECT("releaseEndDate", EndDate),
+JSON_OBJECT("visitBeginDate", VisitBeginDate),
+JSON_OBJECT("visitEndDate", VisitEndDate),
+JSON_OBJECT("ambulanceArrivalTime", AmbulanceArrivalTime),
+JSON_OBJECT("rescueTime", RescueTime),
+JSON_OBJECT("emergencyCaseId", EmergencyCaseId),
+
+JSON_OBJECT("emergencyNumber", EmergencyNumber),
+
+JSON_OBJECT("emergencyCodeId", EmergencyCodeId),
+
+JSON_OBJECT("emergencyCode", EmergencyCode),
+
+JSON_OBJECT("callDateTime", CallDateTime),
+
+JSON_OBJECT("location", Location),
+JSON_OBJECT("latLngLiteral", latLngLiteral),
+callerDetails,
+Patients))AS DriverViewData
+FROM DriverViewCTE;
 
 END$$
 DELIMITER ;
