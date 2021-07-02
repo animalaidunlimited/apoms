@@ -194,7 +194,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
         mediaItem.mediaItem.updated = true;
       }
       else{
-        console.log('Upload media');
+       //  console.log('Upload media');
       }
   
     }
