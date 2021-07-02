@@ -38,8 +38,9 @@
     width: 88.06px;
     height: 23px;
     border-radius: 24px;
-    position: relative;
-    left: 14rem;
+   /*  position: relative;
+    top: 2px;
+    left: 14rem; */
     text-align: center;
     vertical-align: middle;
 
@@ -85,6 +86,15 @@
     margin-top: 5%;
 }
 
+.toggleDiv {
+    width: max-content;
+}
+
+.toggleButtonColor {
+    color: green;
+    font-size: 1.6em;
+}
+
 .iconText {
     margin-top: 5px;
     color: white;
@@ -96,7 +106,8 @@
 
 .iconDiv {
     border-radius: 50%;
-    background-color: white;
+    background-color: #607d8b;;
+    color: white;
     width: 30px;
     height: 30px;
     margin-bottom: 7px;
@@ -105,3 +116,10 @@
     display: flex;
 }
 
+::ng-deep  .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0 0.35em !important;
+}
+
+.mat-icon {
+    width: 1em !important;
+}

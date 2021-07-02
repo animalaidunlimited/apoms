@@ -38,8 +38,9 @@
     width: 88.06px;
     height: 23px;
     border-radius: 24px;
-    position: relative;
+   /*  position: relative;
     left: 14rem;
+    top: 2px; */
     text-align: center;
     vertical-align: middle;
 
@@ -68,6 +69,15 @@
 
 .countWrapper {
     // margin-left: -1rem !important;
+}
+
+.toggleDiv {
+    width: max-content;
+}
+
+.toggleButtonColor {
+    color: green;
+    font-size: 1.6em;
 }
 
 .horizontalTab {
@@ -105,3 +115,10 @@
     display: flex;
 }
 
+::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0 0.35em !important;
+}
+
+.mat-icon {
+    width: 1em !important;
+}
