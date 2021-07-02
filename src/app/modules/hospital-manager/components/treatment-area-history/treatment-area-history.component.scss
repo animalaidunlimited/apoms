@@ -59,6 +59,14 @@ $standard-width: 175px;
     mat-row, mat-footer-row {
         min-height: 30px;
     }
+
+    th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type{
+      padding: 0;
+    }
+
+    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type{
+      padding:0;
+    }
 }
 
 .Edit {
