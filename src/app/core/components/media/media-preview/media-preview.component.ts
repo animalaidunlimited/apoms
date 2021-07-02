@@ -301,7 +301,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       
       this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
        
-        console.log(tagsResponse);
         if (tagsResponse.success === 1) {
 
           this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
