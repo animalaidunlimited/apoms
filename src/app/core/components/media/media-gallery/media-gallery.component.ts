@@ -161,6 +161,40 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     });
 
+    const sub = dialogRef.componentInstance.onArrowKey.pipe(takeUntil(this.ngUnsubscribe)).subscribe(key => {
+
+      // tslint:disable-next-line: max-line-length
+      const mediaDataIndex = this.mediaPatientItems.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
+      const imageIndex = this.galleryImages.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
+      
+    
+       if(key === 37){
+          if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
+             
+              const dialogData = {
+                  image : this.galleryImages[imageIndex - 1],
+                  mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex - 1]
+              };
+              dialogRef.componentInstance.updateDialog(dialogData);
+              
+          }
+      }
+      
+       if(key === 39){
+          
+          if(imageIndex + 1 <= this.galleryImages.length - 1 && mediaDataIndex + 1 <= this.mediaPatientItems.length - 1) {
+             
+              const dialogData = {
+                  image : this.galleryImages[imageIndex + 1],
+                  mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex + 1]
+              };
+              dialogRef.componentInstance.updateDialog(dialogData);
+          } 
+      } 
+      
+    });
+ 
+
     dialogRef.afterClosed()
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(updatedMedia => {
@@ -238,7 +272,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
             full:item.remoteURL,
             type: item.mediaType.includes('video') ? 'video' : 'image',
             time: this.datepipe.transform(item.datetime, 'HH:mm'),
-            date: item.datetime.toString().replace('T',' ').slice(0,10),
+            date: this.datepipe.transform( new Date(item.datetime) , 'yyyy-MM-dd'),
             tags: item.tags,
             patientMediaItemId: item.patientMediaItemId,
             width: item.widthPX,

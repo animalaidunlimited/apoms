@@ -1,15 +1,24 @@
+<meta *ngIf="fullImageView" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=9.0, user-scalable=yes" />
+<meta *ngIf="!fullImageView"name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<button *ngIf="fullImageView" mat-icon-button class="close-button imageCloseBtn" (click)="removeFullView($event)" >
+    <mat-icon class="close-icon" >close</mat-icon>
+</button>
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
-<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0;">
-    <div 
+<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0; border-radius: 0.5em;">
+    <div #imgElement 
     [style.backgroundImage]="'url('+ imageData?.full +')'" 
     class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
-    *ngIf="imageData?.type?.includes('image') || data.upload">
-    <mat-spinner style="position: absolute;left: 23.5em;top: 11em;" [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+    *ngIf="imageData?.type?.includes('image') || data.upload"
+   
+    (click)="onImageClick($event)">
+    
+    <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
         <ng-container *ngIf="data.upload && !loading" >
 
             <input
@@ -26,12 +35,12 @@
             (dragleave)="onDragLeave($event)">
                 <!--camera -->
                 <div fxLayout="row" ngStyle.xs="margin-top:1.5em;">
-                    <div fxLayout="column" fxLayoutAlign="center center">
-                        <mat-icon *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
-                        <p style="text-align:center;" *ngIf="platform.ANDROID || platform.IOS">Click here to capture video/image</p>
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="platform.ANDROID || platform.IOS" >
+                        <mat-icon aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                        <p style="text-align:center;">Click here to capture video/image</p>
                     </div>
                     <!--From gallery-->
-                    <div fxLayout="column" fxLayoutAlign="center center">
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!platform.ANDROID && !platform.IOS" >
                         <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
                         <p style="text-align:center;">Drag and drop files here</p>
                     </div>
