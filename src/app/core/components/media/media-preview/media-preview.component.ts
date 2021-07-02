@@ -114,7 +114,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       imageTags:[],
       imageTagsChips: ''
     });
-    console.log(this.data.mediaData);
+
     if(!this.data?.upload){
      
 
@@ -192,9 +192,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       else if(mediaItem.mediaItem){
 
         mediaItem.mediaItem.updated = true;
-      }
-      else{
-       //  console.log('Upload media');
       }
   
     }
