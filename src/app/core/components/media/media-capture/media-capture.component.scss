@@ -66,6 +66,7 @@
 
   .seconday-icon {
     font-size: 4em;
+    color:lightgray;
   }
 
   .timer{
@@ -88,14 +89,14 @@
 
   @media(max-width: 600px) {
     .container{
-      width: 95vw;
-      height: 95vh;
+      width: 90vw;
+      height: 90vh;
       position: relative;
     }
     .vid {
       object-fit: fill;
-      max-width:95vw;
-      height: 95vh;
+      max-width:90vw;
+      height: 90vh;
     }
   }
 
