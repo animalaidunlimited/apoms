@@ -167,7 +167,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     });
 
-    this.patientForm.valueChanges.subscribe(patient => {
+    this.patientForm?.valueChanges.subscribe(patient => {
      /** 
       * Hide deleted patient
       */
