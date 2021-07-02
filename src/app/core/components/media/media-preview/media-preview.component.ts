@@ -60,12 +60,12 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   onDialog(event: KeyboardEvent): void {
 
     const lisitenKeys = [37, 38, 39, 40];
-    
+
     if((event.composedPath()[0] as HTMLElement).classList[0] as string === 'mat-dialog-container'){
 
       // tslint:disable-next-line: deprecation
       if (lisitenKeys.includes(event.keyCode)) {
-    
+        
         // tslint:disable-next-line: deprecation
         this.onArrowKey.emit(event.keyCode);
 
