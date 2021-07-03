@@ -1,5 +1,9 @@
 <ng-container *ngFor="let image of gallery" >
-    <div class="mediaGalleryImages" (click)="openPreviewDialog(image)" [style.backgroundImage]="'url('+ image.thumbnail +')'">
+    <div *ngIf="image.type !=='video'" class="mediaGalleryImages" (click)="openPreviewDialog(image)" [style.backgroundImage]="'url('+ image.thumbnail +')'">
         <span class="imagesTime">{{image.time}}</span>
     </div>
+    <video autoplay *ngIf="image.type === 'video'" (click)="openPreviewDialog(image)" controls class="mediaGalleryImages">
+        <source src="{{image?.full}}" type="video/mp4" />
+        Browser not supported
+    </video>
 </ng-container>

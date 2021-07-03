@@ -20,7 +20,7 @@
   	"noImplicitReturns": true,
   	"noImplicitThis": true,
     "outDir": "./dist/out-tsc",
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
   	"strictNullChecks": true,
     "target": "es2015",

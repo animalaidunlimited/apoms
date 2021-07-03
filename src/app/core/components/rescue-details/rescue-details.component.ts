@@ -29,6 +29,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true }) ambulanceArrivalTimeField!: ElementRef;
     @ViewChild('ambulanceAssignmentTimeField', { read: ElementRef, static: true }) ambulanceAssignmentTimeField!: ElementRef;
 
+    @ViewChild('emergencyCode', { read: ElementRef, static: true })
+
+
+    emergencyCode!: ElementRef;
+
     emergencyCodes$!: Observable<EmergencyCode[]>;
 
     admissionTime: AbstractControl | undefined | null;
@@ -66,6 +71,12 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.rescueTimeField.nativeElement.focus();
     }
 
+    @HostListener('document:keydown.control.e', ['$event'])
+    emergencyCodeFocus(event: KeyboardEvent) {
+        event.preventDefault();
+        this.emergencyCode.nativeElement.focus();
+    }
+
     @HostListener('document:keydown.control.shift.a', ['$event'])
     ambulanceArrivalTimeFocus(event: KeyboardEvent) {
         event.preventDefault();
@@ -91,6 +102,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
+                code: this.code,
                 rescuers: this.fb.array([])
             }),
         );
@@ -137,6 +149,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.code.valueChanges.subscribe(code =>{
 
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
+            this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
         });
 
@@ -340,20 +353,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         return o1?.EmergencyCodeId === o2?.EmergencyCodeId;
     }
 
-    selectEmergencyCode($event: any) {
+    selectEmergencyCode($event: KeyboardEvent) {
+
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
         this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-            const selectedCode = codes.find((code:EmergencyCode) => {
-
-                return code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase();
-
-            });
+            const selectedCode = codes.find((code:EmergencyCode) =>
+                code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase()
+            );
 
             if (selectedCode) {
-                this.recordForm
-                    .get('emergencyDetails.code')
-                    ?.setValue(selectedCode);
+                this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
+
+                this.code?.setValue(selectedCode,{emitEvent: false});
             }
         });
     }

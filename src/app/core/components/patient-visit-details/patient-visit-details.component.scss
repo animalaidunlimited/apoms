@@ -27,20 +27,25 @@
                     border-top-right-radius: 25px;
                 }
                 .mat-calendar-body-cell{
-                    &.selected-date {
-                        @include border(#607d8b);
-                    }
                     &.complete {
                         @include border(#58b09c);
-                    }
-                    &.complete-animal-died {
-                        @include border(#202030);
-                    }
-                    &.complete-animal-not-found {
-                        @include border(#4f6d7a);
-                    }
-                    &.complete-early-release {
-                        @include border(#386150);
+                        &-animal{
+                            &-died{
+                                @include border(#202030);
+                            }
+                            &-not-found {
+                                @include border(#4f6d7a);
+                            }
+                        }
+                        &-early-release {
+                            @include border(#386150);
+                        }
+                        &-auto-closed {
+                            @include border(#304047);
+                        }
+                        &-complainer-not-reachable {
+                            @include border(#a18fad);
+                        }
                     }
                     &.in-progress {
                         @include border(#caf7e2);
@@ -54,14 +59,11 @@
                     &.to-do {
                         @include border(#a9bec7);
                     }
-                    &.complete-auto-closed {
-                        @include border(#304047);
-                    }
-                    &.complete-complainer-not-reachable {
-                        @include border(#a18fad);
-                    }
                     &.admission-to-aau {
                         @include border(#4f776d);
+                    }
+                    &.selected-date {
+                        @include border(#607d8b);
                     }
                 }
             }
@@ -202,8 +204,7 @@
 @media only screen and (min-width: 1000px) {
     .add-visits-fab-btn {
         display:flex !important;
-        flex-direction: row-reverse;
-        margin:0 calc(50% - 12px) 30px 0;
+        width:100%;
     }
 }
 .full-width {

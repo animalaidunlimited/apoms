@@ -1,5 +1,65 @@
 DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_GetReleaseDetailsById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetReleaseDetailsById(IN prm_PatientId INT)
+BEGIN
+/*
+Created By: Arpit Trivedi
+Created On: 21/11/2020
+Purpose: To fetch release details of a patient.
+
+
+Modified By: Ankit Singh
+Modified On: 28/01/2021
+Purpose: To seperate visit data
+
+Modified By: Ankit Singh
+Modified On: 18/04/2021
+Purpose: For Null Data Checking
+*/
+
+
+DECLARE vReleaseDetailsIdExists INT;
+DECLARE vStreetTreatCaseIdExists INT;
+
+SELECT COUNT(ReleaseDetailsId) INTO vReleaseDetailsIdExists FROM AAU.ReleaseDetails WHERE PatientId=prm_PatientId;
+
+
+IF vReleaseDetailsIdExists > 0 THEN
+SELECT
+	JSON_OBJECT( 
+		"releaseId",rd.ReleaseDetailsId,
+		"patientId",rd.PatientId,
+		"releaseRequestForm",
+			JSON_OBJECT(
+				"requestedUser",u.UserName, 
+				"requestedDate",DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")
+			), 
+		"complainerNotes",rd.ComplainerNotes,
+		"complainerInformed",rd.ComplainerInformed,
+		"Releaser1",rd.Releaser1Id, 
+		"Releaser2",rd.Releaser2Id, 
+		"releaseBeginDate",DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"), 
+		"releaseEndDate",DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")
+	) 
+AS Result
+	FROM
+        AAU.ReleaseDetails rd
+        INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
+        LEFT JOIN AAU.StreetTreatCase s ON rd.PatientID = s.PatientId
+        LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
+	WHERE 
+		rd.PatientId =  prm_PatientId
+	GROUP BY rd.ReleaseDetailsId;
+ELSE
+	SELECT null AS Result;
+END IF;
+END$$
+DELIMITER ;
+DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentListByPatientId !!
 
 DELIMITER $$
@@ -383,3 +443,90 @@ SELECT IF(ROW_COUNT() > 0, 1, 0) AS `success`;
 CALL AAU.sp_GetTreatmentListByPatientId(prm_Username, prm_PatientId);
 
 END $$
+
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateRescueDetails!!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateRescueDetails(
+									IN prm_UserName VARCHAR(64),
+									IN prm_EmergencyCaseId INT,
+                                    IN prm_Rescuer1Id INT,
+                                    IN prm_Rescuer2Id INT,
+                                    IN prm_AmbulanceArrivalTime DATETIME,
+									IN prm_RescueTime DATETIME,
+									IN prm_AdmissionTime DATETIME,
+                                    IN prm_UpdateTime DATETIME,
+                                    In prm_EmergencyCodeId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 29/03/2020
+Purpose: Used to update the status of a patient.
+*/
+
+DECLARE vUpdateTime DATETIME;
+DECLARE vOrganisationId INT;
+DECLARE vCallOutcomeId INT;
+DECLARE vSuccess INT;
+DECLARE vSocketEndPoint VARCHAR(3);
+
+DECLARE vEmNoExists INT;
+SET vEmNoExists = 0;
+
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(CallOutcomeId) INTO vEmNoExists, vUpdateTime, vCallOutcomeId 
+FROM AAU.EmergencyCase 
+WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+IF vEmNoExists = 1 AND prm_UpdateTime >= vUpdateTime THEN
+
+START TRANSACTION;
+
+	UPDATE AAU.EmergencyCase SET						
+						Rescuer1Id             = prm_Rescuer1Id,
+						Rescuer2Id             = prm_Rescuer2Id,
+						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
+						RescueTime             = prm_RescueTime,
+						AdmissionTime          = prm_AdmissionTime,						
+                        UpdateTime			   = prm_UpdateTime,
+                        EmergencyCodeId = prm_EmergencyCodeId
+			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+COMMIT;
+
+    SELECT 1 INTO vSuccess;
+    
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, null);
+
+    INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase RescueDetails',CONCAT('Update ', prm_UpdateTime, ' ', vUpdateTime), NOW());    
+       
+
+ELSEIF vEmNoExists > 1 THEN
+
+	SELECT 2 INTO vSuccess;
+
+ELSEIF prm_UpdateTime < vUpdateTime THEN
+
+	SELECT 3 INTO vSuccess; -- Already updated
+
+ELSEIF vUpdateTime > prm_UpdateTime THEN
+	SELECT 4 INTO vSuccess; -- Emergency record already updated another time.
+    
+ELSE
+	SELECT 5 INTO vSuccess; -- Other error   
+END IF;
+
+SELECT vSocketEndPoint AS socketEndPoint, vSuccess AS success; 
+
+
+END$$
+DELIMITER ;

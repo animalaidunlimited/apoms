@@ -19,6 +19,7 @@ export interface Marker {
 }
 
 @Component({
+    // tslint:disable-next-line: component-selector
     selector: 'location-details',
     templateUrl: './location-details.component.html',
     styleUrls: ['./location-details.component.scss'],
@@ -48,6 +49,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     latitude!: AbstractControl;
     longitude!: AbstractControl;
 
+    mapOptions : google.maps.MapOptions = {};
+
     locationDetails!: FormGroup;
 
     location$!: Location;
@@ -61,6 +64,18 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnInit() {
+        this.mapOptions = {
+            streetViewControl: false,
+            center: this.center,
+			mapId: '587b2567d44623c',
+            styles: [
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{visibility: 'off'}]
+            }
+          ]} as google.maps.MapOptions;
+
         this.recordForm.addControl(
             'locationDetails',
             this.fb.group({
@@ -143,7 +158,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         });
 
     }
-
+    
     invokeEvent(place: any) {
         this.setAddress.emit(place);
 

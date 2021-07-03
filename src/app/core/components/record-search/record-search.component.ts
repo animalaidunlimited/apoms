@@ -34,6 +34,8 @@ export class RecordSearchComponent implements OnDestroy {
 
     loading = false;
 
+    noResults = false;
+
     searchResultArray!: SearchResponse[];
 
     searchResults$!:Observable<SearchResponse[]>;
@@ -52,12 +54,17 @@ export class RecordSearchComponent implements OnDestroy {
 
     onSearchQuery(searchQuery:string){
         this.loading = true;
+        this.noResults = false;
 
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
         this.searchResults$
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((value)=>{
+
+            if(!value){
+                this.noResults = true;
+            }
 
             this.searchResultArray = value?.sort((date1: any,date2:any)=> {
                 return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();
