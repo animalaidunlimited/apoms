@@ -8,6 +8,7 @@ import { NavigationService } from 'src/app/core/services/navigation/navigation.s
 import { CaseService } from '../../services/case.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -16,7 +17,8 @@ interface EmergencyCaseIndentifiers {
 
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
+    
+    // tslint:disable-next-line: component-selector
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
     styleUrls: ['./tab-bar.component.scss'],
@@ -134,5 +136,16 @@ export class TabBarComponent implements OnInit, OnDestroy {
            mediaVal
         }
     });
+    }
+
+
+    openShortcutsDialog($event:Event, tabIndex:number){
+        $event.preventDefault();
+        
+        const dialog = this.dialog.open(KeyboardShortcutsComponent, {
+            minWidth: '50%'
+        });
+        dialog.afterClosed().subscribe(()=> this.selected.setValue(tabIndex));
+
     }
 }

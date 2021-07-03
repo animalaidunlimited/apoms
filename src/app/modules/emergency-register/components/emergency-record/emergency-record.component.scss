@@ -136,5 +136,29 @@ $standard-width: 183px;
     height: auto;
     width: auto;
     display: flex;
-    margin-top: 9px;
+    cursor: pointer;
+}
+
+.comment-box{
+    position: relative;
+    margin-top: 0.7rem;
+    display: flex;
+
+}
+.comment-badge{
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(45%, -30%);
+    background: #f44336;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: -2px 1px 2px 0 rgb(0 0 0 / 2%), -3px 4px 2px 0 rgb(1 1 1 / 25%);
+    font-weight: 600;
 }

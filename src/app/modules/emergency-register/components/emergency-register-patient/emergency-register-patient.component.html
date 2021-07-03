@@ -1,12 +1,13 @@
 <div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
-  fxLayout.gt-xs="row">
+  fxLayout.gt-xs="row" >
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
-
-    <mat-form-field style="margin-top: 1.4rem;">
+    
+    <!-- Animal Dropdown-->
+    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;" fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher" (keydown.Tab)="isSpeciesBlank($event);false;"
@@ -22,7 +23,8 @@
 
     </mat-form-field>
 
-    <mat-form-field fxFlex.gt-xs="1 1 100%">
+    <!-- Main Problem -->
+    <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
 
       <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
 
@@ -33,13 +35,13 @@
         </mat-chip>
 
         <input placeholder="Main problem(s)" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
-          [matChipInputFor]="chipList" (focusout)="checkMainProblem()">
+          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)" (keydown.Shift.Tab)="focusAnimalType($event)">
 
       </mat-chip-list>
 
       <mat-autocomplete class="problemAutocomplete" autoActiveFirstOption #problemAuto="matAutocomplete"
         (optionSelected)="updatePatientProblemArray($event)">
-        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
+        <mat-option *ngFor="let problem of filteredProblems$ | async" [value]="problem.ProblemId">
           {{problem.Problem}}
         </mat-option>
       </mat-autocomplete>
@@ -48,21 +50,26 @@
   </div>
 
 
-  <button class="deleteButton" type="button" (click)="deletePatient($event, patientIndex)" mat-mini-fab color="warn">
+  <button *ngIf="!patientDeletedFlag" class="deleteButton" type="button" (click)="deletePatient()" mat-mini-fab color="warn">
     <mat-icon>delete</mat-icon>
   </button>
+
+  <button *ngIf="patientDeletedFlag" class="undoButton" type="button" (click)="redoPatient()" mat-mini-fab color="warn">
+    <mat-icon>undo</mat-icon>
+  </button>
+  
 
 
   <!-- Calloutcome details-->
   <div *ngIf="outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
 
-    <emergency-case-outcome class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
+    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18">
+    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
 
       <mat-label>Tag number</mat-label>
 
-      <input tabindex="20" matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+      <input matInput #tagNumber  formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
 
       <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
         The tag number already exists.
@@ -73,12 +80,17 @@
     <div *ngIf="patientForm.get('isAdmission')?.value" class="admissionAreaDivWrapper">
 
       <mat-form-field class="admissionAreaWrapper">
+
         <mat-label>Admission area</mat-label>
+
         <mat-select formControlName="admissionArea" [errorStateMatcher]="errorMatcher">
+
           <mat-option *ngFor="let areaName of treatmentAreaNames$ | async" [value]="areaName.areaId">
             {{areaName.areaName}}
           </mat-option>
+
         </mat-select>
+
       </mat-form-field>
       
     </div>

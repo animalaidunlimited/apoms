@@ -11,7 +11,7 @@
 
     <location-details [recordForm]="recordForm"></location-details>
 
-    <animal-selection [outcome]="false" [recordForm]="recordForm"></animal-selection>
+    <animal-selection (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
 
     <fieldset class="form-sub-group">
 
@@ -51,7 +51,7 @@
       (click)="openCommentDialog(); $event.preventDefault();"
       [matBadge]="hasComments ? 1 : 0" matBadgeColor="primary"
       role="img" mattooltip="Add/Edit comment" color="primary"
-      class="comment-icon "> comment </mat-icon>
+      class="comment-icon"> comment </mat-icon>
 
     </div>
 

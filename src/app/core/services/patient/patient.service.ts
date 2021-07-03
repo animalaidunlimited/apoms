@@ -233,16 +233,18 @@ export class PatientService extends APIService {
     }
 
     public async savePatientMedia(mediaItem: MediaItem){
-
+      
         return await this.put(mediaItem)
-            .then((data:SuccessResult) => {
+            .then((data:{success:number, mediaItemId:number}) => {
 
-
+                
                 if(data.success === 1){
-
+                   
                     let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
                         patientMediaItemVal.patientId === mediaItem.patientId
                     );
+
+                    
 
                     if(!patientMediaItem){
                         // We're loading the service for the first time and the first patient has no photos
@@ -258,12 +260,13 @@ export class PatientService extends APIService {
 
                     let dataItem = patientMediaItem.mediaItem.getValue();
 
+                    
 
                     if(mediaItem.deleted){
-                        dataItem = dataItem.filter(e => e.patientMediaItemId !== mediaItem.patientMediaItemId);
+                        dataItem = dataItem.filter(e => e.patientMediaItemId !== data.mediaItemId);
                     }
 
-                    const existingItem = dataItem.findIndex(item => item.patientMediaItemId === mediaItem.patientMediaItemId);
+                    const existingItem = dataItem.findIndex(item => item.patientMediaItemId === data.mediaItemId);
 
 
                     if(existingItem === -1 ){
@@ -272,7 +275,7 @@ export class PatientService extends APIService {
                      else {
                        dataItem[existingItem] = mediaItem;
                     }
-
+                    
                     patientMediaItem.mediaItem.next(dataItem);
 
                 }

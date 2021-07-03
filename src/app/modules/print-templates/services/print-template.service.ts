@@ -263,7 +263,7 @@ private toCamelCase(str:string) : string {
       }
 
 
-    });
+    }, 0);
   }
 
 }
