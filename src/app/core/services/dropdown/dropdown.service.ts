@@ -316,7 +316,7 @@ export class DropdownService extends APIService {
         if (!this.animalTypes$) {
             this.animalTypes$ = this.getObservable(request).pipe(
                 map(response => {
-                    return response;
+                    return response.sort((a: AnimalType,b: AnimalType) => a.Sort- b.Sort);
                 }),
             );
         }
@@ -450,7 +450,7 @@ export class DropdownService extends APIService {
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
                 map((response: CallOutcomeResponse[]) => {
-                    return response;
+                    return response.sort((a,b) => a.SortOrder - b.SortOrder);
                 }),
             );
         }

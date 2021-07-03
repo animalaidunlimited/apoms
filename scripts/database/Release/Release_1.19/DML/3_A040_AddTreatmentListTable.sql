@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `AAU`.`TreatmentList` (
   `OutDate` DATETIME NULL,
   `OutAccepted` TINYINT NULL,
   `OutOfHospital` TINYINT NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TreatmentListId`),
   INDEX `FK_TreatmentListPatientId_PatientPatiendId_idx` (`PatientId` ASC) VISIBLE,
   INDEX `FK_InTreatmentAreaId_TreatmentAreaTreatmentAreaId_idx` (`InTreatmentAreaId` ASC) VISIBLE,

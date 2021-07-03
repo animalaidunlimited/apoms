@@ -4,9 +4,11 @@
     height: 98vh;
 }
 
-.stop-circle{
-    font-size: 45px;
-    color: rgb(150, 11, 11);
+.stop-circle {
+  font-size: 2.5em;
+  color: #960b0b;
+  vertical-align: baseline;
+  margin-top: -0.3em;
 }
 
 .canvas{
@@ -37,32 +39,34 @@
     border-radius: 4px 4px 0 0;
   }
 
-  .capture-buttons{
+  .capture-buttons {
     position: absolute;
-    bottom: 0;
-    width: 98vw;
-    height: 15%
+    bottom: 1em;
+    display: flex;
+    width: 100%;
+    place-content: center center;
   }
 
-  .video-capture-button{
-    left: 50%;
-    margin: 20px 0 0 -28px;
+  .video-capture-button {
+    width: 2.5em;
     background-color: whitesmoke;
+    height: 2.5em;
+    align-self: center;
   }
 
-  .image-capture-button{
-    left: 60%;
-    margin: 20px 0 0 -28px;
+  .image-capture-button {
+    margin: 0 2em 0 0;
     background-color: transparent;
-  }
+}
 
   .complete-button{
     left: 80%;
     background-color: transparent;
   }
 
-  .seconday-icon{
-    font-size: 36px;
+  .seconday-icon {
+    font-size: 4em;
+    color:lightgray;
   }
 
   .timer{
@@ -82,3 +86,24 @@
   .alert{
     color: rgb(218, 21, 21);
   }
+
+  @media(max-width: 600px) {
+    .container{
+      width: 90vw;
+      height: 90vh;
+      position: relative;
+    }
+    .vid {
+      object-fit: fill;
+      max-width:90vw;
+      height: 90vh;
+    }
+  }
+
+  button.close-button {
+    position: absolute;
+    right: 0;
+    background: antiquewhite;
+    transform: translate(10px, -10px);
+    z-index:99;
+}

@@ -1,6 +1,6 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
@@ -51,8 +51,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
-    @ViewChild('tagNumber') tagNumber!: QueryList<ElementRef>;
-
+    @Output() problemTabPressed:EventEmitter<boolean> = new EventEmitter();
+    
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
     @ViewChildren(EmergencyRegisterPatientComponent) emergencyRegisterPatients!: QueryList<EmergencyRegisterPatientComponent>;
@@ -85,9 +85,13 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
+        if(this.outcome){
+            return;
+        }
         this.addPatientRow();
         this.cdr.detectChanges();
 
+        
         const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput.nativeElement.focus();
@@ -97,10 +101,16 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.enter', ['$event'])
     catchControlEnter(event: KeyboardEvent) {
         event.preventDefault();
-        this.tagNumber.toArray()[0].nativeElement.focus();
+        if(this.outcome)
+        {
+            this.emergencyRegisterPatients.first.tagNumber?.nativeElement.focus();
+        }
+        
     }
 
     ngOnInit() {
+
+
         
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
         
@@ -108,6 +118,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         this.patients = this.recordForm.get('patients') as FormArray;
         
+
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
@@ -126,12 +137,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             this.setChildOutcomeAsParentPatient(this.patients);
         }
 
-
+        
     }
 
-    deletePatient(patientIndex:number) {
-
-        this.patients.removeAt(patientIndex);
+    problemTab($event:boolean){
+        this.problemTabPressed.emit($event);
     }
 
     addPatientRow(){
@@ -142,10 +152,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 CallOutcome: 'Admission'
             }, {emitEvent: false});
         }
+        
         this.patients.push(patient);
     }
 
-
+   
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();

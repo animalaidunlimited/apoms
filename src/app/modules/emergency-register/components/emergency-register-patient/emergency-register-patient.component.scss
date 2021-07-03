@@ -22,6 +22,7 @@
 
 
 .elevatedFormsIndex {
+    width:1.3rem;
     min-width: 1.3rem;
     height: 1.3rem;
     border-bottom-right-radius: 0.5rem;
@@ -71,6 +72,11 @@
     width:100%;
 }
 
+.undoButton{
+    @extend .deleteButton;
+    background-color: rgb(224, 178, 178);
+}
+
 @media(max-width: 600px) {
     
     ::ng-deep .mat-autocomplete-panel{
@@ -80,6 +86,11 @@
         &.problemAutocomplete{
             width:max-content;
         }
+    }
+    .mat-form-field.full-width {
+        max-width: 100% !important;
+        width:100%;
+        margin-right:0px !important;
     }
 }
 

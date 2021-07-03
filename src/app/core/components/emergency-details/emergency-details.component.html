@@ -1,9 +1,11 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div fxLayout="row" fxLayout.xs="row wrap" fxLayoutAlign="baseline center">
+    <div fxLayout="row" fxLayout.xs="row-reverse wrap"  fxLayoutAlign="baseline center"  fxLayoutAlign.xs="space-between center" >
 
-    <div class="emergencyDetailsCode" [ngClass]="{
+    <!-- <div fxLayout="row wrap" fxLayoutGap='10px' fxLayoutAlign='start' > -->
+
+    <div fxShow="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
         'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
         'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
         'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
@@ -30,7 +32,7 @@
             [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class='dispatcherWrapper'>
         <mat-label>Dispatcher</mat-label>
         <mat-select tabindex="11" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
             <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">

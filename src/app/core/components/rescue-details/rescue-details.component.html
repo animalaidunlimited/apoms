@@ -78,7 +78,7 @@
         </mat-form-field>
 
         <mat-form-field>
-            <input tabindex="16" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"
+            <input tabindex="15" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"
             name="ambulanceArrivalTime" [min]="currentCallDateTime" [max]="currentRescueTime"
             (focus)="setInitialTime($event)" (blur)="updateTimes()"
             placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
@@ -93,7 +93,7 @@
         </mat-form-field>
 
         <mat-form-field>
-                    <input tabindex="10" formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                    <input tabindex="16" formControlName="rescueTime" type="datetime-local" name="rescueTime"
                     [min]="currentCallDateTime" [max]="currentAdmissionTime"
                     (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
 
@@ -108,7 +108,7 @@
 
 
             <mat-form-field>
-                    <input tabindex="16" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+                    <input tabindex="17" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
 
                     <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
                         Admission before call!
