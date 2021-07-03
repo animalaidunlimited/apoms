@@ -1,0 +1,17 @@
+.keyboard_shortcut div span {
+    background: rgb(0 0 0 / 12%);
+    padding: 0.12em 0.3em;
+    border-radius: 0.2em;
+}
+.keyboard_shortcut {
+    display: flex;
+    place-content: center space-between;
+}
+.keyboard_shortcut > div {
+    width: 48%;
+}
+.keyboard_shortcut > div > div {
+    height: 3em;
+    display: flex;
+    place-content: space-between;
+}

@@ -6,8 +6,12 @@
     height: 100%;
     width: 100%;
 }
-// @media only screen and (max-width:600px){
-//     :host > .mat-tab-group{
-//         margin-top:60px;
-//     }
-// }
+@media only screen and (max-width:600px){
+    :host > .mat-tab-group{
+        margin-top:60px;
+    }
+}
+
+:host > .mat-tab-group:first-child ::ng-deep .mat-tab-label:last-child{
+    margin-left: auto;
+}

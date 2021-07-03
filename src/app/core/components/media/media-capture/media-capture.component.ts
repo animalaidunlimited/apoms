@@ -1,7 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SafeUrl } from '@angular/platform-browser';
-import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@animalaidunlimited/ngx-gallery-aau';
 import { Subject, timer } from 'rxjs';
 import { finalize, take, takeUntil } from 'rxjs/operators';
 import { MediaPasteService } from '../../../services/navigation/media-paste/media-paste.service';
@@ -24,6 +22,10 @@ export class MediaCaptureComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement!: ElementRef;
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
 
+  @Output() closeMediaDialog!: EventEmitter<boolean>;
+
+  capturedImages:string[] = [];
+  
 constraints = {
   video: {
       facingMode: 'environment',
@@ -37,8 +39,7 @@ constraints = {
 
 capturing = false;
 
-galleryOptions: NgxGalleryOptions[] = [];
-galleryImages: NgxGalleryImage[] = [];
+
 
 mediaRecorder!:MediaRecorder;
 
@@ -55,58 +56,17 @@ videoHeight = 0;
     private renderer: Renderer2,
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private changeDetector: ChangeDetectorRef,
-    private dialogRef: MatDialogRef<MediaCaptureComponent>,
     private mediaService: MediaPasteService) {
 
   }
 
   ngOnInit(): void {
 
-
-
-    this.galleryOptions = [
-      {
-          imageSwipe:true,
-          imageArrowsAutoHide: false,
-          thumbnailsArrowsAutoHide: false,
-          arrowPrevIcon: 'fa fa-chevron-circle-left ngx-gallery-arrow',
-          arrowNextIcon: 'fa fa-chevron-circle-right ngx-gallery-arrow',
-          closeIcon: 'fa fa-times',
-          width: '256px',
-          height: '144px',
-          thumbnailsColumns: 4,
-          thumbnailsRows:1,
-          thumbnailsSwipe:true,
-          imageSize: 'contain',
-          imageAnimation: NgxGalleryAnimation.Zoom,
-          previewCloseOnClick: true,
-          image: false,
-
-      },
-      // max-width 800
-      {
-          breakpoint: 1028,
-          width: '100%',
-          height: '600px',
-          imagePercent: 100,
-          thumbnailsPercent: 50,
-          thumbnailsMargin: 20,
-          thumbnailMargin: 20,
-      },
-      // max-width 400
-      {
-          breakpoint: 400,
-          preview: true
-      }
-
-  ];
-
     this.startCamera();
 
   }
 
   ngOnDestroy(){
-
 
     this.stream.getTracks().forEach((track) => {
       track.stop();
@@ -209,14 +169,9 @@ captureImage() {
 
       this.uploadAndAddToGallery(blob,'image');
 
-      // this.addNewGalleryItem(URL.createObjectURL(blob), 'image');
-
     });
 }
 
-closeDialog(){
-  this.dialogRef.close();
-}
 
 uploadAndAddToGallery(newFile:any, type:string){
 
@@ -225,25 +180,23 @@ uploadAndAddToGallery(newFile:any, type:string){
   newFile.lastModified = new Date();
   newFile.name = 'uploadFile';
 
-  const localSrc = URL.createObjectURL(newFile);
-
   const uploadFile = newFile as File;
 
   const returnObject = this.mediaService.handleUpload(uploadFile, this.data.patientId);
 
   if(returnObject.mediaItem){
 
+   
     returnObject.mediaItem.heightPX = this.videoHeight;
     returnObject.mediaItem.widthPX = this.videoWidth;
-
-
-    setTimeout(() => {this.addNewGalleryItem(localSrc, type);},0);
-
+   
     returnObject.mediaItemId
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((result) => {
-
+     
       if(returnObject.mediaItem && result){
+
+        this.capturedImages.push( returnObject.mediaItem?.remoteURL );
         this.uploading--;
         this.changeDetector.detectChanges();
 
@@ -252,22 +205,11 @@ uploadAndAddToGallery(newFile:any, type:string){
   }
 }
 
-addNewGalleryItem(itemURL:string|SafeUrl, itemType:string){
-
-  const newGalleryItem = {
-    small: itemURL,
-    medium: itemURL,
-    big: itemURL,
-    type: itemType
-  };
-
-  const newArray = Array.from(this.galleryImages);
-
-  newArray.unshift(newGalleryItem);
-
-  this.galleryImages = Array.from(newArray);
-  this.changeDetector.detectChanges();
-
-}
+  closeDialog($event:Event) {
+   
+    $event.preventDefault();
+    
+    this.closeMediaDialog?.emit(true);
+  }
 
 }

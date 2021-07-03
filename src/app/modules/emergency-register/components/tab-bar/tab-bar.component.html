@@ -1,7 +1,6 @@
 <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
 
-        <mat-tab *ngFor="let tab of tabs; let index = index"
-        label="tab">
+        <mat-tab *ngFor="let tab of tabs; let index = index" label="tab">
 
                 <ng-template mat-tab-label>
                 {{tab.value}}
@@ -27,6 +26,15 @@
                 </button>
         </ng-template>
         </mat-tab>
+        <mat-tab >
+                <ng-template mat-tab-label >
+                        <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="openShortcutsDialog($event,selected.value)">
+                                <mat-icon fxHide.lt-md color="primary">build_circle</mat-icon>
+                        </button>
+                </ng-template>
+        </mat-tab>
 
 </mat-tab-group>
+
+
 

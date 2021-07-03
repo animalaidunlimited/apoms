@@ -101,6 +101,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
         this.patientId = this.incomingPatient.patientId;
 
         this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
+        
         if(this.mediaData){
 
             // tslint:disable-next-line: deprecation
@@ -109,11 +110,13 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
                     return;
                 }
 
+                
                 this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
-
+                
                 this.changeDetector.detectChanges();
 
             });
+    
         }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,

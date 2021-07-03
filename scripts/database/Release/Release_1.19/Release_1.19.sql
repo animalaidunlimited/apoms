@@ -130,9 +130,7 @@ BEGIN
 	-- return the rescue status
 	RETURN (rescueReleaseStatus);
 END$$
-DELIMITER ;
 DELIMITER !!
-DROP DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_ETL_DailyStats_Full !!
 
@@ -1480,8 +1478,7 @@ WHERE ec.EmergencyCaseId = prm_emergencyCaseId
 GROUP BY ec.EmergencyCaseId;
 
 END$$
-DELIMITER ;
-DELIMITER !!
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetPatientsByEmergencyCaseId !!
@@ -1563,7 +1560,65 @@ LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
 GROUP BY p.EmergencyCaseId;
 
 END$$
+DELIMITER ;
+DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_GetReleaseDetailsById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetReleaseDetailsById(IN prm_PatientId INT)
+BEGIN
+/*
+Created By: Arpit Trivedi
+Created On: 21/11/2020
+Purpose: To fetch release details of a patient.
+
+Modified By: Ankit Singh
+Modified On: 28/01/2021
+Purpose: To seperate visit data
+
+Modified By: Ankit Singh
+Modified On: 18/04/2021
+Purpose: For Null Data Checking
+*/
+
+
+DECLARE vReleaseDetailsIdExists INT;
+DECLARE vStreetTreatCaseIdExists INT;
+SELECT COUNT(ReleaseDetailsId) INTO vReleaseDetailsIdExists FROM AAU.ReleaseDetails WHERE PatientId=prm_PatientId;
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
+
+
+IF vStreetTreatCaseIdExists >= 0 AND vReleaseDetailsIdExists > 0 THEN
+SELECT
+	JSON_OBJECT( 
+		"releaseId",rd.ReleaseDetailsId,
+		"patientId",rd.PatientId,
+		"releaseRequestForm",
+			JSON_OBJECT(
+				"requestedUser",u.UserName, 
+				"requestedDate",DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")
+			), 
+		"complainerNotes",rd.ComplainerNotes,
+		"complainerInformed",rd.ComplainerInformed,
+		"Releaser1",rd.Releaser1Id, 
+		"Releaser2",rd.Releaser2Id, 
+		"releaseBeginDate",DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"), 
+		"releaseEndDate",DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")
+	) 
+AS Result
+	FROM
+        AAU.ReleaseDetails rd
+        INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
+        LEFT JOIN AAU.StreetTreatCase s ON rd.PatientID = s.PatientId
+        LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
+	WHERE 
+		rd.PatientId =  prm_PatientId
+	GROUP BY rd.ReleaseDetailsId;
+ELSE
+	SELECT null AS Result;
+END IF;
+END$$
 
 DELIMITER !!
 
@@ -1786,6 +1841,7 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("area" , data.Area),
+JSON_OBJECT("sortArea" , data.SortArea),
 JSON_OBJECT("lowPriority" , LowPriority),
 JSON_OBJECT("normalPriority" , NormalPriority),
 JSON_OBJECT("highPriority" , HighPriority),
@@ -1794,9 +1850,11 @@ JSON_OBJECT("adults" , Adults),
 JSON_OBJECT("count" , data.TotalCount))) as PatientCountData
 FROM
 (
-SELECT Area, LowPriority, NormalPriority, HighPriority, Infants, Adults, TotalCount FROM TotalAreaCount tc
+SELECT tc.Area, IFNULL(ta.SortArea,999) AS `SortArea`, tc.LowPriority, tc.NormalPriority, tc.HighPriority, tc.Infants, tc.Adults, tc.TotalCount
+FROM TotalAreaCount tc
+LEFT JOIN AAU.TreatmentArea ta ON ta.Area = tc.Area
 UNION ALL
-SELECT "Total", 0, 0, 0, 0, 0, SUM(TotalCount) FROM TotalAreaCount
+SELECT "Total", 999, 0, 0, 0, 0, 0, SUM(TotalCount) FROM TotalAreaCount
 ) data;
 
 
@@ -1856,19 +1914,19 @@ Purpose: Procedure for inserting admission and moved in records to the treatment
 */
 
 WITH PatientCTE AS (
-SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
-p.Sex, p.Description, p.KnownAsName, p.MainProblems,
-CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
-FROM AAU.Patient p
-INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
-WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
-AND p.PatientCallOutcomeId = 1
+	SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.PatientStatusDate, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
+	p.Sex, p.Description, p.KnownAsName, p.MainProblems,
+	CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
+	FROM AAU.Patient p
+	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
+	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND p.PatientCallOutcomeId = 1
 ),
 EmergencyCaseCTE AS (
-SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
-FROM AAU.EmergencyCase ec
-WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
+	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
+	FROM AAU.EmergencyCase ec
+	WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
 ),
 RecordSplitCTE AS
 (
@@ -1917,7 +1975,15 @@ FROM PatientCTE p
 		FROM AAU.TreatmentList tld
         WHERE (prm_TreatmentListDate <= IFNULL(CAST(IF(OutAccepted IS NULL, NULL, OutDate) AS DATE), prm_TreatmentListDate)
         AND CAST(InDate AS DATE) <= prm_TreatmentListDate)
-    ) tl ON tl.PatientId = p.PatientId AND NULLIF(OutAccepted, 0) IS NULL AND OutOfHospital IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId
+    ) tl ON tl.PatientId = p.PatientId
+    AND NULLIF(OutAccepted, 0) IS NULL
+    AND InTreatmentAreaId = prm_TreatmentAreaId
+    AND
+		(
+			OutOfHospital IS NULL
+			OR
+			CAST(p.PatientStatusDate AS DATE) = prm_TreatmentListDate
+		)
 	INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
 	INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
 	INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
@@ -2137,7 +2203,6 @@ END IF;
 SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;
 
 END$$
-DELIMITER ;
 
 DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient !!
@@ -2236,8 +2301,6 @@ END IF;
 SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
 
 END$$
-DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertPatientCallerInteraction !!
@@ -2473,7 +2536,6 @@ END IF;
 
 
 END$$
-DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertTreatmentListRecord !!
@@ -2697,6 +2759,82 @@ END$$
 DELIMITER ;
 
 DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatient!!
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdatePatient(
+									IN prm_UserName VARCHAR(64),
+									IN prm_PatientId INT,
+									IN prm_EmergencyCaseId INT,
+									IN prm_Position INT,
+									IN prm_AnimalTypeId INT,
+                                    IN prm_IsDeleted INT,
+                                    IN prm_TagNumber VARCHAR(45),
+                                    IN prm_PatientCallOutcomeId INT,
+                                    IN prm_SameAsEmergencyNumber INT,
+									IN prm_PatientStatusDate DATETIME
+)
+BEGIN
+
+DECLARE vOrganisationId INT;
+DECLARE vPatientExists INT;
+DECLARE vPatientId INT;
+DECLARE vTagNumber VARCHAR(45);
+DECLARE vExistingTagNumber VARCHAR(45);
+DECLARE vSameAsEmergencyCaseId INT;
+DECLARE vSuccess INT;
+
+SET vTagNumber = NULL;
+SET vSameAsEmergencyCaseId = NULL;
+
+SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE PatientId <> prm_PatientId
+AND EmergencyCaseId = prm_EmergencyCaseId
+AND Position = prm_Position AND IsDeleted = 0;
+
+SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+
+SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+IF vPatientExists = 0 THEN
+
+	UPDATE AAU.Patient SET
+			Position		= prm_Position,
+			AnimalTypeId	= prm_AnimalTypeId,
+			TagNumber		= IF(prm_IsDeleted = 1, NULL, UPPER(prm_TagNumber)),
+            PatientCallOutcomeId = prm_PatientCallOutcomeId,
+            SameAsEmergencyCaseId = vSameAsEmergencyCaseId,
+            IsDeleted		= prm_IsDeleted,
+            PatientStatusDate = prm_PatientStatusDate,
+            DeletedDate		= CASE
+								WHEN prm_IsDeleted = FALSE THEN NULL
+                                WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
+							  END
+	WHERE PatientId = prm_PatientId;
+
+    -- Now update the Census in case there were records entered there early.
+    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
+		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
+    END IF;
+
+	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
+
+    SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
+
+ELSEIF vPatientExists >= 1 THEN
+
+	SELECT 2 INTO vSuccess;
+
+ELSE
+
+	SELECT 3 INTO vSuccess;
+END IF;
+
+SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
+
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatientCallerInteraction !!
 
@@ -2770,7 +2908,6 @@ END IF;
 SELECT vSuccess AS success;
 
 END$$
-DELIMITER ;
 
 DELIMITER !!
 DROP PROCEDURE AAU.sp_UpdatePatientMedia!!
@@ -2846,6 +2983,31 @@ END IF;
 END$$
 DELIMITER ;
 
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatientStatusAfterRelease !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdatePatientStatusAfterRelease(IN prm_ReleaseDetailsId INTEGER, IN prm_ReleaseEndDate DATE)
+BEGIN
+
+/*
+
+Created By: Jim Mackenzie
+Created On: 22/02/2021
+Purpose: When the release is complete we should update the patient status with the release
+end date as we know with certainty that the patient has been released.
+
+*/
+
+UPDATE AAU.Patient p
+INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+SET p.PatientStatusDate = prm_ReleaseEndDate, p.PatientStatusId = 2
+WHERE rd.ReleaseDetailsId = prm_ReleaseDetailsId;
+
+
+END$$
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateTreatmentList_AcceptRejectMoveIn !!
@@ -3262,11 +3424,9 @@ END IF;
 SELECT vTagNumber, vCaseId;
 
 END$$
-DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertVisit!!
-DROP PROCEDURE IF EXISTS AAU.sp_InsertAndUpdateVisit!!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertVisit(
@@ -3360,89 +3520,6 @@ END IF;
 SELECT vSuccess AS success, prm_VisitId AS visitId, DATE_FORMAT(prm_VisitDate, '%Y-%m-%d') AS visitDate;
 
 END$$
-DELIMITER ;
-
-
-
-
-
-DELIMITER !!
-DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatient!!
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdatePatient(
-									IN prm_UserName VARCHAR(64),
-									IN prm_PatientId INT,
-									IN prm_EmergencyCaseId INT,
-									IN prm_Position INT,
-									IN prm_AnimalTypeId INT,
-                                    IN prm_IsDeleted INT,
-                                    IN prm_TagNumber VARCHAR(45),
-                                    IN prm_PatientCallOutcomeId INT,
-                                    IN prm_SameAsEmergencyNumber INT,
-									IN prm_PatientStatusDate DATETIME
-)
-BEGIN
-
-DECLARE vOrganisationId INT;
-DECLARE vPatientExists INT;
-DECLARE vPatientId INT;
-DECLARE vTagNumber VARCHAR(45);
-DECLARE vExistingTagNumber VARCHAR(45);
-DECLARE vSameAsEmergencyCaseId INT;
-DECLARE vSuccess INT;
-
-SET vTagNumber = NULL;
-SET vSameAsEmergencyCaseId = NULL;
-
-SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE PatientId <> prm_PatientId
-AND EmergencyCaseId = prm_EmergencyCaseId
-AND Position = prm_Position AND IsDeleted = 0;
-
-SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
-
-SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
-
-IF vPatientExists = 0 THEN
-
-	UPDATE AAU.Patient SET
-			Position		= prm_Position,
-			AnimalTypeId	= prm_AnimalTypeId,
-			TagNumber		= IF(prm_IsDeleted = 1, NULL, UPPER(prm_TagNumber)),
-            PatientCallOutcomeId = prm_PatientCallOutcomeId,
-            SameAsEmergencyCaseId = vSameAsEmergencyCaseId,
-            IsDeleted		= prm_IsDeleted,
-            PatientStatusDate = prm_PatientStatusDate,
-            DeletedDate		= CASE
-								WHEN prm_IsDeleted = FALSE THEN NULL
-                                WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
-							  END
-	WHERE PatientId = prm_PatientId;
-
-    -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
-		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
-    END IF;
-
-	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
-
-    SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
-
-ELSEIF vPatientExists >= 1 THEN
-
-	SELECT 2 INTO vSuccess;
-
-ELSE
-
-	SELECT 3 INTO vSuccess;
-END IF;
-
-SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
-
-END$$
-DELIMITER ;
 
 DELIMITER !!
 
@@ -3524,5 +3601,344 @@ END IF;
 
 SELECT vSocketEndPoint AS socketEndPoint, vSuccess AS success; 
 
+END$$
 
-END
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveStreetTreatCasesWithNoVisits!!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetActiveStreetTreatCasesWithNoVisits( IN prm_Username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+
+SELECT o.OrganisationId INTO vOrganisationId
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+/*
+Created By: Ankit Singh
+Created On: 10/02/2021
+Purpose: Used to return active cases for the StreetTreat screen Changed Problem with MainProblem
+*/
+WITH casesCTE AS
+(
+	SELECT st.StreetTreatCaseId
+	FROM AAU.StreetTreatCase st
+	WHERE OrganisationId = vOrganisationId
+    AND st.StreetTreatCaseid NOT IN (
+		SELECT
+			v.StreetTreatCaseid
+		FROM AAU.Visit v
+		WHERE v.statusid < 3 AND v.date > CURDATE()
+    )
+),
+visitsCTE AS
+(
+	SELECT
+		stc.StreetTreatCaseId,
+        stc.PatientId,
+		t.TeamId,
+		t.TeamName,
+        t.TeamColour,
+        stc.PriorityId AS CasePriorityId,
+        stc.StatusId AS CaseStatusId,
+        ec.Latitude,
+        ec.Longitude,
+        ec.Location,
+        p.TagNumber,
+        p.Description,
+        stc.PriorityId,
+        pr.Priority,
+        stc.MainProblemId,
+        mp.MainProblem,
+        ec.EmergencyCaseId,
+        pr.Priority AS CasePriority,
+        s.Status AS CaseStatus,
+        at.AnimalType
+	FROM AAU.StreetTreatCase stc
+	INNER JOIN AAU.Team t ON t.TeamId = stc.TeamId
+    INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
+    INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+    INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
+    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = stc.MainProblemId
+    INNER JOIN AAU.Status s ON s.StatusId = stc.StatusId
+	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
+    AND stc.StatusId < 4
+),
+CaseCTE AS
+(
+SELECT
+rawData.TeamId,
+rawData.TeamName,
+rawData.TeamColour,
+rawData.StreetTreatCaseId,
+rawData.CasePriorityId,
+rawData.CasePriority,
+rawData.CaseStatusId,
+rawData.CaseStatus,
+JSON_ARRAY() AS StreetTreatCases,
+
+        JSON_OBJECT(
+          'Latitude', rawData.Latitude,
+          'Longitude',rawData.Longitude,
+          'Address', rawData.Location
+
+      )AS Position,
+      JSON_OBJECT(
+          'TagNumber', rawData.TagNumber,
+          'AnimalName', rawData.Description,
+          'AnimalType', rawData.AnimalType,
+          'Priority', rawData.Priority,
+          'PatientId',rawData.PatientId,
+          'EmergencyCaseId',rawData.EmergencyCaseId
+      ) AS AnimalDetails
+FROM visitsCTE rawData
+GROUP BY rawData.StreetTreatCaseId, rawData.TeamId, rawData.TeamName
+)
+
+SELECT
+
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("TeamId", cases.TeamId),
+JSON_OBJECT("TeamName", cases.TeamName),
+JSON_OBJECT("TeamColour", cases.TeamColour),
+JSON_OBJECT("StreetTreatCaseVisits", cases.StreetTreatCases)
+)) AS Result
+FROM
+(
+SELECT
+caseVisits.TeamId,
+caseVisits.TeamName,
+caseVisits.TeamColour,
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("StreetTreatCaseId", caseVisits.StreetTreatCaseId),
+JSON_OBJECT("StreetTreatCasePriorityId",caseVisits.CasePriorityId),
+JSON_OBJECT("StreetTreatCasePriority",caseVisits.CasePriority),
+JSON_OBJECT("StreetTreatCaseStatusId",caseVisits.CaseStatusId),
+JSON_OBJECT("StreetTreatCaseStatus",caseVisits.CaseStatus),
+JSON_OBJECT("Visits", caseVisits.StreetTreatCases),
+JSON_OBJECT("Position",caseVisits.Position),
+JSON_OBJECT("AnimalDetails",caseVisits.AnimalDetails)
+)) AS StreetTreatCases
+FROM CaseCTE caseVisits
+GROUP BY caseVisits.TeamId,caseVisits.TeamName
+) AS cases;
+
+END$$
+DELIMITER ;
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase !!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
+		IN prm_Username VARCHAR(45),
+		IN prm_PatientId INT,
+		IN prm_PriorityId INT,
+		IN prm_StatusId INT,
+		IN prm_TeamId INT,
+		IN prm_MainProblemId INT,
+		IN prm_AdminComments VARCHAR(256),
+		IN prm_OperatorNotes VARCHAR(256),
+		IN prm_ClosedDate DATE,
+		IN prm_EarlyReleaseFlag BOOLEAN,
+		IN prm_AnimalDescription VARCHAR(256)
+)
+BEGIN
+/*
+Created By: Ankit Singh
+Created On: 02/12/2020
+Purpose: Used to insert a new case.
+
+
+Created By: Ankit Singh
+Created On: 27/04/2021
+Purpose: ON DUPLICATE KEY UPDATE Added
+*/
+
+DECLARE vStreetTreatCaseId INT;
+DECLARE vSuccess INT;
+DECLARE vOrganisationId INT;
+
+SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE UserName = prm_Username LIMIT 1;
+
+INSERT INTO AAU.StreetTreatCase(
+						OrganisationId,
+                        PatientId,
+						PriorityId,
+						StatusId,
+						TeamId,
+                        MainProblemId,
+						AdminComments,
+						OperatorNotes,
+                        ClosedDate,
+                        EarlyReleaseFlag,
+                        OrganisationId
+					) VALUES (
+						vOrganisationId,
+                        prm_PatientId,
+						prm_PriorityId,
+						prm_StatusId,
+						prm_TeamId,
+                        prm_MainProblemId,
+						prm_AdminComments,
+						prm_OperatorNotes,
+                        prm_ClosedDate,
+                        prm_EarlyReleaseFlag,
+                        vOrganisationId
+						) ON DUPLICATE KEY UPDATE
+                        PriorityId			= prm_PriorityId,
+						StatusId			= prm_StatusId,
+						TeamId				= prm_TeamId,
+						MainProblemId		= prm_MainProblemId,
+						AdminComments		= prm_AdminComments,
+						OperatorNotes		= prm_OperatorNotes,
+						ClosedDate			= prm_ClosedDate,
+						EarlyReleaseFlag	= prm_EarlyReleaseFlag;
+
+	SELECT 1 INTO vSuccess;
+
+	SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
+
+    UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
+	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
+END$$
+
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetScoreCard!!
+
+DELIMITER $$
+
+CREATE PROCEDURE AAU.sp_GetScoreCard(IN prm_Username VARCHAR(45))
+BEGIN
+
+DECLARE TotalActiveCases INT;
+DECLARE CasesWithVisitToday INT;
+DECLARE VisitsToday INT;
+DECLARE TotalPlannedVisits INT;
+DECLARE OutstandingVisitsToday INT;
+DECLARE CompleteVisitsToday INT;
+DECLARE TotalUrgentCases INT;
+DECLARE OutstandingUrgentVisitsToday INT;
+DECLARE CompletedUrgentVisitsToday INT;
+DECLARE NoVisits INT;
+DECLARE vOrganisationId INT;
+
+SET TotalActiveCases = 0;
+SET CasesWithVisitToday = 0;
+SET VisitsToday = 0;
+SET TotalPlannedVisits = 0;
+SET OutstandingVisitsToday = 0;
+SET CompleteVisitsToday = 0;
+SET TotalUrgentCases = 0;
+SET OutstandingUrgentVisitsToday = 0;
+SET CompletedUrgentVisitsToday = 0;
+SET NoVisits = 0;
+SET vOrganisationId = 0;
+
+/*
+1: Cases with a visit today
+1: All Active cases
+2: Total planned visits
+3: Visits complete today
+3: Visits today (same as cases with a visit today)
+4: Total active urgent cases
+5: Urgent visits complete today
+5: Total urgent visits today
+6: Cases flagged for early completion today
+*/
+
+
+-- 1: Cases with a visit today
+-- 3: Visits today (same as cases with a visit today)
+-- 3: Visits complete today
+-- 5: Urgent visits complete today
+-- 5: Total urgent visits today
+
+SELECT u.OrganisationId INTO vOrganisationId FROM AAU.User u WHERE u.UserName = prm_Username;
+
+SELECT
+	COUNT(DISTINCT c.StreetTreatCaseId),
+	COUNT(DISTINCT v.VisitId),
+	SUM(CASE WHEN c.PriorityId = 4 AND v.StatusId > 2 THEN 1 ELSE 0 END),
+	SUM(CASE WHEN c.PriorityId = 4 AND v.StatusId <= 2 THEN 1 ELSE 0 END),
+	sum(CASE WHEN v.statusid <= 2 THEN 1 ELSE 0 END),
+	sum(CASE WHEN v.statusid > 2 THEN 1 ELSE 0 END)
+INTO
+	CasesWithVisitToday,
+    VisitsToday,
+    OutstandingUrgentVisitsToday,
+    CompletedUrgentVisitsToday,
+    OutstandingVisitsToday,
+    CompleteVisitsToday
+FROM AAU.StreetTreatCase c
+INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = c.StreetTreatCaseId
+WHERE v.Date = CURDATE()
+AND v.IsDeleted = false
+AND c.IsDeleted = false;
+
+
+-- 1: All Active cases
+-- 4: Total active urgent cases
+SELECT
+	COUNT(1),
+	SUM(CASE WHEN c.PriorityId = 4 THEN 1 ELSE 0 END)
+INTO
+    TotalActiveCases,
+    TotalUrgentCases
+FROM AAU.StreetTreatCase c
+WHERE c.StatusId <= 2; -- Total Cases
+
+
+-- 2: Total planned visits 
+	SELECT 
+		SUM(CASE WHEN v.StreetTreatCaseId IS NULL THEN 1 ELSE 0 END) ,
+		SUM(CASE WHEN v.StreetTreatCaseId IS NULL THEN 0 ELSE 1 END)
+	INTO NoVisits, TotalPlannedVisits
+	FROM AAU.StreetTreatCase stc
+	LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = stc.StreetTreatCaseId AND v.StatusId <= 2 AND v.Date >= CURDATE()
+	WHERE stc.StatusId <= 2;
+
+SELECT	IFNULL(TotalActiveCases,0) AS TotalActiveCases,
+		IFNULL(CasesWithVisitToday,0) AS CasesWithVisitToday,
+		IFNULL(VisitsToday,0) AS VisitsToday,
+		IFNULL(TotalPlannedVisits,0) AS TotalPlannedVisits,
+		IFNULL(OutstandingVisitsToday,0) AS OutstandingVisitsToday,
+		IFNULL(CompleteVisitsToday,0) AS CompleteVisitsToday,
+		IFNULL(TotalUrgentCases,0) AS TotalUrgentCases,
+		IFNULL(OutstandingUrgentVisitsToday,0) AS OutstandingUrgentVisitsToday,
+		IFNULL(CompletedUrgentVisitsToday,0) AS CompletedUrgentVisitsToday,
+        IFNULL(NoVisits,0) AS NoVisits;
+
+END$$
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutcomes!!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetOutcomes(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT CallOutcomeId, CallOutcome, SortOrder FROM AAU.CallOutcome WHERE OrganisationId = vOrganisationId AND IsDeleted = false;
+
+END$$

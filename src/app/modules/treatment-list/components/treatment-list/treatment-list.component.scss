@@ -7,10 +7,24 @@
     .mat-dialog-container { display: none !important; }
     .cdk_overlay_pane > * { display: none !important; }
 
+    .moved-in-legend{
+      padding-top: 25px;
+      padding-bottom: 25px;
+    }
+
     body {
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
     }
+
+    th {
+      color:black;
+    }
+
+    legend {
+      color:black;
+    }
+
   }
 
 .complete{
@@ -23,6 +37,10 @@
 
 .saved-icon{
   color: green;
+}
+
+.manual-check-box{
+  font-size: large;
 }
 
 :host ::ng-deep .mat-select-arrow {
@@ -39,10 +57,14 @@
   width: 50px;
 }
 
+.border-right{
+  border-right: solid 1px rgba(0, 0, 0, 0.2);
+}
+
 .moved-out-group {
   text-align: center;
   border-radius: 3px 3px 3px 0;
-  border: 1px solid lightgrey;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .checkbox-column{
@@ -55,6 +77,10 @@
 
 .select-width{
   width: 175px;
+}
+
+.treatment-priority-select{
+  width: 125px;
 }
 
 :host ::ng-deep .mat-chip-list-wrapper{
