@@ -114,7 +114,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       imageTags:[],
       imageTagsChips: ''
     });
-    console.log(this.data.mediaData);
+   
     if(!this.data?.upload){
      
 
@@ -193,9 +193,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         mediaItem.mediaItem.updated = true;
       }
-      else{
-       //  console.log('Upload media');
-      }
   
     }
   
@@ -246,9 +243,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
  
     Event?.preventDefault();
     const comment = Event?.target;
+    const patientMediaItemId = this.imageData.patientMediaItemId ? this.imageData.patientMediaItemId : this.data.mediaData.patientMediaItemId ;
 
     const commentObject = ({
-      patientMediaItemId : this.imageData.patientMediaItemId,
+      patientMediaItemId,
       comment: (comment as HTMLInputElement).value
     });
 
@@ -260,7 +258,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
-        this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+        this.patientService.getPatientMediaComments(patientMediaItemId).subscribe((comments)=>{
           this.patientMediaComments$.next(comments);
         });
       }
@@ -304,7 +302,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       
       this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
        
-        console.log(tagsResponse);
         if (tagsResponse.success === 1) {
 
           this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');
