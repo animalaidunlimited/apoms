@@ -6,10 +6,10 @@
     height: 100%;
     width: 100%;
 }
-// @media only screen and (max-width:600px){
-//     :host {
-//         padding-top:60px;
-//         display:block;
-//     }
-//   }
+
+@media only screen and (max-width:600px){
+    .tab-container{
+        margin-top:12% !important;
+    }
+  }
 

@@ -84,6 +84,10 @@ $standard-width: 183px;
         }
     }
 
+    .body {
+        margin-top: calc(100vh/13) !important;
+    }
+
     .iconWrapper {
         position: relative;
         margin-bottom: -20px !important;

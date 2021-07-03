@@ -1,6 +1,14 @@
 
-.selectionDivWrapper {
-    margin-top: 10px;
+// .selectionDivWrapper {
+//     margin-top: 10px;
+// }
+
+@media (max-width: 600px){
+
+    .selectionDivWrapper {
+        margin-top: calc(100vh/13);
+    }
+
 }
 
 .emergencyDetailsCode {
@@ -67,10 +75,6 @@
     color: white;
 }
 
-.countWrapper {
-    // margin-left: -1rem !important;
-}
-
 .horizontalTab {
     position: fixed;
     width: 100%;
@@ -82,8 +86,10 @@
     justify-content: space-between;
 }
 
-.contentWrapper {
-    margin-top: 5%;
+@media(max-width: 600px) {
+    .contentWrapper {
+        margin-top: 14%;
+    }
 }
 
 .toggleDiv {
