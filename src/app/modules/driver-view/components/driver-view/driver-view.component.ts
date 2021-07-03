@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -18,13 +18,9 @@ export class DriverViewComponent implements OnInit {
 
   driverViewDetails!: FormGroup;
   rescuers$!: Observable<User[]>;
-  // driverViewList$!: Observable<any>;
-  inProgressStatusList!: DriverAssignments[];
-  inAmbulaneStatusList!: DriverAssignments[];
-  assignedList!: DriverAssignments[];
+  statusList!: any;
 
   constructor( private fb: FormBuilder,
-    // private dropdowns: DropdownService,
     private driverView: DriverViewService,
     private router: Router) { }
 
@@ -36,31 +32,32 @@ export class DriverViewComponent implements OnInit {
     });
 
     this.loadDriverDetails();
-    
-    // this.rescuers$ = this.dropdowns.getRescuers();
-  
-
   }
 
   loadDriverDetails() {
+
     this.driverViewDetails.get('assignmentDate')?.setValue(getCurrentTimeString());
+
     this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
-      this.driverView.getDriverViewDetails(date).subscribe(()=>{});
+      console.log(date);
+      if(date) {
+        this.populateDriverView(date);
+      }
     });
-
-    this.driverView.inAmbulanceAssignment.subscribe(val=> {
-      this.inAmbulaneStatusList = val;
-    });
-
-    this.driverView.inProgressAssignment.subscribe(val=> {
-      this.inProgressStatusList = val;
-    });
-
-    this.driverView.assignedAssignments.subscribe(val=> {
-      this.assignedList = val;
-    })
     
 
+  }
+
+  populateDriverView(date: any) {
+    this.driverView.getDriverViewDetails(date).subscribe(() => {});
+
+    let states = this.driverView.driverViewDetails.pipe(map(assignments=> 
+      assignments.map(assignment=> assignment.actionStatus)
+    ));
+
+    states.subscribe(val=> {
+      console.log(val);
+    })
   }
 
   changeRoute() {

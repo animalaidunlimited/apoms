@@ -3,6 +3,14 @@
     margin-top: 10px;
 }
 
+@media (max-width: 600px){
+
+    .selectionDivWrapper {
+        margin-top: calc(100vh/13);
+    }
+
+}
+
 .emergencyDetailsCode {
     min-width: 2em;
     height: 2em;

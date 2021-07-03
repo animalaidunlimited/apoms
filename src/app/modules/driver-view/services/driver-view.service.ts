@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { map } from 'rxjs/operators';
+import { map, reduce } from 'rxjs/operators';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 // import { DriverAssignments } from "../../../core/models/driver-view";
 
@@ -12,7 +12,7 @@ import { DriverAssignments } from 'src/app/core/models/driver-view';
 })
 
 export class DriverViewService extends APIService {
-
+  arr!: DriverAssignments[];
   endpoint = 'DriverView';
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   inAmbulanceAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
@@ -50,25 +50,46 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getDriverViewDetails(driverViewDate: Date) {
+  public getDriverViewDetails(driverViewDate: Date): Observable<DriverAssignments[]> {
 
     let request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).pipe(
       map((response: any) => {
-        console.log(response);
         this.driverViewDetails.next(response);
-
-        this.driverViewDetails.subscribe((assignments)=> {
-
-          this.inAmbulanceAssignment.next(assignments.filter(data=> data.actionStatus === 'In Ambulance'));
-          this.inProgressAssignment.next(assignments.filter(data=> data.actionStatus === 'In Progress'));
-          this.assignedAssignments.next(assignments.filter(data=> data.actionStatus === 'Assigned'));
-          this.completedAssignments.next(assignments.filter(data=> data.actionStatus === 'Complete'));
-        })
+        return response;
       })
     );
 
   }
 
+  public getFilteredAssignmentForDriverView(actionStatusType: String) {
+    let filteredArray;
+    this.driverViewDetails.subscribe(val=> {
+          filteredArray =  val.reduce((filterAssignmentsList: DriverAssignments[],currentAssignmentList: DriverAssignments)=> {
+
+                if(currentAssignmentList.actionStatus === actionStatusType) {
+                  filterAssignmentsList.push(currentAssignmentList);
+                }
+    
+                return filterAssignmentsList;
+    
+              },[]);
+              
+        });
+    return filteredArray;
+  }
+
 }
+
+
+
+        // this.driverViewDetails.next(response);
+
+        // this.driverViewDetails.subscribe((assignments)=> {
+
+        //   this.inAmbulanceAssignment.next(assignments.filter(data=> data.actionStatus === 'In Ambulance'));
+        //   this.inProgressAssignment.next(assignments.filter(data=> data.actionStatus === 'In Progress'));
+        //   this.assignedAssignments.next(assignments.filter(data=> data.actionStatus === 'Assigned'));
+        //   this.completedAssignments.next(assignments.filter(data=> data.actionStatus === 'Complete'));
+        // })
