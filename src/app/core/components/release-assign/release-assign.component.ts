@@ -42,8 +42,8 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       releaseId: [],
       emergencyCaseId:[],
       releaseType: [{value: '', disabled: true}],
-      // Releaser1: [],
-      // Releaser2: [],
+      Releaser1: [],
+      Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
       pickupDate: [],
@@ -51,12 +51,17 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       assignedDate:['']
     });
 
+    console.log(this.formData);
+
     if(!this.formData){
 
       this.releaseDetails.getReleaseDetails(this.patientId || -1)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(release => {
           this.formData = release as ReleaseDetails;
+
+          console.log(release);
+
           this.recordForm.patchValue(this.formData);
       });
 
