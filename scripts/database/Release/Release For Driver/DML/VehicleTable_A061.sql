@@ -3,6 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `VehicleId` int NOT NULL AUTO_INCREMENT,
+  `OrganisationId` INT NOT NULL,
   `VehicleRegistrationNumber` varchar(100) DEFAULT NULL,
   `VehicleNumber` varchar(100) NOT NULL,
   `VehicleTypeId` int DEFAULT NULL,
@@ -17,5 +18,7 @@ CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `MaxRescuerCapacity` int DEFAULT NULL,
   PRIMARY KEY (`VehicleId`),
   KEY `FK_VehicleVehicleTypeId_VehicleType_VehicleTypeId_idx` (`VehicleTypeId`),
-  CONSTRAINT `FK_VehicleVehicleTypeId_VehicleType_VehicleTypeId` FOREIGN KEY (`VehicleTypeId`) REFERENCES AAU.VehicleType (`VehicleTypeId`)
+  KEY `FK_VehicleOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
+  CONSTRAINT `FK_VehicleVehicleTypeId_VehicleType_VehicleTypeId` FOREIGN KEY (`VehicleTypeId`) REFERENCES AAU.VehicleType (`VehicleTypeId`),
+  CONSTRAINT `FK_VehicleOrganisationId_OrganisationOrganisationId_idx` FOREIGN KEY (`OrganisationId`) REFERENCES AAU.Organisation (`OrganisationId`)
 );
