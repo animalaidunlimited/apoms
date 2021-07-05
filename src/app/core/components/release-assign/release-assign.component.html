@@ -7,25 +7,28 @@
     </mat-form-field>
 </div>
 
-<div  fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
+<div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
     <img src="assets/images/Dog.png" class="images" alt="dog_face">
 
     <div fxFlex="60%" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
 
         <mat-form-field>
             <mat-label>Assign Vehicle</mat-label>
-                <mat-select tabindex="12" formControlName="assignedVehicleId">
+                <mat-select tabindex="12" formControlName="assignedVehicleId"
+                (selectionChange)="vehicleSelected($event)">
                 <mat-option>N/A</mat-option>
                     <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
-                    {{vehicle.vehicleNumber}}
+                    {{vehicle.vehicleNumber}}{{vehicle.currentVehicleStaff}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Assigned Date</mat-label>
-            <input #ambulanceAssignmentTimeField formControlName="assignedDate" type="datetime-local"
+            <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime"
+            type="datetime-local"
             name="ambulanceAssignmentTime" (focus)="setInitialDate($event)"
+            [errorStateMatcher]="errorMatcher"
             placeholder="Ambulance assignment time" matInput>
 
         </mat-form-field>
