@@ -18,10 +18,18 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "namedChunks": true,
             "outputPath": "dist/apoms",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
+            "optimization": false,
+            "outputHashing": "all",
+            "serviceWorker": true,
+            "sourceMap": true,
+            "vendorChunk": false,
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -63,7 +71,12 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "hidden": true,
+                "vendor": false
+              },
               "vendorChunk": false
             },
             "stage": {
@@ -91,7 +104,12 @@
               "optimization": true,
               "outputHashing": "all",
               "serviceWorker": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "hidden": true,
+                "vendor": false
+              },
               "vendorChunk": false
             }
           }

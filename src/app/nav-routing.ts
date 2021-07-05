@@ -2,6 +2,8 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
+import { CompletedAssignmentComponent } from './modules/driver-view/components/completed-assignment/completed-assignment.component';
+import { CompletedAssignmentModule } from './modules/driver-view/components/completed-assignment/completed-assignment.module';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -75,6 +77,35 @@ export const navRoutes: NavRoute[] = [
             import('./modules/streettreat/pages/teams-page/teams-page.module')
             .then(m => m.TeamsPageModule)
     },
+
+    {
+        data: { title: 'Vehicle List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'vehicle-list',
+        loadChildren: () =>
+            import('./modules/driver-view/pages/vehile-list-page/vehicle-list-page.module')
+            .then(m => m.VehicleListPageModule)
+    },
+
+    {
+        data: { title: 'Driver View', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'driver-view',
+        loadChildren: () =>
+            import('./modules/driver-view/components/driver-view/driver-view.module')
+            .then(m => m.DriverViewModule)
+    },
+
+    {
+        data:{ title: 'Completed assignments'},
+        path: 'completed-assignments',
+        loadChildren: () =>
+            import('./modules/driver-view/components/completed-assignment/completed-assignment.module')
+            .then(m => m.CompletedAssignmentModule)
+    },
+
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
@@ -121,7 +152,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.PrintTemplatesPageModule)
     }
 
-                ];
+];
 
 @Injectable({
     providedIn: 'root',
@@ -161,7 +192,7 @@ export class NavRouteService {
     }
 
     getNavRouteList() {
-       
+
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 

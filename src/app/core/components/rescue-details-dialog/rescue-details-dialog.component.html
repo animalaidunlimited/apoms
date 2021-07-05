@@ -13,13 +13,10 @@ cdkDragHandle>Rescue details - {{data.emergencyNumber}}</h1>
       (result)="onRescueDetailsResult($event)"
       #rescueDetails>
     </rescue-details>
-
-    <animal-selection [recordForm]="data.recordForm"></animal-selection>
-
 </div>
 <div mat-dialog-actions>
 
-  <button mat-raised-button color="primary" (click)="rescueDetails.save(); saveRescueUpdate();" [disabled]="data.recordForm.invalid">Save</button>
+  <button mat-raised-button color="primary" (click)="rescueDetails.save();" [disabled]="data.recordForm.invalid">Save</button>
 
   <button mat-raised-button color="primary" (click)="onCancel()">Cancel</button>
 </div>

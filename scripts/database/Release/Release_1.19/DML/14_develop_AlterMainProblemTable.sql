@@ -10,7 +10,7 @@ BEGIN
 	UPDATE AAU.MainProblem
 	SET
 		OrganisationId = 1
-	WHERE MainProblemId <> 0;;
+	WHERE MainProblemId <> 0;
 	
 END //
 DELIMITER ;

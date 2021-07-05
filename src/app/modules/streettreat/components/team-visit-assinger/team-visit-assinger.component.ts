@@ -8,7 +8,6 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import {MediaObserver} from '@angular/flex-layout';
 import { take } from 'rxjs/operators';
 
 
@@ -40,6 +39,21 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   @Output() public openStreetTreatCase = new EventEmitter<StreetTreatTabResult>();
 
+  @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
+
+  animations = true;
+
+  center:google.maps.LatLngLiteral = this.userOptions.getCoordinates();
+
+  chartExpanded = false;
+  chartData!: ChartData[];
+
+  customColours:TeamColour[] = [];
+
+  filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
+  gradient = false;
+  highlightStreetTreatCase = -1;
+
   icon = {
     path: 'M261-46C201-17 148 39 124 98 111 128 107 169 108 245 110 303 105 377 98 408L89 472 142 458C175 444 227 436 309 430 418 423 435 419 476 394 652 288 637 28 450-48 397-70 309-69 261-46ZZ',
     fillColor: '#FF0000',
@@ -49,38 +63,30 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     scale: 0.07
   };
 
-  zoom = 11.0;
-  filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
-  streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
-  teamsDropDown:StreetTreatCases[] | null=[];
-  latlngboundsArray:google.maps.LatLng[] = [];
-  markers: MapMarker[] = [];
-  highlightStreetTreatCase = -1;
-  latlngbounds = new google.maps.LatLngBounds(undefined);
-
-  @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
-
-
-  showXAxis = true;
-  showYAxis = true;
-  gradient = false;
-  showLegend = true;
-  animations= true;
-  chartExpanded = false;
-  chartData!: ChartData[];
-  scoreCards$!: Observable<StreetTreatScoreCard>;
   infoWindow = new google.maps.InfoWindow();
-  center:google.maps.LatLngLiteral = this.userOptions.getCoordinates();
-  view:[number,number] = [700,400];
-  customColours:TeamColour[] = [];
+
+  latlngbounds = new google.maps.LatLngBounds(undefined);
+  latlngboundsArray:google.maps.LatLng[] = [];
+
+  markers: MapMarker[] = [];
+
+  scoreCards$!: Observable<StreetTreatScoreCard>;
 
   searchDate = new Date();
 
+  showLegend = true;
+  showXAxis = true;
+  showYAxis = true;
+
+  streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
   streetTreatServiceSubs:Subscription = new Subscription();
 
+  teamsDropDown:StreetTreatCases[] | null=[];
   teamsgroup!:FormGroup;
 
+  view:[number,number] = [700,400];
 
+  zoom = 11.0;
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -159,7 +165,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          
+
           if (streetTreatCaseByVisitDateResponse?.Cases) {
             this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;

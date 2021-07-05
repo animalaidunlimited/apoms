@@ -15,7 +15,7 @@
     <mat-icon>add_a_photo</mat-icon>
 </button>
 
-<button mat-mini-fab color="primary" *ngIf="platform.ANDROID || platform.IOS" aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">
+<button mat-mini-fab color="primary" aria-label="Upload new image" *ngIf="platform.ANDROID || platform.IOS" (click)="openMobileMediaCaptureDialog()">
     <mat-icon>camera</mat-icon>
 </button>
 

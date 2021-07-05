@@ -16,9 +16,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 99;
 	.mat-icon{
 		font-size:1.2rem;
 	}
+}
+
+
+.mat-spinner{
+
+    position: absolute;
+    left: 30rem;
+    top: 14rem;
+    
 }
 
 ::ng-deep .mat-form-field-appearance-fill 
@@ -40,18 +50,23 @@
     min-height: 70vh;
     background-position: center;
     border: 0.3rem solid white;
+    touch-action: pinch-zoom !important;
+    user-select: auto !important;
+    z-index: 9;
+    border-top-left-radius: 0.5em;
+    border-bottom-left-radius: 0.5em;
 }
 .imagePreviewSidePanel{
     box-shadow: -1px -1px 3px #FFFFFF, 1.5px 1.5px 2px rgba(174, 174, 192, 0.4);
     border-radius: 0.3rem ;
     background: rgba(240, 240, 243, 0.73);
     display: flex;
+    flex-direction:column;
     align-items: baseline;
     width: 100%;
     .commentSection{ 
         width:100%;
         max-height: 12rem;
-        min-height: 12rem;
         overflow-y: scroll;
         scroll-behavior: smooth;
         display:flex;
@@ -212,3 +227,112 @@
     width:calc(100% - 1rem)
 }
 
+
+
+.uploadMediaIcon{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    .mat-icon{
+        width:auto;
+        height:auto;
+        font-size:8em;
+        color: #BDBDBD;
+        border: 0.05em solid;
+        padding: 0.1em;
+        &:hover{
+            cursor: pointer;
+            
+        }
+    }
+    &.fileDragHover{
+        animation: shake 0.82s infinite;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+    
+}
+
+.classLoader{
+    
+    position: absolute;
+    left: 23.5em;
+    top: 11em;
+
+}
+
+
+
+@keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+
+
+@media (max-width: 600px){
+    .mat-form-field {
+        max-width: unset !important;   
+    }
+    .uploadMediaIcon{
+        .mat-icon{
+            font-size:2em;
+        }   
+    }
+    .imagePreviewSidePanel{
+        flex-direction: row;
+    }
+    .mediaPreviewBackgroundImage{
+        border-top-left-radius: 0.5em;
+        border-bottom-left-radius: 0;
+    }
+    .mat-spinner{
+        position: absolute;
+        left: 40%;
+        top: 20%;
+        ::ng-deep svg{
+            width: 4em !important;
+            height:4em !important;
+        }
+        
+    }
+    
+}
+@media (max-width: 900px){
+    
+    .fullImageView{
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index:99;
+        border: none;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+    }
+    .imageCloseBtn{
+        z-index: 999;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 3em;
+        height: 3em;
+        transform: translate(-0.5em, 0.5em);
+    }
+}

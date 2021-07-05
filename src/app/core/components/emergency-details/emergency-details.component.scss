@@ -1,26 +1,20 @@
-.dot-red {
-    color: red;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-green {
-    color: green;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-yellow {
-    color: gold;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
-}
-.dot-grey {
-    color: grey;
-    font-size: 17px !important;
-    height: 17px !important;
-    width: 17px !important;
+.emergencyDetailsCode {
+    min-width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.5em;
+    border-radius: 50%;
+    &.red{
+        background: red;
+    }
+    &.green{
+        background: green;
+    }
+    &.yellow{
+        background: gold;
+    }
+    &.grey{
+        background: grey;
+    }
 }
 
 
@@ -39,7 +33,7 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
 
 }
 
-@media(max-width: 600px) {  
+@media(max-width: 600px) {
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
         font-size: 1.5rem;
         position: absolute!important;
@@ -47,9 +41,13 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
         top: 6rem !important;
         cursor: pointer;
     }
+
+    .dispatcherWrapper {
+        position: relative;
+    }
 }
 
-@media(max-width: 1024px) {  
+@media(max-width: 1024px) {
     .mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons{
         font-size: 2rem;
         position: absolute !important;
@@ -60,11 +58,11 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     .mat-icon{
         vertical-align: text-bottom !important;
     }
-    
+
 }
 
 
-@media(min-width: 600px) {  
+@media(min-width: 600px) {
     .mat-icon{
         font-size: 2rem;
         margin-top: -2rem;
