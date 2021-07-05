@@ -36,7 +36,7 @@ WITH RescuesReleases AS
 (
 SELECT PatientId
 FROM  AAU.Patient p
-WHERE p.OrganisationId = 1
+WHERE p.OrganisationId = vOrganisationId
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0
 
@@ -44,7 +44,7 @@ UNION
 
 SELECT PatientId
 FROM AAU.ReleaseDetails rd
-WHERE rd.OrganisationId = 1
+WHERE rd.OrganisationId = vOrganisationId
 AND rd.EndDate IS NULL
 
 ),
@@ -121,13 +121,11 @@ SELECT AAU.fn_GetRescueStatus(
 				rd.ReleaseDetailsId, 
 				rd.RequestedUser, 
 				rd.RequestedDate, 
-				rd.Releaser1Id, 
-				rd.Releaser2Id, 
+				rd.AssignedVehicleId, 
                 rd.PickupDate,
 				rd.BeginDate, 
 				rd.EndDate, 
-				ec.Rescuer1Id, 
-				ec.Rescuer2Id, 
+				ec.AssignedVehicleId, 
 				ec.AmbulanceArrivalTime, 
 				ec.RescueTime, 
 				ec.AdmissionTime,
@@ -143,8 +141,10 @@ SELECT AAU.fn_GetRescueStatus(
             rd.PickupDate,
             rd.BeginDate,
             rd.EndDate,
-            IF(rd.ReleaseDetailsId IS NULL,ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
+            IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
 			IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer2Id, rd.Releaser2Id) AS Staff2Id,
+            IF(rd.ReleaseDetailsId IS NULL, ec.assignedVehicleId, rd.assignedVehicleId) AS assignedVehicleId,
+            IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime) AS ambulanceAssignmentTime,
             ec.AmbulanceArrivalTime,
             ec.RescueTime,            
 			ec.EmergencyCaseId,
@@ -189,6 +189,8 @@ SELECT
 	JSON_OBJECT("releaseEndDate", DATE_FORMAT(r.EndDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("staff1", r.Staff1Id),
 	JSON_OBJECT("staff2", r.Staff2Id),
+    JSON_OBJECT("assignedVehicleId", r.assignedVehicleId),
+    JSON_OBJECT("ambulanceAssignmentTime", DATE_FORMAT(r.ambulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("ambulanceArrivalTime", IFNULL(r.AmbulanceArrivalTime,'')),
 	JSON_OBJECT("rescueTime", IFNULL(r.RescueTime,'')),            
 	JSON_OBJECT("emergencyCaseId", r.EmergencyCaseId),

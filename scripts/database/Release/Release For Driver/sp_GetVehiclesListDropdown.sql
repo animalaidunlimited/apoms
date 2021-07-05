@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.p_GetVehiclesListDropdown!!
 
+-- CALL AAU.p_GetVehiclesListDropdown('Jim');
+
 DELIMITER $$
 CREATE PROCEDURE AAU.p_GetVehiclesListDropdown(IN prm_Username VARCHAR(65))
 BEGIN

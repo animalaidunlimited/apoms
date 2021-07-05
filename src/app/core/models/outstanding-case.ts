@@ -51,6 +51,8 @@ export interface OutstandingAssignment {
     ambulanceArrivalTime: string | Date;
 
     // These are for updated cases coming in via the messaging service
+    assignedVehicleId: number,
+    ambulanceAssignmentTime: Date,
     staff1Abbreviation: string;
     staff2Abbreviation: string;
     staff1Colour: string;

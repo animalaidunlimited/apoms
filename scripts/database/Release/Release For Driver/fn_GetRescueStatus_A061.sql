@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.fn_GetRescueStatus!!
+DROP FUNCTION IF EXISTS AAU.fn_GetRescueStatus!!
 
 DELIMITER $$
 CREATE FUNCTION AAU.fn_GetRescueStatus(
@@ -23,27 +23,34 @@ BEGIN
     DECLARE rescueReleaseStatus INT;
 
 		IF
-			(AssignedRescueVehicleId IS NULL AND
+			(
+            AssignedRescueVehicleId IS NULL AND
             CallOutcomeId IS NULL AND
             ReleaseDetailsId IS NULL AND
             RequestedUser IS NULL AND
-            RequestedDate IS NULL) 
+            RequestedDate IS NULL
+            ) 
             OR
-            (AssignedRescueVehicleId IS NOT NULL AND
+            (
+            AssignedRescueVehicleId IS NOT NULL AND
             CallOutcomeId IS NOT NULL AND
 			ReleaseDetailsId IS NOT NULL AND
             RequestedUser IS NOT NULL AND
             RequestedDate IS NOT NULL AND
-            AssignedReleaseVehicleId IS NULL)
+            AssignedReleaseVehicleId IS NULL
+            )
 			THEN SET rescueReleaseStatus = 1;
             
         ELSEIF
-			(AssignedRescueVehicleId IS NOT NULL AND
+			(
+            AssignedRescueVehicleId IS NOT NULL AND
 			AmbulanceArrivalTime IS NULL AND
             RescueTime IS NULL AND
-            ReleaseDetailsId IS NULL) 
+            ReleaseDetailsId IS NULL
+            ) 
             OR
-            (AssignedRescueVehicleId IS NOT NULL AND
+            (
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
@@ -56,12 +63,15 @@ BEGIN
 			THEN SET rescueReleaseStatus = 2;
             
 		ELSEIF
-			(AssignedRescueVehicleId IS NOT NULL AND
+			(
+            AssignedRescueVehicleId IS NOT NULL AND
             AmbulanceArrivalTime IS NOT NULL AND
             RescueTime IS NULL AND
-            ReleaseDetailsId IS NULL)
+            ReleaseDetailsId IS NULL
+            )
             OR
-            (AssignedRescueVehicleId IS NOT NULL AND
+            (
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
@@ -73,12 +83,15 @@ BEGIN
             )
 			THEN SET rescueReleaseStatus = 3;
 		ELSEIF
-			(AssignedRescueVehicleId IS NOT NULL AND
+			(
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
 			AdmissionTime IS NULL AND
-			ReleaseDetailsId IS NULL)
+			ReleaseDetailsId IS NULL
+            )
             OR
-            (AssignedRescueVehicleId IS NOT NULL AND
+            (
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
@@ -87,11 +100,13 @@ BEGIN
             AssignedReleaseVehicleId IS NOT NULL AND
             PickupDate IS NOT NULL AND 
             BeginDate IS NOT NULL AND
-            EndDate IS NULL)
+            EndDate IS NULL
+            )
 			THEN SET rescueReleaseStatus = 4;
             
 		ELSEIF
-			(AssignedRescueVehicleId IS NOT NULL AND
+			(
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NULL  AND
@@ -101,7 +116,8 @@ BEGIN
 				)
             ) 
             OR
-            (AssignedRescueVehicleId IS NOT NULL AND
+            (
+            AssignedRescueVehicleId IS NOT NULL AND
             RescueTime IS NOT NULL AND
             AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
@@ -110,12 +126,12 @@ BEGIN
             AssignedReleaseVehicleId IS NOT NULL AND
             PickupDate IS NOT NULL AND 
             BeginDate IS NOT NULL AND 
-            EndDate IS NULL)
-			THEN SET rescueReleaseStatus = 5;
-        
+            EndDate IS NULL
+            )
+			THEN SET rescueReleaseStatus = 5;        
         
         END IF;
         
 	-- return the rescue status
 	RETURN (rescueReleaseStatus);
-END!!
+END$$
