@@ -1,22 +1,6 @@
 ::ng-deep .media-gallery-dialog {
     max-height: 70vh;
     position:relative !important;
-    .mat-dialog-container{ 
-        &::-webkit-scrollbar-thumb {
-            background: #ccccccfc;
-            border-radius: 1rem;
-            border: 0.8px solid #fff;
-            border-right: 0.2rem solid #fff;
-            display: none;
-        }
-        &:hover::-webkit-scrollbar-thumb {
-            display: block;
-        }
-        &::-webkit-scrollbar {
-            border-top-right-radius: 0.1rem;
-            width: 0.8rem;
-        }
-    }
 }
 .close-button {
     position: absolute;
@@ -33,4 +17,19 @@
 	.mat-icon{
 		font-size:1.2rem;
 	}
+}
+
+
+@media(max-width:600px){
+
+    ::ng-deep .media-gallery-dialog {
+
+        .mat-dialog-container{ 
+
+            max-width: 90vw !important;
+            max-height: 90vh !important;
+            overflow: hidden;
+            padding:1em;
+        }
+    }
 }

@@ -1,13 +1,65 @@
+<meta *ngIf="fullImageView" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=9.0, user-scalable=yes" />
+<meta *ngIf="!fullImageView"name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<button *ngIf="fullImageView" mat-icon-button class="close-button imageCloseBtn" (click)="removeFullView($event)" >
+    <mat-icon class="close-icon" >close</mat-icon>
+</button>
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
-<div fxLayout="row" style="background: #F0F0F0;">
-    <div [style.backgroundImage]="'url('+ imageData?.full +')'" class="mediaPreviewBackgroundImage"></div>
-    <div style="
-        width: 100%;
-        padding: 0.5rem;
-    " [formGroup]="recordForm">
-        <div class="imagePreviewSidePanel" >
+<div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0; border-radius: 0.5em;">
+    <div #imgElement 
+    [style.backgroundImage]="'url('+ imageData?.full +')'" 
+    class="mediaPreviewBackgroundImage"
+    [ngStyle.xs]="'min-height:'+ imageHeight+'vh'" 
+    (swipeleft)="onSwipeLeft($event)"
+    (swiperight)="onSwipeRight($event)"
+    *ngIf="imageData?.type?.includes('image') || data.upload"
+   
+    (click)="onImageClick($event)">
+    
+    <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
+        <ng-container *ngIf="data.upload && !loading" >
+
+            <input
+                hidden
+                type="file"
+                #uploader
+                multiple
+                accept="image/*,video/*"
+                (change)="uploadFile($event)"
+            />
+            <div class='uploadMediaIcon' #uploadMediaIcon 
+            (dragover)="mediaDrag($event)" 
+            (drop)="mediaDrop($event)"
+            (dragleave)="onDragLeave($event)">
+                <!--camera -->
+                <div fxLayout="row" ngStyle.xs="margin-top:1.5em;">
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="platform.ANDROID || platform.IOS" >
+                        <mat-icon aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
+                        <p style="text-align:center;">Click here to capture video/image</p>
+                    </div>
+                    <!--From gallery-->
+                    <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!platform.ANDROID && !platform.IOS" >
+                        <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
+                        <p style="text-align:center;">Drag and drop files here</p>
+                    </div>
+                </div>
+
+                <button  mat-raised-button color="primary" (click)="uploader.click()">Browse for file</button>
+            </div>
+
+        </ng-container>
+    </div>
+
+
+    <video autoplay *ngIf="imageData?.type?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
+        <source src="{{imageData?.full}}" type="video/mp4" />
+        Browser not supported
+    </video>
+    
+    <div style="padding: 0.5rem;" ngStyle.gt-xs="width: 100%;" [formGroup]="recordForm">
+        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
             <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
                 <mat-label >Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;

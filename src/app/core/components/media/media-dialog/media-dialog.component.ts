@@ -210,6 +210,8 @@ openMobileMediaCaptureDialog(){
     }
   });
 
+  dialogRef.componentInstance.closeMediaDialog.subscribe(() => dialogRef.close());
+
 }
 
 
