@@ -109,11 +109,8 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.initReleaseDetailsForm();
 
-    
-    this.recordForm.statusChanges.subscribe(status => {
-      
-      setTimeout(() => this.formValidity.next(this.recordForm.status === 'VALID' ? false : true),1);
-    
+    this.recordForm.valueChanges.subscribe(() => {
+      this.formValidity.emit(this.recordForm.invalid);
     });
 
   }
@@ -130,7 +127,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
-        
+
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -229,6 +226,8 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   onReleaseSubmit() {
+
+    console.log('Here');
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 

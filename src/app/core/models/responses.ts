@@ -52,14 +52,17 @@ export interface RescueDetailsParent {
 
 export interface RescueDetails {
     rescueTime: string | Date;
-    rescuer1Id: number;
-    rescuer2Id: number;
     admissionTime: string | Date;
-    rescuer1Colour: string;
-    rescuer2Colour: string;
     ambulanceArrivalTime: string | Date;
-    rescuer1Abbreviation: string;
-    rescuer2Abbreviation: string;
+    rescuers: Rescuer[]
+}
+
+export interface Rescuer {
+    rescuerId: number;
+    rescuerFirstName: string;
+    rescuerSurname: string;
+    rescuerColour: string;
+    rescuerAbbreviation: string;
 }
 
 export interface Caller {
