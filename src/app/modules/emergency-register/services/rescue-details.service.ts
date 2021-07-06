@@ -49,4 +49,19 @@ export class RescueDetailsService extends APIService {
 
         return this.outstandingRescues$;
     }
+
+    getOutstandingRescues2(): Observable<OutstandingCaseResponse> {
+        const request = '/OutstandingRescues2';
+
+        if (!this.outstandingRescues$) {
+            this.outstandingRescues$ = this.getObservable(request).pipe(
+                debounceTime(1000),
+                map(response => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.outstandingRescues$;
+    }
 }
