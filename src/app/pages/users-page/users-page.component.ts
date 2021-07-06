@@ -236,7 +236,7 @@ export class UsersPageComponent implements OnInit {
         }
       ];
 
-      this.userDetails.get('per');
+      // this.userDetails.get('per');
 
       this.dropdown.getAllTeams().subscribe(team=>{
         this.teamNames = team;
