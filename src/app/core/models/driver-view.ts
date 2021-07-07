@@ -32,7 +32,7 @@ export interface Patient {
   PatientCallOutcomeId?: number;
 }
 
-export interface CallerDetail {
+export interface CallerDetails {
   callerId: number;
   callerName: string;
   callerNumber: string;
@@ -51,7 +51,7 @@ export interface DriverAssignments {
   actionStatus: string;
   callDateTime: string;
   visitEndDate?: any;
-  callerDetails: CallerDetail[];
+  callerDetails: CallerDetails[];
   emergencyCode: string;
   latLngLiteral: LatLngLiteral;
   releaseEndDate: string;
