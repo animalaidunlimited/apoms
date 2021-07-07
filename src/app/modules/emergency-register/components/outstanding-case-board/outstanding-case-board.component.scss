@@ -251,6 +251,12 @@ $standard-width: 180px;
     background-color: white;
 }
 
+.ambulance-list {
+    border-bottom: 1px solid grey;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+}
+
 .filterWrapper{
     position: absolute !important;
     width: 25rem;

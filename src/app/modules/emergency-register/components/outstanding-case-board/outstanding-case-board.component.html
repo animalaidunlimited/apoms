@@ -70,21 +70,23 @@
         Toggle ambulance paths
       </div>
 
-      <div class="filter-content" *ngFor="let ambulance of (ambulanceLocations$ | async)"
+      <div class="filter-content ambulance-list" *ngFor="let ambulance of (ambulanceLocations$ | async)"
       fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="center space-between">
 
         <img src="assets/icons/ambulance_van.png" class="ambulance-icon" alt="Ambulance filter">
 
           <div fxLayout="column" fxLayoutAlign="center center">
 
-            <div>
-              Rescuer 1: {{ambulance.staff1Abbreviation}}
+            <div *ngFor="let rescuer of ambulance.vehicleStaff; let i = index;">
+
+              <div>
+                Rescuer {{i + 1}}: {{rescuer.initials}}
+              </div>
+
             </div>
+
             <div>
-              Rescuer 2: {{ambulance.staff2Abbreviation}}
-            </div>
-            <div>
-              <mat-slide-toggle>Show path</mat-slide-toggle>
+              <mat-slide-toggle (change)="toggleVehicleLocation($event, ambulance.vehicleDetails.vehicleId)">Show path</mat-slide-toggle>
             </div>
           </div>
 

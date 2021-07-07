@@ -21,6 +21,10 @@ import { MatChip, MatChipList } from '@angular/material/chips';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
+import { LocationService } from 'src/app/core/services/location/location.service';
+import { ActiveVehicleLocations } from 'src/app/core/models/location';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle/slide-toggle';
+
 
 export interface Swimlane{
   label:string;
@@ -85,7 +89,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
 
-    ambulanceLocations$!:Observable<RescuerGroup[]>;
+    ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
 
     autoRefresh = false;
 
@@ -150,6 +154,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
+    private locationService: LocationService,
     private userOptions: UserOptionsService,
     private printService: PrintTemplateService,
     private dialog: MatDialog,
@@ -245,7 +250,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   initialiseBoard() {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
-    this.ambulanceLocations$ = this.outstandingCaseService.ambulanceLocations$;
+    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
 
 
     // Attempting to force change detection here causes the whole thing to hang.
@@ -255,10 +260,9 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
       this.outstandingCasesArray = assignments;
 
-      if(assignments.length > 0){
-        this.ambulanceLocations$ = this.outstandingCaseService.getAmbulanceLocations();
-        this.ambulanceLocations$.subscribe(val => console.log(val));
-      }
+      //if(assignments.length > 0){
+      //  this.ambulanceLocations$ = this.locationService.getActiveVehicleLocations();
+      //}
 
       this.actionStatus.forEach(status=> {
         const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
@@ -520,5 +524,8 @@ filterChipSelected(groupName: string, chip: MatChip) {
 
 }
 
+toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
+  this.locationService.toggleVehicleLocation(vehicleId, $event.checked)
+}
 
 }

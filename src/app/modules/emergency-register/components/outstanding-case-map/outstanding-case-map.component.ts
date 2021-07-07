@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, ActionGroup, } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
 import { takeUntil } from 'rxjs/operators';
+import { ActiveVehicleLocations, LocationPathSegment } from 'src/app/core/models/location';
+import { LocationService } from 'src/app/core/services/location/location.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -22,7 +24,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   @ViewChild('googlemap') googlemap: any;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<RescuerGroup[]>;
+  ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
@@ -30,12 +32,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
-  speedColours = [
-    {maxSpeed: 7, colour: "gray"},
-    {maxSpeed: 30, colour: "green"},
-    {maxSpeed: 40, colour: "yellow"},
-    {maxSpeed: 999, colour: "red"}
-  ];
+
 
   vehicleLocations = [{latLng: {lat: 24.62486, lng: 73.630552}, speed: 54},
     {latLng: {lat: 24.626108, lng: 73.635362}, speed: 9},
@@ -85,8 +82,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     {latLng: {lat: 24.631746, lng: 73.639274}, speed: 16},
     {latLng: {lat: 24.632545, lng: 73.635254}, speed: 30}];
 
-  locationList!: any[];
-  polyLineOptions: google.maps.PolylineOptions = {};
+  locationList$: BehaviorSubject<LocationPathSegment[]>;
+  //polyLineOptions: google.maps.PolylineOptions = {};
 
   options: google.maps.MapOptions = {};
 
@@ -99,9 +96,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   constructor(
     private userOptions: UserOptionsService,
     private caseService: CaseService,
+    private locationService: LocationService,
     private outstandingCases: OutstandingCaseService) {
+
       this.outstandingCases$ = this.outstandingCases.outstandingCases$;
-      this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
+      this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+      this.locationList$ = this.locationService.locationList$;
    }
 
   ngOnInit(): void {
@@ -120,18 +120,18 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       }
     ]};
 
-    this.outstandingCases.outstandingCases$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(cases => {
+    //this.outstandingCases.outstandingCases$
+    //.pipe(takeUntil(this.ngUnsubscribe))
+    //.subscribe(cases => {
 
-      if(cases.length > 0){
-        this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
-      }
+    //  if(cases.length > 0){
+    //    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+    //  }
 
-    });
+    //});
 
 
-    this.locationList = this.generatePolylines(this.vehicleLocations);
+
 
   }
 
@@ -142,36 +142,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  generatePolylines(locations: any[]){
-
-    let returnArray = []
-
-    for(let i = 0; i < locations.length - 1; i++){
-
-      let curr = {options: {
-        strokeColor: this.getColourForSpeed(locations[i].speed),
-        path: [locations[i].latLng, locations[i + 1].latLng]
-      }}
-
-      returnArray.push(curr);
-
-    }
-
-    return returnArray;
-
-  }
-
-  getColourForSpeed(speed: number){
-
-    const currentSpeedBand = this.speedColours.find(band => speed < band.maxSpeed);
-
-    return currentSpeedBand?.colour;
-
-  }
-
-  between(toCheck: number, min: number, max: number) {
-    return toCheck >= min && toCheck <= max;
-  }
 
   openAmbulanceInfoWindow(marker: MapMarker, actions: ActionGroup[]){
 

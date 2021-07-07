@@ -38,7 +38,7 @@ export class AppComponent implements OnInit{
 
         setTimeout(() => {
             this.locationTracker.logLocation();
-        }, 5000);
+        }, 15000);
 
 
 
