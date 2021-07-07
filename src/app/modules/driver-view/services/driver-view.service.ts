@@ -12,7 +12,6 @@ import { DriverAssignments } from 'src/app/core/models/driver-view';
 })
 
 export class DriverViewService extends APIService {
-  arr!: DriverAssignments[];
   endpoint = 'DriverView';
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   inAmbulanceAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
@@ -50,46 +49,30 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getDriverViewDetails(driverViewDate: Date): Observable<DriverAssignments[]> {
+  public populateDriverView(driverViewDate: Date) {
+
+    console.log(driverViewDate);
 
     let request = '?assignmentDate='+ driverViewDate;
 
-    return this.getObservable(request).pipe(
-      map((response: any) => {
+    return this.getObservable(request).subscribe(response=> {
+      console.log(response);
+      if(response){
         this.driverViewDetails.next(response);
-        return response;
-      })
-    );
+      }
+      else {
+        this.driverViewDetails.next([]);
+      }
+      
+    })
 
   }
 
-  public getFilteredAssignmentForDriverView(actionStatusType: String) {
-    let filteredArray;
-    this.driverViewDetails.subscribe(val=> {
-          filteredArray =  val.reduce((filterAssignmentsList: DriverAssignments[],currentAssignmentList: DriverAssignments)=> {
+  public getAssignmentByStatus(actionStatusType: String) {
 
-                if(currentAssignmentList.actionStatus === actionStatusType) {
-                  filterAssignmentsList.push(currentAssignmentList);
-                }
-    
-                return filterAssignmentsList;
-    
-              },[]);
-              
-        });
-    return filteredArray;
+    return this.driverViewDetails.pipe(map(val=> {
+      return val.filter(value=> value.actionStatus === actionStatusType);
+    }));
   }
 
 }
-
-
-
-        // this.driverViewDetails.next(response);
-
-        // this.driverViewDetails.subscribe((assignments)=> {
-
-        //   this.inAmbulanceAssignment.next(assignments.filter(data=> data.actionStatus === 'In Ambulance'));
-        //   this.inProgressAssignment.next(assignments.filter(data=> data.actionStatus === 'In Progress'));
-        //   this.assignedAssignments.next(assignments.filter(data=> data.actionStatus === 'Assigned'));
-        //   this.completedAssignments.next(assignments.filter(data=> data.actionStatus === 'Complete'));
-        // })
