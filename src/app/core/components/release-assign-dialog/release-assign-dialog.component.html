@@ -7,12 +7,12 @@ cdkDragHandle
 
 <div mat-dialog-content>
 
-  <app-release-assign [formData]="formData" (saveSuccessResponse)="onSaveResponse($event)" #releaseDetails></app-release-assign>
+  <app-release-assign [formData]="formData" (formInvalid)="setFormValidity($event)" (saveSuccessResponse)="onSaveResponse($event)" #releaseDetails></app-release-assign>
 
 </div>
 
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="releaseDetails.saveReleaseDetails()">Save</button>
+  <button mat-raised-button color="primary" (click)="releaseDetails.saveReleaseDetails()" [disabled]="formInvalid">Save</button>
   <button mat-raised-button color="primary" (click)="closeDialog()">Cancel</button>
 </div>
 

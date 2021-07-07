@@ -2,13 +2,15 @@ import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angu
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 import { takeUntil } from 'rxjs/operators';
 import { Vehicle } from '../../models/driver-view';
+import { MatSelectChange } from '@angular/material/select';
+import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 
 @Component({
   selector: 'app-release-assign',
@@ -20,6 +22,9 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
   @Input() formData: ReleaseDetails | undefined;
   @Input() patientId: number | undefined;
   @Output() public saveSuccessResponse = new EventEmitter<number>();
+  @Output() public formInvalid = new EventEmitter<boolean>(false);
+
+  errorMatcher = new CrossFieldErrorMatcher();
 
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
@@ -42,14 +47,22 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       releaseId: [],
       emergencyCaseId:[],
       releaseType: [{value: '', disabled: true}],
-      // Releaser1: [],
-      // Releaser2: [],
+      Releaser1: [],
+      Releaser2: [],
       releaseBeginDate: [],
       releaseEndDate: [],
       pickupDate: [],
       assignedVehicleId:[],
-      assignedDate:['']
+      ambulanceAssignmentTime:[]
     });
+
+    this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe(() => {
+
+      this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
+
+    });
+
+    console.log(this.formData);
 
     if(!this.formData){
 
@@ -57,6 +70,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(release => {
           this.formData = release as ReleaseDetails;
+
           this.recordForm.patchValue(this.formData);
       });
 
@@ -87,6 +101,22 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
         }
 
     }
+}
+
+vehicleSelected($event:MatSelectChange){
+
+  const ambulanceAssignmentTime = this.recordForm.get('ambulanceAssignmentTime')
+
+  if($event.value)  {
+        ambulanceAssignmentTime?.setValidators([Validators.required]);
+      }
+      else  {
+        ambulanceAssignmentTime?.clearValidators();
+      }
+
+      ambulanceAssignmentTime?.updateValueAndValidity();
+      this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
+
 }
 
   saveReleaseDetails() {

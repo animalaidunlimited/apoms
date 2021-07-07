@@ -47,7 +47,7 @@ export class DriverViewComponent implements OnInit {
         this.populateDriverView(date);
       }
     });
-    
+
 
   }
 
@@ -68,6 +68,6 @@ export class DriverViewComponent implements OnInit {
     this.showComplete = !this.showComplete;
     // this.router.navigate(['/nav/completed-assignments']);
   }
-  
+
 
 }

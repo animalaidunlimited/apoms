@@ -98,7 +98,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             'rescueDetails',
             this.fb.group({
                 assignedVehicleId: [],
-                assignedDate: [''],
+                ambulanceAssignmentTime: [''],
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
