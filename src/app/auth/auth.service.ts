@@ -40,13 +40,14 @@ export class AuthService extends APIService {
     }
 
     public async login(username: string, password: string) {
+
         try {
             this.response = (await this.post({
                 username,
                 password,
             })) as Response;
 
-            console.log(this.response)
+
 
             this.token = this.response.token || '';
 

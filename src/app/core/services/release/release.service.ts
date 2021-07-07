@@ -32,9 +32,12 @@ export class ReleaseService extends APIService {
 
   public getReleaseDetails(patientId: number) : Observable<any> {
 
+    console.log("getReleaseDetails");
+
     const request = '?PatientId=' + patientId;
     return this.getObservable(request).pipe(
       map((res: ReleaseResponse)=> {
+        console.log(res);
         return res;
       })
     );

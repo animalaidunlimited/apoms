@@ -36,7 +36,7 @@ IF vReleaseCount = 1 THEN
 UPDATE AAU.ReleaseDetails
 				SET -- Releaser1Id = prm_Releaser1Id,
                     -- Releaser2Id = prm_Releaser2Id,
-                    AssignedAmbulanceId = prm_AssignedAmbulanceId,
+                    AssignedVehicleId = prm_AssignedAmbulanceId,
                     AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
                     Pickupdate = prm_PickupDate,
                     BeginDate = prm_BeginDate,

@@ -99,7 +99,7 @@ export class StreetTreatRecordComponent implements OnInit {
       ),
       patientId:[this.patientId,Validators.required],
       // assignedVehicleId: [],
-      // assignedDate:['']
+      // ambulanceAssignmentTime:['']
 
     });
 
@@ -110,7 +110,7 @@ export class StreetTreatRecordComponent implements OnInit {
         if (media.length === 0) {
           return;
         }
-		  
+
         this.profileUrl = media.find(item => Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
         this.changeDetector.detectChanges();
       });
@@ -118,7 +118,6 @@ export class StreetTreatRecordComponent implements OnInit {
 
     this.animalTypes$ = this.dropdown.getAnimalTypes();
 
-    console.log(this.inputStreetTreatCase);
     this.streetTreatServiceSubscription = this.streetTreatService.getStreetTreatCaseById(this.inputStreetTreatCase.streetTreatCaseId)
     .pipe(
       map(item => {
@@ -151,7 +150,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
 
-    
+
 
   }
 
