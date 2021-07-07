@@ -84,7 +84,7 @@ export const navRoutes: NavRoute[] = [
         group: 'Vehicles',
         path: 'vehicle-list',
         loadChildren: () =>
-            import('./modules/driver-view/pages/vehile-list-page/vehicle-list-page.module')
+            import('./modules/driver-view/pages/vehicle-list-page/vehicle-list-page.module')
             .then(m => m.VehicleListPageModule)
     },
 

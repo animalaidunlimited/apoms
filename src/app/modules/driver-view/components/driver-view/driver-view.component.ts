@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
+import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -22,9 +23,14 @@ export class DriverViewComponent implements OnInit {
 
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
+    private locationService: LocationService,
     private router: Router) { }
 
   ngOnInit(): void {
+
+
+    // Start logging the location of this vehicle.
+    this.locationService.beginLoggingVehicleLocation();
 
     this.driverViewDetails = this.fb.group({
       assignmentDate: [getCurrentTimeString()],
