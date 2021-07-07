@@ -6,6 +6,7 @@ import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
+import { LocationService } from 'src/app/core/services/location/location.service';
 
 @Injectable({
     providedIn: 'root'
@@ -25,6 +26,7 @@ constructor(
     private zone: NgZone,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
+    private locationService: LocationService,
     http: HttpClient) {
         super(http);
 
@@ -61,7 +63,7 @@ constructor(
         }
 
         if(message?.hasOwnProperty('vehicleLocation')){
-            this.outstandingCase.receiveVehicleLocation(message);
+            this.locationService.receiveVehicleLocation(message);
         }
 
         // This is a admission/movement message for treatment list records

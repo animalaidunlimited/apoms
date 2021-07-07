@@ -4,17 +4,18 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { LocationService } from 'src/app/core/services/location/location.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 
 
 @Component({
-  selector: 'app-vehile-list-page',
-  templateUrl: './vehile-list-page.component.html',
-  styleUrls: ['./vehile-list-page.component.scss']
+  selector: 'app-vehicle-list-page',
+  templateUrl: './vehicle-list-page.component.html',
+  styleUrls: ['./vehicle-list-page.component.scss']
 })
-export class VehileListPageComponent implements OnInit {
+export class VehicleListPageComponent implements OnInit {
 
   vehicleStatus: VehicleStatus[] = [
     {VehicleStatusId: 1, VehicleStatus: 'Active'},
@@ -58,6 +59,7 @@ export class VehileListPageComponent implements OnInit {
   ngOnInit(): void {
     this.vehicleType$ = this.dropdown.getVehicleType();
     this.refreshVehicleTable();
+
   }
 
   Submit(vehicleForm: FormGroup) {

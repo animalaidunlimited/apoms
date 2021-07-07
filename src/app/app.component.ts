@@ -35,13 +35,6 @@ export class AppComponent implements OnInit{
 
     ngOnInit() {
 
-
-        setTimeout(() => {
-            this.locationTracker.logLocation();
-        }, 15000);
-
-
-
         this.authService.loggedIn.subscribe(loggedIn => {
 
             if(loggedIn){
@@ -58,8 +51,6 @@ export class AppComponent implements OnInit{
 
                  // Set up to receive messages from the service worker when the app is in the background.
                  navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
-
-                    console.log(event);
 
                     if(event.data?.image || event.data?.video){
 

@@ -22,7 +22,7 @@ export class OutstandingCaseService {
   autoRefreshState = false;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject([] as OutstandingCase[]);
-  
+
 
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
@@ -430,12 +430,6 @@ export class OutstandingCaseService {
       });
 
     this.zone.run(() => this.outstandingCases$.next(outstandingCases));
-
-  }
-
-  receiveVehicleLocation(locationRecord: any){
-
-    this.locationService.receiveVehicleLocation(locationRecord);
 
   }
 
