@@ -61,7 +61,7 @@ constructor(
         }
 
         if(message?.hasOwnProperty('vehicleLocation')){
-            this.outstandingCase.receiveAmbulanceLocationMessage(message);
+            this.outstandingCase.receiveVehicleLocation(message);
         }
 
         // This is a admission/movement message for treatment list records
