@@ -8,9 +8,11 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
+import { OutstandingCaseBoardAmbulanceComponent } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.component';
 
 @NgModule({
     declarations: [
+        OutstandingCaseBoardAmbulanceComponent,
         OutstandingCaseBoard2Component
     ],
     imports: [

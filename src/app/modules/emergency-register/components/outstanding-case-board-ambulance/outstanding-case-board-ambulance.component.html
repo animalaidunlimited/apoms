@@ -1,0 +1,13 @@
+ 
+<div *ngFor="let vehicle of vehicleList$ | async">
+  
+  {{ vehicle.emergencyCaseId }}
+    
+</div>
+
+<div *ngFor="let vehicle of getOutstandingCasesByStatusId(2) | async">
+  
+  {{ vehicle.emergencyCaseId }}
+    
+</div>
+
