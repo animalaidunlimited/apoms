@@ -118,7 +118,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    console.log(rescueDetails)
 
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
 

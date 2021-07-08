@@ -10,6 +10,41 @@ export interface OutstandingCase {
     statusGroups: RescuerGroup[];
 }
 
+
+export interface OutstandingCase2 {
+    actionStatusId: number;
+    ambulanceAction: string;
+    assignedVehicleId: number | null;
+    callDateTime: string;
+    callerDetails: [{
+        callerId: number;
+        callerName: string;
+        callerNumber: string;
+    }];
+    emergencyCaseId: number;
+    emergencyCode: string;
+    emergencyCodeId: number;
+    emergencyNumber: number;
+    lat: number;
+    lng: number;
+    location: string;
+    patients: [{
+        animalType: string | null;
+        animalTypeId: number;
+        patientCallOutcomeId: number | null;
+        patientId: number;
+        patientStatusDate: string | null;
+        patientStatusId: -1
+        problems: string;
+        tagnumber: string | null;
+    }];
+    pickupDate: string | null;
+    releaseBeginDate: string | null;
+    releaseEndDate: string | null;
+    releaseId: number | null;
+    releaseType: string;
+    requestedDate: string | null;
+}
 export interface RescuerGroup {
     staff1: number;
     staff1Abbreviation: string;

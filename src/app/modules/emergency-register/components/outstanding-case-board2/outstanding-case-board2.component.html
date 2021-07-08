@@ -1,1 +1,15 @@
-<p>outstanding-case-board2 works!</p>
+
+
+<div fxLayout="row wrap">
+    <div>
+        <div *ngFor="let case of recievedVehicleList$ | async" style="background-color: antiquewhite;">
+               {{ case.emergencyCaseId }}
+        </div>
+    </div>
+    <div>
+        <div *ngFor="let id of vehicleId$ | async" style="background-color: aquamarine;">
+           <outstanding-case-board-ambulance [vehicleId]="id "></outstanding-case-board-ambulance>
+        </div>
+    </div>
+</div>
+
