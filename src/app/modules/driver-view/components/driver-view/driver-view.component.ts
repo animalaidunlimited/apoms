@@ -1,12 +1,9 @@
-import { state } from '@angular/animations';
-import { S } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { exhaustMap, flatMap, last, map, mergeMap, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../services/driver-view.service';
@@ -30,6 +27,8 @@ export class DriverViewComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+
+    this.locationService.initialise()
 
 
     // Start logging the location of this vehicle.
@@ -61,14 +60,14 @@ export class DriverViewComponent implements OnInit {
     this.driverView.populateDriverView(date);
 
     this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
-     
+
       let statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;
     }));
 
   }
 
-  
+
   showCompleteList() {
 
     this.showComplete = !this.showComplete;
