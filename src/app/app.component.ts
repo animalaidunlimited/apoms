@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth/auth.service';
+import { LocationService } from './core/services/location/location.service';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit{
         private printService: PrintTemplateService,
         private authService: AuthService,
         private messagingService: MessagingService,
+        private locationTracker: LocationService,
         private emergencyTabBar: EmergencyRegisterTabBarService
     ) {
 
@@ -59,10 +61,11 @@ export class AppComponent implements OnInit{
                         this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
                     }
 
-                 });
+                    if(event.data?.vehicleId){
 
-            }
-            else {
+                    }
+
+                 });
 
             }
 
