@@ -1,7 +1,14 @@
-<h1 mat-dialog-title>Complainer details</h1>
+
+<div (click)="closeDialog()" class="closeIconDiv">
+    <mat-icon>close</mat-icon>
+</div>
 
 <div mat-dialog-content>
 
-    <!-- <caller-details></caller-details> -->
+    <caller-details
+    [recordForm]='recordForm' [incomingCallerDetails]='data.assignmentDetails.callerDetails'>
+    </caller-details>
+
 
 </div>
+

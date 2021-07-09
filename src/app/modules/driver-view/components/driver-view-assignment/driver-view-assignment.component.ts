@@ -19,7 +19,7 @@ export class DriverViewAssignmentComponent implements OnInit {
   ngOnInit(): void {
 
     this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
-    console.log(this.showCompleteFlag);
+    
   }
 
 }

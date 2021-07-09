@@ -1,11 +1,11 @@
 import { Inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Form, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CallerDetails } from 'src/app/core/models/driver-view';
+import { CallerDetails, DriverAssignments } from 'src/app/core/models/driver-view';
 
 interface DialogData {
-  emergencyCaseId: any;
+  assignmentDetails: DriverAssignments
 }
 
 @Component({
@@ -15,24 +15,22 @@ interface DialogData {
 })
 export class CallerDetailsDialogComponent implements OnInit {
 
-  callerDetails!: CallerDetails[];
-  emergencyDetails: any;
-  recordForm!: FormGroup;
+  recordForm = this.fb.group({
+    emergencyCaseId: [this.data.assignmentDetails.emergencyCaseId],
+  });
 
   constructor( public dialogRef: MatDialogRef<CallerDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,) { }
-
-  ngOnInit(): void {
-
-    let emergencyDetails = {
-      emergencyCaseId: this.data.emergencyCaseId
-    };
-
-    this.recordForm.addControl('emergencyDetails', new FormControl(emergencyDetails));
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private fb: FormBuilder) 
+  { }
 
 
-    console.log(this.recordForm.value);
+  ngOnInit(): void { 
 
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 
 }

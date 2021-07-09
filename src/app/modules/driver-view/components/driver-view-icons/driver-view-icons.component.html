@@ -6,7 +6,7 @@
             <img src="assets/icons/callButton.svg" class="imageIcons" alt="call_Button">
             <p>Call complainer</p>
         </div>
-         <div class="iconDivWrapper" fxLayout='row' fxLayoutGap='10px'>
+         <div (click)="openLocationDialog(driverViewAssignment)" class="iconDivWrapper" fxLayout='row' fxLayoutGap='10px'>
             <img src="assets/images/maps_Logo.png" class="mapIcon" alt="mapIcon_Button">
             <p style="padding-left: 1%;">Location</p>
         </div>
@@ -22,4 +22,8 @@
     </div>
 
 
+</div>
+
+<div>
+    <mat-icon *ngIf="displayIconsDiv" (click)="displayIconsDiv=!displayIconsDiv" class="cancelButtonIcon">close</mat-icon>
 </div>
