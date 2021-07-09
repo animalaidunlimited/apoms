@@ -36,7 +36,7 @@ export interface OutstandingCase2 {
         patientStatusDate: string | null;
         patientStatusId: -1
         problems: string;
-        tagnumber: string | null;
+        tagNumber: string | null;
     }];
     pickupDate: string | null;
     releaseBeginDate: string | null;
