@@ -3,9 +3,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { MessagingService } from '../../services/messaging.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { OutstandingCase, UpdatedRescue, OutstandingAssignment, RescuerGroup } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
@@ -21,6 +21,10 @@ import { MatChip, MatChipList } from '@angular/material/chips';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
+import { LocationService } from 'src/app/core/services/location/location.service';
+import { ActiveVehicleLocations } from 'src/app/core/models/location';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle/slide-toggle';
+
 
 export interface Swimlane{
   label:string;
@@ -85,6 +89,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
 
+    ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
+
     autoRefresh = false;
 
     caseFilter = [{
@@ -138,6 +144,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   searchForm:FormGroup = new FormGroup({});
   searchValue!: string;
 
+  showAmbulancePaths = false;
+
 
   constructor(
     public rescueDialog: MatDialog,
@@ -146,6 +154,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     private messagingService: MessagingService,
     private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
+    private locationService: LocationService,
     private userOptions: UserOptionsService,
     private printService: PrintTemplateService,
     private dialog: MatDialog,
@@ -243,6 +252,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   initialiseBoard() {
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
+    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+
 
     // Attempting to force change detection here causes the whole thing to hang.
     this.outstandingCases$
@@ -250,6 +261,10 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     .subscribe((assignments) => {
 
       this.outstandingCasesArray = assignments;
+
+      //if(assignments.length > 0){
+      //  this.ambulanceLocations$ = this.locationService.getActiveVehicleLocations();
+      //}
 
       this.actionStatus.forEach(status=> {
         const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
@@ -515,5 +530,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   }
 
+toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
+  this.locationService.toggleVehicleLocation(vehicleId, $event.checked)
+}
 
 }

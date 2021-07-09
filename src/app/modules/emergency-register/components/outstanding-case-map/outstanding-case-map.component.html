@@ -8,15 +8,23 @@
             [center]="center"
             [zoom]="zoom">
 
-            <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
+
+                <div *ngFor="let vehicle of (locationList$ | async)">
+                    <div *ngFor="let line of vehicle.options">
+                        <map-polyline [options]="line"></map-polyline>
+                    </div>
+                </div>
+
+
+            <!--<div *ngFor="let outstandingActions of (outstandingCases$ | async);">
 
                 <div *ngFor="let states of outstandingActions.statusGroups;">
 
-                    <div *ngFor="let assignments of states.actions;">
+                    <div *ngFor="let assignments of states.actions;">-->
 
                         <!--TODO alter the emergencyCodeId so that it works for all organisations -->
                         <!-- #marker="mapMarker" -->
-
+<!--
                         <map-marker
                         *ngFor="let action of assignments.ambulanceAssignment"
                         #marker="mapMarker"
@@ -25,7 +33,7 @@
                         [options]="{icon:
                                         (
                                             action.ambulanceAction == 'Release'? (
-                                                
+
                                                 hasLargeAninmal(action.patients)?
                                                     'assets/icons/large_animal_release_purple.png'
                                                     :
@@ -57,15 +65,19 @@
                         </map-marker>
                     </div>
                 </div>
-            </div>
+            </div>-->
                         <!-- Add the ambulance locations -->
-                        <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
-                        #ambulanceMarker="mapMarker"
-                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions)"
-                        [position]="ambulance.latestLocation"
-                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.staff1Abbreviation + ' + ' + ambulance.staff2Abbreviation}">
+                        <!--(mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions)"-->
 
-                        </map-marker>
+                        <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
+                            <map-marker
+                            #ambulanceMarker="mapMarker"
+                            [position]="{lat: ambulance.vehicleDetails.latLng.lat, lng: ambulance.vehicleDetails.latLng.lng} || {lat:0, lng:0}"
+                            [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100,
+                            label: ''}">
+                            </map-marker>
+
+                        </div>
 
 
 

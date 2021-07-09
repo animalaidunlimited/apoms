@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
 import { takeUntil } from 'rxjs/operators';
+import { ActiveVehicleLocations, LocationPathSegment } from 'src/app/core/models/location';
+import { LocationService } from 'src/app/core/services/location/location.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -19,9 +21,10 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
+  @ViewChild('googlemap') googlemap: any;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<any>;
+  ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
@@ -29,23 +32,26 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
-  //TODO: Put this back when Angular Google Maps has the typings upgraded.
-  //options : google.maps.MapOptions = {};
-  options : any = {};
+  locationList$: BehaviorSubject<LocationPathSegment[]>;
+  //polyLineOptions: google.maps.PolylineOptions = {};
 
+  options: google.maps.MapOptions = {};
 
-  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
+  outstandingCases$: BehaviorSubject<OutstandingCase[]>;
 
-  rescues:any = [];
+  rescues: any = [];
 
   zoom = 13;
 
   constructor(
     private userOptions: UserOptionsService,
     private caseService: CaseService,
+    private locationService: LocationService,
     private outstandingCases: OutstandingCaseService) {
+
       this.outstandingCases$ = this.outstandingCases.outstandingCases$;
-      this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
+      this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+      this.locationList$ = this.locationService.locationList$;
    }
 
   ngOnInit(): void {
@@ -64,15 +70,18 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       }
     ]};
 
-    this.outstandingCases.outstandingCases$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(cases => {
+    //this.outstandingCases.outstandingCases$
+    //.pipe(takeUntil(this.ngUnsubscribe))
+    //.subscribe(cases => {
 
-      if(cases.length > 0){
-        this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
-      }
+    //  if(cases.length > 0){
+    //    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+    //  }
 
-    });
+    //});
+
+
+
 
   }
 
@@ -83,13 +92,14 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, rescues: RescuerGroup){
+
+  openAmbulanceInfoWindow(marker: MapMarker, actions: ActionGroup[]){
 
     let searchQuery = ' ec.EmergencyCaseId IN (';
 
     let assignments:OutstandingAssignment[] = [];
 
-    rescues.actions.forEach(action => {
+    actions.forEach(action => {
 
       action.ambulanceAssignment.forEach(ambulanceAssignments => {
         assignments = assignments.concat(ambulanceAssignments);
