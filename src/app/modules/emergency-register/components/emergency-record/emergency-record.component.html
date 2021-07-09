@@ -7,7 +7,7 @@
     <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true"
       (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-    <caller-details [recordForm]="recordForm"></caller-details>
+    <caller-details [recordForm]="recordForm" [incomingCallerDetails]='[]'></caller-details>
 
     <location-details [recordForm]="recordForm"></location-details>
 

@@ -37,6 +37,7 @@ export interface CallerDetails {
   callerId: number;
   callerName: string;
   callerNumber: string;
+  callerAlternativeNumber: string;
 }
 
 export interface LatLngLiteral {

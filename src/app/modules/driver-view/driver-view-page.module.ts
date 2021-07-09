@@ -10,8 +10,9 @@ import { DriverViewIconsComponent } from './components/driver-view-icons/driver-
 import { CallerDetailsDialogComponent } from './dialogs/caller-details-dialog/caller-details-dialog.component';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { CallerDetailsComponent } from 'src/app/core/components/caller-details/caller-details.component';
+import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
 @NgModule({
-  declarations: [VehileListPageComponent, DriverViewAssignmentComponent, DriverViewIconsComponent, CallerDetailsDialogComponent],
+  declarations: [VehileListPageComponent, DriverViewAssignmentComponent, DriverViewIconsComponent, CallerDetailsDialogComponent, LocationDialogComponent],
   imports: [
     CommonModule,
     DriverViewPageRoutingModule,

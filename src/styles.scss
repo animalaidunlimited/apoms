@@ -151,9 +151,17 @@ mat-radio-button{
     max-width: 120px;
     font-size: 13px;
   }
-}
+} 
 
 @media(max-width: 600px) {
+
+  // .mat-dialog-container {
+  //   position: absolute;
+  //   left: 0;
+  //   min-width: 100%;
+  //   height: fit-content !important;
+  //   top: calc(100vh/3.5);
+  // }
 
   .mat-cell {
     font-size: 13px;
