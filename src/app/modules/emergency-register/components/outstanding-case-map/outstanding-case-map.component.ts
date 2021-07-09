@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ActiveVehicleLocations, LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
 
+
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'outstanding-case-map',

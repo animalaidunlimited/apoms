@@ -21,9 +21,9 @@ import { MatChip, MatChipList } from '@angular/material/chips';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
-import { LocationService } from 'src/app/core/services/location/location.service';
-import { ActiveVehicleLocations } from 'src/app/core/models/location';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle/slide-toggle';
+import { ActiveVehicleLocations } from 'src/app/core/models/location';
+import { LocationService } from 'src/app/core/services/location/location.service';
 
 
 export interface Swimlane{

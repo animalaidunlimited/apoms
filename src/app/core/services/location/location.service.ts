@@ -16,7 +16,7 @@ export class LocationService extends APIService {
 
   locationLogInterval: ReturnType<typeof setTimeout> | undefined;
 
-  locationList$: BehaviorSubject<LocationPathSegment[]>
+  locationList$!: BehaviorSubject<LocationPathSegment[]>
   logLocation = new BehaviorSubject<boolean>(false);
 
   speedColours = [
@@ -38,10 +38,14 @@ export class LocationService extends APIService {
 
   constructor(http: HttpClient) {
     super(http);
+  }
+
+  initialise(){
+
     this.locationList$ = new BehaviorSubject<LocationPathSegment[]>(this.emptyLocationList);
 
     //this.locationList$.subscribe(vals => console.log(vals));
-    this.getActiveVehicleLocations();
+    //this.getActiveVehicleLocations();
 
     this.logLocation.subscribe(logLocation => {
 
@@ -57,8 +61,7 @@ export class LocationService extends APIService {
       };
 
 
-    })
-
+    });
 
   }
 
