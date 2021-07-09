@@ -83,19 +83,18 @@ export class VehileListPageComponent implements OnInit {
   refreshVehicleTable() {
     this.driverViewService.getVehicleListTableData().then((vehicleListTabledata)=> {
       this.dataSource = vehicleListTabledata;
-    })
+    });
   }
 
   selectRow(selectedVehicle: any) {
 
-    console.log(selectedVehicle);
-
     this.vehicleListForm.patchValue(selectedVehicle);
+
   }
 
   deleteVehicle(vehicleId : number) {
 
-    console.log(vehicleId);
+
     if(vehicleId) {
       this.driverViewService.deleteVehicleListItem(vehicleId).then(successResponse=> {
 

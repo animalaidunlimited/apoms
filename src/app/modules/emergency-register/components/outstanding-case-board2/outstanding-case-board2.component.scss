@@ -46,3 +46,24 @@
     stroke: #607d8b;
     stroke-width: 4;
 }
+
+
+.mat-release-panel{
+    margin-bottom: 8px;
+    border-radius: 30px;
+    min-height: 50px;
+    border-bottom: solid;
+    border-color: grey;
+}
+.mat-release-panel.mat-expanded {
+    border-radius: 20px !important;
+}
+
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
+{
+  background-color: lightsteelblue !important;
+}

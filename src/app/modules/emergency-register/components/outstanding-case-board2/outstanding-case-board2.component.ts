@@ -4,7 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { delay, map, skip, take } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
+import { Vehicle } from 'src/app/core/models/driver-view';
 import { OutstandingCase2 } from 'src/app/core/models/outstanding-case';
+import { DriverViewService } from 'src/app/modules/driver-view/services/driver-view.service';
 
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 
@@ -22,12 +24,13 @@ export class OutstandingCaseBoard2Component implements OnInit {
 
   outstandingCases$!:  Observable<OutstandingCase2[]>;
   recievedVehicleList$!:  Observable<OutstandingCase2[]>;
-
+  vehcileList:Vehicle[] = [];
   loaded = false;
 
   constructor( 
     private outstandingCase2Service: OutstandingCase2Service,
-    private dialog: MatDialog,) { }
+    private dialog: MatDialog,
+    private driverViewService: DriverViewService) { }
 
   ngOnInit(): void {
    
@@ -35,12 +38,21 @@ export class OutstandingCaseBoard2Component implements OnInit {
 
     this.actionStatusId = [2,3,4,5];
     this.recievedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
-    this.recievedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false)
+    this.recievedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
+
+
+    this.driverViewService.getVehicleListTableData().then((vehicleListTabledata:Vehicle[]) => {
+
+      this.vehcileList = vehicleListTabledata;
+
+    });
     
   }
 
+ 
+
   getOutstandingCasesByVehicleId(vehicleId: number){
-    console.log(this.outstandingCase2Service.outstandingCases$.value.filter(outstandingCase => outstandingCase.assignedVehicleId === vehicleId));
+
     return this.outstandingCase2Service.outstandingCases$.value.filter(outstandingCase => outstandingCase.assignedVehicleId === vehicleId);
     
   }
@@ -108,5 +120,8 @@ export class OutstandingCaseBoard2Component implements OnInit {
     });
 
   }
+
+
+  
   
 }
