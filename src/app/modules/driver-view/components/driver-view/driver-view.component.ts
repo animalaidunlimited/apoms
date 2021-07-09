@@ -1,9 +1,10 @@
 import { state } from '@angular/animations';
+import { S } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { exhaustMap, flatMap, last, map, mergeMap, switchMap } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
@@ -20,6 +21,8 @@ export class DriverViewComponent implements OnInit {
   driverViewDetails!: FormGroup;
   rescuers$!: Observable<User[]>;
   statusList!: any;
+  states!: any;
+  showComplete = false;
 
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
@@ -55,23 +58,21 @@ export class DriverViewComponent implements OnInit {
   }
 
   populateDriverView(date: any) {
-    this.driverView.getDriverViewDetails(date).subscribe((cases) => {
+    this.driverView.populateDriverView(date);
 
-      console.log(cases);
+    this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
+     
+      let statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
+      return statesList;
+    }));
 
-    });
-
-    let states = this.driverView.driverViewDetails.pipe(map(assignments=>
-      assignments.map(assignment=> assignment.actionStatus)
-    ));
-
-    states.subscribe(val=> {
-      console.log(val);
-    });
   }
 
-  changeRoute() {
-    this.router.navigate(['/nav/completed-assignments']);
+  
+  showCompleteList() {
+
+    this.showComplete = !this.showComplete;
+    // this.router.navigate(['/nav/completed-assignments']);
   }
 
 

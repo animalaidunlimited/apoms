@@ -43,7 +43,8 @@ SELECT ecr.EmergencyCaseId,
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT('callerId', c.CallerId),
 	JSON_OBJECT('callerName', c.Name),
-	JSON_OBJECT('callerNumber', c.Number)
+	JSON_OBJECT('callerNumber', c.Number),
+    JSON_OBJECT('callerAlternativeNumber', c.AlternativeNumber)
 	)) AS callerDetails
 	FROM AAU.Caller c
 	INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId

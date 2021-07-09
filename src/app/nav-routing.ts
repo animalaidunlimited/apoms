@@ -2,8 +2,6 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
-import { CompletedAssignmentComponent } from './modules/driver-view/components/completed-assignment/completed-assignment.component';
-import { CompletedAssignmentModule } from './modules/driver-view/components/completed-assignment/completed-assignment.module';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -96,14 +94,6 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import('./modules/driver-view/components/driver-view/driver-view.module')
             .then(m => m.DriverViewModule)
-    },
-
-    {
-        data:{ title: 'Completed assignments'},
-        path: 'completed-assignments',
-        loadChildren: () =>
-            import('./modules/driver-view/components/completed-assignment/completed-assignment.module')
-            .then(m => m.CompletedAssignmentModule)
     },
 
     {

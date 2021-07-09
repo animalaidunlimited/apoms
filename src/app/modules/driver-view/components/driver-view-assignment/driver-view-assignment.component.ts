@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -9,13 +11,15 @@ import { DriverViewService } from '../../services/driver-view.service';
 export class DriverViewAssignmentComponent implements OnInit {
 
   @Input() actionStatus!: string;
+  @Input() showCompleteFlag!: any;
+  driverViewAssignments!: Observable<DriverAssignments[]>; 
 
   constructor(private driverView: DriverViewService ) { }
 
   ngOnInit(): void {
 
-
-
+    this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
+    
   }
 
 }
