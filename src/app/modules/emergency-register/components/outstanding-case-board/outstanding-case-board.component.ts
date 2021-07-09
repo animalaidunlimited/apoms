@@ -231,6 +231,8 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
     this.setup();
 
+
+    
   }
 
   ngOnDestroy() {
@@ -264,6 +266,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
         }
 
         this.outstandingCasesArray.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
+        
       });
 
         this.loading = false;
@@ -271,6 +274,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     });
 
     this.outstandingCaseService.initialise();
+
   }
 
   openMediaDialog(patientId: number, tagNumber: string | null): void{
@@ -284,15 +288,15 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   }
 
-   openSearchMediaDialog(){
+  openSearchMediaDialog(){
 
-      this.dialog.open(AddSearchMediaDialogComponent, {
-      minWidth: '50%',
-      data: {
-          mediaVal: []
-      }
-   });
-   }
+    this.dialog.open(AddSearchMediaDialogComponent, {
+    minWidth: '50%',
+    data: {
+        mediaVal: []
+    }
+  });
+  }
 
   autoRefreshToggled(){
     this.outstandingCaseService.toggleAutoRefresh();
@@ -372,7 +376,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
           event.container.data,
           event.previousIndex,
           event.currentIndex);
-
+/* 
         this.openRescueEdit(event.container.data[event.currentIndex])
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((result:UpdatedRescue) =>
@@ -389,24 +393,26 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
               this.refreshColour$.next('warn');
               this.changeDetector.detectChanges();
             }
-          });
+          }); */
       }
       catch(error){
         console.log(error);
       }
     }
+
+    console.log(this.outstandingCasesArray);
   }
 
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
-      const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-        maxWidth: 'auto',
-        maxHeight: '100vh',
-        data: {
-                emergencyCaseId:outstandingCase.emergencyCaseId,
-                emergencyNumber:outstandingCase.emergencyNumber
-              }
-      });
+    const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
+      maxWidth: 'auto',
+      maxHeight: '100vh',
+      data: {
+              emergencyCaseId:outstandingCase.emergencyCaseId,
+              emergencyNumber:outstandingCase.emergencyNumber
+            }
+    });
 
     // If we successfully updated the rescue and we're currently set to
     // not receive auto-refresh updates, then we need to set the colour of
@@ -428,86 +434,86 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
   }
 
-openCaseFromMap(emergencyCase:SearchResponse){
+  openCaseFromMap(emergencyCase:SearchResponse){
 
-  this.openEmergencyCase.emit(emergencyCase);
+    this.openEmergencyCase.emit(emergencyCase);
 
-}
+  }
 
-openCase(caseSearchResult:OutstandingAssignment)
-{
-  const result:SearchResponse = {
+  openCase(caseSearchResult:OutstandingAssignment)
+  {
+    const result:SearchResponse = {
 
-    EmergencyCaseId: caseSearchResult.emergencyCaseId,
-    EmergencyNumber: caseSearchResult.emergencyNumber,
-    CallDateTime: caseSearchResult.callDateTime.toString(),
-    callerDetails: caseSearchResult.callerDetails,
-    AnimalTypeId: 0,
-    AnimalType: '',
-    PatientId: 0,
-    MediaCount: 0,
-    TagNumber: '',
-    CallOutcomeId: caseSearchResult.callOutcomeId,
-    CallOutcome: undefined,
-    sameAsNumber: undefined,
-    Location: caseSearchResult.location,
-    Latitude: caseSearchResult.latLngLiteral.lat,
-    Longitude: caseSearchResult.latLngLiteral.lng,
-    CurrentLocation: undefined,
+      EmergencyCaseId: caseSearchResult.emergencyCaseId,
+      EmergencyNumber: caseSearchResult.emergencyNumber,
+      CallDateTime: caseSearchResult.callDateTime.toString(),
+      callerDetails: caseSearchResult.callerDetails,
+      AnimalTypeId: 0,
+      AnimalType: '',
+      PatientId: 0,
+      MediaCount: 0,
+      TagNumber: '',
+      CallOutcomeId: caseSearchResult.callOutcomeId,
+      CallOutcome: undefined,
+      sameAsNumber: undefined,
+      Location: caseSearchResult.location,
+      Latitude: caseSearchResult.latLngLiteral.lat,
+      Longitude: caseSearchResult.latLngLiteral.lng,
+      CurrentLocation: undefined,
 
-  };
+    };
 
-  this.openEmergencyCase.emit(result);
-}
+    this.openEmergencyCase.emit(result);
+  }
 
-refreshRescues(){
+  refreshRescues(){
 
-  this.loading = true;
+    this.loading = true;
 
-  this.outstandingCaseService.refreshRescues();
+    this.outstandingCaseService.refreshRescues();
 
-}
+  }
 
-printEmergencyCard(emergencyCaseId: number){
+  printEmergencyCard(emergencyCaseId: number){
 
-  const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
+    const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
 
-  this.printService.printEmergencyCaseDocument(printTemplateId, emergencyCaseId);
+    this.printService.printEmergencyCaseDocument(printTemplateId, emergencyCaseId);
 
-}
+  }
 
-openReleaseAssignDialog(caseDetails: OutstandingAssignment) {
-  const dialogRef = this.releaseAssignDialog.open(ReleaseAssignDialogComponent, {
-    maxWidth: '100vw',
-    maxHeight: '100vh',
-    data: {
-      caseDetails
+  openReleaseAssignDialog(caseDetails: OutstandingAssignment) {
+    const dialogRef = this.releaseAssignDialog.open(ReleaseAssignDialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      data: {
+        caseDetails
+      }
+    });
+  }
+
+  filterChipSelected(groupName: string, chip: MatChip) {
+
+    this.incomingObject = {
+      group: groupName,
+      value: chip.value.trim(),
+      selected: chip.selected
+    };
+
+    if(this.incomingObject.selected) {
+
+      this.filterKeysArray.push(this.incomingObject);
     }
-  });
-}
 
-filterChipSelected(groupName: string, chip: MatChip) {
+    if(!this.incomingObject.selected) {
+      const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group &&
+      obj.value === this.incomingObject.value);
+      this.filterKeysArray.splice(index,1);
+    }
 
-  this.incomingObject = {
-    group: groupName,
-    value: chip.value.trim(),
-    selected: chip.selected
-  };
+    this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
 
-  if(this.incomingObject.selected) {
-
-    this.filterKeysArray.push(this.incomingObject);
   }
-
-  if(!this.incomingObject.selected) {
-    const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group &&
-    obj.value === this.incomingObject.value);
-    this.filterKeysArray.splice(index,1);
-  }
-
-  this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
-
-}
 
 
 }
