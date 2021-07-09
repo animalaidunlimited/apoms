@@ -1,12 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-import { map } from 'rxjs/operators';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
-import { LocationService } from 'src/app/core/services/location/location.service';
-import { ActiveVehicleLocations } from 'src/app/core/models/location';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +13,6 @@ export class OutstandingCaseService {
 
   constructor(
     private rescueService: RescueDetailsService,
-    private locationService: LocationService,
     private zone:NgZone
     ) { }
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
