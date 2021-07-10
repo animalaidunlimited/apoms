@@ -45,8 +45,9 @@ export class LocationService extends APIService {
 
     this.locationList$ = new BehaviorSubject<LocationPathSegment[]>(this.emptyLocationList);
 
-    //this.locationList$.subscribe(vals => console.log(vals));
-    this.getActiveVehicleLocations();
+
+    //Uncomment the below in order to start sending location updates
+    //this.getActiveVehicleLocations();
 
     this.logLocation.subscribe(logLocation => {
 
@@ -65,19 +66,14 @@ export class LocationService extends APIService {
 
     let currentLocations = this.ambulanceLocations$.value;
 
-    console.log(locationMessage);
-
     const updated = currentLocations.map(vehicle => {
-
-      console.log(vehicle);
-      console.log(locationMessage);
 
       if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleDetails.vehicleId){
         vehicle.vehicleLocation.latLng.lat = locationMessage.vehicleLocation.latLng.lat;
         vehicle.vehicleLocation.latLng.lng = locationMessage.vehicleLocation.latLng.lat;
       }
 
-        return vehicle;
+      return vehicle;
 
     });
 
@@ -86,7 +82,6 @@ export class LocationService extends APIService {
   }
 
   beginLoggingVehicleLocation(){
-    console.log("Start logging");
     this.logLocation.next(true);
   }
 
