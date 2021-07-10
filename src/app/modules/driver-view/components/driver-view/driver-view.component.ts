@@ -48,6 +48,8 @@ export class DriverViewComponent implements OnInit {
       }
     });
 
+    this.driverView.getDriverViewQuestions();
+
 
   }
 
@@ -66,7 +68,6 @@ export class DriverViewComponent implements OnInit {
   showCompleteList() {
 
     this.showComplete = !this.showComplete;
-    // this.router.navigate(['/nav/completed-assignments']);
   }
 
 

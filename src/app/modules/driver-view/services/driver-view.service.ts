@@ -18,6 +18,7 @@ export class DriverViewService extends APIService {
   inProgressAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   assignedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   completedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  driverViewQuestionList: any
 
   constructor(public http: HttpClient) {
     super(http);
@@ -58,9 +59,14 @@ export class DriverViewService extends APIService {
     return this.getObservable(request).subscribe(response=> {
       console.log(response);
       if(response){
-        this.driverViewDetails.next(response);
+        
+        localStorage.setItem('driverViewData', JSON.stringify(response));
+
+        this.driverViewDetails.next(JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))));
+
       }
       else {
+        localStorage.removeItem('driverViewData');
         this.driverViewDetails.next([]);
       }
       
@@ -73,6 +79,34 @@ export class DriverViewService extends APIService {
     return this.driverViewDetails.pipe(map(val=> {
       return val.filter(value=> value.actionStatus === actionStatusType);
     }));
+  }
+
+  public getDriverViewQuestions() {
+    
+    const request = '?getDriverViewQuestions';
+
+    return this.getObservable(request).subscribe(response=> {
+      localStorage.setItem('driverViewQuestions', JSON.stringify(response));
+
+      this.driverViewQuestionList = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewQuestions'))));
+
+    })
+
+  }
+
+  public getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatus: string, subAction: string) {
+
+    console.log(actionStatus)
+
+    console.log(subAction)
+
+    console.log(this.driverViewQuestionList)
+
+    console.log(this.driverViewQuestionList.filter((value: any)=> value.actionStatus === actionStatus && value.subAction === subAction)
+    )
+
+    return this.driverViewQuestionList.filter((value: any)=> value.actionStatus === actionStatus && value.subAction === subAction);
+
   }
 
 }
