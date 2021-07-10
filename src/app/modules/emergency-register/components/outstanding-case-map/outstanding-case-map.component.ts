@@ -7,7 +7,7 @@ import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
 import { takeUntil } from 'rxjs/operators';
-import { ActiveVehicleLocations, LocationPathSegment } from 'src/app/core/models/location';
+import { ActiveVehicleLocation, LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
 
 
@@ -25,7 +25,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
   @ViewChild('googlemap') googlemap: any;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
+  ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 

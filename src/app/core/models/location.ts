@@ -11,25 +11,34 @@ export interface LatLng {
 }
 
 export interface VehicleDetails {
-    latLng: LatLng;
     vehicleId: number;
+    vehicleTypeId: number;
+    vehicleImage: string;
+    vehicleNumber: string;
+    largeAnimalCapacity: number;
+    smallAnimalCapacity: number;
+    vehicleRegistrationNumber: string;
 }
 
-export interface ActiveVehicleLocations {
-    vehicleStaff: VehicleStaff[];
-    vehicleDetails: VehicleDetails;
-}
-
-export interface LocationHistory {
+export interface VehicleLocation {
     speed: number;
     latLng: LatLng;
-    heading?: any;
     timestamp: string;
+    heading?: number;
+    accuracy?: number;
+    altitude?: number;
+    altitudeAccuracy?: number;
 }
 
-export interface VehicleLocationHistory {
-    vehicleId: number;
-    locationHistory: LocationHistory[];
+export interface ActiveVehicleLocation {
+    vehicleDetails: VehicleDetails;
+    vehicleLocation: VehicleLocation;
+    vehicleStaff: VehicleStaff[];
+}
+
+export interface VehicleLocationDetails {
+    vehicleDetails: VehicleDetails;
+    locationHistory: VehicleLocation[];
 }
 
 export interface PolylineOptions {

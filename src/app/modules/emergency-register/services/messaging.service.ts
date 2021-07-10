@@ -8,6 +8,7 @@ import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 
+
 @Injectable({
     providedIn: 'root'
   })
