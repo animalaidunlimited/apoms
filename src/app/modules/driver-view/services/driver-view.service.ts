@@ -23,32 +23,6 @@ export class DriverViewService extends APIService {
     super(http);
   }
 
-  public async upsertVehicleListItem(vehicleDetail: any) : Promise<SuccessOnlyResponse> {
-    if (vehicleDetail.vehicleId) {
-      return await this.put(vehicleDetail);
-    } else {
-      return await this.post(vehicleDetail);
-    }
-  }
-
-  public getVehicleListTableData(): Promise<any> {
-    const request = '?GetVehicleListTableData';
-    return this.get(request);
-  }
-
-  public async deleteVehicleListItem(vehicleId : number) : Promise<SuccessOnlyResponse> {
-    let deleteobject = {
-      vehicleId:vehicleId,
-      isDeleted: true
-    }
-    return await this.put(deleteobject).then((output)=>{
-      return output;
-    }).catch((error:any)=>{
-        console.log(error);
-    });
-
-  }
-
   public populateDriverView(driverViewDate: Date) {
 
     console.log(driverViewDate);
@@ -63,7 +37,7 @@ export class DriverViewService extends APIService {
       else {
         this.driverViewDetails.next([]);
       }
-      
+
     })
 
   }

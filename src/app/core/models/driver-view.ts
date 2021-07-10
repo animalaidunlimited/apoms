@@ -10,7 +10,7 @@ export interface Vehicle {
   smallAnimalCapacity: number;
   minRescuerCapacity: number;
   maxRescuerCapacity: number;
-  currentVehicleStaff: string;
+  currentVehicleStaff?: string;
 }
 
 export interface VehicleType {
