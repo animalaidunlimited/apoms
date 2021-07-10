@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ActiveVehicleLocations, LocationHistory, LocationPathSegment, PolylineOptions, VehicleLocationHistory } from '../../models/location';
+import { VehicleLocation, LocationPathSegment, PolylineOptions, VehicleLocationDetails, ActiveVehicleLocation } from '../../models/location';
 import { APIService } from '../http/api.service';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { APIService } from '../http/api.service';
 })
 export class LocationService extends APIService {
 
-  ambulanceLocations$ = new BehaviorSubject<ActiveVehicleLocations[]>([]);
+  ambulanceLocations$ = new BehaviorSubject<ActiveVehicleLocation[]>([]);
 
   endpoint = 'Location';
 
@@ -19,6 +19,7 @@ export class LocationService extends APIService {
   locationList$!: BehaviorSubject<LocationPathSegment[]>
   logLocation = new BehaviorSubject<boolean>(false);
 
+  //TODO - Allow this to be changed in settings.
   speedColours = [
     {maxSpeed: 7, colour: "gray"},
     {maxSpeed: 30, colour: "green"},
@@ -45,27 +46,22 @@ export class LocationService extends APIService {
     this.locationList$ = new BehaviorSubject<LocationPathSegment[]>(this.emptyLocationList);
 
     //this.locationList$.subscribe(vals => console.log(vals));
-    //this.getActiveVehicleLocations();
+    this.getActiveVehicleLocations();
 
     this.logLocation.subscribe(logLocation => {
 
       if(logLocation) {
-
-        console.log("Set interval");
         this.locationLogInterval = (setInterval(() => {this.postLocation();}, 10000));
       }
       else if(this.locationLogInterval) {
-
         clearInterval(this.locationLogInterval)
-
       };
-
 
     });
 
   }
 
-  receiveVehicleLocation(locationMessage: any){
+  receiveVehicleLocation(locationMessage: ActiveVehicleLocation){
 
     let currentLocations = this.ambulanceLocations$.value;
 
@@ -73,17 +69,19 @@ export class LocationService extends APIService {
 
     const updated = currentLocations.map(vehicle => {
 
-      if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleLocation[1]){
+      console.log(vehicle);
+      console.log(locationMessage);
 
-        vehicle.vehicleDetails.latLng.lat = locationMessage.vehicleLocation[3];
-        vehicle.vehicleDetails.latLng.lng = locationMessage.vehicleLocation[4]
+      if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleDetails.vehicleId){
+        vehicle.vehicleLocation.latLng.lat = locationMessage.vehicleLocation.latLng.lat;
+        vehicle.vehicleLocation.latLng.lng = locationMessage.vehicleLocation.latLng.lat;
       }
 
         return vehicle;
 
-      });
+    });
 
-      this.ambulanceLocations$.next(updated);
+    this.ambulanceLocations$.next(updated);
 
   }
 
@@ -93,8 +91,6 @@ export class LocationService extends APIService {
   }
 
   postLocation(){
-
-    console.log("postLocation");
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -110,8 +106,6 @@ export class LocationService extends APIService {
           altitude: position.coords.altitude,
           accuracy: position.coords.accuracy,
         };
-
-        //console.log(vehicleLocation);
 
         await this.postSubEndpoint('LogVehicleLocation', vehicleLocation);
 
@@ -137,18 +131,19 @@ export class LocationService extends APIService {
 
     const request = '/ActiveVehicleLocations';
 
-    this.getObservable(request).subscribe((response: ActiveVehicleLocations[]) =>
-        this.ambulanceLocations$.next(response)
+    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) =>
+    {console.log(response);
+        this.ambulanceLocations$.next(response)}
     );
 
   }
 
-  getVehicleLocationHistory(vehicleId: number) : Observable<VehicleLocationHistory>{
+  getVehicleVehicleLocation(vehicleId: number) : Observable<VehicleLocationDetails>{
 
-    const request = `/VehicleLocationHistory?vehicleId=${vehicleId}`;
+    const request = `/VehicleLocationDetails?vehicleId=${vehicleId}`;
 
     return this.getObservable(request).pipe(
-        map((response: VehicleLocationHistory) => {
+        map((response: VehicleLocationDetails) => {
             return response;
         })
     );
@@ -158,15 +153,15 @@ export class LocationService extends APIService {
   toggleVehicleLocation(vehicleId: number, checked: boolean) : void{
 
     checked ?
-      this.addVehicleLocationHistory(vehicleId)
+      this.addVehicleVehicleLocation(vehicleId)
       :
-      this.removeVehicleLocationHistory(vehicleId);
+      this.removeVehicleVehicleLocation(vehicleId);
 
   }
 
-  addVehicleLocationHistory(vehicleId : number) : void{
+  addVehicleVehicleLocation(vehicleId : number) : void{
 
-    this.getVehicleLocationHistory(vehicleId).subscribe(locationHistory => {
+    this.getVehicleVehicleLocation(vehicleId).subscribe(locationHistory => {
 
       let currentHistory = this.locationList$.value;
 
@@ -180,7 +175,7 @@ export class LocationService extends APIService {
 
   }
 
-  removeVehicleLocationHistory(vehicleId : number) : void {
+  removeVehicleVehicleLocation(vehicleId : number) : void {
 
     const currentHistory = this.locationList$.value;
 
@@ -190,7 +185,7 @@ export class LocationService extends APIService {
 
   }
 
-  generatePolylines(vehicleId: number, locations: LocationHistory[]) : LocationPathSegment{
+  generatePolylines(vehicleId: number, locations: VehicleLocation[]) : LocationPathSegment{
 
     let returnArray:LocationPathSegment = {
       vehicleId,

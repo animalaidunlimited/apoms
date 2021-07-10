@@ -30,6 +30,8 @@ update the current location and rescuers for a specific vehicle.
 SELECT
 JSON_OBJECT(
 	"vehicleId", prm_VehicleId,
+    "vehicleLocation",
+    JSON_OBJECT(
 	"speed", prm_Speed,
 	"heading", prm_Heading,
 	"accuracy", prm_Accuracy,
@@ -38,7 +40,7 @@ JSON_OBJECT(
 	"latLng",    
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT("lat", prm_Latitude),
-	JSON_OBJECT("lng", prm_Longitude)),
+	JSON_OBJECT("lng", prm_Longitude))),
     "vehicleStaff",
 	JSON_ARRAYAGG(
 	JSON_OBJECT(
