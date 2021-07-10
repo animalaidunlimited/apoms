@@ -430,7 +430,7 @@ export class OutstandingCaseService {
 
   }
 
-  getAmbulanceLocationHistory(){
+  getAmbulanceVehicleLocation(){
 
   }
 

@@ -22,7 +22,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle/slide-toggle';
-import { ActiveVehicleLocations } from 'src/app/core/models/location';
+import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
 
 
@@ -89,7 +89,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     {actionStatus: 4, actionStatusName: 'Rescued/Released'},
     {actionStatus: 5, actionStatusName: 'Admitted'}];
 
-    ambulanceLocations$!:Observable<ActiveVehicleLocations[]>;
+    ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
 
     autoRefresh = false;
 
