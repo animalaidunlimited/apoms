@@ -4,9 +4,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { LocationService } from 'src/app/core/services/location/location.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DriverViewService } from '../../services/driver-view.service';
+import { VehicleService } from '../../services/vehicle.service';
 
 
 
@@ -53,7 +53,7 @@ export class VehicleListPageComponent implements OnInit {
 
   constructor(private dropdown: DropdownService,
               private fb: FormBuilder,
-              private driverViewService: DriverViewService,
+              private vehicleService: VehicleService,
               private snackBar: SnackbarService) { }
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class VehicleListPageComponent implements OnInit {
 
   Submit(vehicleForm: FormGroup) {
 
-    this.driverViewService.upsertVehicleListItem(vehicleForm.value).then(response=> {
+    this.vehicleService.upsertVehicleListItem(vehicleForm.value).then(response=> {
       if(response.success === -1) {
         this.snackBar.errorSnackBar('Communication error see adim', 'Ok');
       }
@@ -83,7 +83,7 @@ export class VehicleListPageComponent implements OnInit {
   }
 
   refreshVehicleTable() {
-    this.driverViewService.getVehicleListTableData().then((vehicleListTabledata)=> {
+    this.vehicleService.getVehicleList().then((vehicleListTabledata)=> {
       this.dataSource = vehicleListTabledata;
     })
   }
@@ -99,7 +99,7 @@ export class VehicleListPageComponent implements OnInit {
 
     console.log(vehicleId);
     if(vehicleId) {
-      this.driverViewService.deleteVehicleListItem(vehicleId).then(successResponse=> {
+      this.vehicleService.deleteVehicleListItem(vehicleId).then(successResponse=> {
 
         if(successResponse.success === -1) {
           this.snackBar.errorSnackBar('Communication error see adim', 'Ok');
