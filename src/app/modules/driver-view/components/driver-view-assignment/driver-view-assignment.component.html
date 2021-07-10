@@ -58,62 +58,62 @@
 
                 </div>
 
-                <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'Rescue'">
-                    <mat-button-toggle>
+                <mat-button-toggle-group class="toggleDiv" (change)="togglebuttonSelection($event.value, assignments.ambulanceAction , assignments)" *ngIf="assignments.ambulanceAction === 'Rescue'">
+                    <mat-button-toggle value="Arrived">
                         Arrived
                         <mat-icon *ngIf = "assignments.ambulanceArrivalTime" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Rescued">
                         Rescued
                         <mat-icon *ngIf = "assignments.rescueTime" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Admitted">
                         Admitted
                         <mat-icon *ngIf="assignments.patientCallOutcomeId == 1" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
 
-                <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'Release'">
-                    <mat-button-toggle>
+                <mat-button-toggle-group (change)="togglebuttonSelection($event.value, assignments.ambulanceAction, assignments)" class="toggleDiv" *ngIf="assignments.ambulanceAction === 'Release'">
+                    <mat-button-toggle value="PickedUp">
                         Pickedup
                         <mat-icon *ngIf = "assignments.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Arrived">
                         Arrived
                         <mat-icon *ngIf = "assignments.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
-                        Complete
+                    <mat-button-toggle value="Released">
+                        Released
                         <mat-icon *ngIf="assignments.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
 
-                <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
-                    <mat-button-toggle>
+                <mat-button-toggle-group class="toggleDiv" (change)="togglebuttonSelection($event.value, assignments.ambulanceAction, assignments)" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
+                    <mat-button-toggle value="Arrived">
                         Arrived
                         <mat-icon *ngIf = "assignments.visitBeginDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
-                        Complete
+                    <mat-button-toggle value="Treated">
+                        Treated
                         <mat-icon *ngIf="assignments.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
                 </mat-button-toggle-group>
 
 
-                <mat-button-toggle-group class="toggleDiv" *ngIf="assignments.ambulanceAction === 'STRelease'">
-                    <mat-button-toggle>
+                <mat-button-toggle-group class="toggleDiv" (change)="togglebuttonSelection($event.value, assignments.ambulanceAction, assignments)" *ngIf="assignments.ambulanceAction === 'STRelease'">
+                    <mat-button-toggle value="PickedUp">
                         Pickedup
                         <mat-icon *ngIf = "assignments.releasePickupDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Arrived">
                         Arrived
                         <mat-icon *ngIf = "assignments.releaseBeginDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Released">
                         Released
                         <mat-icon *ngIf="assignments.releaseEndDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle>
+                    <mat-button-toggle value="Treated">
                         Treated
                         <mat-icon *ngIf="assignments.visitEndDate" class="toggleButtonColor">check_circle</mat-icon>
                     </mat-button-toggle>

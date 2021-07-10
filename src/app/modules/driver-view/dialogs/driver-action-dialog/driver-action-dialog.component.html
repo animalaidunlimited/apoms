@@ -1,0 +1,27 @@
+<div (click)="closeDialog()">
+    <mat-icon class="closeIconDiv">close</mat-icon>
+</div>
+
+<div mat-dialog-content>
+
+    <form [formGroup]="formGroup" (ngSubmit)='Submit(formGroup.value)'>
+
+        <div *ngFor="let control of data.formBuilderArray">
+    
+            <mat-form-field appearance="fill">
+                <mat-label>{{control.subAction}} Time</mat-label>
+                <input type="{{control.type}}" [formControlName]="control.formControlName" matInput>
+              </mat-form-field>
+    
+        </div>
+
+        <div mat-dialog-action>
+
+            <button mat-raised-button color="primary" type="submit">Save</button>
+        
+        </div>
+    
+    </form>
+
+</div>
+
