@@ -52,7 +52,7 @@ JSON_OBJECT(
 "initials", u.Initials,
 "colour", u.Colour)) AS `vehicleStaff`
 FROM AAU.Vehicle v
-INNER JOIN
+LEFT JOIN
 (
 SELECT	VehicleId, Latitude, Longitude, Speed, Heading, Accuracy, Altitude, AltitudeAccuracy,
 		ROW_NUMBER() OVER (PARTITION BY VehicleId ORDER BY Timestamp DESC) AS `RNum`
