@@ -22,27 +22,44 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
+
 WITH vehicleListCTE AS 
 (
-SELECT JSON_OBJECT(
-"vehicleId", vl.VehicleId,
+SELECT 
+JSON_OBJECT(
+"vehicleId", v.VehicleId,
+"vehicleRegistrationNumber", v.VehicleRegistrationNumber,
+"vehicleNumber", v.VehicleNumber,
+"smallAnimalCapacity", v.SmallAnimalCapacity,
+"largeAnimalCapacity", v.LargeAnimalCapacity,
+"vehicleImage", v.VehicleImage,
+"vehicleTypeId", v.VehicleTypeId) AS `vehicleDetails`,
+
+JSON_OBJECT(
+"speed", Speed,
+"heading", Heading,
+"accuracy", Accuracy,
+"altitude", Altitude,
+"altitudeAccuracy", AltitudeAccuracy,
 "latLng",
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("lat", vl.Latitude),
-JSON_OBJECT("lng", Longitude))) AS `vehicleDetails`,
+JSON_OBJECT("lng", Longitude))) AS `vehicleLocation`,
 JSON_ARRAYAGG(
 JSON_OBJECT(
 "firstName", u.FirstName,
 "surname", u.Surname,
 "initials", u.Initials,
 "colour", u.Colour)) AS `vehicleStaff`
-FROM
+FROM AAU.Vehicle v
+INNER JOIN
 (
-SELECT VehicleId, Latitude, Longitude, ROW_NUMBER() OVER (PARTITION BY VehicleId ORDER BY Timestamp DESC) AS `RNum`
+SELECT	VehicleId, Latitude, Longitude, Speed, Heading, Accuracy, Altitude, AltitudeAccuracy,
+		ROW_NUMBER() OVER (PARTITION BY VehicleId ORDER BY Timestamp DESC) AS `RNum`
 FROM AAU.VehicleLocation
-WHERE CAST(Timestamp AS DATE) = CAST(CURDATE()-2 AS DATE)
+WHERE CAST(Timestamp AS DATE) = '2021-07-04'
 AND OrganisationId = vOrganisationId
-) vl
+) vl ON vl.VehicleId = v.VehicleId
 LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = vl.VehicleId
 LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
@@ -56,8 +73,12 @@ SELECT
 JSON_ARRAYAGG(
 JSON_OBJECT(
 "vehicleDetails", vehicleDetails,
+"vehicleLocation", vehicleLocation,
 "vehicleStaff", vehicleStaff
 )) AS `vehicleList`
 FROM vehicleListCTE;
 
 END$$
+
+
+

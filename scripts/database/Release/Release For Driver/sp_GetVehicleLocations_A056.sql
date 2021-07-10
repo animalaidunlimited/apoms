@@ -22,24 +22,47 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
+WITH LocationHistoryCTE AS
+(
 SELECT
-JSON_OBJECT("vehicleId", VehicleId,
-"locationHistory", 
-JSON_ARRAYAGG(
-JSON_OBJECT(
-"timestamp", Timestamp,
-"speed", Speed,
-"heading", Heading,
-"latLng",
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("lat", Latitude),
-JSON_OBJECT("lng", Longitude))
-))) AS `locationByVehicleId`
-FROM AAU.VehicleLocation
-WHERE CAST(Timestamp AS DATE) = CAST(CURDATE()-2 AS DATE)
+vl.VehicleId,
+	JSON_ARRAYAGG(
+		JSON_OBJECT(
+		"timestamp", vl.Timestamp,
+		"speed", vl.Speed,
+		"heading", vl.Heading,
+		"accuracy", vl.Accuracy,
+		"altitude", vl.Altitude,
+		"altitudeAccuracy", vl.AltitudeAccuracy,
+		"latLng",
+		JSON_MERGE_PRESERVE(
+		JSON_OBJECT("lat", vl.Latitude),
+		JSON_OBJECT("lng", vl.Longitude))
+	)) AS `locationByVehicleId`
+FROM AAU.VehicleLocation vl
+WHERE CAST(vl.`Timestamp` AS DATE) = '2021-07-04'
 AND OrganisationId = vOrganisationId
 AND VehicleId = prm_VehicleId
-GROUP BY VehicleId;
+GROUP BY vl.VehicleId
+)
+
+SELECT
+JSON_MERGE_PRESERVE(
+JSON_OBJECT(
+"vehicleDetails",
+	JSON_OBJECT(
+	"vehicleId", v.VehicleId,
+	"vehicleRegistrationNumber", v.VehicleRegistrationNumber,
+	"vehicleNumber", v.VehicleNumber,
+	"smallAnimalCapacity", v.SmallAnimalCapacity,
+	"largeAnimalCapacity", v.LargeAnimalCapacity,
+	"vehicleImage", v.VehicleImage,
+	"vehicleTypeId", v.VehicleTypeId)),
+JSON_OBJECT(
+"vehicleLocation",
+	JSON_OBJECT("locationHistory", lh.locationByVehicleId))) AS `vehicleLocationHistory`
+FROM AAU.Vehicle v
+INNER JOIN LocationHistoryCTE lh ON lh.VehicleId = v.VehicleId;
 
 
 END $$
