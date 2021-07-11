@@ -12,6 +12,11 @@ Created On: 19/05/2021
 Purpose: To get the list of Vehicle To display them in a table.
 */
 
+DECLARE vOrganisationId INT;
+
+SELECT u.OrganisationId INTO vOrganisationId
+FROM AAU.User u
+WHERE u.UserName = prm_Username LIMIT 1;
 
 SELECT
 JSON_ARRAYAGG(
@@ -26,8 +31,7 @@ JSON_MERGE_PRESERVE(
     JSON_OBJECT("minRescuerCapacity", vehicleDetails.MinRescuerCapacity),
 	JSON_OBJECT("maxRescuerCapacity", vehicleDetails.MaxRescuerCapacity),
 	JSON_OBJECT("vehicleStatusId", vehicleDetails.VehicleStatusId),
-	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus),
-    JSON_OBJECT("currentVehicleStaff", vehicleDetails.VehicleStaff)
+	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus)
 )) AS vehicleList
 FROM
 (SELECT vl.VehicleId,
@@ -40,22 +44,12 @@ FROM
     vl.MinRescuerCapacity,
     vl.MaxRescuerCapacity,
 	vl.VehicleStatusId,
-	vs.VehicleStatus,
-    vsu.VehicleStaff
+	vs.VehicleStatus
 FROM AAU.Vehicle vl
 INNER JOIN AAU.VehicleType vt ON vt.VehicleTypeId = vl.VehicleTypeId
 INNER JOIN AAU.VehicleStatus vs ON vs.VehicleStatusId = vl.VehicleStatusId
-LEFT JOIN AAU.VehicleShift vsh ON vsh.VehicleId = vl.VehicleId AND
-	CURDATE() >= vsh.StartDate AND
-	CURDATE() <= IFNULL(vsh.EndDate, CURDATE())
-LEFT JOIN
-	(
-		SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(u.Initials),")") AS VehicleStaff
-		FROM AAU.VehicleShiftUser vsu
-		LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-		GROUP BY VehicleShiftId
-	) vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 WHERE vl.isDeleted = 0
+AND vl.OrganisationId = vOrganisationId
 ) vehicleDetails;
 
 END$$
