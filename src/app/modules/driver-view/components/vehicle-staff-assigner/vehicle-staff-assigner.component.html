@@ -1,3 +1,20 @@
-<div *ngFor="let vehicle of (activeVehicles$ | async)">
-    {{vehicle.vehicleNumber}}
+<div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container">
+
+    <div fxLayout="row" fxLayoutAlign="center start" class="vehicle-shift-container">
+
+        <div fxFlex="none" class="vehicle-shift-header">
+            {{vehicle.vehicleNumber}}
+            {{vehicle.registrationNumber}}
+        </div>
+
+        <div fxFlex="fill" fxLayout="row" fxLayoutAlign="space-between center">
+
+            <div *ngFor="let hour of hours" class="single-hour">
+                {{hour}}
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
