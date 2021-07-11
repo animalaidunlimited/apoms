@@ -128,7 +128,7 @@ export class LocationService extends APIService {
 
   }
 
-  getVehicleVehicleLocation(vehicleId: number) : Observable<VehicleLocationDetails>{
+  getVehicleLocation(vehicleId: number) : Observable<VehicleLocationDetails>{
 
     const request = `/VehicleLocationHistory?vehicleId=${vehicleId}`;
 
@@ -143,15 +143,15 @@ export class LocationService extends APIService {
   toggleVehicleLocation(vehicleId: number, checked: boolean) : void{
 
     checked ?
-      this.addVehicleVehicleLocation(vehicleId)
+      this.addVehicleLocation(vehicleId)
       :
-      this.removeVehicleVehicleLocation(vehicleId);
+      this.removeVehicleLocation(vehicleId);
 
   }
 
-  addVehicleVehicleLocation(vehicleId : number) : void{
+  addVehicleLocation(vehicleId : number) : void{
 
-    this.getVehicleVehicleLocation(vehicleId).subscribe(locationHistory => {
+    this.getVehicleLocation(vehicleId).subscribe(locationHistory => {
 
       const currentHistory = this.locationList$.value;
 
@@ -165,7 +165,7 @@ export class LocationService extends APIService {
 
   }
 
-  removeVehicleVehicleLocation(vehicleId : number) : void {
+  removeVehicleLocation(vehicleId : number) : void {
 
     const currentHistory = this.locationList$.value;
 
