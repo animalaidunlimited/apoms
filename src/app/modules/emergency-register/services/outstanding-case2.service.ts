@@ -1,8 +1,9 @@
-import { OutstandingCase, OutstandingCase2 } from './../../../core/models/outstanding-case';
+
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinct, map, reduce, take, takeLast} from 'rxjs/operators';
+import { OutstandingAssigment2 } from 'src/app/core/models/outstanding-case';
 
 import { RescueDetailsService } from './rescue-details.service';
 
@@ -16,7 +17,7 @@ export class OutstandingCase2Service {
 
 
   initialised = false;
-  outstandingCases$:BehaviorSubject<OutstandingCase2[]> = new BehaviorSubject<OutstandingCase2[]>([]);
+  outstandingCases$:BehaviorSubject<OutstandingAssigment2[]> = new BehaviorSubject<OutstandingAssigment2[]>([]);
   
   constructor(
     private rescueService: RescueDetailsService

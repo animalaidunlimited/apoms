@@ -11,7 +11,7 @@ export interface OutstandingCase {
 }
 
 
-export interface OutstandingCase2 {
+export interface OutstandingAssigment2 {
     actionStatusId: number;
     ambulanceAction: string;
     assignedVehicleId: number | null;

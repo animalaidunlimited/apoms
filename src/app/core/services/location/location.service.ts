@@ -55,8 +55,8 @@ export class LocationService extends APIService {
         this.locationLogInterval = (setInterval(() => {this.postLocation();}, 10000));
       }
       else if(this.locationLogInterval) {
-        clearInterval(this.locationLogInterval)
-      };
+        clearInterval(this.locationLogInterval);
+      }
 
     });
 
@@ -124,16 +124,13 @@ export class LocationService extends APIService {
 
     const request = '/ActiveVehicleLocations';
 
-    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) =>
-    {console.log(response);
-        this.ambulanceLocations$.next(response)}
-    );
+    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) => this.ambulanceLocations$.next(response));
 
   }
 
   getVehicleVehicleLocation(vehicleId: number) : Observable<VehicleLocationDetails>{
 
-    const request = `/VehicleLocationDetails?vehicleId=${vehicleId}`;
+    const request = `/VehicleLocationHistory?vehicleId=${vehicleId}`;
 
     return this.getObservable(request).pipe(
         map((response: VehicleLocationDetails) => {
