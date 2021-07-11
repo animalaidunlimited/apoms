@@ -29,6 +29,10 @@
     <div class="ambulanceAssignedCases" *ngFor="let vehicleId of vehicleId$ | async">
 
       <ng-container *ngIf="vehicleId">
+
+
+        <app-ambulance-details [vehcileDetails]="getVehcileDetails(vehicleId)" ></app-ambulance-details>
+
         <div *ngFor="let statusId of actionStatusId " fxFlex class="drag-drop-container">
 
           <h2>{{getActionStatus(statusId)}}</h2>
