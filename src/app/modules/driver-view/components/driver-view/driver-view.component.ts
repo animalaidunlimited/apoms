@@ -28,7 +28,7 @@ export class DriverViewComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.locationService.initialise()
+    this.locationService.initialise();
 
 
     // Start logging the location of this vehicle.

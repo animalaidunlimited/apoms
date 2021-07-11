@@ -35,7 +35,6 @@ export class AppComponent implements OnInit{
 
         this.authService.loggedIn.subscribe(loggedIn => {
 
-            console.log(loggedIn);
 
             if(loggedIn){
 

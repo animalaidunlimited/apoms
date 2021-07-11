@@ -2,10 +2,11 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { delay, map, skip, take } from 'rxjs/operators';
+import { skip } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { Vehicle } from 'src/app/core/models/driver-view';
 import { OutstandingCase2 } from 'src/app/core/models/outstanding-case';
+import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from 'src/app/modules/driver-view/services/driver-view.service';
 
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
@@ -30,7 +31,8 @@ export class OutstandingCaseBoard2Component implements OnInit {
   constructor( 
     private outstandingCase2Service: OutstandingCase2Service,
     private dialog: MatDialog,
-    private driverViewService: DriverViewService) { }
+    private driverViewService: DriverViewService,
+    private locationService: LocationService) { }
 
   ngOnInit(): void {
    
@@ -46,6 +48,7 @@ export class OutstandingCaseBoard2Component implements OnInit {
       this.vehcileList = vehicleListTabledata;
 
     });
+
     
   }
 
@@ -58,6 +61,7 @@ export class OutstandingCaseBoard2Component implements OnInit {
   }
 
   getOutstandingCasesByStatusId(vehicleId:number, statusId: number){
+    
     
     return this.getOutstandingCasesByVehicleId(vehicleId).filter(outStandingCases => outStandingCases.actionStatusId === statusId);
     
@@ -82,33 +86,6 @@ export class OutstandingCaseBoard2Component implements OnInit {
     
   }
 
-  drop(event: CdkDragDrop<any>) {
-    console.log(event.previousContainer);
-    console.log(event.container);
-    if (event.previousContainer === event.container) {
-
-      try{
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      }
-      catch(error){
-        console.log(error);
-      }
-    } else {
-
-      try{
-
-        // We need to move the item first when moving by drag so that the rescue
-        // waits in its new swimlane until it either succeeds or fails and is moved back
-        transferArrayItem(event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex);
-      }
-      catch(error){
-        console.log(error);
-      }
-    }
-  }
 
   openMediaDialog(patientId: number, tagNumber: string | null): void{
     this.dialog.open(MediaDialogComponent, {
@@ -121,6 +98,11 @@ export class OutstandingCaseBoard2Component implements OnInit {
 
   }
 
+
+  getVehcileDetails(vehicleId: number){
+    
+    return this.locationService.getVehicleVehicleLocation(vehicleId);
+  }
 
   
   

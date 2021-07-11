@@ -2,7 +2,7 @@ import { OutstandingCase, OutstandingCase2 } from './../../../core/models/outsta
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinct, map, take, takeLast} from 'rxjs/operators';
+import { distinct, map, reduce, take, takeLast} from 'rxjs/operators';
 
 import { RescueDetailsService } from './rescue-details.service';
 
@@ -45,13 +45,16 @@ export class OutstandingCase2Service {
     
   
     return this.outstandingCases$.pipe(
+   
       map(outstandingCases => outstandingCases.map(outstandingCase => outstandingCase.assignedVehicleId)),
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase !== null)),
-      map(ids => [...new Set(ids)])
+      map(ids => [...new Set(ids)]) 
     );
    
   
   }
+
+
   getActionStatusId(){
     
   
