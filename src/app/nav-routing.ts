@@ -79,7 +79,7 @@ export const navRoutes: NavRoute[] = [
     {
         data: { title: 'Vehicle List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
-        group: 'Vehicles',
+        group: 'Driver View',
         path: 'vehicle-list',
         loadChildren: () =>
             import('./modules/driver-view/pages/vehicle-list-page/vehicle-list-page.module')
@@ -89,11 +89,21 @@ export const navRoutes: NavRoute[] = [
     {
         data: { title: 'Driver View', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
-        group: 'Vehicles',
+        group: 'Driver View',
         path: 'driver-view',
         loadChildren: () =>
             import('./modules/driver-view/components/driver-view/driver-view.module')
             .then(m => m.DriverViewModule)
+    },
+
+    {
+        data: { title: 'Vehicle Staff Assigner', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Driver View',
+        path: 'vehicle-staff-assigner',
+        loadChildren: () =>
+            import('./modules/driver-view/components/vehicle-staff-assigner/vehicle-staff-assigner.module')
+            .then(m => m.VehicleStaffAssignerModule)
     },
 
     {

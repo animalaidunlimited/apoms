@@ -8,13 +8,18 @@ import { DriverViewAssignmentComponent } from '../driver-view-assignment/driver-
 import { DriverViewIconsComponent } from '../driver-view-icons/driver-view-icons.component';
 import { CallerDetailsDialogComponent } from '../../dialogs/caller-details-dialog/caller-details-dialog.component';
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
-import { CallerDetailsComponent } from 'src/app/core/components/caller-details/caller-details.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
 
 
 @NgModule({
-  declarations: [DriverViewComponent, DriverViewAssignmentComponent, DriverViewIconsComponent,CallerDetailsDialogComponent,LocationDialogComponent],
+  declarations: [
+    DriverViewComponent,
+    DriverViewAssignmentComponent,
+    DriverViewIconsComponent,
+    CallerDetailsDialogComponent,
+    LocationDialogComponent
+  ],
   imports: [
     CommonModule,
     DriverViewRoutingModule,
