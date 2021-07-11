@@ -1,0 +1,58 @@
+
+
+.vehicle-shift-header{
+    background-color: lightgray;
+    min-height: 15rem;
+    padding: 1em;
+    border-radius: 5px 0px 0px 5px;;
+}
+
+.vehicle-shift-hours{
+    background-color: white;
+}
+
+.single-hour{
+    width: calc(100% / 24);
+    text-align: center;
+    height: 25px;
+    line-height: 25px;
+
+    border-radius: 2px;
+    border: 1px solid darkgray;
+    background-color: lightgray;
+}
+
+.single-hour:not(:first-child) {
+    border-left: none !important;
+}
+
+.addStaffAssignmentButton{
+    position: absolute;
+    bottom: 2%;
+    right: 1%;
+}
+
+.vehicle-shift{
+    position: relative;
+    height: 5rem;
+    background-color: #359A88;
+    border-radius: 15px;
+    margin-top: 5px;
+    padding-left: .5rem;
+}
+
+
+.vehicle-shift:last-child{
+    margin-bottom: 5px;
+}
+
+.staff-icon {
+    border-radius: 50%;
+    height: 3rem;
+    line-height: 3rem;
+    width: 3rem;
+    font-weight: 500;
+    color: white;
+    background-color: darkgray;
+    text-align: center;
+}

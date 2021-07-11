@@ -5,6 +5,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DriverViewAssignmentComponent } from './components/driver-view-assignment/driver-view-assignment.component';
 import { VehicleListPageModule } from './pages/vehicle-list-page/vehicle-list-page.module';
+
 @NgModule({
   declarations: [ DriverViewAssignmentComponent],
   imports: [

@@ -1,8 +1,8 @@
 export interface VehicleStaff {
-    colour?: any;
-    surname?: any;
     initials: string;
     firstName: string;
+    surname?: any;
+    colour?: any;
 }
 
 export interface LatLng {

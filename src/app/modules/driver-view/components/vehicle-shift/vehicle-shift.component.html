@@ -1,0 +1,41 @@
+<div fxLayout="row" fxLayoutAlign="center start">
+
+    <div class="vehicle-shift-header">
+        {{vehicle.vehicleNumber}}
+        {{vehicle.registrationNumber}}
+    </div>
+
+    <div fxFlex fxLayout="column" class="vehicle-shift-hours">
+
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+
+
+            <div *ngFor="let hour of hours" class="single-hour">
+                {{hour}}
+            </div>
+
+        </div>
+
+        <div
+        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
+        *ngFor="let shift of ( shifts$ | async)"
+        [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
+
+            <div *ngFor="let staff of shift.vehicleStaff">
+
+                <div class="staff-icon">
+                    {{staff.initials}}
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<button class="addStaffAssignmentButton" type="button" (click)="addStaffAssignment(vehicle.vehicleId)" mat-mini-fab color="primary">
+    <mat-icon>add</mat-icon>
+</button>

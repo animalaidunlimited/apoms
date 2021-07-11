@@ -1,27 +1,12 @@
-
 .assigner-container {
  margin-top: 20px;
+ position: relative;
 }
 
 .vehicle-shift-container {
-    width: 100%;
-    margin: 5px;
-}
-
-.vehicle-shift-header{
-    background-color: lightgray;
-    min-height: 15rem;
-    margin-bottom: 1em;
-    padding: 1em;
+    width: 99.5%;
+    border-bottom: 1px solid lightgray;
+    border-right: 1px solid lightgray;
     border-radius: 5px;
-}
-
-.single-hour{
-    width: calc(100% / 24);
-    text-align: center;
-    height: 25px;
-    line-height: 25px;
-    border: 1px solid darkgray;
-    border-radius: 4px;
     background-color: lightgray;
 }
