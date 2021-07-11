@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { VehicleStaffAssignerComponent } from './vehicle-staff-assigner.component';
 import { MaterialModule } from 'src/app/material-module';
 import { VehicleStaffAssignerRoutingModule } from './vehicle-staff-assigner-routing.module';
+import { VehicleShiftComponent } from '../vehicle-shift/vehicle-shift.component';
 
 
 
 @NgModule({
-  declarations: [VehicleStaffAssignerComponent],
+  declarations: [
+    VehicleStaffAssignerComponent,
+    VehicleShiftComponent
+  ],
   imports: [
     CommonModule,
     VehicleStaffAssignerRoutingModule,

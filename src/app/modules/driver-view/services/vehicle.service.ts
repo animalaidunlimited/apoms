@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Vehicle } from 'src/app/core/models/driver-view';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { VehicleShift } from 'src/app/core/models/vehicle';
 import { APIService } from 'src/app/core/services/http/api.service';
 
 @Injectable({
@@ -53,6 +54,76 @@ export class VehicleService  extends APIService {
     }).catch((error:any)=>{
         console.log(error);
     });
+
+  }
+
+
+  public getVehicleShifts() : Observable<VehicleShift[]>{
+
+    return of(
+      [
+        {
+          vehicleShiftId: 1,
+          startTime: new Date("2021-11-07 06:00:00"),
+          endTime: new Date("2021-11-07 08:00:00"),
+          vehicleStaff: [
+          {
+            initials: "DP",
+            firstName: "Dipesh",
+            surname: "Thapa",
+            colour: "green"
+          },
+          {
+            initials: "KS",
+            firstName: "Kamlesh",
+            surname: "Sharma",
+            colour: "lightgreen"
+          }
+          ]
+
+        },
+        {
+          vehicleShiftId: 1,
+          startTime: new Date("2021-11-07 08:00:01"),
+          endTime: new Date("2021-11-07 10:30:00"),
+          vehicleStaff: [
+          {
+            initials: "DD",
+            firstName: "Deendeyal",
+            surname: "Gora",
+            colour: "purple"
+          },
+          {
+            initials: "KSD",
+            firstName: "KaluSingh",
+            surname: "Deora",
+            colour: "orange"
+          }
+          ]
+
+        },
+        {
+          vehicleShiftId: 1,
+          startTime: new Date("2021-11-07 10:30:00"),
+          endTime: new Date("2021-11-07 17:15:0-1"),
+          vehicleStaff: [
+          {
+            initials: "MD",
+            firstName: "Manoj",
+            surname: "Dangi",
+            colour: "blue"
+          },
+          {
+            initials: "GS",
+            firstName: "Ganpat",
+            surname: "Singh",
+            colour: "magenta"
+          }
+          ]
+
+        }
+      ]
+    )
 
   }
 }
