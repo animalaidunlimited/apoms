@@ -52,7 +52,7 @@
                 <mat-label>Done by</mat-label>
                 <mat-select formControlName="doneBy" [compareWith]="compareAssignedTo" [errorStateMatcher]="errorMatcher">
                     <mat-option *ngFor="let asignee of assignedTo$ | async" [value]="asignee">
-                        {{asignee.FirstName}}
+                        {{asignee.firstName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

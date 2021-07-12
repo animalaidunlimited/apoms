@@ -2,9 +2,22 @@
 
 .vehicle-shift-header{
     background-color: lightgray;
-    min-height: 15rem;
+    min-height: 5rem;
     padding: 1em;
     border-radius: 5px 0px 0px 5px;;
+
+    .vehicle-image {
+        border-radius: 50%;
+        height: 5em;
+        width: 5em;
+        background-color: white;
+    }
+
+    .vehicle-details{
+        span{
+            font-weight: bold;
+        }
+    }
 }
 
 .vehicle-shift-hours{
@@ -26,19 +39,15 @@
     border-left: none !important;
 }
 
-.addStaffAssignmentButton{
-    position: absolute;
-    bottom: 2%;
-    right: 1%;
-}
-
 .vehicle-shift{
     position: relative;
-    height: 5rem;
+    min-height: 5rem;
     background-color: #359A88;
     border-radius: 15px;
     margin-top: 5px;
     padding-left: .5rem;
+    padding-top: 5px;
+    box-shadow: 0px 5px 1px -2px rgb(0 0 0 / 11%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 }
 
 
@@ -51,8 +60,86 @@
     height: 3rem;
     line-height: 3rem;
     width: 3rem;
-    font-weight: 500;
+    font-weight: 650;
     color: white;
     background-color: darkgray;
     text-align: center;
+    cursor: pointer;
+}
+
+.shift-detail{
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    font-size: x-large;
+}
+
+
+
+.license-plate{
+    border: 2px solid black;
+    width: 9em;
+    padding: 2px 6px 2px 10px;
+    margin-left: 18px;
+    border-radius: 0.25em;
+    font-weight: 600;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    background-color: whitesmoke;
+
+    &-badge {
+        background-color: #3636c9;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 1em;
+        left: 0;
+        min-width: 2em;
+        padding: 0.2em 0 0.2em 0;
+
+        .silver {
+            background:
+               conic-gradient(
+                       #d7d7d7, #c3c3c3, #cccccc, #c6c6c6,
+                       #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8,
+                       #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf,
+                       #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5,
+                       #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd,
+                       #c4c4c4, #d9d9d9, #cecece, #c5c5c5,
+                       #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9,
+                       #d7d7d7) content-box,
+               linear-gradient(#d4d4d4, #d4d4d4)
+                   padding-box;
+           width: 0.7em;
+           height: 0.7em;
+       }
+
+        span{
+            color: white;
+            font-size: 0.44em;
+            margin-top: 0.5em;
+        }
+
+
+    }
+
+}
+
+.addStaffAssignmentButton{
+    position: absolute;
+    bottom: 2%;
+    right: 1%;
+}
+
+.add-shift-dialog {
+    width: 30em;
+    background-color: white;
+    border: 1px solid darkgray;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 11%;
+    right: 2.5%;
+    padding: 1em;
 }
