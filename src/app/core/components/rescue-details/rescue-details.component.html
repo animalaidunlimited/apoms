@@ -50,8 +50,8 @@
                     <mat-label>Rescuer {{i + 1}}</mat-label>
                     <mat-select tabindex="12" formControlName="rescuerId" [errorStateMatcher]="errorMatcher">
                         <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
-                            {{rescuer.FirstName}}
+                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.userId">
+                            {{rescuer.firstName}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

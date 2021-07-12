@@ -1,23 +1,9 @@
-export interface VehicleStaff {
-    initials: string;
-    firstName: string;
-    surname?: any;
-    colour?: any;
-}
+import { User } from "./user";
+import { VehicleDetails } from "./vehicle";
 
 export interface LatLng {
     lat: number;
     lng: number;
-}
-
-export interface VehicleDetails {
-    vehicleId: number;
-    vehicleTypeId: number;
-    vehicleImage: string;
-    vehicleNumber: string;
-    largeAnimalCapacity: number;
-    smallAnimalCapacity: number;
-    vehicleRegistrationNumber: string;
 }
 
 export interface VehicleLocation {
@@ -33,7 +19,7 @@ export interface VehicleLocation {
 export interface ActiveVehicleLocation {
     vehicleDetails: VehicleDetails;
     vehicleLocation: VehicleLocation;
-    vehicleStaff: VehicleStaff[];
+    vehicleStaff: User[];
 }
 
 export interface VehicleLocationDetails {

@@ -1,5 +1,14 @@
+<form [formGroup]="shiftDate">
+    <mat-form-field >
+        <mat-label>Shift date</mat-label>
+        <input type="date" formControlName="date" matInput>
+
+    </mat-form-field>
+
+</form>
+
 <div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container" fxLayout="row" fxLayoutAlign="center center">
 
-    <app-vehicle-shift class="vehicle-shift-container" [vehicle]="vehicle"></app-vehicle-shift>
+    <app-vehicle-shift class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
 
 </div>

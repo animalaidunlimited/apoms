@@ -1,9 +1,42 @@
 <div fxLayout="row" fxLayoutAlign="center start">
 
-    <div class="vehicle-shift-header">
-        {{vehicle.vehicleNumber}}
-        {{vehicle.registrationNumber}}
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+        <div class="vehicle-shift-header" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center space-between">
+            <div class="vehicle-image">
+
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="center start" class="vehicle-details">
+                <div><span>Number: </span>   {{vehicle.vehicleNumber}}</div>
+                <div><span>Type: </span>{{vehicle.vehicleType}}</div>
+                <div><span>Capacity: </span>{{vehicle.smallAnimalCapacity}}S / {{vehicle.largeAnimalCapacity}}L</div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="license-plate" fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="license-plate-badge">
+                    <div class="silver"></div>
+                    <span>IND</span>
+                </div>
+                <div>
+                    {{vehicle.registrationNumber}}
+                </div>
+        </div>
+
+
     </div>
+
+
+
+
 
     <div fxFlex fxLayout="column" class="vehicle-shift-hours">
 
@@ -17,16 +50,21 @@
         </div>
 
         <div
-        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
+        fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px"
         *ngFor="let shift of ( shifts$ | async)"
         [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
 
             <div *ngFor="let staff of shift.vehicleStaff">
 
-                <div class="staff-icon">
+                <div class="staff-icon"
+                [matTooltip]="staff.firstName + ' ' + staff.surname">
                     {{staff.initials}}
                 </div>
 
+            </div>
+
+            <div fxFlex class="shift-detail">
+                {{shift.startTime | date: 'HH:mm' : '' + (shift.startTime.getTimezoneOffset() * -1)}} - {{shift.endTime | date: 'HH:mm' : '' + (shift.endTime.getTimezoneOffset() * -1)}}
             </div>
 
         </div>
@@ -36,6 +74,76 @@
 
 </div>
 
-<button class="addStaffAssignmentButton" type="button" (click)="addStaffAssignment(vehicle.vehicleId)" mat-mini-fab color="primary">
+<button class="addStaffAssignmentButton" type="button" (click)="addStaffAssignment()" mat-mini-fab color="primary">
     <mat-icon>add</mat-icon>
 </button>
+
+<form [formGroup]="addShiftFormGroup" *ngIf="showAddShiftDialog" class="add-shift-dialog" (ngSubmit)="addStaffShift()">
+
+<div fxLayout="row wrap">
+
+    <mat-form-field>
+        <input formControlName="shiftStartTimeString" type="time"
+        name="shiftStartTime"
+        placeholder="Shift start time" [errorStateMatcher]="errorMatcher" matInput>
+
+            <!--<mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
+            Ambulance arrival before call!
+            </mat-error>
+
+            <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
+            Ambulance arrival after rescue!
+            </mat-error>-->
+    </mat-form-field>
+
+    <mat-form-field>
+        <input formControlName="shiftEndTimeString" type="time"
+        name="shiftEndTime"
+        placeholder="Shift end time" [errorStateMatcher]="errorMatcher" matInput>
+
+            <!--<mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
+            Ambulance arrival before call!
+            </mat-error>
+
+            <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
+            Ambulance arrival after rescue!
+            </mat-error>-->
+    </mat-form-field>
+
+</div>
+
+<div fxLayout="column">
+
+    <div formArrayName="vehicleStaff" *ngFor="let staff of staffArray?.controls; let i = index;">
+
+        <!--<div *ngFor="let e of [].constructor(vehicle.maxRescuerCapacity); let i = index">-->
+
+            <div [formGroupName]="i">
+
+                <mat-form-field>
+                    <mat-label>Staff {{i + 1}}</mat-label>
+                    <mat-select formControlName="userId" [errorStateMatcher]="errorMatcher">
+                        <mat-option>N/A</mat-option>
+                            <mat-option *ngFor="let staff of staff$ | async" [value]="staff.userId">
+                            {{staff.firstName}} {{staff.surname}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+            </div>
+
+
+        </div>
+
+
+        <button mat-raised-button color="primary" type="submit"
+        [disabled]="addShiftFormGroup.invalid">Add shift</button>
+
+
+    <!--</div>-->
+
+
+
+    </div>
+</form>

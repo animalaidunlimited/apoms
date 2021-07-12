@@ -37,8 +37,8 @@
         <mat-label>Releaser 1</mat-label>
             <mat-select formControlName="Releaser1">
                 <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                    {{releaser.FirstName}}
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
+                    {{releaser.firstName}}
                 </mat-option>
         </mat-select>
     </mat-form-field>
@@ -46,8 +46,8 @@
         <mat-label>Releaser 2</mat-label>
             <mat-select formControlName="Releaser2">
                 <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                    {{releaser.FirstName}}
+                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
+                    {{releaser.firstName}}
                 </mat-option>
         </mat-select>
     </mat-form-field> -->
