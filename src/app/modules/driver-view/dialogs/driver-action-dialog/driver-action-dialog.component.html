@@ -4,7 +4,7 @@
 
 <div mat-dialog-content>
 
-    <form [formGroup]="formGroup" (ngSubmit)='Submit(formGroup.value)'>
+    <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
 
         <div *ngFor="let control of data.formBuilderArray">
     

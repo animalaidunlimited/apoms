@@ -67,6 +67,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     );
 
     this.checkConnection.subscribe(connectionState => {
+      console.log(connectionState)
       if(connectionState){
 
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
