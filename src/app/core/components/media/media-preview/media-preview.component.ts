@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -12,8 +12,6 @@ import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
-
-import { DomSanitizer } from '@angular/platform-browser';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 @Component({
   // tslint:disable-next-line: component-selector
@@ -22,19 +20,22 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
   styleUrls: ['./media-preview.component.scss']
 })
 export class MediaPreviewComponent implements OnInit, OnDestroy {
+
   imageData!:Image;
   recordForm!: FormGroup;
   visible = true;
   removable = true;
   addOnBlur = true;
   selectable = false;
- 
+  fullImageView = false;
   imageHeight = 0;
   
   loading = false;
 
-
   mediaItems: MediaItem [] = [];
+
+  innerWidth = 0;
+  innerHeight = 0;
   
   private ngUnsubscribe = new Subject();
 
@@ -44,20 +45,27 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
 
+
+  onPinch$: Subject<number> = new Subject<number>();
+
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('commentInput') commentInput!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadMediaIcon') uploadMediaIcon!:ElementRef<HTMLElement>;
 
   @ViewChild('videoPlayer', { static: true }) videoplayer!: ElementRef;
+
+  @ViewChild('imgElement') imgElement!: ElementRef;
   
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
+
     const lisitenKeys = [37, 38, 39, 40];
+
     if((event.composedPath()[0] as HTMLElement).classList[0] as string === 'mat-dialog-container'){
 
       // tslint:disable-next-line: deprecation
       if (lisitenKeys.includes(event.keyCode)) {
-    
+        
         // tslint:disable-next-line: deprecation
         this.onArrowKey.emit(event.keyCode);
 
@@ -84,6 +92,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public cdr:ChangeDetectorRef,
     private onlineStatus: OnlineStatusService,
+    private renderer: Renderer2
   ) {
 
     if(this.data?.image){
@@ -98,8 +107,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
     this.recordForm = this.fb.group({
       imageDate: '',
       imageTags:[],
@@ -120,14 +129,19 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     
   }
 
-  checkHeight(dialogDataHeight = null){
-    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
+  checkHeight(dialogDataHeight?:number , dialogDataWidth?:number){
 
-    if(height > 900){
+    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
+    const width = dialogDataWidth ? dialogDataWidth :  this.data.image?.width;
+    
+    if(height > 2000 && width > 3000){
+      this.imageHeight = 24;
+    }
+    else if(height > 900 && width > 700){
       this.imageHeight = 50;
     }
     else{
-      this.imageHeight = 25;
+      this.imageHeight = 24;
     }
   }
 
@@ -158,7 +172,14 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           }
           
           this.data.upload = false;
+
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
+
+          this.imageData.patientMediaItemId = media;
+
+  
+
+          this.checkHeight(mediaItem.mediaItem?.heightPX, mediaItem.mediaItem?.widthPX);
 
         }
 
@@ -173,7 +194,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
         mediaItem.mediaItem.updated = true;
       }
       else{
-        console.log('Upload media');
+       //  console.log('Upload media');
       }
   
     }
@@ -222,6 +243,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   submitComment(Event:Event | null): void {
 
+ 
     Event?.preventDefault();
     const comment = Event?.target;
 
@@ -230,9 +252,11 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       comment: (comment as HTMLInputElement).value
     });
 
-    const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
 
+    const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
+    
     mediaCommentResponse.then((response:{success:number}) => {
+      
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
@@ -255,12 +279,20 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   private insertPatientTags(value: string) {
 
+    if(!this.recordForm.get('imageTags')?.value){
+
+      this.recordForm.get('imageTags')?.setValue([]);
+     
+    }
+
     const imageTags = this.recordForm.get('imageTags')?.value;
+
     imageTags.push(value);
 
     const mediaItem = this.getUpdatedPatientMediaItem();
 
     this.savePatientMediaItem(mediaItem);
+    
   }
 
 
@@ -366,6 +398,31 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   toggleVideo(event: any) {
     this.videoplayer.nativeElement.play();
-}
-}
+  }
+
+  onImageClick($event:Event){
+
+    
+    if(($event.composedPath()[0] as HTMLElement).classList[0] as string === 'mediaPreviewBackgroundImage'){
+      $event.preventDefault();
+      this.fullImageView = true;
+      this.renderer.addClass(this.imgElement.nativeElement ,'fullImageView');
+    }
+    
+
+  }
+
+  removeFullView($event:Event){
+    $event.preventDefault();
+    this.fullImageView = false;
+    this.renderer.removeClass(this.imgElement.nativeElement ,'fullImageView');
+    Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: this.innerWidth});
+    Object.defineProperty(window, 'innerHeight', {writable: true, configurable: true, value: this.innerHeight});
+
+
+  }
+
+
+
+} 
 
