@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import {  Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -35,12 +36,12 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
             },
             autoFocus: false
         });
-        const sub = dialogRef.componentInstance.onArrowKey.subscribe(key => {
-          
+       
+        const sub = dialogRef.componentInstance.onArrowKey.pipe(takeUntil(this.ngUnsubscribe)).subscribe(key => {
+
             // tslint:disable-next-line: max-line-length
             const mediaDataIndex = this.mediaPatientItems.value.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
             const imageIndex = this.gallery.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-            const datetime = dialogRef.componentInstance.data.mediaData.datetime.substring(0,10);
           
              if(key === 37){
                 if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
@@ -65,9 +66,6 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
                     dialogRef.componentInstance.updateDialog(dialogData);
                 } 
             } 
-            if(key === 38 || key === 39) {
-                this.arrowUpAndDown.emit({key,datetime});
-            }
            
             
         });

@@ -82,6 +82,7 @@ export class MediaPasteService {
       // upload the file and return its progress for display
 
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
+     
 
       const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
 
@@ -106,6 +107,9 @@ export class MediaPasteService {
             result.ref.getDownloadURL().then((url:any) => {
 
               newMediaItem.remoteURL = url;
+
+              newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string,
+              
 
               this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
                 
@@ -231,7 +235,7 @@ export class MediaPasteService {
         (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
 
         returnObject.mediaItemId.next(1);
-        console.log(this.getMediaItemsFromLocalStoargeByPatientId(patientId));
+        
       }
       else{
 

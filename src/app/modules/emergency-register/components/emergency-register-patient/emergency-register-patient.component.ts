@@ -167,7 +167,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
     });
 
-    this.patientForm.valueChanges.subscribe(patient => {
+    this.patientForm?.valueChanges.subscribe(patient => {
      /** 
       * Hide deleted patient
       */
@@ -393,6 +393,11 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   redoPatient(){
     this.patientForm.get('deleted')?.setValue(false);
+  }
+
+  focusAnimalType(event:Event){
+    event.preventDefault();
+    this.animalTypeInput.nativeElement.focus();
   }
 
 }

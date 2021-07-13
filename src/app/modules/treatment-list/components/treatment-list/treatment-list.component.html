@@ -114,10 +114,13 @@
             <div *ngIf="column.type === 'button'">
 
               <div *ngIf="isPrinting" class="checkbox-column">
-                <mat-radio-group>
+                <mat-radio-group *ngIf="row.get('PatientStatusId')?.value < 2">
                  <mat-radio-button checked="false" value="1" style="padding-right: 5px;"></mat-radio-button> R
                  <mat-radio-button checked="false" value="2" style="padding-left: 15px; padding-right:5px;"></mat-radio-button> D
                 </mat-radio-group>
+
+                <div *ngIf="row.get('PatientStatusId')?.value > 1" class="small-font">{{row.get('PatientStatus')?.value}}</div>
+
               </div>
 
               <button *ngIf="!isPrinting" mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
