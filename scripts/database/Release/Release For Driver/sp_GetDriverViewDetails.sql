@@ -102,22 +102,22 @@ PatientsCTE AS
 DriverViewCTE AS
 (
 SELECT 
-				AAU.fn_GetRescueReleaseStStatusForDriverView(
-				rd.ReleaseDetailsId, 
-				rd.RequestedUser, 
-				rd.RequestedDate,  
-                rd.PickupDate,
-				rd.BeginDate, 
-				rd.EndDate, 
-				ec.AmbulanceArrivalTime, 
-				ec.RescueTime, 
-				ec.AdmissionTime,
-                p.PatientCallOutcomeId,
-                tl.InTreatmentAreaId,
-                std.StreetTreatCaseId,
-	            v.VisitBeginDate,
-	        	v.VisitEndDate
-            ) AS ActionStatus,
+				-- AAU.fn_GetRescueReleaseStStatusForDriverView(
+-- 				rd.ReleaseDetailsId, 
+-- 				rd.RequestedUser, 
+-- 				rd.RequestedDate,  
+--                 rd.PickupDate,
+-- 				rd.BeginDate, 
+-- 				rd.EndDate, 
+-- 				ec.AmbulanceArrivalTime, 
+-- 				ec.RescueTime, 
+-- 				ec.AdmissionTime,
+--                 p.PatientCallOutcomeId,
+--                 tl.InTreatmentAreaId,
+--                 std.StreetTreatCaseId,
+-- 	            v.VisitBeginDate,
+-- 	        	v.VisitEndDate
+--             ) AS ActionStatus,
 			IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NULL),'Rescue', 
 				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL),'Release',
 				IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL),'StreetTreat',
@@ -129,9 +129,11 @@ SELECT
             rd.Releaser1Id,
             std.StreetTreatCaseId,
             std.MainProblemId,
+            ec.Admissiontime,
             mp.MainProblem,
             std.PriorityId,
             p.Priority,
+            tl.InTreatmentAreaId,
             p.PatientCallOutcomeId,
             rd.PickupDate,
             p.PatientId,
@@ -169,7 +171,7 @@ LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
 SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE( 
-JSON_OBJECT("actionStatus", ActionStatus),
+JSON_OBJECT("actionStatus", null),
 JSON_OBJECT("ambulanceAction", AmbulanceAction),
 JSON_OBJECT("releaseDetailsId", ReleaseDetailsId),
 JSON_OBJECT("releaseRequestDate", RequestedDate),
@@ -180,15 +182,19 @@ JSON_OBJECT("streetTreatMainProblem", MainProblem),
 JSON_OBJECT("streetTreatPriorityId", PriorityId),
 JSON_OBJECT("streetTreatPriority", Priority),
 JSON_OBJECT("patientCallOutcomeId", PatientCallOutcomeId),
-JSON_OBJECT("releasePickupDate", PickupDate),
+JSON_OBJECT("releasePickupDate", DATE_Format(PickupDate,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("patientId", PatientId),
-JSON_OBJECT("releaseBeginDate", BeginDate),
-JSON_OBJECT("releaseEndDate", EndDate),
-JSON_OBJECT("visitBeginDate", VisitBeginDate),
-JSON_OBJECT("visitEndDate", VisitEndDate),
-JSON_OBJECT("ambulanceArrivalTime", AmbulanceArrivalTime),
-JSON_OBJECT("rescueTime", RescueTime),
+JSON_OBJECT("releaseBeginDate", DATE_Format(BeginDate,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("releaseEndDate", DATE_Format(EndDate,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("visitBeginDate", DATE_Format(VisitBeginDate,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("visitEndDate", DATE_Format(VisitEndDate,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("ambulanceArrivalTime", DATE_Format(AmbulanceArrivalTime,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("rescueTime", DATE_Format(RescueTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("emergencyCaseId", EmergencyCaseId),
+
+JSON_OBJECT("admissionTime", AdmissionTime),
+
+JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
 
 JSON_OBJECT("emergencyNumber", EmergencyNumber),
 
@@ -200,6 +206,7 @@ JSON_OBJECT("callDateTime", CallDateTime),
 
 JSON_OBJECT("location", Location),
 JSON_OBJECT("latLngLiteral", latLngLiteral),
+JSON_OBJECT("isUpdated", FALSE),
 callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
