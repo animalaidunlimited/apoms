@@ -62,7 +62,6 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
     });
 
-    console.log(this.formData);
 
     if(!this.formData){
 
