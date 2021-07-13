@@ -5,6 +5,7 @@ import { BehaviorSubject, interval, Observable, Observer, of } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { map, mapTo } from 'rxjs/operators';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 // import { DriverAssignments } from "../../../core/models/driver-view";
 
 @Injectable({
@@ -14,35 +15,19 @@ import { DriverAssignments } from 'src/app/core/models/driver-view';
 export class DriverViewService extends APIService {
   endpoint = 'DriverView';
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
-  inAmbulanceAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
-  inProgressAssignment: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
-  assignedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
-  completedAssignments: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   driverViewQuestionList: any;
 
-  private source = interval(3000);
-  // public online$: Observable<boolean>;
-
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient,
+    private checkConnectionService: CheckConnectionService) {
     super(http);
 
-    // this.online$ = merge(
-    //   of(navigator.onLine),
-    //   fromEvent(window, 'online').pipe(mapTo(true)),
-    //   fromEvent(window, 'offline').pipe(mapTo(false))
-    // )
-
-    // this.source.subscribe(()=> {
-    //     if(navigator.onLine) {
-    //       const value = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
-    //       value.forEach((val:DriverAssignments)=> {
-    //         if(val.isUpdated) {
-    //           this.saveDriverViewDataFromLocalStorage(val);
-    //           val.isUpdated = false;
-    //         }
-    //       })
-    //     }
-    // })
+    this.checkConnectionService.checkConnection.subscribe(connection=> {
+      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))).forEach((item: DriverAssignments)=> {
+        if(connection && item.isUpdated) {
+            this.saveDriverViewDataFromLocalStorage(item);
+        }
+      })
+    })
   }
 
   public async upsertVehicleListItem(vehicleDetail: any) : Promise<SuccessOnlyResponse> {
@@ -84,10 +69,6 @@ export class DriverViewService extends APIService {
         response.forEach((data: DriverAssignments)=> {
           this.getAssignmentStatus(data);
         })
-
-      
-
-        console.log(response);
         
         localStorage.setItem('driverViewData', JSON.stringify(response));
 
@@ -95,6 +76,7 @@ export class DriverViewService extends APIService {
 
       }
       else {
+        console.log('empty res')
         localStorage.removeItem('driverViewData');
         this.driverViewDetails.next([]);
       }
@@ -268,16 +250,29 @@ export class DriverViewService extends APIService {
   }
 
   public saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignments) {
+
+    // let array = [];
+
+    // array.push(driverViewUpdatedData);
+
+    // let set = new Set(array);
+
+
+    // console.log(set)
+
     console.log(driverViewUpdatedData);
+
+    this.put(driverViewUpdatedData);
+
+    let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+
+    let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
+
+    localData[index].isUpdated = false;
+
+    localStorage.setItem('driverViewData', JSON.stringify(localData))
+
+    
   }
 
-}
-
-function merge<T>(arg0: any, arg1: any, arg2: any) {
-  throw new Error('Function not implemented.');
-}
-
-
-function fromEvent(window: Window & typeof globalThis, arg1: string) {
-  throw new Error('Function not implemented.');
 }
