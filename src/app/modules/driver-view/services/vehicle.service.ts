@@ -24,8 +24,6 @@ export class VehicleService  extends APIService {
     private dropdowns: DropdownService
     ) {
     super(http);
-
-    this.vehicleShifts.subscribe(val => console.log(val));
   }
 
   public async upsertVehicleListItem(vehicleDetail: any) : Promise<SuccessOnlyResponse> {
@@ -68,18 +66,16 @@ export class VehicleService  extends APIService {
 
   }
 
-  addVehicleShift(shiftDate: Date, vehicleId: Number, iShiftDetails:FormGroup){
+  addVehicleShift(vehicleId: Number, iShiftDetails:FormGroup){
 
     const exists = this.currentVehicleShifts.findIndex(shift => shift.vehicleId === vehicleId);
 
     let shiftDetails = iShiftDetails.value as VehicleShift;
 
+    shiftDetails.shiftStartTime = new Date(shiftDetails.shiftStartTime);
+    shiftDetails.shiftEndTime = new Date(shiftDetails.shiftEndTime);
 
-    const datePipe = new DatePipe('en-GB');
-    const dateString = datePipe.transform(shiftDate, 'yyyy-MM-dd');
-
-    shiftDetails.startTime = new Date(dateString + 'T' + shiftDetails.shiftStartTimeString + ':00');
-    shiftDetails.endTime = new Date(dateString + 'T' + shiftDetails.shiftEndTimeString + ':00');
+    console.log(iShiftDetails)
 
     shiftDetails.vehicleStaff = shiftDetails.vehicleStaff.filter(staff => staff.userId);
 
@@ -98,7 +94,7 @@ export class VehicleService  extends APIService {
 
       this.currentVehicleShifts.splice(exists, exists > 0 ? 1 : 0, shiftDetails);
 
-      this.currentVehicleShifts.sort((a,b) => a.startTime.getTime() - b.startTime.getTime());
+      this.currentVehicleShifts.sort((a,b) => a.shiftStartTime.getTime() - b.shiftStartTime.getTime());
 
       this.vehicleShifts.next(this.currentVehicleShifts);
 

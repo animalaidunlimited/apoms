@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { Vehicle } from 'src/app/core/models/driver-view';
 import { VehicleService } from '../../services/vehicle.service';
 
@@ -14,7 +15,7 @@ export class VehicleStaffAssignerComponent implements OnInit {
   activeVehicles$!: Observable<Vehicle[]>;
 
   shiftDate = this.fb.group({
-    date: [new Date()]}
+    date: [getCurrentDateString()]}
   );
 
   constructor(

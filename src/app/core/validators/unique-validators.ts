@@ -1,6 +1,6 @@
-import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-import { isBlank, isPresent } from './utils';
+import { isBlank, isPresent } from '../components/patient-visit-details/utils';
 
 export class UniqueValidators {
 
@@ -10,7 +10,7 @@ export class UniqueValidators {
 			const controls: AbstractControl[] = formArray.controls.filter(formGroup => {
 				return isPresent(formGroup.get(field)?.value);
 			});
-			const uniqueObj: any = { uniqueBy: true };
+			const uniqueObj: ValidationErrors = { uniqueBy: true };
 			let find  = false;
 
 			controls.map(formGroup => formGroup.get(field)).forEach(x => {

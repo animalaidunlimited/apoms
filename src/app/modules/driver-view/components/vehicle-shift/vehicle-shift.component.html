@@ -1,23 +1,16 @@
 <div fxLayout="row" fxLayoutAlign="center start">
 
-    <div fxLayout="column" fxLayoutAlign="center start">
+    <div fxLayout="column" fxLayoutAlign="center center">
 
-        <div class="vehicle-shift-header" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center space-between">
+        <div class="vehicle-shift-header" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
             <div class="vehicle-image">
 
             </div>
 
-            <div fxLayout="column" fxLayoutAlign="center start" class="vehicle-details">
-                <div><span>Number: </span>   {{vehicle.vehicleNumber}}</div>
-                <div><span>Type: </span>{{vehicle.vehicleType}}</div>
-                <div><span>Capacity: </span>{{vehicle.smallAnimalCapacity}}S / {{vehicle.largeAnimalCapacity}}L</div>
+        </div>
 
-
-
-
-            </div>
-
-
+        <div class="vehicle-number">
+            {{vehicle.vehicleNumber}}
         </div>
 
 
@@ -31,12 +24,33 @@
                 </div>
         </div>
 
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="vehicle-type">
+                <div class="vehicle-type-icon">icon</div>
+                <div>{{vehicle.vehicleType}}</div>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="center center" class="capacity-details">
+
+            <div class="capacity">Capacity</div>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div>Small</div>
+                <div>:</div>
+                <div>{{vehicle.smallAnimalCapacity}}</div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="center space-between">
+                <div>Large</div>
+                <div>:</div>
+                <div>{{vehicle.largeAnimalCapacity}}</div>
+            </div>
+
+        </div>
+
+
+
 
     </div>
-
-
-
-
 
     <div fxFlex fxLayout="column" class="vehicle-shift-hours">
 
@@ -64,7 +78,7 @@
             </div>
 
             <div fxFlex class="shift-detail">
-                {{shift.startTime | date: 'HH:mm' : '' + (shift.startTime.getTimezoneOffset() * -1)}} - {{shift.endTime | date: 'HH:mm' : '' + (shift.endTime.getTimezoneOffset() * -1)}}
+                {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTime.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTime.getTimezoneOffset() * -1)}}
             </div>
 
         </div>
@@ -82,32 +96,48 @@
 
 <div fxLayout="row wrap">
 
+    <!--[max]="shiftEndTime?.value || currentDayEnd"-->
     <mat-form-field>
-        <input formControlName="shiftStartTimeString" type="time"
+        <input formControlName="shiftStartTime" type="datetime-local"
         name="shiftStartTime"
+        [min]="minDate"
+        [max]="maxStartTime"
         placeholder="Shift start time" [errorStateMatcher]="errorMatcher" matInput>
 
-            <!--<mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
-            Ambulance arrival before call!
+            <mat-error *ngIf="shiftStartTime?.hasError('inside-other-shift')">
+            Shift start time is inside another shift.
             </mat-error>
 
-            <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
-            Ambulance arrival after rescue!
-            </mat-error>-->
+            <mat-error *ngIf="shiftStartTime?.hasError('start-before-end')">
+            Shift start time is after shift end time.
+            </mat-error>
+
+            <mat-error *ngIf="shiftStartTime?.hasError('shift-overlap')">
+            This shift overlaps another shift.
+            </mat-error>
+
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="shiftEndTimeString" type="time"
+        <input formControlName="shiftEndTime" type="datetime-local"
         name="shiftEndTime"
+        [min]="minEndTime"
+        [max]="maxDate"
         placeholder="Shift end time" [errorStateMatcher]="errorMatcher" matInput>
 
-            <!--<mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
-            Ambulance arrival before call!
-            </mat-error>
+        <mat-error *ngIf="shiftEndTime?.hasError('inside-other-shift')">
+            Shift end time is inside another shift.
+        </mat-error>
 
-            <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
-            Ambulance arrival after rescue!
-            </mat-error>-->
+        <mat-error *ngIf="shiftEndTime?.hasError('end-before-start')">
+            Shift end time is before shift start time.
+        </mat-error>
+
+        <mat-error *ngIf="shiftEndTime?.hasError('shift-overlap')">
+            This shift overlaps another shift.
+        </mat-error>
+
+
     </mat-form-field>
 
 </div>
@@ -115,8 +145,6 @@
 <div fxLayout="column">
 
     <div formArrayName="vehicleStaff" *ngFor="let staff of staffArray?.controls; let i = index;">
-
-        <!--<div *ngFor="let e of [].constructor(vehicle.maxRescuerCapacity); let i = index">-->
 
             <div [formGroupName]="i">
 
@@ -128,6 +156,11 @@
                             {{staff.firstName}} {{staff.surname}}
                         </mat-option>
                     </mat-select>
+
+                    <mat-error *ngIf="shiftEndTime?.hasError('uniqueBy')">
+                        This staff member is already assigned.
+                    </mat-error>
+
                 </mat-form-field>
 
 
@@ -139,10 +172,6 @@
 
         <button mat-raised-button color="primary" type="submit"
         [disabled]="addShiftFormGroup.invalid">Add shift</button>
-
-
-    <!--</div>-->
-
 
 
     </div>
