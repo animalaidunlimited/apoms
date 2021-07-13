@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Form, FormArray, FormBuilder, FormControl, FormControlName, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
 import { DriverViewService } from '../../services/driver-view.service';
@@ -50,7 +51,15 @@ export class DriverViewAssignmentComponent implements OnInit {
     streetTreatMainProblem: [''],
     streetTreatMainProblemId: [],
     admissionTime:[''],
-    inTreatmentAreaId:[]
+    inTreatmentAreaId:[],
+    dispatcher:[],
+    updateTime:[getCurrentTimeString()],
+    caseComments:[''],
+    rescueAmbulanceId: [],
+    rescueAmbulanceAssignmentDate: [''],
+    releaseAmbulanceId: [],
+    releaseAmbulanceAssignmentDate: [''],
+    visitId: []
   });
 
   callerDetails!:FormArray;

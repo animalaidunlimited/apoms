@@ -11,6 +11,7 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
+import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -21,7 +22,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
-  private connectionStateSubs = new Subject();
+  // public connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
 
   @Input() mediaData!:BehaviorSubject<MediaItem[]>;
@@ -34,7 +35,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   patientId!:number;
 
-  checkConnection!:Observable<boolean>;
+  // checkConnection!:Observable<boolean>;
 
   constructor(
     public dialog: MatDialog,
@@ -42,7 +43,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     private patientService:PatientService,
     private onlineStatus: OnlineStatusService,
     private mediaPasteService: MediaPasteService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private checkConnectionService: CheckConnectionService
 
   ) { }
 
@@ -52,21 +54,21 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.patientId = this.galleryData?.get('patientId')?.value;
      
  
-    this.checkConnection = timer(0,3000).pipe(
-      takeUntil(this.connectionStateSubs),
-      switchMap(() => this.onlineStatus.connectionChanged),
-      takeUntil(this.ngUnsubscribe),
-      retryWhen(errors =>
-        errors.pipe(
-          // log error message
-          tap(error => console.log(error)),
-          // restart after 5 seconds
-          delay(5000)
-        )
-      )
-    );
+    // this.checkConnection = timer(0,3000).pipe(
+    //   takeUntil(this.connectionStateSubs),
+    //   switchMap(() => this.onlineStatus.connectionChanged),
+    //   takeUntil(this.ngUnsubscribe),
+    //   retryWhen(errors =>
+    //     errors.pipe(
+    //       // log error message
+    //       tap(error => console.log(error)),
+    //       // restart after 5 seconds
+    //       delay(5000)
+    //     )
+    //   )
+    // );
 
-    this.checkConnection.subscribe(connectionState => {
+    this.checkConnectionService.checkConnection.subscribe(connectionState => {
       console.log(connectionState)
       if(connectionState){
 
@@ -85,8 +87,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         else{
 
-          this.connectionStateSubs.next();
-          this.connectionStateSubs.complete();
+          this.checkConnectionService.connectionStateSubs.next();
+          this.checkConnectionService.connectionStateSubs.complete();
           
         }
       }

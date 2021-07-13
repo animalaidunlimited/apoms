@@ -79,6 +79,13 @@ export interface DriverAssignments {
   isUpdated?: boolean;
   admissionTime: string;
   inTreatmentAreaId: number;
+  dispatcher: number;
+  caseComments: string;
+  rescueAmbulanceId: number;
+  rescueAmbulanceAssignmentDate: string;
+  releaseAmbulanceId: number;
+  releaseAmbulanceAssignmentDate: string;
+  visitId: number;
 }
 
 

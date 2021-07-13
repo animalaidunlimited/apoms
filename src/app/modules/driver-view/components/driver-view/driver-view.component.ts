@@ -39,7 +39,7 @@ export class DriverViewComponent implements OnInit {
 
   loadDriverDetails() {
 
-    this.driverViewDetails.get('assignmentDate')?.setValue(getCurrentTimeString());
+    this.populateDriverView(this.driverViewDetails.get('assignmentDate')?.value);
 
     this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
       console.log(date);
