@@ -1,15 +1,15 @@
 
 
 .vehicle-shift-header{
-    background-color: lightgray;
+    background-color: #D3D3D3;
     min-height: 5rem;
     padding: 1em;
     border-radius: 5px 0px 0px 5px;;
 
     .vehicle-image {
         border-radius: 50%;
-        height: 5em;
-        width: 5em;
+        height: 7em;
+        width: 7em;
         background-color: white;
     }
 
@@ -74,6 +74,13 @@
     font-size: x-large;
 }
 
+.vehicle-number{
+    font-size: larger;
+    align-self: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 
 
 .license-plate{
@@ -127,11 +134,26 @@
 
 }
 
+.capacity-details{
+    border-radius: 10px;
+    background-color: #F9F9F9;
+    min-height: 5em;
+    width: 100%;
+
+    .capacity{
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: large;
+    }
+}
+
 .addStaffAssignmentButton{
     position: absolute;
     bottom: 2%;
     right: 1%;
 }
+
+
 
 .add-shift-dialog {
     width: 30em;
