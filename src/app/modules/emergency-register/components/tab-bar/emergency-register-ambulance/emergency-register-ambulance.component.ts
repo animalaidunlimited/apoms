@@ -6,7 +6,10 @@ import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { OutstandingCase2Service } from '../../../services/outstanding-case2.service';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { concatAll, distinct, map, skip, skipWhile} from 'rxjs/operators';
+import { ActiveVehicleLocation, VehicleDetails, VehicleLocation, VehicleStaff } from 'src/app/core/models/location';
+import { VehicleType } from 'src/app/core/models/driver-view';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -18,26 +21,47 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
     @Input() vehicleId!:number;
 
 
-    vehcileAssigmentList!: Observable<OutstandingAssigment2[]>;
+    vehicleAssigmentList!: Observable<OutstandingAssigment2[]>;
+
+    ambulanceLocations$!:Observable<ActiveVehicleLocation>;
+
+    vehicleType$!: Observable<VehicleType[]>;
 
     actionStatusId!: number[];
 
     constructor (
         private outstandingCase2Service: OutstandingCase2Service,
         private dialog: MatDialog,
-        private locationService: LocationService
+        private locationService: LocationService,
+        private dropdown: DropdownService
     ) {}
 
     ngOnInit(): void {
 
         this.actionStatusId = [2,3,4,5];
 
-        this.locationService.getVehicleVehicleLocation(this.vehicleId).subscribe(value => console.log(value));
 
-        this.vehcileAssigmentList = this.outstandingCase2Service.outstandingCases$.pipe(
+        this.vehicleType$ = this.dropdown.getVehicleType();
+        
+        this.locationService.getActiveVehicleLocations();
+
+        this.ambulanceLocations$ = this.locationService.ambulanceLocations$.pipe(
+            map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId)),
+            skipWhile(ambulanceLocations => ambulanceLocations.length === 0),
+            concatAll(),
+
+            distinct(ambulanceLocations => ambulanceLocations.vehicleDetails.vehicleId)
+        );
+
+   
+        this.ambulanceLocations$.subscribe(value => console.log(value));
+        
+        this.vehicleAssigmentList = this.outstandingCase2Service.outstandingCases$.pipe(
             map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId === this.vehicleId)),
            
         );
+
+
     }
 
    
@@ -45,7 +69,7 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
     getOutstandingCasesByStatusId(statusId: number){
     
     
-        return this.vehcileAssigmentList.pipe(
+        return this.vehicleAssigmentList.pipe(
             map(outstandingCases => outstandingCases.filter(outStandingCases => outStandingCases.actionStatusId === statusId))
         );
     

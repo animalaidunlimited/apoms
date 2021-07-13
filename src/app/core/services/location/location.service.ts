@@ -169,7 +169,7 @@ export class LocationService extends APIService {
 
     const currentHistory = this.locationList$.value;
 
-    const newHistoryList = currentHistory.filter(list => list.vehicleId !== vehicleId)
+    const newHistoryList = currentHistory.filter(list => list.vehicleId !== vehicleId);
 
     this.locationList$.next(newHistoryList);
 

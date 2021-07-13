@@ -90,7 +90,7 @@ export class HospitalManagerTabBarComponent implements OnInit {
 
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId === result.EmergencyCaseId,
+                card.patientId === result.PatientId,
         );
 
         tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result);
