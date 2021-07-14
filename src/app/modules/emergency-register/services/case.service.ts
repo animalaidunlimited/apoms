@@ -6,7 +6,6 @@ import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { debounceTime, map, share } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -253,10 +252,6 @@ export class CaseService extends APIService {
     public async updateCaseOutcome(outcomeDetails: EmergencyCase): Promise<EmergencyCase> {
 
         return await this.put(outcomeDetails);
-    }
-
-    public generateUUID() : string{
-        return UUID.UUID();
     }
 
     public afterSaveEmergencyResponse() {

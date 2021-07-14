@@ -104,82 +104,16 @@ export class VehicleService  extends APIService {
 
   }
 
+  public removeShift(shift: VehicleShift){
 
-  //public getVehicleShifts() : Observable<VehicleShift[]>{
+    const currentShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
 
-  //  return of(
-  //    [
-  //      {
-  //        vehicleShiftId: 1,
-  //        vehicleId: 1,
-  //        startTime: new Date("2021-11-07 06:00:00"),
-  //        endTime: new Date("2021-11-07 08:00:00"),
-  //        vehicleStaff: [
-  //        {
-  //          staffId: 1,
-  //          initials: "DP",
-  //          firstName: "Dipesh",
-  //          surname: "Thapa",
-  //          colour: "green"
-  //        },
-  //        {
-  //          staffId: 2,
-  //          initials: "KS",
-  //          firstName: "Kamlesh",
-  //          surname: "Sharma",
-  //          colour: "lightgreen"
-  //        }
-  //        ]
+    this.vehicleShifts.next(currentShifts);
 
-  //      },
-  //      {
-  //        vehicleShiftId: 1,
-  //        vehicleId: 2,
-  //        startTime: new Date("2021-11-07 08:00:01"),
-  //        endTime: new Date("2021-11-07 10:30:00"),
-  //        vehicleStaff: [
-  //        {
-  //          staffId: 3,
-  //          initials: "DD",
-  //          firstName: "Deendeyal",
-  //          surname: "Gora",
-  //          colour: "purple"
-  //        },
-  //        {
-  //          staffId: 4,
-  //          initials: "KSD",
-  //          firstName: "KaluSingh",
-  //          surname: "Deora",
-  //          colour: "orange"
-  //        }
-  //        ]
+  }
 
-  //      },
-  //      {
-  //        vehicleShiftId: 1,
-  //        vehicleId: 3,
-  //        startTime: new Date("2021-11-07 10:30:00"),
-  //        endTime: new Date("2021-11-07 17:15:01"),
-  //        vehicleStaff: [
-  //        {
-  //          staffId: 5,
-  //          initials: "MD",
-  //          firstName: "Manoj",
-  //          surname: "Dangi",
-  //          colour: "blue"
-  //        },
-  //        {
-  //          staffId: 6,
-  //          initials: "GS",
-  //          firstName: "Ganpat",
-  //          surname: "Singh",
-  //          colour: "magenta"
-  //        }
-  //        ]
+  public editShift(shift: VehicleShift){
 
-  //      }
-  //    ]
-  //  )
+  }
 
-  //}
 }

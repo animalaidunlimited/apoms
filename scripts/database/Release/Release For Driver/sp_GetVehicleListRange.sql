@@ -31,7 +31,8 @@ JSON_MERGE_PRESERVE(
     JSON_OBJECT("minRescuerCapacity", vehicleDetails.MinRescuerCapacity),
 	JSON_OBJECT("maxRescuerCapacity", vehicleDetails.MaxRescuerCapacity),
 	JSON_OBJECT("vehicleStatusId", vehicleDetails.VehicleStatusId),
-	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus)
+	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus),
+    JSON_OBJECT("imageURL", vehicleDetails.VehicleImage)
 )) AS vehicleList
 FROM
 (SELECT vl.VehicleId,
@@ -44,7 +45,8 @@ FROM
     vl.MinRescuerCapacity,
     vl.MaxRescuerCapacity,
 	vl.VehicleStatusId,
-	vs.VehicleStatus
+	vs.VehicleStatus,
+    vl.VehicleImage
 FROM AAU.Vehicle vl
 INNER JOIN AAU.VehicleType vt ON vt.VehicleTypeId = vl.VehicleTypeId
 INNER JOIN AAU.VehicleStatus vs ON vs.VehicleStatusId = vl.VehicleStatusId

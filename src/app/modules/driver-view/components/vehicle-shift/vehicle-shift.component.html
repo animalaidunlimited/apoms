@@ -1,10 +1,10 @@
 <div fxLayout="row" fxLayoutAlign="center start">
 
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div fxLayout="column" fxLayoutAlign="center center" class="vehicle-shift-header-wrapper">
 
         <div class="vehicle-shift-header" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
             <div class="vehicle-image">
-
+                <img [src]="vehicle.imageURL" />
             </div>
 
         </div>
@@ -25,7 +25,9 @@
         </div>
 
         <div fxLayout="row" fxLayoutAlign="space-between center" class="vehicle-type">
-                <div class="vehicle-type-icon">icon</div>
+                <div class="vehicle-type-icon">
+                    <img  src="assets/icons/ambulance_van.png" alt="Vehicle type">
+                </div>
                 <div>{{vehicle.vehicleType}}</div>
         </div>
 
@@ -33,13 +35,13 @@
 
             <div class="capacity">Capacity</div>
 
-            <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="capacity-item">
                 <div>Small</div>
                 <div>:</div>
                 <div>{{vehicle.smallAnimalCapacity}}</div>
             </div>
 
-            <div fxLayout="row" fxLayoutAlign="center space-between">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="capacity-item">
                 <div>Large</div>
                 <div>:</div>
                 <div>{{vehicle.largeAnimalCapacity}}</div>
@@ -56,32 +58,45 @@
 
         <div fxLayout="row" fxLayoutAlign="space-between center">
 
-
             <div *ngFor="let hour of hours" class="single-hour">
                 {{hour}}
             </div>
 
         </div>
 
-        <div
-        fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px"
-        *ngFor="let shift of ( shifts$ | async)"
-        [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
+        <div fxFill class="shift-wrapper">
 
-            <div *ngFor="let staff of shift.vehicleStaff">
+            <div
+            fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px"
+            *ngFor="let shift of ( shifts$ | async)"
+            [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
 
-                <div class="staff-icon"
-                [matTooltip]="staff.firstName + ' ' + staff.surname">
-                    {{staff.initials}}
+                <div *ngFor="let staff of shift.vehicleStaff">
+
+                    <div class="staff-icon"
+                    [matTooltip]="staff.firstName + ' ' + staff.surname">
+                        {{staff.initials}}
+                    </div>
+
                 </div>
 
-            </div>
+                <div fxFlex class="shift-detail">
+                    {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTime.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTime.getTimezoneOffset() * -1)}}
+                </div>
 
-            <div fxFlex class="shift-detail">
-                {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTime.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTime.getTimezoneOffset() * -1)}}
+                <button class="shift-button delete" type="button" (click)="removeShift(shift)" mat-mini-fab color="warn">
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+                <button class="shift-button edit" type="button" (click)="editShift(shift)" mat-mini-fab color="primary">
+                    <mat-icon>edit</mat-icon>
+                </button>
+
             </div>
 
         </div>
+
+
 
 
     </div>
@@ -172,6 +187,8 @@
 
         <button mat-raised-button color="primary" type="submit"
         [disabled]="addShiftFormGroup.invalid">Add shift</button>
+
+        <button mat-raised-button color="primary" type="button" (click)="resetForm()" >Reset</button>
 
 
     </div>
