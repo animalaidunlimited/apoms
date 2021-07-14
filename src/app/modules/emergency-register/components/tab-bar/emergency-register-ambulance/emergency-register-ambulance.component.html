@@ -1,37 +1,59 @@
 <div fxLayout="column">
 
-  <ng-container *ngIf="(ambulanceLocations$ | async)  as ambulanceLocations">
-    <div *ngIf="ambulanceLocations.vehicleDetails as vehicleDetail" class="vehicleWrapper">
+  <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
+    <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
       <div fxLayout="row" class="vehicle">
 
-        <div class="vehicleImage">
-          <img [src]="vehicleDetail.vehicleImage" />
-        </div>
-
-        <div class="vehicleDescription">
-
-          <div class="vehicleNumber">
-            <p>{{vehicleDetail.vehicleNumber}}</p>
-            <div class="licensePlate" fxLayout="row">
-              <div class="licensePlateBadge">
-                <div class="silver"></div>
-                <span>IND</span>
-              </div>
-              <div class="vehicleRegistrationNumber">
-                {{vehicleDetail.vehicleRegistrationNumber}}
+        <div fxLayout="row">
+          <div class="vehicleImage">
+            <img [src]="vehicleDetail.vehicleImage" />
+          </div>
+          <div class="vehicleDescription">
+            <div class="vehicleNumber">
+              <p>{{vehicleDetail.vehicleNumber}}</p>
+              <div class="licensePlate" fxLayout="row">
+                <div class="licensePlateBadge">
+                  <div class="silver"></div>
+                  <span>IND</span>
+                </div>
+                <div class="vehicleRegistrationNumber">
+                  {{vehicleDetail.vehicleRegistrationNumber}}
+                </div>
               </div>
             </div>
-          </div>
-          <div *ngIf="ambulanceLocations.vehicleStaff as vehicleStaff" class="vehicleStaff">
-              <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
-                {{ vehicleStaff.initials }} {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
+            <ng-container *ngIf="ambulanceCase.vehicleStaff as vehicleStaff">
+              <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
+                  <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
+                    {{ vehicleStaff.initials }} {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
+                  </div>
               </div>
+            </ng-container>
           </div>
-
         </div>
 
-        <div>
-          {{vehicleDetail.vehicleTypeId}}
+        <div fxLayout="column" class="vehicleType">
+          <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+            <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
+            <p>{{vehicle.VehicleType}}</p>
+          </div>
+          <div fxFlex fxLayout="row">
+            <button mat-mini-fab>
+              <mat-icon>map</mat-icon>
+            </button>
+            <p>View in map</p>
+          </div>
+        </div>
+
+        <div class="vehicleCapacity">
+          
+          <div >
+            <div fxLayout="row" fxLayoutAlign="end" >
+              <h3>Capacity</h3>
+              <h3>Current</h3>
+            </div>
+            <div class="capacityTitle">Small <span>{{vehicleDetail.smallAnimalCapacity}}</span> <span>{{vehicleDetail.smallAnimalCapacity}}</span></div>
+            <div class="capacityTitle">Large <span>{{vehicleDetail.largeAnimalCapacity}}</span> <span>{{vehicleDetail.smallAnimalCapacity}}</span></div>
+          </div>
         </div>
 
       </div>

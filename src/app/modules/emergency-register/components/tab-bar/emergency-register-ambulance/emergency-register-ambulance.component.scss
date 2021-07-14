@@ -52,7 +52,7 @@
 }
 
 .vehicle{
-
+    justify-content: space-between;
     &Number{
         p{
             margin-top:0.5em;
@@ -68,7 +68,7 @@
         flex-wrap: wrap;
         justify-content: space-between;
         &Name{
-            font-size: 1.1em;
+            font-size: 1em;
             background: white;
             border-radius: 1em;
             padding: 0.2em 0.5em;
@@ -93,6 +93,8 @@
         justify-content: space-between;
         max-width: 19em;
         max-height: 8.5em;
+        min-width: 15em;
+        margin-right: 2em;
     }
 }
 
@@ -100,6 +102,41 @@
 .vehicleWrapper{
     border: 1px solid rgb(96 125 139/35%);
     border-radius: 0.5em;
-    background:rgb(96 125 139/25%);
+    background:rgb(96 125 139/15%);
     padding:1em;
+}
+
+.vehicleType{
+    margin-top: 0.8em;
+    min-width: 35em;
+    p{
+        margin-left:1em;
+    }
+}
+.vehicleTypeIcon{
+    img{
+        width:2.5em;
+        height: 2.5em;
+    }
+}
+
+.capacityTitle{
+    margin-top: 1.5em;
+    font-size: 1.2em;
+    &:nth-child(even){
+        margin-top: 0;
+    }
+    span{
+        width: 8em;
+        display: inline-block;
+        text-align: center;
+    }
+}
+
+.vehicleCapacity{
+    h3{
+        width: 8.2em;
+        text-align: center;
+        margin-top: 0.1em;
+    }
 }

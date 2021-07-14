@@ -31,6 +31,7 @@ export interface OutstandingAssigment2 {
     patients: [{
         animalType: string | null;
         animalTypeId: number;
+        animalSize: string | null;
         patientCallOutcomeId: number | null;
         patientId: number;
         patientStatusDate: string | null;
@@ -44,6 +45,7 @@ export interface OutstandingAssigment2 {
     releaseId: number | null;
     releaseType: string;
     requestedDate: string | null;
+    rescueTime:string | null;
 }
 export interface RescuerGroup {
     staff1: number;

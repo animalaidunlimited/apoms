@@ -6,8 +6,8 @@ import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { OutstandingCase2Service } from '../../../services/outstanding-case2.service';
 import { Observable } from 'rxjs';
-import { concatAll, distinct, map, skip, skipWhile} from 'rxjs/operators';
-import { ActiveVehicleLocation, VehicleDetails, VehicleLocation, VehicleStaff } from 'src/app/core/models/location';
+import { concatAll, distinct, map, skipWhile, tap, withLatestFrom} from 'rxjs/operators';
+import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
@@ -23,11 +23,12 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
 
     vehicleAssigmentList!: Observable<OutstandingAssigment2[]>;
 
-    ambulanceLocations$!:Observable<ActiveVehicleLocation>;
+    ambulanceCases$!:Observable<ActiveVehicleLocation>;
 
-    vehicleType$!: Observable<VehicleType[]>;
+    vehicleType$!:Observable<VehicleType>;
 
     actionStatusId!: number[];
+
 
     constructor (
         private outstandingCase2Service: OutstandingCase2Service,
@@ -40,12 +41,10 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
 
         this.actionStatusId = [2,3,4,5];
 
-
-        this.vehicleType$ = this.dropdown.getVehicleType();
         
         this.locationService.getActiveVehicleLocations();
 
-        this.ambulanceLocations$ = this.locationService.ambulanceLocations$.pipe(
+        this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
             map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId)),
             skipWhile(ambulanceLocations => ambulanceLocations.length === 0),
             concatAll(),
@@ -54,12 +53,54 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
         );
 
    
-        this.ambulanceLocations$.subscribe(value => console.log(value));
         
         this.vehicleAssigmentList = this.outstandingCase2Service.outstandingCases$.pipe(
             map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId === this.vehicleId)),
-           
         );
+
+
+        this.vehicleType$ = this.dropdown.getVehicleType().pipe(
+            // tslint:disable-next-line: max-line-length
+            withLatestFrom(this.ambulanceCases$,(vehicleTypes,ambulanceLocation) => vehicleTypes.filter(vehicleType => vehicleType.VehicleTypeId === ambulanceLocation.vehicleDetails.vehicleTypeId)),
+            concatAll()
+        );
+
+        this.vehicleAssigmentList.pipe(
+            map(vehicleAssigments => {
+
+                    let smallPatientCount = 0;
+                    let largePatientCount = 0;
+
+                    vehicleAssigments.forEach( vehicleAssigment => {
+                        /**
+                         * Rescue count
+                         */
+                        if(vehicleAssigment.releaseId !== null && vehicleAssigment.releaseEndDate !== null && vehicleAssigment.pickupDate !== null)
+                        {
+                            
+                            patientCount = patientCount + 1;
+                        }
+                        else {
+                            vehicleAssigment.patients.forEach(patient =>
+                                {
+                                    /**
+                                     * Release count
+                                     */
+                                    if(vehicleAssigment.releaseId === null && patient.patientCallOutcomeId !== null && vehicleAssigment.rescueTime !== null){
+                                        patientCount = patientCount + 1;
+                                    }
+
+                                }
+                            ); 
+                        }
+                    });
+
+                    return patientCount;
+                }
+            )
+        ).subscribe(vehicleAssigments => 
+            console.log(vehicleAssigments));
+
 
 
     }
