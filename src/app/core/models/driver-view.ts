@@ -11,6 +11,7 @@ export interface Vehicle {
   minRescuerCapacity: number;
   maxRescuerCapacity: number;
   currentVehicleStaff?: string;
+  imageURL: string;
 }
 
 export interface VehicleType {

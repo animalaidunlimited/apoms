@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { UniqueValidators } from 'src/app/core/validators/unique-validators';
-import { getCurrentDateString } from 'src/app/core/helpers/utils';
+import { generateUUID, getCurrentDateString, getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { Vehicle } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
 import { VehicleShift } from 'src/app/core/models/vehicle';
@@ -11,6 +11,8 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { VehicleService } from '../../services/vehicle.service';
 import { ShiftTimeValidator } from '../../validators/shift-time.validator';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -55,21 +57,18 @@ export class VehicleShiftComponent implements OnInit {
     private vehicleService: VehicleService,
     private dropdowns: DropdownService,
     private shiftValidator: ShiftTimeValidator,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
    }
 
   ngOnInit(): void {
-
-    console.log(this.shiftDate)
 
     this.currentDayStart = new Date(this.shiftDate);
     this.currentDayStart.setHours(0,0,0);
 
     this.currentDayEnd = new Date(this.shiftDate);
     this.currentDayEnd.setHours(23,59,59,999);
-
-
 
     this.staff$ = this.dropdowns.getRescuers();
 
@@ -143,7 +142,10 @@ export class VehicleShiftComponent implements OnInit {
 
     }
 
+
+
      const returnGroup = this.fb.group({
+      shiftUUID: [generateUUID()],
       vehicleShiftId: [],
       vehicleId: [this.vehicle.vehicleId, Validators.required],
       shiftStartTime: [],
@@ -161,8 +163,41 @@ export class VehicleShiftComponent implements OnInit {
 
   addStaffShift() : void {
 
-    this.vehicleService.addVehicleShift(this.vehicle.vehicleId, this.addShiftFormGroup)
+    this.vehicleService.addVehicleShift(this.vehicle.vehicleId, this.addShiftFormGroup);
 
+    this.resetForm();
+  }
+
+  resetForm(){
+    this.addShiftFormGroup.reset();
+    this.addShiftFormGroup.get('vehicleId')?.setValue(this.vehicle.vehicleId);
+    this.addShiftFormGroup.get('shiftStartTime')?.setValue(getCurrentTimeString());
+  }
+
+  removeShift(shift: VehicleShift) : void{
+
+    const dialogRef = this.dialog.open(ConfirmationDialog,{
+      data:{
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Yes',
+          cancel: 'No'
+        }
+      }
+    });
+
+    dialogRef.afterClosed()
+    .subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.vehicleService.removeShift(shift);
+      }
+    });
+
+
+  }
+
+  editShift(shift: VehicleShift) : void{
+    this.vehicleService.editShift(shift);
   }
 
 

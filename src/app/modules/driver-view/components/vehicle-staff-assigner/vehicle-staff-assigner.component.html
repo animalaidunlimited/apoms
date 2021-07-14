@@ -7,8 +7,12 @@
 
 </form>
 
-<div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container" fxLayout="row" fxLayoutAlign="center center">
+<div style="margin-bottom: 60px;">
 
-    <app-vehicle-shift class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
+    <div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container" fxLayout="row" fxLayoutAlign="center center">
 
+        <app-vehicle-shift class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
+
+    </div>
 </div>
+
