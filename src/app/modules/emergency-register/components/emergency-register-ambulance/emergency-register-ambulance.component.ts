@@ -29,6 +29,8 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
 
     vehicleType$!:Observable<VehicleType>;
 
+    currentCapacity!:Observable<{ capacity: { small: number; large: number; };}>;
+
     actionStatusId!: number[];
 
 
@@ -67,41 +69,48 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
             concatAll()
         );
 
-        this.vehicleAssigmentList.pipe(
+        this.currentCapacity = this.vehicleAssigmentList.pipe(
             map(vehicleAssigments => {
 
-                    let patientCount = 0;
+                    let smallPatientCount = 0;
                     let largePatientCount = 0;
 
                     vehicleAssigments.forEach( vehicleAssigment => {
-                        /**
-                         * Rescue count
-                         */
-                        if(vehicleAssigment.releaseId !== null && vehicleAssigment.releaseEndDate !== null && vehicleAssigment.pickupDate !== null)
-                        {
-                            
-                            patientCount = patientCount + 1;
-                        }
-                        else {
+                       
                             vehicleAssigment.patients.forEach(patient =>
                                 {
-                                    /**
-                                     * Release count
-                                     */
-                                    if(vehicleAssigment.releaseId === null && patient.patientCallOutcomeId !== null && vehicleAssigment.rescueTime !== null){
-                                        patientCount = patientCount + 1;
+                                    
+    
+                                    if(
+                                        (
+                                        /**
+                                         * Release count
+                                         */    
+                                        vehicleAssigment.releaseId === null && patient.patientCallOutcomeId !== null && vehicleAssigment.rescueTime !== null) || 
+                                        /**
+                                         * Rescue count
+                                         */
+                                        vehicleAssigment.releaseId !== null && vehicleAssigment.releaseEndDate !== null && vehicleAssigment.pickupDate !== null){
+                                            patient.animalSize === 'small' ? smallPatientCount = smallPatientCount + 1 : largePatientCount = largePatientCount + 1; 
                                     }
-
+                                    
+    
                                 }
+                                   
+
                             ); 
-                        }
+              
                     });
 
-                    return patientCount;
+                    return ({
+                        capacity:{
+                            small:smallPatientCount,
+                            large: largePatientCount
+                        }
+                    });
                 }
             )
-        ).subscribe(vehicleAssigments => 
-            console.log(vehicleAssigments));
+        );
 
 
 

@@ -44,15 +44,15 @@
           </div>
         </div>
 
-        <div class="vehicleCapacity">
+        <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
           
-          <div >
+          <div *ngIf="currentCapacity.capacity as capacity">
             <div fxLayout="row" fxLayoutAlign="end" >
               <h3>Capacity</h3>
               <h3>Current</h3>
             </div>
-            <div class="capacityTitle">Small <span>{{vehicleDetail.smallAnimalCapacity}}</span> <span>{{vehicleDetail.smallAnimalCapacity}}</span></div>
-            <div class="capacityTitle">Large <span>{{vehicleDetail.largeAnimalCapacity}}</span> <span>{{vehicleDetail.smallAnimalCapacity}}</span></div>
+            <div class="capacityTitle">Small <span>{{vehicleDetail.smallAnimalCapacity}}</span> <span>{{capacity.small}}</span></div>
+            <div class="capacityTitle">Large <span>{{vehicleDetail.largeAnimalCapacity}}</span> <span>{{capacity.large}}</span></div>
           </div>
         </div>
 
