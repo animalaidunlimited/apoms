@@ -1,15 +1,17 @@
-import { OutstandingAssigment2 } from './../../../../../core/models/outstanding-case';
+
 
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { LocationService } from 'src/app/core/services/location/location.service';
-import { OutstandingCase2Service } from '../../../services/outstanding-case2.service';
+
 import { Observable } from 'rxjs';
 import { concatAll, distinct, map, skipWhile, tap, withLatestFrom} from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { OutstandingAssigment2 } from 'src/app/core/models/outstanding-case';
+import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -68,7 +70,7 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit{
         this.vehicleAssigmentList.pipe(
             map(vehicleAssigments => {
 
-                    let smallPatientCount = 0;
+                    let patientCount = 0;
                     let largePatientCount = 0;
 
                     vehicleAssigments.forEach( vehicleAssigment => {
