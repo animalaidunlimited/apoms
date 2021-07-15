@@ -98,7 +98,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
                     this.emergencyNumberField.nativeElement.focus();

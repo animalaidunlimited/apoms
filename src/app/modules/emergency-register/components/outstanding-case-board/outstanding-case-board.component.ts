@@ -6,7 +6,7 @@ import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-det
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OutstandingCase, UpdatedRescue, OutstandingAssignment, RescuerGroup } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ThemePalette } from '@angular/material/core';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
@@ -360,6 +360,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
     this.searchForm.get('searchTerm')?.valueChanges
       .pipe(
+        distinctUntilChanged(),
         debounceTime(250),
         startWith(''),
         takeUntil(this.ngUnsubscribe)
@@ -415,7 +416,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log(this.outstandingCasesArray);
+
   }
 
 

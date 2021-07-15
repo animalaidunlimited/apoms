@@ -6,7 +6,6 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescue2 !!
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutstandingRescue2(IN prm_UserName VARCHAR(45))
 BEGIN
-
 DECLARE vOrganisationId INT;
 
 SELECT u.OrganisationId INTO vOrganisationId
@@ -70,7 +69,8 @@ PatientsCTE AS
 			JSON_OBJECT('patientId',p.PatientId),
 			JSON_OBJECT('animalTypeId',p.AnimalTypeId),
             JSON_OBJECT("animalType", ant.AnimalType),
-			JSON_OBJECT('tagnumber',p.TagNumber),
+            JSON_OBJECT("animalSize", IF(ant.LargeAnimal = 0, 'small', 'large')),
+			JSON_OBJECT('tagNumber',p.TagNumber),
 			JSON_OBJECT('patientStatusId',p.PatientStatusId),
 			JSON_OBJECT('patientStatusDate',p.PatientStatusDate),
 			JSON_OBJECT('patientCallOutcomeId',p.PatientCallOutcomeId),
@@ -101,41 +101,30 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT('emergencyNumber',ec.EmergencyNumber),
     JSON_OBJECT('emergencyCode',ec.EmergencyCode),
     JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
-	JSON_OBJECT('actionStatus',
-    CASE AAU.fn_GetRescueStatus(
+    JSON_OBJECT('rescueTime',ec.RescueTime),
+	JSON_OBJECT('actionStatusId',
+    AAU.fn_GetRescueStatus(
 				rd.ReleaseDetailsId,
 				rd.RequestedUser,
 				rd.RequestedDate,
-				rd.Releaser1Id,
-				rd.Releaser2Id,
+				rd.AssignedVehicleId,
 				rd.PickupDate,
 				rd.BeginDate,
 				rd.EndDate,
-				ec.Rescuer1Id,
-				ec.Rescuer2Id,
+                ec.AssignedVehicleId,
 				ec.AmbulanceArrivalTime,
 				ec.RescueTime,
 				ec.AdmissionTime,
                 p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
             )
-			WHEN 1 THEN "Received"
-			WHEN 2 THEN "Assigned"
-			WHEN 3 THEN "Arrived/Picked"
-			WHEN 4 THEN "Rescued/Released"
-			WHEN 5 THEN "Admitted"
-			END
     
 		),
 	JSON_OBJECT('callerDetails', ca.CallerDetails),
     JSON_OBJECT("callDateTime", ec.CallDateTime),
     JSON_OBJECT("location", ec.Location),
-    JSON_OBJECT("latLngLiteral",
-		JSON_MERGE_PRESERVE(
-			JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
-			JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-		)
-	),
+    JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+	JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0)),
 	JSON_OBJECT("releaseId", rd.ReleaseDetailsId),
 	JSON_OBJECT("requestedDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("pickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
@@ -144,7 +133,7 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
 	JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release'))
 )  )
-AS Cases
+AS Result
 
 FROM  EmergencyCaseCTE ec 
 LEFT JOIN PatientsCTE p  ON p.EmergencyCaseId = ec.EmergencyCaseId
@@ -165,8 +154,7 @@ INNER JOIN (
     WHERE ecr.IsDeleted = 0
     AND ecr.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds)
     GROUP BY ecr.EmergencyCaseId
-) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId;
-
+) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId ;
 
 END$$
 DELIMITER ;
