@@ -14,12 +14,7 @@
     margin-bottom: 8px;
     border: solid .1px lightgray;
 }
-.drag-drop-container {
-    text-align: center;
-    margin: 1.25em 0.5em 1.5em 0;
-    min-width: 13em;
-    width: 18%;
-}
+
 
 
 .ambulanceAssignedCases{
@@ -66,4 +61,29 @@
 .mat-expansion-panel-header:hover
 {
   background-color: lightsteelblue !important;
+}
+
+.swimlane{
+    min-width: 13em;
+    width:18%;
+    margin: 1.25em 0.5em 1.5em 0;
+    text-align: center;
+}
+
+@media screen and (min-width: 1280px) and (max-width: 1919.98px){
+    .vehicle {
+        #{&} &Type{
+            min-width:unset ;
+        }
+        #{&} &Capacity{
+            h3{
+                width:6em;
+            }
+            .capacityTitle{
+                span{
+                    width:6em;
+                }
+            }
+        }
+    }
 }

@@ -103,12 +103,12 @@
     border: 1px solid rgb(96 125 139/35%);
     border-radius: 0.5em;
     background:rgb(96 125 139/15%);
-    padding:1em;
+    padding: 0.5em;
 }
 
 .vehicleType{
     margin-top: 0.8em;
-    min-width: 35em;
+    min-width: 30em;
     p{
         margin-left:1em;
     }
@@ -139,4 +139,11 @@
         text-align: center;
         margin-top: 0.1em;
     }
+}
+
+.swimlane{
+    margin: 1.25em 1em 1.5em 0;
+}
+.name {
+    margin: 10px 0px 0px 10px;
 }

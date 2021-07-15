@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
-import { OutstandingAssigment2, OutstandingCaseResponse, UpdateResponse } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment2, OutstandingCaseResponse, UpdateResponse } from 'src/app/core/models/outstanding-case';
 
 @Injectable({
     providedIn: 'root',
@@ -50,7 +50,7 @@ export class RescueDetailsService extends APIService {
         return this.outstandingRescues$;
     }
 
-    getOutstandingRescues2(): Observable<OutstandingAssigment2[]> {
+    getOutstandingRescues2(): Observable<OutstandingAssignment2[]> {
         const request = '/OutstandingRescues2';
 
             return this.getObservable(request).pipe(

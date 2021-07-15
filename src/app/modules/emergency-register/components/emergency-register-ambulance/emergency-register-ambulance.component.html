@@ -62,10 +62,8 @@
     </div>
   </ng-container>
 
-  <hr/>
-
   <div>
-    <div *ngFor="let statusId of actionStatusId " fxFlex class="drag-drop-container">
+    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
 
       <h2>{{getActionStatus(statusId)}}</h2>
 
@@ -78,7 +76,7 @@
                                         'border-green' : outstandingCase.emergencyCodeId == 2,
                                         'border-yellow' : outstandingCase.emergencyCodeId == 3}">
                 <div fxFlex="15">
-                  <mat-icon aria-label="Open rescue edit">departure_board</mat-icon>
+                  <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
                 </div>
                 <div fxFlex="40" style="text-align: center;">
                   {{outstandingCase.emergencyNumber}}
