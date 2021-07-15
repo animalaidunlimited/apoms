@@ -86,7 +86,7 @@
                   </div>
                 </div>
                 <div fxFlex="25">
-                  <mat-icon aria-label="Edit record">create</mat-icon>
+                  <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
                 </div>
                 <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
               </mat-expansion-panel-header>

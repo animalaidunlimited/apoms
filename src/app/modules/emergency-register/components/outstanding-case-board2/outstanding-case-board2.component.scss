@@ -70,6 +70,25 @@
     text-align: center;
 }
 
+
+
+
+
+.CallDateTime, .name, .telephone, .patients-group, .animal-location{
+    margin: 10px 0px 0px 10px;
+    text-align: left;
+}
+
+.patient-details{
+    padding-top: 3px;
+}
+
+
+.imageIcon {
+
+    cursor: pointer;
+}
+
 @media screen and (min-width: 1280px) and (max-width: 1919.98px){
     .vehicle {
         #{&} &Type{

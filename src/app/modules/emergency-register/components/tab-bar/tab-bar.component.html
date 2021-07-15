@@ -11,7 +11,7 @@
         
                         <outstanding-case-board *ngIf="index == 0" (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>  
                 
-                        <outstanding-case-board2 *ngIf="index == 1" class="tab-icon"></outstanding-case-board2>
+                        <outstanding-case-board2 *ngIf="index == 1"  (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board2>
 
                         <record-search *ngIf="index == 2" (openEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
         

@@ -38,6 +38,8 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
 
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
 
+    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment2> = new EventEmitter();
+
     currentCapacity!: Observable<{
         capacity: { small: number; large: number };
     }>;
@@ -171,5 +173,9 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
 
     openRescueEdit(outstandingCase:OutstandingAssignment2){
         this.rescueEdit.emit(outstandingCase);
+    }
+
+    openCase(caseSearchResult:OutstandingAssignment2){
+        this.openCaseEmitter.emit(caseSearchResult);
     }
 }

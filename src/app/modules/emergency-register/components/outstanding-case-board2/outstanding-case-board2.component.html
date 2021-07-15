@@ -56,7 +56,7 @@
 
       <ng-container *ngIf="vehicleId">
 
-        <emergency-register-ambulance (rescueEdit)="openRescueEdit($event)" (mediaDialog)="openMediaDialog($event)"   [vehicleId]="vehicleId"></emergency-register-ambulance>
+        <emergency-register-ambulance (openCaseEmitter)="openCase($event)" (rescueEdit)="openRescueEdit($event)" (mediaDialog)="openMediaDialog($event)"   [vehicleId]="vehicleId"></emergency-register-ambulance>
 
       </ng-container>
 

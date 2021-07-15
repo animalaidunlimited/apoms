@@ -1,11 +1,12 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
+import { SearchResponse } from 'src/app/core/models/responses';
 
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 
@@ -19,7 +20,7 @@ export class OutstandingCaseBoard2Component implements OnInit {
 
   vehicleId$!: Observable<(number | null)[]>;
 
-
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   outstandingCases$!:  Observable<OutstandingAssignment2[]>;
   recievedVehicleList$!:  Observable<OutstandingAssignment2[]>;
@@ -62,6 +63,33 @@ export class OutstandingCaseBoard2Component implements OnInit {
             patientId,
         },
     });
+  }
+
+  openCase(caseSearchResult:OutstandingAssignment2)
+  {
+
+    const result:SearchResponse = {
+
+      EmergencyCaseId: caseSearchResult.emergencyCaseId,
+      EmergencyNumber: caseSearchResult.emergencyNumber,
+      CallDateTime: caseSearchResult.callDateTime.toString(),
+      callerDetails: caseSearchResult.callerDetails,
+      AnimalTypeId: 0,
+      AnimalType: '',
+      PatientId: 0,
+      MediaCount: 0,
+      TagNumber: '',
+      CallOutcomeId: 0,
+      CallOutcome: undefined,
+      sameAsNumber: undefined,
+      Location: caseSearchResult.location,
+      Latitude: caseSearchResult.lat,
+      Longitude: caseSearchResult.lng,
+      CurrentLocation: undefined,
+
+    };
+
+    this.openEmergencyCase.emit(result);
   }
 
   
