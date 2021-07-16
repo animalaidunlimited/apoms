@@ -6,6 +6,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescue2 !!
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutstandingRescue2(IN prm_UserName VARCHAR(45))
 BEGIN
+
 DECLARE vOrganisationId INT;
 
 SELECT u.OrganisationId INTO vOrganisationId
@@ -74,6 +75,7 @@ PatientsCTE AS
 			JSON_OBJECT('patientStatusId',p.PatientStatusId),
 			JSON_OBJECT('patientStatusDate',p.PatientStatusDate),
 			JSON_OBJECT('patientCallOutcomeId',p.PatientCallOutcomeId),
+            JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
             pp.PatientProblems
             )
         ) AS Patients
@@ -86,6 +88,15 @@ PatientsCTE AS
 		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
 		GROUP BY pp.PatientId
     ) pp ON pp.PatientId = p.PatientId
+    LEFT JOIN
+    (
+		SELECT	pmi.PatientId,
+				COUNT(pmi.PatientId) as mediaCount
+		FROM AAU.PatientMediaItem pmi
+        WHERE pmi.PatientId IN (SELECT PatientId FROM RescuesReleases)
+        AND pmi.IsDeleted = 0
+		GROUP BY pmi.PatientId
+    ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE)
 	GROUP BY p.EmergencyCaseId
 )
@@ -118,7 +129,6 @@ JSON_MERGE_PRESERVE(
                 p.PatientCallOutcomeId,
                 tl.InTreatmentAreaId
             )
-    
 		),
 	JSON_OBJECT('callerDetails', ca.CallerDetails),
     JSON_OBJECT("callDateTime", ec.CallDateTime),

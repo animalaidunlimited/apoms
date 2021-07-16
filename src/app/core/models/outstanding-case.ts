@@ -38,6 +38,7 @@ export interface OutstandingAssignment2 {
         patientStatusId: -1
         problems: string;
         tagNumber: string | null;
+        mediaCount:number;
     }];
     pickupDate: string | null;
     releaseBeginDate: string | null;
