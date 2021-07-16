@@ -10,7 +10,7 @@ export class ShiftTimeValidator {
     ) {}
 
     //validate(time: string, shifts: VehicleShift[]): ValidatorFn {
-    validate(dateType: string, iMatchDate:AbstractControl|null, vehicleId: number): ValidatorFn {
+    validate(dateType: string, iMatchDate:AbstractControl|null, iUUID:string|null , vehicleId: number): ValidatorFn {
 
         return (
             control: AbstractControl,
@@ -24,13 +24,8 @@ export class ShiftTimeValidator {
 
             let shifts = this.vehicleService.vehicleShifts.value.filter(shift => shift.vehicleId === vehicleId);
 
-            // If the form hasn't been touched then don't validate
-            if (control.pristine) {
-                null;
-            }
-
             // Check if the time falls inside any existing shifts
-            if(this.timeIsInsideOtherShift(currentTime, shifts)){
+            if(this.timeIsInsideOtherShift(currentTime, shifts, iUUID)){
                 errors["inside-other-shift"] = true;
             }
 
@@ -51,7 +46,7 @@ export class ShiftTimeValidator {
             let start = dateType === 'start' ? currentTime : matchDate;
             let end = dateType === 'end' ? currentTime : matchDate;
 
-            if(this.shiftOverlapsExistingShift(start, end, shifts)){
+            if(this.shiftOverlapsExistingShift(start, end, shifts, iUUID)){
                 errors["shift-overlap"] = true;
             }
 
@@ -61,13 +56,13 @@ export class ShiftTimeValidator {
         };
     }
 
-    timeIsInsideOtherShift(currentTime: Date, shifts: VehicleShift[]) : boolean{
+    timeIsInsideOtherShift(currentTime: Date, shifts: VehicleShift[], iUUID: string|null) : boolean{
 
-        return shifts.some(shift => currentTime >= shift.shiftStartTime && currentTime <= shift.shiftEndTime);
+        return shifts.some(shift => currentTime >= shift.shiftStartTime && currentTime <= shift.shiftEndTime && shift.shiftUUID !== iUUID);
     }
 
-    shiftOverlapsExistingShift(startDate: Date, endDate: Date, shifts: VehicleShift[]) : boolean {
+    shiftOverlapsExistingShift(startDate: Date, endDate: Date, shifts: VehicleShift[], iUUID: string|null) : boolean {
 
-        return shifts.some(shift => endDate >= shift.shiftStartTime && startDate <= shift.shiftEndTime);
+        return shifts.some(shift => endDate >= shift.shiftStartTime && startDate <= shift.shiftEndTime && shift.shiftUUID !== iUUID);
     }
 }

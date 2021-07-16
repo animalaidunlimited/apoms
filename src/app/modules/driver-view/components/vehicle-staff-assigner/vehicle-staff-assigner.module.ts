@@ -4,13 +4,15 @@ import { VehicleStaffAssignerComponent } from './vehicle-staff-assigner.componen
 import { MaterialModule } from 'src/app/material-module';
 import { VehicleStaffAssignerRoutingModule } from './vehicle-staff-assigner-routing.module';
 import { VehicleShiftComponent } from '../vehicle-shift/vehicle-shift.component';
+import { VehicleShiftDialogComponent } from '../vehicle-shift-dialog/vehicle-shift-dialog.component';
 
 
 
 @NgModule({
   declarations: [
     VehicleStaffAssignerComponent,
-    VehicleShiftComponent
+    VehicleShiftComponent,
+    VehicleShiftDialogComponent
   ],
   imports: [
     CommonModule,

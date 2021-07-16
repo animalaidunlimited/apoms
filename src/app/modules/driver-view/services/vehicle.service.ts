@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -66,16 +66,14 @@ export class VehicleService  extends APIService {
 
   }
 
-  addVehicleShift(vehicleId: Number, iShiftDetails:FormGroup){
+  upsertVehicleShift(vehicleId: Number, iShiftDetails:FormGroup) : void{
 
-    const exists = this.currentVehicleShifts.findIndex(shift => shift.vehicleId === vehicleId);
+    const exists = this.currentVehicleShifts.findIndex(shift => shift.vehicleId === vehicleId && shift.shiftUUID === iShiftDetails.get('shiftUUID')?.value);
 
     let shiftDetails = iShiftDetails.value as VehicleShift;
 
     shiftDetails.shiftStartTime = new Date(shiftDetails.shiftStartTime);
     shiftDetails.shiftEndTime = new Date(shiftDetails.shiftEndTime);
-
-    console.log(iShiftDetails)
 
     shiftDetails.vehicleStaff = shiftDetails.vehicleStaff.filter(staff => staff.userId);
 
@@ -92,7 +90,7 @@ export class VehicleService  extends APIService {
 
       });
 
-      this.currentVehicleShifts.splice(exists, exists > 0 ? 1 : 0, shiftDetails);
+      this.currentVehicleShifts.splice(exists, exists > -1 ? 1 : 0, shiftDetails);
 
       this.currentVehicleShifts.sort((a,b) => a.shiftStartTime.getTime() - b.shiftStartTime.getTime());
 
@@ -100,19 +98,13 @@ export class VehicleService  extends APIService {
 
     });
 
-
-
   }
 
   public removeShift(shift: VehicleShift){
 
-    const currentShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
+    this.currentVehicleShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
 
-    this.vehicleShifts.next(currentShifts);
-
-  }
-
-  public editShift(shift: VehicleShift){
+    this.vehicleShifts.next(this.currentVehicleShifts);
 
   }
 
