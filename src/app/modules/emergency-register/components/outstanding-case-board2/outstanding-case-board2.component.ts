@@ -23,7 +23,7 @@ export class OutstandingCaseBoard2Component implements OnInit {
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   outstandingCases$!:  Observable<OutstandingAssignment2[]>;
-  recievedVehicleList$!:  Observable<OutstandingAssignment2[]>;
+  receivedVehicleList$!:  Observable<OutstandingAssignment2[]>;
 
   loaded = false;
 
@@ -37,8 +37,8 @@ export class OutstandingCaseBoard2Component implements OnInit {
     this.vehicleId$ = this.outstandingCase2Service.getVehicleId().pipe(skip(1)); 
  
 
-    this.recievedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
-    this.recievedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
+    this.receivedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
+    this.receivedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
 
   }
 
