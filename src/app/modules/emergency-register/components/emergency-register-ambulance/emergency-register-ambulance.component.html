@@ -37,7 +37,7 @@
             <p>{{vehicle.VehicleType}}</p>
           </div>
           <div fxFlex fxLayout="row">
-            <button mat-mini-fab>
+            <button (click)="openMap($event)" mat-mini-fab>
               <mat-icon>map</mat-icon>
             </button>
             <p>View in map</p>
