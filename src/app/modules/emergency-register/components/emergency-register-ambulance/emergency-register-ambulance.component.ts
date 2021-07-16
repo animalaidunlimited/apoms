@@ -16,7 +16,6 @@ import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
-import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 
 @Component({
@@ -28,7 +27,7 @@ import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding
 export class EmergencyRegisterAmbulanceComponent implements OnInit {
     @Input() vehicleId!: number;
 
-    vehicleAssigmentList!: Observable<OutstandingAssignment2[]>;
+    vehicleAssignmentList!: Observable<OutstandingAssignment2[]>;
 
     ambulanceCases$!: Observable<ActiveVehicleLocation>;
 
@@ -58,6 +57,7 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
         this.actionStatusId = [2, 3, 4, 5];
 
         this.locationService.getActiveVehicleLocations();
+        
 
         this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
             map(ambulanceLocations =>
@@ -76,7 +76,7 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
             ),
         );
 
-        this.vehicleAssigmentList = this.outstandingCase2Service.outstandingCases$.pipe(
+        this.vehicleAssignmentList = this.outstandingCase2Service.outstandingCases$.pipe(
             map(outstandingCases =>
                 outstandingCases.filter(
                     outstandingCase =>
@@ -101,7 +101,7 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
             concatAll(),
         );
 
-        this.currentCapacity = this.vehicleAssigmentList.pipe(
+        this.currentCapacity = this.vehicleAssignmentList.pipe(
             map(vehicleAssigments => {
                 let smallPatientCount = 0;
                 let largePatientCount = 0;
@@ -138,10 +138,12 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
                 };
             }),
         );
+
+
     }
 
     getOutstandingCasesByStatusId(statusId: number) {
-        return this.vehicleAssigmentList.pipe(
+        return this.vehicleAssignmentList.pipe(
             map(outstandingCases =>
                 outstandingCases.filter(
                     outStandingCases =>

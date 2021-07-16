@@ -1,4 +1,4 @@
-<div cdkDropListGroup fxLayout="row" style="margin: 0 0.5em;">
+<div cdkDropListGroup fxLayout="row" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
   <div class="swimlane">
     <h2 *ngIf="loaded" style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
@@ -51,7 +51,7 @@
       </mat-expansion-panel>
     </div>
   </div>
-  <div fxFlex="1 1 auto" style="margin-top:4em;">
+  <div fxFlex="1 1 auto" ngStyle.gt-sm="margin-top:4em;">
     <div class="ambulanceAssignedCases" *ngFor="let vehicleId of vehicleId$ | async">
 
       <ng-container *ngIf="vehicleId">

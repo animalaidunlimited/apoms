@@ -19,7 +19,7 @@ export class LocationService extends APIService {
   locationList$!: BehaviorSubject<LocationPathSegment[]>
   logLocation = new BehaviorSubject<boolean>(false);
 
-  //TODO - Allow this to be changed in settings.
+  // TODO - Allow this to be changed in settings.
   speedColours = [
     {maxSpeed: 7, colour: 'gray'},
     {maxSpeed: 30, colour: 'green'},
@@ -71,8 +71,10 @@ export class LocationService extends APIService {
       if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleDetails.vehicleId){
         vehicle.vehicleLocation.latLng.lat = locationMessage.vehicleLocation.latLng.lat;
         vehicle.vehicleLocation.latLng.lng = locationMessage.vehicleLocation.latLng.lat;
+        vehicle.vehicleStaff = locationMessage.vehicleStaff;
       }
 
+      
       return vehicle;
 
     });
