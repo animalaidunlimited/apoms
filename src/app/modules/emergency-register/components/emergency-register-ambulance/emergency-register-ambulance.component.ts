@@ -17,6 +17,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
+import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -177,5 +178,16 @@ export class EmergencyRegisterAmbulanceComponent implements OnInit {
 
     openCase(caseSearchResult:OutstandingAssignment2){
         this.openCaseEmitter.emit(caseSearchResult);
+    }
+
+    openMap($event:any){
+
+        this.dialog.open(OutstandingCaseMapComponent,
+        {
+            panelClass: 'outstanding-case-board-vehicle-map', 
+            minWidth: '50vw',
+            maxWidth: '100%',
+            data: this.vehicleId
+        });
     }
 }
