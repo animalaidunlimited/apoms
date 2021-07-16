@@ -1,7 +1,7 @@
 <div cdkDropListGroup fxLayout="row" style="margin: 0 0.5em;">
   <div class="swimlane">
     <h2 *ngIf="loaded" style="text-align: center;">Received</h2>
-    <div *ngFor="let outstandingCase of recievedVehicleList$ | async">
+    <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
       <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                   'border-green' : outstandingCase.emergencyCodeId == 2,
