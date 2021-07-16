@@ -10,7 +10,7 @@ import { VehicleListPageComponent } from './vehicle-list-page.component';
   imports: [
     CommonModule,
     VehicleListPageRoutingModule,
-    MaterialModule
+    MaterialModule 
   ]
 })
 export class VehicleListPageModule { }
