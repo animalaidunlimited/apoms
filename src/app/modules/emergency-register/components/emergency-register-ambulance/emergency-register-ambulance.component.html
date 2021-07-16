@@ -2,7 +2,7 @@
 
   <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
     <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
-      <div fxLayout="row" class="vehicle">
+      <div fxLayout="row" fxLayout.lt-sm="column"class="vehicle">
 
         <div fxLayout="row">
           <div class="vehicleImage">
@@ -31,7 +31,7 @@
           </div>
         </div>
 
-        <div fxLayout="column" class="vehicleType">
+        <div fxLayout="column" fxLayout.lt-sm="row" class="vehicleType">
           <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
@@ -62,7 +62,7 @@
     </div>
   </ng-container>
 
-  <div>
+  <div fxLayout.lt-sm="column">
     <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
 
       <h2>{{getActionStatus(statusId)}}</h2>

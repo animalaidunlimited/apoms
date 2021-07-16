@@ -36,7 +36,6 @@ export class OutstandingCaseBoard2Component implements OnInit {
 
     this.vehicleId$ = this.outstandingCase2Service.getVehicleId().pipe(skip(1)); 
  
-
     this.receivedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
     this.receivedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
 

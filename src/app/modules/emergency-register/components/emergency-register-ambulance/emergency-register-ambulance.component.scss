@@ -146,3 +146,28 @@
 }
 
 
+@media (max-width: 600px){
+
+    .vehicleType{
+        min-width: unset;
+        
+        &Icon img {
+            margin-top: 0.4em;
+        }
+    }
+
+    .vehicleCapacity{
+        padding-left: 0.2em;
+        h3{
+            width: 9.4em;
+            margin-top: 1em;
+        }
+    }
+    
+    .capacityTitle{
+        span{
+            width: 8.9em;
+        }
+    }
+    
+}
