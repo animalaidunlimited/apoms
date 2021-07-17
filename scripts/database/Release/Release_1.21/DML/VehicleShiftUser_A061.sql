@@ -1,8 +1,10 @@
 CREATE TABLE `AAU`.`VehicleShiftUser` (
   `VehicleShiftUserId` INT NOT NULL AUTO_INCREMENT,
   `VehicleShiftId` INT NOT NULL,
-  `UserId` INT NOT NULL,
-  `CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `UserId` INT NOT NULL,  
+  `IsDeleted` TINYINT NULL,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`VehicleShiftUserId`),
   INDEX `FK_VehicleShiftUserVehicleShiftId_VehicleShiftVehicleShiftI_idx` (`VehicleShiftId` ASC) VISIBLE,
   CONSTRAINT `FK_VehicleShiftUserVehicleShiftId_VehicleShiftVehicleShiftId`

@@ -50,19 +50,19 @@ export class ShiftTimeValidator {
                 errors["shift-overlap"] = true;
             }
 
-
-
             return errors;
         };
     }
 
     timeIsInsideOtherShift(currentTime: Date, shifts: VehicleShift[], iUUID: string|null) : boolean{
 
-        return shifts.some(shift => currentTime >= shift.shiftStartTime && currentTime <= shift.shiftEndTime && shift.shiftUUID !== iUUID);
+        return shifts.some(shift => {
+
+            return currentTime >= shift.shiftStartTimeDate && currentTime <= shift.shiftEndTimeDate && shift.shiftUUID !== iUUID});
     }
 
     shiftOverlapsExistingShift(startDate: Date, endDate: Date, shifts: VehicleShift[], iUUID: string|null) : boolean {
 
-        return shifts.some(shift => endDate >= shift.shiftStartTime && startDate <= shift.shiftEndTime && shift.shiftUUID !== iUUID);
+        return shifts.some(shift => endDate >= shift.shiftStartTimeDate && startDate <= shift.shiftEndTimeDate && shift.shiftUUID !== iUUID);
     }
 }

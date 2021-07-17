@@ -9,11 +9,13 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehicleService  extends APIService {
+
   endpoint = 'Vehicle';
 
   currentVehicleShifts: VehicleShift[] = [];
@@ -21,9 +23,41 @@ export class VehicleService  extends APIService {
 
   constructor(
     public http: HttpClient,
-    private dropdowns: DropdownService
+    private dropdowns: DropdownService,
+    private snackbar: SnackbarService
     ) {
     super(http);
+  }
+
+
+  public populateVehicleShiftDetails (date: string) {
+
+    if(date){
+
+      let request = "/GetVehicleShiftDetails?" + "shiftDate=" + date;
+
+      this.get(request).then((response:any) => {
+
+        if(!response){
+          this.vehicleShifts.next([]);
+          return;
+        }
+
+        this.currentVehicleShifts = response?.map((shift:any) => {
+
+          shift.shiftStartTimeDate = new Date(shift.shiftStartTime);
+          shift.shiftEndTimeDate = new Date(shift.shiftEndTime);
+
+          return shift;
+
+      });
+
+        this.vehicleShifts.next(this.currentVehicleShifts);
+
+      })
+
+    }
+
   }
 
   public async upsertVehicleListItem(vehicleDetail: any) : Promise<SuccessOnlyResponse> {
@@ -51,8 +85,6 @@ export class VehicleService  extends APIService {
 
   }
 
-
-
   public async deleteVehicleListItem(vehicleId : number) : Promise<SuccessOnlyResponse> {
     let deleteobject = {
       vehicleId:vehicleId,
@@ -72,8 +104,8 @@ export class VehicleService  extends APIService {
 
     let shiftDetails = iShiftDetails.value as VehicleShift;
 
-    shiftDetails.shiftStartTime = new Date(shiftDetails.shiftStartTime);
-    shiftDetails.shiftEndTime = new Date(shiftDetails.shiftEndTime);
+    shiftDetails.shiftStartTimeDate = new Date(shiftDetails.shiftStartTime);
+    shiftDetails.shiftEndTimeDate = new Date(shiftDetails.shiftEndTime);
 
     shiftDetails.vehicleStaff = shiftDetails.vehicleStaff.filter(staff => staff.userId);
 
@@ -92,19 +124,50 @@ export class VehicleService  extends APIService {
 
       this.currentVehicleShifts.splice(exists, exists > -1 ? 1 : 0, shiftDetails);
 
-      this.currentVehicleShifts.sort((a,b) => a.shiftStartTime.getTime() - b.shiftStartTime.getTime());
+      this.currentVehicleShifts.sort((a,b) => a.shiftStartTimeDate.getTime() - b.shiftStartTimeDate.getTime());
 
-      this.vehicleShifts.next(this.currentVehicleShifts);
+      let upsert = shiftDetails.vehicleShiftId ?
+                                  this.putSubEndpoint("/VehicleShiftDetails",shiftDetails) :
+                                  this.postSubEndpoint("/VehicleShiftDetails",shiftDetails);
+
+      upsert.then(result => this.processUpsertShiftResult(result));
 
     });
 
   }
 
+  private processUpsertShiftResult(result: any) {
+
+    if (result.success === 1) {
+      this.vehicleShifts.next(this.currentVehicleShifts);
+      this.snackbar.successSnackBar('Shift updated successfully', 'OK');
+
+    }
+    else {
+      this.snackbar.errorSnackBar('Error updating shift: please see admin', 'OK');
+    }
+  }
+
   public removeShift(shift: VehicleShift){
 
-    this.currentVehicleShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
+    shift.isDeleted = true;
 
-    this.vehicleShifts.next(this.currentVehicleShifts);
+    this.putSubEndpoint("/VehicleShiftDetails",shift).then(result => {
+
+      if (result.success === 1) {
+        this.currentVehicleShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
+        this.vehicleShifts.next(this.currentVehicleShifts);
+        this.snackbar.successSnackBar('Shift removed successfully', 'OK');
+      }
+      else {
+        this.snackbar.errorSnackBar('Error updating shift: please see admin', 'OK');
+      }
+
+    });
+
+
+
+
 
   }
 

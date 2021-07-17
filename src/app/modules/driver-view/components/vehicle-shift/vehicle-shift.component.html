@@ -74,14 +74,14 @@
                 <div *ngFor="let staff of shift.vehicleStaff">
 
                     <div class="staff-icon"
-                    [matTooltip]="staff.firstName + ' ' + staff.surname">
+                    [matTooltip]="staff.firstName + ' ' + (staff.surname || '')">
                         {{staff.initials}}
                     </div>
 
                 </div>
 
                 <div fxFlex class="shift-detail">
-                    {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTime.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTime.getTimezoneOffset() * -1)}}
+                    {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTimeDate.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTimeDate.getTimezoneOffset() * -1)}}
                 </div>
 
                 <button class="shift-button delete" type="button" (click)="removeShift(shift)" mat-mini-fab color="warn">

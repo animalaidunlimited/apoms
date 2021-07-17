@@ -59,11 +59,11 @@ SELECT	VehicleId, Latitude, Longitude, Speed, Heading, Accuracy, Altitude, Altit
 FROM AAU.VehicleLocation
 WHERE CAST(Timestamp AS DATE) = '2021-07-04'
 AND OrganisationId = vOrganisationId
-) vl ON vl.VehicleId = v.VehicleId
+) vl ON vl.VehicleId = v.VehicleId AND vl.RNum = 1
 LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = vl.VehicleId
 LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-WHERE vl.RNum = 1
+WHERE v.VehicleStatusId = 1
 GROUP BY vl.VehicleId,
 vl.Latitude,
 vl.Longitude
@@ -79,6 +79,4 @@ JSON_OBJECT(
 FROM vehicleListCTE;
 
 END$$
-
-
 
