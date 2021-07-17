@@ -27,9 +27,36 @@ update the current location and rescuers for a specific vehicle.
 
 */
 
-SELECT
+WITH rescuersCTE AS
+(
+SELECT vs.VehicleId,
+JSON_ARRAYAGG(
 JSON_OBJECT(
-	"vehicleId", prm_VehicleId,
+"firstName", u.FirstName,
+"surname", u.Surname,
+"initials", u.Initials,
+"colour", u.Colour)) AS `vehicleStaff`
+FROM AAU.VehicleShift vs
+LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
+LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
+WHERE vs.VehicleId = prm_VehicleId
+	AND CURDATE() >= vs.StartDate
+	AND CURDATE() <= IFNULL(vs.EndDate, CURDATE())
+GROUP BY vs.VehicleId
+)
+
+SELECT
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("vehicleDetails",
+JSON_OBJECT(
+"vehicleId", v.VehicleId,
+"vehicleRegistrationNumber", v.VehicleRegistrationNumber,
+"vehicleNumber", v.VehicleNumber,
+"smallAnimalCapacity", v.SmallAnimalCapacity,
+"largeAnimalCapacity", v.LargeAnimalCapacity,
+"vehicleImage", v.VehicleImage,
+"vehicleTypeId", v.VehicleTypeId)),
+JSON_OBJECT(
     "vehicleLocation",
     JSON_OBJECT(
 	"speed", prm_Speed,
@@ -40,20 +67,10 @@ JSON_OBJECT(
 	"latLng",    
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT("lat", prm_Latitude),
-	JSON_OBJECT("lng", prm_Longitude))),
-    "vehicleStaff",
-	JSON_ARRAYAGG(
-	JSON_OBJECT(
-	"firstName", u.FirstName,
-	"surname", u.Surname,
-	"initials", u.Initials,
-	"colour", u.Colour))) AS `vehicleLocation`
+	JSON_OBJECT("lng", prm_Longitude)))),
+    JSON_OBJECT("vehicleStaff", r.vehicleStaff)) AS `locationMessage`
+FROM AAU.Vehicle v
+INNER JOIN rescuersCTE r ON r.VehicleId = v.VehicleId;
 
-FROM AAU.VehicleShift vs
-LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
-LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-WHERE vs.VehicleId = prm_VehicleId
-	AND CURDATE() >= vs.StartDate
-	AND CURDATE() <= IFNULL(vs.EndDate, CURDATE());
 
 END$$

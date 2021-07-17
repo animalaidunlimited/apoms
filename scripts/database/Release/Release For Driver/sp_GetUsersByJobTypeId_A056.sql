@@ -16,7 +16,7 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-SELECT jt.UserId AS `userId`, u.FirstName AS `firstName`, u.Surname AS `surname`, u.initials AS `initials`
+SELECT jt.UserId AS `userId`, u.FirstName AS `firstName`, u.Surname AS `surname`, u.initials AS `initials`, u.Colour AS `Colour`
 FROM AAU.UserJobType jt
 INNER JOIN AAU.User u ON u.UserId = jt.UserId
 WHERE jt.JobTypeId = prm_JobTypeId

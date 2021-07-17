@@ -7,6 +7,8 @@ import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { VehicleShiftDialogComponent } from '../vehicle-shift-dialog/vehicle-shift-dialog.component';
+import { SHIFT } from '@angular/cdk/keycodes';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 
 
@@ -49,13 +51,14 @@ export class VehicleShiftComponent implements OnInit {
 
       // We need to work out how long the shift is in minutes and then work that out as a % of the number of minutes in a day.
       // Then this becomes the width of the element as a % of the parent width.
-      shift.length = this.getShiftLengthAsPercentageOf24Hours(shift.shiftEndTime.getTime(), shift.shiftStartTime.getTime());
+      shift.length = this.getShiftLengthAsPercentageOf24Hours(shift.shiftEndTimeDate.getTime(), shift.shiftStartTimeDate.getTime());
+      shift.shiftUUID = generateUUID();
 
       // Now we need to work out how far to the right we need to shift the div. This is the difference between midnight and the start
       // time of the shift as a % of 24 hours.
-      let midnight = new Date(shift.shiftStartTime.getTime());
+      let midnight = new Date(shift.shiftStartTimeDate.getTime());
 
-      shift.left = (((shift.shiftStartTime.getTime() - midnight.setHours(0,0,0,0) - 6000) / 1000) / (24 * 60 * 60) * 100);
+      shift.left = (((shift.shiftStartTimeDate.getTime() - midnight.setHours(0,0,0,0) - 6000) / 1000) / (24 * 60 * 60) * 100);
 
       return shift;
 

@@ -118,12 +118,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    console.log(rescueDetails)
-
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
-
-                        console.log(rescuer);
-
 
                         this.rescuerArray = this.recordForm.get('rescueDetails.rescuers') as FormArray;
 
@@ -131,8 +126,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                             rescuerId: [{value: rescuer.rescuerId, disabled: true}]
                         });
 
-                        this.rescuerArray.push(rescuerGroup)
-                        console.log(this.rescuerArray);
+                        this.rescuerArray.push(rescuerGroup);
                     })
 
                     const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);

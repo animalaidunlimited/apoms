@@ -15,7 +15,7 @@ export class VehicleStaffAssignerComponent implements OnInit {
   activeVehicles$!: Observable<Vehicle[]>;
 
   shiftDate = this.fb.group({
-    date: [getCurrentDateString()]}
+    date: []}
   );
 
   constructor(
@@ -26,6 +26,15 @@ export class VehicleStaffAssignerComponent implements OnInit {
   ngOnInit(): void {
 
     this.activeVehicles$ = this.vehicleService.getVehicleListObservable();
+
+    this.shiftDate.valueChanges.subscribe(changes => {
+      this.vehicleService.populateVehicleShiftDetails(changes.date);
+    });
+
+    this.shiftDate.get("date")?.setValue(getCurrentDateString());
+
+
+
 
   }
 

@@ -1,4 +1,3 @@
-import { UUID } from "angular2-uuid";
 import { User } from "./user";
 
 
@@ -6,10 +5,13 @@ export interface VehicleShift {
     shiftUUID: string;
     vehicleShiftId: number;
     vehicleId: number;
-    shiftStartTime: Date;
-    shiftEndTime: Date;
+    shiftStartTime: string;
+    shiftEndTime: string;
+    shiftStartTimeDate: Date;
+    shiftEndTimeDate: Date;
     left?: number;
     length?: number;
+    isDeleted: boolean;
     vehicleStaff: User[];
   }
 
