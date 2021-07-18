@@ -2,15 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Vehicle } from 'src/app/core/models/driver-view';
-import { VehicleShift } from 'src/app/core/models/vehicle';
+import { HourRange, VehicleShift } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { VehicleShiftDialogComponent } from '../vehicle-shift-dialog/vehicle-shift-dialog.component';
-import { SHIFT } from '@angular/cdk/keycodes';
-import { generateUUID } from 'src/app/core/helpers/utils';
-
-
 
 @Component({
   selector: 'app-vehicle-shift',
@@ -25,7 +21,8 @@ export class VehicleShiftComponent implements OnInit {
   currentDayStart!:Date;
   currentDayEnd!:Date;
 
-  hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+  hours:number[] = [];
+  hourRange!: HourRange;
 
   shifts$!: Observable<VehicleShift[]>;
 
@@ -37,13 +34,18 @@ export class VehicleShiftComponent implements OnInit {
 
   ngOnInit(): void {
 
+
+
+    this.hourRange = this.vehicleService.getHourRange();
+    this.hours = this.hourRange.range;
+
+    console.log(this.hourRange)
+
     this.currentDayStart = new Date(this.shiftDate);
-    this.currentDayStart.setHours(0,0,0);
+    this.currentDayStart.setHours(this.hourRange.start,0,0);
 
     this.currentDayEnd = new Date(this.shiftDate);
-    this.currentDayEnd.setHours(23,59,59,999);
-
-
+    this.currentDayEnd.setHours(this.hourRange.end,59,59,999);
 
     this.shifts$ = this.vehicleService.vehicleShifts.pipe(map(shifts => shifts
       .filter(shift => shift.vehicleId === this.vehicle.vehicleId)
@@ -52,13 +54,12 @@ export class VehicleShiftComponent implements OnInit {
       // We need to work out how long the shift is in minutes and then work that out as a % of the number of minutes in a day.
       // Then this becomes the width of the element as a % of the parent width.
       shift.length = this.getShiftLengthAsPercentageOf24Hours(shift.shiftEndTimeDate.getTime(), shift.shiftStartTimeDate.getTime());
-      shift.shiftUUID = generateUUID();
 
       // Now we need to work out how far to the right we need to shift the div. This is the difference between midnight and the start
       // time of the shift as a % of 24 hours.
       let midnight = new Date(shift.shiftStartTimeDate.getTime());
 
-      shift.left = (((shift.shiftStartTimeDate.getTime() - midnight.setHours(0,0,0,0) - 6000) / 1000) / (24 * 60 * 60) * 100);
+      shift.left = (((shift.shiftStartTimeDate.getTime() - midnight.setHours(this.hourRange.start,0,0,0) - 6000) / 1000) / ((this.hourRange.end - this.hourRange.start + 1) * 60 * 60) * 100);
 
       return shift;
 
@@ -73,7 +74,7 @@ export class VehicleShiftComponent implements OnInit {
 
     const shiftLengthInSeconds = Math.round((endTime - startTime) / 1000);
 
-    return shiftLengthInSeconds / (24 * 60 * 60) * 100;
+    return shiftLengthInSeconds / ((this.hourRange.end - this.hourRange.start + 1) * 60 * 60) * 100;
 
   }
 
@@ -81,7 +82,8 @@ export class VehicleShiftComponent implements OnInit {
 
     this.dialog.open(VehicleShiftDialogComponent, {
       data:{
-        vehicle: this.vehicle
+        vehicle: this.vehicle,
+        currentDate: this.shiftDate
       }
     });
 
@@ -92,7 +94,8 @@ export class VehicleShiftComponent implements OnInit {
     this.dialog.open(VehicleShiftDialogComponent, {
       data:{
         vehicle: this.vehicle,
-        shift: editShift
+        shift: editShift,
+        currentDate: this.shiftDate
       }
     });
 

@@ -16,6 +16,7 @@ import { ShiftTimeValidator } from '../../validators/shift-time.validator';
 interface IncomingVehicleDetails {
   vehicle: Vehicle;
   shift?: VehicleShift;
+  currentDate: string;
 }
 
 @Component({
@@ -32,10 +33,10 @@ export class VehicleShiftDialogComponent implements OnInit {
   existingStaff: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
 
-  minDate = getCurrentDateString() + "T00:00";
-  minEndTime = getCurrentDateString() + "T00:00";
-  maxDate = getCurrentDateString() + "T23:59:59";
-  maxStartTime = getCurrentDateString() + "T23:59:59";
+  minDate = this.data.currentDate + "T07:00";
+  minEndTime = this.data.currentDate + "T07:00";
+  maxDate = this.data.currentDate + "T23:59:59";
+  maxStartTime = this.data.currentDate + "T23:59:59";
 
   staff$!: Observable<User[]>;
   staffArray = this.fb.array([]);
@@ -79,8 +80,6 @@ export class VehicleShiftDialogComponent implements OnInit {
     ]);
 
 
-
-
     this.addShiftFormGroup.get('shiftEndTime')?.clearValidators();
 
     this.addShiftFormGroup.get('shiftEndTime')?.setValidators([
@@ -102,9 +101,9 @@ export class VehicleShiftDialogComponent implements OnInit {
 
     // Do something to try and limit the times. Note this doesn't work for minutes or seconds. So we
     // also need to handle it in the validators
-    this.shiftStartTime?.valueChanges.subscribe(startChanged => this.minEndTime = startChanged );
+    this.shiftStartTime?.valueChanges.subscribe((startChanged:string) => this.minEndTime = startChanged || this.data.currentDate + "T00:00" );
 
-    this.shiftEndTime?.valueChanges.subscribe(endChanged => this.maxStartTime = endChanged);
+    this.shiftEndTime?.valueChanges.subscribe((endChanged:string) => this.maxStartTime = endChanged || this.data.currentDate + "T23:59:59");
 
     this.staffArray = this.addShiftFormGroup.get('vehicleStaff') as FormArray;
 
@@ -142,7 +141,7 @@ export class VehicleShiftDialogComponent implements OnInit {
     }
 
      const returnGroup = this.fb.group({
-      shiftUUID: [generateUUID()],
+      shiftUUID: [],
       vehicleShiftId: [],
       vehicleId: [this.data.vehicle.vehicleId, Validators.required],
       shiftStartTime: [],
@@ -166,9 +165,13 @@ export class VehicleShiftDialogComponent implements OnInit {
 
 
   resetForm(){
+
     this.addShiftFormGroup.reset();
     this.addShiftFormGroup.get('vehicleId')?.setValue(this.data.vehicle.vehicleId);
-    this.addShiftFormGroup.get('shiftStartTime')?.setValue(getCurrentTimeString());
+    this.addShiftFormGroup.get('shiftUUID')?.setValue(this.data.shift?.shiftUUID);
+
+    this.updateValidators();
+
   }
 
 }

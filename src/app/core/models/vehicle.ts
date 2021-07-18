@@ -24,3 +24,9 @@ export interface VehicleShift {
     smallAnimalCapacity: number;
     vehicleRegistrationNumber: string;
 }
+
+export interface HourRange {
+  start: number;
+  end: number;
+  range: number[];
+}

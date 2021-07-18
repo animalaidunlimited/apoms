@@ -58,7 +58,7 @@
 
         <div fxLayout="row" fxLayoutAlign="space-between center">
 
-            <div *ngFor="let hour of hours" class="single-hour">
+            <div *ngFor="let hour of hours" class="single-hour" [ngStyle]="{'width' : 'calc(100% / ' + (hourRange.end - hourRange.start + 1) + ')'}">
                 {{hour}}
             </div>
 

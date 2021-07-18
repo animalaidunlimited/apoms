@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { DriverViewService } from '../../services/driver-view.service';
 import { VehicleService } from '../../services/vehicle.service';
 
 
@@ -90,14 +89,11 @@ export class VehicleListPageComponent implements OnInit {
 
   selectRow(selectedVehicle: any) {
 
-    console.log(selectedVehicle);
-
     this.vehicleListForm.patchValue(selectedVehicle);
   }
 
   deleteVehicle(vehicleId : number) {
 
-    console.log(vehicleId);
     if(vehicleId) {
       this.vehicleService.deleteVehicleListItem(vehicleId).then(successResponse=> {
 

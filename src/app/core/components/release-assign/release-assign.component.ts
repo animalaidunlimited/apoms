@@ -62,8 +62,6 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
     });
 
-    console.log(this.formData);
-
     if(!this.formData){
 
       this.releaseDetails.getReleaseDetails(this.patientId || -1)

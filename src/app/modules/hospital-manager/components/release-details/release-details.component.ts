@@ -227,8 +227,6 @@ export class ReleaseDetailsComponent implements OnInit {
 
   onReleaseSubmit() {
 
-    console.log('Here');
-
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 
       const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
