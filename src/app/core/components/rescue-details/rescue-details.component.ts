@@ -297,8 +297,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         const currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
 
-        console.log(currentTime);
-
         if (!currentTime) {
             this.recordForm
                 .get('rescueDetails')

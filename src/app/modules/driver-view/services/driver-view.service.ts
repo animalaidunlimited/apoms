@@ -25,12 +25,9 @@ export class DriverViewService extends APIService {
 
   public populateDriverView(driverViewDate: Date) {
 
-    console.log(driverViewDate);
-
     let request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).subscribe(response=> {
-      console.log(response);
       if(response){
         this.driverViewDetails.next(response);
       }

@@ -4,11 +4,13 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { generateUUID } from 'src/app/core/helpers/utils';
 import { Vehicle } from 'src/app/core/models/driver-view';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { VehicleShift } from 'src/app/core/models/vehicle';
+import { HourRange, VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { OrganisationOptionService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 @Injectable({
@@ -24,7 +26,8 @@ export class VehicleService  extends APIService {
   constructor(
     public http: HttpClient,
     private dropdowns: DropdownService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private orgOptions: OrganisationOptionService
     ) {
     super(http);
   }
@@ -39,11 +42,14 @@ export class VehicleService  extends APIService {
       this.get(request).then((response:any) => {
 
         if(!response){
-          this.vehicleShifts.next([]);
+          this.currentVehicleShifts = [];
+          this.vehicleShifts.next(this.currentVehicleShifts);
           return;
         }
 
-        this.currentVehicleShifts = response?.map((shift:any) => {
+        this.currentVehicleShifts = response?.map((shift:VehicleShift) => {
+
+          shift.shiftUUID = generateUUID();
 
           shift.shiftStartTimeDate = new Date(shift.shiftStartTime);
           shift.shiftEndTimeDate = new Date(shift.shiftEndTime);
@@ -98,7 +104,7 @@ export class VehicleService  extends APIService {
 
   }
 
-  upsertVehicleShift(vehicleId: Number, iShiftDetails:FormGroup) : void{
+  upsertVehicleShift(vehicleId: Number, iShiftDetails:FormGroup) : void {
 
     const exists = this.currentVehicleShifts.findIndex(shift => shift.vehicleId === vehicleId && shift.shiftUUID === iShiftDetails.get('shiftUUID')?.value);
 
@@ -107,9 +113,10 @@ export class VehicleService  extends APIService {
     shiftDetails.shiftStartTimeDate = new Date(shiftDetails.shiftStartTime);
     shiftDetails.shiftEndTimeDate = new Date(shiftDetails.shiftEndTime);
 
+    // Remove any empty users
     shiftDetails.vehicleStaff = shiftDetails.vehicleStaff.filter(staff => staff.userId);
 
-    // We need to populate the list
+    // We need to populate the user details for use in the shift bars
     this.dropdowns.getRescuers().subscribe(staff => {
 
       shiftDetails.vehicleStaff.forEach(vehicleStaff => {
@@ -122,6 +129,7 @@ export class VehicleService  extends APIService {
 
       });
 
+      // If the shift already exists, then replace it with the updated one, otherwise add it into the array.
       this.currentVehicleShifts.splice(exists, exists > -1 ? 1 : 0, shiftDetails);
 
       this.currentVehicleShifts.sort((a,b) => a.shiftStartTimeDate.getTime() - b.shiftStartTimeDate.getTime());
@@ -165,8 +173,22 @@ export class VehicleService  extends APIService {
 
     });
 
+  }
 
+  public getHourRange() : HourRange {
 
+    let start = this.orgOptions.getVehicleAssignerStartHour();
+    let end = this.orgOptions.getVehicleAssignerEndHour();
+
+    var range = [];
+
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+
+    range.sort((a,b) => a-b);
+
+    return { start, end, range } as HourRange;
 
 
   }

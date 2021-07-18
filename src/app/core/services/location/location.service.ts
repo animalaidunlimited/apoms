@@ -122,12 +122,10 @@ export class LocationService extends APIService {
 
   getActiveVehicleLocations() : void {
 
-    console.log("called");
-
     const request = '/ActiveVehicleLocations';
 
     this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) =>
-    {console.log(response);
+    {
         this.ambulanceLocations$.next(response)}
     );
 
