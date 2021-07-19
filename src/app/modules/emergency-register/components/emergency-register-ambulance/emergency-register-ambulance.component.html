@@ -24,7 +24,7 @@
             <ng-container *ngIf="ambulanceCase.vehicleStaff as vehicleStaff">
               <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
                   <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
-                    {{ vehicleStaff.initials }} {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
+                    <span *ngIf="vehicleStaff.initials" class="initials">{{ vehicleStaff.initials }}</span> {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
                   </div>
               </div>
             </ng-container>

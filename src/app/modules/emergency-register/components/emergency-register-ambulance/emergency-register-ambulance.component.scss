@@ -68,12 +68,22 @@
         flex-wrap: wrap;
         justify-content: space-between;
         &Name{
+
             font-size: 1em;
-            background: white;
             border-radius: 1em;
-            padding: 0.2em 0.5em;
+            padding: 0.2em 0.5em 0.2em 0;
             margin: 0.3em 0.2em 0 0;
             border: 1px solid lightslategray;
+            span.initials {
+                border: 1px solid lightslategray;
+                border-radius: 50%;
+                padding: 0.2em;
+                background: white;
+                font-weight: 600;
+                color: rgb(0 0 0);
+                margin-left: -0.0725em;
+            }
+        
         }
     }
     &Image 
