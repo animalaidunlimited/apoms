@@ -20,11 +20,13 @@ import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding
 
 @Component({
     // tslint:disable-next-line: component-selector
-    selector: 'emergency-register-ambulance',
-    templateUrl: './emergency-register-ambulance.component.html',
-    styleUrls: ['./emergency-register-ambulance.component.scss'],
+    selector: 'outstanding-case-board-ambulance',
+    templateUrl: './outstanding-case-board-ambulance.component.html',
+    styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
 })
-export class EmergencyRegisterAmbulanceComponent implements OnInit {
+export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
+
+    
     @Input() vehicleId!: number;
 
     vehicleAssignmentList!: Observable<OutstandingAssignment2[]>;
