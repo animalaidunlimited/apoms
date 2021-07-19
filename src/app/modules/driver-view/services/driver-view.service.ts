@@ -6,6 +6,7 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { map, mapTo } from 'rxjs/operators';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 // import { DriverAssignments } from "../../../core/models/driver-view";
 
 @Injectable({
@@ -16,18 +17,34 @@ export class DriverViewService extends APIService {
   endpoint = 'DriverView';
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   driverViewQuestionList: any;
+  driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
+  updateAssignmentCount: number = 0;
+
 
   constructor(public http: HttpClient,
-    private checkConnectionService: CheckConnectionService) {
+    private checkConnectionService: CheckConnectionService,
+    private snackBar: SnackbarService) {
     super(http);
 
     this.checkConnectionService.checkConnection.subscribe(connection=> {
+      console.log(connection);
       JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))).forEach((item: DriverAssignments)=> {
         if(connection && item.isUpdated) {
-            this.saveDriverViewDataFromLocalStorage(item);
+          this.updateAssignmentCount++;
+          this.saveDriverViewDataFromLocalStorage(item);
+          console.log(this.updateAssignmentCount);
         }
-      })
-    })
+       
+      });
+
+      if(connection && this.updateAssignmentCount > 0) {
+        this.showSaveResponseStatus(this.driverDataSaveErrorResponse)
+      }
+
+      
+
+    });
+
   }
 
   public async upsertVehicleListItem(vehicleDetail: any) : Promise<SuccessOnlyResponse> {
@@ -58,12 +75,10 @@ export class DriverViewService extends APIService {
 
   public populateDriverView(driverViewDate: Date) {
 
-    console.log(driverViewDate);
-
     let request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).subscribe(response=> {
-      console.log(response);
+
       if(response){
 
         response.forEach((data: DriverAssignments)=> {
@@ -76,7 +91,6 @@ export class DriverViewService extends APIService {
 
       }
       else {
-        console.log('empty res')
         localStorage.removeItem('driverViewData');
         this.driverViewDetails.next([]);
       }
@@ -107,21 +121,13 @@ export class DriverViewService extends APIService {
 
   public getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatus: string, subAction: string) {
 
-    console.log(actionStatus)
-
-    console.log(subAction)
-
-    console.log(this.driverViewQuestionList)
-
-    console.log(this.driverViewQuestionList.filter((value: any)=> value.actionStatus === actionStatus && value.subAction === subAction)
-    )
-
     return this.driverViewQuestionList.filter((value: any)=> value.actionStatus === actionStatus && value.subAction === subAction);
 
   }
 
   public getAssignmentStatus(driverViewData: DriverAssignments) {
 
+     driverViewData.patients.forEach(patient=> {
       if(
         (!driverViewData.ambulanceArrivalTime 
           && !driverViewData.rescueTime 
@@ -132,7 +138,7 @@ export class DriverViewService extends APIService {
           (driverViewData.ambulanceArrivalTime
           && driverViewData.rescueTime
           && driverViewData.admissionTime
-          && driverViewData.patientCallOutcomeId === 1
+          && patient.callOutcome.CallOutcome?.CallOutcomeId === 1
           && driverViewData.inTreatmentAreaId
           && driverViewData.releaseDetailsId
           && !driverViewData.releasePickupDate
@@ -161,7 +167,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
 		      driverViewData.rescueTime &&
           driverViewData.admissionTime &&
-          driverViewData.patientCallOutcomeId === 1 &&
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
@@ -176,7 +182,6 @@ export class DriverViewService extends APIService {
         )
       ) 
       {
-        console.log('hello');
         driverViewData.actionStatus = 'In Progress';
       }
 
@@ -185,7 +190,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
 		      driverViewData.rescueTime &&
           driverViewData.admissionTime &&
-		      driverViewData.patientCallOutcomeId === 1 &&
+		      patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.inTreatmentAreaId &&
           !driverViewData.releaseDetailsId &&
           !driverViewData.streetTreatCaseId
@@ -194,7 +199,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
 		      driverViewData.rescueTime &&
           driverViewData.admissionTime &&
-          driverViewData.patientCallOutcomeId === 1 &&
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
@@ -218,7 +223,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
           driverViewData.rescueTime &&
           !driverViewData.admissionTime &&
-          !driverViewData.patientCallOutcomeId &&
+          !patient.callOutcome.CallOutcome?.CallOutcomeId &&
           !driverViewData.inTreatmentAreaId &&
           !driverViewData.releaseDetailsId &&
           !driverViewData.streetTreatCaseId
@@ -227,7 +232,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
           driverViewData.rescueTime &&
           driverViewData.admissionTime &&
-          driverViewData.patientCallOutcomeId === 1 &&
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
@@ -242,8 +247,7 @@ export class DriverViewService extends APIService {
       else {
         console.log('hi')
       }
-
-      console.log(driverViewData);
+    }) 
 
     return driverViewData;
 
@@ -251,28 +255,42 @@ export class DriverViewService extends APIService {
 
   public saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignments) {
 
-    // let array = [];
 
-    // array.push(driverViewUpdatedData);
+    let response = this.put(driverViewUpdatedData);
 
-    // let set = new Set(array);
+    console.log(response)
+
+    response.then((val:SuccessOnlyResponse)=> {
+      console.log(val);
+     if(val.success===1) {
+      
+       let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+
+       let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
+   
+       localData[index].isUpdated = false;
+   
+       localStorage.setItem('driverViewData', JSON.stringify(localData));
+     }
+
+     else {
+      this.driverDataSaveErrorResponse.push(val);
+     }
+    });
+  
+  }
 
 
-    // console.log(set)
+  public showSaveResponseStatus(updatedItemError: SuccessOnlyResponse[] ) {
 
-    console.log(driverViewUpdatedData);
+    if(updatedItemError.length > 0) {
+      this.snackBar.errorSnackBar('Some cases not synced with database, Please try again later!', 'Ok');
+    }
+    else if(updatedItemError.length === 0) {
+      this.snackBar.successSnackBar('All cases synced with database.', 'Ok')
+    }
 
-    this.put(driverViewUpdatedData);
-
-    let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
-
-    let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
-
-    localData[index].isUpdated = false;
-
-    localStorage.setItem('driverViewData', JSON.stringify(localData))
-
-    
+    this.updateAssignmentCount = 0;
   }
 
 }

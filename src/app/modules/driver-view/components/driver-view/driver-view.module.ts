@@ -11,6 +11,7 @@ import { CallerDetailsModule } from 'src/app/core/components/caller-details/call
 import { GoogleMapsModule } from '@angular/google-maps';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
+import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/
     DriverViewRoutingModule,
     MaterialModule,
     CallerDetailsModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    AnimalSelectionModule
   ]
 })
 export class DriverViewModule { }

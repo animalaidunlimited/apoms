@@ -1,15 +1,18 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
-// import { Patient } from 'src/app/core/models/patients';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 interface DialogData {
   formGroup:FormGroup,
-  formBuilderArray: any
+  formBuilderArray: any,
+  patientsArray: Patient[]
 }
+
 
 @Component({
   selector: 'app-driver-action-dialog',
@@ -20,19 +23,22 @@ export class DriverActionDialogComponent implements OnInit {
 
 formGroup = this.data.formGroup;
 
+patientFormGroup = this.data.formGroup.get('patients');
+
   constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private driverView: DriverViewService) { }
+    private driverView: DriverViewService,
+    private dropDown: DropdownService) { }
 
   ngOnInit(): void {
-
-
 
   }
 
   async onSubmit(updatedRecord: DriverAssignments) {
 
     updatedRecord.isUpdated = true;
+
+    console.log(updatedRecord)
 
     let updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
     
@@ -42,10 +48,6 @@ formGroup = this.data.formGroup;
       this.checkAllPatientIds(updatedRecordData.patients, value));
 
     driverViewLocalStorageData.splice(index,1,updatedRecordData);
-
-    // let updatedStorageData = driverViewLocalStorageData.splice(index,1,updatedRecordData);
-
-    // console.log(updatedStorageData);
 
     localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
 

@@ -48,7 +48,7 @@
                         <p>Main Problem:</p>
                         <p *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction ==='StreetTreat'"> {{assignments.streetTreatMainProblem}} </p>
                         <div fxLayout='row wrap' fxLayoutAlign='start'>
-                            <p *ngIf="assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction ==='Release'"> {{assignments.patients[0].problems}} </p>
+                            <p *ngIf="assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction ==='Release'">({{assignments.patients[0].problemsString}}) </p>
                             <p class="countWrapper" *ngIf="(assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction ==='Release') && assignments.patients.length > 1">
                                 + {{assignments.patients.length - 1}} 
                             </p>

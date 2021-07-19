@@ -43,6 +43,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     @Input() recordForm!: FormGroup;
+    @Input() incomingPatientArray!: Patient[];
 
     @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -119,7 +120,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients = this.recordForm.get('patients') as FormArray;
         
 
-        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
+
+        console.log(this.recordForm.value);
+        console.log(this.emergencyCaseId);
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -127,7 +131,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         .subscribe(newValue => this.emergencyCaseId = newValue);
 
 
-        this.emergencyCaseId
+        this.emergencyCaseId || this.incomingPatientArray.length > 0
         ? this.loadPatientArray(this.emergencyCaseId)
         : this.initPatientArray();
 
@@ -194,6 +198,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
+
+        console.log(patient)
 
         const problems = this.fb.array([]);
         
@@ -303,15 +309,14 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         admissionTime?.updateValueAndValidity({ emitEvent: false });
     }
 
-    loadPatientArray(emergencyCaseId: number) {
- 
-        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        // tslint:disable-next-line: deprecation
-        .subscribe((patients: Patients) => {
-            
-            patients.patients.forEach(patient => {
-                // We get a 0 or 1 from the database, so need to convert to a boolean.
+    loadPatientArray(emergencyCaseId: number | undefined) {
+
+        console.log('load patient')
+
+        if(this.incomingPatientArray.length > 0) {
+
+            console.log(this.incomingPatientArray.length)
+            this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
@@ -320,22 +325,56 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 * animal-selection HTML tag will instantiate ng on init 
                 * Rstrict length of patients array to length of incoming patients 
                 */
-                if(this.patients.length < patients.patients.length )
+                if(this.patients.length < this.incomingPatientArray.length )
                 {
                     this.patients.push(newPatient);
                 }
-            });
+            })
+
+            console.log(this.patients);
 
             this.setChildOutcomeAsParentPatient(this.patients);
+
+
+
+        }
+        else if(emergencyCaseId) {
+
+            console.log('I should be called');
+            this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            // tslint:disable-next-line: deprecation
+            .subscribe((patients: Patients) => {
+                
+                patients.patients.forEach(patient => {
+                    // We get a 0 or 1 from the database, so need to convert to a boolean.
+                    patient.deleted = !!+patient.deleted;
+    
+                    const newPatient = this.populatePatient(true, patient);
+                    /* 
+                    * loadPatientArray running multiple times on ngOnInit 
+                    * animal-selection HTML tag will instantiate ng on init 
+                    * Rstrict length of patients array to length of incoming patients 
+                    */
+                    if(this.patients.length < patients.patients.length )
+                    {
+                        this.patients.push(newPatient);
+                    }
+                });
+    
+                this.setChildOutcomeAsParentPatient(this.patients);
+                
             
-        
-        },
-            err => console.error(err),
-        );
+            },
+                err => console.error(err),
+            );   
+        }
     }
 
 
     initPatientArray() {
+
+        console.log('initialise');
 
         this.patients.clear();
 

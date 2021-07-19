@@ -102,33 +102,22 @@ PatientsCTE AS
 DriverViewCTE AS
 (
 SELECT 
-				-- AAU.fn_GetRescueReleaseStStatusForDriverView(
--- 				rd.ReleaseDetailsId, 
--- 				rd.RequestedUser, 
--- 				rd.RequestedDate,  
---                 rd.PickupDate,
--- 				rd.BeginDate, 
--- 				rd.EndDate, 
--- 				ec.AmbulanceArrivalTime, 
--- 				ec.RescueTime, 
--- 				ec.AdmissionTime,
---                 p.PatientCallOutcomeId,
---                 tl.InTreatmentAreaId,
---                 std.StreetTreatCaseId,
--- 	            v.VisitBeginDate,
--- 	        	v.VisitEndDate
---             ) AS ActionStatus,
 			IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NULL),'Rescue', 
 				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL),'Release',
 				IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL),'StreetTreat',
 				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL),'STRelease',NULL)
 				))) AS AmbulanceAction,
             rd.ReleaseDetailsId,
+            rd.AssignedVehicleId AS ReleaseAssignedVehicleId,
+            rd.AmbulanceAssignmentTime AS ReleaseAmbulanceAssignmentTime,
             rd.RequestedDate,
             rd.ComplainerNotes,
+			ec.Comments,
             rd.Releaser1Id,
             std.StreetTreatCaseId,
             std.MainProblemId,
+            ec.AssignedVehicleId,
+            ec.AmbulanceAssignmentTime,
             ec.Admissiontime,
             mp.MainProblem,
             std.PriorityId,
@@ -139,15 +128,15 @@ SELECT
             p.PatientId,
             rd.BeginDate,
             rd.EndDate,
+			v.VisitId,
             v.VisitBeginDate,
             v.VisitEndDate,
-			--  IF(rd.ReleaseDetailsId IS NULL,ec.Rescuer1Id, rd.Releaser1Id) AS Staff1Id,
-			-- IF(rd.ReleaseDetailsId IS NULL, ec.Rescuer2Id, rd.Releaser2Id) AS Staff2Id,
             ec.AmbulanceArrivalTime,
             ec.RescueTime,            
 			ec.EmergencyCaseId,
             ec.EmergencyNumber,
             ec.EmergencyCodeId,
+            ec.DispatcherId,
             ecd.EmergencyCode,
             ec.CallDateTime,
             ec.Location,			
@@ -191,8 +180,17 @@ JSON_OBJECT("visitEndDate", DATE_Format(VisitEndDate,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("ambulanceArrivalTime", DATE_Format(AmbulanceArrivalTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("rescueTime", DATE_Format(RescueTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("emergencyCaseId", EmergencyCaseId),
+JSON_OBJECT("dispatcher", DispatcherId),
 
-JSON_OBJECT("admissionTime", AdmissionTime),
+JSON_OBJECT("rescueAmbulanceId", AssignedVehicleId),
+
+JSON_OBJECT("rescueAmbulanceAssignmentDate", DATE_Format(AmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
+
+JSON_OBJECT("releaseAmbulanceId", ReleaseAssignedVehicleId),
+
+JSON_OBJECT("releaseAmbulanceAssignmentDate", DATE_Format(ReleaseAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
+
+JSON_OBJECT("admissionTime", DATE_Format(AdmissionTime,"%Y-%m-%dT%H:%i:%s")),
 
 JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
 
@@ -202,7 +200,11 @@ JSON_OBJECT("emergencyCodeId", EmergencyCodeId),
 
 JSON_OBJECT("emergencyCode", EmergencyCode),
 
-JSON_OBJECT("callDateTime", CallDateTime),
+JSON_OBJECT("caseComments", Comments),
+
+JSON_OBJECT("visitId", VisitId),
+
+JSON_OBJECT("callDateTime", DATE_Format(CallDateTime,"%Y-%m-%dT%H:%i:%s")),
 
 JSON_OBJECT("location", Location),
 JSON_OBJECT("latLngLiteral", latLngLiteral),

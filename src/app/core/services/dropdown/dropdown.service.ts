@@ -39,6 +39,7 @@ export interface AnimalTypeResponse {
     providedIn: 'root',
 })
 export class DropdownService extends APIService {
+    [x: string]: any;
     endpoint = 'Dropdown';
 
 
@@ -445,15 +446,23 @@ export class DropdownService extends APIService {
     }
 
     getCallOutcomes(): Observable<CallOutcomeResponse[]> {
+        console.log('hi')
         const request = '/CallOutcomes';
-
+        
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
                 map((response: CallOutcomeResponse[]) => {
+                    console.log('inside dropdown');
                     return response.sort((a,b) => a.SortOrder - b.SortOrder);
                 }),
             );
         }
+        else {
+            this.callOutcomes$.subscribe(val=> {
+                console.log(val);
+            })
+        }
+       
         return this.callOutcomes$;
     }
 
@@ -738,5 +747,8 @@ return this.vehicleList$;
 
 }
 
+getValueFromDynamicFunctionName(functionName: any) {
+    return this[functionName]();
+}
 
 }

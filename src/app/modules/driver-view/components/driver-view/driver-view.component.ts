@@ -8,6 +8,7 @@ import { exhaustMap, flatMap, last, map, mergeMap, switchMap } from 'rxjs/operat
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { User } from 'src/app/core/models/user';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -25,6 +26,7 @@ export class DriverViewComponent implements OnInit {
 
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
+    private dropDown: DropdownService,
     private router: Router) { }
 
   ngOnInit(): void {
@@ -35,6 +37,10 @@ export class DriverViewComponent implements OnInit {
     });
 
     this.loadDriverDetails();
+
+    this.dropDown.getCallOutcomes();
+
+    this.dropDown.getTreatmentAreas();
   }
 
   loadDriverDetails() {
@@ -49,6 +55,7 @@ export class DriverViewComponent implements OnInit {
     });
 
     this.driverView.getDriverViewQuestions();
+
 
 
   }
