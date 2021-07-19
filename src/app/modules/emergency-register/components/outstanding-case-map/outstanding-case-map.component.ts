@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Inject, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Inject, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Optional } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -9,7 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { ActiveVehicleLocation, LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -34,7 +34,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
   locationList$: BehaviorSubject<LocationPathSegment[]>;
-  //polyLineOptions: google.maps.PolylineOptions = {};
+  // polyLineOptions: google.maps.PolylineOptions = {};
 
   options: google.maps.MapOptions = {};
 
@@ -50,7 +50,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     private locationService: LocationService,
     private outstandingCases: OutstandingCaseService,
     public cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public vehicleId: number) {
+    @Optional() @Inject(MAT_DIALOG_DATA) public vehicleId: number) {
 
       this.outstandingCases$ = this.outstandingCases.outstandingCases$;
       this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
@@ -75,12 +75,11 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   
     if(this.vehicleId)
-    {
+    { 
       this.ambulanceLocations$ = this.ambulanceLocations$.pipe(
         map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId))
       );
 
-      
     }
    
 
@@ -119,13 +118,13 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, actions: ActionGroup[]){
+  openAmbulanceInfoWindow(marker: MapMarker, actions?: ActionGroup[]){
 
     let searchQuery = ' ec.EmergencyCaseId IN (';
 
     let assignments:OutstandingAssignment[] = [];
 
-    actions.forEach(action => {
+    actions?.forEach(action => {
 
       action.ambulanceAssignment.forEach(ambulanceAssignments => {
         assignments = assignments.concat(ambulanceAssignments);
