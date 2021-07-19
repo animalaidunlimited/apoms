@@ -25,7 +25,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   @ViewChild(GoogleMap, { static: false }) googlemap!: GoogleMap;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
+  ambulanceLocations$!:Observable<any[]>;
 
   center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
@@ -73,7 +73,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
       }
     ]};
 
-  
+  console.log(this.vehicleId);
     if(this.vehicleId)
     { 
       this.ambulanceLocations$ = this.ambulanceLocations$.pipe(
@@ -122,31 +122,36 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
     let searchQuery = ' ec.EmergencyCaseId IN (';
 
-    let assignments:OutstandingAssignment[] = [];
+    if(!this.vehicleId){
+      let assignments:OutstandingAssignment[] = [];
 
-    actions?.forEach(action => {
+      actions?.forEach(action => {
 
-      action.ambulanceAssignment.forEach(ambulanceAssignments => {
-        assignments = assignments.concat(ambulanceAssignments);
+        action.ambulanceAssignment.forEach(ambulanceAssignments => {
+          assignments = assignments.concat(ambulanceAssignments);
+        });
       });
-    });
 
-    const emergencyNumbers = assignments.map(rescue => {
+      const emergencyNumbers = assignments.map(rescue => {
 
-      return rescue.emergencyCaseId;
+        return rescue.emergencyCaseId;
 
-    }).join(',');
+      }).join(',');
 
-    searchQuery += emergencyNumbers + ') ';
+      searchQuery += emergencyNumbers + ') ';
 
-    this.caseService.searchCases(searchQuery)
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(result => {
+      this.caseService.searchCases(searchQuery)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result => {
 
-      this.infoContent.next(result);
+        this.infoContent.next(result);
+        this.infoWindow.open(marker);
+      });
+    }else{
       this.infoWindow.open(marker);
-    });
-
+    }
+   
+ 
   }
 
   openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {
