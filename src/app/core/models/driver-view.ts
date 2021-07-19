@@ -25,16 +25,6 @@ export interface VehicleStatus {
   VehicleStatus: string;
 }
 
-// export interface Patient {
-//   problems: string;
-//   patientId: number;
-//   tagNumber: string;
-//   animalType: string;
-//   mediaCount: number;
-//   largeAnimal: number;
-//   PatientCallOutcomeId?: number;
-// }
-
 export interface CallerDetails {
   callerId: number;
   callerName: string;
@@ -86,6 +76,12 @@ export interface DriverAssignments {
   releaseAmbulanceId: number;
   releaseAmbulanceAssignmentDate: string;
   visitId: number;
+  visitTypeId: number,
+  visitDate: string;
+  visitStatusId: number;
+  visitAdminNotes: string;
+  visitOperatorNotes: string;
+  visitDay: number
 }
 
 

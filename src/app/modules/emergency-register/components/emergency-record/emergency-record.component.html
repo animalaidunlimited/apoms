@@ -11,7 +11,7 @@
 
     <location-details [recordForm]="recordForm"></location-details>
 
-    <animal-selection (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
+    <animal-selection [incomingPatientArray] = '[]' (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
 
     <fieldset class="form-sub-group">
 
@@ -23,7 +23,7 @@
 
     </fieldset>
 
-    <animal-selection [outcome]="true" [recordForm]="recordForm"></animal-selection>
+    <animal-selection [incomingPatientArray] = '[]' [outcome]="true" [recordForm]="recordForm"></animal-selection>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
 

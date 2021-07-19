@@ -6,14 +6,34 @@
 
     <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
 
+       
+
         <div *ngFor="let control of data.formBuilderArray">
     
-            <mat-form-field appearance="fill">
-                <mat-label>{{control.subAction}} Time</mat-label>
-                <input type="{{control.type}}" [formControlName]="control.formControlName" matInput>
-              </mat-form-field>
+           <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
+                <mat-form-field *ngIf="control.type !== 'select'" appearance="fill">
+                    <mat-label>{{control.label}}</mat-label>
+                    <input type="{{control.type}}" [formControlName]="control.formControlName" matInput>
+                </mat-form-field>
+
+                <!-- <mat-form-field *ngIf="control.type === 'select'" appearance="fill">
+                    <mat-label>{{control.label}}</mat-label>
+                    <mat-select [formControlName]="control.formControlName">
+                        <mat-option>N/A</mat-option>
+                        <mat-option *ngFor="let val of control.dataSource | async" [value]="val[control.idName]">
+                            {{val[control.valueName]}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+           </div>
+
+          
     
         </div>
+
+        <animal-selection [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+
+        <animal-selection [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
         <div mat-dialog-action>
 
