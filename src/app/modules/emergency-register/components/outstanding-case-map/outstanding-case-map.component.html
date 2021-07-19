@@ -63,9 +63,9 @@
                 </div>
             </ng-container>
                         <!-- Add the ambulance locations -->
-                        <!--"-->
+                        
 
-            <!-- <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
+            <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
                 <map-marker
                 (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions  )"
                 #ambulanceMarker="mapMarker"
@@ -75,7 +75,7 @@
                 >
                 </map-marker>
 
-            </div> -->
+            </div>
 
 
 
@@ -83,7 +83,7 @@
 
                 <div class="ambulance-window" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-                    <emergency-register-ambulance ></emergency-register-ambulance>
+                    <emergency-register-ambulance [vehicleId]="vehicleId"></emergency-register-ambulance>
 
                     <!-- <div *ngFor="let patient of infoContent | async">
 

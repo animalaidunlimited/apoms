@@ -88,7 +88,7 @@
                 <div fxFlex="25">
                   <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
                 </div>
-                <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
+                <div fxFlex="none">{{outstandingCase.callDateTime }}</div>
               </mat-expansion-panel-header>
               <div fxLayout="column" fxLayoutAlign="space-around start">
                 <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->

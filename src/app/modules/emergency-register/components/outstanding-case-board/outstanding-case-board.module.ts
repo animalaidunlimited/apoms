@@ -10,7 +10,7 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 import { MatChipsModule } from '@angular/material/chips';
 import { ChipListType } from '../../pipes/chip-list-type';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
-
+import { EmergencyRegisterAmbulanceModule } from './../emergency-register-ambulance/emergency-register-ambulance.module';
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,
@@ -18,13 +18,15 @@ import { SharedPipesModule } from 'src/app/shared-pipes.module';
         ChipListType
     ],
     imports: [
-        CommonModule,
+
+CommonModule,
         MaterialModule,
         FlexLayoutModule,
         GoogleMapsModule,
         SearchResultCardModule,
         SharedPipesModule,
-        MatChipsModule
+        MatChipsModule,
+        EmergencyRegisterAmbulanceModule
     ],
     providers:[
 

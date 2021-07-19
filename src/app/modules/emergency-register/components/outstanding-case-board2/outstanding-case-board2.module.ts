@@ -7,21 +7,22 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
-import { EmergencyRegisterAmbulanceComponent } from '../emergency-register-ambulance/emergency-register-ambulance.component';
-
+import { EmergencyRegisterAmbulanceModule } from './../emergency-register-ambulance/emergency-register-ambulance.module';
 @NgModule({
     declarations: [
-        EmergencyRegisterAmbulanceComponent,
+
         OutstandingCaseBoard2Component
     ],
     imports: [
-        CommonModule,
+
+    CommonModule,
         MaterialModule,
         FlexLayoutModule,
         GoogleMapsModule,
         SearchResultCardModule,
         SharedPipesModule,
-        MatChipsModule
+        MatChipsModule,
+        EmergencyRegisterAmbulanceModule
     ],
     providers:[
 
