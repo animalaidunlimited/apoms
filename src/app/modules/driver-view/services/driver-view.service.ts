@@ -34,14 +34,12 @@ export class DriverViewService extends APIService {
           this.saveDriverViewDataFromLocalStorage(item);
           console.log(this.updateAssignmentCount);
         }
-       
+
       });
 
       if(connection && this.updateAssignmentCount > 0) {
         this.showSaveResponseStatus(this.driverDataSaveErrorResponse)
       }
-
-      
 
     });
 
@@ -58,7 +56,7 @@ export class DriverViewService extends APIService {
         response.forEach((data: DriverAssignments)=> {
           this.getAssignmentStatus(data);
         })
-        
+
         localStorage.setItem('driverViewData', JSON.stringify(response));
 
         this.driverViewDetails.next(JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))));
@@ -81,7 +79,7 @@ export class DriverViewService extends APIService {
   }
 
   public getDriverViewQuestions() {
-    
+
     const request = '?getDriverViewQuestions';
 
     return this.getObservable(request).subscribe(response=> {
@@ -103,11 +101,11 @@ export class DriverViewService extends APIService {
 
      driverViewData.patients.forEach(patient=> {
       if(
-        (!driverViewData.ambulanceArrivalTime 
-          && !driverViewData.rescueTime 
+        (!driverViewData.ambulanceArrivalTime
+          && !driverViewData.rescueTime
           && !driverViewData.releaseDetailsId
           && !driverViewData.streetTreatCaseId
-        ) || 
+        ) ||
         (
           (driverViewData.ambulanceArrivalTime
           && driverViewData.rescueTime
@@ -119,17 +117,17 @@ export class DriverViewService extends APIService {
           && !driverViewData.releaseBeginDate
           && !driverViewData.releaseEndDate
           && !driverViewData.streetTreatCaseId)
-        ) || 
+        ) ||
         (
-          driverViewData.streetTreatCaseId 
+          driverViewData.streetTreatCaseId
           && !driverViewData.visitBeginDate
 		      && !driverViewData.visitEndDate
         )
-      ) 
+      )
       {
         driverViewData.actionStatus = 'Assigned';
       }
-      
+
       else if(
         (
           driverViewData.ambulanceArrivalTime
@@ -147,14 +145,14 @@ export class DriverViewService extends APIService {
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
           !driverViewData.releaseEndDate &&
-          !driverViewData.streetTreatCaseId 
-        ) || 
+          !driverViewData.streetTreatCaseId
+        ) ||
         (
           driverViewData.streetTreatCaseId &&
           driverViewData.visitBeginDate &&
-          !driverViewData.visitEndDate 
+          !driverViewData.visitEndDate
         )
-      ) 
+      )
       {
         driverViewData.actionStatus = 'In Progress';
       }
@@ -184,9 +182,9 @@ export class DriverViewService extends APIService {
         (
           driverViewData.streetTreatCaseId &&
           driverViewData.visitBeginDate &&
-          driverViewData.visitEndDate 
+          driverViewData.visitEndDate
         )
-      ) 
+      )
       {
 
         driverViewData.actionStatus = 'Complete';
@@ -221,7 +219,7 @@ export class DriverViewService extends APIService {
       else {
         console.log('hi')
       }
-    }) 
+    })
 
     return driverViewData;
 
@@ -237,13 +235,13 @@ export class DriverViewService extends APIService {
     response.then((val:SuccessOnlyResponse)=> {
       console.log(val);
      if(val.success===1) {
-      
+
        let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
 
        let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
-   
+
        localData[index].isUpdated = false;
-   
+
        localStorage.setItem('driverViewData', JSON.stringify(localData));
      }
 
@@ -251,7 +249,7 @@ export class DriverViewService extends APIService {
       this.driverDataSaveErrorResponse.push(val);
      }
     });
-  
+
   }
 
 
