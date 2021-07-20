@@ -2255,6 +2255,7 @@ END IF;
 SELECT prm_VehicleShiftId AS vehicleShiftId, vSuccess AS 'success';
 
 END$$
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase !!
@@ -2342,6 +2343,22 @@ INSERT INTO AAU.StreetTreatCase(
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetUserPermissionsByUsername !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetUserPermissionsByUsername(IN prm_Username VARCHAR(45))
+BEGIN
+
+SELECT PermissionArray FROM AAU.User
+WHERE Username = prm_Username;
+
 END$$
 
 DELIMITER ;
