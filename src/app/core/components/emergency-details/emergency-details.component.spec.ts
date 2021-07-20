@@ -120,7 +120,7 @@ describe('EmergencyDetailsComponent', () => {
 
         component.recordForm.get('emergencyDetails.code')?.setValue(null);
 
-        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
+        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(1);
 
         rescueDetails.updateValidators();
 
@@ -133,7 +133,7 @@ describe('EmergencyDetailsComponent', () => {
         component.recordForm.get('emergencyDetails.code')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
         component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
 
-        component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
+        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(1);
 
         rescueDetails.updateValidators();
 
