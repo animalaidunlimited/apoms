@@ -1,0 +1,126 @@
+<div fxLayout="column">
+
+  <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
+    <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
+      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" fxL>
+
+        <div fxLayout="row">
+          <div class="vehicleImage">
+            <img [src]="vehicleDetail.vehicleImage" />
+          </div>
+          <div class="vehicleDescription">
+            <div class="vehicleNumber">
+              <p>{{vehicleDetail.vehicleNumber}}</p>
+              <div class="licensePlate" fxLayout="row">
+                <div class="licensePlateBadge">
+                  <div class="silver"></div>
+                  <span>IND</span>
+                </div>
+                <div class="vehicleRegistrationNumber">
+                  {{vehicleDetail.vehicleRegistrationNumber}}
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="ambulanceCase.vehicleStaff as vehicleStaff">
+              <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
+                  <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
+                    <span *ngIf="vehicleStaff.initials" class="initials">{{ vehicleStaff.initials }}</span> {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
+                  </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div [fxLayout]="inMap ? 'row-reverse' : 'column'" fxLayout.lt-sm="row" class="vehicleType">
+          <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+            <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
+            <p>{{vehicle.VehicleType}}</p>
+          </div>
+          <div fxFlex fxLayout="row">
+            <button (click)="openMap($event)" mat-mini-fab>
+              <mat-icon>map</mat-icon>
+            </button>
+            <p>View in map</p>
+          </div>
+        </div>
+
+        <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
+          
+          <div *ngIf="currentCapacity.capacity as capacity">
+            <div fxLayout="row" fxLayoutAlign="end" >
+              <h3>Capacity</h3>
+              <h3>Current</h3>
+            </div>
+            <div class="capacityTitle">Small <span>{{vehicleDetail.smallAnimalCapacity}}</span> <span>{{capacity.small}}</span></div>
+            <div class="capacityTitle">Large <span>{{vehicleDetail.largeAnimalCapacity}}</span> <span>{{capacity.large}}</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      
+    </div>
+  </ng-container>
+
+  <div fxLayout.lt-sm="column" *ngIf="!inMap">
+    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
+
+      <h2>{{getActionStatus(statusId)}}</h2>
+
+      <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
+        <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
+          <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
+            <mat-expansion-panel [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}"
+              hideToggle>
+              <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
+                                        'border-green' : outstandingCase.emergencyCodeId == 2,
+                                        'border-yellow' : outstandingCase.emergencyCodeId == 3}">
+                <div fxFlex="15">
+                  <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+                </div>
+                <div fxFlex="40" style="text-align: center;">
+                  {{outstandingCase.emergencyNumber}}
+                  <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
+                    *ngFor="let patient of outstandingCase.patients">
+                    ({{patient.animalType}})
+                  </div>
+                </div>
+                <div fxFlex="25">
+                  <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
+                </div>
+                <div fxFlex="none">{{outstandingCase.callDateTime }}</div>
+              </mat-expansion-panel-header>
+              <div fxLayout="column" fxLayoutAlign="space-around start">
+                <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
+                <!--<mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>-->
+                <div *ngFor="let callerDetails of outstandingCase.callerDetails">
+                  <div fxLayout="row" fxLayoutAlign="start end">
+                    <div class="telephone-dash-container">
+                      <svg height="11" width="25">
+                        <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                        Sorry, your browser does not support inline SVG.
+                      </svg>
+                    </div>
+                    <div class="name">{{callerDetails.callerName}}</div>
+                    <div class="telephone">{{callerDetails.callerNumber}}</div>
+                  </div>
+                </div>
+                <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap"
+                  fxLayoutAlign="space-around start">
+                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">
+                    add_photo_alternate</mat-icon>
+                   <div class="media-count">({{patient.mediaCount}})</div>
+                  <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+                  </div>
+                </div>
+                <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+                <div class="animal-location">{{outstandingCase.location}}</div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+</div>

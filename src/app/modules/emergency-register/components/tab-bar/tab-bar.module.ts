@@ -11,6 +11,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
 import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
 import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
+import { OutstandingCaseBoard2Module } from '../outstanding-case-board2/outstanding-case-board2.module';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { ReleaseAssignModule } from 'src/app/core/components/release-assign/rele
         FlexLayoutModule,
         EmergencyCaseOutcomeModule,
         ReleaseAssignModule,
-        OutstandingCaseBoardModule
+        OutstandingCaseBoardModule,
+        OutstandingCaseBoard2Module
     ],
     exports: [TabBarComponent]
 })

@@ -19,12 +19,12 @@ export class LocationService extends APIService {
   locationList$!: BehaviorSubject<LocationPathSegment[]>
   logLocation = new BehaviorSubject<boolean>(false);
 
-  //TODO - Allow this to be changed in settings.
+  // TODO - Allow this to be changed in settings.
   speedColours = [
-    {maxSpeed: 7, colour: "gray"},
-    {maxSpeed: 30, colour: "green"},
-    {maxSpeed: 40, colour: "yellow"},
-    {maxSpeed: 999, colour: "red"}
+    {maxSpeed: 7, colour: 'gray'},
+    {maxSpeed: 30, colour: 'green'},
+    {maxSpeed: 40, colour: 'yellow'},
+    {maxSpeed: 999, colour: 'red'}
   ];
 
   emptyOptions: PolylineOptions[] = [{
@@ -46,8 +46,8 @@ export class LocationService extends APIService {
     this.locationList$ = new BehaviorSubject<LocationPathSegment[]>(this.emptyLocationList);
 
 
-    //Uncomment the below in order to start sending location updates
-    //this.getActiveVehicleLocations();
+    // Uncomment the below in order to start sending location updates
+    // this.getActiveVehicleLocations();
 
     this.logLocation.subscribe(logLocation => {
 
@@ -55,8 +55,8 @@ export class LocationService extends APIService {
         this.locationLogInterval = (setInterval(() => {this.postLocation();}, 10000));
       }
       else if(this.locationLogInterval) {
-        clearInterval(this.locationLogInterval)
-      };
+        clearInterval(this.locationLogInterval);
+      }
 
     });
 
@@ -64,15 +64,17 @@ export class LocationService extends APIService {
 
   receiveVehicleLocation(locationMessage: ActiveVehicleLocation){
 
-    let currentLocations = this.ambulanceLocations$.value;
+    const currentLocations = this.ambulanceLocations$.value;
 
     const updated = currentLocations.map(vehicle => {
 
       if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleDetails.vehicleId){
         vehicle.vehicleLocation.latLng.lat = locationMessage.vehicleLocation.latLng.lat;
         vehicle.vehicleLocation.latLng.lng = locationMessage.vehicleLocation.latLng.lat;
+        vehicle.vehicleStaff = locationMessage.vehicleStaff;
       }
 
+      
       return vehicle;
 
     });
@@ -107,27 +109,24 @@ export class LocationService extends APIService {
       });
     } else {
       this.logLocation.next(false);
-      alert("Geolocation is not supported by this browser.");
+      alert('Geolocation is not supported by this browser.');
     }
 
   }
 
-  //toggleLogLocation(){
+  // toggleLogLocation(){
 
   //    while(let i = 0; i < 20; i++){
   //      setTimeout(() => this.getLocation(i / 100),i * 5000);
   //    }
 
-  //}
+  // }
 
   getActiveVehicleLocations() : void {
 
     const request = '/ActiveVehicleLocations';
 
-    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) =>
-    {
-        this.ambulanceLocations$.next(response)}
-    );
+    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) => this.ambulanceLocations$.next(response));
 
   }
 
@@ -156,7 +155,7 @@ export class LocationService extends APIService {
 
     this.getVehicleLocation(vehicleId).subscribe(locationHistory => {
 
-      let currentHistory = this.locationList$.value;
+      const currentHistory = this.locationList$.value;
 
       const lines = this.generatePolylines(vehicleId, locationHistory.locationHistory)
 
@@ -164,7 +163,7 @@ export class LocationService extends APIService {
 
       this.locationList$.next(currentHistory);
 
-      })
+    });
 
   }
 
@@ -172,7 +171,7 @@ export class LocationService extends APIService {
 
     const currentHistory = this.locationList$.value;
 
-    const newHistoryList = currentHistory.filter(list => list.vehicleId !== vehicleId)
+    const newHistoryList = currentHistory.filter(list => list.vehicleId !== vehicleId);
 
     this.locationList$.next(newHistoryList);
 
@@ -180,14 +179,14 @@ export class LocationService extends APIService {
 
   generatePolylines(vehicleId: number, locations: VehicleLocation[]) : LocationPathSegment{
 
-    let returnArray:LocationPathSegment = {
+    const returnArray:LocationPathSegment = {
       vehicleId,
       options: []
     };
 
     for(let i = 0; i < locations.length - 1; i++){
 
-      let curr:PolylineOptions = {
+      const curr:PolylineOptions = {
         strokeColor: this.getColourForSpeed(locations[i].speed),
         path: [locations[i].latLng, locations[i + 1].latLng]
       }

@@ -1,0 +1,65 @@
+<div cdkDropListGroup fxLayout="row" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
+  <div class="swimlane">
+    <h2 *ngIf="loaded" style="text-align: center;">Received</h2>
+    <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
+                  'border-green' : outstandingCase.emergencyCodeId == 2,
+                  'border-yellow' : outstandingCase.emergencyCodeId == 3}">
+          <div fxFlex="15">
+            <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+          </div>
+          <div fxFlex="40" style="text-align: center;">
+            {{outstandingCase.emergencyNumber}}
+            <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
+              *ngFor="let patient of outstandingCase.patients">
+              ({{patient.animalType}})
+            </div>
+          </div>
+
+          <div fxFlex="25">
+            <mat-icon aria-label="Edit record">create</mat-icon>
+          </div>
+          <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
+        </mat-expansion-panel-header>
+        <div fxLayout="column" fxLayoutAlign="space-around start">
+          <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
+          <!--<mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>-->
+          <div *ngFor="let callerDetails of outstandingCase.callerDetails">
+            <div fxLayout="row" fxLayoutAlign="start end">
+              <div class="telephone-dash-container">
+                <svg height="11" width="25">
+                  <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                  Sorry, your browser does not support inline SVG.
+                </svg>
+              </div>
+              <div class="name">{{callerDetails.callerName}}</div>
+              <div class="telephone">{{callerDetails.callerNumber}}</div>
+            </div>
+          </div>
+          <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap"
+            fxLayoutAlign="space-around start">
+            <mat-icon class="imageIcon" (click)="openMediaDialog({patientId:patient.patientId, tagNumber:patient.tagNumber})">
+              add_photo_alternate</mat-icon>
+             <div class="media-count">({{patient.mediaCount}})</div>
+            <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+            </div>
+          </div>
+          <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+          <div class="animal-location">{{outstandingCase.location}}</div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </div>
+  <div fxFlex="1 1 auto" ngStyle.gt-sm="margin-top:4em;">
+    <div class="ambulanceAssignedCases" *ngFor="let vehicleId of vehicleId$ | async">
+
+      <ng-container *ngIf="vehicleId">
+
+        <outstanding-case-board-ambulance (openCaseEmitter)="openCase($event)" (rescueEdit)="openRescueEdit($event)" (mediaDialog)="openMediaDialog($event)"   [vehicleId]="vehicleId"></outstanding-case-board-ambulance>
+
+      </ng-container>
+
+    </div>
+  </div>
+</div>
