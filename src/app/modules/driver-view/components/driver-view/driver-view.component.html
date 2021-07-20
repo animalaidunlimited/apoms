@@ -7,33 +7,33 @@
             <input matInput type="datetime-local" formControlName="assignmentDate" name = "AssignmentDate">
         </mat-form-field>
    </div>
-    
+
     <div *ngFor= "let status of states | async">
         <app-driver-view-assignment [actionStatus] = "status" [showCompleteFlag]="showComplete">
-        
+
         </app-driver-view-assignment>
     </div>
 
-    <mat-toolbar-row *ngIf="!showComplete" class="horizontalTab"
- >
+    <mat-toolbar-row *ngIf="!showComplete" class="horizontalTab" fxLayout="row" flxLayoutAlign="center space-evenly">
+
+        <!--<div fxLayout='column' class="iconDiv">
+            <mat-icon aria-label="Complete" color="primary" style="font-size: 30px;">swap_horizontal_circle</mat-icon>
+            <p class="iconText">Log milage</p>
+        </div>-->
 
         <div fxLayout='column' class="iconDiv">
-            <mat-icon aria-label="Complete" style="font-size: 30px;">swap_horizontal_circle</mat-icon>
-            <p class="iconText">Log milage</p>
-        </div>
-        <div fxLayout='column' class="iconDiv">
-            <mat-icon aria-label="Complete" style="font-size: 28px;">headset_mic</mat-icon>
+            <mat-icon aria-label="Complete" color="primary" style="font-size: 28px;">headset_mic</mat-icon>
             <p class="iconText">Call desk</p>
         </div>
         <div fxLayout='column' class="iconDiv">
-            <mat-icon aria-label="Complete" style="font-size: 30px;">location_on</mat-icon>
+            <mat-icon aria-label="Complete" color="primary" style="font-size: 30px;">location_on</mat-icon>
             <p class="iconText">Map</p>
         </div>
         <div fxLayout='column' class="iconDiv" (click)='showCompleteList()'>
-            <mat-icon aria-label="Complete" style="font-size: 30px;">check_circle</mat-icon>
+            <mat-icon aria-label="Complete" color="primary" style="font-size: 30px;">check_circle</mat-icon>
             <p class="iconText">Complete</p>
         </div>
-      
+
     </mat-toolbar-row>
 
     <mat-toolbar-row *ngIf="showComplete" class="horizontalTab">
