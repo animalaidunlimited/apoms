@@ -1,11 +1,11 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.p_GetVehiclesListDropdown!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleListDropdown!!
 
 -- CALL AAU.p_GetVehiclesListDropdown('Jim');
 
 DELIMITER $$
-CREATE PROCEDURE AAU.p_GetVehiclesListDropdown(IN prm_Username VARCHAR(65))
+CREATE PROCEDURE AAU.sp_GetVehicleListDropdown(IN prm_Username VARCHAR(65))
 BEGIN
 
 /* 
@@ -28,14 +28,14 @@ WHERE UserName = prm_Username LIMIT 1;
 SELECT
 v.VehicleId AS vehicleId,
 v.VehicleRegistrationNumber AS vehicleRegistrationNumber,
-CONCAT(v.VehicleNumber, vsu.VehicleStaff) AS vehicleNumber
+CONCAT(v.VehicleNumber, IFNULL(vsu.VehicleStaff,' UNK')) AS vehicleNumber
 FROM AAU.Vehicle v
 LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId AND
-CURDATE() >= vs.StartDate AND
-CURDATE() <= IFNULL(vs.EndDate, CURDATE())
+NOW() >= vs.StartDate AND
+NOW() <= IFNULL(vs.EndDate, NOW())
 LEFT JOIN
 (
-SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(u.Initials),")") AS VehicleStaff
+SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(IFNULL(u.Initials,"UNK")),")") AS VehicleStaff
 FROM AAU.VehicleShiftUser vsu
 LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
 GROUP BY VehicleShiftId
@@ -43,3 +43,4 @@ GROUP BY VehicleShiftId
 WHERE v.OrganisationId = vOrganisationId;
 
 END$$
+

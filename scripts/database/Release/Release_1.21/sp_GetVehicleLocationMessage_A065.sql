@@ -40,8 +40,8 @@ FROM AAU.VehicleShift vs
 LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
 WHERE vs.VehicleId = prm_VehicleId
-	AND CURDATE() >= vs.StartDate
-	AND CURDATE() <= IFNULL(vs.EndDate, CURDATE())
+	AND NOW() >= vs.StartDate
+	AND NOW() <= IFNULL(vs.EndDate, CURDATE())
 GROUP BY vs.VehicleId
 )
 

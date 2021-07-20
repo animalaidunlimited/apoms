@@ -69,6 +69,8 @@ prm_AltitudeAccuracy);
 
 SELECT 1 INTO vSuccess;
 
+END IF;
+
 CALL AAU.sp_GetVehicleLocationMessage(
 										prm_VehicleId,
 										prm_Timestamp,
@@ -79,8 +81,6 @@ CALL AAU.sp_GetVehicleLocationMessage(
 										prm_Accuracy,
 										prm_Altitude,
 										prm_AltitudeAccuracy);
-
-END IF;
 
 SELECT vSuccess AS `success`, prm_SocketEndPoint AS `socketEndPoint`;
 

@@ -1464,12 +1464,12 @@ LEFT JOIN UserCTE u ON u.VehicleShiftId = s.VehicleShiftId;
 END$$
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.p_GetVehiclesListDropdown!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleListDropdown!!
 
--- CALL AAU.p_GetVehiclesListDropdown('Jim');
+-- CALL AAU.sp_GetVehicleListDropdown('Jim');
 
 DELIMITER $$
-CREATE PROCEDURE AAU.p_GetVehiclesListDropdown(IN prm_Username VARCHAR(65))
+CREATE PROCEDURE AAU.sp_GetVehicleListDropdown(IN prm_Username VARCHAR(65))
 BEGIN
 
 /* 
@@ -1495,8 +1495,8 @@ v.VehicleRegistrationNumber AS vehicleRegistrationNumber,
 CONCAT(v.VehicleNumber, vsu.VehicleStaff) AS vehicleNumber
 FROM AAU.Vehicle v
 LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId AND
-CURDATE() >= vs.StartDate AND
-CURDATE() <= IFNULL(vs.EndDate, CURDATE())
+NOW() >= vs.StartDate AND
+NOW() <= IFNULL(vs.EndDate, NOW())
 LEFT JOIN
 (
 SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(u.Initials),")") AS VehicleStaff
