@@ -1,7 +1,9 @@
 DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByJobTypeId !!
 
 DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_GetUsersByJobTypeId(IN prm_Username VARCHAR(45), IN prm_JobTypeId INT)
 BEGIN
 
@@ -26,4 +28,3 @@ AND u.isDeleted = 0;
 END$$
 
 DELIMITER ;
-

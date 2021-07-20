@@ -86,4 +86,5 @@ INSERT INTO AAU.StreetTreatCase(
 	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
 END$$
+
 DELIMITER ;

@@ -55,4 +55,5 @@ SELECT prm_VehicleId AS vehicleId, vSuccess AS success;
     
 
 END$$
+
 DELIMITER ;

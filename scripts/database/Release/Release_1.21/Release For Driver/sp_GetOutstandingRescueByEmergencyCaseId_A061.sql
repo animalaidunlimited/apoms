@@ -150,4 +150,5 @@ LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
 LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id;
 
 END$$
+
 DELIMITER ;

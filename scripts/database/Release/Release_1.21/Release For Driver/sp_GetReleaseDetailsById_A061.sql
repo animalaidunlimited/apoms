@@ -60,4 +60,5 @@ AS Result
 ELSE
 	SELECT null AS Result;
 END IF;
+
 END $$

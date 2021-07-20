@@ -60,4 +60,5 @@ SELECT vUpdateSuccess AS updateSuccess, vSocketEndPoint AS socketEndPoint;
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, vPatientId);
 
 END$$
+
 DELIMITER ;
