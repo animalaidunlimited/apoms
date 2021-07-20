@@ -55,4 +55,5 @@ AND vl.OrganisationId = vOrganisationId
 ) vehicleDetails;
 
 END$$
+
 DELIMITER ;

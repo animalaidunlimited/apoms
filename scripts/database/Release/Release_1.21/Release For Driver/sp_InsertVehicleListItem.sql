@@ -70,4 +70,5 @@ END IF;
 SELECT vVehicleId AS vehicleId, vSuccess AS success;
 	
 END$$
+
 DELIMITER ;

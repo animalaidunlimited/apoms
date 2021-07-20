@@ -234,4 +234,5 @@ Patients))AS DriverViewData
 FROM DriverViewCTE;
 
 END$$
+
 DELIMITER ;

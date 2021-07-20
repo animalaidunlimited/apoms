@@ -111,4 +111,5 @@ END IF;
 CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL);
 
 END$$
+
 DELIMITER ;

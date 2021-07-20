@@ -67,4 +67,3 @@ SELECT prm_VehicleShiftId AS vehicleShiftId, vSuccess AS 'success';
 		
 
 END $$
-

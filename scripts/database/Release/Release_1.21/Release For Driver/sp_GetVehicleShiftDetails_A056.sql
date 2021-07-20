@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleShiftDetails!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleShiftDetails !!
 
 DELIMITER $$
 

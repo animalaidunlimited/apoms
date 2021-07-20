@@ -1,6 +1,6 @@
-DELIMITER!!
+DELIMITER !!
 
-DROP FUNCTION IF EXISTS AAU.fn_GetRescueReleaseStStatusForDriverView!!
+DROP FUNCTION IF EXISTS AAU.fn_GetRescueReleaseStStatusForDriverView !!
 
 DELIMITER $$
 
@@ -137,4 +137,5 @@ END IF;
 
 RETURN (AssignmentStatus);
 END$$
+
 DELIMITER ;

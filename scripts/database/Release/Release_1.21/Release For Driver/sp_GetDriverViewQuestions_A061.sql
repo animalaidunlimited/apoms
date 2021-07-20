@@ -30,4 +30,5 @@ FROM AAU.DriverViewQuestions;
 
 
 END$$
+
 DELIMITER ;

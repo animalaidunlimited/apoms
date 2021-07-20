@@ -150,4 +150,5 @@ END IF;
 SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;  
 
 END$$
+
 DELIMITER ;
