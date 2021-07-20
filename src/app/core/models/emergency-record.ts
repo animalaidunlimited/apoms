@@ -24,7 +24,7 @@ export interface CallerDetails {
 }
 
 export interface CallOutcome {
-    callOutcome: CallOutcomeResponse;
+    CallOutcome: CallOutcomeResponse;
     sameAsNumber: number;
 }
 
