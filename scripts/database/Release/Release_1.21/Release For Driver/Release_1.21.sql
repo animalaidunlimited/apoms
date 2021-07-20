@@ -440,7 +440,7 @@ PatientsCTE AS
 						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
 						JSON_OBJECT("CallOutcome",co.CallOutcome))
 					),
-					JSON_OBJECT("sameAsNumber",p.SameAsNumber)
+					JSON_OBJECT("sameAsNumber",p.SameAsEmergencyCaseId)
                 )
             ),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),

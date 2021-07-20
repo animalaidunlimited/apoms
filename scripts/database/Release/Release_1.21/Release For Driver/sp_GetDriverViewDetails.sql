@@ -1,10 +1,4 @@
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetDriverViewDetails`(IN prm_Date DATETIME)
 BEGIN
 
 /*
@@ -80,7 +74,7 @@ PatientsCTE AS
 						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
 						JSON_OBJECT("CallOutcome",co.CallOutcome))
 					),
-					JSON_OBJECT("sameAsNumber",p.SameAsNumber)
+					JSON_OBJECT("sameAsNumber",p.SameAsEmergencyCaseId)
                 )
             ),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
@@ -233,6 +227,4 @@ callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
 
-END$$
-
-DELIMITER ;
+END
