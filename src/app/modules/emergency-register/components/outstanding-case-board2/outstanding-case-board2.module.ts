@@ -7,7 +7,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
-import { EmergencyRegisterAmbulanceModule } from './../emergency-register-ambulance/emergency-register-ambulance.module';
+import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
 @NgModule({
     declarations: [
 
@@ -22,7 +22,7 @@ import { EmergencyRegisterAmbulanceModule } from './../emergency-register-ambula
         SearchResultCardModule,
         SharedPipesModule,
         MatChipsModule,
-        EmergencyRegisterAmbulanceModule
+        OutstandingCaseBoardAmbulanceModule
     ],
     providers:[
 
