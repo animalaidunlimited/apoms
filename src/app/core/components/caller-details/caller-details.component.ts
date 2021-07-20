@@ -93,7 +93,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             this.callerArray.at(0).get('primaryCaller')?.setValue(true);
         }
 
-        if(this.incomingCallerDetails.length) {
+        if(this.incomingCallerDetails?.length) {
 
             this.createAndPopulateCaller(this.incomingCallerDetails);
         }
@@ -105,7 +105,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             });
         }
 
-       
+
     }
 
     ngOnDestroy() {

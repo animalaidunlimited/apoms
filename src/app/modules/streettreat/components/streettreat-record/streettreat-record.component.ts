@@ -98,8 +98,8 @@ export class StreetTreatRecordComponent implements OnInit {
         }
       ),
       patientId:[this.patientId,Validators.required],
-      // assignedVehicleId: [],
-      // ambulanceAssignmentTime:['']
+      assignedVehicleId: [],
+      ambulanceAssignmentTime:['']
 
     });
 

@@ -6,7 +6,7 @@ import { HourRange, VehicleShift } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { VehicleShiftDialogComponent } from '../vehicle-shift-dialog/vehicle-shift-dialog.component';
+import { VehicleShiftDialogComponent } from '../../dialogs/vehicle-shift-dialog/vehicle-shift-dialog.component';
 
 @Component({
   selector: 'app-vehicle-shift',
