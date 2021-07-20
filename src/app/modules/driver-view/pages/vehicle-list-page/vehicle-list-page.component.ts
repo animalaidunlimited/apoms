@@ -84,12 +84,13 @@ export class VehicleListPageComponent implements OnInit {
   refreshVehicleTable() {
     this.vehicleService.getVehicleList().then((vehicleListTabledata)=> {
       this.dataSource = vehicleListTabledata;
-    })
+    });
   }
 
   selectRow(selectedVehicle: any) {
 
     this.vehicleListForm.patchValue(selectedVehicle);
+
   }
 
   deleteVehicle(vehicleId : number) {

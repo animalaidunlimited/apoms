@@ -33,7 +33,8 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     tabs = [
         { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' , GUID: new BehaviorSubject<string>('') },
-        { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
+        { id: 1, value: 'Board2', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
+        { id: 2, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
     ];
 
     constructor(private cdr: ChangeDetectorRef,

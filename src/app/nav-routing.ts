@@ -171,17 +171,21 @@ export class NavRouteService {
         if(routes){
 
             this.navRoute = routes;
+
         }
 
         if(!this.navRoute.children){
+
             throw new Error ('No routes detected');
+            
         }
+
         this.navRoute.children?.forEach(routeVal=> {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
 
                 if(routeVal.data && val) {
-                    routeVal.data.componentPermissionLevel.next(val);
+                    routeVal.data.componentPermissionLevel?.next(val);
                 }
                 this.navRoutes.next(this.getNavRouteList() || []);
             });
