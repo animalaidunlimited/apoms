@@ -14,11 +14,14 @@ export class SearchStreetTreetResultCardComponent implements OnInit {
 
   openCase(streetTreatCaseSearchResult: SearchStreetTreatResponse) {
 
+    console.log(streetTreatCaseSearchResult);
+
     this.openStreetTreatCase.emit(streetTreatCaseSearchResult);
   }
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
 }

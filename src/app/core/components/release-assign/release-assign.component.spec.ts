@@ -38,7 +38,9 @@ describe('ReleaseAssignComponent', () => {
       Releaser2: 1,
       releaseBeginDate: new Date(),
       releaseEndDate: new Date(),
-      pickupDate: new Date()
+      pickupDate: new Date(),
+      assignedVehicleId: 1,
+      ambulanceAssignmentTime: new Date()
     };
 
     fixture.detectChanges();

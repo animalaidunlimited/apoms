@@ -12,6 +12,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, take, takeUntil } from 'rxjs/operators';
+import { Vehicle } from 'src/app/core/models/driver-view';
 
 
 
@@ -21,6 +22,8 @@ import { map, take, takeUntil } from 'rxjs/operators';
   styleUrls: ['./streettreat-record.component.scss']
 })
 export class StreetTreatRecordComponent implements OnInit {
+
+  vehicleList$!: Observable<Vehicle[]>
 
   permissionType!: number[];
 
@@ -63,6 +66,8 @@ export class StreetTreatRecordComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.vehicleList$ = this.dropdown.getVehicleListDropdown();
+
     this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
       if (val.componentPermissionLevel.value === 2) {
           this.hasWritePermission = true;
@@ -93,6 +98,9 @@ export class StreetTreatRecordComponent implements OnInit {
         }
       ),
       patientId:[this.patientId,Validators.required],
+      assignedVehicleId: [],
+      ambulanceAssignmentTime:['']
+
     });
 
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
@@ -102,7 +110,7 @@ export class StreetTreatRecordComponent implements OnInit {
         if (media.length === 0) {
           return;
         }
-		  
+
         this.profileUrl = media.find(item => Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
         this.changeDetector.detectChanges();
       });
@@ -142,7 +150,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
 
-    
+
 
   }
 

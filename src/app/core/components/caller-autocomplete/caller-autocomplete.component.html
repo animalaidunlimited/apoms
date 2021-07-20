@@ -1,4 +1,4 @@
-<div [formGroup]="callerForm" class="callerForm" fxLayout="row wrap" fxLayoutGap="20px">
+<div [formGroup]="callerForm" class="callerForm" fxLayout="row wrap" fxLayoutGap="10px">
 
     <mat-form-field >
         <input tabindex="3" type="tel" #callerNumberRef formControlName="callerNumber" placeholder="Number" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
@@ -30,4 +30,8 @@
     <button class="deleteCallerButton" type="button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
         <mat-icon>delete</mat-icon>
     </button>
+
+    <div href="caller.callerNumber">
+        <img src="../../../../assets/icons/callButton.svg" class="imageIcons" alt="call_Button">
+    </div>
 </div>

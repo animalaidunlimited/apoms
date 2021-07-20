@@ -1,8 +1,11 @@
 export interface User {
-    UserId: number;
-    FirstName: string;
-    Initials: string;
+    userId: number;
+    firstName: string;
+    surname: string;
+    initials: string;
+    colour?: string;
 }
+
 
 export interface UserJobType {
     JobTypeId : number;

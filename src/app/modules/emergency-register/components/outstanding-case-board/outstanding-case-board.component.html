@@ -40,8 +40,12 @@
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box" #filterDiv>
 
+    <button mat-mini-fab color="primary" *ngIf="!hideMap" [color]="showAmbulancePaths ? filterBtnColor : 'primary'"
+    (click)="showAmbulancePaths = !showAmbulancePaths">
+      <img src="assets/icons/ambulance_round.png" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
+    </button>
 
-    <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
+    <button mat-mini-fab [color]="filterKeysArray.length > 0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
       <mat-icon>filter_alt</mat-icon>
     </button>
 
@@ -58,27 +62,59 @@
     matTooltip="To enable auto refresh, please enable notifications in your browser."
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
+  <!--This is the card that shows the ambulance and lets you show their paths-->
+  <div class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
 
-   <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
+    <div class="filter-card">
+      <div class="filter-header">
+        Toggle ambulance paths
+      </div>
 
-  <div class="filter-card" *ngFor="let options of caseFilter">
-  <div class="filter-header">
-    {{options.showTitle}}
+      <div class="filter-content ambulance-list" *ngFor="let ambulance of (ambulanceLocations$ | async)"
+      fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="center space-between">
+
+        <img src="assets/icons/ambulance_van.png" class="ambulance-icon" alt="Ambulance filter">
+
+          <div fxLayout="column" fxLayoutAlign="center center">
+
+            <div *ngFor="let rescuer of ambulance.vehicleStaff; let i = index;">
+
+              <div>
+                Rescuer {{i + 1}}: {{rescuer.initials}}
+              </div>
+
+            </div>
+
+            <div>
+              <mat-slide-toggle (change)="toggleVehicleLocation($event, ambulance.vehicleDetails.vehicleId)">Show path</mat-slide-toggle>
+            </div>
+          </div>
+
+      </div>
+    </div>
+
   </div>
 
-  <div class="filter-content">
-    <mat-chip-list #filterChips multiple>
-      <mat-chip #filterChip="matChip"
-      (click)="filterChip.toggleSelected()"
-      (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
-      *ngFor="let option of options.groupValues">
-        {{option.value}}
-      </mat-chip>
-    </mat-chip-list>
-  </div>
-</div>
 
+    <!--This is the card that has the filter details on it-->
+  <div #chipsDiv class="filterWrapper" [hidden]="hideList" style="position: relative;" >
 
+    <div class="filter-card" *ngFor="let options of caseFilter">
+      <div class="filter-header">
+        {{options.showTitle}}
+      </div>
+
+      <div class="filter-content">
+        <mat-chip-list #filterChips multiple>
+          <mat-chip #filterChip="matChip"
+          (click)="filterChip.toggleSelected()"
+          (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
+          *ngFor="let option of options.groupValues">
+            {{option.value}}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
 
   </div>
 </div>
