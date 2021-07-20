@@ -1,4 +1,3 @@
-import { EmergencyCase } from './../../models/emergency-record';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchResponse } from '../../models/responses';
 import { MatDialog } from '@angular/material/dialog';

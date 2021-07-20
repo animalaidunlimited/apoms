@@ -15,6 +15,7 @@ interface IncomingCaseDetails {
 export class ReleaseAssignDialogComponent implements OnInit {
 
   formData!: ReleaseDetails;
+  formInvalid = false;
 
   constructor(public dialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
@@ -28,11 +29,18 @@ export class ReleaseAssignDialogComponent implements OnInit {
       releaseType: this.data.caseDetails.releaseType,
       Releaser1: this.data.caseDetails.staff1,
       Releaser2: this.data.caseDetails.staff2,
+      assignedVehicleId: this.data.caseDetails.assignedVehicleId,
+      ambulanceAssignmentTime: this.data.caseDetails.ambulanceAssignmentTime,
       pickupDate: this.data.caseDetails.pickupDate,
       releaseBeginDate: this.data.caseDetails.releaseBeginDate,
       releaseEndDate: this.data.caseDetails.releaseEndDate
     };
 
+  }
+
+  setFormValidity($event: boolean){
+
+    this.formInvalid = $event;
   }
 
   onSaveResponse(result:any){

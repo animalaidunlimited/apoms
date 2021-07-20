@@ -1,10 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { ActionGroup, OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-import { map } from 'rxjs/operators';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class OutstandingCaseService {
   autoRefreshState = false;
 
   outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject([] as OutstandingCase[]);
-  ambulanceLocations$!:Observable<any>;
+
 
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
@@ -38,6 +38,7 @@ export class OutstandingCaseService {
   {actionStatus: 5 , actionStatusName: 'Admitted'}];
 
   initialise(){
+
 
     if(this.initialised){
       return;
@@ -331,7 +332,7 @@ export class OutstandingCaseService {
                   const key = keyObject.group;
                   if(assignment1[key]===keyObject.value) {
                     filterSuccess++;
-                    
+
                   }
                   else if(key==='animalType') {
                     assignment.patients.forEach((patient:ActionPatient)=>{
@@ -429,104 +430,108 @@ export class OutstandingCaseService {
 
   }
 
-  getAmbulanceLocations() :Observable<any>{
-
-    return this.outstandingCases$.pipe(
-      map((cases) => {
-        if(cases.length !== 0){
-
-          return cases.filter(swimlane => swimlane.actionStatus >= 3)
-                      .map(states => states.statusGroups)
-
-                        // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
-                        // the last one based upon time. However if we make the changes directly to the result object of the
-                        // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
-                        // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
-                        // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
-                      .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
-                      .reduce((aggregatedLocations:RescuerGroup[], current:RescuerGroup[]) => {
-
-
-                if(aggregatedLocations.length === 0){
-                  return current;
-                }
-                else{
-
-                  current.forEach((currentRescueGroup:RescuerGroup) => {
-
-                    currentRescueGroup.actions.forEach((actionGroup:ActionGroup) => {
-
-                    const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
-
-                      return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
-                          parentRescueGroup.staff2 === currentRescueGroup.staff2;
-
-                    });
-
-                    if(index > -1){
-
-                      aggregatedLocations[index].actions.forEach((action:ActionGroup) => {
-
-                        if(action.ambulanceAction === actionGroup.ambulanceAction){
-                          action.ambulanceAssignment = action.ambulanceAssignment.concat(actionGroup.ambulanceAssignment);
-                        }
-
-                      });
-                    }
-                    else
-                    {
-                      aggregatedLocations.push(currentRescueGroup);
-                    }
-
-
-                    });
-                  });
-
-                  return aggregatedLocations;
-
-                }},[])
-              .map((actionGroups:RescuerGroup) => {
-
-                let assignments:OutstandingAssignment[] = [];
-
-                actionGroups.actions.forEach(action => {
-
-                    assignments = assignments.length === 0 ? action.ambulanceAssignment : assignments.concat(action.ambulanceAssignment);
-
-                });
-
-                // TODO: Ask jim sir about it and confirm to him about this latest location for release.
-                const maxAction = assignments.reduce((current:OutstandingAssignment, previous:OutstandingAssignment) => {
-
-                  const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
-                    ? current.ambulanceArrivalTime : current.rescueTime;
-
-                  const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1))
-                    ? previous.ambulanceArrivalTime : previous.rescueTime;
-
-                  return previousTime > currentTime ? previous : current;
-
-                });
-
-               return {
-                staff1: actionGroups.staff1,
-                staff1Abbreviation: actionGroups.staff1Abbreviation,
-                staff2: actionGroups.staff2,
-                staff2Abbreviation: actionGroups.staff2Abbreviation,
-                latestLocation: maxAction.latLngLiteral,
-                actions: actionGroups
-                };
-
-
-             });
-
-            }
-        }
-
-    ));
-
+  getAmbulanceVehicleLocation(){
 
   }
+
+  //getAmbulanceLocations() :Observable<any>{
+
+  //  return this.outstandingCases$.pipe(
+  //    map((cases) => {
+  //      if(cases.length !== 0){
+
+  //        return cases.filter(swimlane => swimlane.actionStatus >= 3)
+  //                    .map(states => states.statusGroups)
+
+  //                      // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find
+  //                      // the last one based upon time. However if we make the changes directly to the result object of the
+  //                      // reduce, it changes the underlying object, moving the rescues around to the wrong ambulance groups.
+  //                      // So we need to create a new object based on the result (which is what the JSON.parse(JSON.stringify is doing)),
+  //                      // to avoid changing the object that lives in the outstandingCases observable in the outstandingCases service.
+  //                    .map(rescueReleaseGroups => JSON.parse(JSON.stringify(rescueReleaseGroups)))
+  //                    .reduce((aggregatedLocations:RescuerGroup[], current:RescuerGroup[]) => {
+
+
+  //              if(aggregatedLocations.length === 0){
+  //                return current;
+  //              }
+  //              else{
+
+  //                current.forEach((currentRescueGroup:RescuerGroup) => {
+
+  //                  currentRescueGroup.actions.forEach((actionGroup:ActionGroup) => {
+
+  //                  const index = aggregatedLocations.findIndex((parentRescueGroup:any) => {
+
+  //                    return parentRescueGroup.staff1 === currentRescueGroup.staff1 &&
+  //                        parentRescueGroup.staff2 === currentRescueGroup.staff2;
+
+  //                  });
+
+  //                  if(index > -1){
+
+  //                    aggregatedLocations[index].actions.forEach((action:ActionGroup) => {
+
+  //                      if(action.ambulanceAction === actionGroup.ambulanceAction){
+  //                        action.ambulanceAssignment = action.ambulanceAssignment.concat(actionGroup.ambulanceAssignment);
+  //                      }
+
+  //                    });
+  //                  }
+  //                  else
+  //                  {
+  //                    aggregatedLocations.push(currentRescueGroup);
+  //                  }
+
+
+  //                  });
+  //                });
+
+  //                return aggregatedLocations;
+
+  //              }},[])
+  //            .map((actionGroups:RescuerGroup) => {
+
+  //              let assignments:OutstandingAssignment[] = [];
+
+  //              actionGroups.actions.forEach(action => {
+
+  //                  assignments = assignments.length === 0 ? action.ambulanceAssignment : assignments.concat(action.ambulanceAssignment);
+
+  //              });
+
+  //              // TODO: Ask jim sir about it and confirm to him about this latest location for release.
+  //              const maxAction = assignments.reduce((current:OutstandingAssignment, previous:OutstandingAssignment) => {
+
+  //                const currentTime = new Date(current.ambulanceArrivalTime) > (new Date(current.rescueTime) || new Date(1901, 1, 1))
+  //                  ? current.ambulanceArrivalTime : current.rescueTime;
+
+  //                const previousTime = new Date(previous.ambulanceArrivalTime) > (new Date(previous.rescueTime) || new Date(1901, 1, 1))
+  //                  ? previous.ambulanceArrivalTime : previous.rescueTime;
+
+  //                return previousTime > currentTime ? previous : current;
+
+  //              });
+
+  //             return {
+  //              staff1: actionGroups.staff1,
+  //              staff1Abbreviation: actionGroups.staff1Abbreviation,
+  //              staff2: actionGroups.staff2,
+  //              staff2Abbreviation: actionGroups.staff2Abbreviation,
+  //              latestLocation: maxAction.latLngLiteral,
+  //              actions: actionGroups
+  //              };
+
+
+  //           });
+
+  //          }
+  //      }
+
+  //  ));
+
+
+  //}
 
 
 

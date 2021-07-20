@@ -1,4 +1,5 @@
 import { formatDate } from '@angular/common';
+import { UUID } from 'angular2-uuid';
 
 export function getCurrentTimeString() {
     let currentTime = new Date();
@@ -42,11 +43,13 @@ export function isImageFile(file: File): boolean {
     return file.type.search(/^image\//i) === 0;
 }
 
-
-
-
 // Determine if the given File is an Video (according do its Mime-Type).
 export function isVideoFile(file: File): boolean {
 
     return file.type.search(/^video\//i) === 0;
+}
+
+// A function to return a UUID
+export function generateUUID() : string{
+    return UUID.UUID();
 }

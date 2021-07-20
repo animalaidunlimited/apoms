@@ -9,6 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -17,7 +18,7 @@ interface EmergencyCaseIndentifiers {
 
 
 @Component({
-    
+
     // tslint:disable-next-line: component-selector
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
@@ -81,7 +82,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
-        const guIdVal = new BehaviorSubject<string>(this.caseService.generateUUID());
+        const guIdVal = new BehaviorSubject<string>(generateUUID());
 
         this.tabs.push({
             id: this.tabs.length,
@@ -141,7 +142,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     openShortcutsDialog($event:Event, tabIndex:number){
         $event.preventDefault();
-        
+
         const dialog = this.dialog.open(KeyboardShortcutsComponent, {
             minWidth: '50%'
         });

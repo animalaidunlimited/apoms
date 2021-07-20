@@ -50,11 +50,11 @@ export class MediaPasteService {
     mediaItemId$!: BehaviorSubject<number>;
 
 
-    
+
 
 
   handleUpload(file: File, patientId: number, offlineUploadDate?:string): MediaItemReturnObject {
-    
+
     if(!file.type.match(/image.*|video.*/)){
       return {
         mediaItem: undefined,
@@ -75,27 +75,27 @@ export class MediaPasteService {
       newMediaItem.datetime = offlineUploadDate;
 
     }
-    
+
 
     this.checkAuthenticated().then(async () => {
 
       // upload the file and return its progress for display
 
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
-     
+
 
       const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
 
-     
+
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
         const resizedImage = await this.cropedImage(file);
-        
+
         if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
-       
+
           newMediaItem.widthPX = resizedImage.width;
           newMediaItem.heightPX = resizedImage.height;
-      
+
           const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
 
           newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
@@ -109,10 +109,10 @@ export class MediaPasteService {
               newMediaItem.remoteURL = url;
 
               newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string,
-              
+
 
               this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
-                
+
                 this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
 
                 if(mediaItems.success) {
@@ -120,7 +120,7 @@ export class MediaPasteService {
                   returnObject.mediaItemId.next(mediaItems.mediaItemId);
 
                 }
-                
+
               });
 
             });
@@ -141,7 +141,7 @@ export class MediaPasteService {
 
         newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
-        
+
         // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
         uploadResult.then((result) => {
@@ -157,7 +157,7 @@ export class MediaPasteService {
             newMediaItem.mediaItemId.subscribe(id => {
 
               returnObject.mediaItemId.next(id);
-              
+
             });
 
           });
@@ -192,33 +192,33 @@ export class MediaPasteService {
             JSON.parse(JSON.parse(mediaItem.value as string))[0]
           );
 
-          
+
           localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
             if(mediaItem.patientId === patientId){
 
-             
+
               mediaItem.media.push({date:  this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl});
             }
             return mediaItem;
           });
-          
+
           this.saveToLocalDatabase('MEDIA', JSON.stringify(localMediaItems));
-          
-          
+
+
         }
         else{
           /**
            * New patient entry
            */
 
-          /** 
+          /**
            * Local Storage media object exists
            * fetch previous media storage and push new patient entry
            * convert to string for storage
            */
-        
+
           if(this.storageService.getItemArray('MEDIA').length >= 0){
-            
+
             const localMedia = this.getParseMediaObject();
 
             localMedia.push({headerType:'POST',patientId, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl}]});
@@ -231,11 +231,11 @@ export class MediaPasteService {
 
           this.onlineStatus.connectionChanged.next(false);
         }
-        
+
         (returnObject.mediaItem as MediaItem).uploadProgress$ = of(100);
 
         returnObject.mediaItemId.next(1);
-        
+
       }
       else{
 
@@ -256,7 +256,7 @@ export class MediaPasteService {
     };
 
     return await this.resizeImage(options);
-    
+
   }
 
   duplicateImage(filename:string,patientId:number){
@@ -458,7 +458,7 @@ export class MediaPasteService {
   }
 
   dataURItoBlob = (dataURI: string) => {
-    
+
     const bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
         atob(dataURI.split(',')[1]) :
         unescape(dataURI.split(',')[1]);
@@ -523,14 +523,14 @@ export class MediaPasteService {
     });
   }
 
-  
+
   getParseMediaObject() {
     if(this.storageService.getItemArray('MEDIA')[0]){
       return JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)) as LocalMediaItem[];
     }else {
       return [];
     }
-    
+
   }
 
   getMediaItemsFromLocalStoargeByPatientId(patientId:number){
@@ -538,9 +538,9 @@ export class MediaPasteService {
   }
 
   imageExsistInLocalStorage(patientId:number){
-    
+
     return this.getMediaItemsFromLocalStoargeByPatientId(patientId)  ? true : false;
-      
+
   }
 
   getPatientMediaImagesFromLocalStorage(patientId:number){
@@ -551,14 +551,14 @@ export class MediaPasteService {
 
 
   deletePatientMediaByPatientId(patientId:number){
-    
+
     const index = this.getParseMediaObject().findIndex((media:any) => media.patientId === patientId);
     const mediaArray = this.getParseMediaObject();
-    
+
     mediaArray.splice(index,1);
 
     this.saveToLocalDatabase('MEDIA',JSON.stringify(mediaArray));
-    
+
   }
 
 }

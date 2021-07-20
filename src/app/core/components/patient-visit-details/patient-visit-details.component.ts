@@ -12,7 +12,7 @@ import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-import { UniqueValidators } from './unique-validators';
+import { UniqueValidators } from '../../validators/unique-validators';
 import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -184,6 +184,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	initStreetTreatForm() {
 
 		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+
+		console.log('Hi I was called');
 
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))

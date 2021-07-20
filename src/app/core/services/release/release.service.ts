@@ -17,19 +17,27 @@ export class ReleaseService extends APIService {
   }
 
   public async saveRelease(releaseDetails: ReleaseDetails) : Promise<any> {
+
+    console.log(releaseDetails);
+
     if(releaseDetails.releaseId) {
+      console.log('PUT');
       return this.put(releaseDetails);
     }
     else {
+      console.log('POST');
       return this.post(releaseDetails);
     }
   }
 
   public getReleaseDetails(patientId: number) : Observable<any> {
 
+    console.log("getReleaseDetails");
+
     const request = '?PatientId=' + patientId;
     return this.getObservable(request).pipe(
       map((res: ReleaseResponse)=> {
+        console.log(res);
         return res;
       })
     );

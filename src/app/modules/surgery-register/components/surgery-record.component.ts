@@ -136,7 +136,7 @@ export class SurgeryRecordComponent implements OnInit {
                 else {
                     if (res.success === 1) {
 
-                        const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
+                        const surgeonNameForTable = this.surgeons.find(user => user.userId === this.surgeryForm.get('SurgeonId')?.value );
                         const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
                         const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
 
@@ -157,7 +157,7 @@ export class SurgeryRecordComponent implements OnInit {
                             date: this.surgeryForm.get('SurgeryDate')?.value,
                             died: this.surgeryForm.get('DiedDate')?.value,
                             site: surgerySiteForTable.SurgerySite,
-                            surgeon: surgeonNameForTable.FirstName,
+                            surgeon: surgeonNameForTable.firstName,
                             type: surgeryTypeForTable.SurgeryType,
                             anesthesiaMinutes: this.surgeryForm.get('AnesthesiaMinutes')?.value,
                             antibioticsGiven: this.surgeryForm.get('AntibioticsGiven')?.value,
