@@ -16,19 +16,19 @@ Purpose: To get the cases for driver view
 WITH RescueReleaseST AS
 (SELECT p.PatientId FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
-AND p.PatientCallOutcomeId IS NULL
+WHERE CAST('2021-06-11' AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST('2021-06-11' AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
+AND (p.PatientCallOutcomeId IS NULL OR p.PatientCallOutcomeId IS NOT NULL)
 
 UNION 
 
 SELECT rd.PatientId FROM AAU.ReleaseDetails rd
-WHERE CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
+WHERE CAST('2021-06-11' AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST('2021-06-11' AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
 
 UNION
 
 SELECT st.PatientId FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
-WHERE CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL
+WHERE CAST(v.Date AS DATE) = CAST('2021-06-11' AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL
 ),
 EmergencyCaseIds AS
 (
@@ -66,24 +66,47 @@ PatientsCTE AS
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
+            JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", p.PatientId),
+            JSON_OBJECT("position", p.Position),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
-            JSON_OBJECT("PatientCallOutcomeId", p.PatientCallOutcomeId),
+            JSON_OBJECT("admissionAccepted", tl.InAccepted),
+            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
+            JSON_OBJECT("callOutcome",
+				JSON_MERGE_PRESERVE(
+					JSON_OBJECT("CallOutcome",
+						JSON_MERGE_PRESERVE(
+						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
+						JSON_OBJECT("CallOutcome",co.CallOutcome))
+					),
+					JSON_OBJECT("sameAsNumber",p.SameAsNumber)
+                )
+            ),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
-            pp.PatientProblems
+            pp.PatientProblems,
+            pp.problemsJSON
 		)) AS Patients
     FROM AAU.Patient p    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
-		SELECT pp.PatientId,
-			JSON_OBJECT("problems", GROUP_CONCAT(pr.Problem)) AS PatientProblems
+		SELECT pp.PatientId,JSON_OBJECT("problems",
+		 JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(                    
+				JSON_OBJECT("problemId", pp.ProblemId),                        
+				JSON_OBJECT("problem", pr.Problem) 
+				)
+			 )
+		) AS problemsJSON,
+		JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS PatientProblems
 		FROM AAU.PatientProblem pp
 		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
         WHERE pp.PatientId IN (SELECT PatientId FROM RescueReleaseST)
 		GROUP BY pp.PatientId
     ) pp ON pp.PatientId = p.PatientId
     LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+    LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
+    LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
     LEFT JOIN AAU.StreetTReatCase std ON std.PatientId = p.PatientId
 	LEFT JOIN
     (
@@ -131,6 +154,11 @@ SELECT
 			v.VisitId,
             v.VisitBeginDate,
             v.VisitEndDate,
+            v.VisitTypeId, 
+			v.Date, 
+			v.StatusId, 
+			v.AdminNotes, 
+			v.OperatorNotes, 
             ec.AmbulanceArrivalTime,
             ec.RescueTime,            
 			ec.EmergencyCaseId,
@@ -149,7 +177,7 @@ SELECT
 FROM PatientsCTE p
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND Admission = 1
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
@@ -181,31 +209,23 @@ JSON_OBJECT("ambulanceArrivalTime", DATE_Format(AmbulanceArrivalTime,"%Y-%m-%dT%
 JSON_OBJECT("rescueTime", DATE_Format(RescueTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("emergencyCaseId", EmergencyCaseId),
 JSON_OBJECT("dispatcher", DispatcherId),
-
+JSON_OBJECT("visitTypeId", VisitTypeId),
+JSON_OBJECT("visitDate", Date),
+JSON_OBJECT("visitStatusId", StatusId),
+JSON_OBJECT("visitAdminNotes", AdminNotes),
+JSON_OBJECT("visitOperatorNotes", OperatorNotes),
 JSON_OBJECT("rescueAmbulanceId", AssignedVehicleId),
-
 JSON_OBJECT("rescueAmbulanceAssignmentDate", DATE_Format(AmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
-
 JSON_OBJECT("releaseAmbulanceId", ReleaseAssignedVehicleId),
-
 JSON_OBJECT("releaseAmbulanceAssignmentDate", DATE_Format(ReleaseAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
-
 JSON_OBJECT("admissionTime", DATE_Format(AdmissionTime,"%Y-%m-%dT%H:%i:%s")),
-
 JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
-
 JSON_OBJECT("emergencyNumber", EmergencyNumber),
-
 JSON_OBJECT("emergencyCodeId", EmergencyCodeId),
-
 JSON_OBJECT("emergencyCode", EmergencyCode),
-
 JSON_OBJECT("caseComments", Comments),
-
 JSON_OBJECT("visitId", VisitId),
-
 JSON_OBJECT("callDateTime", DATE_Format(CallDateTime,"%Y-%m-%dT%H:%i:%s")),
-
 JSON_OBJECT("location", Location),
 JSON_OBJECT("latLngLiteral", latLngLiteral),
 JSON_OBJECT("isUpdated", FALSE),
