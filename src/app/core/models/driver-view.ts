@@ -1,3 +1,5 @@
+import { Patient } from "../models/patients";
+
 export interface Vehicle {
   vehicleId: number;
   vehicleType: string;
@@ -22,16 +24,6 @@ export interface VehicleType {
 export interface VehicleStatus {
   VehicleStatusId: number;
   VehicleStatus: string;
-}
-
-export interface Patient {
-  problems: string;
-  patientId: number;
-  tagNumber: string;
-  animalType: string;
-  mediaCount: number;
-  largeAnimal: number;
-  PatientCallOutcomeId?: number;
 }
 
 export interface CallerDetails {
@@ -75,6 +67,22 @@ export interface DriverAssignments {
   releaseComplainerNotes: string;
   streetTreatMainProblem: string;
   streetTreatMainProblemId?: number;
+  isUpdated?: boolean;
+  admissionTime: string;
+  inTreatmentAreaId: number;
+  dispatcher: number;
+  caseComments: string;
+  rescueAmbulanceId: number;
+  rescueAmbulanceAssignmentDate: string;
+  releaseAmbulanceId: number;
+  releaseAmbulanceAssignmentDate: string;
+  visitId: number;
+  visitTypeId: number,
+  visitDate: string;
+  visitStatusId: number;
+  visitAdminNotes: string;
+  visitOperatorNotes: string;
+  visitDay: number
 }
 
 

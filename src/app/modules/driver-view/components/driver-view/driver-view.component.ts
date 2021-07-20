@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { LocationService } from 'src/app/core/services/location/location.service';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -24,11 +25,12 @@ export class DriverViewComponent implements OnInit {
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
     private locationService: LocationService,
+    private dropDown: DropdownService,
     private router: Router) { }
 
   ngOnInit(): void {
 
-    this.locationService.initialise()
+    this.locationService.initialise();
 
 
     // Start logging the location of this vehicle.
@@ -40,11 +42,15 @@ export class DriverViewComponent implements OnInit {
     });
 
     this.loadDriverDetails();
+
+    this.dropDown.getCallOutcomes();
+
+    this.dropDown.getTreatmentAreas();
   }
 
   loadDriverDetails() {
 
-    this.driverViewDetails.get('assignmentDate')?.setValue(getCurrentTimeString());
+    this.populateDriverView(this.driverViewDetails.get('assignmentDate')?.value);
 
     this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
       console.log(date);
@@ -52,6 +58,9 @@ export class DriverViewComponent implements OnInit {
         this.populateDriverView(date);
       }
     });
+
+    this.driverView.getDriverViewQuestions();
+
 
 
   }
@@ -61,7 +70,7 @@ export class DriverViewComponent implements OnInit {
 
     this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
 
-      let statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
+      const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;
     }));
 
@@ -71,7 +80,6 @@ export class DriverViewComponent implements OnInit {
   showCompleteList() {
 
     this.showComplete = !this.showComplete;
-    // this.router.navigate(['/nav/completed-assignments']);
   }
 
 

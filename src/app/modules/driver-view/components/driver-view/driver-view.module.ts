@@ -10,6 +10,8 @@ import { CallerDetailsDialogComponent } from '../../dialogs/caller-details-dialo
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
+import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
+import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
 
 
 @NgModule({
@@ -18,14 +20,16 @@ import { LocationDialogComponent } from '../../dialogs/location-dialog/location-
     DriverViewAssignmentComponent,
     DriverViewIconsComponent,
     CallerDetailsDialogComponent,
-    LocationDialogComponent
+    LocationDialogComponent,
+    DriverActionDialogComponent
   ],
   imports: [
     CommonModule,
     DriverViewRoutingModule,
     MaterialModule,
     CallerDetailsModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    AnimalSelectionModule
   ]
 })
 export class DriverViewModule { }
