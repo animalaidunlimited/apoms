@@ -2,6 +2,7 @@
 
 .licensePlate{
     border: 2px solid black;
+    min-width: 10em;
     max-width: 10em;
     padding: 0.3em;
     border-radius: 0.25em;
@@ -133,11 +134,12 @@
 .capacityTitle{
     margin-top: 1.5em;
     font-size: 1.2em;
+    display: flex;
     &:nth-child(even){
         margin-top: 0;
     }
     span{
-        width: 8em;
+        width: 4em;
         display: inline-block;
         text-align: center;
     }
@@ -145,7 +147,6 @@
 
 .vehicleCapacity{
     h3{
-        width: 8.2em;
         text-align: center;
         margin-top: 0.1em;
     }

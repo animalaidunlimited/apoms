@@ -56,17 +56,6 @@ export class OutstandingCase2Service {
   }
 
 
-  getActionStatusId(){
-    
-  
-    return this.outstandingCases$.pipe(
-      map(outstandingCases => outstandingCases.map(outstandingCase => outstandingCase.actionStatusId)),
-      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase !== null)),
-      map(ids => [...new Set(ids)])
-    );
-   
-  
-  }
  
   getOutstandingCasesByVehicleId(vehicleId: number | null){
     
@@ -76,6 +65,12 @@ export class OutstandingCase2Service {
     
   }
 
+
+  getOutstandingCaseTimer(){
+    return this.outstandingCases$.pipe(
+    
+    );
+  }
 
  
   
