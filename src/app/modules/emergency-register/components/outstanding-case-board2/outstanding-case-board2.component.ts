@@ -44,9 +44,8 @@ export class OutstandingCaseBoard2Component implements OnInit {
     // tslint:disable-next-line: no-shadowed-variable
     const timer = this.outstandingCase2Service.outstandingCases$.pipe(
       skip(1),
-   
       map(outstandingCases => outstandingCases.filter(outstandingCase => 
-        outstandingCase.assignedVehicleId === 48 && ( outstandingCase.rescueTime !== null || outstandingCase.pickupDate !== null) )
+        outstandingCase.assignedVehicleId === 48 && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null) )
       ),
      
      map(outstandingCases => outstandingCases.map(outstandingCase => 
