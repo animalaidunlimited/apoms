@@ -1,9 +1,8 @@
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, of, zip } from 'rxjs';
-import { interval, Observable, timer } from 'rxjs';
-import { skip, map, startWith, distinct, filter, takeWhile, concatMap, delay, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
@@ -26,6 +25,8 @@ export class OutstandingCaseBoard2Component implements OnInit {
   outstandingCases$!:  Observable<OutstandingAssignment2[]>;
   receivedVehicleList$!:  Observable<OutstandingAssignment2[]>;
 
+ 
+
   loaded = false;
 
   constructor( 
@@ -40,37 +41,9 @@ export class OutstandingCaseBoard2Component implements OnInit {
     this.receivedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
     this.receivedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
 
-
-    // tslint:disable-next-line: no-shadowed-variable
-    const timer = this.outstandingCase2Service.outstandingCases$.pipe(
-      skip(1),
-      map(outstandingCases => outstandingCases.filter(outstandingCase => 
-        outstandingCase.assignedVehicleId === 48 && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null) )
-      ),
-     
-     map(outstandingCases => outstandingCases.map(outstandingCase => 
-        outstandingCase.ambulanceAction === 'Rescue' ? new Date(outstandingCase.rescueTime as string) : new Date(outstandingCase.pickupDate as string))
-     ),
-     map(outstandingCases => outstandingCases.sort((a, b) => new Date(a).getDate() - new Date(b).getDate() && new Date(a).getTime() - new Date(b).getTime())[0]),
-    
-     map(outStandingCases =>  new Date(outStandingCases.getTime() + 150*60000))
-     
-     
-    );
-    combineLatest(interval(1000),timer).subscribe(value => console.log(value));
-    /*  const currentTime = new Date();
-
-      const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
-      const totalMinutes     = Math.floor(totalSeconds/60);
-      const totalHours       = Math.floor(totalMinutes/60);
-      const totalDays        = Math.floor(totalHours/24);
-
-      const hours   = totalHours - ( totalDays * 24 );
-      const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
-      const seconds = totalSeconds - ( totalDays * 24 * 60 * 60 ) - ( hours * 60 * 60 ) - ( minutes * 60 );
-
-      return (`${hours}:${minutes}:${seconds}`); */
   }
+
+  
 
   openRescueEdit(outstandingCase:OutstandingAssignment2){
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {

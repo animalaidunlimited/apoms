@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
@@ -36,6 +36,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
     ambulanceCases$!: Observable<ActiveVehicleLocation>;
 
     vehicleType$!: Observable<VehicleType>;
+
+    timer$!:  Observable<any | null>;
 
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
 
@@ -106,26 +108,26 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         );
 
         this.currentCapacity = this.vehicleAssignmentList.pipe(
-            map(vehicleAssigments => {
+            map(vehicleAssignments => {
                 let smallPatientCount = 0;
                 let largePatientCount = 0;
 
-                vehicleAssigments.forEach(vehicleAssigment => {
-                    vehicleAssigment.patients.forEach(patient => {
+                vehicleAssignments.forEach(vehicleAssignment => {
+                    vehicleAssignment.patients.forEach(patient => {
                         if (
                             /**
                              * Release count
                              */
 
-                            (vehicleAssigment.releaseId === null &&
+                            (vehicleAssignment.releaseId === null &&
                                 patient.patientCallOutcomeId !== null &&
-                                vehicleAssigment.rescueTime !== null) ||
+                                vehicleAssignment.rescueTime !== null) ||
                             /**
                              * Rescue count
                              */
-                            (vehicleAssigment.releaseId !== null &&
-                                vehicleAssigment.releaseEndDate !== null &&
-                                vehicleAssigment.pickupDate !== null)
+                            (vehicleAssignment.releaseId !== null &&
+                                vehicleAssignment.releaseEndDate !== null &&
+                                vehicleAssignment.pickupDate !== null)
                         ) {
                             patient.animalSize === 'small'
                                 ? (smallPatientCount = smallPatientCount + 1)
@@ -142,10 +144,15 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
                 };
             }),
         );
+        
+        this.timer$ = this.outstandingCase2Service.getBackstopHospitalTimer();
+        this.timer$.subscribe(value => {
 
-        /* this.ambulanceCases$.subscribe(vehicle => console.log(vehicle)); */
-
+            console.log(value);
+        });
+        
     }
+
 
     getOutstandingCasesByStatusId(statusId: number) {
         return this.vehicleAssignmentList.pipe(
