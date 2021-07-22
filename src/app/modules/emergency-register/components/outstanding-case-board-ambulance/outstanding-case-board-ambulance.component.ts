@@ -3,12 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
 
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import {
     concatAll,
     distinct,
     map,
+    publishReplay,
+    refCount,
+    share,
+    shareReplay,
     skipWhile,
+    switchMap,
     withLatestFrom,
 } from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
@@ -145,11 +150,11 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             }),
         );
         
-        this.timer$ = this.outstandingCase2Service.getBackstopHospitalTimer();
-        this.timer$.subscribe(value => {
+        const backToHospital = this.outstandingCase2Service.getBackstopHospitalTimer();
 
-            console.log(value);
-        });
+        this.timer$ = timer(0, 1000).pipe(
+            switchMap(() => backToHospital)
+        );
         
     }
 

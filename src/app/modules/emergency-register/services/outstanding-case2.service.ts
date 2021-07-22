@@ -67,11 +67,10 @@ export class OutstandingCase2Service {
 
 
   getBackstopHospitalTimer(){
+    
     const timer = this.outstandingCases$.pipe(
       skip(1),
-     /*  map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId === 48 
-        && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
-            || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null))), */
+    
       map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
       {
         if(outstandingCase.assignedVehicleId === 48 
@@ -84,26 +83,23 @@ export class OutstandingCase2Service {
             
         }
 
-        return  newArr ;
+        return  newArr;
       }, [])
       ),
       map(outStandingCases => {
           return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
       }),
-      tap(time => {
-        console.log(time);
-        console.log(new Date());
-      }),
-      map(time => time.getDate() >= new Date().getDate() ? time : null) 
-  
+      map(time => time.getDate() >= new Date().getDate() ? time : null)
     );
+
     // return timer;
    
-    return combineLatest(interval(1000),timer).pipe(
+    return combineLatest([interval(1000),timer]).pipe(
       map(time => time[1]),
       map(time => time ? this.backToHospitalTimer(time) : null),
-      filter(time => time !== null)
-    );
+    
+      filter(time => time !== null),
+    ); 
 
   }
 
