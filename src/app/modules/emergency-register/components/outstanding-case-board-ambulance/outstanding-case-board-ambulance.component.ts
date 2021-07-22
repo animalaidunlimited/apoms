@@ -143,7 +143,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             }),
         );
 
-        this.ambulanceCases$.subscribe(vehicle => console.log(vehicle));
+        /* this.ambulanceCases$.subscribe(vehicle => console.log(vehicle)); */
 
     }
 
