@@ -1,8 +1,8 @@
 
 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, interval } from 'rxjs';
-import { filter, map, skip, take, tap} from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, interval, timer } from 'rxjs';
+import { filter, map, skip, switchMap, take} from 'rxjs/operators';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 
 import { RescueDetailsService } from './rescue-details.service';
@@ -69,7 +69,6 @@ export class OutstandingCase2Service {
   getBackstopHospitalTimer(){
     
     const timer = this.outstandingCases$.pipe(
-      skip(1),
     
       map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
       {
@@ -88,8 +87,8 @@ export class OutstandingCase2Service {
       ),
       map(outStandingCases => {
           return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
-      }),
-      map(time => time.getDate() >= new Date().getDate() ? time : null)
+      })
+    /*   map(time => time.getDate() >= new Date().getDate() ? time : null) */
     );
 
     // return timer;
@@ -98,9 +97,16 @@ export class OutstandingCase2Service {
       map(time => time[1]),
       map(time => time ? this.backToHospitalTimer(time) : null),
     
-      filter(time => time !== null),
+      filter(time => time !== null)
     ); 
+    
 
+  }
+
+  getTimer(){
+    return timer(200).pipe(
+      switchMap(() => this.getBackstopHospitalTimer()));
+  
   }
 
 

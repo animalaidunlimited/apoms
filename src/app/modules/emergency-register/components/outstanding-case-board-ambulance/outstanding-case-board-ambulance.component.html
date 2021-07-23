@@ -43,7 +43,7 @@
             <p>View in map</p>
           </div>
         </div>
-        <div> Hello {{ timer$ | async }}</div>
+        <div> {{ timer$ | async}}</div>
         <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
           
           <div *ngIf="currentCapacity.capacity as capacity">
