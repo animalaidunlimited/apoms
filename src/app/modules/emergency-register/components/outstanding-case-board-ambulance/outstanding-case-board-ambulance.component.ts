@@ -6,8 +6,10 @@ import { LocationService } from 'src/app/core/services/location/location.service
 import { Observable, timer } from 'rxjs';
 import {
     concatAll,
+    concatMap,
     distinct,
     map,
+    mergeMap,
     publishReplay,
     refCount,
     share,
@@ -42,7 +44,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
 
     vehicleType$!: Observable<VehicleType>;
 
-    timer$!:  Observable<any | null>;
+    timer$!: Observable<any>;
 
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
 
@@ -62,6 +64,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         private dialog: MatDialog,
         private locationService: LocationService,
         private dropdown: DropdownService,
+        private cdr:ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
@@ -150,11 +153,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             }),
         );
         
-        const backToHospital = this.outstandingCase2Service.getBackstopHospitalTimer();
+        this.timer$ = this.outstandingCase2Service.getTimer();
 
-        this.timer$ = timer(0, 1000).pipe(
-            switchMap(() => backToHospital)
-        );
+     
         
     }
 
