@@ -1,21 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
 
-import { Observable, timer } from 'rxjs';
+import { Observable, Subject, timer } from 'rxjs';
 import {
     concatAll,
-    concatMap,
     distinct,
     map,
-    mergeMap,
-    publishReplay,
-    refCount,
-    share,
-    shareReplay,
+  
     skipWhile,
-    switchMap,
+    takeUntil,
     withLatestFrom,
 } from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
@@ -31,7 +26,7 @@ import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
 })
-export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
+export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
     
     @Input() vehicleId!: number;
@@ -46,6 +41,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
 
     timer$!: Observable<any>;
 
+    
+
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
 
 
@@ -58,6 +55,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
     }>;
 
     actionStatusId!: number[];
+
+    ngUnsubscribe = new Subject();
 
     constructor(
         private outstandingCase2Service: OutstandingCase2Service,
@@ -74,6 +73,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         
 
         this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
+            takeUntil(this.ngUnsubscribe),
             map(ambulanceLocations =>
                 ambulanceLocations.filter(
                     ambulanceLocation =>
@@ -91,6 +91,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         );
 
         this.vehicleAssignmentList = this.outstandingCase2Service.outstandingCases$.pipe(
+            takeUntil(this.ngUnsubscribe),
             map(outstandingCases =>
                 outstandingCases.filter(
                     outstandingCase =>
@@ -102,6 +103,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         
 
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
+            takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length
             withLatestFrom(
                 this.ambulanceCases$,
@@ -116,6 +118,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         );
 
         this.currentCapacity = this.vehicleAssignmentList.pipe(
+            takeUntil(this.ngUnsubscribe),
             map(vehicleAssignments => {
                 let smallPatientCount = 0;
                 let largePatientCount = 0;
@@ -209,5 +212,12 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             maxWidth: '100%',
             data: this.vehicleId
         });
+    }
+
+    ngOnDestroy(){
+        
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    
     }
 }

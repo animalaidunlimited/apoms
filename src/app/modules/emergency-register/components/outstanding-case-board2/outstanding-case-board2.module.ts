@@ -8,10 +8,12 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 import { MatChipsModule } from '@angular/material/chips';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
 import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
+import { ChipListType } from '../../pipes/chip-list-type';
+import { OutstandingCaseMapModule } from '../outstanding-case-map/outstanding-case-map.module';
 @NgModule({
     declarations: [
 
-        OutstandingCaseBoard2Component
+        OutstandingCaseBoard2Component,
     ],
     imports: [
 
@@ -22,7 +24,8 @@ import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-a
         SearchResultCardModule,
         SharedPipesModule,
         MatChipsModule,
-        OutstandingCaseBoardAmbulanceModule
+        OutstandingCaseBoardAmbulanceModule,
+        OutstandingCaseMapModule
     ],
     providers:[
 
