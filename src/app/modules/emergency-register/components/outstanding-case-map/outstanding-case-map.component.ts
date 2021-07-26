@@ -73,7 +73,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
       }
     ]};
 
-  console.log(this.vehicleId);
     if(this.vehicleId)
     { 
       this.ambulanceLocations$ = this.ambulanceLocations$.pipe(

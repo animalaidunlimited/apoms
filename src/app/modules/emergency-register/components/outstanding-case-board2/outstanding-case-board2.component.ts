@@ -1,14 +1,23 @@
 
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatChip, MatChipList } from '@angular/material/chips';
+import { ThemePalette } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { skip } from 'rxjs/operators';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, skip, startWith, take, takeUntil } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
+import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { SearchResponse } from 'src/app/core/models/responses';
+import { LocationService } from 'src/app/core/services/location/location.service';
+import { MessagingService } from '../../services/messaging.service';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
+import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -16,34 +25,161 @@ import { OutstandingCase2Service } from '../../services/outstanding-case2.servic
   templateUrl: './outstanding-case-board2.component.html',
   styleUrls: ['./outstanding-case-board2.component.scss']
 })
-export class OutstandingCaseBoard2Component implements OnInit {
+export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
 
   vehicleId$!: Observable<(number | null)[]>;
 
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+
+  ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
 
   outstandingCases$!:  Observable<OutstandingAssignment2[]>;
   receivedVehicleList$!:  Observable<OutstandingAssignment2[]>;
 
- 
+  searchForm:FormGroup = new FormGroup({});
+  searchValue!: string;
 
+  ngUnsubscribe = new Subject();
+
+  filterKeysArray : FilterKeys[] = [];
+  
+  showAmbulancePaths = false;
+  autoRefresh = false;
   loaded = false;
+  hideList = true;
+  hideMap = true;
+  loading = new BehaviorSubject<boolean>(true);
+  notificationPermissionGranted = false;
+  removable = true;
+
+  refreshColour:ThemePalette = 'primary';
+  filterBtnColor: ThemePalette = 'accent';
+
+  refreshColour$!:BehaviorSubject<ThemePalette>;
+
+
+  incomingObject!: FilterKeys;
+
+
+  caseFilter = [{
+    groupId: 1,
+    showTitle: 'Ambulance action',
+    groupTitle: 'ambulanceAction',
+    groupValues: [{
+      id: 1 , value: 'Rescue'
+    },
+    {
+      id: 2 , value: 'Release'
+    }]
+  },
+  {
+    groupId: 2,
+    groupTitle: 'emergencyCode',
+    showTitle: 'Emergency code',
+    groupValues: []
+  },
+  {
+    groupId: 3,
+    showTitle: 'Animal type',
+    groupTitle: 'animalType',
+    groupValues: []
+  }];
+  
+  
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
 
   constructor( 
     private outstandingCase2Service: OutstandingCase2Service,
     public rescueDialog: MatDialog,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private locationService: LocationService,
+    private fb: FormBuilder,
+    private messagingService: MessagingService,
+    private outstandingCaseService: OutstandingCaseService,
+    private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit(): void {
 
     this.vehicleId$ = this.outstandingCase2Service.getVehicleId().pipe(skip(1)); 
  
-    this.receivedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null);
+    this.receivedVehicleList$ = this.outstandingCase2Service.getOutstandingCasesByVehicleId(null).pipe(
+      takeUntil(this.ngUnsubscribe),
+      take(2),
+      finalize(() => 
+      (this.loading.next(false))
+      ),
+      catchError(error => {
+        this.loading.next(false);
+        return throwError(error);
+      })
+    );
+
+
     this.receivedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
+
+    this.searchForm = this.fb.group({
+      searchTerm: ['']
+    });
+
+    
+    this.searchForm.get('searchTerm')?.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(250),
+        startWith(''),
+        takeUntil(this.ngUnsubscribe)
+        )
+      .subscribe(value => {
+        this.searchValue = value;
+          this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
+      });
+
+
+    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+
+    this.refreshColour$ = this.outstandingCaseService.refreshColour;
+
+    this.refreshColour$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(colour => {
+      this.refreshColour = colour;
+      this.changeDetector.detectChanges();
+    });
+
+    this.setup();
 
   }
 
-  
+  setup(){
+
+    this.messagingService.getPermissionGranted()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((permissionGranted) => {
+
+      this.notificationPermissionGranted = !!permissionGranted;
+
+      this.outstandingCaseService.getAutoRefresh()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(value => {
+
+        this.autoRefresh = value;
+
+      });
+
+      this.outstandingCaseService.setAutoRefresh(!!permissionGranted);
+      this.changeDetector.detectChanges();
+
+    });
+
+  }
+
+  refreshRescues(){
+
+    this.loading.next(true);
+
+    this.outstandingCaseService.refreshRescues();
+
+  }
 
   openRescueEdit(outstandingCase:OutstandingAssignment2){
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
@@ -95,5 +231,49 @@ export class OutstandingCaseBoard2Component implements OnInit {
     this.openEmergencyCase.emit(result);
   }
 
+  
+  toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
+    this.locationService.toggleVehicleLocation(vehicleId, $event.checked)
+  }
+
+  autoRefreshToggled(){
+    this.outstandingCaseService.toggleAutoRefresh();
+  }
+
+  filterChipSelected(groupName: string, chip: MatChip) {
+
+    this.incomingObject = {
+      group: groupName,
+      value: chip.value.trim(),
+      selected: chip.selected
+    };
+
+    if(this.incomingObject.selected) {
+
+      this.filterKeysArray.push(this.incomingObject);
+    }
+
+    if(!this.incomingObject.selected) {
+      const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group &&
+      obj.value === this.incomingObject.value);
+      this.filterKeysArray.splice(index,1);
+    }
+
+    this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
+
+  }
+
+  openCaseFromMap(emergencyCase:SearchResponse){
+
+    this.openEmergencyCase.emit(emergencyCase);
+
+  }
+  
+
+  ngOnDestroy(){
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+  }
   
 }
