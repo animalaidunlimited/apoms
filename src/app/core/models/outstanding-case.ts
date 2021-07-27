@@ -41,12 +41,13 @@ export interface OutstandingAssignment2 {
         mediaCount:number;
     }];
     pickupDate: string | null;
-    releaseBeginDate: string | null;
-    releaseEndDate: string | null;
-    releaseId: number | null;
+    releaseBeginDate?: string ;
+    releaseEndDate?: string ;
+    releaseId?: number ;
     releaseType: string;
-    requestedDate: string | null;
-    rescueTime:string | null;
+    requestedDate?: string;
+    rescueTime?:string;
+    searchCandidate?: boolean;
 }
 export interface RescuerGroup {
     staff1: number;

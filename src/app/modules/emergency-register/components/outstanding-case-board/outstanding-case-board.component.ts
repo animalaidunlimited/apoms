@@ -532,7 +532,7 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
   }
 
 toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
-  this.locationService.toggleVehicleLocation(vehicleId, $event.checked)
+  this.locationService.toggleVehicleLocation(vehicleId, $event.checked);
 }
 
 }

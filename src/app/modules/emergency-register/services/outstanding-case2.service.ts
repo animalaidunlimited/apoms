@@ -33,7 +33,10 @@ export class OutstandingCase2Service {
 
     this.initialised = true;
 
-    this.rescueService.getOutstandingRescues2().pipe(take(1)).subscribe(outstandingCases =>
+    this.rescueService.getOutstandingRescues2().pipe(take(1),
+    map(outstandingCases => 
+      outstandingCases.map(outstandingCase => ({...outstandingCase, searchCandidate: false})))
+    ).subscribe(outstandingCases =>
       { 
         if(outstandingCases){
           this.outstandingCases$.next(outstandingCases);
@@ -69,6 +72,7 @@ export class OutstandingCase2Service {
 
   getBackstopHospitalTimer(){
     
+    // tslint:disable-next-line: no-shadowed-variable
     const timer = this.outstandingCases$.pipe(
     
       map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
@@ -175,5 +179,42 @@ export class OutstandingCase2Service {
        
       })
     ); 
+  }
+
+  onSearchChange(outstandingCases$:Observable<OutstandingAssignment2[]>, searchValue:string){
+
+
+    this.outstandingCases$.value.forEach(outstandingCase => {
+
+      const currentValue = this.convertObjectToString(outstandingCase);
+      if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
+        outstandingCase.searchCandidate = true;
+      }
+    });
+   
+    
+    
+  }
+
+
+
+  convertObjectToString(assignment : any){
+
+    let result = '';
+    if(assignment) {
+      result = Object.entries(assignment).reduce((currentValue: string, val: any)=>{
+
+        if(typeof val[1] === 'object') {
+          currentValue += this.convertObjectToString(val[1]);
+        }
+        else if(typeof val[1] !== 'number' || val[0]==='emergencyNumber') {
+          currentValue += currentValue + val[1] + '◬';
+        }
+        return currentValue;
+      },'');
+    }
+
+    return result;
+
   }
 }

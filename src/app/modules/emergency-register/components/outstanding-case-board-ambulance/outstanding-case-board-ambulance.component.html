@@ -89,7 +89,7 @@
       <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
         <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
           <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
-            <mat-expansion-panel [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}"
+            <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}"
               hideToggle>
               <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                                         'border-green' : outstandingCase.emergencyCodeId == 2,
