@@ -59,7 +59,7 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
 
-  
+
 
   incomingObject!: FilterKeys;
 
@@ -115,8 +115,9 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
          * so finalize operator can be init
          */
         take(2),
-        finalize(() => 
-        (this.loading.next(false))
+        finalize(() => {
+        this.loading.next(false);
+        this.loaded = true;        }
         ),
         catchError(error => {
           this.loading.next(false);
@@ -124,18 +125,12 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
         })
       ),
       this.filterKeysArray,
-
       this.ngUnsubscribe
       );
 
     
-   
-
     this.vehicleId$ = this.outstandingCase2Service.getVehicleId().pipe(skip(1)); 
- 
 
-
-    this.receivedVehicleList$.subscribe(cases =>  this.loaded = cases.length > 0 ? true : false);
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -150,8 +145,12 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
         takeUntil(this.ngUnsubscribe)
         )
       .subscribe(value => {
-        this.searchValue = value;
-          this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
+       
+       /*  this.outstandingCase2Service.onSearchChange(this.receivedVehicleList$, value); */
+
+       this.receivedVehicleList$ = this.receivedVehicleList$.pipe(
+        map(outstandingCase => outstandingCase.map())
+       );
       });
 
 
@@ -212,6 +211,26 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
     });
 
     this.setup();
+
+  }
+
+  convertObjectToString(assignment : any){
+
+    let result = '';
+    if(assignment) {
+      result = Object.entries(assignment).reduce((currentValue: string, val: any)=>{
+
+        if(typeof val[1] === 'object') {
+          currentValue += this.convertObjectToString(val[1]);
+        }
+        else if(typeof val[1] !== 'number' || val[0]==='emergencyNumber') {
+          currentValue += currentValue + val[1] + '◬';
+        }
+        return currentValue;
+      },'');
+    }
+
+    return result;
 
   }
 
@@ -326,8 +345,6 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
 
     this.matChipObs.next(null);
 
-   
-    this.receivedVehicleList$.subscribe(value => console.log(value));
   }
 
   openCaseFromMap(emergencyCase:SearchResponse){

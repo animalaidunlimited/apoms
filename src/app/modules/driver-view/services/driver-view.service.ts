@@ -25,12 +25,12 @@ export class DriverViewService extends APIService {
 
   public populateDriverView(driverViewDate: Date) {
 
-    console.log(driverViewDate);
 
-    let request = '?assignmentDate='+ driverViewDate;
+
+    const request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).subscribe(response=> {
-      console.log(response);
+
       if(response){
         this.driverViewDetails.next(response);
       }
@@ -42,7 +42,7 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getAssignmentByStatus(actionStatusType: String) {
+  public getAssignmentByStatus(actionStatusType: string) {
 
     return this.driverViewDetails.pipe(map(val=> {
       return val.filter(value=> value.actionStatus === actionStatusType);
