@@ -1,9 +1,10 @@
 
 
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, interval, timer } from 'rxjs';
-import { filter, map, skip, switchMap, take} from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
+import { filter, map, pairwise, skip, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
+import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 
 import { RescueDetailsService } from './rescue-details.service';
 
@@ -104,8 +105,10 @@ export class OutstandingCase2Service {
   }
 
   getTimer(){
+    
     return timer(200).pipe(
-      switchMap(() => this.getBackstopHospitalTimer()));
+      switchMap(() => this.getBackstopHospitalTimer())
+    );
   
   }
 
@@ -127,4 +130,50 @@ export class OutstandingCase2Service {
   }
 
  
+  filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment2[]>, filters:FilterKeys[], until$:Observable<any>){
+    
+    return combineLatest(click$, cases$).pipe(
+      takeUntil(until$),
+      map(chipChangeObs => chipChangeObs[1]),
+      map(outstandingCases => { 
+       if(filters.length > 0)
+       {
+
+        let filteredOutstandingCases:any = [];
+
+        filters.forEach((keyObject,index)=>{
+
+          const key = keyObject.group;
+          index === 0 ?
+            filteredOutstandingCases.push(outstandingCases.filter((cases:any) => 
+
+              key === 'animalType' ? 
+                cases?.patients?.some((patient:any) => patient[key] === keyObject.value)
+              :
+                cases[key] === keyObject.value
+
+            ))
+          :
+            filteredOutstandingCases = filteredOutstandingCases.flat().filter((filteredCase:any) => 
+
+              key === 'animalType' ? 
+                filteredCase?.patients?.some((patient:any) => patient[key] === keyObject.value)
+              :
+                filteredCase[key] === keyObject.value
+
+            ); 
+          
+        });
+
+        return filteredOutstandingCases.flat();
+
+       }else{
+
+        return outstandingCases;
+
+       }
+       
+      })
+    ); 
+  }
 }

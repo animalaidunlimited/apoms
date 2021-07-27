@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
 
-import { Observable, Subject, timer } from 'rxjs';
+import { Observable, Subject, timer, BehaviorSubject } from 'rxjs';
 import {
     concatAll,
     distinct,
@@ -19,6 +19,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
+import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -31,7 +32,10 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     
     @Input() vehicleId!: number;
 
+    @Input() matChipObs!: BehaviorSubject<any>;
+
     @Input() inMap = false;
+    @Input() filterKeysArray!: FilterKeys[];
 
     vehicleAssignmentList!: Observable<OutstandingAssignment2[]>;
 
@@ -42,9 +46,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     timer$!: Observable<any>;
 
     
-
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
-
 
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
 
@@ -71,7 +73,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
         this.locationService.getActiveVehicleLocations();
         
-
+       
         this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
             takeUntil(this.ngUnsubscribe),
             map(ambulanceLocations =>
@@ -90,14 +92,19 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             ),
         );
 
-        this.vehicleAssignmentList = this.outstandingCase2Service.outstandingCases$.pipe(
-            takeUntil(this.ngUnsubscribe),
-            map(outstandingCases =>
-                outstandingCases.filter(
-                    outstandingCase =>
-                        outstandingCase.assignedVehicleId === this.vehicleId,
+        this.vehicleAssignmentList =  this.outstandingCase2Service.filterCases(
+            this.matChipObs,
+            this.outstandingCase2Service.outstandingCases$.pipe(
+                takeUntil(this.ngUnsubscribe),
+                map(outstandingCases =>
+                    outstandingCases.filter(
+                        outstandingCase =>
+                            outstandingCase.assignedVehicleId === this.vehicleId,
+                    ),
                 ),
             ),
+            this.filterKeysArray,
+            this.ngUnsubscribe
         );
 
         
