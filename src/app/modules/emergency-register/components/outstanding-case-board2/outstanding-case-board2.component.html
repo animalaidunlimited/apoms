@@ -107,7 +107,7 @@
       <div class="filter-content">
         <mat-chip-list #filterChips multiple>
           <mat-chip #filterChip="matChip"
-          (click)="filterChip.toggleSelected()"
+          (click)="filterChip.toggleSelected() "
           (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
           *ngFor="let option of options.groupValues">
             {{option.value}}
@@ -180,7 +180,13 @@
 
       <ng-container *ngIf="vehicleId">
 
-        <outstanding-case-board-ambulance (openCaseEmitter)="openCase($event)" (rescueEdit)="openRescueEdit($event)" (mediaDialog)="openMediaDialog($event)"   [vehicleId]="vehicleId"></outstanding-case-board-ambulance>
+        <outstanding-case-board-ambulance 
+          (openCaseEmitter)="openCase($event)" 
+          (rescueEdit)="openRescueEdit($event)" 
+          (mediaDialog)="openMediaDialog($event)"   
+        [vehicleId]="vehicleId"
+        [matChipObs]="matChipObs"
+        [filterKeysArray]="filterKeysArray"></outstanding-case-board-ambulance>
 
       </ng-container>
 

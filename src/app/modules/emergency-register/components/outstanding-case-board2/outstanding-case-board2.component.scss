@@ -15,20 +15,12 @@
     border: solid .1px lightgray;
 }
 
-
-
 .ambulanceAssignedCases{
     border: 0.1em solid lightgrey;
     margin: 1.5em 0 1.5em 0.5em;
     border-radius: 0.3em;
     box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
     padding: 0.5em;
-    .drag-drop-container{
-        margin: 0 1em 0 0;
-        &:last-child{ 
-            margin-right:0;
-        }
-    }
 }
 
 
@@ -94,6 +86,60 @@
 
     cursor: pointer;
 }
+
+
+
+.filter-{
+    &header{
+        background-color: lightsteelblue;
+        height: 64px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 24px;
+        border-radius: inherit;
+        transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+
+    }
+    
+
+    &card{
+        background-color: white;
+        margin-bottom: 6px !important;
+        padding-bottom: 3px !important;
+        box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+        box-sizing: content-box;
+        display: block;
+        margin: 0;
+        border-radius: 4px;
+        overflow: hidden;
+        transition: margin 225ms cubic-bezier(0.4, 0, 0.2, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    
+    &content{
+        background-color: white;
+    }
+}
+
+
+.filterWrapper{
+    position: absolute !important;
+    width: 25rem;
+    right: 0;
+    top: 60px;
+    z-index: 1;
+    overflow-y: hidden;
+    .mat-expansion-panel:last-of-type {
+    
+        max-height: 40vh;
+    }
+}
+
+
 
 @media screen and (min-width: 1280px) and (max-width: 1919.98px){
     .vehicle {
