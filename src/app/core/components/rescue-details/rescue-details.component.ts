@@ -132,7 +132,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                         });
 
                         this.rescuerArray.push(rescuerGroup);
-                    })
+                    });
 
                     const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);
 

@@ -53,7 +53,6 @@ export class DriverViewComponent implements OnInit {
     this.populateDriverView(this.driverViewDetails.get('assignmentDate')?.value);
 
     this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
-      console.log(date);
       if(date) {
         this.populateDriverView(date);
       }
@@ -69,7 +68,7 @@ export class DriverViewComponent implements OnInit {
     this.driverView.populateDriverView(date);
 
     this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
-
+     
       const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;
     }));
@@ -80,6 +79,10 @@ export class DriverViewComponent implements OnInit {
   showCompleteList() {
 
     this.showComplete = !this.showComplete;
+  }
+
+  openMapComponent() {
+    this.router.navigate(['/nav/case-location']);
   }
 
 
