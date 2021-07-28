@@ -39,9 +39,6 @@ export class ReleaseAssignDialogComponent implements OnInit {
   }
 
   setFormValidity($event: boolean){
-
-    console.log($event);
-
     this.formInvalid = $event;
   }
 

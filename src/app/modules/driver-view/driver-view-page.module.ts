@@ -12,8 +12,9 @@ import { CallerDetailsModule } from 'src/app/core/components/caller-details/call
 import { CallerDetailsComponent } from 'src/app/core/components/caller-details/caller-details.component';
 import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
 import { DriverActionDialogComponent } from './dialogs/driver-action-dialog/driver-action-dialog.component';
+import { CaseLocationComponent } from './components/case-location/case-location.component';
 @NgModule({
-  declarations: [VehileListPageComponent, DriverViewAssignmentComponent, DriverViewIconsComponent, CallerDetailsDialogComponent, LocationDialogComponent, DriverActionDialogComponent],
+  declarations: [VehileListPageComponent, DriverViewAssignmentComponent, DriverViewIconsComponent, CallerDetailsDialogComponent, LocationDialogComponent, DriverActionDialogComponent, CaseLocationComponent],
   imports: [
     CommonModule,
     DriverViewPageRoutingModule,

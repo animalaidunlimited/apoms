@@ -118,12 +118,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-                    console.log(rescueDetails)
-
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
-
-                        console.log(rescuer);
-
 
                         this.rescuerArray = this.recordForm.get('rescueDetails.rescuers') as FormArray;
 
@@ -132,7 +127,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                         });
 
                         this.rescuerArray.push(rescuerGroup)
-                        console.log(this.rescuerArray);
                     })
 
                     const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);
@@ -302,8 +296,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
 
         const currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
-
-        console.log(currentTime);
 
         if (!currentTime) {
             this.recordForm

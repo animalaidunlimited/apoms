@@ -15,16 +15,6 @@
                     <mat-label>{{control.label}}</mat-label>
                     <input type="{{control.type}}" [formControlName]="control.formControlName" matInput>
                 </mat-form-field>
-
-                <!-- <mat-form-field *ngIf="control.type === 'select'" appearance="fill">
-                    <mat-label>{{control.label}}</mat-label>
-                    <mat-select [formControlName]="control.formControlName">
-                        <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let val of control.dataSource | async" [value]="val[control.idName]">
-                            {{val[control.valueName]}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field> -->
            </div>
 
           
