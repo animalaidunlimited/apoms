@@ -140,12 +140,13 @@ export class OutstandingCase2Service {
       takeUntil(until$),
       map(chipChangeObs => chipChangeObs[1]),
       map(outstandingCases => { 
-       if(filters.length > 0)
-       {
 
-        let filteredOutstandingCases:any = [];
+        if(filters.length > 0)
+        {
 
-        filters.forEach((keyObject,index)=>{
+          let filteredOutstandingCases:any = [];
+
+          filters.forEach((keyObject,index)=>{
 
           const key = keyObject.group;
           index === 0 ?
@@ -167,33 +168,43 @@ export class OutstandingCase2Service {
 
             ); 
           
-        });
+          });
 
-        return filteredOutstandingCases.flat();
+          return filteredOutstandingCases.flat();
 
-       }else{
+        }else{
 
-        return outstandingCases;
+          return outstandingCases;
 
-       }
+        }
        
       })
     ); 
   }
 
-  onSearchChange(outstandingCases$:Observable<OutstandingAssignment2[]>, searchValue:string){
-
-
-    this.outstandingCases$.value.forEach(outstandingCase => {
-
-      const currentValue = this.convertObjectToString(outstandingCase);
-      if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
-        outstandingCase.searchCandidate = true;
-      }
-    });
-   
+  onSearchChange(searchValue$:Observable<string> ,outstandingCases$:Observable<OutstandingAssignment2[]>, until$:Observable<any>){
     
-    
+    return combineLatest(searchValue$, outstandingCases$).pipe(
+      takeUntil(until$),
+      map(outstandingCases => {
+        
+        
+        outstandingCases[1].forEach(outstandingCase => {
+
+          const currentValue = this.convertObjectToString(outstandingCase);
+          if(currentValue.toLowerCase().indexOf(outstandingCases[0]) > -1 && outstandingCases[0] !== '') {
+            outstandingCase.searchCandidate = true;
+          }
+
+        });
+
+        return outstandingCases;    
+
+      }),
+      map(outstandingCases => outstandingCases[1])
+
+    );
+       
   }
 
 
@@ -217,4 +228,5 @@ export class OutstandingCase2Service {
     return result;
 
   }
+  
 }

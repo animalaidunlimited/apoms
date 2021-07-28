@@ -1,12 +1,12 @@
 
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { ThemePalette } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { BehaviorSubject, Observable, Subject, throwError, combineLatest, fromEvent } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, finalize, map, skip, startWith, take, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, skip, startWith, take, takeUntil } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -18,7 +18,6 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { MessagingService } from '../../services/messaging.service';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
-
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 
@@ -58,9 +57,6 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
   filterBtnColor: ThemePalette = 'accent';
 
   refreshColour$!:BehaviorSubject<ThemePalette>;
-
-
-
   incomingObject!: FilterKeys;
 
 
@@ -90,6 +86,7 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
   
   
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+
   @ViewChildren('filterChips') filterChips!: MatChipList[];
 
   matChipObs = new BehaviorSubject(null);
@@ -136,22 +133,19 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
       searchTerm: ['']
     });
 
-    
-    this.searchForm.get('searchTerm')?.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        debounceTime(250),
-        startWith(''),
-        takeUntil(this.ngUnsubscribe)
-        )
-      .subscribe(value => {
-       
-       /*  this.outstandingCase2Service.onSearchChange(this.receivedVehicleList$, value); */
 
-       this.receivedVehicleList$ = this.receivedVehicleList$.pipe(
-        map(outstandingCase => outstandingCase.map())
-       );
-      });
+    this.outstandingCase2Service.onSearchChange(this.searchForm.get('searchTerm')?.valueChanges
+    .pipe(
+      distinctUntilChanged(),
+      debounceTime(250),
+      startWith(''),
+      takeUntil(this.ngUnsubscribe)
+      ) as Observable<string>,
+      this.receivedVehicleList$,
+      this.ngUnsubscribe
+      ).subscribe(val => console.log(val));
+    
+ 
 
 
     this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
@@ -211,26 +205,6 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
     });
 
     this.setup();
-
-  }
-
-  convertObjectToString(assignment : any){
-
-    let result = '';
-    if(assignment) {
-      result = Object.entries(assignment).reduce((currentValue: string, val: any)=>{
-
-        if(typeof val[1] === 'object') {
-          currentValue += this.convertObjectToString(val[1]);
-        }
-        else if(typeof val[1] !== 'number' || val[0]==='emergencyNumber') {
-          currentValue += currentValue + val[1] + '◬';
-        }
-        return currentValue;
-      },'');
-    }
-
-    return result;
 
   }
 
