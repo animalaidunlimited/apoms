@@ -2,6 +2,7 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
+import { CaseLocationComponent } from './modules/driver-view/components/case-location/case-location.component';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -150,6 +151,12 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import('./modules/print-templates/print-templates-page.module')
             .then(m => m.PrintTemplatesPageModule)
+    },
+    {
+        path: 'case-location',
+        loadChildren: () =>
+            import('./modules/driver-view/components/case-location/case-location.module')
+            .then(m => m.CaseLocationModule)
     }
 
 ];

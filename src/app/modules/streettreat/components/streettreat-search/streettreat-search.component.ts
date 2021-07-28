@@ -24,10 +24,6 @@ export class StreetTreatSearchComponent implements OnInit {
 
   onSearchQuery(searchQuery:string){
   this.searchResults$ = this.streetTreatService.searchCases(searchQuery);
-
-    //this.searchResults$.subscribe(val=> {
-    //  console.log(val);
-    //})
   }
 
   openCase(searchResult: SearchStreetTreatResponse) {

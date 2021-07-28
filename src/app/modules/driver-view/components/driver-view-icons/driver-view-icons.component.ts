@@ -18,8 +18,6 @@ export class DriverViewIconsComponent implements OnInit {
   constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
-
-    console.log(this.driverViewAssignment)
     
 
   }
