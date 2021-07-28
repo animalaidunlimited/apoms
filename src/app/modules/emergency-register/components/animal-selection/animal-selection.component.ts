@@ -122,9 +122,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
 
-        console.log(this.recordForm.value);
-        console.log(this.emergencyCaseId);
-
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
@@ -198,8 +195,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
-
-        console.log(patient)
 
         const problems = this.fb.array([]);
         
@@ -311,11 +306,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     loadPatientArray(emergencyCaseId: number | undefined) {
 
-        console.log('load patient')
-
         if(this.incomingPatientArray.length > 0) {
 
-            console.log(this.incomingPatientArray.length)
             this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
@@ -329,9 +321,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 {
                     this.patients.push(newPatient);
                 }
-            })
-
-            console.log(this.patients);
+            });
 
             this.setChildOutcomeAsParentPatient(this.patients);
 
@@ -340,7 +330,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
         else if(emergencyCaseId) {
 
-            console.log('I should be called');
             this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
@@ -373,8 +362,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     initPatientArray() {
-
-        console.log('initialise');
 
         this.patients.clear();
 

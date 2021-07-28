@@ -12,6 +12,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
 import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
+import { CaseLocationComponent } from '../case-location/case-location.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { AnimalSelectionModule } from 'src/app/modules/emergency-register/compon
     DriverViewIconsComponent,
     CallerDetailsDialogComponent,
     LocationDialogComponent,
-    DriverActionDialogComponent
+    DriverActionDialogComponent,
+    CaseLocationComponent
   ],
   imports: [
     CommonModule,

@@ -39,7 +39,7 @@
     border-radius: 15px;
     width: 100%; 
     height: max-content; 
-    margin-top: 10px;
+    margin-top: 16px;
     // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 
 }
@@ -49,11 +49,11 @@
     height: 23px;
     border-radius: 24px;
     margin-bottom: 7px;
-   /*  position: relative;
-    left: 14rem;
-    top: 2px; */
     text-align: center;
     vertical-align: middle;
+    // position: absolute;
+    // right: calc(100vw / 3);
+    // top: -7%;
 
     &.STRelease{
         background: #3393B4;
@@ -169,3 +169,16 @@ p {
     top: 5%;
 }
 
+.selectionButton {
+    color: green;
+    font-size: 1.3em;
+    position: relative;
+    top: 3px;
+}
+
+.selectionButtonWrapper {
+    background-color: #EDEDED;
+    border: solid 0px;
+    border-radius: 6px;
+    height: 2em;
+}
