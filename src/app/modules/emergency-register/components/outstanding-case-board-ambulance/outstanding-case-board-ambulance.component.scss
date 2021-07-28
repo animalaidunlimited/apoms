@@ -68,6 +68,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        align-items: center;
         &Name{
 
             font-size: 1em;
@@ -181,4 +182,9 @@
         }
     }
     
+}
+
+.timeAgo{
+    font-weight: bold;
+    color:red;
 }

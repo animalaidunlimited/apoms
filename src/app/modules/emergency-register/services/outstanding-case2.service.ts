@@ -70,30 +70,44 @@ export class OutstandingCase2Service {
   }
 
 
-  getBackstopHospitalTimer(){
+  getBackstopHospitalTimer(vehicleId:number){
     
     // tslint:disable-next-line: no-shadowed-variable
     const timer = this.outstandingCases$.pipe(
     
       map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
       {
-        if(outstandingCase.assignedVehicleId === 48 
+        if(outstandingCase.assignedVehicleId === vehicleId 
           && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
               || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null))
         {
-          outstandingCase.ambulanceAction === 'Rescue' ? 
-            newArr.push(new Date(outstandingCase.rescueTime as string)) : 
-            newArr.push(new Date(outstandingCase.pickupDate as string));
+
+          if(outstandingCase.ambulanceAction === 'Rescue' )
+          { 
+            const rescueTime = new Date(outstandingCase.rescueTime as string);
+            if(rescueTime.getDate() === new Date().getDate())
+            {
+              newArr.push(rescueTime);
+            }
+
+          }
+          else{
+
+            const pickupTime = new Date(outstandingCase.rescueTime as string);
+            if(pickupTime.getDate() === new Date().getDate())
+            {
+              newArr.push(pickupTime);
+            }
+          }
             
         }
-
-        return  newArr;
+        
+        return newArr;
       }, [])
       ),
       map(outStandingCases => {
           return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
       })
-    /*   map(time => time.getDate() >= new Date().getDate() ? time : null) */
     );
 
     // return timer;
@@ -108,10 +122,10 @@ export class OutstandingCase2Service {
 
   }
 
-  getTimer(){
+  getTimer(vehicleId:number){
     
     return timer(200).pipe(
-      switchMap(() => this.getBackstopHospitalTimer())
+      switchMap(() => this.getBackstopHospitalTimer(vehicleId))
     );
   
   }
@@ -119,18 +133,44 @@ export class OutstandingCase2Service {
 
 
   backToHospitalTimer(backToHospital: Date){
+   
     const currentTime = new Date();
 
-    const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
-    const totalMinutes     = Math.floor(totalSeconds/60);
-    const totalHours       = Math.floor(totalMinutes/60);
-    const totalDays        = Math.floor(totalHours/24);
+    if(backToHospital.getTime() - currentTime.getTime() > 0)
+    {
+      const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
+      const totalMinutes     = Math.floor(totalSeconds/60);
+      const totalHours       = Math.floor(totalMinutes/60);
+      const totalDays        = Math.floor(totalHours/24);
 
-    const hours   = totalHours - ( totalDays * 24 );
-    const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
-    const seconds = totalSeconds - ( totalDays * 24 * 60 * 60 ) - ( hours * 60 * 60 ) - ( minutes * 60 );
+      const hours   = totalHours - ( totalDays * 24 );
+      const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
+      const seconds = totalSeconds - ( totalDays * 24 * 60 * 60 ) - ( hours * 60 * 60 ) - ( minutes * 60 );
 
-    return (`${hours}:${minutes}:${seconds}`); 
+      
+      return ({
+        time : `${hours}:${minutes}:${seconds}`,
+        class : 'timeLeft'
+      }); 
+
+    }
+    else{
+      const elapsed = currentTime.getTime() - backToHospital.getTime() ;
+      const seconds = parseInt((Math.abs(elapsed) / (1000) % 60).toString(),10);
+      const minutes = parseInt((Math.abs(elapsed) / (1000 * 60) % 60).toString(),10);
+      const hours = parseInt((Math.abs(elapsed) / ((1000 * 60 * 60))).toString(), 10);
+      
+      if(isNaN(hours))
+      {
+        return null;
+      }else{
+        return ({
+        time: `${hours}:${minutes}:${seconds}`,
+        class: 'timeAgo'
+        }); 
+      }
+
+    }
   }
 
  
