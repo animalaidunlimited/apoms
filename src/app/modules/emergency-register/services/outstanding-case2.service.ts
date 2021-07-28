@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
-import { filter, map, pairwise, skip, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import { filter, map, pairwise, skip, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 
@@ -182,28 +182,20 @@ export class OutstandingCase2Service {
     ); 
   }
 
-  onSearchChange(searchValue$:Observable<string> ,outstandingCases$:Observable<OutstandingAssignment2[]>, until$:Observable<any>){
-    
-    return combineLatest(searchValue$, outstandingCases$).pipe(
-      takeUntil(until$),
-      map(outstandingCases => {
-        
-        
-        outstandingCases[1].forEach(outstandingCase => {
+  onSearchChange(searchValue:string ){
 
-          const currentValue = this.convertObjectToString(outstandingCase);
-          if(currentValue.toLowerCase().indexOf(outstandingCases[0]) > -1 && outstandingCases[0] !== '') {
-            outstandingCase.searchCandidate = true;
-          }
+  
+    this.outstandingCases$.value.forEach(outstandingCase => {
 
-        });
+      const currentValue = this.convertObjectToString(outstandingCase);
+      if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
+        outstandingCase.searchCandidate = true;
+      }else{
+        outstandingCase.searchCandidate = false;
+      }
 
-        return outstandingCases;    
-
-      }),
-      map(outstandingCases => outstandingCases[1])
-
-    );
+    }); 
+      
        
   }
 

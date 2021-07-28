@@ -36,8 +36,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
     @Input() inMap = false;
     @Input() filterKeysArray!: FilterKeys[];
+    @Input() searchChange$!:Observable<string>;
 
-    vehicleAssignmentList!: Observable<OutstandingAssignment2[]>;
+    vehicleAssignmentList$!: Observable<OutstandingAssignment2[]>;
 
     ambulanceCases$!: Observable<ActiveVehicleLocation>;
 
@@ -92,7 +93,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             ),
         );
 
-        this.vehicleAssignmentList =  this.outstandingCase2Service.filterCases(
+        this.vehicleAssignmentList$ =  this.outstandingCase2Service.filterCases(
             this.matChipObs,
             this.outstandingCase2Service.outstandingCases$.pipe(
                 takeUntil(this.ngUnsubscribe),
@@ -124,7 +125,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             concatAll(),
         );
 
-        this.currentCapacity = this.vehicleAssignmentList.pipe(
+        this.currentCapacity = this.vehicleAssignmentList$.pipe(
             takeUntil(this.ngUnsubscribe),
             map(vehicleAssignments => {
                 let smallPatientCount = 0;
@@ -165,13 +166,21 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         
         this.timer$ = this.outstandingCase2Service.getTimer();
 
-     
+        
+   /*      this.vehicleAssignmentList$  = this.outstandingCase2Service.onSearchChange(
+            this.searchChange$,
+            this.vehicleAssignmentList$,
+            this.ngUnsubscribe
+        );
+
+
+         this.vehicleAssignmentList$.subscribe(value => console.log(value)); */
         
     }
 
 
     getOutstandingCasesByStatusId(statusId: number) {
-        return this.vehicleAssignmentList.pipe(
+        return this.vehicleAssignmentList$.pipe(
             map(outstandingCases =>
                 outstandingCases.filter(
                     outStandingCases =>

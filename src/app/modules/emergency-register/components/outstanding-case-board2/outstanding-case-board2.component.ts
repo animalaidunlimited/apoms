@@ -84,6 +84,7 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
     groupValues: []
   }];
   
+  searchChange$!:Observable<string>;
   
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
@@ -133,17 +134,18 @@ export class OutstandingCaseBoard2Component implements OnInit,OnDestroy {
       searchTerm: ['']
     });
 
-
-    this.outstandingCase2Service.onSearchChange(this.searchForm.get('searchTerm')?.valueChanges
+   
+   this.searchForm.get('searchTerm')?.valueChanges
     .pipe(
       distinctUntilChanged(),
       debounceTime(250),
       startWith(''),
       takeUntil(this.ngUnsubscribe)
-      ) as Observable<string>,
-      this.receivedVehicleList$,
-      this.ngUnsubscribe
-      ).subscribe(val => console.log(val));
+      ).subscribe(searchValue => this.outstandingCase2Service.onSearchChange(
+        searchValue
+      )) ;
+
+
     
  
 
