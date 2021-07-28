@@ -44,7 +44,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
     vehicleType$!: Observable<VehicleType>;
 
-    timer$!: Observable<any>;
+    timer$!: Observable<{time:string, class:string} | null>;
 
     
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
@@ -164,7 +164,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             }),
         );
         
-        this.timer$ = this.outstandingCase2Service.getTimer();
+        this.timer$ = this.outstandingCase2Service.getTimer(this.vehicleId);
 
         
    /*      this.vehicleAssignmentList$  = this.outstandingCase2Service.onSearchChange(
