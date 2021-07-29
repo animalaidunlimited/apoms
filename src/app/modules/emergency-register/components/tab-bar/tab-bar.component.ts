@@ -31,16 +31,17 @@ export class TabBarComponent implements OnInit, OnDestroy {
     selected = new FormControl(0);
 
     tabs = [
-        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' , GUID: new BehaviorSubject<string>('') },
-        { id: 1, value: 'Board2', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
-        { id: 2, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
+        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
+        { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
     ];
 
-    constructor(private cdr: ChangeDetectorRef,
+    constructor(
+        private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
         private navigationService:NavigationService,
-        private caseService: CaseService) {}
+        private caseService: CaseService
+    ) {}
 
     ngOnInit() {
         this.selected.setValue(1);
