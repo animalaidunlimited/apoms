@@ -1,12 +1,13 @@
 
 
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 import { DatePipe } from '@angular/common';
 import { RescueDetailsService } from './rescue-details.service';
+import { ThemePalette } from '@angular/material/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +15,22 @@ import { RescueDetailsService } from './rescue-details.service';
 export class OutstandingCase2Service {
   
 
-  vechileId$ = new BehaviorSubject<(number| null)[]>([]);
-
 
   initialised = false;
+  
+  vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
+
+
+  autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+  autoRefreshState = false;
+
+
+  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
   outstandingCases$:BehaviorSubject<OutstandingAssignment2[]> = new BehaviorSubject<OutstandingAssignment2[]>([]);
   
   constructor(
     private rescueService: RescueDetailsService,
-    private datepipe:DatePipe
+    private zone:NgZone
   ) {
     this.initialise();
    }
@@ -41,6 +49,7 @@ export class OutstandingCase2Service {
       { 
         if(outstandingCases){
           this.outstandingCases$.next(outstandingCases);
+          this.zone.run(() => this.refreshColour.next('primary'));
         }
       }
     );
@@ -268,6 +277,28 @@ export class OutstandingCase2Service {
     }
 
     return result;
+
+  }
+
+  getAutoRefresh(){
+    return this.autoRefresh;
+  }
+
+  setAutoRefresh(value:boolean){
+    this.zone.run(() => this.autoRefresh.next(value));
+
+  }
+
+  toggleAutoRefresh(){
+
+    let currentValue:boolean;
+
+    this.autoRefresh.subscribe(value => {
+      currentValue = value;
+    });
+
+    this.zone.run(() => this.autoRefresh.next(!currentValue));
+
 
   }
   
