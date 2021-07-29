@@ -175,7 +175,7 @@ export class OutstandingCase2Service {
       }else{
     
         return ({
-        time: formatTime(hours,minutes),
+        time: `- ${formatTime(hours,minutes)}`,
         class: 'timeAgo'
         }); 
       }
