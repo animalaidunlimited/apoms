@@ -2,7 +2,7 @@
 
   <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
     <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
-      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" fxL>
+      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
 
         <div fxLayout="row">
          <!--  <div class="vehicleImage">
@@ -10,8 +10,8 @@
           </div> -->
           <div class="vehicleDescription" fxLayout="row">
             <div class="vehicleNumber">
-              <p>{{vehicleDetail.vehicleNumber}}</p>
-              <div class="licensePlate" fxLayout="row">
+              <p (click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
+              <div class="licensePlate" @fadeAnimation fxLayout="row" *ngIf="showPlate">
                 <div class="licensePlateBadge">
                   <div class="silver"></div>
                   <span>IND</span>
@@ -31,22 +31,21 @@
           </div>
         </div>
 
-        <div [fxLayout]="inMap ? 'row-reverse' : 'column'" fxLayout.lt-sm="row" class="vehicleType">
+        <div fxLayout="row" class="vehicleType">
           <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
           </div>
-          <div fxFlex fxLayout="row">
+          <div class="vehicleMap">
             <button (click)="openMap($event)" mat-mini-fab>
               <mat-icon>map</mat-icon>
             </button>
-            <p>View in map</p>
           </div>
         </div>
 
 
 
-        <div 
+        <div  class="timer"
         *ngIf="timer$ | async as timer"
         [ngClass]="timer.class"> 
           <span *ngIf="timer.class === 'ago'">-</span>{{ timer.time }}

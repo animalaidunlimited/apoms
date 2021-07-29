@@ -1,7 +1,6 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between center">
   <form [formGroup]="searchForm">
-
-    <mat-spinner *ngIf="loading | async" class="mat-spinner"></mat-spinner>
+  <mat-spinner class="loader"  *ngIf="loading | async" class="mat-spinner"></mat-spinner>
 
   <mat-form-field class="search-box" >
 
