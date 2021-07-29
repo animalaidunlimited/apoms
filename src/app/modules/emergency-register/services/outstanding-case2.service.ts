@@ -2,10 +2,10 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
-import { filter, map, pairwise, skip, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
-
+import { DatePipe } from '@angular/common';
 import { RescueDetailsService } from './rescue-details.service';
 
 @Injectable({
@@ -21,7 +21,8 @@ export class OutstandingCase2Service {
   outstandingCases$:BehaviorSubject<OutstandingAssignment2[]> = new BehaviorSubject<OutstandingAssignment2[]>([]);
   
   constructor(
-    private rescueService: RescueDetailsService
+    private rescueService: RescueDetailsService,
+    private datepipe:DatePipe
   ) {
     this.initialise();
    }
@@ -133,9 +134,15 @@ export class OutstandingCase2Service {
 
 
   backToHospitalTimer(backToHospital: Date){
+
+    const formatTime = (hours:number,minutes:number) => {
+      return `${hours < 10 ? `0${hours}`: `${hours}`}:${minutes < 10 ? `0${minutes}`: `${minutes}`}`;
+    };
    
     const currentTime = new Date();
 
+  
+    
     if(backToHospital.getTime() - currentTime.getTime() > 0)
     {
       const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
@@ -145,27 +152,30 @@ export class OutstandingCase2Service {
 
       const hours   = totalHours - ( totalDays * 24 );
       const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
-      const seconds = totalSeconds - ( totalDays * 24 * 60 * 60 ) - ( hours * 60 * 60 ) - ( minutes * 60 );
-
       
+      
+     
       return ({
-        time : `${hours}:${minutes}:${seconds}`,
+        time : formatTime(hours,minutes),
         class : 'timeLeft'
       }); 
 
     }
     else{
       const elapsed = currentTime.getTime() - backToHospital.getTime() ;
-      const seconds = parseInt((Math.abs(elapsed) / (1000) % 60).toString(),10);
+
       const minutes = parseInt((Math.abs(elapsed) / (1000 * 60) % 60).toString(),10);
       const hours = parseInt((Math.abs(elapsed) / ((1000 * 60 * 60))).toString(), 10);
-      
+
+     
+     
       if(isNaN(hours))
       {
         return null;
       }else{
+    
         return ({
-        time: `${hours}:${minutes}:${seconds}`,
+        time: formatTime(hours,minutes),
         class: 'timeAgo'
         }); 
       }

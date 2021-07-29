@@ -12,6 +12,9 @@
     position: relative;
     box-shadow: 0 0.2em 0.1em rgb(0 0 0 / 25%);
     background:white;
+    position: absolute;
+    left:-1em;
+    top:-1em;
     &Badge {
         background-color: #3636c9;
         display: flex;
@@ -54,10 +57,16 @@
 
 .vehicle{
     justify-content: space-between;
+    padding-right: 2em;
+    position: relative;
     &Number{
+        position: relative;
+        min-width: max-content;
+
         p{
-            margin-top:0.5em;
+            margin-bottom:0em;
             font-weight:bold;
+            font-size:1.2em;
         }
         
     }
@@ -69,6 +78,8 @@
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
+        min-width: 10em;
+        margin-left: 1em;
         &Name{
 
             font-size: 1em;
@@ -108,6 +119,11 @@
         min-width: 15em;
         margin-right: 2em;
     }
+    &Map{
+        position: absolute;
+        top:0.5em;
+        right:0.1em;
+    }
 }
 
 
@@ -119,8 +135,7 @@
 }
 
 .vehicleType{
-    margin-top: 0.8em;
-    min-width: 30em;
+    align-items: center;
     p{
         margin-left:1em;
     }
@@ -150,6 +165,7 @@
     h3{
         text-align: center;
         margin-top: 0.1em;
+        margin-bottom: 0.6em;
     }
 }
 
@@ -187,4 +203,8 @@
 .timeAgo{
     font-weight: bold;
     color:red;
+}
+.timer{
+    display:flex;
+    align-items: center;
 }

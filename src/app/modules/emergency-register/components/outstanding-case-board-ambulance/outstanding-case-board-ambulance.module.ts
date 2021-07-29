@@ -6,8 +6,7 @@ import { SharedPipesModule } from 'src/app/shared-pipes.module';
 @NgModule({
   declarations: [OutstandingCaseBoardAmbulanceComponent],
   imports: [
-
-  CommonModule,
+    CommonModule,
     MaterialModule,
     SharedPipesModule
   ],

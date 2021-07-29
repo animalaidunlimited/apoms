@@ -3,12 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
 
-import { Observable, Subject, timer, BehaviorSubject } from 'rxjs';
+import { Observable, Subject,  BehaviorSubject } from 'rxjs';
 import {
     concatAll,
     distinct,
     map,
-  
     skipWhile,
     takeUntil,
     withLatestFrom,
@@ -20,45 +19,62 @@ import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
+import {trigger, transition, style, animate} from '@angular/animations';
 
+
+const fadeAnimation = trigger('fadeAnimation',[
+    transition(':enter',[
+        style({opacity: 0}),
+        animate('200ms', style({opacity: 1}))
+    ]),
+    transition(':leave',[
+        style({opacity: 1}),
+        animate('200ms', style({opacity : 0}))
+    ])
+]);
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
+    animations: [fadeAnimation]
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
-    
+    // Input's  
+
+    // Static Input's
     @Input() vehicleId!: number;
-
-    @Input() matChipObs!: BehaviorSubject<any>;
-
     @Input() inMap = false;
     @Input() filterKeysArray!: FilterKeys[];
+
+    // Dynamic Input's
     @Input() searchChange$!:Observable<string>;
-
-    vehicleAssignmentList$!: Observable<OutstandingAssignment2[]>;
-
-    ambulanceCases$!: Observable<ActiveVehicleLocation>;
-
-    vehicleType$!: Observable<VehicleType>;
-
-    timer$!: Observable<{time:string, class:string} | null>;
-
+    @Input() matChipObs!: BehaviorSubject<any>;
     
+    // Output's  
     @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
-
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
-
     @Output() openCaseEmitter:EventEmitter<OutstandingAssignment2> = new EventEmitter();
 
+
+
+    // Properties
+
+    // Static
+    actionStatusId!: number[];
+    showPlate = false;
+
+    // Dynamic
+    vehicleAssignmentList$!: Observable<OutstandingAssignment2[]>;
+    ambulanceCases$!: Observable<ActiveVehicleLocation>;
+    vehicleType$!: Observable<VehicleType>;
+    timer$!: Observable<{time:string, class:string} | null>;
     currentCapacity!: Observable<{
         capacity: { small: number; large: number };
     }>;
-
-    actionStatusId!: number[];
-
+    
+    // Component unsubscribe handler
     ngUnsubscribe = new Subject();
 
     constructor(
@@ -134,16 +150,15 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 vehicleAssignments.forEach(vehicleAssignment => {
                     vehicleAssignment.patients.forEach(patient => {
                         if (
-                            /**
-                             * Release count
-                             */
+                            
+                            // Release count
 
                             (vehicleAssignment.releaseId === null &&
                                 patient.patientCallOutcomeId !== null &&
                                 vehicleAssignment.rescueTime !== null) ||
-                            /**
-                             * Rescue count
-                             */
+
+                            // Rescue count
+                            
                             (vehicleAssignment.releaseId !== null &&
                                 vehicleAssignment.releaseEndDate !== null &&
                                 vehicleAssignment.pickupDate !== null)
@@ -165,16 +180,6 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         );
         
         this.timer$ = this.outstandingCase2Service.getTimer(this.vehicleId);
-
-        
-   /*      this.vehicleAssignmentList$  = this.outstandingCase2Service.onSearchChange(
-            this.searchChange$,
-            this.vehicleAssignmentList$,
-            this.ngUnsubscribe
-        );
-
-
-         this.vehicleAssignmentList$.subscribe(value => console.log(value)); */
         
     }
 
