@@ -53,7 +53,7 @@
       <mat-icon>map</mat-icon>
     </button>
 
-    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()" >
+    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshCases()" >
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -121,6 +121,7 @@
 </div>
 
 <outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
+
 <div  fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
   <div class="swimlane">
     <h2 *ngIf="loaded" style="text-align: center;">Received</h2>

@@ -17,8 +17,8 @@ import { SearchResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { MessagingService } from '../../services/messaging.service';
-import { OutstandingCaseService } from '../../services/outstanding-case.service';
-import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
+/* import { OutstandingCaseService } from '../../services/outstanding-case.service'; */
+import { OutstandingCase2Service as OutstandingCaseService } from '../../services/outstanding-case2.service';
 
 
 export interface FilterKeys {
@@ -98,22 +98,22 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   matChipObs = new BehaviorSubject(null);
 
   constructor( 
-    private outstandingCase2Service: OutstandingCase2Service,
+    private outstandingCaseService: OutstandingCaseService,
     public rescueDialog: MatDialog,
     private dialog: MatDialog,
     private locationService: LocationService,
     private fb: FormBuilder,
     private messagingService: MessagingService,
-    private outstandingCaseService: OutstandingCaseService,
+   /*  private outstandingCaseService: OutstandingCaseService, */
     private changeDetector: ChangeDetectorRef,
     private dropDown: DropdownService) { }
 
   ngOnInit(): void {
 
 
-    this.receivedVehicleList$ = this.outstandingCase2Service.filterCases(
+    this.receivedVehicleList$ = this.outstandingCaseService.filterCases(
       this.matChipObs,
-      this.outstandingCase2Service.getOutstandingCasesByVehicleId(null).pipe(
+      this.outstandingCaseService.getOutstandingCasesByVehicleId(null).pipe(
         /** to fire complete on observable 
          * so finalize operator can be init
          */
@@ -132,7 +132,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       );
 
     
-    this.vehicleId$ = this.outstandingCase2Service.getVehicleId().pipe(skip(1)); 
+    this.vehicleId$ = this.outstandingCaseService.getVehicleId().pipe(skip(1)); 
 
 
     this.searchForm = this.fb.group({
@@ -146,7 +146,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       debounceTime(250),
       startWith(''),
       takeUntil(this.ngUnsubscribe)
-      ).subscribe(searchValue => this.outstandingCase2Service.onSearchChange(
+      ).subscribe(searchValue => this.outstandingCaseService.onSearchChange(
         searchValue
       )) ;
 
@@ -238,11 +238,11 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   }
 
-  refreshRescues(){
+  refreshCases(){
 
     this.loading.next(true);
 
-    this.outstandingCaseService.refreshRescues();
+    this.outstandingCaseService.initialise();
 
   }
 
