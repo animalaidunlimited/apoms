@@ -48,7 +48,7 @@
         <div  class="timer"
         *ngIf="timer$ | async as timer"
         [ngClass]="timer.class"> 
-          <span *ngIf="timer.class === 'ago'">-</span>{{ timer.time }}
+        {{ timer.time }}
         </div>
 
 
