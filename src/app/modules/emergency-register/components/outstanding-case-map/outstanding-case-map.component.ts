@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Inject, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Optional } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, ActionGroup, } from 'src/app/core/models/outstanding-case';
+import { ActionPatient,  ActionGroup, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
@@ -10,6 +9,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { ActiveVehicleLocation, LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -38,7 +38,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   options: google.maps.MapOptions = {};
 
-  outstandingCases$: BehaviorSubject<OutstandingCase[]>;
+
+
+  outstandingCases$!: BehaviorSubject<OutstandingAssignment[]>;
 
   rescues: any = [];
 
@@ -52,13 +54,15 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     public cdr: ChangeDetectorRef,
     @Optional() @Inject(MAT_DIALOG_DATA) public vehicleId: number) {
 
-      this.outstandingCases$ = this.outstandingCases.outstandingCases$;
+      this.outstandingCases$ =  this.outstandingCases.outstandingCases$;
       this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
       this.locationList$ = this.locationService.locationList$;
+
    }
 
   ngOnInit(): void {
 
+    
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
@@ -75,6 +79,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
     if(this.vehicleId)
     { 
+
       this.ambulanceLocations$ = this.ambulanceLocations$.pipe(
         map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId))
       );
@@ -156,11 +161,12 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
-
+    console.log(rescue.emergencyNumber);
     this.caseService.searchCases(searchQuery)
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(result => {
 
+       console.log(result);
       this.infoContent.next(result);
       this.infoWindow.open(marker);
 
@@ -168,9 +174,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   }
 
-  hasLargeAninmal(patients:ActionPatient[]) : boolean{
+  hasLargeAnimal(patients:ActionPatient[]) : boolean{
 
-    return patients.some(patient => patient.largeAnimal);
+    return patients?.some(patient => patient.animalSize === 'large');
 
   }
 

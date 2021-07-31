@@ -53,11 +53,11 @@ constructor(
         const message = JSON.parse(JSON.parse(payload.data?.messageData));
 
         // This is a rescue message, so pass this on to the outstanding-case service
-        if(message?.hasOwnProperty('actionStatus')){
+        /* if(message?.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
         }
-
+ */
         // This is an accept/reject message for treatment list records
         if(message?.hasOwnProperty('messageType')){
             this.treatmentList.receiveAcceptRejectMessage(message);

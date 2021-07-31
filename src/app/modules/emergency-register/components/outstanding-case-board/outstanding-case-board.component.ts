@@ -12,13 +12,12 @@ import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-det
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
-import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
-import { createTrue } from 'typescript';
 import { MessagingService } from '../../services/messaging.service';
-import { OutstandingCase2Service as OutstandingCaseService } from '../../services/outstanding-case2.service';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
 
 export interface FilterKeys {
@@ -36,13 +35,14 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   vehicleId$!: Observable<(number | null)[]>;
 
-
   ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
 
-  outstandingCases$!:  Observable<OutstandingAssignment2[]>;
-  receivedVehicleList$!:  Observable<OutstandingAssignment2[]>;
+  outstandingCases$!:  Observable<OutstandingAssignment[]>;
+
+  receivedVehicleList$!:  Observable<OutstandingAssignment[]>;
 
   searchForm:FormGroup = new FormGroup({});
+
   searchValue!: string;
 
   ngUnsubscribe = new Subject();
@@ -51,7 +51,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   
   showAmbulancePaths = false;
   autoRefresh = false;
-  loaded = false;
   hideList = true;
   hideMap = true;
   notificationPermissionGranted = false;
@@ -63,7 +62,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   matChipObs = new BehaviorSubject(null);
   refreshColour$!:BehaviorSubject<ThemePalette>;
   incomingObject!: FilterKeys;
-
 
   loading = this.outstandingCaseService.loading;
 
@@ -97,8 +95,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   @ViewChildren('filterChips') filterChips!: MatChipList[];
 
-  
-
   constructor( 
     private outstandingCaseService: OutstandingCaseService,
     public rescueDialog: MatDialog,
@@ -117,11 +113,12 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       this.outstandingCaseService.getOutstandingCasesByVehicleId(null),
       this.filterKeysArray,
       this.ngUnsubscribe
-      );
+    );
+
+   
+    this.vehicleId$ = this.outstandingCaseService.getVehicleId(); 
 
     
-    this.vehicleId$ = this.outstandingCaseService.getVehicleId().pipe(skip(1)); 
-
     this.searchForm = this.fb.group({
       searchTerm: ['']
     });
@@ -228,7 +225,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   }
 
-  openRescueEdit(outstandingCase:OutstandingAssignment2){
+  openRescueEdit(outstandingCase:OutstandingAssignment){
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
         maxWidth: 'auto',
         maxHeight: '100vh',
@@ -251,7 +248,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     });
   }
 
-  openCase(caseSearchResult:OutstandingAssignment2)
+  openCase(caseSearchResult:OutstandingAssignment)
   {
 
     const result:SearchResponse = {

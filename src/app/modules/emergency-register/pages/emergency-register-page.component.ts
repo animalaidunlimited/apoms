@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { PrintTemplateService } from '../../print-templates/services/print-template.service';
-import { EmergencyRegisterTabBarService } from '../services/emergency-register-tab-bar.service';
 import { MessagingService } from '../services/messaging.service';
 import { OutstandingCaseService } from '../services/outstanding-case.service';
 import { BehaviorSubject } from 'rxjs';
