@@ -77,12 +77,12 @@ export interface DriverAssignments {
   releaseAmbulanceId: number;
   releaseAmbulanceAssignmentDate: string;
   visitId: number;
-  visitTypeId: number,
+  visitTypeId: number;
   visitDate: string;
   visitStatusId: number;
   visitAdminNotes: string;
   visitOperatorNotes: string;
-  visitDay: number
+  visitDay: number;
 }
 
 

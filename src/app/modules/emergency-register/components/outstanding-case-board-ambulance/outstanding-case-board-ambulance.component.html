@@ -2,16 +2,16 @@
 
   <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
     <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
-      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" fxL>
+      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
 
         <div fxLayout="row">
-          <div class="vehicleImage">
+         <!--  <div class="vehicleImage">
             <img [src]="vehicleDetail.vehicleImage" />
-          </div>
-          <div class="vehicleDescription">
+          </div> -->
+          <div class="vehicleDescription" fxLayout="row">
             <div class="vehicleNumber">
-              <p>{{vehicleDetail.vehicleNumber}}</p>
-              <div class="licensePlate" fxLayout="row">
+              <p (click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
+              <div class="licensePlate" @fadeAnimation fxLayout="row" *ngIf="showPlate">
                 <div class="licensePlateBadge">
                   <div class="silver"></div>
                   <span>IND</span>
@@ -31,28 +31,55 @@
           </div>
         </div>
 
-        <div [fxLayout]="inMap ? 'row-reverse' : 'column'" fxLayout.lt-sm="row" class="vehicleType">
+        <div fxLayout="row" class="vehicleType">
           <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
           </div>
-          <div fxFlex fxLayout="row">
+          <div class="vehicleMap">
             <button (click)="openMap($event)" mat-mini-fab>
               <mat-icon>map</mat-icon>
             </button>
-            <p>View in map</p>
           </div>
         </div>
+
+
+
+        <div  class="timer"
+        *ngIf="timer$ | async as timer"
+        [ngClass]="timer.class"> 
+        {{ timer.time }}
+        </div>
+
 
         <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
           
           <div *ngIf="currentCapacity.capacity as capacity">
+
             <div fxLayout="row" fxLayoutAlign="end" >
-              <h3>Capacity</h3>
-              <h3>Current</h3>
+
+              <div>
+                <h3>Capacity</h3>
+                <div class="capacityTitle">
+                  <span>{{vehicleDetail.smallAnimalCapacity}} (S)</span>
+                  <span>{{vehicleDetail.largeAnimalCapacity}} (L)</span>
+                </div>
+              </div>
+
+              <div>
+                <h3>Current</h3>
+                <div class="capacityTitle">
+                  <span>{{capacity.small}} (S)</span>
+                  <span>{{capacity.large}} (L)</span>
+                </div>
+              </div>
+
             </div>
-            <div class="capacityTitle">Small <span>{{vehicleDetail.smallAnimalCapacity}}</span> <span>{{capacity.small}}</span></div>
-            <div class="capacityTitle">Large <span>{{vehicleDetail.largeAnimalCapacity}}</span> <span>{{capacity.large}}</span></div>
+
+            
+
+            
+
           </div>
         </div>
 
@@ -70,7 +97,7 @@
       <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
         <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
           <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
-            <mat-expansion-panel [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}"
+            <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}"
               hideToggle>
               <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                                         'border-green' : outstandingCase.emergencyCodeId == 2,

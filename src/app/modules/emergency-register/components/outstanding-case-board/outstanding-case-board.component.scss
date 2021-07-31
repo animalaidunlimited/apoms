@@ -1,97 +1,3 @@
-$colour-border: #a9abad;
-$primary-font-colour: #626262;
-$standard-width: 180px;
-
-.outstandingWrapper {
-    min-height: 60vh;
-
-}
-
-.drag-drop-container {
-    text-align: center;
-    width: 18%;
-    max-width: 100%;
-    min-height: 70vh;
-    min-width: 250px;
-    margin: 20px 25px 25px 0;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.rescue-group-container {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.avatar-circle {
-    width: 60px;
-    height: 60px;
-    background-color: lightsteelblue;
-    text-align: center;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-}
-
-.initials {
-    position: relative;
-    top: 15px; /* 25% of parent */
-    font-size: 30px; /* 50% of parent */
-    line-height: 30px; /* 50% of parent */
-    color: #fff;
-    font-weight: bold;
-}
-
-.drag-drop-list {
-    min-height: 48px;
-    min-width: 250px;
-    background: white;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.drag-drop-box {
-    padding: 20px 10px;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 14px;
-}
-
-.cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-placeholder {
-    opacity: 0;
-}
-
-.cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.drag-drop-box:last-child {
-    border: none;
-}
-
-.drag-drop-list.cdk-drop-list-dragging
-    .drag-drop-box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.moved {
-    background-color: lightsteelblue !important;
-}
-
 .border-red {
     border-right: 8px solid red;
 }
@@ -104,109 +10,30 @@ $standard-width: 180px;
     border-right: 8px solid gold;
 }
 
-.name {
-    margin: 10px 0px 0px 10px;
+.mat-expansion-panel{
+    margin-bottom: 8px;
+    border: solid .1px lightgray;
 }
 
-.telephone {
-    float: left;
-    margin: 10px 0px 0px 10px;
+.ambulanceAssignedCases{
+    border: 0.1em solid lightgrey;
+    margin: 1.5em 0 1.5em 0.5em;
+    border-radius: 0.3em;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    padding: 0.5em;
 }
+
 
 .telephone-dash-container {
     height: 100%;
     margin-bottom: 5px;
 }
 
-
 .telephone-dash {
     stroke: #607d8b;
     stroke-width: 4;
 }
 
-.patients-group{
-    margin: 10px 0px 0px 10px;
-}
-
-.media-count{
-    font-weight: bold;
-    color: #607d8b;
-    padding-top:3px;
-    margin-right: 4px;
-}
-
-.patient-details{
-    padding-top:3px;
-}
-
-.CallDateTime {
-    margin: 10px 0px 0px 10px;
-}
-
-.animal-location {
-    margin: 10px 0px 10px 10px;
-}
-
-.imageIcon {
-    color: black;
-    //margin-top: 0px;
-    cursor: pointer;
-}
-
-.imageCount {
-    color: black;
-}
-
-::ng-deep .mat-expansion-panel-header {
-    height:unset;
-    min-height:50px;
-}
-
-::ng-deep .mat-expansion-panel-header .mat-content{
-    align-items: center;
-}
-
-
-.mat-expansion-panel-header.mat-expanded,
-.mat-expansion-panel-header.mat-expanded:focus,
-.mat-expansion-panel-header.mat-expanded:hover,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
-.mat-expansion-panel-header:hover
-{
-  background-color: lightsteelblue !important;
-}
-
-.mat-expansion-panel{
-    margin-bottom: 8px;
-    border: solid .1px lightgray;
-}
-
-.filterChipWrapper {
-    position: absolute;
-    right: 16rem;
-}
-
-.filterText {
-    font-weight: bold;
-    font-family: sans-serif;
-    color: #a9abad;
-    margin-top: 24px;
-}
-
-
-.refresh-box{
-    max-width: 300px;
-    margin-right: 25px;
-}
-
-.mat-spinner {
-    position: absolute;
-    align-self: center;
-    top: 200px;
-    left: 40%;
-    z-index: 5000;
-    margin: auto;
-}
 
 .mat-release-panel{
     margin-bottom: 8px;
@@ -219,42 +46,91 @@ $standard-width: 180px;
     border-radius: 20px !important;
 }
 
-.filter-header{
-    background-color: lightsteelblue;
-    height: 64px;
-	display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 24px;
-    border-radius: inherit;
-    transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
-	font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-size: 15px;
-    font-weight: 400;
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
+{
+  background-color: lightsteelblue !important;
 }
 
-.filter-card{
-    background-color: white;
-    margin-bottom: 6px !important;
-    padding-bottom: 3px !important;
-    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
-    box-sizing: content-box;
-    display: block;
-    margin: 0;
-    border-radius: 4px;
-    overflow: hidden;
-    transition: margin 225ms cubic-bezier(0.4, 0, 0.2, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+.swimlane{
+    min-width: 13em;
+    width:18%;
+    margin: 1.25em 0.5em 1.5em 0;
+    text-align: center;
 }
 
-.filter-content{
-    background-color: white;
+
+
+
+
+.CallDateTime, .name, .telephone, .patients-group, .animal-location{
+    margin: 10px 0px 0px 10px;
+    text-align: left;
 }
 
-.ambulance-list {
-    border-bottom: 1px solid grey;
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
+.patient-details{
+    padding-top: 3px;
+}
+
+.media-count{
+    font-weight: bold;
+    color: #607d8b;
+    padding-top:3px;
+    margin-right: 4px;
+}
+
+.imageIcon {
+
+    cursor: pointer;
+}
+
+
+
+.filter-{
+    &header{
+        background-color: lightsteelblue;
+        height: 64px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 24px;
+        border-radius: inherit;
+        transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+
+    }
+    
+
+    &card{
+        background-color: white;
+        margin-bottom: 6px !important;
+        padding-bottom: 3px !important;
+        box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+        box-sizing: content-box;
+        display: block;
+        margin: 0;
+        border-radius: 4px;
+        overflow: hidden;
+        transition: margin 225ms cubic-bezier(0.4, 0, 0.2, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    
+    &content{
+        background-color: white;
+    }
+}
+.mat-progress-spinner {
+    margin: auto;
+    top: 0;
+    left: 20em;
+    right: 0;
+    bottom: 0;
+    position: fixed;
 }
 
 .filterWrapper{
@@ -264,84 +140,24 @@ $standard-width: 180px;
     top: 60px;
     z-index: 1;
     overflow-y: hidden;
-& .mat-expansion-panel:last-of-type {
-    // overflow-y: scroll;
-    max-height: 40vh;
-}
-}
-
-.ambulance-icon {
-    width: 77px;
-    height: 74px;
-    user-select: none;
-    border: 0px;
-    padding: 0px;
-    margin: 0px;
-    max-width: none;
+    .mat-expansion-panel:last-of-type {
+    
+        max-height: 40vh;
+    }
 }
 
-.show-ambulance-paths{
 
-}
 
-@media (max-width: 812px) {
-
-    ::ng-deep {
-    .outstandingWrapper {
-        margin-top: 6%;
-        min-height: 500px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .drag-drop-container {
-            margin-top: 20px !important;
-            min-width: 80% !important;
-            width: 80%;
-            display: block;
+@media screen and (min-width: 1280px) and (max-width: 1919.98px){
+    .vehicle {
+        #{&} &Type{
+            min-width:unset ;
         }
     }
-
-    mat-form-field.mat-form-field.search-box {
-        max-width: 100%;
-    }
-
-
-    .filterWrapper{
-        position: absolute !important;
-        width: 20rem !important;
-        right: 0;
-        left: 39px;
-        margin-top: 100px !important;
-        z-index: 1;
-        overflow-y: hidden;
-    & .mat-expansion-panel:last-of-type {
-        overflow-y: scroll;
-        max-height: 200px;
-    }
-    }
-
-    .filterText {
-        position: absolute !important;
-        font-weight: bold !important;
-        font-family: sans-serif !important;
-        right: 87vw !important;
-        color: $colour-border !important;
-        top: 1vw;
-    }
-
-    .filterChipWrapper {
-        position: absolute !important;
-        top: 98px !important;
-        left: 0 !important;
-        margin-left: 51px !important;
-        width: 100% !important;
-    }
-
-    .outstandingExpansionWrapper {
-        padding-left: 15px;
-    }
-
-}
 }
 
+@media (max-width: 600px){
+    .swimlane{
+        width:100%;
+    }
+}
