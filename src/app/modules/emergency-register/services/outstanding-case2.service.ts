@@ -13,17 +13,12 @@ import { ThemePalette } from '@angular/material/core';
   providedIn: 'root'
 })
 export class OutstandingCase2Service {
-  
 
-
-  initialised = false;
+  autoRefreshState = false;
   
   vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
 
-
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-  autoRefreshState = false;
-
 
   refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
   outstandingCases$:BehaviorSubject<OutstandingAssignment2[]> = new BehaviorSubject<OutstandingAssignment2[]>([]);
@@ -36,20 +31,18 @@ export class OutstandingCase2Service {
    }
 
   initialise(){
-    if(this.initialised){
-      return;
-    }
 
-    this.initialised = true;
-
-    this.rescueService.getOutstandingRescues2().pipe(take(1),
+    this.rescueService.getOutstandingRescues2().pipe(
     map(outstandingCases => 
       outstandingCases.map(outstandingCase => ({...outstandingCase, searchCandidate: false})))
     ).subscribe(outstandingCases =>
       { 
+        
         if(outstandingCases){
+     
           this.outstandingCases$.next(outstandingCases);
           this.zone.run(() => this.refreshColour.next('primary'));
+
         }
       }
     );
@@ -119,8 +112,6 @@ export class OutstandingCase2Service {
           return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
       })
     );
-
-    // return timer;
    
     return combineLatest([interval(1000),timer]).pipe(
       map(time => time[1]),

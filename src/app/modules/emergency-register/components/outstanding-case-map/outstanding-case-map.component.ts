@@ -82,7 +82,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     }
    
 
-
   }
 
   ngOnDestroy(){
