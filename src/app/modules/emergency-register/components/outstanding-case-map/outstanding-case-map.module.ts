@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
+import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
 
 @NgModule({
     declarations: [
@@ -13,10 +14,11 @@ import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-a
     ],
     imports: [
 
-    CommonModule,
+        CommonModule,
         MaterialModule,
         FlexLayoutModule,
         GoogleMapsModule,
+        SearchResultCardModule,
         OutstandingCaseBoardAmbulanceModule
     ],
     providers:[

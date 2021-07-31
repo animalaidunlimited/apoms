@@ -15,11 +15,13 @@ import {
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
-import { OutstandingCase2Service as  OutstandingCaseService} from '../../services/outstanding-case2.service';
+
+
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 import {trigger, transition, style, animate} from '@angular/animations';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
 
 const fadeAnimation = trigger('fadeAnimation',[
@@ -53,9 +55,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     @Input() matChipObs!: BehaviorSubject<any>;
     
     // Output's  
-    @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
+    @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
-    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment2> = new EventEmitter();
+    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment> = new EventEmitter();
 
 
 
@@ -66,7 +68,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     showPlate = false;
 
     // Dynamic
-    vehicleAssignmentList$!: Observable<OutstandingAssignment2[]>;
+    vehicleAssignmentList$!: Observable<OutstandingAssignment[]>;
     ambulanceCases$!: Observable<ActiveVehicleLocation>;
     vehicleType$!: Observable<VehicleType>;
     timer$!: Observable<{time:string, class:string} | null>;
@@ -216,11 +218,11 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         this.mediaDialog.emit(({patientId,tagNumber}));
     }
 
-    openRescueEdit(outstandingCase:OutstandingAssignment2){
+    openRescueEdit(outstandingCase:OutstandingAssignment){
         this.rescueEdit.emit(outstandingCase);
     }
 
-    openCase(caseSearchResult:OutstandingAssignment2){
+    openCase(caseSearchResult:OutstandingAssignment){
         this.openCaseEmitter.emit(caseSearchResult);
     }
 

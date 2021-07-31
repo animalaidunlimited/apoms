@@ -17,40 +17,42 @@
 
 
     <ng-container *ngIf="!vehicleId">
-        <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
-            <div *ngFor="let states of outstandingActions.statusGroups;">
-                <div *ngFor="let assignments of states.actions;">
+        <div >
+           <!--  *ngFor="let states of outstandingActions.statusGroups;" -->
+            <div >
+               <!--  *ngFor="let assignments of states.actions;" -->
+                <div >
                     <!--TODO alter the emergencyCodeId so that it works for all organisations -->
-                    <!-- #marker="mapMarker" -->
+
                     <map-marker
-                    *ngFor="let action of assignments.ambulanceAssignment"
+                    *ngFor="let outstandingCase of (outstandingCases$ | async);"
                     #marker="mapMarker"
-                    [position]="action.latLngLiteral"
-                    (mapClick)="openInfoWindow(marker, action)"
+                    [position]="{lat: outstandingCase.lat, lng: outstandingCase.lng}"
+                    (mapClick)="openInfoWindow(marker, outstandingCase)"
                     [options]="{icon:
                                     (
-                                        action.ambulanceAction == 'Release'? (
-                                            hasLargeAninmal(action.patients)?
+                                        outstandingCase.ambulanceAction == 'Release'? (
+                                            hasLargeAnimal(outstandingCase.patients)?
                                                 'assets/icons/large_animal_release_purple.png'
                                                 :
                                                 'assets/icons/small_animal_release_purple.png'
                                             )
                                             :
                                             (
-                                                hasLargeAninmal(action.patients) ?
-                                                        (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                                                hasLargeAnimal(outstandingCase.patients) ?
+                                                        (outstandingCase.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                                                         :
-                                                        action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                                                        outstandingCase.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
                                                         :
-                                                        action.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                                                        outstandingCase.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
                                                         :
                                                         'assets/icons/large_animal_grey.png')
                                                     :
-                                                        (action.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                                                        (outstandingCase.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
                                                         :
-                                                        action.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                                                        outstandingCase.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
                                                         :
-                                                        action.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                                                        outstandingCase.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
                                                         :
                                                         'assets/icons/small_animal_grey.png')
                                             )
@@ -85,12 +87,12 @@
 
             <outstanding-case-board-ambulance [inMap]="true" [vehicleId]="vehicleId"></outstanding-case-board-ambulance>
 
-            <!-- <div *ngFor="let patient of infoContent | async">
+            <div *ngFor="let patient of infoContent | async">
 
                 <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
                 
 
-            </div> -->
+            </div> 
 
         </div>
 

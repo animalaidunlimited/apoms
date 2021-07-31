@@ -1,15 +1,13 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
 import { OutstandingCaseService } from './outstanding-case.service';
 
-describe('OutstandingCaseService', () => {
+
+
+describe('OutstandingCase2Service', () => {
   let service: OutstandingCaseService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
-    });
+    TestBed.configureTestingModule({});
     service = TestBed.inject(OutstandingCaseService);
   });
 

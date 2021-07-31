@@ -1,361 +1,256 @@
 import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { OutstandingAssignment, OutstandingCase, OutstandingCaseResponse, RescuerGroup, ActionPatient } from 'src/app/core/models/outstanding-case';
+import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
+import { filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class OutstandingCaseService {
 
+  autoRefreshState = false;
+  
+  vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
+  loading = new BehaviorSubject<boolean>(true);
+
+  autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+
+  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
+  outstandingCases$:BehaviorSubject<OutstandingAssignment[]> = new BehaviorSubject<OutstandingAssignment[]>([]);
+  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+  
   constructor(
     private rescueService: RescueDetailsService,
     private zone:NgZone
-    ) { }
-  autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-  autoRefreshState = false;
-
-  outstandingCases$:BehaviorSubject<OutstandingCase[]> = new BehaviorSubject([] as OutstandingCase[]);
-
-
-  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-
-  notificationPermissionGranted = false;
-
-  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
-
-  initialRescueListSubscription:Subscription | undefined;
-
-  initialised = false;
-
-  actionStatus = [{actionStatus: 1 , actionStatusName: 'Received'},
-  {actionStatus: 2 , actionStatusName: 'Assigned'},
-  {actionStatus: 3 , actionStatusName: 'Arrived/Picked'},
-  {actionStatus: 4 , actionStatusName: 'Rescued/Released'},
-  {actionStatus: 5 , actionStatusName: 'Admitted'}];
+  ) {
+    this.initialise();
+   }
 
   initialise(){
 
-
-    if(this.initialised){
-      return;
-    }
-
-      this.initialised = true;
-
-      // Get the initial list from the rescue service
-      this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: OutstandingCaseResponse) => {
+    this.rescueService.getOutstandingRescues2().pipe(
+    map(outstandingCases => 
+      outstandingCases.map(outstandingCase => ({...outstandingCase, searchCandidate: false})))
+    ).subscribe(outstandingCases =>
+      { 
+  
         if(outstandingCases){
-          this.populateOutstandingCases(outstandingCases.outstandingActions);
-        }
-      });
+     
+          this.outstandingCases$.next(outstandingCases);
+          
+          this.zone.run(() => this.refreshColour.next('primary'));
 
-      this.autoRefresh.subscribe(state => {
-        this.autoRefreshState = state;
-      });
-
-  }
-
-  refreshRescues(){
-    this.initialRescueListSubscription = this.rescueService.getOutstandingRescues().subscribe((outstandingCases: any) => {
-      if(outstandingCases)
-      {
-        this.populateOutstandingCases(outstandingCases.outstandingActions);
-      }
-    });
-    return false;
-
-  }
-
-  populateOutstandingCases(outstandingCases:OutstandingCase[]){
-
-    this.emitOutstandingCases(outstandingCases);
-
-    this.zone.run(() => this.refreshColour.next('primary'));
-
-
-    // Make sure we close the subscription as we only need to get this once when we initialise
-    this.initialRescueListSubscription?.unsubscribe();
-
-  }
-
-  receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment) {
-
-    let currentOutstanding: OutstandingCase[];
-
-    this.outstandingCases$.subscribe((cases: any) => {
-      currentOutstanding = cases;
-
-      currentOutstanding = this.removeRescueById(currentOutstanding, updatedAssignment);
-
-      // Check to see if the swimlane exists and insert if not
-    let laneExists = currentOutstanding.some(elem => elem.actionStatus === updatedAssignment.actionStatus);
-
-    if(!laneExists && updatedAssignment.actionStatus){
-
-      const rescueStatusName = ['Received',
-      'Assigned',
-      'Arrived/Picked',
-      'Rescued/Released',
-      'Admitted'];
-
-      currentOutstanding.push({
-        actionStatus: updatedAssignment.actionStatus,
-        actionStatusName: rescueStatusName[updatedAssignment.actionStatus - 1],
-        statusGroups: []
-      });
-
-      laneExists = true;
-    }
-
-    // Check to see if the rescuers exist and insert if not
-    let rescuersExist = false;
-
-    currentOutstanding.forEach(actionState => {
-
-      if(actionState.actionStatus === updatedAssignment.actionStatus)
-      {
-
-        rescuersExist = actionState.statusGroups.some((actionGroup: RescuerGroup) =>
-                                                              actionGroup.staff1 === updatedAssignment.staff1 &&
-                                                              actionGroup.staff2 === updatedAssignment.staff2);
-
-        if(!rescuersExist){
-
-          const newRescueGroup:RescuerGroup = {
-            staff1: updatedAssignment.staff1,
-            staff1Abbreviation: updatedAssignment.staff1Abbreviation,
-            staff2: updatedAssignment.staff2,
-            staff2Abbreviation: updatedAssignment.staff2Abbreviation,
-            latestLocation: undefined,
-            actions : []
-          };
-
-          actionState.statusGroups.push(newRescueGroup);
-          rescuersExist = true;
+          this.loading.next(false);
 
         }
       }
+    );
 
-    });
+  }
 
-    // Check to see if the action exists for the ambulance and insert if not
-    let actionTypeExists = false;
+  getVehicleId(){
+   
+    return this.outstandingCases$.pipe(
+   
+      map(outstandingCases => outstandingCases.map(outstandingCase => outstandingCase.assignedVehicleId)),
+      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase !== null)),
+      map(ids => [...new Set(ids)]) 
+    );
+   
+  
+  }
 
-    currentOutstanding.forEach(outstanding => {
 
-      if(outstanding.actionStatus === updatedAssignment.actionStatus)
+ 
+  getOutstandingCasesByVehicleId(vehicleId: number | null){
+    
+    return  this.outstandingCases$.pipe(
+      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId === vehicleId)),
+    );
+    
+  }
+
+
+  getBackstopHospitalTimer(vehicleId:number){
+    
+    // tslint:disable-next-line: no-shadowed-variable
+    const timer = this.outstandingCases$.pipe(
+    
+      map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
       {
-
-        outstanding.statusGroups.forEach(rescuerGroup => {
-
-          if(rescuerGroup.staff1 === updatedAssignment.staff1 && rescuerGroup.staff2 === updatedAssignment.staff2){
-
-            actionTypeExists = rescuerGroup.actions.some(action => action.ambulanceAction === updatedAssignment.ambulanceAction);
-
-            if(!actionTypeExists){
-
-              const newAction = { ambulanceAction: updatedAssignment.ambulanceAction, ambulanceAssignment: []};
-
-              rescuerGroup.actions.push(newAction);
-              actionTypeExists = true;
-
-            }
-          }
-        });
-
-      }
-
-  });
-
-    // Insert the rescue into its new home
-    if(rescuersExist && laneExists && actionTypeExists){
-      this.insertRescue(currentOutstanding, updatedAssignment);
-    }
-
-    // Set the rescue to show as moved
-    currentOutstanding = this.setMoved(currentOutstanding, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
-
-    }).unsubscribe();
-
-    // Here we only do the refresh if the user has the toggle turned on.
-    if(!this.autoRefreshState){
-      this.zone.run(() => this.refreshColour.next('warn'));
-      return;
-    }
-
-    // If the record is no longer outstanding, then removing it from the list is enough and we're finished here
-    if(updatedAssignment.actionStatus){
-
-      this.zone.run(() => this.refreshColour.next('primary'));
-
-    }
-
-    this.zone.run(() => this.emitOutstandingCases(currentOutstanding));
-
-
-  }
-
-  removeRescueById(outstanding:OutstandingCase[], rescue:OutstandingAssignment) {
-
-    // Search through the outstanding cases and remove the old case
-
-    outstanding.forEach(status => {
-
-        status.statusGroups.forEach((state, stateIndex) => {
-
-          state.actions.forEach((group, index) => {
-
-            const removeIndex = group.ambulanceAssignment.findIndex(current => current.emergencyCaseId === rescue.emergencyCaseId &&
-                                                                                current.releaseId === rescue.releaseId);
-
-            if(removeIndex > -1){
-
-               group.ambulanceAssignment.splice(removeIndex, 1);
-
-                // If the group is now empty, remove it.
-                if(group.ambulanceAssignment.length === 0){
-                  state.actions.splice(index,1);
-
-                  if(state.actions.length === 0){
-                    status.statusGroups.splice(stateIndex, 1);
-                  }
-                }
-
-                return;
-            }
-
-          });
-
-          });
-
-    });
-
-    return outstanding.filter(cases => cases.statusGroups.length !== 0);
-  }
-
-  insertRescue(outstanding:OutstandingCase[], action:OutstandingAssignment){
-
-    outstanding.forEach(status => {
-
-      if(status.actionStatus === action.actionStatus){
-
-        status.statusGroups.forEach(state => {
-
-          state.actions.forEach(group => {
-
-            if(state.staff1 === action.staff1 && state.staff2 === action.staff2 && group.ambulanceAction === action.ambulanceAction){
-              group.ambulanceAssignment.push(action);
-
-              group.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber);
-            }
-          });
-      });
-      }
-
-    });
-
-    return outstanding;
-  }
-
-  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
-
-
-    // Search for the rescue and update its moved flag depending on whether this function
-    // is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseId === releaseId){
-
-        o.moved = moved;
-
-        if(!timeout){
-          setTimeout(() => {
-
-            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseId, false, true));
-
-          }
-
-          , 3500);
-        }
-
-      }
-      let result;
-      let p;
-
-      for (p in o) {
-          if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, releaseId, moved, timeout);
-          }
-      }
-
-      return o;
-
-  }
-
-  onSearchChange(filterKeysArray:FilterKeys[] ,searchValue: string): void {
-
-    let haveRun = false;
-    let outstanding:OutstandingCase[];
-
-    this.outstandingCases$.subscribe(cases => {
-
-      outstanding = cases;
-
-      // We've already made a change, so no need to do anything further
-      if(!outstanding || haveRun){
-        return;
-      }
-
-      haveRun = true;
-
-      outstanding.forEach(status =>
+        if(outstandingCase.assignedVehicleId === vehicleId 
+          && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
+              || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null))
         {
 
-          status.statusGroups.forEach(state => {
+          if(outstandingCase.ambulanceAction === 'Rescue' )
+          { 
+            const rescueTime = new Date(outstandingCase.rescueTime as string);
+            if(rescueTime.getDate() === new Date().getDate())
+            {
+              newArr.push(rescueTime);
+            }
 
-          state.actions.forEach(group => {
+          }
+          else{
 
-              group.ambulanceAssignment.forEach(assignment => {
-
-                const assignment1 = JSON.parse(JSON.stringify(assignment));
-
-                assignment.searchCandidate = false;
-                assignment.filteredCandidate = true;
-
-                let filterSuccess = 0;
-                filterKeysArray.forEach((keyObject)=>{
-                  const key = keyObject.group;
-                  if(assignment1[key]===keyObject.value) {
-                    filterSuccess++;
-                  }
-                  
-                  else if(key==='animalType') {
-                    assignment.patients.forEach((patient:ActionPatient)=>{
-                      if(patient[key]===keyObject.value) {
-                        filterSuccess++;
-                      }
-                    });
-                  }
-                });
-
-                assignment.filteredCandidate = filterSuccess === new Set(filterKeysArray.map(current=> current.group)).size;
-
-                const currentValue = this.convertObjectToString(assignment);
-
-                if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
-                  assignment.searchCandidate = true;
-                }
-              });
-            });
-          });
-        });
-        this.emitOutstandingCases(outstanding);
-
-    });
+            const pickupTime = new Date(outstandingCase.rescueTime as string);
+            if(pickupTime.getDate() === new Date().getDate())
+            {
+              newArr.push(pickupTime);
+            }
+          }
+            
+        }
+        
+        return newArr;
+      }, [])
+      ),
+      map(outStandingCases => {
+          return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
+      })
+    );
+   
+    return combineLatest([interval(1000),timer]).pipe(
+      map(time => time[1]),
+      map(time => time ? this.backToHospitalTimer(time) : null),
+    
+      filter(time => time !== null)
+    ); 
+    
 
   }
+
+  getTimer(vehicleId:number){
+    
+    return timer(200).pipe(
+      switchMap(() => this.getBackstopHospitalTimer(vehicleId))
+    );
+  
+  }
+
+
+
+  backToHospitalTimer(backToHospital: Date){
+
+    const formatTime = (hours:number,minutes:number) => {
+      return `${hours < 10 ? `0${hours}`: `${hours}`}:${minutes < 10 ? `0${minutes}`: `${minutes}`}`;
+    };
+   
+    const currentTime = new Date();
+
+  
+    
+    if(backToHospital.getTime() - currentTime.getTime() > 0)
+    {
+      const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
+      const totalMinutes     = Math.floor(totalSeconds/60);
+      const totalHours       = Math.floor(totalMinutes/60);
+      const totalDays        = Math.floor(totalHours/24);
+
+      const hours   = totalHours - ( totalDays * 24 );
+      const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
+      
+      
+     
+      return ({
+        time : formatTime(hours,minutes),
+        class : 'timeLeft'
+      }); 
+
+    }
+    else{
+      const elapsed = currentTime.getTime() - backToHospital.getTime() ;
+
+      const minutes = parseInt((Math.abs(elapsed) / (1000 * 60) % 60).toString(),10);
+      const hours = parseInt((Math.abs(elapsed) / ((1000 * 60 * 60))).toString(), 10);
+
+     
+     
+      if(isNaN(hours))
+      {
+        return null;
+      }else{
+    
+        return ({
+        time: `- ${formatTime(hours,minutes)}`,
+        class: 'timeAgo'
+        }); 
+      }
+
+    }
+  }
+
+ 
+  filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
+    
+    return combineLatest(click$, cases$).pipe(
+      takeUntil(until$),
+      map(chipChangeObs => chipChangeObs[1]),
+      map(outstandingCases => { 
+
+        if(filters.length > 0)
+        {
+
+          let filteredOutstandingCases:any = [];
+
+          filters.forEach((keyObject,index)=>{
+
+          const key = keyObject.group;
+          index === 0 ?
+            filteredOutstandingCases.push(outstandingCases.filter((cases:any) => 
+
+              key === 'animalType' ? 
+                cases?.patients?.some((patient:any) => patient[key] === keyObject.value)
+              :
+                cases[key] === keyObject.value
+
+            ))
+          :
+            filteredOutstandingCases = filteredOutstandingCases.flat().filter((filteredCase:any) => 
+
+              key === 'animalType' ? 
+                filteredCase?.patients?.some((patient:any) => patient[key] === keyObject.value)
+              :
+                filteredCase[key] === keyObject.value
+
+            ); 
+          
+          });
+
+          return filteredOutstandingCases.flat();
+
+        }else{
+
+          return outstandingCases;
+
+        }
+       
+      })
+    ); 
+  }
+
+  onSearchChange(searchValue:string ){
+
+  
+    this.outstandingCases$.value.forEach(outstandingCase => {
+
+      const currentValue = this.convertObjectToString(outstandingCase);
+      if(currentValue.toLowerCase().indexOf(searchValue) > -1 && searchValue !== '') {
+        outstandingCase.searchCandidate = true;
+      }else{
+        outstandingCase.searchCandidate = false;
+      }
+
+    }); 
+      
+       
+  }
+
+
 
   convertObjectToString(assignment : any){
 
@@ -376,8 +271,6 @@ export class OutstandingCaseService {
     return result;
 
   }
-
-
 
   getAutoRefresh(){
     return this.autoRefresh;
@@ -401,30 +294,9 @@ export class OutstandingCaseService {
 
   }
 
-  // The window has received focus, so we may need to refresh
   receiveFocus(){
     this.zone.run(() => this.haveReceivedFocus.next(true));
 
   }
-
-  emitOutstandingCases(outstandingCases:OutstandingCase[]){
-
-    outstandingCases.sort((a,b) => a.actionStatus - b.actionStatus);
-
-    outstandingCases.forEach(states =>
-      {
-        states.statusGroups.forEach(rescuerGroups => {
-
-          rescuerGroups.actions.sort((a,b) => b.ambulanceAction > a.ambulanceAction ? 1 : -1);
-
-          rescuerGroups.actions.forEach(action => action.ambulanceAssignment.sort((a,b) => b.emergencyNumber - a.emergencyNumber));
-
-        });
-
-      });
-
-    this.zone.run(() => this.outstandingCases$.next(outstandingCases));
-
-  }
-
+  
 }
