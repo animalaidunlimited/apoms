@@ -1,178 +1,149 @@
-import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ViewChildren, ElementRef, Renderer2, OnDestroy } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { MessagingService } from '../../services/messaging.service';
-import { MatDialog } from '@angular/material/dialog';
-import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { OutstandingCase, UpdatedRescue, OutstandingAssignment, RescuerGroup } from 'src/app/core/models/outstanding-case';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ThemePalette } from '@angular/material/core';
-import { OutstandingCaseService } from '../../services/outstanding-case.service';
-import { SearchResponse } from 'src/app/core/models/responses';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
-import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
-import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { ThemePalette } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged,startWith, takeUntil } from 'rxjs/operators';
+import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
+import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle/slide-toggle';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { SearchResponse } from 'src/app/core/models/responses';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
+import { MessagingService } from '../../services/messaging.service';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
 
-export interface Swimlane{
-  label:string;
-  state:number;
-  name:string;
-  array:OutstandingCase[];
-}
-
-interface ActionStatus {
-  actionStatus: number;
-  actionStatusName: string;
-}
 export interface FilterKeys {
   group: string;
   value: string;
   selected: boolean;
 }
-
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
+  // tslint:disable-next-line: component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
-  styleUrls: ['./outstanding-case-board.component.scss'],
-  animations:
-  [
-    trigger('rescueMoved',
-    [
-      state('void', style({
-        background: 'transparent'
-      })),
-      state('moved',style({
-        background: 'lightsteelblue'
-
-    })),
-    state('still', style({
-      background: 'transparent'
-    })),
-    transition('moved => still', [
-      animate('1s')
-    ]),
-    transition('still => moved', [
-      animate('0s')
-    ])
-
-  ])
-],
-changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./outstanding-case-board.component.scss']
 })
+export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
-export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
+  vehicleId$!: Observable<(number | null)[]>;
 
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
-  @ViewChildren('filterChips') filterChips!: MatChipList[];
-  @ViewChild('filterDiv') filterDiv!: ElementRef;
-  @ViewChild('chipsDiv') chipsDiv!: ElementRef;
+  ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
+
+  outstandingCases$!:  Observable<OutstandingAssignment[]>;
+
+  receivedVehicleList$!:  Observable<OutstandingAssignment[]>;
+
+  searchForm:FormGroup = new FormGroup({});
+
+  searchValue!: string;
 
   ngUnsubscribe = new Subject();
 
-  actionStatus: ActionStatus[] = [{actionStatus:1 , actionStatusName: 'Recieved'},
-    {actionStatus: 2, actionStatusName: 'Assigned'},
-    {actionStatus: 3, actionStatusName: 'Arrived/Picked'},
-    {actionStatus: 4, actionStatusName: 'Rescued/Released'},
-    {actionStatus: 5, actionStatusName: 'Admitted'}];
-
-    ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
-
-    autoRefresh = false;
-
-    caseFilter = [{
-      groupId: 1,
-      showTitle: 'Ambulance action',
-      groupTitle: 'ambulanceAction',
-      groupValues: [{
-        id: 1 , value: 'Rescue'
-      },
-      {
-        id: 2 , value: 'Release'
-      }]
-    },
-    {
-      groupId: 2,
-      groupTitle: 'emergencyCode',
-      showTitle: 'Emergency code',
-      groupValues: []
-    },
-    {
-      groupId: 3,
-      showTitle: 'Animal type',
-      groupTitle: 'animalType',
-      groupValues: []
-    }];
-
-    clickCount = 0;
-
-  filterBtnColor: ThemePalette = 'accent';
   filterKeysArray : FilterKeys[] = [];
-
+  
+  showAmbulancePaths = false;
+  autoRefresh = false;
   hideList = true;
   hideMap = true;
-
-  incomingObject!: FilterKeys;
-
-  loading = true;
-
   notificationPermissionGranted = false;
-
-  refreshColour:ThemePalette = 'primary';
-  refreshColour$!:BehaviorSubject<ThemePalette>;
-
- /*  refreshForm:FormGroup = new FormGroup({}); */
   removable = true;
 
-  outstandingCases!:OutstandingCase[];
-  outstandingCases$!:BehaviorSubject<OutstandingCase[]>;
-  outstandingCasesArray!:OutstandingCase[];
+  refreshColour:ThemePalette = 'primary';
+  filterBtnColor: ThemePalette = 'accent';
 
-  searchForm:FormGroup = new FormGroup({});
-  searchValue!: string;
+  matChipObs = new BehaviorSubject(null);
+  refreshColour$!:BehaviorSubject<ThemePalette>;
+  incomingObject!: FilterKeys;
 
-  showAmbulancePaths = false;
+  loading = this.outstandingCaseService.loading;
 
+  caseFilter = [{
+    groupId: 1,
+    showTitle: 'Ambulance action',
+    groupTitle: 'ambulanceAction',
+    groupValues: [{
+      id: 1 , value: 'Rescue'
+    },
+    {
+      id: 2 , value: 'Release'
+    }]
+  },
+  {
+    groupId: 2,
+    groupTitle: 'emergencyCode',
+    showTitle: 'Emergency code',
+    groupValues: []
+  },
+  {
+    groupId: 3,
+    showTitle: 'Animal type',
+    groupTitle: 'animalType',
+    groupValues: []
+  }];
+  
+  searchChange$!:Observable<string>;
+  
+  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  constructor(
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
+
+  constructor( 
+    private outstandingCaseService: OutstandingCaseService,
     public rescueDialog: MatDialog,
-    public releaseAssignDialog: MatDialog,
+    private dialog: MatDialog,
+    private locationService: LocationService,
     private fb: FormBuilder,
     private messagingService: MessagingService,
-    private outstandingCaseService: OutstandingCaseService,
     private changeDetector: ChangeDetectorRef,
-    private locationService: LocationService,
-    private userOptions: UserOptionsService,
-    private printService: PrintTemplateService,
-    private dialog: MatDialog,
-    private dropDown: DropdownService,
-    private renderer: Renderer2
-    ) {}
+    private dropDown: DropdownService) { }
 
   ngOnInit(): void {
 
-    this.renderer.listen('window', 'click',(e:Event)=>{
 
-      // The below logic made the filter list disappear when click outside it.
-      if(!this.filterDiv.nativeElement.contains(e.target)) {
-        this.hideList= true;
-        this.changeDetector.detectChanges();
-      }
+    this.receivedVehicleList$ = this.outstandingCaseService.filterCases(
+      this.matChipObs,
+      this.outstandingCaseService.getOutstandingCasesByVehicleId(null),
+      this.filterKeysArray,
+      this.ngUnsubscribe
+    );
 
-      });
+   
+    this.vehicleId$ = this.outstandingCaseService.getVehicleId(); 
+
+    
+    this.searchForm = this.fb.group({
+      searchTerm: ['']
+    });
+
+   
+   this.searchForm.get('searchTerm')?.valueChanges
+    .pipe(
+      distinctUntilChanged(),
+      debounceTime(250),
+      startWith(''),
+      takeUntil(this.ngUnsubscribe)
+      ).subscribe(searchValue => this.outstandingCaseService.onSearchChange(
+        searchValue
+    ));
+
+    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+
+    this.refreshColour$ = this.outstandingCaseService.refreshColour;
+
+    this.refreshColour$
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(colour => {
+      this.refreshColour = colour;
+      this.changeDetector.detectChanges();
+    });
 
     this.dropDown.getAnimalTypes()
     .pipe(takeUntil(this.ngUnsubscribe))
@@ -219,107 +190,12 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.searchForm = this.fb.group({
-      searchTerm: ['']
-    });
-
-/*     this.refreshForm = this.fb.group({
-      autoRefreshEnabled: [false, Validators.requiredTrue],
-      updateRequired: [false, Validators.requiredTrue]
-    }); */
-
-    this.initialiseBoard();
-    this.refreshColour$ = this.outstandingCaseService.refreshColour;
-
-    this.refreshColour$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(colour => {
-      this.refreshColour = colour;
-      this.changeDetector.detectChanges();
-    });
-
     this.setup();
 
-
-    
-  }
-
-  ngOnDestroy() {
-      this.ngUnsubscribe.next();
-      this.ngUnsubscribe.complete();
-  }
-
-  initialiseBoard() {
-
-    this.outstandingCases$ = this.outstandingCaseService.outstandingCases$;
-    this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
-
-
-    // Attempting to force change detection here causes the whole thing to hang.
-    this.outstandingCases$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((assignments) => {
-
-      this.outstandingCasesArray = assignments;
-
-      //if(assignments.length > 0){
-      //  this.ambulanceLocations$ = this.locationService.getActiveVehicleLocations();
-      //}
-
-      this.actionStatus.forEach(status=> {
-        const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
-
-        if(statusExist) {
-          return;
-        }
-        else {
-          this.outstandingCasesArray.push({
-            actionStatus: status.actionStatus,
-            actionStatusName: status.actionStatusName,
-            statusGroups: []
-          });
-        }
-
-        this.outstandingCasesArray.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
-        
-      });
-
-        this.loading = false;
-        this.changeDetector.detectChanges();
-    });
-
-    this.outstandingCaseService.initialise();
-
-  }
-
-  openMediaDialog(patientId: number, tagNumber: string | null): void{
-    this.dialog.open(MediaDialogComponent, {
-        minWidth: '50%',
-        data: {
-            tagNumber,
-            patientId,
-        }
-    });
-
-  }
-
-  openSearchMediaDialog(){
-
-    this.dialog.open(AddSearchMediaDialogComponent, {
-    minWidth: '50%',
-    data: {
-        mediaVal: []
-    }
-  });
-  }
-
-  autoRefreshToggled(){
-    this.outstandingCaseService.toggleAutoRefresh();
   }
 
   setup(){
 
-    // Find out whether we have permission to receive notifications or not
     this.messagingService.getPermissionGranted()
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((permissionGranted) => {
@@ -339,125 +215,42 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
 
     });
 
-    // If we receive focus then make sure we tidy up as needed.
-    this.outstandingCaseService.haveReceivedFocus
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((focusReceived) => {
-
-      if(focusReceived && !this.autoRefresh){
-        this.refreshColour$.next('warn');
-        this.changeDetector.detectChanges();
-      }
-      else if (focusReceived && this.autoRefresh){
-        // this.refreshRescues();
-
-        this.outstandingCases$ =  this.outstandingCaseService.outstandingCases$;
-        this.changeDetector.detectChanges();
-
-      }
-
-    });
-
-    this.searchForm.get('searchTerm')?.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        debounceTime(250),
-        startWith(''),
-        takeUntil(this.ngUnsubscribe)
-        )
-      .subscribe(value => {
-        this.searchValue = value;
-          this.outstandingCaseService.onSearchChange(this.filterKeysArray,this.searchValue);
-      });
   }
 
-  drop(event: CdkDragDrop<any>) {
+  refreshCases(){
 
-    if (event.previousContainer === event.container) {
+    this.outstandingCaseService.loading.next(true);
 
-      try{
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        this.changeDetector.detectChanges();
-      }
-      catch(error){
-        console.log(error);
-      }
-    } else {
-
-      try{
-
-        // We need to move the item first when moving by drag so that the rescue
-        // waits in its new swimlane until it either succeeds or fails and is moved back
-        transferArrayItem(event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex);
-/* 
-        this.openRescueEdit(event.container.data[event.currentIndex])
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((result:UpdatedRescue) =>
-          {
-
-            if(result?.success !== 1){
-              transferArrayItem(event.container.data,
-                event.previousContainer.data,
-                event.currentIndex,
-                event.previousIndex);
-                this.changeDetector.detectChanges();
-            }
-            else {
-              this.refreshColour$.next('warn');
-              this.changeDetector.detectChanges();
-            }
-          }); */
-      }
-      catch(error){
-        console.log(error);
-      }
-    }
-
+    this.outstandingCaseService.initialise();
 
   }
-
 
   openRescueEdit(outstandingCase:OutstandingAssignment){
     const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {
-      maxWidth: 'auto',
-      maxHeight: '100vh',
-      data: {
-              emergencyCaseId:outstandingCase.emergencyCaseId,
-              emergencyNumber:outstandingCase.emergencyNumber
+        maxWidth: 'auto',
+        maxHeight: '100vh',
+        data: {
+                emergencyCaseId:outstandingCase.emergencyCaseId,
+                emergencyNumber:outstandingCase.emergencyNumber
             }
     });
-
-    // If we successfully updated the rescue and we're currently set to
-    // not receive auto-refresh updates, then we need to set the colour of
-    // the refresh button to show we've made a change.
-    const afterClosed = rescueDialog.afterClosed();
-
-    afterClosed
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(result => {
-
-      if(result?.success === 1 && !this.autoRefresh){
-        this.refreshColour$.next('warn');
-      }
-      this.changeDetector.detectChanges();
-
-    });
-
-    return afterClosed;
-
   }
 
-  openCaseFromMap(emergencyCase:SearchResponse){
-
-    this.openEmergencyCase.emit(emergencyCase);
-
+  openMediaDialog($event:{patientId: number, tagNumber: string | null}): void {
+    const tagNumber = $event.tagNumber;
+    const patientId = $event.patientId;
+    this.dialog.open(MediaDialogComponent, {
+        minWidth: '50%',
+        data: {
+            tagNumber,
+            patientId,
+        },
+    });
   }
 
   openCase(caseSearchResult:OutstandingAssignment)
   {
+
     const result:SearchResponse = {
 
       EmergencyCaseId: caseSearchResult.emergencyCaseId,
@@ -469,12 +262,12 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       PatientId: 0,
       MediaCount: 0,
       TagNumber: '',
-      CallOutcomeId: caseSearchResult.callOutcomeId,
+      CallOutcomeId: 0,
       CallOutcome: undefined,
       sameAsNumber: undefined,
       Location: caseSearchResult.location,
-      Latitude: caseSearchResult.latLngLiteral.lat,
-      Longitude: caseSearchResult.latLngLiteral.lng,
+      Latitude: caseSearchResult.lat,
+      Longitude: caseSearchResult.lng,
       CurrentLocation: undefined,
 
     };
@@ -482,30 +275,13 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
     this.openEmergencyCase.emit(result);
   }
 
-  refreshRescues(){
-
-    this.loading = true;
-
-    this.outstandingCaseService.refreshRescues();
-
+  
+  toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
+    this.locationService.toggleVehicleLocation(vehicleId, $event.checked);
   }
 
-  printEmergencyCard(emergencyCaseId: number){
-
-    const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
-
-    this.printService.printEmergencyCaseDocument(printTemplateId, emergencyCaseId);
-
-  }
-
-  openReleaseAssignDialog(caseDetails: OutstandingAssignment) {
-    const dialogRef = this.releaseAssignDialog.open(ReleaseAssignDialogComponent, {
-      maxWidth: '100vw',
-      maxHeight: '100vh',
-      data: {
-        caseDetails
-      }
-    });
+  autoRefreshToggled(){
+    this.outstandingCaseService.toggleAutoRefresh();
   }
 
   filterChipSelected(groupName: string, chip: MatChip) {
@@ -527,12 +303,21 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       this.filterKeysArray.splice(index,1);
     }
 
-    this.outstandingCaseService.onSearchChange(this.filterKeysArray, this.searchValue);
+    this.matChipObs.next(null);
 
   }
 
-toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
-  this.locationService.toggleVehicleLocation(vehicleId, $event.checked)
-}
+  openCaseFromMap(emergencyCase:SearchResponse){
 
+    this.openEmergencyCase.emit(emergencyCase);
+
+  }
+  
+
+  ngOnDestroy(){
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+  }
+  
 }

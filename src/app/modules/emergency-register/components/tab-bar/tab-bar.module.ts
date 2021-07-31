@@ -8,10 +8,10 @@ import { MaterialModule } from 'src/app/material-module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
-import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
+
 import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
-import { OutstandingCaseBoard2Module } from '../outstanding-case-board2/outstanding-case-board2.module';
+import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
 
 
 @NgModule({
@@ -29,8 +29,7 @@ import { OutstandingCaseBoard2Module } from '../outstanding-case-board2/outstand
         FlexLayoutModule,
         EmergencyCaseOutcomeModule,
         ReleaseAssignModule,
-        OutstandingCaseBoardModule,
-        OutstandingCaseBoard2Module
+        OutstandingCaseBoardModule
     ],
     exports: [TabBarComponent]
 })
