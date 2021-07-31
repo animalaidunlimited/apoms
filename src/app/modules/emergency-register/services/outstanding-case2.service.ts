@@ -14,6 +14,7 @@ export class OutstandingCase2Service {
   autoRefreshState = false;
   
   vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
+  loading = new BehaviorSubject<boolean>(true);
 
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
@@ -38,7 +39,10 @@ export class OutstandingCase2Service {
         if(outstandingCases){
      
           this.outstandingCases$.next(outstandingCases);
+          
           this.zone.run(() => this.refreshColour.next('primary'));
+
+          this.loading.next(false);
 
         }
       }
