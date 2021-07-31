@@ -16,8 +16,8 @@ import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
+import { createTrue } from 'typescript';
 import { MessagingService } from '../../services/messaging.service';
-/* import { OutstandingCaseService } from '../../services/outstanding-case.service'; */
 import { OutstandingCase2Service as OutstandingCaseService } from '../../services/outstanding-case2.service';
 
 
@@ -61,6 +61,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   refreshColour:ThemePalette = 'primary';
   filterBtnColor: ThemePalette = 'accent';
 
+  matChipObs = new BehaviorSubject(null);
   refreshColour$!:BehaviorSubject<ThemePalette>;
   incomingObject!: FilterKeys;
 
@@ -95,7 +96,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   @ViewChildren('filterChips') filterChips!: MatChipList[];
 
-  matChipObs = new BehaviorSubject(null);
+  
 
   constructor( 
     private outstandingCaseService: OutstandingCaseService,
@@ -104,7 +105,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     private locationService: LocationService,
     private fb: FormBuilder,
     private messagingService: MessagingService,
-   /*  private outstandingCaseService: OutstandingCaseService, */
     private changeDetector: ChangeDetectorRef,
     private dropDown: DropdownService) { }
 
@@ -119,9 +119,9 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
          */
         take(2),
         finalize(() => {
-        this.loading.next(false);
-        this.loaded = true;        }
-        ),
+          this.loading.next(false);
+          this.loaded = true;        
+        }),
         catchError(error => {
           this.loading.next(false);
           return throwError(error);
@@ -133,7 +133,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
     
     this.vehicleId$ = this.outstandingCaseService.getVehicleId().pipe(skip(1)); 
-
 
     this.searchForm = this.fb.group({
       searchTerm: ['']
@@ -148,12 +147,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       takeUntil(this.ngUnsubscribe)
       ).subscribe(searchValue => this.outstandingCaseService.onSearchChange(
         searchValue
-      )) ;
-
-
-    
- 
-
+    ));
 
     this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
 
@@ -239,8 +233,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   }
 
   refreshCases(){
-
-    this.loading.next(true);
 
     this.outstandingCaseService.initialise();
 
