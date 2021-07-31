@@ -16,7 +16,7 @@ import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
-import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
+import { OutstandingCase2Service as  OutstandingCaseService} from '../../services/outstanding-case2.service';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 import {trigger, transition, style, animate} from '@angular/animations';
@@ -78,7 +78,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     ngUnsubscribe = new Subject();
 
     constructor(
-        private outstandingCase2Service: OutstandingCase2Service,
+        private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
         private dropdown: DropdownService,
@@ -109,9 +109,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             ),
         );
 
-        this.vehicleAssignmentList$ =  this.outstandingCase2Service.filterCases(
+        this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
             this.matChipObs,
-            this.outstandingCase2Service.outstandingCases$.pipe(
+            this.outstandingCaseService.outstandingCases$.pipe(
                 takeUntil(this.ngUnsubscribe),
                 map(outstandingCases =>
                     outstandingCases.filter(
@@ -179,7 +179,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             }),
         );
         
-        this.timer$ = this.outstandingCase2Service.getTimer(this.vehicleId);
+        this.timer$ = this.outstandingCaseService.getTimer(this.vehicleId);
         
     }
 
