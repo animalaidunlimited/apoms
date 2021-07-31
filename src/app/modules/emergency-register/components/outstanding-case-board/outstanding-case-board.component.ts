@@ -54,7 +54,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   loaded = false;
   hideList = true;
   hideMap = true;
-  loading = new BehaviorSubject<boolean>(true);
   notificationPermissionGranted = false;
   removable = true;
 
@@ -65,6 +64,8 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   refreshColour$!:BehaviorSubject<ThemePalette>;
   incomingObject!: FilterKeys;
 
+
+  loading = this.outstandingCaseService.loading;
 
   caseFilter = [{
     groupId: 1,
@@ -113,20 +114,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
     this.receivedVehicleList$ = this.outstandingCaseService.filterCases(
       this.matChipObs,
-      this.outstandingCaseService.getOutstandingCasesByVehicleId(null).pipe(
-        /** to fire complete on observable 
-         * so finalize operator can be init
-         */
-        take(2),
-        finalize(() => {
-          this.loading.next(false);
-          this.loaded = true;        
-        }),
-        catchError(error => {
-          this.loading.next(false);
-          return throwError(error);
-        })
-      ),
+      this.outstandingCaseService.getOutstandingCasesByVehicleId(null),
       this.filterKeysArray,
       this.ngUnsubscribe
       );
@@ -233,6 +221,8 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   }
 
   refreshCases(){
+
+    this.outstandingCaseService.loading.next(true);
 
     this.outstandingCaseService.initialise();
 
