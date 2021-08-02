@@ -13,7 +13,7 @@ CREATE TABLE `AAU`.`VehicleShift` (
   INDEX `FK_VehicleShiftOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
   CONSTRAINT `FK_VehicleShiftVehicleId_VehicleListVehicleId`
     FOREIGN KEY (`VehicleId`)
-    REFERENCES `AAU`.`VehicleList` (`VehicleId`)
+    REFERENCES `AAU`.`Vehicle` (`VehicleId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `FK_VehicleShiftOrganisationId_OrganisationOrganisationId`

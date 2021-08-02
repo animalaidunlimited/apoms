@@ -75,7 +75,6 @@ export class DriverViewComponent implements OnInit {
 
   }
 
-
   showCompleteList() {
 
     this.showComplete = !this.showComplete;
@@ -83,6 +82,10 @@ export class DriverViewComponent implements OnInit {
 
   openMapComponent() {
     this.router.navigate(['/nav/case-location']);
+  }
+
+  refreshDate() {
+    this.driverViewDetails.get('assignmentDate')?.setValue(getCurrentTimeString());
   }
 
 

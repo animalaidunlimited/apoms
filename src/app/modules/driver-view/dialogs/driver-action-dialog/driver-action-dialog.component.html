@@ -17,13 +17,16 @@
                 </mat-form-field>
            </div>
 
+           <input type="button" value="{{data.subAction}}" class="actionButton" 
+           (click)='setCurrentDateTime(control.formControlName)'>
+
           
     
         </div>
 
-        <animal-selection [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+        <animal-selection hidden = 'true' [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
-        <animal-selection [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+        <animal-selection hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
         <div mat-dialog-action>
 

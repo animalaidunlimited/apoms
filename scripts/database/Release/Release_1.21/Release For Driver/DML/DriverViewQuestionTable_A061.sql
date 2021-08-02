@@ -52,14 +52,3 @@ UPDATE AAU.DriverViewQuestions SET `Label` = 'Release end date' WHERE (`QustionI
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Visit end date' WHERE (`QustionId` = '12');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Patient calloutcome' WHERE (`QustionId` = '13');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Treatment area' WHERE (`QustionId` = '14');
-
-
-ALTER TABLE AAU.DriverViewQuestions 
-ADD COLUMN `SelectFunctionname` VARCHAR(45) NULL AFTER `Label`,
-ADD COLUMN `IdName` VARCHAR(45) NULL AFTER `SelectFunctionName`,
-ADD COLUMN `ValueName` VARCHAR(45) NULL AFTER `IdName`;
-
-
-UPDATE AAU.DriverViewQuestions SET `SelectFunctionName` = 'getCallOutcomes', `IdName` = 'CallOutcomeId', `ValueName` = 'CallOutcome' WHERE (`QustionId` = '13');
-UPDATE AAU.DriverViewQuestions SET `SelectFunctionName` = 'getTreatmentAreas()', `IdName` = 'areaId', `ValueName` = 'areaName' WHERE (`QustionId` = '14');
-

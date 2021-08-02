@@ -18,7 +18,7 @@ export class DriverViewService extends APIService {
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   driverViewQuestionList: any;
   driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
-  updateAssignmentCount: number = 0;
+  updateAssignmentCount = 0;
 
 
   constructor(public http: HttpClient,
@@ -28,7 +28,7 @@ export class DriverViewService extends APIService {
 
     this.checkConnectionService.checkConnection.subscribe(connection=> {
 
-      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))).forEach((item: DriverAssignments)=> {
+      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignments)=> {
         if(connection && item.isUpdated) {
           this.updateAssignmentCount++;
           this.saveDriverViewDataFromLocalStorage(item);
@@ -98,7 +98,7 @@ export class DriverViewService extends APIService {
 
   public getAssignmentStatus(driverViewData: DriverAssignments) {
 
-     driverViewData.patients.forEach(patient=> {
+     driverViewData?.patients.forEach(patient=> {
       if(
         (!driverViewData.ambulanceArrivalTime
           && !driverViewData.rescueTime

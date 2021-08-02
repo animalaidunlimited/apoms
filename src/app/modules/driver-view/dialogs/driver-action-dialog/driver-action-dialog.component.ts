@@ -10,9 +10,10 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { DriverViewService } from '../../services/driver-view.service';
 
 interface DialogData {
-  formGroup:FormGroup,
-  formBuilderArray: any,
-  patientsArray: Patient[]
+  formGroup:FormGroup;
+  formBuilderArray: any;
+  patientsArray: Patient[];
+  subAction: string;
 }
 
 
@@ -56,6 +57,7 @@ patientFormGroup = this.data.formGroup.get('patients');
 
     this.snackBar.successSnackBar('Case saved to local storage.','Ok');
   }
+
   closeDialog() {
     this.dialogRef.close();
   }
@@ -65,6 +67,16 @@ patientFormGroup = this.data.formGroup.get('patients');
     return driverViewData.patients.every(patient=> {
       return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
     });
+  }
+
+  setCurrentDateTime(formControlName: string) {
+    
+    this.formGroup.get(formControlName)?.setValue(getCurrentTimeString());
+
+  }
+
+  resoveDateTimeVal(formControlName: string) {
+    return this.formGroup.get(formControlName)?.value === getCurrentTimeString();
   }
 
 
