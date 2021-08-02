@@ -35,23 +35,10 @@ export class RescueDetailsService extends APIService {
         return await this.put(rescueDetails);
     }
 
-    getOutstandingRescues(): Observable<OutstandingCaseResponse> {
+   
+
+    getOutstandingRescues(): Observable<OutstandingAssignment[]> {
         const request = '/OutstandingRescues';
-
-        if (!this.outstandingRescues$) {
-            this.outstandingRescues$ = this.getObservable(request).pipe(
-                debounceTime(1000),
-                map(response => {
-                    return response;
-                }),
-            );
-        }
-
-        return this.outstandingRescues$;
-    }
-
-    getOutstandingRescues2(): Observable<OutstandingAssignment[]> {
-        const request = '/OutstandingRescues2';
 
             return this.getObservable(request).pipe(
                 map(response => {

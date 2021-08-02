@@ -31,7 +31,7 @@ export class OutstandingCaseService {
 
   initialise(){
 
-    this.rescueService.getOutstandingRescues2().pipe(
+    this.rescueService.getOutstandingRescues().pipe(
     map(outstandingCases => 
       outstandingCases.map(outstandingCase => ({...outstandingCase, searchCandidate: false})))
     ).subscribe(outstandingCases =>
