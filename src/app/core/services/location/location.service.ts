@@ -52,7 +52,7 @@ export class LocationService extends APIService {
     this.logLocation.subscribe(logLocation => {
 
       if(logLocation) {
-        this.locationLogInterval = (setInterval(() => {this.postLocation();}, 10000));
+        this.locationLogInterval = (setInterval(() => {this.postLocation();}, 30000));
       }
       else if(this.locationLogInterval) {
         clearInterval(this.locationLogInterval);
@@ -74,7 +74,7 @@ export class LocationService extends APIService {
         vehicle.vehicleStaff = locationMessage.vehicleStaff;
       }
 
-      
+
       return vehicle;
 
     });
@@ -85,6 +85,22 @@ export class LocationService extends APIService {
 
   beginLoggingVehicleLocation(){
     this.logLocation.next(true);
+  }
+
+  getCurrentLocation() : GeolocationCoordinates | undefined{
+
+    if (navigator.geolocation) {
+
+      navigator.geolocation.getCurrentPosition(position => {
+
+        return position.coords;
+
+      })
+
+    }
+
+    return undefined;
+
   }
 
   postLocation(){
