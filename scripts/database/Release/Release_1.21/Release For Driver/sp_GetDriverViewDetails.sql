@@ -1,4 +1,11 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetDriverViewDetails`(IN prm_Date DATETIME)
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
+
+DELIMITER $$
+
+
+CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME , IN prm_Username VARCHAR(45))
 BEGIN
 
 /*
@@ -7,22 +14,41 @@ CreatedBy: Arpit Trivedi
 Purpose: To get the cases for driver view
 */
 
-WITH RescueReleaseST AS
+DECLARE vVehicleId INT;
+DECLARE vUserId INT;
+
+SELECT UserId INTO vUserId
+FROM AAU.User
+WHERE UserName = prm_Username; 
+
+
+WITH VehicleIdCTE AS
+(
+	SELECT v.VehicleId
+    FROM AAU.Vehicle v
+	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId
+	INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
+	WHERE vsu.UserId = vUserId AND (vs.StartDate <= prm_Date AND vs.EndDate >= prm_Date)
+),
+
+RescueReleaseST AS
 (SELECT p.PatientId FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE CAST('2021-06-11' AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST('2021-06-11' AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
-AND (p.PatientCallOutcomeId IS NULL OR p.PatientCallOutcomeId IS NOT NULL)
+WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
+AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
 UNION 
 
 SELECT rd.PatientId FROM AAU.ReleaseDetails rd
-WHERE CAST('2021-06-11' AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST('2021-06-11' AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE())
+WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
+AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
 UNION
 
 SELECT st.PatientId FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
-WHERE CAST(v.Date AS DATE) = CAST('2021-06-11' AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL
+WHERE ( CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL AND v.VisitId IS NOT NULL )
+AND st.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 ),
 EmergencyCaseIds AS
 (
@@ -53,7 +79,7 @@ UserCTE AS
 ),
 PatientsCTE AS
 (
-    SELECT
+    SELECT DISTINCT
 		p.EmergencyCaseId,
         p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
         p.PatientId,
@@ -118,7 +144,7 @@ PatientsCTE AS
 ,
 DriverViewCTE AS
 (
-SELECT 
+SELECT
 			IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NULL),'Rescue', 
 				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL),'Release',
 				IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL),'StreetTreat',
