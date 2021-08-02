@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { BehaviorSubject, interval, Observable, Observer, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { map, mapTo } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -46,7 +46,9 @@ export class DriverViewService extends APIService {
 
   public populateDriverView(driverViewDate: any) {
 
-    let request = '?assignmentDate='+ driverViewDate;
+
+
+    const request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).subscribe(response=> {
 
@@ -70,7 +72,7 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getAssignmentByStatus(actionStatusType: String) {
+  public getAssignmentByStatus(actionStatusType: string) {
 
     return this.driverViewDetails.pipe(map(val=> {
       return val.filter(value=> value.actionStatus === actionStatusType);
