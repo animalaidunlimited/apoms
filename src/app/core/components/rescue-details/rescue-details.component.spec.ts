@@ -97,7 +97,7 @@ describe('RescueDetailsComponent', () => {
         component.recordForm.get('rescueDetails.rescuer1Id')?.setValue(1);
         component.updateValidators();
 
-        
+        console.log(component.recordForm);
         expect(component.recordForm.valid).toEqual(false);
     });
 
