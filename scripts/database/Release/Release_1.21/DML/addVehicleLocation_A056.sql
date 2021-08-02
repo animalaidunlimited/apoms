@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `AAU`.`VehicleLocation` (
   INDEX `FK_VehicleLocationVehicleId_VehicleVehicleId_idx` (`VehicleId` ASC) VISIBLE,
   CONSTRAINT `FK_VehicleLocationVehicleId_VehicleVehicleId`
     FOREIGN KEY (`VehicleId`)
-    REFERENCES `AAU`.`VehicleList` (`VehicleId`),
+    REFERENCES `AAU`.`Vehicle` (`VehicleId`),
 INDEX `FK_VehicleLocationOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
   CONSTRAINT `FK_VehicleLocationOrganisationId_OrganisationOrganisationId`
     FOREIGN KEY (`OrganisationId`)

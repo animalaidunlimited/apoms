@@ -65,6 +65,10 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     ngOnInit(): void {
         this.dispatchers$ = this.dropdowns.getDispatchers();
 
+        this.dispatchers$.subscribe(val=> {
+            console.log(val);
+        })
+
         this.minimumDate =
             this.datePipe.transform(
                 this.userOptions.getMinimumDate(),
