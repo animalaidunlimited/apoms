@@ -18,7 +18,7 @@ export class DriverViewService extends APIService {
   driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
   driverViewQuestionList: any;
   driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
-  updateAssignmentCount: number = 0;
+  updateAssignmentCount = 0;
 
 
   constructor(public http: HttpClient,
@@ -27,25 +27,24 @@ export class DriverViewService extends APIService {
     super(http);
 
     this.checkConnectionService.checkConnection.subscribe(connection=> {
-      console.log(connection);
-      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))).forEach((item: DriverAssignments)=> {
+
+      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignments)=> {
         if(connection && item.isUpdated) {
           this.updateAssignmentCount++;
           this.saveDriverViewDataFromLocalStorage(item);
-          console.log(this.updateAssignmentCount);
         }
 
       });
 
       if(connection && this.updateAssignmentCount > 0) {
-        this.showSaveResponseStatus(this.driverDataSaveErrorResponse)
+        this.updateAssignmentCount = this.showSaveResponseStatus(this.driverDataSaveErrorResponse);
       }
 
     });
 
   }
 
-  public populateDriverView(driverViewDate: Date) {
+  public populateDriverView(driverViewDate: any) {
 
 
 
@@ -101,7 +100,7 @@ export class DriverViewService extends APIService {
 
   public getAssignmentStatus(driverViewData: DriverAssignments) {
 
-     driverViewData.patients.forEach(patient=> {
+     driverViewData?.patients.forEach(patient=> {
       if(
         (!driverViewData.ambulanceArrivalTime
           && !driverViewData.rescueTime
@@ -129,8 +128,8 @@ export class DriverViewService extends APIService {
       {
         driverViewData.actionStatus = 'Assigned';
       }
-
-      else if(
+      
+      if(
         (
           driverViewData.ambulanceArrivalTime
           && !driverViewData.rescueTime
@@ -156,43 +155,11 @@ export class DriverViewService extends APIService {
         )
       )
       {
+
         driverViewData.actionStatus = 'In Progress';
       }
 
-      else if(
-        (
-          driverViewData.ambulanceArrivalTime &&
-		      driverViewData.rescueTime &&
-          driverViewData.admissionTime &&
-		      patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          driverViewData.inTreatmentAreaId &&
-          !driverViewData.releaseDetailsId &&
-          !driverViewData.streetTreatCaseId
-        ) ||
-        (
-          driverViewData.ambulanceArrivalTime &&
-		      driverViewData.rescueTime &&
-          driverViewData.admissionTime &&
-          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          driverViewData.inTreatmentAreaId &&
-          driverViewData.releaseDetailsId &&
-          driverViewData.releasePickupDate &&
-          driverViewData.releaseBeginDate &&
-          driverViewData.releaseEndDate &&
-          !driverViewData.streetTreatCaseId
-        ) ||
-        (
-          driverViewData.streetTreatCaseId &&
-          driverViewData.visitBeginDate &&
-          driverViewData.visitEndDate
-        )
-      )
-      {
-
-        driverViewData.actionStatus = 'Complete';
-      }
-
-      else if(
+      if(
         (
           driverViewData.ambulanceArrivalTime &&
           driverViewData.rescueTime &&
@@ -215,13 +182,44 @@ export class DriverViewService extends APIService {
           !driverViewData.streetTreatCaseId
         )
       ) {
-
         driverViewData.actionStatus = 'In Ambulance'
       }
-      else {
-        console.log('hi')
+
+      if(
+        (
+          driverViewData.rescueTime &&
+          driverViewData.ambulanceArrivalTime &&
+          driverViewData.admissionTime &&
+		      patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
+          patient.admissionArea &&
+          !driverViewData.releaseDetailsId &&
+          !driverViewData.streetTreatCaseId
+        ) ||
+        (
+          driverViewData.ambulanceArrivalTime &&
+		      driverViewData.rescueTime &&
+          driverViewData.admissionTime &&
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
+          driverViewData.inTreatmentAreaId &&
+          driverViewData.releaseDetailsId &&
+          driverViewData.releasePickupDate &&
+          driverViewData.releaseBeginDate &&
+          driverViewData.releaseEndDate &&
+          !driverViewData.streetTreatCaseId
+        ) ||
+        (
+          driverViewData.streetTreatCaseId &&
+          driverViewData.visitBeginDate &&
+          driverViewData.visitEndDate 
+        )
+      ) 
+      {
+        driverViewData.actionStatus = 'Complete';
       }
-    })
+
+      
+      
+    });
 
     return driverViewData;
 
@@ -232,10 +230,7 @@ export class DriverViewService extends APIService {
 
     let response = this.put(driverViewUpdatedData);
 
-    console.log(response)
-
     response.then((val:SuccessOnlyResponse)=> {
-      console.log(val);
      if(val.success===1) {
 
        let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
@@ -247,7 +242,7 @@ export class DriverViewService extends APIService {
        localStorage.setItem('driverViewData', JSON.stringify(localData));
      }
 
-     else {
+     else{
       this.driverDataSaveErrorResponse.push(val);
      }
     });
@@ -264,7 +259,7 @@ export class DriverViewService extends APIService {
       this.snackBar.successSnackBar('All cases synced with database.', 'Ok')
     }
 
-    this.updateAssignmentCount = 0;
+    return 0;
   }
 
 }
