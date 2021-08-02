@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LatLngLiteral } from '../../models/driver-view';
 import { VehicleLocation, LocationPathSegment, PolylineOptions, VehicleLocationDetails, ActiveVehicleLocation } from '../../models/location';
 import { APIService } from '../http/api.service';
 
@@ -87,15 +88,20 @@ export class LocationService extends APIService {
     this.logLocation.next(true);
   }
 
-  getCurrentLocation() : GeolocationCoordinates | undefined{
+  getCurrentLocation() : LatLngLiteral | undefined {
 
     if (navigator.geolocation) {
 
       navigator.geolocation.getCurrentPosition(position => {
 
-        return position.coords;
+        const latLng:LatLngLiteral = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
 
-      })
+        return latLng;
+
+      });
 
     }
 
