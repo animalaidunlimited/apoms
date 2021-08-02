@@ -122,9 +122,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
 
-        console.log(this.recordForm.value);
-        console.log(this.emergencyCaseId);
-
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
         // tslint:disable-next-line: deprecation
@@ -198,8 +195,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
     populatePatient(isUpdate: boolean, patient: Patient) {
-
-        console.log(patient)
 
         const problems = this.fb.array([]);
         
@@ -328,7 +323,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 {
                     this.patients.push(newPatient);
                 }
-            })
+            });
 
             
 
@@ -372,8 +367,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     initPatientArray() {
-
-        console.log('initialise');
 
         this.patients.clear();
 

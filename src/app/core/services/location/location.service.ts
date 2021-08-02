@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LatLngLiteral } from '../../models/driver-view';
 import { VehicleLocation, LocationPathSegment, PolylineOptions, VehicleLocationDetails, ActiveVehicleLocation } from '../../models/location';
 import { APIService } from '../http/api.service';
 
@@ -52,7 +53,7 @@ export class LocationService extends APIService {
     this.logLocation.subscribe(logLocation => {
 
       if(logLocation) {
-        this.locationLogInterval = (setInterval(() => {this.postLocation();}, 10000));
+        this.locationLogInterval = (setInterval(() => {this.postLocation();}, 30000));
       }
       else if(this.locationLogInterval) {
         clearInterval(this.locationLogInterval);
@@ -74,7 +75,7 @@ export class LocationService extends APIService {
         vehicle.vehicleStaff = locationMessage.vehicleStaff;
       }
 
-      
+
       return vehicle;
 
     });
@@ -85,6 +86,27 @@ export class LocationService extends APIService {
 
   beginLoggingVehicleLocation(){
     this.logLocation.next(true);
+  }
+
+  getCurrentLocation() : LatLngLiteral | undefined {
+
+    if (navigator.geolocation) {
+
+      navigator.geolocation.getCurrentPosition(position => {
+
+        const latLng:LatLngLiteral = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+
+        return latLng;
+
+      });
+
+    }
+
+    return undefined;
+
   }
 
   postLocation(){

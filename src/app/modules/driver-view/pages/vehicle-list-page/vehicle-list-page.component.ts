@@ -88,13 +88,11 @@ export class VehicleListPageComponent implements OnInit {
   }
 
   selectRow(selectedVehicle: any) {
-
     this.vehicleListForm.patchValue(selectedVehicle);
 
   }
 
   deleteVehicle(vehicleId : number) {
-
     if(vehicleId) {
       this.vehicleService.deleteVehicleListItem(vehicleId).then(successResponse=> {
 

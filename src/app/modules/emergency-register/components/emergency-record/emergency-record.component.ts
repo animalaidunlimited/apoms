@@ -165,7 +165,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     resetForm() {
 
-
         this.recordForm.reset({});
 
         this.resetPatientFormArray();

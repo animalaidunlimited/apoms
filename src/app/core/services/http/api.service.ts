@@ -23,10 +23,6 @@ export abstract class APIService<T = any> {
     }
 
     public getObservable(request: string): Observable<any> {
-        console.log(request);
-        if(request === '/CallOutcomes' ) {
-            console.log('hit http');
-        }
         return this.http.get(`${this.url}/${this.endpoint}${request}`);
     }
 

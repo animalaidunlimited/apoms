@@ -81,12 +81,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
-
-    console.log(this.actionStatus);
-
-    console.log(this.driverViewAssignments);
-
+    
     this.recordForm.addControl(
       'callerDetails', this.fb.array([this.getCallerFormGroup()])
     );
@@ -95,6 +90,8 @@ export class DriverViewAssignmentComponent implements OnInit {
     //   'patients',this.fb.array([this.getPatientFormGroup()])
     // );
 
+    this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
+
     this.callerDetails = this.recordForm.get('callerDetails') as FormArray;
     // this.patients = this.recordForm.get('patients') as FormArray;
       
@@ -102,45 +99,41 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignments) {
 
-    // console.log(assignment);
 
-    for(var i=0;i<assignment.callerDetails.length - 1;i++) {
+    for(let i=0;i<assignment.callerDetails.length - 1;i++) {
       this.callerDetails.push(this.getCallerFormGroup());
     }
-
-    // for(var i=0;i<assignment.patients.length - 1;i++) {
-    //   this.patients.push(this.getPatientFormGroup())
-    // }
-
     this.recordForm.patchValue(assignment);
     
-    this.openDriverActionDialog(this.driverView.getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatusName, subAction) ,this.recordForm, assignment.patients);
+    this.openDriverActionDialog(this.driverView.getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatusName, subAction) ,
+    this.recordForm, assignment.patients, subAction);
 
   }
 
-  openDriverActionDialog(formBuilderArrayVal: any,assignmentFormGroup: FormGroup, patientsArray: Patient[]) {
+  openDriverActionDialog(formBuilderArrayVal: any,assignmentFormGroup: FormGroup, patientsArray: Patient[] , subAction: string) {
 
     const dialogRef = this.dialog.open(DriverActionDialogComponent, {
       minWidth: '100vw',
       data: {
         formBuilderArray: formBuilderArrayVal,
         formGroup: assignmentFormGroup,
-        patientsArray: patientsArray
+        patientsArray,
+        subAction
       }
     });
   }
 
-  getPatientFormGroup() {
-    return this.fb.group({
-      problems: [''],
-      patientId: [],
-      tagNumber: [''],
-      animalType: [''],
-      mediaCount: [],
-      largeAnimal: [],
-      PatientCallOutcomeId: []
-    });
-  }
+  // getPatientFormGroup() {
+  //   return this.fb.group({
+  //     problems: [''],
+  //     patientId: [],
+  //     tagNumber: [''],
+  //     animalType: [''],
+  //     mediaCount: [],
+  //     largeAnimal: [],
+  //     PatientCallOutcomeId: []
+  //   });
+  // }
 
   getCallerFormGroup() {
     return this.fb.group( {
