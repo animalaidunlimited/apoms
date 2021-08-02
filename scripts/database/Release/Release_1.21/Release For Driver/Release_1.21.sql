@@ -377,7 +377,7 @@ WITH RescueReleaseST AS
 (SELECT p.PatientId FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE CAST('2021-06-11' AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST('2021-06-11' AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE()))
-AND (p.PatientCallOutcomeId IS NULL OR p.PatientCallOutcomeId IS NOT NULL)
+AND (p.PatientCallOutcomeId IS NULL)
 
 UNION 
 
