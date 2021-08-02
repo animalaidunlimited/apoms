@@ -144,7 +144,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     }
 
     primaryCaller(callerIndex: number) {
-        this.callerArray.controls.forEach((element,index)=>{
+        this.callerArray.controls?.forEach((element,index)=>{
             if(index !== callerIndex) {
                 element.get('primaryCaller')?.setValue(false);
             }
