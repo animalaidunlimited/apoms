@@ -44,6 +44,7 @@
 
 .iconDiv {
     border-radius: 50%;
+    color: #607d8b;
     background-color: white;
     width: 30px;
     height: 30px;
@@ -63,7 +64,7 @@
 
 .backIconDiv {
     border-radius: 50%;
-    background-color: #607d8b;;
+    background-color: #607d8b;
     color: white;
     width: 30px;
     height: 30px;
@@ -71,4 +72,14 @@
     flex-direction: column;
     box-sizing: border-box;
     display: flex;
+}
+
+.refreshButton {
+    position: absolute;
+    right: 1em;
+    top: 5em;
+
+    .mat-icon {
+        color: white;
+    }
 }
