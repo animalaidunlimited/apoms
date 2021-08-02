@@ -24,6 +24,7 @@ export class DriverViewIconsComponent implements OnInit {
 
   openCallerDetailsDialog(assignment: DriverAssignments) {
     const dialogRef = this.dialog.open(CallerDetailsDialogComponent, {
+      disableClose:true,
       minWidth: '100vw',
       data: {assignmentDetails: assignment}
     });
@@ -31,6 +32,7 @@ export class DriverViewIconsComponent implements OnInit {
 
   openLocationDialog(assignment: DriverAssignments) {
     const dialogRef = this.dialog.open(LocationDialogComponent, {
+      disableClose:true,
       minWidth: '100vw',
       data: {assignmentDetails: assignment}
     });
