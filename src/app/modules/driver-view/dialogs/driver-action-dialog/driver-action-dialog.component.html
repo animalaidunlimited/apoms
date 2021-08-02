@@ -11,14 +11,42 @@
         <div *ngFor="let control of data.formBuilderArray">
     
            <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
-                <mat-form-field *ngIf="control.type !== 'select'" appearance="fill">
+                <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
                     <mat-label>{{control.label}}</mat-label>
-                    <input type="{{control.type}}" [formControlName]="control.formControlName" matInput>
+                    <input type="{{control.type}}" [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
                 </mat-form-field>
+
+                <input type="button" value="{{data.subAction}}" class="actionButton"
+                [ngClass]="{
+                    'blue' : dateTimeChanged == false,
+                    'green' : dateTimeChanged == true
+                }" 
+                (click)='setCurrentDateTime(control.formControlName)'>
+
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalBeforeCallDatetime')">
+                    Ambulance arrival before call!
+                </mat-error>
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalAfterRescue') || formGroup.get(control.formControlName)?.hasError('rescueBeforeAmbulanceArrival')">
+                    Ambulance arrival after rescue!
+                </mat-error>
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('rescueAfterAdmission')">
+                    Rescue after admission!
+                </mat-error>
+
+                <mat-icon class='crosshairIcon'
+                [ngClass]="{
+                    'grey' : latLngChanged == false,
+                    'green' : latLngChanged == true
+                }"
+                (click)="getCurrentlocation()">
+                    my_location
+                </mat-icon>
            </div>
 
-           <input type="button" value="{{data.subAction}}" class="actionButton" 
-           (click)='setCurrentDateTime(control.formControlName)'>
+           
 
           
     

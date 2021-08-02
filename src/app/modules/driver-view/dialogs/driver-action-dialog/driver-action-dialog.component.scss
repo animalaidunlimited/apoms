@@ -8,6 +8,29 @@
     height: 3em;
     border: 0;
     border-radius: 4%;
-    background-color: #607d8b;
+    margin-bottom: 2em;
     color: white;
+
+    &.blue {
+        background-color: #607d8b;
+    }
+
+    &.green {
+        background-color: green;
+    }
+}
+
+.crosshairIcon {
+
+    font-size: 3em;
+    margin-bottom: 1.1em;
+
+    &.grey {
+        color: grey;
+    }
+
+    &.green {
+        color: green;
+    }
+
 }
