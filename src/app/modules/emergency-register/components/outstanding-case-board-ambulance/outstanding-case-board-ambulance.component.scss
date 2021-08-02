@@ -1,7 +1,8 @@
-@import '../../components/outstanding-case-board2/outstanding-case-board2.component.scss';
+@import '../../components/outstanding-case-board/outstanding-case-board.component.scss';
 
 .licensePlate{
     border: 2px solid black;
+    min-width: 10em;
     max-width: 10em;
     padding: 0.3em;
     border-radius: 0.25em;
@@ -11,6 +12,9 @@
     position: relative;
     box-shadow: 0 0.2em 0.1em rgb(0 0 0 / 25%);
     background:white;
+    position: absolute;
+    left:-1em;
+    top:-1em;
     &Badge {
         background-color: #3636c9;
         display: flex;
@@ -53,10 +57,16 @@
 
 .vehicle{
     justify-content: space-between;
+    padding-right: 2em;
+    position: relative;
     &Number{
+        position: relative;
+        min-width: max-content;
+
         p{
-            margin-top:0.5em;
+            margin-bottom:0em;
             font-weight:bold;
+            font-size:1.2em;
         }
         
     }
@@ -67,6 +77,9 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        align-items: center;
+        min-width: 10em;
+        margin-left: 1em;
         &Name{
 
             font-size: 1em;
@@ -106,6 +119,11 @@
         min-width: 15em;
         margin-right: 2em;
     }
+    &Map{
+        position: absolute;
+        top:0.5em;
+        right:0.1em;
+    }
 }
 
 
@@ -117,8 +135,7 @@
 }
 
 .vehicleType{
-    margin-top: 0.8em;
-    min-width: 30em;
+    align-items: center;
     p{
         margin-left:1em;
     }
@@ -133,11 +150,12 @@
 .capacityTitle{
     margin-top: 1.5em;
     font-size: 1.2em;
+    display: flex;
     &:nth-child(even){
         margin-top: 0;
     }
     span{
-        width: 8em;
+        width: 4em;
         display: inline-block;
         text-align: center;
     }
@@ -145,14 +163,14 @@
 
 .vehicleCapacity{
     h3{
-        width: 8.2em;
         text-align: center;
         margin-top: 0.1em;
+        margin-bottom: 0.6em;
     }
 }
 
 .swimlane{
-    margin: 1.25em 1em 1.5em 0;
+    margin: 0em 1em 1.5em 0;
 }
 
 
@@ -180,4 +198,13 @@
         }
     }
     
+}
+
+.timeAgo{
+    font-weight: bold;
+    color:red;
+}
+.timer{
+    display:flex;
+    align-items: center;
 }

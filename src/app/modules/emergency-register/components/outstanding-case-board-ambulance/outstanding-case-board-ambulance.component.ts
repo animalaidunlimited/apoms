@@ -1,60 +1,90 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
 
-import { Observable } from 'rxjs';
+import { Observable, Subject,  BehaviorSubject } from 'rxjs';
 import {
     concatAll,
     distinct,
     map,
     skipWhile,
+    takeUntil,
     withLatestFrom,
 } from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { OutstandingAssignment2 } from 'src/app/core/models/outstanding-case';
-import { OutstandingCase2Service } from '../../services/outstanding-case2.service';
-import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 
+
+import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
+import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
+import {trigger, transition, style, animate} from '@angular/animations';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
+
+
+const fadeAnimation = trigger('fadeAnimation',[
+    transition(':enter',[
+        style({opacity: 0}),
+        animate('200ms', style({opacity: 1}))
+    ]),
+    transition(':leave',[
+        style({opacity: 1}),
+        animate('200ms', style({opacity : 0}))
+    ])
+]);
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
+    animations: [fadeAnimation]
 })
-export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
+export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
-    
+    // Input's  
+
+    // Static Input's
     @Input() vehicleId!: number;
-
     @Input() inMap = false;
+    @Input() filterKeysArray!: FilterKeys[];
 
-    vehicleAssignmentList!: Observable<OutstandingAssignment2[]>;
-
-    ambulanceCases$!: Observable<ActiveVehicleLocation>;
-
-    vehicleType$!: Observable<VehicleType>;
-
-    @Output() rescueEdit:EventEmitter<OutstandingAssignment2> = new EventEmitter();
-
-
+    // Dynamic Input's
+    @Input() searchChange$!:Observable<string>;
+    @Input() matChipObs!: BehaviorSubject<any>;
+    
+    // Output's  
+    @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
+    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment> = new EventEmitter();
 
-    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment2> = new EventEmitter();
 
+
+    // Properties
+
+    // Static
+    actionStatusId!: number[];
+    showPlate = false;
+
+    // Dynamic
+    vehicleAssignmentList$!: Observable<OutstandingAssignment[]>;
+    ambulanceCases$!: Observable<ActiveVehicleLocation>;
+    vehicleType$!: Observable<VehicleType>;
+    timer$!: Observable<{time:string, class:string} | null>;
     currentCapacity!: Observable<{
         capacity: { small: number; large: number };
     }>;
-
-    actionStatusId!: number[];
+    
+    // Component unsubscribe handler
+    ngUnsubscribe = new Subject();
 
     constructor(
-        private outstandingCase2Service: OutstandingCase2Service,
+        private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
         private dropdown: DropdownService,
+        private cdr:ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
@@ -62,8 +92,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
 
         this.locationService.getActiveVehicleLocations();
         
-
+       
         this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
+            takeUntil(this.ngUnsubscribe),
             map(ambulanceLocations =>
                 ambulanceLocations.filter(
                     ambulanceLocation =>
@@ -80,18 +111,25 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             ),
         );
 
-        this.vehicleAssignmentList = this.outstandingCase2Service.outstandingCases$.pipe(
-            map(outstandingCases =>
-                outstandingCases.filter(
-                    outstandingCase =>
-                        outstandingCase.assignedVehicleId === this.vehicleId,
+        this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
+            this.matChipObs,
+            this.outstandingCaseService.outstandingCases$.pipe(
+                takeUntil(this.ngUnsubscribe),
+                map(outstandingCases =>
+                    outstandingCases.filter(
+                        outstandingCase =>
+                            outstandingCase.assignedVehicleId === this.vehicleId,
+                    ),
                 ),
             ),
+            this.filterKeysArray,
+            this.ngUnsubscribe
         );
 
         
 
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
+            takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length
             withLatestFrom(
                 this.ambulanceCases$,
@@ -105,27 +143,27 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             concatAll(),
         );
 
-        this.currentCapacity = this.vehicleAssignmentList.pipe(
-            map(vehicleAssigments => {
+        this.currentCapacity = this.vehicleAssignmentList$.pipe(
+            takeUntil(this.ngUnsubscribe),
+            map(vehicleAssignments => {
                 let smallPatientCount = 0;
                 let largePatientCount = 0;
 
-                vehicleAssigments.forEach(vehicleAssigment => {
-                    vehicleAssigment.patients.forEach(patient => {
+                vehicleAssignments.forEach(vehicleAssignment => {
+                    vehicleAssignment.patients.forEach(patient => {
                         if (
-                            /**
-                             * Release count
-                             */
+                            
+                            // Release count
 
-                            (vehicleAssigment.releaseId === null &&
+                            (vehicleAssignment.releaseId === null &&
                                 patient.patientCallOutcomeId !== null &&
-                                vehicleAssigment.rescueTime !== null) ||
-                            /**
-                             * Rescue count
-                             */
-                            (vehicleAssigment.releaseId !== null &&
-                                vehicleAssigment.releaseEndDate !== null &&
-                                vehicleAssigment.pickupDate !== null)
+                                vehicleAssignment.rescueTime !== null) ||
+
+                            // Rescue count
+                            
+                            (vehicleAssignment.releaseId !== null &&
+                                vehicleAssignment.releaseEndDate !== null &&
+                                vehicleAssignment.pickupDate !== null)
                         ) {
                             patient.animalSize === 'small'
                                 ? (smallPatientCount = smallPatientCount + 1)
@@ -142,12 +180,14 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
                 };
             }),
         );
-
-
+        
+        this.timer$ = this.outstandingCaseService.getTimer(this.vehicleId);
+        
     }
 
+
     getOutstandingCasesByStatusId(statusId: number) {
-        return this.vehicleAssignmentList.pipe(
+        return this.vehicleAssignmentList$.pipe(
             map(outstandingCases =>
                 outstandingCases.filter(
                     outStandingCases =>
@@ -178,11 +218,11 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
         this.mediaDialog.emit(({patientId,tagNumber}));
     }
 
-    openRescueEdit(outstandingCase:OutstandingAssignment2){
+    openRescueEdit(outstandingCase:OutstandingAssignment){
         this.rescueEdit.emit(outstandingCase);
     }
 
-    openCase(caseSearchResult:OutstandingAssignment2){
+    openCase(caseSearchResult:OutstandingAssignment){
         this.openCaseEmitter.emit(caseSearchResult);
     }
 
@@ -195,5 +235,12 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit {
             maxWidth: '100%',
             data: this.vehicleId
         });
+    }
+
+    ngOnDestroy(){
+        
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    
     }
 }

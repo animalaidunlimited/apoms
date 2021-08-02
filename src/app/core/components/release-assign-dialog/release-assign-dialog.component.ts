@@ -29,11 +29,11 @@ export class ReleaseAssignDialogComponent implements OnInit {
       releaseType: this.data.caseDetails.releaseType,
       Releaser1: this.data.caseDetails.staff1,
       Releaser2: this.data.caseDetails.staff2,
-      assignedVehicleId: this.data.caseDetails.assignedVehicleId,
+      assignedVehicleId: this.data.caseDetails.assignedVehicleId as number,
       ambulanceAssignmentTime: this.data.caseDetails.ambulanceAssignmentTime,
-      pickupDate: this.data.caseDetails.pickupDate,
-      releaseBeginDate: this.data.caseDetails.releaseBeginDate,
-      releaseEndDate: this.data.caseDetails.releaseEndDate
+      pickupDate: this.data.caseDetails.pickupDate as string,
+      releaseBeginDate: this.data.caseDetails.releaseBeginDate as string,
+      releaseEndDate: this.data.caseDetails.releaseEndDate as string
     };
 
   }

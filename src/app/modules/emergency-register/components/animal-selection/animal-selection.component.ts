@@ -306,8 +306,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     loadPatientArray(emergencyCaseId: number | undefined) {
 
-        if(this.incomingPatientArray.length > 0) {
 
+        if(this.incomingPatientArray?.length > 0) {
+
+            
             this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
@@ -315,7 +317,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 /* 
                 * loadPatientArray running multiple times on ngOnInit 
                 * animal-selection HTML tag will instantiate ng on init 
-                * Rstrict length of patients array to length of incoming patients 
+                * Restrict length of patients array to length of incoming patients 
                 */
                 if(this.patients.length < this.incomingPatientArray.length )
                 {
