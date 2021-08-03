@@ -6,7 +6,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { GoogleMap } from 'src/app/core/testing/google-map';
 
 interface DialogData {
-  assignmentDetails: DriverAssignments
+  assignmentDetails: DriverAssignments;
 }
 
 
@@ -52,7 +52,7 @@ export class LocationDialogComponent implements OnInit {
 
 
   initialiseLocation(coordinates: any) {
-    this.zoom = 20;
+    this.zoom = 13;
 
     this.markers = [];
 

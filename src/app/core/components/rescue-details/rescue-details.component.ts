@@ -109,10 +109,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         this.vehicleList$ = this.dropdowns.getVehicleListDropdown();
 
-        this.vehicleList$.subscribe((val:any) => console.log(val));
-
-
-
         this.rescuers$ = this.dropdowns.getRescuers();
         this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 

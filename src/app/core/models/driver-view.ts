@@ -83,6 +83,8 @@ export interface DriverAssignments {
   visitAdminNotes: string;
   visitOperatorNotes: string;
   visitDay: number;
+  streetTreatAmbulanceId: number;
+  streetTreatAmbulanceAssignmentDate: string;
 }
 
 
