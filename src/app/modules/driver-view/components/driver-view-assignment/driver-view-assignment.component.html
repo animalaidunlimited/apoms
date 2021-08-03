@@ -71,7 +71,7 @@
                     </button>
                     <button (click)="togglebuttonSelection('Admitted', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Admitted
-                        <mat-icon *ngIf="assignments.patients[0].callOutcome.CallOutcome.CallOutcomeId == 1" class="selectionButton">check_circle</mat-icon>
+                        <mat-icon *ngIf="assignments.admissionTime" class="selectionButton">check_circle</mat-icon>
                     </button>
 
                 </div>

@@ -161,12 +161,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
-    console.log(rescue.emergencyNumber);
     this.caseService.searchCases(searchQuery)
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(result => {
-
-       console.log(result);
       this.infoContent.next(result);
       this.infoWindow.open(marker);
 

@@ -13,10 +13,10 @@
            <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
                 <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
                     <mat-label>{{control.label}}</mat-label>
-                    <input type="{{control.type}}" [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
+                    <input type="{{control.type}}" [min]='minTime' [max]='maxTime' [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
                 </mat-form-field>
 
-                <input type="button" value="{{data.subAction}}" class="actionButton"
+                <input type="button" *ngIf="control.type == 'datetime-local'" value="{{data.subAction}}" class="actionButton"
                 [ngClass]="{
                     'blue' : dateTimeChanged == false,
                     'green' : dateTimeChanged == true
@@ -36,14 +36,20 @@
                     Rescue after admission!
                 </mat-error>
 
+                
+           </div>
+            
+           <div fxLayout='row' fxLayoutGap='20px'>
+               
                 <mat-icon class='crosshairIcon'
                 [ngClass]="{
                     'grey' : latLngChanged == false,
                     'green' : latLngChanged == true
                 }"
-                (click)="getCurrentlocation()">
+                (click)="getCurrentVehiclelocation()">
                     my_location
                 </mat-icon>
+                <p>Update latest location</p>
            </div>
 
            

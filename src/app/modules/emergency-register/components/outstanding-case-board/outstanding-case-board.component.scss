@@ -7,7 +7,7 @@
 }
 
 .border-yellow {
-    border-right: 8px solid gold;
+    border-right: 8px solid gold;  
 }
 
 .mat-expansion-panel{
@@ -158,6 +158,28 @@
 
 @media (max-width: 600px){
     .swimlane{
-        width:100%;
+        width:90%;
+        margin:0 auto;
+    }
+
+    .ambulanceAssignedCases {
+        max-width: 90%;
+        margin: 1.5em auto !important;
+    }
+
+    .vehicleCapacity > div > div {
+        flex-direction: column !important;
+        > div {
+            display: flex;
+        }
+    }
+    
+    .mat-form-field.search-box {
+        max-width: unset;
+    }
+    .filterWrapper{
+        width: 92vw;
+        left: 1.2em;
+        top: 8em;
     }
 }
