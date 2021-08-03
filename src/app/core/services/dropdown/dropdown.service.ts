@@ -45,7 +45,7 @@ export class DropdownService extends APIService {
     callOutcomes$!: Observable<CallOutcomeResponse[]>;
     callStaff$!: Observable<User[]>;
     callTypes$!: Observable<CallType[]>;
-    crueltyIspectors$!: Observable<User[]>;
+    crueltyInspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
@@ -414,15 +414,15 @@ export class DropdownService extends APIService {
     getCrueltyInspectors(): Observable<User[]> {
         const request = '/CrueltyStaff';
 
-        if (!this.crueltyIspectors$) {
-            this.crueltyIspectors$ = this.getObservable(request).pipe(
+        if (!this.crueltyInspectors$) {
+            this.crueltyInspectors$ = this.getObservable(request).pipe(
                 map((response: User[]) => {
                     return response;
                 }),
             );
         }
 
-        return this.crueltyIspectors$;
+        return this.crueltyInspectors$;
     }
 
     getDispatchers(): Observable<User[]> {
