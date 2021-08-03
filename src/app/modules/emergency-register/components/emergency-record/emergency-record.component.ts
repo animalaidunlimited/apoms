@@ -47,11 +47,17 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     hasWritePermission = false;
 
+    @HostListener('document:keydown.control',['$event'])
+    removeDropDownFocus(){
+        
+    }
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
 
-        event.preventDefault();
 
+        event.preventDefault();
+        
         const element = this.elementRef.nativeElement;
 
         if(element.offsetParent){

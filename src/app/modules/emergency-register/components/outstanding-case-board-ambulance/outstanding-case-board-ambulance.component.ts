@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
@@ -83,8 +83,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
-        private dropdown: DropdownService,
-        private cdr:ChangeDetectorRef
+        private dropdown: DropdownService
     ) {}
 
     ngOnInit(): void {
@@ -149,8 +148,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 let smallPatientCount = 0;
                 let largePatientCount = 0;
 
-                vehicleAssignments.forEach(vehicleAssignment => {
-                    vehicleAssignment.patients.forEach(patient => {
+                vehicleAssignments?.forEach(vehicleAssignment => {
+                    vehicleAssignment.patients?.forEach(patient => {
                         if (
                             
                             // Release count
