@@ -39,8 +39,6 @@ export class VehicleShiftComponent implements OnInit {
     this.hourRange = this.vehicleService.getHourRange();
     this.hours = this.hourRange.range;
 
-    console.log(this.hourRange)
-
     this.currentDayStart = new Date(this.shiftDate);
     this.currentDayStart.setHours(this.hourRange.start,0,0);
 

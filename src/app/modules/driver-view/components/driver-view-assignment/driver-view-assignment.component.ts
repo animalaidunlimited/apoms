@@ -66,7 +66,9 @@ export class DriverViewAssignmentComponent implements OnInit {
     visitStatusId: [],
     visitAdminNotes: [''],
     visitOperatorNotes: [''],
-    visitDay:[]
+    visitDay:[],
+    streetTreatAmbulanceId: [],
+    streetTreatAmbulanceAssignmentDate: [''],
   });
 
   callerDetails!:FormArray;
