@@ -99,6 +99,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
+                selfAdmission:false,
                 code: this.code
             }),
         );
