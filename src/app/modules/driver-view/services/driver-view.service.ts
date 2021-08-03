@@ -190,8 +190,8 @@ export class DriverViewService extends APIService {
           driverViewData.rescueTime &&
           driverViewData.ambulanceArrivalTime &&
           driverViewData.admissionTime &&
-		      patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          patient.admissionArea &&
+		      // patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
+          // patient.admissionArea &&
           !driverViewData.releaseDetailsId &&
           !driverViewData.streetTreatCaseId
         ) ||
@@ -199,8 +199,8 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceArrivalTime &&
 		      driverViewData.rescueTime &&
           driverViewData.admissionTime &&
-          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          driverViewData.inTreatmentAreaId &&
+          // patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
+          // driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
