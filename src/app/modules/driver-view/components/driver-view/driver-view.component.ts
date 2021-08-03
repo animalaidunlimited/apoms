@@ -32,6 +32,10 @@ export class DriverViewComponent implements OnInit {
 
     this.locationService.initialise();
 
+    this.locationService.currentLocation$.subscribe(val => console.log(val))
+    this.locationService.getCurrentLocation();
+
+
 
     // Start logging the location of this vehicle.
     this.locationService.beginLoggingVehicleLocation();
@@ -68,7 +72,7 @@ export class DriverViewComponent implements OnInit {
     this.driverView.populateDriverView(date);
 
     this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
-     
+
       const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;
     }));
