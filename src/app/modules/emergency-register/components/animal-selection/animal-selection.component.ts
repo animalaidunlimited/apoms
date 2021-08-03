@@ -85,7 +85,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.p', ['$event'])
 
     addPatientTable(event: KeyboardEvent) {
-        event.preventDefault();
+        event.preventDefault()
         if(this.outcome){
             return;
         }
@@ -325,6 +325,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 }
             });
 
+            
+
             this.setChildOutcomeAsParentPatient(this.patients);
 
 
@@ -332,6 +334,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
         else if(emergencyCaseId) {
 
+            
             this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
