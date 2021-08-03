@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DriverViewIconsComponent } from './driver-view-icons.component';
-
+import { MaterialModule } from 'src/app/material-module';
 describe('DriverViewIconsComponent', () => {
   let component: DriverViewIconsComponent;
   let fixture: ComponentFixture<DriverViewIconsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DriverViewIconsComponent ]
+      imports:[MaterialModule],
+      
+declarations: [ DriverViewIconsComponent ]
     })
     .compileComponents();
   });
