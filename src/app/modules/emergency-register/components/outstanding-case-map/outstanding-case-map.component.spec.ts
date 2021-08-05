@@ -6,12 +6,13 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { createMapSpy, createMapConstructorSpy } from 'src/app/core/testing/fake-google-map-utils';
 import { DEFAULT_OPTIONS } from 'src/app/core/testing/google-map';
 import { environment } from 'src/environments/environment';
-
 import { OutstandingCaseMapComponent } from './outstanding-case-map.component';
 
+import { SharedPipesModule } from 'src/app/shared-pipes.module';
 describe('OutstandingCaseMapComponent', () => {
   let component: OutstandingCaseMapComponent;
   let fixture: ComponentFixture<OutstandingCaseMapComponent>;
@@ -22,16 +23,19 @@ describe('OutstandingCaseMapComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
+  HttpClientTestingModule,
         AngularFireMessagingModule,
+        BrowserAnimationsModule,
         GoogleMapsModule,
-        AngularFireModule.initializeApp(environment.firebase)
+        AngularFireModule.initializeApp(environment.firebase),
+        SharedPipesModule
       ],
       providers: [
         MatSnackBar,
-        Overlay
+        Overlay,
+        
       ],
-      declarations: [ OutstandingCaseMapComponent ],
+      declarations: [ OutstandingCaseMapComponent, ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
