@@ -26,7 +26,7 @@ export class OutstandingCaseService {
     private rescueService: RescueDetailsService,
     private zone:NgZone
   ) {
-    this.initialise();
+    
    }
 
   initialise(){
