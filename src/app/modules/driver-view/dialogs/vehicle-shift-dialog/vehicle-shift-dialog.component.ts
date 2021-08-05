@@ -76,7 +76,7 @@ export class VehicleShiftDialogComponent implements OnInit {
       this.shiftValidator.validate('start',
         this.addShiftFormGroup.get('shiftEndTime'),
         this.addShiftFormGroup.get('shiftUUID')?.value,
-        this.data.vehicle.vehicleId)
+        this.data.vehicle?.vehicleId)
     ]);
 
 
@@ -87,7 +87,7 @@ export class VehicleShiftDialogComponent implements OnInit {
       this.shiftValidator.validate('end',
         this.addShiftFormGroup.get('shiftStartTime'),
         this.addShiftFormGroup.get('shiftUUID')?.value,
-        this.data.vehicle.vehicleId)
+        this.data.vehicle?.vehicleId)
     ]);
 
   }
@@ -126,12 +126,12 @@ export class VehicleShiftDialogComponent implements OnInit {
 
     const staffArray = this.fb.array([]);
 
-    for(let i = 0; i < this.data.vehicle.maxRescuerCapacity; i++){
+    for(let i = 0; i < this.data.vehicle?.maxRescuerCapacity; i++){
 
       // As we add staff into the array, check that this one is less than the minimum number
       // of staff required for the vehicle.
       const staff = this.fb.group({
-        userId: [, i <= this.data.vehicle.minRescuerCapacity ? Validators.required : null]
+        userId: [, i <= this.data.vehicle?.minRescuerCapacity ? Validators.required : null]
       });
 
       staffArray.setValidators(UniqueValidators.uniqueBy('userId'));
@@ -143,7 +143,7 @@ export class VehicleShiftDialogComponent implements OnInit {
      const returnGroup = this.fb.group({
       shiftUUID: [],
       vehicleShiftId: [],
-      vehicleId: [this.data.vehicle.vehicleId, Validators.required],
+      vehicleId: [this.data.vehicle?.vehicleId, Validators.required],
       shiftStartTime: [],
       shiftEndTime: [],
       vehicleStaff: staffArray
@@ -155,7 +155,7 @@ export class VehicleShiftDialogComponent implements OnInit {
 
   upsertStaffShift() : void {
 
-    this.vehicleService.upsertVehicleShift(this.data.vehicle.vehicleId, this.addShiftFormGroup);
+    this.vehicleService.upsertVehicleShift(this.data.vehicle?.vehicleId, this.addShiftFormGroup);
 
     if(!this.isEdit){
       this.resetForm();
@@ -167,7 +167,7 @@ export class VehicleShiftDialogComponent implements OnInit {
   resetForm(){
 
     this.addShiftFormGroup.reset();
-    this.addShiftFormGroup.get('vehicleId')?.setValue(this.data.vehicle.vehicleId);
+    this.addShiftFormGroup.get('vehicleId')?.setValue(this.data.vehicle?.vehicleId);
     this.addShiftFormGroup.get('shiftUUID')?.setValue(this.data.shift?.shiftUUID);
 
     this.updateValidators();

@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
@@ -28,9 +28,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('rescueTimeField', { read: ElementRef, static: true }) rescueTimeField!: ElementRef;
     @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true }) ambulanceArrivalTimeField!: ElementRef;
     @ViewChild('ambulanceAssignmentTimeField', { read: ElementRef, static: true }) ambulanceAssignmentTimeField!: ElementRef;
-
     @ViewChild('emergencyCode', { read: ElementRef, static: true })
-
 
     emergencyCode!: ElementRef;
 
@@ -119,6 +117,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .subscribe((rescueDetails: RescueDetailsParent) => {
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
+                    console.log(rescueDetails);
+
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
 
                         this.rescuerArray = this.recordForm.get('rescueDetails.rescuers') as FormArray;
@@ -150,6 +150,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
         this.ambulanceArrivalTime = this.recordForm.get('rescueDetails.ambulanceArrivalTime');
+        this.ambulanceAssignmentTime  = this.recordForm.get('rescueDetails.ambulanceAssignmentTime');
         this.rescueTime = this.recordForm.get('rescueDetails.rescueTime');
         this.admissionTime = this.recordForm.get('rescueDetails.admissionTime');
         this.callDateTime = this.recordForm.get('emergencyDetails.callDateTime');
@@ -168,7 +169,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.subscribeToValueChanges('rescueDetails');
         this.subscribeToValueChanges('emergencyDetails.callDateTime');
         this.subscribeToValueChanges('callOutcome.CallOutcome');
-
+        this.subscribeToValueChanges('rescueDetails.ambulanceAssignmentTime');
     }
 
     private subscribeToValueChanges(abstractControlName: string) {
@@ -176,7 +177,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .get(abstractControlName)
             ?.valueChanges.pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
-            .subscribe(() => {
+            .subscribe((value) => {
                 // The values won't have bubbled up to the parent yet, so wait for one tick
                 setTimeout(() => this.updateValidators());
             });
@@ -208,14 +209,18 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         }
 
-        // if ambulance arrived then assignedVehicleId, resuce time required
-        if (this.ambulanceArrivalTime?.value) {
+        // if ambulance arrived then assignedVehicleId, rescue time required
+        if (this.ambulanceArrivalTime?.value || this.ambulanceAssignmentTime?.value) {
             this.assignedVehicleId?.setValidators([Validators.required]);
+        } else if(this.ambulanceAssignmentTime?.value === '' || this.ambulanceArrivalTime?.value === ''){
+            this.assignedVehicleId?.clearValidators();
         }
 
         // if rescue time then assignedVehicleId, ambulance arrived required
         if (this.rescueTime?.value) {
             this.assignedVehicleId?.setValidators([Validators.required]);
+            this.ambulanceArrivalTime?.setValidators([Validators.required]);
+            this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
         }
 
         if (

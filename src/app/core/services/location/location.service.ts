@@ -91,13 +91,9 @@ export class LocationService extends APIService {
 
   getCurrentLocation() {
 
-    console.log(navigator.geolocation)
-
     if (navigator.geolocation) {
 
       navigator.geolocation.getCurrentPosition(position => {
-
-        console.log(position);
 
         const latLng:LatLngLiteral = {
           lat: position.coords.latitude,
