@@ -47,7 +47,7 @@ export class LocationDialogComponent implements OnInit {
 
    
 
-    this.initialiseLocation(this.data.assignmentDetails.latLngLiteral);
+    this.initialiseLocation(this.data.assignmentDetails?.latLngLiteral);
   }
 
 
@@ -56,10 +56,10 @@ export class LocationDialogComponent implements OnInit {
 
     this.markers = [];
 
-    this.center = { lat: this.data.assignmentDetails.latLngLiteral.lat , lng: this.data.assignmentDetails.latLngLiteral.lng };
+    this.center = { lat: this.data.assignmentDetails?.latLngLiteral.lat , lng: this.data.assignmentDetails?.latLngLiteral.lng };
 
     const marker: Marker = {  
-        position: { lat: coordinates.lat, lng: coordinates.lng },
+        position: { lat: coordinates?.lat, lng: coordinates?.lng },
         label: '',
         options: { draggable: true },
     };
