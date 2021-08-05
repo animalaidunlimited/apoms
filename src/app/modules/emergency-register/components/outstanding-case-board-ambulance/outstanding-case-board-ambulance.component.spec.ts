@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OutstandingCaseBoardAmbulanceComponent } from './outstanding-case-board-ambulance.component';
 
-
 describe('OutstandingCaseBoardAmbulanceComponent', () => {
     let component: OutstandingCaseBoardAmbulanceComponent;
     let fixture: ComponentFixture<OutstandingCaseBoardAmbulanceComponent>;
@@ -12,7 +11,7 @@ describe('OutstandingCaseBoardAmbulanceComponent', () => {
         TestBed.configureTestingModule({
             imports:[
                 MatDialogModule,
-                HttpClientTestingModule
+                HttpClientTestingModule,
             ],
             providers: [
                 {
@@ -20,6 +19,7 @@ describe('OutstandingCaseBoardAmbulanceComponent', () => {
                   useValue: {}
                 },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
+                  
              ],
             declarations: [ OutstandingCaseBoardAmbulanceComponent ]
         })
