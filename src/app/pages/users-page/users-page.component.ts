@@ -13,6 +13,7 @@ import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { UserOptionsService } from './../../core/services/user-option/user-options.service';
 
 
 interface StreetTreatRole {
@@ -102,6 +103,7 @@ export class UsersPageComponent implements OnInit {
     @ViewChild(MatTable) table!: MatTable<UserDetails>;
 
     constructor(private dropdown : DropdownService,
+      private userService: UserOptionsService,
       private fb : FormBuilder,
       private userAction : UserActionService,
       private snackBar: SnackbarService,
@@ -250,7 +252,8 @@ export class UsersPageComponent implements OnInit {
 
 
     getrefreshTableData() {
-      this.userAction.getUsersByIdRange().then((userListData: UserDetails[])=>{
+      
+      this.userAction.getUsersByIdRange(this.userService.getUserName()).then((userListData: UserDetails[])=>{
         this.userList = userListData;
         this.initialiseTable(this.userList);
       });

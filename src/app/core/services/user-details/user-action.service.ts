@@ -19,8 +19,8 @@ export class UserActionService extends APIService{
     }
   }
 
-  public getUsersByIdRange(): Promise<any> {
-    const request = '?GetUsersByIdRange';
+  public getUsersByIdRange(username: string): Promise<any> {
+    const request = `/GetUsersByIdRange?username=${username}`;
     return this.get(request);
   }
 
