@@ -1,11 +1,19 @@
 
 <div class="contentWrapper" [formGroup]="driverViewDetails">
 
-   <div fxLayout="row wrap" fxLayoutAlign="start end" class="selectionDivWrapper">
-        <mat-form-field>
+   <div fxLayout="row wrap" fxLayoutAlign="center center" class="selectionDivWrapper">
+       <!-- Do not delete this code may be some point in the future we may need this again. -->
+       
+        <!-- <mat-form-field>
             <mat-label>Date</mat-label>
             <input matInput type="datetime-local" formControlName="assignmentDate" name = "AssignmentDate">
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <div  class="timer"
+        *ngIf="timer$ | async as timer"
+        [ngClass]="timer.class"> 
+        {{ timer.time }}
+        </div>
 
         <button mat-mini-fab class="refreshButton" aria-label="Manual refresh" (click)="refreshDate()" >
             <mat-icon>refresh</mat-icon>  

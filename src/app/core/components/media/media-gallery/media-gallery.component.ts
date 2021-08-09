@@ -25,6 +25,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   // public connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
 
+  @Input() displayImagesAndButtons!:boolean;
+
   @Input() mediaData!:BehaviorSubject<MediaItem[]>;
 
   mediaPatientItems!:MediaItem[];

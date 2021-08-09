@@ -94,6 +94,10 @@ export class DriverViewAssignmentComponent implements OnInit {
 
     this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
 
+    this.driverViewAssignments.subscribe(val=> {
+      console.log(val);
+    })
+
     this.callerDetails = this.recordForm.get('callerDetails') as FormArray;
     // this.patients = this.recordForm.get('patients') as FormArray;
       
