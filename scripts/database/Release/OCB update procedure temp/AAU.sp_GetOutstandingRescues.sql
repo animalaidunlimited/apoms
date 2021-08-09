@@ -1,10 +1,10 @@
 
 DELIMITER  !!
-DROP PROCEDURE AAU.sp_GetOutstandingRescues!!
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues!!
 
 
 DELIMITER $$
-CREATE AAU.sp_GetOutstandingRescue(IN prm_UserName VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
 DECLARE vOrganisationId INT;
