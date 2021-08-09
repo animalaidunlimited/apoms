@@ -11,7 +11,10 @@ describe('OutstandingCaseService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [OutstandingCaseService],
+      
+      providers: [
+        OutstandingCaseService
+      ],
     });
     service = TestBed.inject(OutstandingCaseService);
   });

@@ -1,6 +1,7 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OutstandingCaseBoardAmbulanceComponent } from './outstanding-case-board-ambulance.component';
-
 
 describe('OutstandingCaseBoardAmbulanceComponent', () => {
     let component: OutstandingCaseBoardAmbulanceComponent;
@@ -8,6 +9,18 @@ describe('OutstandingCaseBoardAmbulanceComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports:[
+                MatDialogModule,
+                HttpClientTestingModule,
+            ],
+            providers: [
+                {
+                  provide: MatDialogRef,
+                  useValue: {}
+                },
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                  
+             ],
             declarations: [ OutstandingCaseBoardAmbulanceComponent ]
         })
         .compileComponents();
@@ -23,3 +36,4 @@ describe('OutstandingCaseBoardAmbulanceComponent', () => {
         expect(component).toBeTruthy();
     });
 });
+
