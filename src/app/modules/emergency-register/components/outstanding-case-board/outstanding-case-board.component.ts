@@ -250,20 +250,20 @@ export class OutstandingCaseBoardComponent implements OnInit, OnDestroy {
       this.outstandingCasesArray = assignments;
 
       this.actionStatus.forEach(status=> {
-        const statusExist = this.outstandingCasesArray.some(statusObj=> statusObj.actionStatus === status.actionStatus);
+        const statusExist = this.outstandingCasesArray?.some(statusObj=> statusObj.actionStatus === status.actionStatus);
 
         if(statusExist) {
           return;
         }
         else {
-          this.outstandingCasesArray.push({
+          this.outstandingCasesArray?.push({
             actionStatus: status.actionStatus,
             actionStatusName: status.actionStatusName,
             statusGroups: []
           });
         }
 
-        this.outstandingCasesArray.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
+        this.outstandingCasesArray?.sort((status1,status2)=> status1.actionStatus - status2.actionStatus);
       });
 
         this.loading = false;

@@ -9,7 +9,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Platform } from '@angular/cdk/platform';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';

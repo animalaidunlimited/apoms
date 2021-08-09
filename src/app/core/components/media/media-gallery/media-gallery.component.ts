@@ -9,7 +9,7 @@ import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 @Component({
   // tslint:disable-next-line: component-selector

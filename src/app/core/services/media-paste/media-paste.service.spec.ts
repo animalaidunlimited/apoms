@@ -1,4 +1,4 @@
-import { MaterialModule } from './../../../../material-module';
+import { MaterialModule } from '../../../material-module';
 import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';

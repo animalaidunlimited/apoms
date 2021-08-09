@@ -68,7 +68,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(cases => {
 
-      if(cases.length > 0){
+      if(cases?.length > 0){
         this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
       }
 

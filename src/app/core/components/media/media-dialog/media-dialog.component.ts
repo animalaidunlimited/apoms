@@ -4,7 +4,7 @@ import { Platform } from '@angular/cdk/platform';
 import { of, BehaviorSubject, Subject } from 'rxjs';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import { takeUntil } from 'rxjs/operators';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MediaItem, MediaItemReturnObject } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';

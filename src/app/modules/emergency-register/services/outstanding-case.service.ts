@@ -411,9 +411,9 @@ export class OutstandingCaseService {
 
   emitOutstandingCases(outstandingCases:OutstandingCase[]){
 
-    outstandingCases.sort((a,b) => a.actionStatus - b.actionStatus);
+    outstandingCases?.sort((a,b) => a.actionStatus - b.actionStatus);
 
-    outstandingCases.forEach(states =>
+    outstandingCases?.forEach(states =>
       {
         states.statusGroups.forEach(rescuerGroups => {
 
@@ -433,9 +433,9 @@ export class OutstandingCaseService {
 
     return this.outstandingCases$.pipe(
       map((cases) => {
-        if(cases.length !== 0){
+        if(cases?.length !== 0){
 
-          return cases.filter(swimlane => swimlane.actionStatus >= 3)
+          return cases?.filter(swimlane => swimlane.actionStatus >= 3)
                       .map(states => states.statusGroups)
 
                         // In the below we need to aggregate the rescues into their own ambulance groups so that we can then find

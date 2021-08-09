@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestr
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, timer } from 'rxjs';
 import { finalize, take, takeUntil } from 'rxjs/operators';
-import { MediaPasteService } from '../../../services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from '../../../services/media-paste/media-paste.service';
 
 
 interface IncomingData {

@@ -16,11 +16,12 @@ measurementId: "G-2FQTQ26YCP"
   // Initialize Firebase
 
   if (firebase.messaging.isSupported()) {
-      firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
+    
+    const messaging = firebase.messaging();
 
   }
 
-  const messaging = firebase.messaging();
 
 
 //Handle messages whilst the app is in the background. We'll show a notification

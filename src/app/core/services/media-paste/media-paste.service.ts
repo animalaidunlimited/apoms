@@ -1,7 +1,7 @@
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../../models/media';
+import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
 import { Observable, from, BehaviorSubject, of} from 'rxjs';
@@ -10,10 +10,10 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { isImageFile, isVideoFile } from '../../../helpers/utils';
+import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
-import { OnlineStatusService } from '../../online-status/online-status.service';
-import { StorageService } from '../../storage/storage.service';
+import { OnlineStatusService } from '../online-status/online-status.service';
+import { StorageService } from '../storage/storage.service';
 
 interface IResizeImageOptions {
   maxSize: number;

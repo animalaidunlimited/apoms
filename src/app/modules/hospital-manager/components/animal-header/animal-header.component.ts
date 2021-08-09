@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { MediaItem } from 'src/app/core/models/media';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
