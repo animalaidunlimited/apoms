@@ -12,6 +12,7 @@ import { APIService } from '../http/api.service';
 export class LocationService extends APIService {
 
   ambulanceLocations$ = new BehaviorSubject<ActiveVehicleLocation[]>([]);
+  currentLocation$ = new BehaviorSubject<LatLngLiteral>({lat: 0, lng: 0})
 
   endpoint = 'Location';
 
@@ -88,7 +89,7 @@ export class LocationService extends APIService {
     this.logLocation.next(true);
   }
 
-  getCurrentLocation() : LatLngLiteral | undefined {
+  getCurrentLocation() {
 
     if (navigator.geolocation) {
 
@@ -99,13 +100,13 @@ export class LocationService extends APIService {
           lng: position.coords.longitude
         }
 
-        return latLng;
+        this.currentLocation$.next(latLng);
 
       });
 
+    } else {
+      alert('Geolocation is not supported by this browser.');
     }
-
-    return undefined;
 
   }
 

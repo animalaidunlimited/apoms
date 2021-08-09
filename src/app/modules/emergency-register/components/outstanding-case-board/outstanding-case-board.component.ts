@@ -103,9 +103,12 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     private fb: FormBuilder,
     private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
-    private dropDown: DropdownService) { }
+    private dropDown: DropdownService,
+    private outStandingCaseService: OutstandingCaseService) { }
 
   ngOnInit(): void {
+
+    this.outStandingCaseService.initialise();
 
 
     this.receivedVehicleList$ = this.outstandingCaseService.filterCases(

@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -36,21 +34,20 @@ dateTimeChanged = false;
 
 errorMatcher = new CrossFieldErrorMatcher();
 
-formGroup = this.data.formGroup;
+formGroup = this.data.formGroup ;
 
-patientFormGroup = this.data.formGroup.get('patients');
+patientFormGroup = this.data.formGroup?.get('patients');
 
   constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private driverView: DriverViewService,
-    private dropDown: DropdownService,
     private snackBar: SnackbarService,
     private locationService: LocationService,
     private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
-    this.data.formBuilderArray.forEach((fb: any)=> {
+    this.data.formBuilderArray?.forEach((fb: any)=> {
       if(fb.type==='datetime-local') {
         this.dateTimeChanged =  this.formGroup.get(fb.formControlName)?.value ? true : false; 
         this.getMinAndMAx(fb);
@@ -267,11 +264,11 @@ patientFormGroup = this.data.formGroup.get('patients');
   getCurrentVehiclelocation() {
 
     const newLatLongLiteral = this.locationService.getCurrentLocation();
-    if(newLatLongLiteral) {
+    /* if(newLatLongLiteral) { */
       this.formGroup.get('latLngLiteral')?.setValue(newLatLongLiteral);
       this.formGroup.get('isUpdated')?.setValue(true);
       this.latLngChanged = true;
-    }
+  /*   } */
 
   }
 

@@ -1,8 +1,8 @@
 import { Inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { Form, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CallerDetails, DriverAssignments } from 'src/app/core/models/driver-view';
+import {  DriverAssignments } from 'src/app/core/models/driver-view';
 
 interface DialogData {
   assignmentDetails: DriverAssignments
@@ -16,7 +16,7 @@ interface DialogData {
 export class CallerDetailsDialogComponent implements OnInit {
 
   recordForm = this.fb.group({
-    emergencyCaseId: [this.data.assignmentDetails.emergencyCaseId],
+    emergencyCaseId: [this.data.assignmentDetails?.emergencyCaseId],
   });
 
   constructor( public dialogRef: MatDialogRef<CallerDetailsDialogComponent>,

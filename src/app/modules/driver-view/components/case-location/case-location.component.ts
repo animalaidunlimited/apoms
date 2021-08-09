@@ -84,18 +84,20 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
   }
 
   fitMaps(latlngbounds: google.maps.LatLngBounds){
-    this.map.fitBounds(latlngbounds);
+    if(this.map){
+      this.map.fitBounds(latlngbounds);
 
-    this.map.panToBounds(latlngbounds);
+      this.map.panToBounds(latlngbounds);
 
-    this.map.zoomChanged.subscribe(() => {
+      this.map.zoomChanged.subscribe(() => {
 
-      if(this.map.getZoom() > 12) {
-        this.zoom = 13;
-        this.cdRef.detectChanges();
-      }
+        if(this.map.getZoom() > 12) {
+          this.zoom = 13;
+          this.cdRef.detectChanges();
+        }
 
-    });
+      });
+    }
   }
   
 
