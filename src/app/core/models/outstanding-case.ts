@@ -40,6 +40,7 @@ export interface OutstandingAssignment {
     staff2: number;
     ambulanceAssignmentTime: Date;
     searchCandidate?: boolean;
+    moved?:boolean | null;
 }
 export interface RescuerGroup {
     staff1: number;
