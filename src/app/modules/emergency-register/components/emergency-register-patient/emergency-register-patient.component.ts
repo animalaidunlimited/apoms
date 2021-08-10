@@ -101,10 +101,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
    }
 
   ngOnInit(): void {
+
+    console.log(this.patientFormInput.value)
     
     this.patientForm = this.patientFormInput as FormGroup;
 
-    this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value)
+    if(this.patientForm.get('patientId')?.value) {
+      this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
+    }
     
     this.exclusions = this.dropdown.getExclusions();
 
