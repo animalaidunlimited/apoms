@@ -83,7 +83,7 @@ export class OutstandingCaseService {
       {
         if(outstandingCase.assignedVehicleId === vehicleId 
           && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
-              || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null))
+              || outstandingCase.ambulanceAction === 'Release' && outstandingCase.releasePickupDate !== null))
         {
 
           if(outstandingCase.ambulanceAction === 'Rescue')
@@ -97,7 +97,7 @@ export class OutstandingCaseService {
           }
           else{
 
-            const pickupTime = new Date(outstandingCase.pickupDate as string);
+            const pickupTime = new Date(outstandingCase.releasePickupDate as string);
             if(pickupTime.getDate() === new Date().getDate())
             {
               newArr.push(pickupTime);
@@ -202,15 +202,17 @@ export class OutstandingCaseService {
     const existingCaseIndex = outstandingCases.findIndex( c  => c.emergencyNumber === updatedAssignment.emergencyNumber);
     if(existingCaseIndex > -1){
       outstandingCases[existingCaseIndex] = updateCases(outstandingCases[existingCaseIndex],updatedAssignment);
+
     }else{
       
       outstandingCases.push(updatedAssignment);
     }
     
     // Set the rescue to show as moved
-    const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
+    // const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
-    this.outstandingCases$.next(currentOutstanding);
+   
+    this.outstandingCases$.next(outstandingCases);
 
 
   }
