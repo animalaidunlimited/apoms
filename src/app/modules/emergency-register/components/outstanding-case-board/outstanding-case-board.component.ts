@@ -1,4 +1,5 @@
 
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -29,7 +30,30 @@ export interface FilterKeys {
   // tslint:disable-next-line: component-selector
   selector: 'outstanding-case-board',
   templateUrl: './outstanding-case-board.component.html',
-  styleUrls: ['./outstanding-case-board.component.scss']
+  styleUrls: ['./outstanding-case-board.component.scss'],
+  animations:
+  [
+    trigger('rescueMoved',
+    [
+      state('void', style({
+        background: 'transparent'
+      })),
+      state('moved',style({
+        background: 'lightsteelblue'
+
+    })),
+    state('still', style({
+      background: 'transparent'
+    })),
+    transition('moved => still', [
+      animate('1s')
+    ]),
+    transition('still => moved', [
+      animate('0s')
+    ])
+
+  ])
+]
 })
 export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 

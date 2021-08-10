@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { LocationService } from 'src/app/core/services/location/location.service';
@@ -8,6 +8,7 @@ import {
     concatAll,
     distinct,
     map,
+    publishReplay,
     skipWhile,
     takeUntil,
     withLatestFrom,
@@ -19,7 +20,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
-import {trigger, transition, style, animate} from '@angular/animations';
+import {trigger, transition, style, animate, state} from '@angular/animations';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 
@@ -34,12 +35,34 @@ const fadeAnimation = trigger('fadeAnimation',[
         animate('200ms', style({opacity : 0}))
     ])
 ]);
+
+const rescueMoved = trigger('rescueMoved',
+[
+  state('void', style({
+    background: 'transparent'
+  })),
+  state('moved',style({
+    background: 'lightsteelblue'
+
+})),
+state('still', style({
+  background: 'transparent'
+})),
+transition('moved => still', [
+  animate('1s')
+]),
+transition('still => moved', [
+  animate('0s')
+])
+
+]);
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
-    animations: [fadeAnimation]
+    animations: [fadeAnimation,rescueMoved],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
@@ -64,7 +87,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Properties
 
     // Static
-    actionStatusId!: number[];
+    actionStatusId = new BehaviorSubject([2, 3, 4, 5]);
     showPlate = false;
 
     // Dynamic
@@ -83,11 +106,12 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
-        private dropdown: DropdownService
+        private dropdown: DropdownService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
-        this.actionStatusId = [2, 3, 4, 5];
+        
 
         this.locationService.getActiveVehicleLocations();
         
@@ -125,8 +149,12 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             this.ngUnsubscribe
         );
 
-        
-
+        this.vehicleAssignmentList$.subscribe(_ => {
+            this.actionStatusId.next
+            this.cdr.markForCheck();
+            this.cdr.detectChanges();
+        });
+                        
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length
@@ -192,7 +220,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                     outStandingCases =>
                         outStandingCases.actionStatusId === statusId,
                 ),
-            ),
+            )
         );
     }
 

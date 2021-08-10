@@ -184,6 +184,68 @@ export class OutstandingCaseService {
     }
   }
 
+  receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment){
+
+    // tslint:disable-next-line: no-shadowed-variable
+    const updateCases = (outstandingCases: any, Assignment:any) => {
+      const res:any = {};
+      Object.keys(outstandingCases)
+            .forEach(k => res[k] = (Assignment[k] ?? outstandingCases[k]));
+      return res;
+    };
+
+
+    const outstandingCases = this.outstandingCases$?.value;
+    
+    const existingCaseIndex = outstandingCases.findIndex( c  => c.emergencyNumber === updatedAssignment.emergencyNumber);
+    if(existingCaseIndex > -1){
+      outstandingCases[existingCaseIndex] = updateCases(outstandingCases[existingCaseIndex],updatedAssignment);
+    }else{
+      
+      outstandingCases.push(updatedAssignment);
+    }
+    
+    // Set the rescue to show as moved
+    const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
+
+    this.outstandingCases$.next(currentOutstanding);
+
+
+  }
+
+
+  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
+
+
+    // Search for the rescue and update its moved flag depending on whether this function
+    // is being called by itself or not
+      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseId === releaseId){
+
+        o.moved = moved;
+
+        if(!timeout){
+          setTimeout(() => 
+
+            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseId, false, true))
+
+          , 3500);
+        }
+
+      }
+      
+      let result;
+      let p;
+
+      for (p in o) {
+          if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
+              result = this.setMoved(o[p], emergencyCaseId, releaseId, moved, timeout);
+          }
+      }
+
+      return o;
+
+  }
+
  
   filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
     
