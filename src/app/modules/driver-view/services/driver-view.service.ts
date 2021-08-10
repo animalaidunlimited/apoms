@@ -386,7 +386,10 @@ export class DriverViewService extends APIService {
      
       if(isNaN(hours))
       {
-        return null;
+        return ({
+          time : '2:30',
+          class : 'timeLeft'
+        });
       }else{
     
         return ({

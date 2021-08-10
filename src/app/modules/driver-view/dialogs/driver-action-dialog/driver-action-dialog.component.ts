@@ -59,6 +59,8 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
     updatedRecord.isUpdated = true;
 
+    console.log(updatedRecord);
+
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
     
     const driverViewLocalStorageData: DriverAssignments[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
@@ -273,6 +275,7 @@ patientFormGroup = this.data.formGroup?.get('patients');
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignments) {
+    console.log(assignment);
     const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',

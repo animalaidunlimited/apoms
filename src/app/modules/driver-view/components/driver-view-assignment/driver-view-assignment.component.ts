@@ -69,13 +69,14 @@ export class DriverViewAssignmentComponent implements OnInit {
     visitDay:[],
     streetTreatAmbulanceId: [],
     streetTreatAmbulanceAssignmentDate: [''],
+
   });
 
   callerDetails!:FormArray;
   // callerArray!: FormArray;
 
-  // patients!:FormArray;
-  // patientArray!: FormArray;
+  patients!:FormArray;
+  patientArray!: FormArray;
 
   constructor(private driverView: DriverViewService,
     private fb: FormBuilder,
@@ -88,9 +89,9 @@ export class DriverViewAssignmentComponent implements OnInit {
       'callerDetails', this.fb.array([this.getCallerFormGroup()])
     );
 
-    // this.recordForm.addControl(
-    //   'patients',this.fb.array([this.getPatientFormGroup()])
-    // );
+    this.recordForm.addControl(
+      'patients',this.fb.array([this.getPatientFormGroup()])
+    );
 
     this.driverViewAssignments = this.driverView.getAssignmentByStatus(this.actionStatus);
 
@@ -99,17 +100,41 @@ export class DriverViewAssignmentComponent implements OnInit {
     })
 
     this.callerDetails = this.recordForm.get('callerDetails') as FormArray;
-    // this.patients = this.recordForm.get('patients') as FormArray;
+    this.patients = this.recordForm.get('patients') as FormArray;
       
   }
 
   togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignments) {
 
+    console.log(assignment)
+
+    if(this.patients.length > 1) {
+      for(let i=1; i<= this.patients.length; i++) {
+        this.patients.removeAt(i);
+      }
+    }
+
+    if(this.callerDetails.length > 1) {
+      for(let i=1; i<= this.callerDetails.length; i++) {
+        this.callerDetails.removeAt(i);
+      }
+    }
 
     for(let i=0;i<assignment.callerDetails.length - 1;i++) {
       this.callerDetails.push(this.getCallerFormGroup());
     }
+
+    for(let i=0;i<assignment.patients.length - 1;i++) {
+     
+      this.patients.push(this.getPatientFormGroup());
+      
+    }
+
+    console.log(this.recordForm.value);
+
     this.recordForm.patchValue(assignment);
+
+    console.log(this.recordForm.value);
     
     this.openDriverActionDialog(this.driverView.getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatusName, subAction) ,
     this.recordForm, assignment.patients, subAction);
@@ -130,17 +155,19 @@ export class DriverViewAssignmentComponent implements OnInit {
     });
   }
 
-  // getPatientFormGroup() {
-  //   return this.fb.group({
-  //     problems: [''],
-  //     patientId: [],
-  //     tagNumber: [''],
-  //     animalType: [''],
-  //     mediaCount: [],
-  //     largeAnimal: [],
-  //     PatientCallOutcomeId: []
-  //   });
-  // }
+  getPatientFormGroup() {
+    return this.fb.group({
+      problems: [''],
+      patientId: [],
+      tagNumber: [''],
+      animalType: [''],
+      animalTypeId:[''],
+      mediaCount: [],
+      largeAnimal: [],
+      callOutcome: [],
+      deleted:0    
+    });
+  }
 
   getCallerFormGroup() {
     return this.fb.group( {
