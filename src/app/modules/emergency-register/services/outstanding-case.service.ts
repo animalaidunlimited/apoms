@@ -86,7 +86,7 @@ export class OutstandingCaseService {
               || outstandingCase.ambulanceAction === 'Release' && outstandingCase.pickupDate !== null))
         {
 
-          if(outstandingCase.ambulanceAction === 'Rescue' )
+          if(outstandingCase.ambulanceAction === 'Rescue')
           { 
             const rescueTime = new Date(outstandingCase.rescueTime as string);
             if(rescueTime.getDate() === new Date().getDate())
@@ -97,20 +97,22 @@ export class OutstandingCaseService {
           }
           else{
 
-            const pickupTime = new Date(outstandingCase.rescueTime as string);
+            const pickupTime = new Date(outstandingCase.pickupDate as string);
             if(pickupTime.getDate() === new Date().getDate())
             {
               newArr.push(pickupTime);
             }
+            
           }
             
         }
         
+        
         return newArr;
       }, [])
       ),
-      map(outStandingCases => {
-          return new Date(new Date(Math.min.apply(null, outStandingCases)).getTime() + 150*60000);
+      map(datesArray => {
+          return new Date(new Date(Math.min.apply(null, datesArray)).getTime() + 150*60000);
       })
     );
    

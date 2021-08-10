@@ -1,14 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignments } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DriverViewService } from '../../services/driver-view.service';
+import { PatientSelectFormediaDialogComponent } from '../patient-select-formedia-dialog/patient-select-formedia-dialog.component';
 
 interface DialogData {
   formGroup:FormGroup;
@@ -42,7 +42,8 @@ patientFormGroup = this.data.formGroup?.get('patients');
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private driverView: DriverViewService,
     private snackBar: SnackbarService,
-    private locationService: LocationService) { }
+    private locationService: LocationService,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -269,6 +270,14 @@ patientFormGroup = this.data.formGroup?.get('patients');
       this.latLngChanged = true;
   /*   } */
 
+  }
+
+  openPatientSelectForMediaDialog(assignment: DriverAssignments) {
+    const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
+      disableClose:true,
+      minWidth: '100vw',
+      data: {assignmentDetails: assignment}
+    });
   }
 
 

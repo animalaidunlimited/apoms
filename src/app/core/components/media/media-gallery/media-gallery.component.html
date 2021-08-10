@@ -1,5 +1,5 @@
 
-<div fxLayout="row" class="mediaGalleryContainer">
+<div fxLayout="row" class="mediaGalleryContainer" *ngIf="displayImagesAndButtons">
 
     <media-thumbnails
         [gallery]="galleryImages.slice(0,3)"
@@ -8,18 +8,27 @@
     
 </div>
 
-<div fxLayout="row" fxLayoutAlign="end center">
+<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center" *ngIf="displayImagesAndButtons">
 
     <button type='button' color="primary" mat-mini-fab>
-        <mat-icon (click)="openMediaDialog()">add_photo_alternate</mat-icon>
+        <mat-icon (click)="openMediaDialog()">add_a_photo</mat-icon>
     </button>
 
-    <button
-        mat-raised-button
-        (click)="openGalleryDialog($event)"
-        color="primary"
-        style="max-width: 6rem;margin: 1rem;">View more
+    <button type='button' color="primary" mat-mini-fab>
+        <mat-icon (click)="openGalleryDialog($event)">collections</mat-icon>
     </button>
+
+</div>
+
+<div fxLayout="row" fxLayoutGap='5px' fxLayoutAlign="end center" *ngIf="!displayImagesAndButtons">
+
+    <div>
+        <mat-icon (click)="openMediaDialog()">add_a_photo</mat-icon>
+    </div>
+
+    <div>
+        <mat-icon (click)="openGalleryDialog($event)">collections</mat-icon>
+    </div>
 
 </div>
 
