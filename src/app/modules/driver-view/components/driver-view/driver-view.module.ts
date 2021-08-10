@@ -13,6 +13,7 @@ import { LocationDialogComponent } from '../../dialogs/location-dialog/location-
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
 import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
 import { CaseLocationComponent } from '../case-location/case-location.component';
+import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-select-formedia-dialog/patient-select-formedia-dialog.component';
 
 
 @NgModule({
@@ -23,13 +24,14 @@ import { CaseLocationComponent } from '../case-location/case-location.component'
     CallerDetailsDialogComponent,
     LocationDialogComponent,
     DriverActionDialogComponent,
-    CaseLocationComponent
+    CaseLocationComponent,
+    PatientSelectFormediaDialogComponent
   ],
   imports: [
     CommonModule,
     DriverViewRoutingModule,
     MaterialModule,
-    CallerDetailsModule,
+    CallerDetailsModule, 
     GoogleMapsModule,
     AnimalSelectionModule
   ]

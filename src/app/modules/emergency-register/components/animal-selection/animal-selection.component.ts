@@ -44,6 +44,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     @Input() recordForm!: FormGroup;
     @Input() incomingPatientArray!: Patient[];
+    @Input() isDisplayOnly!: boolean;
 
     @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -85,7 +86,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @HostListener('document:keydown.control.p', ['$event'])
 
     addPatientTable(event: KeyboardEvent) {
-        event.preventDefault()
+        event.preventDefault();
         if(this.outcome){
             return;
         }

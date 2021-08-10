@@ -39,17 +39,24 @@
                 
            </div>
             
-           <div fxLayout='row' fxLayoutGap='20px'>
-               
-                <mat-icon class='crosshairIcon'
-                [ngClass]="{
-                    'grey' : latLngChanged == false,
-                    'green' : latLngChanged == true
-                }"
-                (click)="getCurrentVehiclelocation()">
-                    my_location
-                </mat-icon>
-                <p>Update latest location</p>
+           <div fxLayout='row' fxLayoutGap='10px'>
+                <div fxLayout='row' fxLayoutGap='20px'>
+                    <mat-icon class='crosshairIcon'
+                    [ngClass]="{
+                        'grey' : latLngChanged == false,
+                        'green' : latLngChanged == true
+                    }"   
+                    (click)="getCurrentVehiclelocation()">
+                        my_location
+                    </mat-icon>
+                    <p>Update latest location</p>
+                </div>
+
+
+                <div (click)="openPatientSelectForMediaDialog(formGroup.value)" fxLayout='row' fxLayoutGap='20px'>
+                    <mat-icon class="crosshairIcon">add_a_photo</mat-icon>
+                    <p>Add images</p>
+                </div>
            </div>
 
            
@@ -58,9 +65,9 @@
     
         </div>
 
-        <animal-selection hidden = 'true' [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
-        <animal-selection hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
         <div mat-dialog-action>
 

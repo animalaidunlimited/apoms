@@ -8,6 +8,7 @@ import { User } from 'src/app/core/models/user';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
+import { OutstandingCaseService } from 'src/app/modules/emergency-register/services/outstanding-case.service';
 
 @Component({
   selector: 'app-driver-view',
@@ -21,12 +22,14 @@ export class DriverViewComponent implements OnInit {
   statusList!: any;
   states!: any;
   showComplete = false;
+  timer$!: Observable<{time:string, class:string} | null>;
 
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
     private locationService: LocationService,
     private dropDown: DropdownService,
-    private router: Router) { }
+    private router: Router,
+    private oustandingService: OutstandingCaseService) { }
 
   ngOnInit(): void {
 
@@ -72,6 +75,18 @@ export class DriverViewComponent implements OnInit {
     this.driverView.populateDriverView(date);
 
     this.states = this.driverView.driverViewDetails.pipe(map(driverAssignments=> {
+
+      const vehicleIdSet = new Set(driverAssignments.map(assignments=> 
+        assignments.ambulanceAction==='Rescue' ? assignments.rescueAmbulanceId :
+          assignments.ambulanceAction==='Release' ? assignments.releaseAmbulanceId :
+          assignments.ambulanceAction==='StreetTreat' ? assignments.streetTreatAmbulanceId :
+          assignments.ambulanceAction==='STRelease' ? (assignments.streetTreatAmbulanceId ? assignments.streetTreatAmbulanceId : assignments.releaseAmbulanceId) :
+          null 
+        ));
+
+      const newVehicleIdArray = Array.from(vehicleIdSet);
+
+      this.timer$ = this.driverView.getTimer();
 
       const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;
