@@ -1,4 +1,4 @@
-import { Patient } from "../models/patients";
+import { Patient } from '../models/patients';
 
 export interface Vehicle {
   vehicleId: number;

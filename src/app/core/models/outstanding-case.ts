@@ -1,3 +1,4 @@
+import { LatLngLiteral } from './driver-view';
 import { CallerDetails } from './emergency-record';
 
 export interface OutstandingCaseResponse {
@@ -14,33 +15,26 @@ export interface OutstandingCase {
 export interface OutstandingAssignment {
     actionStatusId: number;
     ambulanceAction: string;
+    ambulanceAssignmentTime: Date;
     assignedVehicleId: number | null;
     callDateTime: string;
-    callerDetails: [{
-        callerId: number;
-        callerName: string;
-        callerNumber: string;
-    }];
+    callerDetails: CallerDetails[];
     emergencyCaseId: number;
     emergencyCode: string;
-    emergencyCodeId: number;
+    emergencyCodeId?: number;
     emergencyNumber: number;
-    lat: number;
-    lng: number;
+    latLngLiteral: LatLngLiteral;
     location: string;
+    moved?:boolean | null;
     patients: ActionPatient[];
-    pickupDate: string | null;
+    releasePickupDate: string | null;
     releaseBeginDate?: string ;
     releaseEndDate?: string ;
-    releaseId: number ;
+    releaseDetailsId: number ;
     releaseType: string;
-    requestedDate?: string;
+    releaseRequestDate?: string;
     rescueTime?:string;
-    staff1: number;
-    staff2: number;
-    ambulanceAssignmentTime: Date;
     searchCandidate?: boolean;
-    moved?:boolean | null;
 }
 export interface RescuerGroup {
     staff1: number;
