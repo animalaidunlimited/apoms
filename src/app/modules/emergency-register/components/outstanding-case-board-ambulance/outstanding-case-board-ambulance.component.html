@@ -90,10 +90,10 @@
   </ng-container>
 
   <div fxLayout.lt-sm="column" *ngIf="!inMap">
-    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
+    <div *ngFor="let statusId of actionStatusId | async" fxFlex class="swimlane">
 
       <h2>{{getActionStatus(statusId)}}</h2>
-
+     
       <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
         <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
           <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
@@ -101,7 +101,8 @@
               hideToggle>
               <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                                         'border-green' : outstandingCase.emergencyCodeId == 2,
-                                        'border-yellow' : outstandingCase.emergencyCodeId == 3}">
+                                        'border-yellow' : outstandingCase.emergencyCodeId == 3}"
+                                        [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
                 <div fxFlex="15">
                   <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
                 </div>
