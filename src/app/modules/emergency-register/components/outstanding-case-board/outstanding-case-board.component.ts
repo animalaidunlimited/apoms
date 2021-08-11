@@ -7,7 +7,7 @@ import { ThemePalette } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged,startWith, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, startWith, takeUntil, map } from 'rxjs/operators';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { RescueDetailsDialogComponent } from 'src/app/core/components/rescue-details-dialog/rescue-details-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -60,6 +60,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   vehicleId$!: Observable<(number | null)[]>;
 
   ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
+
 
   outstandingCases$!:  Observable<OutstandingAssignment[]>;
 
@@ -142,6 +143,9 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       this.ngUnsubscribe
     );
 
+    this.outstandingCases$ = this.outstandingCaseService.outstandingCases$.pipe(
+      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId !== null))
+    );
    
     this.vehicleId$ = this.outstandingCaseService.getVehicleId(); 
 
@@ -293,8 +297,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       CallOutcome: undefined,
       sameAsNumber: undefined,
       Location: caseSearchResult.location,
-      Latitude: caseSearchResult.lat,
-      Longitude: caseSearchResult.lng,
+      latLngLiteral: caseSearchResult.latLngLiteral,
       CurrentLocation: undefined,
 
     };

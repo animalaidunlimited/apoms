@@ -9,8 +9,7 @@
     releaseId: number;
     emergencyCaseId: number;
     releaseType: string;
-    Releaser1: number;
-    Releaser2: number;
+ 
     releaseBeginDate: Date | string;
     releaseEndDate: Date | string;
     pickupDate: Date | string;

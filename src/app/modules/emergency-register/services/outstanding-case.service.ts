@@ -5,6 +5,7 @@ import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
+import { DriverAssignments } from 'src/app/core/models/driver-view';
 
 @Injectable({
   providedIn: 'root'
@@ -186,8 +187,9 @@ export class OutstandingCaseService {
     }
   }
 
-  receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment){
+  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignments){
 
+    console.log(updatedAssignment);
     // tslint:disable-next-line: no-shadowed-variable
     const updateCases = (outstandingCases: any, Assignment:any) => {
       const res:any = {};
@@ -197,28 +199,37 @@ export class OutstandingCaseService {
     };
 
 
+
     const outstandingCases = this.outstandingCases$?.value;
     
     const existingCaseIndex = outstandingCases.findIndex( c  => c.emergencyNumber === updatedAssignment.emergencyNumber);
+
     if(existingCaseIndex > -1){
+
       outstandingCases[existingCaseIndex] = updateCases(outstandingCases[existingCaseIndex],updatedAssignment);
 
+      outstandingCases[existingCaseIndex].moved = true;
+      if(updatedAssignment.ambulanceAction !== null){
+       
+        // tslint:disable-next-line: max-line-length
+        outstandingCases[existingCaseIndex].assignedVehicleId = updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId;
+
+      }
     }else{
       
-      outstandingCases.push(updatedAssignment);
+      // outstandingCases.push(updatedAssignment);
     }
     
-    // Set the rescue to show as moved
-    // const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
-   
+    console.log(outstandingCases);
+    
     this.outstandingCases$.next(outstandingCases);
 
 
   }
 
 
-  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
+ /*  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
 
 
     // Search for the rescue and update its moved flag depending on whether this function
@@ -248,7 +259,7 @@ export class OutstandingCaseService {
 
       return o;
 
-  }
+  } */
 
  
   filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
