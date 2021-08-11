@@ -73,7 +73,7 @@ INSERT INTO AAU.StreetTreatCase(
 						OperatorNotes		= prm_OperatorNotes,
 						ClosedDate			= prm_ClosedDate,
 						EarlyReleaseFlag	= prm_EarlyReleaseFlag,
-                        AssignedAmbulanceId = prm_AssignedAmbulanceId,
+                        AssignedVehicleId = prm_AssignedAmbulanceId,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime;
                         
 	SELECT 1 INTO vSuccess;
