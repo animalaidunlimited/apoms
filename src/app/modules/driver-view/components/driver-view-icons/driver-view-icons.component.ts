@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { CallerDetailsDialogComponent } from '../../dialogs/caller-details-dialog/caller-details-dialog.component';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
 import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-select-formedia-dialog/patient-select-formedia-dialog.component';
@@ -12,7 +12,7 @@ import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-sele
 })
 export class DriverViewIconsComponent implements OnInit {
 
-  @Input() driverViewAssignment!: DriverAssignments;
+  @Input() driverViewAssignment!: DriverAssignment;
 
   displayIconsDiv = false;
 
@@ -23,7 +23,7 @@ export class DriverViewIconsComponent implements OnInit {
 
   }
 
-  openCallerDetailsDialog(assignment: DriverAssignments) {
+  openCallerDetailsDialog(assignment: DriverAssignment) {
     const dialogRef = this.dialog.open(CallerDetailsDialogComponent, {
       disableClose:true,
       minWidth: '100vw',
@@ -31,7 +31,7 @@ export class DriverViewIconsComponent implements OnInit {
     });
   }
 
-  openLocationDialog(assignment: DriverAssignments) {
+  openLocationDialog(assignment: DriverAssignment) {
     const dialogRef = this.dialog.open(LocationDialogComponent, {
       disableClose:true,
       minWidth: '100vw',
@@ -39,7 +39,7 @@ export class DriverViewIconsComponent implements OnInit {
     });
   }
 
-  openPatientSelectForMediaDialog(assignment: DriverAssignments) {
+  openPatientSelectForMediaDialog(assignment: DriverAssignment) {
     const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',

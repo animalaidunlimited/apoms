@@ -1,11 +1,11 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
-import { filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil} from 'rxjs/operators';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 
 @Injectable({
   providedIn: 'root'
@@ -187,7 +187,7 @@ export class OutstandingCaseService {
     }
   }
 
-  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignments){
+  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment ){
 
     console.log(updatedAssignment);
     // tslint:disable-next-line: no-shadowed-variable
@@ -215,13 +215,17 @@ export class OutstandingCaseService {
         outstandingCases[existingCaseIndex].assignedVehicleId = updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId;
 
       }
+
     }else{
-      
-      // outstandingCases.push(updatedAssignment);
+      const driverAssignment = { 
+        ...updatedAssignment,
+        assignedVehicleId : updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId,
+        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceAssignmentDate : updatedAssignment.releaseAmbulanceAssignmentDate
+      };
+
+     // outstandingCases.push(driverAssignment );
     }
     
-
-    console.log(outstandingCases);
     
     this.outstandingCases$.next(outstandingCases);
 

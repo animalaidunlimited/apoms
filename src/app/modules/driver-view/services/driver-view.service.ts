@@ -4,7 +4,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { BehaviorSubject, interval } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { timer } from 'rxjs';
@@ -19,7 +19,7 @@ import { combineLatest } from 'rxjs';
 
 export class DriverViewService extends APIService {
   endpoint = 'DriverView';
-  driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  driverViewDetails: BehaviorSubject<DriverAssignment[]> = new BehaviorSubject<DriverAssignment[]>([]);
   driverViewQuestionList: any;
   driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
   updateAssignmentCount = 0;
@@ -32,7 +32,7 @@ export class DriverViewService extends APIService {
 
     this.checkConnectionService.checkConnection.subscribe(connection=> {
 
-      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignments)=> {
+      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignment)=> {
         if(connection && item.isUpdated) {
           this.updateAssignmentCount++;
           this.saveDriverViewDataFromLocalStorage(item);
@@ -58,7 +58,7 @@ export class DriverViewService extends APIService {
 
       if(response){
 
-        response.forEach((data: DriverAssignments)=> {
+        response.forEach((data: DriverAssignment)=> {
           this.getAssignmentStatus(data);
         })
 
@@ -102,7 +102,7 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getAssignmentStatus(driverViewData: DriverAssignments) {
+  public getAssignmentStatus(driverViewData: DriverAssignment) {
 
      driverViewData?.patients.forEach(patient=> {
       if(
@@ -229,7 +229,7 @@ export class DriverViewService extends APIService {
 
   }
 
-  public saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignments) {
+  public saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
 
 
     let response = this.put(driverViewUpdatedData);
@@ -237,7 +237,7 @@ export class DriverViewService extends APIService {
     response.then((val:SuccessOnlyResponse)=> {
      if(val.success===1) {
 
-       let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+       let localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
 
        let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
 

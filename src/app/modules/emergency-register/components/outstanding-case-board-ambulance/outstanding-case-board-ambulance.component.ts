@@ -61,8 +61,7 @@ transition('still => moved', [
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
-    animations: [fadeAnimation,rescueMoved],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    animations: [fadeAnimation,rescueMoved]
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
@@ -87,7 +86,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Properties
 
     // Static
-    actionStatusId = new BehaviorSubject([2, 3, 4, 5]);
+    actionStatusId = [2, 3, 4, 5];
     showPlate = false;
 
     // Dynamic
@@ -106,8 +105,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
-        private dropdown: DropdownService,
-        private cdr: ChangeDetectorRef
+        private dropdown: DropdownService
     ) {}
 
     ngOnInit(): void {
@@ -133,7 +131,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                     ambulanceLocations.vehicleDetails.vehicleId,
             ),
         );
-
+       
         this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
             this.matChipObs,
             this.outstandingCases$?.pipe(
@@ -150,7 +148,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         );
 
        
-                        
+            
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length

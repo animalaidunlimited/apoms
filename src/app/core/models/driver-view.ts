@@ -38,7 +38,7 @@ export interface LatLngLiteral {
   lng: number;
 }
 
-export interface DriverAssignments {
+export interface DriverAssignment {
   location: string;
   patients: Patient[];
   patientId: number;
