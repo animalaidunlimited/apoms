@@ -76,7 +76,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Dynamic Input's
     @Input() searchChange$!:Observable<string>;
     @Input() matChipObs!: BehaviorSubject<any>;
-    
+    @Input() outstandingCases$!: Observable<OutstandingAssignment[]>;
     // Output's  
     @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
@@ -136,7 +136,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
         this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
             this.matChipObs,
-            this.outstandingCaseService.outstandingCases$.pipe(
+            this.outstandingCases$?.pipe(
                 takeUntil(this.ngUnsubscribe),
                 map(outstandingCases =>
                     outstandingCases.filter(
@@ -149,11 +149,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             this.ngUnsubscribe
         );
 
-        this.vehicleAssignmentList$.subscribe(_ => {
-            this.actionStatusId.next
-            this.cdr.markForCheck();
-            this.cdr.detectChanges();
-        });
+       
                         
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
@@ -182,15 +178,15 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                             
                             // Release count
 
-                            (vehicleAssignment.releaseId === null &&
+                            (vehicleAssignment.releaseDetailsId === null &&
                                 patient.patientCallOutcomeId !== null &&
                                 vehicleAssignment.rescueTime !== null) ||
 
                             // Rescue count
                             
-                            (vehicleAssignment.releaseId !== null &&
+                            (vehicleAssignment.releaseDetailsId !== null &&
                                 vehicleAssignment.releaseEndDate !== null &&
-                                vehicleAssignment.pickupDate !== null)
+                                vehicleAssignment.releasePickupDate !== null)
                         ) {
                             patient.animalSize === 'small'
                                 ? (smallPatientCount = smallPatientCount + 1)
