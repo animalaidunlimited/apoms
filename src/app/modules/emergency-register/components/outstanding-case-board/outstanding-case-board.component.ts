@@ -144,7 +144,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     );
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$.pipe(
-      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId !== null))
+      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.rescueAmbulanceId !== null))
     );
    
     this.vehicleId$ = this.outstandingCaseService.getVehicleId(); 

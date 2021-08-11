@@ -56,9 +56,12 @@ export class OutstandingCaseService {
    
     return this.outstandingCases$.pipe(
    
-      map(outstandingCases => outstandingCases.map(outstandingCase => outstandingCase.assignedVehicleId)),
+      map(outstandingCases => outstandingCases.map(outstandingCase => 
+        outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId
+      )),
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase !== null)),
       map(ids => [...new Set(ids)]) 
+
     );
    
   
@@ -69,7 +72,11 @@ export class OutstandingCaseService {
   getOutstandingCasesByVehicleId(vehicleId: number | null){
     
     return  this.outstandingCases$.pipe(
-      map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.assignedVehicleId === vehicleId)),
+     
+      map(outstandingCases => outstandingCases.filter(outstandingCase => 
+        vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
+      )),
+
     );
     
   }
@@ -82,7 +89,7 @@ export class OutstandingCaseService {
     
       map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
       {
-        if(outstandingCase.assignedVehicleId === vehicleId 
+        if(vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
           && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
               || outstandingCase.ambulanceAction === 'Release' && outstandingCase.releasePickupDate !== null))
         {
@@ -212,7 +219,9 @@ export class OutstandingCaseService {
       if(updatedAssignment.ambulanceAction !== null){
        
         // tslint:disable-next-line: max-line-length
-        outstandingCases[existingCaseIndex].assignedVehicleId = updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId;
+        updatedAssignment.ambulanceAction === 'Rescue' ? 
+          outstandingCases[existingCaseIndex].rescueAmbulanceId =  updatedAssignment.rescueAmbulanceId : 
+          outstandingCases[existingCaseIndex].releaseAmbulanceId =  updatedAssignment.releaseAmbulanceId;
 
       }
 

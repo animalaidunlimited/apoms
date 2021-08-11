@@ -9,11 +9,10 @@
     releaseId: number;
     emergencyCaseId: number;
     releaseType: string;
- 
     releaseBeginDate: Date | string;
     releaseEndDate: Date | string;
     pickupDate: Date | string;
-    assignedVehicleId: number;
+    releaseAmbulanceId: number;
     ambulanceAssignmentTime: Date;
   }
 

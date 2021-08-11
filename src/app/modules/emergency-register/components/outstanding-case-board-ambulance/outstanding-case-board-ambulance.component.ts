@@ -139,7 +139,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 map(outstandingCases =>
                     outstandingCases.filter(
                         outstandingCase =>
-                            outstandingCase.assignedVehicleId === this.vehicleId,
+                        this.vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
                     ),
                 ),
             ),
