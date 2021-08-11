@@ -4,7 +4,7 @@ import { Form, FormArray, FormBuilder, FormControl, FormControlName, FormGroup }
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
 import { DriverViewService } from '../../services/driver-view.service';
@@ -18,7 +18,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   @Input() actionStatus!: string;
   @Input() showCompleteFlag!: any;
-  driverViewAssignments!: Observable<DriverAssignments[]>; 
+  driverViewAssignments!: Observable<DriverAssignment[]>; 
 
   recordForm = this.fb.group({
     location: [''],
@@ -104,7 +104,7 @@ export class DriverViewAssignmentComponent implements OnInit {
       
   }
 
-  togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignments) {
+  togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignment) {
 
     console.log(assignment)
 
