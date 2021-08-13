@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
-import { MediaItem } from 'src/app/core/models/media';
+import { MediaItem, PatientMediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
 
@@ -21,12 +21,12 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() mediaItem!: MediaItem;
+  @Input() mediaItem!: PatientMediaItem;
   @Input() tagNumber!: string;
   @Input() isPrimaryChanged!: BehaviorSubject<number>;
 
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
-  @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
+  @Output() updatedMedia: EventEmitter<PatientMediaItem> = new EventEmitter();
 
   @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer!: ElementRef;
 

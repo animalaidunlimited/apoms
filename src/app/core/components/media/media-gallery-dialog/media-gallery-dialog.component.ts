@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { Gallery, MediaItem } from 'src/app/core/models/media';
+import { Gallery,  PatientMediaItem } from 'src/app/core/models/media';
 import { MediaThumbnailsComponent } from '../media-thumbnails/media-thumbnails.component';
 @Component({
   // tslint:disable-next-line: component-selector
@@ -17,7 +17,7 @@ export class MediaGalleryDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:
     {
       mediaGallery: Gallery[],
-      mediaPatientItems: BehaviorSubject<MediaItem[]>
+      mediaPatientItems: BehaviorSubject<PatientMediaItem[]>
     }) { }
 
   ngOnInit(): void {

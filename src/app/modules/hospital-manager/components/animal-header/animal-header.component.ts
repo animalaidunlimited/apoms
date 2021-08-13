@@ -3,11 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { MediaItem } from 'src/app/core/models/media';
-import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
+import { PatientMediaItem } from 'src/app/core/models/media';
 import { SelectionModel } from '@angular/cdk/collections';
 import { of, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -29,7 +27,7 @@ export class AnimalHeaderComponent implements OnInit, OnDestroy {
 
     lastObjectUrl = '';
 
-    mediaObject!: MediaItem;
+    mediaObject!: PatientMediaItem;
 
     // Only doing this so the checker doesn't complain.
     patientDetailsFormGroup:FormGroup = new FormGroup({});

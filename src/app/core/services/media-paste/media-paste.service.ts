@@ -1,7 +1,7 @@
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../models/media';
+import { LocalMediaItem, MediaItem, MediaItemReturnObject, PatientMediaItem } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
 import { Observable, from, BehaviorSubject, of} from 'rxjs';
@@ -14,6 +14,7 @@ import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
+import { LogoService } from '../logo/logo.service';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -44,7 +45,8 @@ export class MediaPasteService {
     private onlineStatus: OnlineStatusService,
     private snackbarService:SnackbarService,
     public datePipe:DatePipe,
-    protected storageService: StorageService) { }
+    protected storageService: StorageService,
+    private logoService: LogoService) { }
 
     user!: firebase.default.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
@@ -53,7 +55,7 @@ export class MediaPasteService {
     
 
 
-  handleUpload(file: File, patientId: number, offlineUploadDate?:string): MediaItemReturnObject {
+  handleUpload(file: File, patientId: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
     
     if(!file.type.match(/image.*|video.*/)){
       return {
@@ -63,7 +65,7 @@ export class MediaPasteService {
       };
     }
 
-    const newMediaItem:MediaItem = this.createMediaItem(file, patientId);
+    const newMediaItem:PatientMediaItem = this.createMediaItem(file, patientId);
 
     const returnObject:MediaItemReturnObject = {
         mediaItem: newMediaItem,
@@ -83,13 +85,14 @@ export class MediaPasteService {
 
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
      
+      const path = filePath ? filePath : 'patient-media';
 
-      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
+      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '', path);
 
      
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
-        const resizedImage = await this.cropedImage(file);
+        const resizedImage = await this.croppedImage(file);
         
         if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
        
@@ -108,21 +111,31 @@ export class MediaPasteService {
 
               newMediaItem.remoteURL = url;
 
-              newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string,
+              newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string;
               
 
-              this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
-                
-                this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+              if(path === 'patient-media')
+              {
 
-                if(mediaItems.success) {
+                this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
+                  
+                  this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
 
-                  returnObject.mediaItemId.next(mediaItems.mediaItemId);
+                  if(mediaItems.success) {
 
-                }
-                
-              });
+                    returnObject.mediaItemId.next(mediaItems.mediaItemId);
 
+                  }
+                  
+                });
+
+              }else{
+
+                // this.logoService.saveOrganisationLogo()
+
+              }
+
+              
             });
 
           }).catch(async error => {
@@ -177,7 +190,7 @@ export class MediaPasteService {
 
         this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
 
-        const resizedImage = await this.cropedImage(file);
+        const resizedImage = await this.croppedImage(file);
         this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
 
         /**
@@ -249,7 +262,7 @@ export class MediaPasteService {
 
   }
 
-  private async cropedImage(file: File) {
+  private async croppedImage(file: File) {
     const options: IResizeImageOptions = {
       maxSize: 5000,
       file
@@ -301,7 +314,7 @@ export class MediaPasteService {
     const isImage = isImageFile(file);
     const isVideo = isVideoFile(file);
 
-    const newMediaItem:MediaItem = {
+    const newMediaItem:PatientMediaItem = {
       mediaItemId: new Observable<number>(),
       patientMediaItemId: 0,
       mediaType: file.type,
@@ -344,6 +357,7 @@ export class MediaPasteService {
 
   }
 
+  
   getImageDimension(image:any): Observable<any> {
 
     return new Observable(observer => {
@@ -428,12 +442,12 @@ export class MediaPasteService {
 
   }
 
-  getFileUploadLocation(filename: string, timestamp: string) : string{
+  getFileUploadLocation(filename: string, timestamp: string, folder:string) : string{
 
     // Make sure we only save files in the folder for the organisation.
     const organisationFolder = this.authService.getOrganisationSocketEndPoint();
 
-    return `${organisationFolder}/patient-media/${timestamp}_${filename}`;
+    return `${organisationFolder}/${folder}/${timestamp}_${filename}`;
 
   }
 

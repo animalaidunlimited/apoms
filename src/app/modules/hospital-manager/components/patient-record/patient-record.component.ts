@@ -4,7 +4,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
-import { MediaItem } from 'src/app/core/models/media';
+import { MediaItem, PatientMediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
@@ -28,7 +28,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
     loading = false;
     logsData!:LogsData;
-    mediaData!: BehaviorSubject<MediaItem[]>;
+    mediaData!: BehaviorSubject<PatientMediaItem[]>;
     recordForm: FormGroup = new FormGroup({});
 
     patientId!:number;

@@ -2,7 +2,7 @@ import { takeUntil } from 'rxjs/operators';
 import {  Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Image, MediaItem } from 'src/app/core/models/media';
+import { Image, MediaItem, PatientMediaItem } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 })
 export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     @Input() gallery!:Image[];
-    @Input() mediaPatientItems!:BehaviorSubject<MediaItem[]>;
+    @Input() mediaPatientItems!:BehaviorSubject<PatientMediaItem[]>;
 
     @Output() arrowUpAndDown: EventEmitter<{key:number,datetime:string}> = new EventEmitter();
     private ngUnsubscribe = new Subject();

@@ -1,4 +1,4 @@
-import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
+import { Image, Comment, MediaItem, MediaItemReturnObject, PatientMediaItem } from './../../../models/media';
 import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -297,7 +297,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
 
 
-  private savePatientMediaItem(mediaItem: MediaItem, removeTag:boolean=false) {
+  private savePatientMediaItem(mediaItem: PatientMediaItem, removeTag:boolean=false) {
 
     if(this.recordForm.dirty || removeTag)
     {
@@ -315,7 +315,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getUpdatedPatientMediaItem(): MediaItem {
+  private getUpdatedPatientMediaItem(): PatientMediaItem {
     return {
       ...this.data.mediaData,
       datetime: this.recordForm.get('imageDate')?.value,
