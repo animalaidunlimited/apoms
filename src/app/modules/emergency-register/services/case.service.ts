@@ -32,8 +32,6 @@ export class CaseService extends APIService {
     response: EmergencyResponse = {} as EmergencyResponse;
     redirectUrl = '';
 
-    online!: boolean;
-
     saveCaseFail = false;
 
     private async postFromLocalStorage(postsToSync:any) {
@@ -111,7 +109,7 @@ export class CaseService extends APIService {
             return result;
         }).catch(async error => {
 
-            if (error.status === 504 || !this.online) {
+            if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
 
                 this.saveCaseFail = true;
                 if(this.saveCaseFail) {
@@ -145,7 +143,7 @@ export class CaseService extends APIService {
             })
             .catch(async error => {
 
-                if (error.status === 504 || !this.online) {
+                if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
                     this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                     this.saveCaseFail = true;

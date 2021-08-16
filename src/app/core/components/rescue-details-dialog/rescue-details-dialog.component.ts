@@ -57,6 +57,13 @@ export class RescueDetailsDialogComponent implements OnInit {
         callDateTime: [''],
         updateTime: ['']
       }),
+
+      locationDetails: this.fb.group({
+        location: [''],
+        latitude: [''],
+        longitude: ['']
+      }),
+
       updateFromRescueDialog: [true]
     });
 

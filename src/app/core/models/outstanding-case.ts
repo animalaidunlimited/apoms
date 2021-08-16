@@ -26,7 +26,7 @@ export interface OutstandingAssignment {
     emergencyCodeId: number;
     emergencyNumber: number;
     lat: number;
-    lng: number;
+    lng: number;                                             
     location: string;
     patients: ActionPatient[];
     pickupDate: string | null;

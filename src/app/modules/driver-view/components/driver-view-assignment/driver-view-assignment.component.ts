@@ -106,8 +106,6 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignments) {
 
-    console.log(assignment)
-
     if(this.patients.length > 1) {
       for(let i=1; i<= this.patients.length; i++) {
         this.patients.removeAt(i);
@@ -130,11 +128,7 @@ export class DriverViewAssignmentComponent implements OnInit {
       
     }
 
-    console.log(this.recordForm.value);
-
     this.recordForm.patchValue(assignment);
-
-    console.log(this.recordForm.value);
     
     this.openDriverActionDialog(this.driverView.getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatusName, subAction) ,
     this.recordForm, assignment.patients, subAction);
