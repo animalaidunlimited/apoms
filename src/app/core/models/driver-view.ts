@@ -85,6 +85,7 @@ export interface DriverAssignment {
   visitDay: number;
   streetTreatAmbulanceId: number;
   streetTreatAmbulanceAssignmentDate: string;
+  rescuerList:number[];
 }
 
 

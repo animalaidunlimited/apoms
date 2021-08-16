@@ -101,8 +101,6 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
    }
 
   ngOnInit(): void {
-
-    console.log(this.patientFormInput.value)
     
     this.patientForm = this.patientFormInput as FormGroup;
 
