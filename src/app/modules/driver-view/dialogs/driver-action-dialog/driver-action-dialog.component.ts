@@ -59,22 +59,24 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
     updatedRecord.isUpdated = true;
 
-    console.log(updatedRecord);
-
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
     
-    const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+    const driverViewLocalStorageData =  this.driverView.driverViewDetails.value;
 
     const index = driverViewLocalStorageData.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
-      this.checkAllPatientIds(updatedRecordData.patients, value));
+      this.driverView.checkAllPatientIds(updatedRecordData.patients, value));
 
-    driverViewLocalStorageData.splice(index,1,updatedRecordData);
+    if(index >= 0){
+      driverViewLocalStorageData.splice(index,1,updatedRecordData);
+    }
 
     localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
 
-    this.driverView.driverViewDetails.next(JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))));
+    this.driverView.driverViewDetails.next(driverViewLocalStorageData);
 
-    this.snackBar.successSnackBar('Case saved to local storage.','Ok');
+    this.driverView.saveDriverViewDataFromLocalStorage(updatedRecordData);
+
+    this.snackBar.successSnackBar('New Update recieved.','Ok');
   }
 
   closeDialog() {

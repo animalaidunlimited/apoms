@@ -8,10 +8,9 @@ import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { timer } from 'rxjs';
-import { newArray } from '@angular/compiler/src/util';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { combineLatest } from 'rxjs';
-// import { DriverAssignments } from "../../../core/models/driver-view";
+import { Patient } from 'src/app/core/models/patients';
+import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +26,11 @@ export class DriverViewService extends APIService {
 
   constructor(public http: HttpClient,
     private checkConnectionService: CheckConnectionService,
+    private onlineStatus: OnlineStatusService,
     private snackBar: SnackbarService) {
     super(http);
 
-    this.checkConnectionService.checkConnection.subscribe(connection=> {
+    this.onlineStatus.connectionChanged.subscribe(connection=> {
 
       JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignment)=> {
         if(connection && item.isUpdated) {
@@ -41,6 +41,7 @@ export class DriverViewService extends APIService {
       });
 
       if(connection && this.updateAssignmentCount > 0) {
+        console.log(2);
         this.updateAssignmentCount = this.showSaveResponseStatus(this.driverDataSaveErrorResponse);
       }
 
@@ -68,11 +69,11 @@ export class DriverViewService extends APIService {
 
       }
       else {
-        localStorage.removeItem('driverViewData');
+        localStorage.setItem('driverViewData',JSON.stringify([]));
         this.driverViewDetails.next([]);
       }
 
-    })
+    });
 
   }
 
@@ -92,7 +93,7 @@ export class DriverViewService extends APIService {
 
       this.driverViewQuestionList = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewQuestions'))));
 
-    })
+    });
 
   }
 
@@ -103,6 +104,8 @@ export class DriverViewService extends APIService {
   }
 
   public getAssignmentStatus(driverViewData: DriverAssignment) {
+
+    console.log(driverViewData);
 
      driverViewData?.patients.forEach(patient=> {
       if(
@@ -186,7 +189,7 @@ export class DriverViewService extends APIService {
           !driverViewData.streetTreatCaseId
         )
       ) {
-        driverViewData.actionStatus = 'In Ambulance'
+        driverViewData.actionStatus = 'In Ambulance';
       }
 
       if(
@@ -229,28 +232,92 @@ export class DriverViewService extends APIService {
 
   }
 
-  public saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
+  public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) { 
 
-
-    let response = this.put(driverViewUpdatedData);
-
-    response.then((val:SuccessOnlyResponse)=> {
-     if(val.success===1) {
-
-       let localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
-
-       let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
-
-       localData[index].isUpdated = false;
-
-       localStorage.setItem('driverViewData', JSON.stringify(localData));
-     }
-
-     else{
-      this.driverDataSaveErrorResponse.push(val);
-     }
+    await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
+      if(val.success===1) {
+ 
+        let localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+ 
+        let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
+ 
+        localData[index].isUpdated = false;
+ 
+        localStorage.removeItem('driverViewData');
+ 
+        localStorage.setItem('driverViewData', JSON.stringify(localData));
+      }
+      else{
+       this.driverDataSaveErrorResponse.push(val);
+      }
+    }).catch(async error=> {
+      if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
+        this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+    }
     });
+  }
 
+
+  
+
+  public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
+
+    const updatedRecordData = this.getAssignmentStatus(updatedRecord);
+
+    let uId = Number(localStorage.getItem('UserId'));
+
+    if(updatedRecordData.rescuerList.includes(uId)) {
+      const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+      const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
+      this.checkAllPatientIds(updatedRecordData.patients, value));
+
+      console.log(index)
+      if(index >=0) 
+      {
+        driverViewLocalStorageData.splice(index,1,updatedRecordData);
+        this.driverViewDetails.next(driverViewLocalStorageData);
+        localStorage.removeItem('driverViewData');
+        localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
+        
+      }
+      else {
+        driverViewLocalStorageData.push(updatedRecordData);
+        this.driverViewDetails.next(driverViewLocalStorageData);
+        localStorage.removeItem('driverViewData');
+        localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
+        
+      }
+
+    }
+    // {
+    //   const driverViewLocalStorageData: DriverAssignments[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+
+    //   const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
+    //   this.checkAllPatientIds(updatedRecordData.patients, value)) || -1;
+  
+    //   if(index < 0) {
+    //     driverViewLocalStorageData.push(updatedRecordData);
+    //     localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
+    //     this.driverViewDetails.next(driverViewLocalStorageData);
+    //   }
+    //   else {
+    //     driverViewLocalStorageData.splice(index,1,updatedRecordData);
+    //     localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
+
+    //     this.driverViewDetails.next(driverViewLocalStorageData);
+    //   }
+
+    // }
+
+   
+  }
+
+
+  checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
+    
+    return driverViewData.patients.every(patient=> {
+      return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
+    });
   }
 
 
@@ -260,7 +327,7 @@ export class DriverViewService extends APIService {
       this.snackBar.errorSnackBar('Some cases not synced with database, Please try again later!', 'Ok');
     }
     else if(updatedItemError.length === 0) {
-      this.snackBar.successSnackBar('All cases synced with database.', 'Ok')
+      this.snackBar.successSnackBar('All cases synced with database.', 'Ok');
     }
 
     return 0;
@@ -329,8 +396,7 @@ export class DriverViewService extends APIService {
           }
           return newArr;
       },[])
-    ),
-    tap(value => console.log(value)), 
+    ), 
     map(datesArray => {
       return new Date(new Date(Math.min.apply(null, datesArray)).getTime() + 150*60000);
     })

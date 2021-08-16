@@ -13,6 +13,8 @@ export interface Response {
     message: string;
     socketEndPoint: string;
     token: string;
+    userId: number;
+    orgId: number;
 }
 
 @Injectable({
@@ -44,10 +46,8 @@ export class AuthService extends APIService {
         try {
             this.response = (await this.post({
                 username,
-                password,
+                password
             })) as Response;
-
-
 
             this.token = this.response.token || '';
 
@@ -59,6 +59,8 @@ export class AuthService extends APIService {
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
+            this.storage.save('OrganisationId', this.response.orgId);
+            this.storage.save('UserId', this.response.userId);
 
             return this.redirectUrl;
         } catch (error) {
