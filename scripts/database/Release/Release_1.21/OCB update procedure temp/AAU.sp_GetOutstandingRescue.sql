@@ -108,7 +108,8 @@ JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 	JSON_OBJECT('patients', p.Patients),
 	JSON_OBJECT('emergencyCaseId',ec.EmergencyCaseId),
-	JSON_OBJECT('assignedVehicleId',ec.AssignedVehicleId),
+	JSON_OBJECT('rescueAmbulanceId',ec.AssignedVehicleId),
+    JSON_OBJECT('releaseAmbulanceId',rd.AssignedVehicleId),
 	JSON_OBJECT('emergencyNumber',ec.EmergencyNumber),
     JSON_OBJECT('emergencyCode',ec.EmergencyCode),
     JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
