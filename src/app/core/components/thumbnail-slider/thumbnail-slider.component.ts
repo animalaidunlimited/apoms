@@ -22,8 +22,7 @@ export class ThumbnailSliderComponent implements OnInit{
     constructor(public datepipe: DatePipe) {}
 
     ngOnInit() {
-        console.log(this.mediaData);
-        console.log(this.patientData?.value);
+
     }
     
 }

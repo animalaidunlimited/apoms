@@ -59,34 +59,31 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
     updatedRecord.isUpdated = true;
 
-    console.log(updatedRecord);
-
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
     
-    const driverViewLocalStorageData: DriverAssignments[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+    const driverViewLocalStorageData =  this.driverView.driverViewDetails.value;
 
     const index = driverViewLocalStorageData.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
-      this.checkAllPatientIds(updatedRecordData.patients, value));
+      this.driverView.checkAllPatientIds(updatedRecordData.patients, value));
 
-    driverViewLocalStorageData.splice(index,1,updatedRecordData);
+    if(index >= 0){
+      driverViewLocalStorageData.splice(index,1,updatedRecordData);
+    }
 
     localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
 
-    this.driverView.driverViewDetails.next(JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))));
+    this.driverView.driverViewDetails.next(driverViewLocalStorageData);
 
-    this.snackBar.successSnackBar('Case saved to local storage.','Ok');
+    this.driverView.saveDriverViewDataFromLocalStorage(updatedRecordData);
+
+    this.snackBar.successSnackBar('New Update recieved.','Ok');
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignments) {
-    
-    return driverViewData.patients.every(patient=> {
-      return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
-    });
-  }
+
 
   getMinAndMAx(fb: any) { 
 
@@ -275,7 +272,6 @@ patientFormGroup = this.data.formGroup?.get('patients');
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignments) {
-    console.log(assignment);
     const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',

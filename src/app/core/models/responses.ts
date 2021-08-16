@@ -48,6 +48,7 @@ export interface RescueDetailsParent {
     callOutcome: CallOutcome;
     rescueDetails: RescueDetails;
     emergencyDetails: EmergencyDetails;
+    locationDetails: Location;
 }
 
 export interface RescueDetails {

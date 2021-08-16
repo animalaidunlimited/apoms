@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
+import { DriverViewService } from '../../driver-view/services/driver-view.service';
 
 
 @Injectable({
@@ -25,6 +26,7 @@ constructor(
     private angularFireMessaging: AngularFireMessaging,
     private authService: AuthService,
     private zone: NgZone,
+    private driverView: DriverViewService,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
     private locationService: LocationService,
@@ -55,6 +57,7 @@ constructor(
         // This is a rescue message, so pass this on to the outstanding-case service
         if(message?.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
+            this.driverView.recieveUpdateDriverViewMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
         }
 

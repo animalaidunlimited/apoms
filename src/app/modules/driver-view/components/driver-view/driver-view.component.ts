@@ -35,7 +35,7 @@ export class DriverViewComponent implements OnInit {
 
     this.locationService.initialise();
 
-    this.locationService.currentLocation$.subscribe(val => console.log(val))
+    this.locationService.currentLocation$.subscribe();
     this.locationService.getCurrentLocation();
 
 
@@ -66,8 +66,6 @@ export class DriverViewComponent implements OnInit {
     });
 
     this.driverView.getDriverViewQuestions();
-
-
 
   }
 

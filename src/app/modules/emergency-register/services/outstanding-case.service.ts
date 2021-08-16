@@ -5,6 +5,7 @@ import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
+import { DriverAssignments } from 'src/app/core/models/driver-view';
 
 @Injectable({
   providedIn: 'root'
@@ -186,7 +187,7 @@ export class OutstandingCaseService {
     }
   }
 
-  receiveUpdatedRescueMessage(updatedAssignment:OutstandingAssignment){
+  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignments){
 
     // tslint:disable-next-line: no-shadowed-variable
     const updateCases = (outstandingCases: any, Assignment:any) => {
@@ -204,13 +205,13 @@ export class OutstandingCaseService {
       outstandingCases[existingCaseIndex] = updateCases(outstandingCases[existingCaseIndex],updatedAssignment);
     }else{
       
-      outstandingCases.push(updatedAssignment);
+      // outstandingCases.push(updatedAssignment);
     }
     
     // Set the rescue to show as moved
-    const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
+    // const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseId, true, false);
 
-    this.outstandingCases$.next(currentOutstanding);
+    // this.outstandingCases$.next(currentOutstanding);
 
 
   }
