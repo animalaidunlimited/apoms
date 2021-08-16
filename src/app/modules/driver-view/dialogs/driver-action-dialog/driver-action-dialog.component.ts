@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -55,7 +55,7 @@ patientFormGroup = this.data.formGroup?.get('patients');
     });
   }
 
-  async onSubmit(updatedRecord: DriverAssignments) {
+  async onSubmit(updatedRecord: DriverAssignment) {
 
     updatedRecord.isUpdated = true;
 
@@ -83,7 +83,12 @@ patientFormGroup = this.data.formGroup?.get('patients');
     this.dialogRef.close();
   }
 
-
+  checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
+    
+    return driverViewData.patients.every(patient=> {
+      return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
+    });
+  }
 
   getMinAndMAx(fb: any) { 
 
@@ -271,7 +276,8 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
   }
 
-  openPatientSelectForMediaDialog(assignment: DriverAssignments) {
+  openPatientSelectForMediaDialog(assignment: DriverAssignment) {
+    console.log(assignment);
     const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',

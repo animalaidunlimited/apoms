@@ -1,6 +1,6 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertStreetTreatCase!!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
@@ -86,5 +86,4 @@ INSERT INTO AAU.StreetTreatCase(
 	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
 END$$
-
 DELIMITER ;

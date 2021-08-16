@@ -90,7 +90,7 @@
   </ng-container>
 
   <div fxLayout.lt-sm="column" *ngIf="!inMap">
-    <div *ngFor="let statusId of actionStatusId | async" fxFlex class="swimlane">
+    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
 
       <h2>{{getActionStatus(statusId)}}</h2>
      

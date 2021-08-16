@@ -4,7 +4,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { BehaviorSubject, interval } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { timer } from 'rxjs';
@@ -18,7 +18,7 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
 
 export class DriverViewService extends APIService {
   endpoint = 'DriverView';
-  driverViewDetails: BehaviorSubject<DriverAssignments[]> = new BehaviorSubject<DriverAssignments[]>([]);
+  driverViewDetails: BehaviorSubject<DriverAssignment[]> = new BehaviorSubject<DriverAssignment[]>([]);
   driverViewQuestionList: any;
   driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
   updateAssignmentCount = 0;
@@ -32,7 +32,7 @@ export class DriverViewService extends APIService {
 
     this.onlineStatus.connectionChanged.subscribe(connection=> {
 
-      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignments)=> {
+      JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignment)=> {
         if(connection && item.isUpdated) {
           this.updateAssignmentCount++;
           this.saveDriverViewDataFromLocalStorage(item);
@@ -59,7 +59,7 @@ export class DriverViewService extends APIService {
 
       if(response){
 
-        response.forEach((data: DriverAssignments)=> {
+        response.forEach((data: DriverAssignment)=> {
           this.getAssignmentStatus(data);
         })
 
@@ -103,7 +103,7 @@ export class DriverViewService extends APIService {
 
   }
 
-  public getAssignmentStatus(driverViewData: DriverAssignments) {
+  public getAssignmentStatus(driverViewData: DriverAssignment) {
 
     console.log(driverViewData);
 
@@ -232,12 +232,12 @@ export class DriverViewService extends APIService {
 
   }
 
-  public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignments) { 
+  public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) { 
 
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
       if(val.success===1) {
  
-        let localData: DriverAssignments[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+        let localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
  
         let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
  
@@ -260,14 +260,14 @@ export class DriverViewService extends APIService {
 
   
 
-  public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignments) {
+  public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
 
     const updatedRecordData = this.getAssignmentStatus(updatedRecord);
 
     let uId = Number(localStorage.getItem('UserId'));
 
     if(updatedRecordData.rescuerList.includes(uId)) {
-      const driverViewLocalStorageData: DriverAssignments[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+      const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
       const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
       this.checkAllPatientIds(updatedRecordData.patients, value));
 
@@ -313,7 +313,7 @@ export class DriverViewService extends APIService {
   }
 
 
-  checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignments) {
+  checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
     
     return driverViewData.patients.every(patient=> {
       return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;

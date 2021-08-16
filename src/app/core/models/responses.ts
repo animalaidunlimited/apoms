@@ -1,3 +1,4 @@
+import { LatLngLiteral } from './driver-view';
 import { CallerDetails, CallOutcome, EmergencyDetails } from './emergency-record';
 
 
@@ -31,7 +32,7 @@ export interface PatientResponse {
 }
 
 export interface SearchFieldResponse {
-    sucess: string;
+    success: string;
 }
 
 export interface LocationResponse {
@@ -55,7 +56,7 @@ export interface RescueDetails {
     rescueTime: string | Date;
     admissionTime: string | Date;
     ambulanceArrivalTime: string | Date;
-    rescuers: Rescuer[]
+    rescuers: Rescuer[];
 }
 
 export interface Rescuer {
@@ -94,9 +95,6 @@ export interface SearchResponse {
     EmergencyNumber: number;
     CallDateTime: string;
     callerDetails: CallerDetails[] | any;
-    // CallerId: number;
-    // Name: string;
-    // Number: string;
     AnimalTypeId: number;
     AnimalType: string;
     PatientId: number;
@@ -106,8 +104,7 @@ export interface SearchResponse {
     CallOutcome: string | undefined;
     sameAsNumber: number | undefined;
     Location: string;
-    Latitude: number;
-    Longitude: number;
+    latLngLiteral: LatLngLiteral;
     CurrentLocation: string | undefined;
 }
 export interface SearchStreetTreatResponse {

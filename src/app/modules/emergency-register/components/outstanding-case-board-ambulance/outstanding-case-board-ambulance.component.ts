@@ -61,8 +61,7 @@ transition('still => moved', [
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
-    animations: [fadeAnimation,rescueMoved],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    animations: [fadeAnimation,rescueMoved]
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
@@ -76,7 +75,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Dynamic Input's
     @Input() searchChange$!:Observable<string>;
     @Input() matChipObs!: BehaviorSubject<any>;
-    
+    @Input() outstandingCases$!: Observable<OutstandingAssignment[]>;
     // Output's  
     @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
@@ -87,7 +86,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Properties
 
     // Static
-    actionStatusId = new BehaviorSubject([2, 3, 4, 5]);
+    actionStatusId = [2, 3, 4, 5];
     showPlate = false;
 
     // Dynamic
@@ -106,8 +105,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         private outstandingCaseService: OutstandingCaseService,
         private dialog: MatDialog,
         private locationService: LocationService,
-        private dropdown: DropdownService,
-        private cdr: ChangeDetectorRef
+        private dropdown: DropdownService
     ) {}
 
     ngOnInit(): void {
@@ -133,15 +131,15 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                     ambulanceLocations.vehicleDetails.vehicleId,
             ),
         );
-
+       
         this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
             this.matChipObs,
-            this.outstandingCaseService.outstandingCases$.pipe(
+            this.outstandingCases$?.pipe(
                 takeUntil(this.ngUnsubscribe),
                 map(outstandingCases =>
                     outstandingCases.filter(
                         outstandingCase =>
-                            outstandingCase.assignedVehicleId === this.vehicleId,
+                        this.vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
                     ),
                 ),
             ),
@@ -149,12 +147,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             this.ngUnsubscribe
         );
 
-        this.vehicleAssignmentList$.subscribe(_ => {
-            this.actionStatusId.next
-            this.cdr.markForCheck();
-            this.cdr.detectChanges();
-        });
-                        
+       
+            
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length
@@ -182,15 +176,15 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                             
                             // Release count
 
-                            (vehicleAssignment.releaseId === null &&
+                            (vehicleAssignment.releaseDetailsId === null &&
                                 patient.patientCallOutcomeId !== null &&
                                 vehicleAssignment.rescueTime !== null) ||
 
                             // Rescue count
                             
-                            (vehicleAssignment.releaseId !== null &&
+                            (vehicleAssignment.releaseDetailsId !== null &&
                                 vehicleAssignment.releaseEndDate !== null &&
-                                vehicleAssignment.pickupDate !== null)
+                                vehicleAssignment.releasePickupDate !== null)
                         ) {
                             patient.animalSize === 'small'
                                 ? (smallPatientCount = smallPatientCount + 1)

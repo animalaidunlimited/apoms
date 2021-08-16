@@ -1,4 +1,4 @@
-import { Patient } from "../models/patients";
+import { Patient } from '../models/patients';
 
 export interface Vehicle {
   vehicleId: number;
@@ -38,7 +38,7 @@ export interface LatLngLiteral {
   lng: number;
 }
 
-export interface DriverAssignments {
+export interface DriverAssignment {
   location: string;
   patients: Patient[];
   patientId: number;

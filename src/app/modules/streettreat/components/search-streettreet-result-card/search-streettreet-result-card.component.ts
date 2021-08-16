@@ -13,7 +13,7 @@ export class SearchStreetTreetResultCardComponent implements OnInit {
   @Output() public openStreetTreatCase = new EventEmitter<SearchStreetTreatResponse>();
 
   openCase(streetTreatCaseSearchResult: SearchStreetTreatResponse) {
-
+    console.log(streetTreatCaseSearchResult);
     this.openStreetTreatCase.emit(streetTreatCaseSearchResult);
   }
   constructor() { }

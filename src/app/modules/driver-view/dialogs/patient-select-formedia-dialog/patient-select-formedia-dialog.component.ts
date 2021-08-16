@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
 
 interface DialogData {
-assignmentDetails: DriverAssignments;
+assignmentDetails: DriverAssignment;
 }
 
 @Component({
