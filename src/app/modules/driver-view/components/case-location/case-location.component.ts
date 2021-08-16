@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '
 import { GoogleMap } from '@angular/google-maps';
 import { Router } from '@angular/router';
 import { Marker } from 'src/app/core/components/location-details/location-details.component';
-import { DriverAssignments } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { DriverViewService } from '../../services/driver-view.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { DriverViewService } from '../../services/driver-view.service';
 })
 export class CaseLocationComponent implements OnInit, AfterViewInit{
 
-  casesList!: DriverAssignments[];
+  casesList!: DriverAssignment[];
 
   isNavigated = 'true';
   
@@ -55,7 +55,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
   }
 
-  findCenter(caseListVal: DriverAssignments[]) {
+  findCenter(caseListVal: DriverAssignment[]) {
 
     caseListVal?.forEach(val=> {
       if(val.latLngLiteral){

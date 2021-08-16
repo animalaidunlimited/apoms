@@ -12,7 +12,7 @@ import { APIService } from '../http/api.service';
 export class LocationService extends APIService {
 
   ambulanceLocations$ = new BehaviorSubject<ActiveVehicleLocation[]>([]);
-  currentLocation$ = new BehaviorSubject<LatLngLiteral>({lat: 0, lng: 0})
+  currentLocation$ = new BehaviorSubject<LatLngLiteral>({lat: 0, lng: 0});
 
   endpoint = 'Location';
 

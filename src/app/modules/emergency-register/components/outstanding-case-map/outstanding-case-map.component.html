@@ -27,7 +27,7 @@
                     <map-marker
                     *ngFor="let outstandingCase of (outstandingCases$ | async);"
                     #marker="mapMarker"
-                    [position]="{lat: outstandingCase.lat, lng: outstandingCase.lng}"
+                    [position]="outstandingCase.latLngLiteral"
                     (mapClick)="openInfoWindow(marker, outstandingCase)"
                     [options]="{icon:
                                     (
