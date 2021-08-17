@@ -126,7 +126,7 @@
   <div class="swimlane">
     <h2  style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
-      <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
+      <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}" hideToggle>
         <mat-expansion-panel-header [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                   'border-green' : outstandingCase.emergencyCodeId == 2,
                   'border-yellow' : outstandingCase.emergencyCodeId == 3}"
