@@ -34,12 +34,18 @@ export class OnlineStatusService  extends APIService{
 
     public checkApiStatus() {
       
-        if(window.navigator.onLine){
+        if(!window.navigator.onLine){
             const limitedInterval = setInterval(() => {
                
-                const request = '';
-                this.get(request).then(status => console.log(status));
-                if (!window.navigator.onLine) {
+                
+                if (window.navigator.onLine) {
+                    const request = '';
+                    this.get(request).then((status:any) => {
+                        if(status.status === 'UP'){
+                            this.internalConnectionChanged.next(true);
+                        }
+                    });
+                    
                     clearInterval(limitedInterval);
                 }
 
