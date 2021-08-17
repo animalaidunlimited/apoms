@@ -49,7 +49,7 @@ export interface RescueDetailsParent {
     callOutcome: CallOutcome;
     rescueDetails: RescueDetails;
     emergencyDetails: EmergencyDetails;
-    locationDetails: Location;
+    latLngLiteral: LatLngLiteral;
 }
 
 export interface RescueDetails {
