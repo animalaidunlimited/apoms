@@ -1,34 +1,57 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject} from 'rxjs';
+import { APIService } from '../http/api.service';
 
 declare const window: any;
 
 @Injectable({ providedIn: 'root' })
-export class OnlineStatusService {
+export class OnlineStatusService  extends APIService{
+
+    endpoint = 'Health';
     private internalConnectionChanged = new BehaviorSubject<boolean>(true);
 
     get connectionChanged() {
         return this.internalConnectionChanged;
     }
 
-    // get isOnline() {
-    //     return !!window.navigator.onLine;   
-    // }
-
-    constructor() {
+   
+    constructor(http: HttpClient) {
+        super(http);
         window.addEventListener('online', () => this.updateOnlineStatus());
         window.addEventListener('offline', () => this.updateOnlineStatus());
+       
     }
 
     private updateOnlineStatus() {
         this.internalConnectionChanged.next(window.navigator.onLine);
+
+
+        this.checkApiStatus();
+       
+        
+    }
+
+    public checkApiStatus() {
+      
+        if(window.navigator.onLine){
+            const limitedInterval = setInterval(() => {
+               
+                const request = '';
+                this.get(request).then(status => console.log(status));
+                if (!window.navigator.onLine) {
+                    clearInterval(limitedInterval);
+                }
+
+            }, 1000);
+        }
     }
 
     public updateOnlineStatusAfterUnsuccessfulHTTPRequest(){
-
+        
         this.internalConnectionChanged.next(false);
+        
     }
-
 
     public updateOnlineStatusAfterSuccessfulHTTPRequest(){
 
