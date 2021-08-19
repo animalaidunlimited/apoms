@@ -58,24 +58,6 @@
                         <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
                     </div>
 
-                    <mat-form-field appearance="fill">
-                        <mat-label>Assign Vehicle</mat-label>
-                            <mat-select tabindex="12" formControlName="assignedVehicleId">
-                            <mat-option>N/A</mat-option>
-                                <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
-                                {{vehicle.vehicleNumber}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                        <mat-label>Assigned Date</mat-label>
-                        <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
-                        name="ambulanceAssignmentTime"
-                        placeholder="Ambulance assignment time" matInput>
-
-                    </mat-form-field>
-
               </div>
 
             <app-patient-visit-details [dateSelected]="dateSelected" [recordForm]="recordForm" ></app-patient-visit-details>

@@ -23,7 +23,6 @@ import { Vehicle } from 'src/app/core/models/driver-view';
 })
 export class StreetTreatRecordComponent implements OnInit {
 
-  vehicleList$!: Observable<Vehicle[]>
 
   permissionType!: number[];
 
@@ -66,8 +65,6 @@ export class StreetTreatRecordComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.vehicleList$ = this.dropdown.getVehicleListDropdown();
-
     this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
       if (val.componentPermissionLevel.value === 2) {
           this.hasWritePermission = true;
@@ -97,9 +94,7 @@ export class StreetTreatRecordComponent implements OnInit {
           currentLocation: this.inputStreetTreatCase.currentLocation
         }
       ),
-      patientId:[this.patientId,Validators.required],
-      assignedVehicleId: [],
-      ambulanceAssignmentTime:['']
+      patientId:[this.patientId,Validators.required]
 
     });
 

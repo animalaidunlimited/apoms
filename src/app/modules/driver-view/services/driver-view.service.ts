@@ -124,7 +124,7 @@ export class DriverViewService extends APIService {
           && !driverViewData.releasePickupDate
           && !driverViewData.releaseBeginDate
           && !driverViewData.releaseEndDate
-          && !driverViewData.streetTreatCaseId)
+          && driverViewData.ambulanceAction==='STRelease' ? driverViewData.streetTreatCaseId : !driverViewData.streetTreatCaseId)
         ) ||
         (
           driverViewData.streetTreatCaseId
@@ -153,7 +153,7 @@ export class DriverViewService extends APIService {
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
           !driverViewData.releaseEndDate &&
-          !driverViewData.streetTreatCaseId
+          driverViewData.ambulanceAction==='STRelease' ? (driverViewData.streetTreatCaseId && driverViewData.visitBeginDate) : !driverViewData.streetTreatCaseId
         ) ||
         (
           driverViewData.streetTreatCaseId &&
@@ -186,7 +186,7 @@ export class DriverViewService extends APIService {
           driverViewData.releasePickupDate &&
           !driverViewData.releaseBeginDate &&
           !driverViewData.releaseEndDate &&
-          !driverViewData.streetTreatCaseId
+          driverViewData.ambulanceAction === 'STRelease' ? driverViewData.streetTreatCaseId : !driverViewData.streetTreatCaseId
         )
       ) {
         driverViewData.actionStatus = 'In Ambulance';
@@ -212,7 +212,7 @@ export class DriverViewService extends APIService {
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
           driverViewData.releaseEndDate &&
-          !driverViewData.streetTreatCaseId
+          driverViewData.ambulanceAction==='STRelease' ? (driverViewData.streetTreatCaseId && driverViewData.visitEndDate) : !driverViewData.streetTreatCaseId
         ) ||
         (
           driverViewData.streetTreatCaseId &&
