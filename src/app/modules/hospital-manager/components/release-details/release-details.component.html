@@ -59,14 +59,18 @@
     </div>
 </div>
 
+<div style="margin-left: 10px; margin-bottom: 30px;">
+    <p><mat-checkbox formControlName='isAStreetTreatRelease'>Release needs to be carried out by street treat staff</mat-checkbox></p>
+</div>
+
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
 
-    <mat-slide-toggle [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
+    <mat-slide-toggle [disabled]='disableStreetTreat' [checked]="isStreetTreat" (change)="valueChages($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
 
-    <div [@openCloseDiv]="isStreetTreatRelease" [@visibilityDiv]="isStreetTreatRelease">
+    <div [@openCloseDiv]="isStreetTreat" [@visibilityDiv]="isStreetTreat">
         <app-patient-visit-details
-            [isStreetTreatTrue]="isStreetTreatRelease"
-            [hidden]="!isStreetTreatRelease"
+            [isStreetTreatTrue]="isStreetTreat"
+            [hidden]="!isStreetTreat"
             (streetTreatCaseIdEmit)="streetTreatCaseIdEventHandler($event)"
             [recordForm]="recordForm">
         </app-patient-visit-details>
