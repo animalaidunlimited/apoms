@@ -5,7 +5,7 @@ import { of, BehaviorSubject, Subject } from 'rxjs';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import { takeUntil } from 'rxjs/operators';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
-import { MediaItem, MediaItemReturnObject, PatientMediaItem } from 'src/app/core/models/media';
+import { MediaItem, MediaItemReturnObject} from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
@@ -28,11 +28,11 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
 
   isPrimaryChanged : BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  mediaItems: PatientMediaItem [] = [];
+  mediaItems: MediaItem [] = [];
 
-  newItem! : PatientMediaItem;
+  newItem! : MediaItem;
 
-  primaryMedia! : PatientMediaItem;
+  primaryMedia! : MediaItem;
 
   uploading = 0;
 
@@ -159,7 +159,7 @@ uploadFile($event:any) : void {
 
 }
 
-addToMediaItems(item: PatientMediaItem) : void {
+addToMediaItems(item: MediaItem) : void {
 
   if(!this.mediaItems){
     this.mediaItems = [];
@@ -183,7 +183,7 @@ clearPrimary() : void {
   });
 }
 
-onMediaUpdate(updatedMedia:PatientMediaItem) : void {
+onMediaUpdate(updatedMedia:MediaItem) : void {
   if(updatedMedia.isPrimary === true){
     this.primaryMedia = updatedMedia;
   }

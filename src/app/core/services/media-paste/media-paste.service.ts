@@ -1,7 +1,7 @@
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { LocalMediaItem, MediaItem, MediaItemReturnObject, PatientMediaItem } from '../../models/media';
+import { LocalMediaItem,MediaItemReturnObject, MediaItem } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
 import { Observable, from, BehaviorSubject, of} from 'rxjs';
@@ -55,8 +55,8 @@ export class MediaPasteService {
     
 
 
-  handleUpload(file: File, patientId: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
-    
+  handleUpload(file: File, Id: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
+    console.log('hi');
     if(!file.type.match(/image.*|video.*/)){
       return {
         mediaItem: undefined,
@@ -65,7 +65,7 @@ export class MediaPasteService {
       };
     }
 
-    const newMediaItem:PatientMediaItem = this.createMediaItem(file, patientId);
+    const newMediaItem:MediaItem = this.createMediaItem(file, Id);
 
     const returnObject:MediaItemReturnObject = {
         mediaItem: newMediaItem,
@@ -94,7 +94,7 @@ export class MediaPasteService {
 
         const resizedImage = await this.croppedImage(file);
         
-        if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
+        if(!this.duplicateImage(file.name, Id) || file.name ==='uploadFile'){
        
           newMediaItem.widthPX = resizedImage.width;
           newMediaItem.heightPX = resizedImage.height;
@@ -114,8 +114,8 @@ export class MediaPasteService {
               newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string;
               
 
-              if(path === 'patient-media')
-              {
+              path === 'patient-media'?
+            
 
                 this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
                   
@@ -127,14 +127,11 @@ export class MediaPasteService {
 
                   }
                   
-                });
+                })
 
-              }else{
+              : 
 
-                // this.logoService.saveOrganisationLogo()
-
-              }
-
+              returnObject.mediaItemId.next(0);
               
             });
 
@@ -198,7 +195,7 @@ export class MediaPasteService {
          * add more images to patient
          */
 
-        if(this.imageExsistInLocalStorage(patientId))
+        if(this.imageExsistInLocalStorage(Id))
         {
 
           let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
@@ -207,7 +204,7 @@ export class MediaPasteService {
 
           
           localMediaItems = localMediaItems.map((mediaItem:LocalMediaItem) => {
-            if(mediaItem.patientId === patientId){
+            if(mediaItem.patientId === Id){
 
              
               mediaItem.media.push({date:  this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl});
@@ -234,7 +231,7 @@ export class MediaPasteService {
             
             const localMedia = this.getParseMediaObject();
 
-            localMedia.push({headerType:'POST',patientId, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl}]});
+            localMedia.push({headerType:'POST',patientId: Id, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl}]});
 
             this.saveToLocalDatabase(
               'MEDIA', JSON.stringify(localMedia)
@@ -314,9 +311,10 @@ export class MediaPasteService {
     const isImage = isImageFile(file);
     const isVideo = isVideoFile(file);
 
-    const newMediaItem:PatientMediaItem = {
+    const newMediaItem:MediaItem = {
       mediaItemId: new Observable<number>(),
       patientMediaItemId: 0,
+      organisationMediaItemId: 0,
       mediaType: file.type,
       localURL: this.sanitizer.bypassSecurityTrustUrl(lastObjectUrl),
       isPrimary: false,

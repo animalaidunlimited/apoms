@@ -4,6 +4,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
   export interface MediaItem{
     mediaItemId: Observable<number>;
+    patientMediaItemId?: number;
+    organisationMediaItemId?: number;
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
@@ -19,9 +21,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
   }
 
 
-  export interface PatientMediaItem extends MediaItem{
-    patientMediaItemId: number;
-  }
   export interface LocalMediaItem{
     patientId: number;
     headerType: string;
@@ -34,14 +33,14 @@ import { Observable, BehaviorSubject } from 'rxjs';
   }
 
   export interface MediaItemReturnObject{
-    mediaItem: PatientMediaItem | undefined;
+    mediaItem: MediaItem | undefined;
     mediaItemId: BehaviorSubject<number | undefined>;
     result: string;
   }
 
   export interface MediaItemsDataObject{
     patientId: number;
-    mediaItem: BehaviorSubject<PatientMediaItem[]>;
+    mediaItem: BehaviorSubject<MediaItem[]>;
   }
 
   export interface SharedMediaPackage{

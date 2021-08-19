@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
-import { MediaItem, PatientMediaItem } from 'src/app/core/models/media';
+import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
 
@@ -21,12 +21,12 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() mediaItem!: PatientMediaItem;
+  @Input() mediaItem!: MediaItem;
   @Input() tagNumber!: string;
   @Input() isPrimaryChanged!: BehaviorSubject<number>;
 
   @Output() itemDeleted: EventEmitter<boolean> = new EventEmitter();
-  @Output() updatedMedia: EventEmitter<PatientMediaItem> = new EventEmitter();
+  @Output() updatedMedia: EventEmitter<MediaItem> = new EventEmitter();
 
   @ViewChild('videoPlayer', { read: ElementRef, static:false }) videoplayer!: ElementRef;
 
@@ -161,7 +161,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       this.mediaItem.mediaItemId
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((itemId) => {
-
+       
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
         this.mediaForm.get('updated')?.setValue(true);
 

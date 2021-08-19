@@ -11,9 +11,10 @@
             <input  type="text" placeholder="Organisation address" matInput>
         </mat-form-field>
 
-        <mat-form-field>
-            <input  type="text" placeholder="Organisation logo url" matInput>
-        </mat-form-field>
-        
+        <input
+                type="file"
+            
+                (change)="uploadLogo($event)"
+            />
     </fieldset>
 </form>

@@ -6,7 +6,7 @@ import { StreetTreatTab } from 'src/app/core/models/streettreet';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
-import { MediaItem, PatientMediaItem } from 'src/app/core/models/media';
+import { MediaItem } from 'src/app/core/models/media';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
@@ -37,7 +37,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
   profileUrl: SafeUrl = '../../../../../../assets/images/image_placeholder.png';
   dateSelected: string[]=[];
-  mediaData!: BehaviorSubject<PatientMediaItem[]>;
+  mediaData!: BehaviorSubject<MediaItem[]>;
 
   constructor(
     private fb: FormBuilder,

@@ -1,4 +1,4 @@
-import { Image, MediaItem,  Gallery, LocalMediaItem, LocalMedia, PatientMediaItem} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery,  LocalMedia} from 'src/app/core/models/media';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,9 +24,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   private connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
 
-  @Input() mediaData!:BehaviorSubject<PatientMediaItem[]>;
+  @Input() mediaData!:BehaviorSubject<MediaItem[]>;
 
-  mediaPatientItems!:PatientMediaItem[];
+  mediaPatientItems!:MediaItem[];
 
   galleryImages: Image[] = [];
 
@@ -251,7 +251,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  initMedaiaGalleryProperties(mediaItems:PatientMediaItem[]) {
+  initMedaiaGalleryProperties(mediaItems:MediaItem[]) {
     if(!mediaItems){
         this.galleryImages.push({
           thumbnail:'../../../../../assets/images/image_placeholder.png',

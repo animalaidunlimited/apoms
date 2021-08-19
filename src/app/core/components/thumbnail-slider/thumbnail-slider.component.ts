@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 import { BehaviorSubject } from 'rxjs';
-import { MediaItem, PatientMediaItem } from '../../models/media';
+import { MediaItem } from '../../models/media';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,10 +13,10 @@ import { MediaItem, PatientMediaItem } from '../../models/media';
 })
 export class ThumbnailSliderComponent implements OnInit{
    
-    @Input() mediaData!: BehaviorSubject<PatientMediaItem[]>;
+    @Input() mediaData!: BehaviorSubject<MediaItem[]>;
     @Input() patientData!: AbstractControl | null;
 
-    mediaItems:PatientMediaItem[]=[];
+    mediaItems:MediaItem[]=[];
 
     constructor(public datepipe: DatePipe) {}
 
