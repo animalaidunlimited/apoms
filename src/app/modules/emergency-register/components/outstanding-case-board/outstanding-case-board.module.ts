@@ -10,9 +10,10 @@ import { SharedPipesModule } from 'src/app/shared-pipes.module';
 import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
 
 import { OutstandingCaseMapModule } from '../outstanding-case-map/outstanding-case-map.module';
+import { OutstandingCaseBoardCasePanelComponent } from '../outstanding-case-board-case-panel/outstanding-case-board-case-panel.component';
+import { OutstandingCaseBoardCasePanelModule } from '../outstanding-case-board-case-panel/oustadning-case-baord-case-panel.module';
 @NgModule({
     declarations: [
-
         OutstandingCaseBoardComponent,
     ],
     imports: [
@@ -25,6 +26,7 @@ import { OutstandingCaseMapModule } from '../outstanding-case-map/outstanding-ca
         SharedPipesModule,
         MatChipsModule,
         OutstandingCaseBoardAmbulanceModule,
+        OutstandingCaseBoardCasePanelModule,
         OutstandingCaseMapModule
     ],
     providers:[

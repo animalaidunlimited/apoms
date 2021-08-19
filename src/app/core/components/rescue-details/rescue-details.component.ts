@@ -60,7 +60,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuerArray!: FormArray;
 
     rescuers$!: Observable<User[]>;
-    vehicleList$!: Observable<Vehicle[]>
+    vehicleList$!: Observable<Vehicle[]>;
 
 
     @HostListener('document:keydown.control.shift.q', ['$event'])

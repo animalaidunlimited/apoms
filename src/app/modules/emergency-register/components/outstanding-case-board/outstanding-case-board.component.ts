@@ -143,6 +143,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       this.ngUnsubscribe
     );
 
+
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$.pipe(
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.rescueAmbulanceId !== null))
     );

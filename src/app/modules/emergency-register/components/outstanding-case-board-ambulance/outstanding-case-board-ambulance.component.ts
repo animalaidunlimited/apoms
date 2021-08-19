@@ -76,6 +76,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     @Input() searchChange$!:Observable<string>;
     @Input() matChipObs!: BehaviorSubject<any>;
     @Input() outstandingCases$!: Observable<OutstandingAssignment[]>;
+    
     // Output's  
     @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
@@ -235,8 +236,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         }
     }
 
-    openMediaDialog(patientId: number, tagNumber: string | null): void {
-        this.mediaDialog.emit(({patientId,tagNumber}));
+    openMediaDialog($event:{patientId: number, tagNumber: string | null}): void {
+        this.mediaDialog.emit($event);
     }
 
     openRescueEdit(outstandingCase:OutstandingAssignment){
