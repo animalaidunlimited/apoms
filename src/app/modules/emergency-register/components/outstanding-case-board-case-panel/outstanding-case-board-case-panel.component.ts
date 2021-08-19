@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 
 @Component({
@@ -11,7 +13,7 @@ export class OutstandingCaseBoardCasePanelComponent {
     @Output() rescueEdit: EventEmitter<OutstandingAssignment> = new EventEmitter();
     @Output() mediaDialog: EventEmitter<{patientId: number, tagNumber: string | null}> = new EventEmitter();
     @Output() openCaseEmitter: EventEmitter<OutstandingAssignment> = new EventEmitter();
-    constructor () {}
+    constructor (public releaseAssignDialog: MatDialog,) {}
    
 
     openRescueEdit(outstandingCase:OutstandingAssignment){
@@ -26,5 +28,15 @@ export class OutstandingCaseBoardCasePanelComponent {
     openMediaDialog($event:{patientId: number, tagNumber: string | null}): void {
         this.mediaDialog.emit($event);
     } 
+
+    openReleaseAssignDialog(caseDetails: OutstandingAssignment) {
+        const dialogRef = this.releaseAssignDialog.open(ReleaseAssignDialogComponent, {
+          maxWidth: '100vw',
+          maxHeight: '100vh',
+          data: {
+            caseDetails
+          }
+        });
+      }
     
 }
