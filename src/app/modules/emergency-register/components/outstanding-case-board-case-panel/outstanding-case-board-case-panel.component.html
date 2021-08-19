@@ -10,10 +10,14 @@
                   
       [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
 
-          <div fxFlex="15">
+          <div fxFlex="15" *ngIf="outstandingCase.ambulanceAction !== 'Release'">
             <mat-icon 
               aria-label="Open rescue edit" 
               (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+          </div>
+
+          <div fxFlex="15" *ngIf="outstandingCase.ambulanceAction === 'Release'">
+            <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
           </div>
 
           <div fxFlex="40" style="text-align: center;">
