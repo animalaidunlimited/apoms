@@ -28,7 +28,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
-  vehicleList$!: Observable<Vehicle[]>
+  vehicleList$!: Observable<Vehicle[]>;
 
   private ngUnsubscribe = new Subject();
 
@@ -103,7 +103,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
 vehicleSelected($event:MatSelectChange){
 
-  const ambulanceAssignmentTime = this.recordForm.get('ambulanceAssignmentTime')
+  const ambulanceAssignmentTime = this.recordForm.get('ambulanceAssignmentTime');
 
   if($event.value)  {
         ambulanceAssignmentTime?.setValidators([Validators.required]);
