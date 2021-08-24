@@ -15,6 +15,7 @@ import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
 import { LogoService } from '../logo/logo.service';
+import { OrganisationOptionsService } from '../organisation-option/organisation-option.service';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -38,7 +39,6 @@ export class MediaPasteService {
   constructor(
     private sanitizer: DomSanitizer,
     private storage: AngularFireStorage,
-    private authService: AuthService,
     private datepipe: DatePipe,
     private patientService: PatientService,
     private fireAuth: AngularFireAuth,
@@ -46,7 +46,7 @@ export class MediaPasteService {
     private snackbarService:SnackbarService,
     public datePipe:DatePipe,
     protected storageService: StorageService,
-    private logoService: LogoService) { }
+    private organisationOptions: OrganisationOptionsService) { }
 
     user!: firebase.default.auth.UserCredential;
     mediaItemId$!: BehaviorSubject<number>;
@@ -443,7 +443,7 @@ export class MediaPasteService {
   getFileUploadLocation(filename: string, timestamp: string, folder:string) : string{
 
     // Make sure we only save files in the folder for the organisation.
-    const organisationFolder = this.authService.getOrganisationSocketEndPoint();
+    const organisationFolder = this.organisationOptions.getOrganisationSocketEndPoint();
 
     return `${organisationFolder}/${folder}/${timestamp}_${filename}`;
 

@@ -33,7 +33,7 @@ describe('UserOptionsService', () => {
     it('Default duration should be 5 seconds', () => {
         const service: UserOptionsService = TestBed.get(UserOptionsService);
 
-        const notificationSeconds = service.getNotifactionDuration();
+        const notificationSeconds = service.getNotificationDuration();
 
         expect(notificationSeconds).toEqual(3);
 

@@ -289,7 +289,7 @@ export class CaseService extends APIService {
 
                     if(result.length > 0){
 
-                        const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 20) + 1000;
+                        const insertWaitToShowMessage = (this.userOptions.getNotificationDuration() * 20) + 1000;
 
                         setTimeout(() => {
                             this.toaster.successSnackBar('Synced updated cases with server', 'OK');
@@ -309,7 +309,7 @@ export class CaseService extends APIService {
 
                     if(result.length > 0){
 
-                        const insertWaitToShowMessage = (this.userOptions.getNotifactionDuration() * 30) + 1000;
+                        const insertWaitToShowMessage = (this.userOptions.getNotificationDuration() * 30) + 1000;
 
 
                     setTimeout(() => {

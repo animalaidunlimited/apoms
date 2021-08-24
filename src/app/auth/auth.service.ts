@@ -13,6 +13,8 @@ export interface Response {
     message: string;
     socketEndPoint: string;
     token: string;
+    userId: number;
+    orgId: number;
 }
 
 @Injectable({
@@ -40,10 +42,11 @@ export class AuthService extends APIService {
     }
 
     public async login(username: string, password: string) {
+
         try {
             this.response = (await this.post({
                 username,
-                password,
+                password
             })) as Response;
 
             this.token = this.response.token || '';
@@ -52,11 +55,13 @@ export class AuthService extends APIService {
                 throw new Error('Wrong Credentials!');
             }
             this.userService.userName = username;
-
+            console.log(this.response);
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
-
+            this.storage.save('OrganisationId', this.response.orgId);
+            this.storage.save('UserId', this.response.userId);
+            console.log(this.response);
             return this.redirectUrl;
         } catch (error) {
             return Promise.reject(error);
@@ -99,7 +104,5 @@ export class AuthService extends APIService {
         return false;
     }
 
-    public getOrganisationSocketEndPoint() {
-        return this.storage.read('SOCKET_END_POINT');
-    }
+    
 }

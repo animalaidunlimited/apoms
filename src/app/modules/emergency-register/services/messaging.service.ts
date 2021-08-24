@@ -6,6 +6,7 @@ import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
+import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 
 @Injectable({
     providedIn: 'root'
@@ -21,10 +22,10 @@ token = '';
 
 constructor(
     private angularFireMessaging: AngularFireMessaging,
-    private authService: AuthService,
     private zone: NgZone,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
+    private organisationOptions: OrganisationOptionsService,
     http: HttpClient) {
         super(http);
 
@@ -105,7 +106,7 @@ constructor(
     async subscribeToTopics(token:string){
 
         // send the token to the server and subscribe it to the relevant topics
-        const organisation = this.authService.getOrganisationSocketEndPoint();
+        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
 
         const subscriptionBodyAssignment = {
             token,
@@ -131,7 +132,7 @@ constructor(
 
     async unsubscribe(){
 
-        const organisation = this.authService.getOrganisationSocketEndPoint();
+        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
 
         const unsubscribeAssignment = {
                             unsubscribe: 'true',

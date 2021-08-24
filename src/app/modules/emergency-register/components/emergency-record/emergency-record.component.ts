@@ -101,7 +101,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         });
 
-        this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
+        this.notificationDurationSeconds = this.userOptions.getNotificationDuration();
 
         this.recordForm = this.fb.group({
             emergencyDetails: this.fb.group({

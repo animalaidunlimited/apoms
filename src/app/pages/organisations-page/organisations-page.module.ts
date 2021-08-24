@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { OrganisationsPageRoutingModule } from './organisations-page-routing.module';
 import { OrganisationsPageComponent } from './organisations-page.component';
 import { MaterialModule } from './../../material-module';
+import { GoogleMapsModule } from '@angular/google-maps';
 @NgModule({
     declarations: [
         OrganisationsPageComponent
@@ -12,7 +13,8 @@ import { MaterialModule } from './../../material-module';
     
     CommonModule, 
         OrganisationsPageRoutingModule,
-        MaterialModule
+        MaterialModule,
+        GoogleMapsModule
     ],
 })
 export class OrganisationsPageModule {}

@@ -1,20 +1,112 @@
-<form>
-    <fieldset class="form-sub-group" autocomplete=false>
+<form 
+    [formGroup]="organisationForm" 
+    (ngSubmit)="onSubmit(organisationForm.value)" 
+    style="margin:0 0.1em;">
 
-        <legend class="legend" i18n>Organization details</legend>
+    <div fxLayout="row" >
 
-        <mat-form-field >
-            <input  type="text" placeholder="Organisation name" matInput>
-        </mat-form-field>
-
-        <mat-form-field>
-            <input  type="text" placeholder="Organisation address" matInput>
-        </mat-form-field>
-
-        <input
-                type="file"
+        <div fxLayout="column">
+            <fieldset class="form-sub-group">
+                <legend class="legend" i18n>Logo</legend>
+                <div fxLayout="column" fxLayoutAlign="center center" >
             
-                (change)="uploadLogo($event)"
-            />
+                    <img [src]="imageSrc ? imageSrc: organisationForm.get('logoUrl')?.value" style="width:10em"/>
+                    <button  mat-raised-button color="primary" (click)="logo.click()">Upload logo</button>
+                    <input fxHide type="file" #logo (change)="uploadLogo($event)"/>
+                </div>
+            </fieldset>
+            
+            <fieldset class="form-sub-group">
+                <legend class="legend" i18n>Name</legend>
+                <mat-form-field >
+                    <input  type="text" placeholder="Organisation name" matInput formControlName= "name">
+                </mat-form-field>
+            </fieldset>
+        </div>
+
+        <fieldset class="form-sub-group" autocomplete=false fxLayout="column">
+
+            <legend class="legend" i18n>Address</legend>
+    
+            <div formArrayName="address" >
+
+                <div fxLayout="row" fxLayoutAlign="start end">
+
+                    <div fxLayout="column">
+
+                        <div *ngFor="let item of address.controls; let i = index">
+
+                            <div [formGroupName]="i"  fxLayout="row">
+
+                                <mat-form-field>
+                
+                                    <input
+                                    matInput 
+                                    type="text"
+                                    placeholder="Name"
+                                    formControlName="name"
+                                    >
+
+                                </mat-form-field>
+
+                                <mat-form-field>
+                
+                                        <input
+                                        matInput type="text"
+                                        placeholder="Address"
+                                        (keydown.enter)="performSearch(i, $event)"
+                                        #addressSearch
+                                        formControlName="address"
+                                        (keypress)="getPlaceAutocomplete(i)">
+
+                                        <mat-icon matSuffix (click)="performSearch(i, $event)" style="cursor: pointer">search</mat-icon>
+
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input tabindex="5" formControlName="number" type="tel" placeholder="Alt. Number" matInput  >
+                                </mat-form-field>
+
+                                <button style="margin:0.4em 1em 0 1em;" class="addCallerButton" type="button" (click)="deleteItem($event, i)" mat-mini-fab color="warn">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div> 
+
+                    <button  style="margin:0.4em 0em 1.73em 0em;" class="addCallerButton" type="button" (click)="addItem($event)" mat-mini-fab color="primary">
+                        <mat-icon>add</mat-icon>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <google-map
+            [zoom]="zoom"
+            [center]="center"
+            height="174px"
+            width="100%"
+            id="googlemap">
+
+                <map-marker
+                    *ngFor="let marker of markers"
+                    [position]="marker.position"
+                    [label]="marker.label"
+                    [options]="marker.options"
+                    (mapDragend)="markerDragEnd($event)">
+                </map-marker>
+
+            </google-map>
+
+        </fieldset>
+
+    </div>
+
+    <fieldset class="form-sub-group">
+        <button type="submit"  mat-raised-button color="primary"> Save </button>
     </fieldset>
+          
 </form>

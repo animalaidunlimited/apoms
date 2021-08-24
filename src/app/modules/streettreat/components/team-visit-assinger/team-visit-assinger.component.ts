@@ -66,7 +66,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   infoWindow = new google.maps.InfoWindow();
 
   latlngbounds = new google.maps.LatLngBounds(undefined);
-  latlngboundsArray:google.maps.LatLng[] = [];
 
   markers: MapMarker[] = [];
 
