@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseDetails !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdateReleaseDetails (IN prm_Username VARCHAR(45),
+CREATE PROCEDURE AAU.sp_UpdateReleaseDetails(IN prm_Username VARCHAR(45),
 											IN prm_ReleaseId INT,
 											IN prm_EmergencyCaseId INT,
 											IN prm_AssignedAmbulanceId INT,
@@ -36,7 +36,7 @@ IF vReleaseCount = 1 THEN
 UPDATE AAU.ReleaseDetails
 				SET -- Releaser1Id = prm_Releaser1Id,
                     -- Releaser2Id = prm_Releaser2Id,
-                    AssignedVehicleId = prm_AssignedVehicleId,
+                    AssignedVehicleId = prm_AssignedAmbulanceId,
                     AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
                     Pickupdate = prm_PickupDate,
                     BeginDate = prm_BeginDate,
@@ -57,7 +57,7 @@ END IF;
 
 SELECT vUpdateSuccess AS updateSuccess, vSocketEndPoint AS socketEndPoint;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, vPatientId);
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, vPatientId, 'Release');
 
 END$$
 DELIMITER ;

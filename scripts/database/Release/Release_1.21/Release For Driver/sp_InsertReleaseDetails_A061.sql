@@ -80,7 +80,7 @@ END IF;
 
 SELECT EmergencyCaseId INTO vEmergencyCaseId FROM AAU.Patient WHERE PatientId = prm_PatientId;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, prm_PatientId);
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, prm_PatientId, 'Release');
 
 SELECT vReleaseId, vSuccess AS success, vSocketEndPoint AS socketEndPoint;
 

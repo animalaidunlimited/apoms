@@ -57,6 +57,8 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
   async onSubmit(updatedRecord: DriverAssignment) {
 
+    console.log(updatedRecord);
+
     updatedRecord.isUpdated = true;
 
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
@@ -64,6 +66,7 @@ patientFormGroup = this.data.formGroup?.get('patients');
     const driverViewLocalStorageData =  this.driverView.driverViewDetails.value;
 
     const index = driverViewLocalStorageData.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
+      value.ambulanceAction === updatedRecord.ambulanceAction &&
       this.driverView.checkAllPatientIds(updatedRecordData.patients, value));
 
     if(index >= 0){
@@ -277,7 +280,6 @@ patientFormGroup = this.data.formGroup?.get('patients');
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignment) {
-    console.log(assignment);
     const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',

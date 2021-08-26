@@ -40,6 +40,8 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    console.log(this.formData);
+
     this.releasers$ = this.dropdown.getRescuers();
     this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 
@@ -52,8 +54,8 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       releaseBeginDate: [],
       releaseEndDate: [],
       pickupDate: [],
-      assignedVehicleId:[],
-      ambulanceAssignmentTime:[]
+      releaseAmbulanceId:[],
+      ambulanceAssignmentTime:['']
     });
 
     this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe(() => {
@@ -67,6 +69,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       this.releaseDetails.getReleaseDetails(this.patientId || -1)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(release => {
+        console.log(release)
           this.formData = release as ReleaseDetails;
 
           this.recordForm.patchValue(this.formData);
@@ -76,6 +79,8 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
     else {
 
       this.recordForm.patchValue(this.formData);
+
+      console.log(this.recordForm.value)
 
     }
 

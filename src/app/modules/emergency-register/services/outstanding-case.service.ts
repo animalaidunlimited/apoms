@@ -196,7 +196,6 @@ export class OutstandingCaseService {
 
   receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment ){
 
-    console.log(updatedAssignment);
     // tslint:disable-next-line: no-shadowed-variable
     const updateCases = (outstandingCases: any, Assignment:any) => {
       const res:any = {};
