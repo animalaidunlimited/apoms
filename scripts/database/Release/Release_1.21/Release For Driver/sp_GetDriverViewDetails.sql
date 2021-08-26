@@ -3,16 +3,9 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
 DELIMITER $$
-
-
 CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME , IN prm_Username VARCHAR(45))
 BEGIN
 
-/*
-Created Date: 11/06/2021
-CreatedBy: Arpit Trivedi
-Purpose: To get the cases for driver view
-*/
 
 DECLARE vVehicleId INT;
 DECLARE vUserId INT;
@@ -21,7 +14,6 @@ SELECT UserId INTO vUserId
 FROM AAU.User
 WHERE UserName = prm_Username; 
 
-
 WITH VehicleIdCTE AS
 (
 	SELECT v.VehicleId
@@ -29,27 +21,34 @@ WITH VehicleIdCTE AS
 	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId
 	INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 	WHERE vsu.UserId = vUserId AND (vs.StartDate <= prm_Date AND vs.EndDate >= prm_Date)
+    AND vs.IsDeleted = 0
 ),
 
 RescueReleaseST AS
-(SELECT p.PatientId FROM AAU.EmergencyCase ec
+(SELECT p.PatientId,'Rescue' AmbulanceAction
+FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
+
 UNION 
 
-SELECT rd.PatientId FROM AAU.ReleaseDetails rd
+SELECT rd.PatientId ,IF(rd.IsAStreetTreatRelease = 1, 'STRelease','Release') 
+FROM AAU.ReleaseDetails rd
 WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
 UNION
 
-SELECT st.PatientId FROM AAU.StreetTreatCase st
+SELECT st.PatientId , IF(rd.ReleaseDetailsId IS NOT NULL,'STRelease','StreetTreat')
+FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = st.PatientId AND (rd.IsAStreetTreatRelease = 1 AND rd.AssignedVehicleId = st.AssignedVehicleId)
 WHERE ( CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL AND v.VisitId IS NOT NULL )
 AND st.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
-),
+)
+,
 EmergencyCaseIds AS
 (
 SELECT EmergencyCaseId
@@ -145,11 +144,9 @@ PatientsCTE AS
 DriverViewCTE AS
 (
 SELECT
-			IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NULL),'Rescue', 
-				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL),'Release',
-				IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL),'StreetTreat',
-				IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL),'STRelease',NULL)
-				))) AS AmbulanceAction,
+		
+			rrst.AmbulanceAction,
+           -- AS AmbulanceAction,
             rd.ReleaseDetailsId,
             rd.AssignedVehicleId AS ReleaseAssignedVehicleId,
             rd.AmbulanceAssignmentTime AS ReleaseAmbulanceAssignmentTime,
@@ -158,6 +155,8 @@ SELECT
 			ec.Comments,
             rd.Releaser1Id,
             std.StreetTreatCaseId,
+            std.AssignedVehicleId AS StreetTreatAssignedVehicleId,
+            std.AmbulanceAssignmentTime AS StreetTreatAmbulanceAssignmentTime,
             std.MainProblemId,
             ec.AssignedVehicleId,
             ec.AmbulanceAssignmentTime,
@@ -195,6 +194,7 @@ SELECT
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
             JSON_OBJECT("patients",p.Patients) AS Patients 
 FROM PatientsCTE p
+LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
@@ -202,7 +202,7 @@ LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
-LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId
+LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(prm_Date AS DATE)
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
 
 SELECT
@@ -238,6 +238,8 @@ JSON_OBJECT("rescueAmbulanceId", AssignedVehicleId),
 JSON_OBJECT("rescueAmbulanceAssignmentDate", DATE_Format(AmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("releaseAmbulanceId", ReleaseAssignedVehicleId),
 JSON_OBJECT("releaseAmbulanceAssignmentDate", DATE_Format(ReleaseAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("streetTreatAmbulanceId", StreetTreatAssignedVehicleId),
+JSON_OBJECT("streetTreatAmbulanceAssignmentDate", DATE_Format(StreetTreatAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("admissionTime", DATE_Format(AdmissionTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
 JSON_OBJECT("emergencyNumber", EmergencyNumber),
@@ -253,4 +255,5 @@ callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
 
-END
+END$$
+DELIMITER ;

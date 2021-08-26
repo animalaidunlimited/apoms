@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_InsertReleaseDetails (IN prm_UserName NVARCHAR(45),
+CREATE PROCEDURE AAU.sp_InsertReleaseDetails(IN prm_UserName NVARCHAR(45),
 												IN prm_PatientId INT,
 												IN prm_ComplainerNotes NVARCHAR(450),
 												IN prm_ComplainerInformed TINYINT,
@@ -88,7 +88,7 @@ END IF;
 
 SELECT EmergencyCaseId INTO vEmergencyCaseId FROM AAU.Patient WHERE PatientId = prm_PatientId;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, prm_PatientId);
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, prm_PatientId, 'Release');
 
 SELECT vReleaseId, vSuccess AS success, vSocketEndPoint AS socketEndPoint;
 

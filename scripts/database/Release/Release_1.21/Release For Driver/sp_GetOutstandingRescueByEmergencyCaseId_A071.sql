@@ -3,7 +3,9 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
 
 DELIMITER $$
-CREATE  PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT, IN prm_PatientId INT)
+CREATE PROCEDURE AAU.sp_GetOutstandingRescueByEmergencyCaseId( IN prm_EmergencyCaseId INT,
+ IN prm_PatientId INT,
+ IN prm_AmbulanceAction VARCHAR(45))
 BEGIN
 
 
@@ -26,14 +28,15 @@ Purpose: Altering status based upon whether the admission area has been added
 
 ***************************************************************************/
 
-  WITH RescueReleaseSTPatientId AS (
+ WITH RescueReleaseSTPatientId AS (
 	SELECT PatientId FROM AAU.Patient
     WHERE EmergencyCaseId = prm_EmergencyCaseId
 ),
+
 EmergencyCaseIds AS
 (
 SELECT EmergencyCaseId
-FROM AAU.Patient
+FROM AAU.Patient 
 WHERE PatientId IN (SELECT PatientId FROM RescueReleaseSTPatientId)
 ),
 CallerCTE AS 
@@ -124,11 +127,17 @@ PatientsCTE AS
 ,
 DriverViewObject AS
 (
-	SELECT IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NULL),'Rescue', 
-			IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL),'Release',
-			IF((rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL),'StreetTreat',
-			IF((rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL),'STRelease',NULL)
-			))) AS AmbulanceAction,
+	SELECT CASE 
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL AND rd.IsAStreetTreatRelease = 0 THEN 'Release'
+            WHEN rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL THEN 'StreetTreat'
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsAStreetTreatRelease = 1 THEN 'STRelease'
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL 
+            AND prm_AmbulanceAction = 'StreetTreat' THEN 'StreetTreat'
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL 
+            AND prm_AmbulanceAction = 'Release' THEN 'Release'
+           -- WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsAStreetTreatRelease = 0 THEN 'Release'
+            ELSE 'Rescue' END
+            AS AmbulanceAction,
 			IF((rd.AssignedVehicleId IS NULL AND std.AssignedVehicleId IS NULL),ec.AssignedVehicleId,
 				IF((rd.AssignedVehicleId IS NOT NULL AND std.AssignedVehicleId IS NULL),rd.AssignedVehicleId,
 				IF((rd.AssignedVehicleId IS NULL AND std.AssignedVehicleId IS NOT NULL),std.AssignedVehicleId,
@@ -157,7 +166,7 @@ DriverViewObject AS
             p.PatientId,
             rd.BeginDate,
             rd.EndDate,
-			v.VisitId,
+			IF(rd.EndDate,v.VisitId,NULL) VisitId,
             v.VisitBeginDate,
             v.VisitEndDate,
             v.VisitTypeId, 
@@ -259,6 +268,6 @@ callerDetails,
 Patients)AS DriverViewData
 FROM DriverViewCTE;
 
-END$$
 
+END$$
 DELIMITER ;

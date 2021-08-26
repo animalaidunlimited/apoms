@@ -14,6 +14,7 @@
     pickupDate: Date | string;
     releaseAmbulanceId: number;
     ambulanceAssignmentTime: Date;
+    assignedVehicleId:number;
   }
 
   export interface ReleaseResponse {

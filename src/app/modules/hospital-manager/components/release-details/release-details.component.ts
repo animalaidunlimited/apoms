@@ -112,8 +112,11 @@ export class ReleaseDetailsComponent implements OnInit {
 
     });
 
+    this.recordForm.get('releaseRequestForm.requestedDate')?.valueChanges.subscribe(value=> {
+        console.log(this.recordForm)
+    });
+
     this.recordForm.get('isAStreetTreatRelease')?.valueChanges.subscribe(value=> {
-      console.log(this.recordForm.get('isAStreetTreatRelease')?.value);
       if(value) {
         this.streetTreatReleaseTrue();
         this.disableStreetTreat = true;
@@ -242,7 +245,6 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   onReleaseSubmit() {
-    console.log(this.recordForm.value);
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 
