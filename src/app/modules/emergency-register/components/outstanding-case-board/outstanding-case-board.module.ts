@@ -12,6 +12,7 @@ import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-a
 import { OutstandingCaseMapModule } from '../outstanding-case-map/outstanding-case-map.module';
 import { OutstandingCaseBoardCasePanelComponent } from '../outstanding-case-board-case-panel/outstanding-case-board-case-panel.component';
 import { OutstandingCaseBoardCasePanelModule } from '../outstanding-case-board-case-panel/oustadning-case-baord-case-panel.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
     declarations: [
         OutstandingCaseBoardComponent,

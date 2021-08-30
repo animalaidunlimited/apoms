@@ -57,8 +57,6 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
   async onSubmit(updatedRecord: DriverAssignment) {
 
-    console.log(updatedRecord);
-
     updatedRecord.isUpdated = true;
 
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);

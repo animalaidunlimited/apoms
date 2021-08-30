@@ -7,7 +7,7 @@ export interface SearchRecordTab {
     tagNumber: string | undefined;
     animalType: string;
     currentLocation: string | undefined;
-    callDateTime: string;
+    callDateTime: string | Date | undefined;
     callOutcomeId: number | undefined;
     callOutcome: string | undefined;
     icon: string | undefined;

@@ -18,7 +18,7 @@ export interface OutstandingAssignment {
     ambulanceAssignmentTime: Date;
     rescueAmbulanceId: number;
     releaseAmbulanceId: number | null;
-    callDateTime: string;
+    callDateTime: string | Date | undefined;
     callerDetails: CallerDetails[];
     emergencyCaseId: number;
     emergencyCode: string;

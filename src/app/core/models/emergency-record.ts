@@ -5,7 +5,7 @@ export interface EmergencyDetails {
     emergencyCaseId: number;
     guId:string;
     emergencyNumber: number;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     dispatcher: number;
     code: EmergencyCode;
     updateTime: string | Date;

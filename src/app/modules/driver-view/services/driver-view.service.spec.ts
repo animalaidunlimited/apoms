@@ -4,7 +4,6 @@ import { DriverViewService } from './driver-view.service';
 import { MaterialModule } from './../../../material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
-import { NgZone } from '@angular/core';
 describe('DriverViewService', () => {
   let service: DriverViewService;
   let testData: DriverAssignment;
@@ -13,8 +12,7 @@ describe('DriverViewService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        MaterialModule,
-        NgZone
+        MaterialModule
       ],
       providers: [DriverViewService]
     });
@@ -120,7 +118,7 @@ describe('DriverViewService', () => {
     expect(service).toBeTruthy();
   });
 
-
+// Tests for rescue
   it('Should give the assignment status as Assigned for rescue with ambulance assignment time only.', ()=> {
     testData.trueStatus = 'Assigned';
     testData.ambulanceAction = 'Rescue';
@@ -129,7 +127,7 @@ describe('DriverViewService', () => {
     expect(data.actionStatus).toEqual(trueStatusVal);
   });
 
-  it('Should give the assignment status as Assigned for rescue with ambulance assignment time only.', ()=> {
+  it('Should give the assignment status as In progress for rescue with ambulance arrival time.', ()=> {
     testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
     testData.trueStatus = 'In Progress';
     testData.ambulanceAction = 'Rescue';
@@ -138,7 +136,7 @@ describe('DriverViewService', () => {
     expect(data.actionStatus).toEqual(trueStatusVal);
   });
 
-  it('Should give the assignment status as Assigned for rescue with ambulance assignment time only.', ()=> {
+  it('Should give the assignment status as In Ambulance for rescue with rescue time.', ()=> {
     testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
     testData.rescueTime = '2021-08-24 11:10:55';
     testData.trueStatus = 'In Ambulance';
@@ -148,15 +146,259 @@ describe('DriverViewService', () => {
     expect(data.actionStatus).toEqual(trueStatusVal);
   });
 
-  it('Should give the assignment status as Assigned for rescue with ambulance assignment time only.', ()=> {
+  it('Should give the assignment status as Complete for rescue with admission time.', ()=> {
     testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
     testData.rescueTime = '2021-08-24 11:10:55';
-    testData.rescueTime = '2021-08-24 11:30:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
     testData.trueStatus = 'Complete';
     testData.ambulanceAction = 'Rescue';
     const data = service.getAssignmentStatus(testData);
     const trueStatusVal = testData.trueStatus;
     expect(data.actionStatus).toEqual(trueStatusVal);
   });
+
+  
+// Tests for release
+
+  it('Should give assignment status as Assigned for release with assigned ambulance id and time.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releaseDetailsId = 1;
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.trueStatus = 'Assigned';
+    testData.ambulanceAction = 'Release';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  it('Should give assignment status as Assigned for release with pickup time.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseDetailsId = 1;
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.trueStatus = 'In Ambulance';
+    testData.ambulanceAction = 'Release';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  it('Should give assignment status as Assigned for release with begin time.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releaseDetailsId = 1;
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.trueStatus = 'In Progress';
+    testData.ambulanceAction = 'Release';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  it('Should give assignment status as Assigned for release with end time.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    testData.releaseEndDate = '2021-08-25 11:40:55';
+    testData.releaseDetailsId = 1;
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.trueStatus = 'Complete';
+    testData.ambulanceAction = 'Release';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  
+// Tests for ST
+  it('Should give assigned for ST.', ()=> {
+    
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
+    testData.patients[0].tagNumber = 'ST1';
+    testData.streetTreatCaseId = 22;
+    testData.visitDate = '2021-08-25 11:40:55';
+    testData.trueStatus = 'Assigned';
+    testData.ambulanceAction = 'StreetTreat';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  it('Should give In progress for ST.', ()=> {
+    
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
+    testData.patients[0].tagNumber = 'ST1';
+    testData.visitId = 18;
+    testData.visitDate = '2021-08-25 11:40:55';
+    testData.streetTreatCaseId = 22;
+    testData.visitBeginDate = '2021-08-25 11:40:55';
+    testData.trueStatus = 'In Progress';
+    testData.ambulanceAction = 'StreetTreat';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  it('Should give complete for ST.', ()=> {
+    
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
+    testData.patients[0].tagNumber = 'ST1';
+    testData.streetTreatCaseId = 22;
+    testData.visitDate = '2021-08-25 11:40:55';
+    testData.visitBeginDate = '2021-08-25 11:40:55';
+    testData.visitEndDate = '2021-08-25 11:40:55';
+    testData.trueStatus = 'Complete';
+    testData.ambulanceAction = 'StreetTreat';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+
+  });
+
+  // Tests for STRelease
+
+  it('Should give the assignment status as Assigned for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'Assigned';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+  });
+
+  it('Should give the assignment status as in an=mbulance for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    // testData.releaseBeginDate = '2021-08-25 11:35:55';
+    // testData.releaseEndDate = '2021-08-25 11:40:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'In Ambulance';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+  });
+
+  it('Should give the assignment status as in progress for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    // testData.releaseEndDate = '2021-08-25 11:40:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'In Progress';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+  });
+
+  it('Should give the assignment status as in progress for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    testData.releaseEndDate = '2021-08-25 11:40:55';
+    testData.visitId = 1;
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'In Progress';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+  });
+
+  it('Should give the assignment status as in progress for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    testData.releaseEndDate = '2021-08-25 11:40:55';
+    testData.visitId = 1;
+    testData.visitBeginDate = '2021-08-25 11:40:55';
+    testData.visitEndDate = '2021-08-25 11:40:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'Complete';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    const trueStatusVal = testData.trueStatus;
+    expect(data.actionStatus).toEqual(trueStatusVal);
+  });
+
+  it('Should not give the assignment status as in progress for STRelease.', ()=> {
+    testData.ambulanceArrivalTime = '2021-08-24 10:10:55';
+    testData.rescueTime = '2021-08-24 11:10:55';
+    testData.admissionTime = '2021-08-24 11:30:55';
+    testData.releasePickupDate = '2021-08-25 11:30:55';
+    testData.releaseBeginDate = '2021-08-25 11:35:55';
+    testData.visitId = 1;
+    testData.visitBeginDate = '2021-08-25 11:40:55';
+    testData.visitEndDate = '2021-08-25 11:40:55';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcome = 'Admission';
+    testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 1;
+    testData.patients[0].tagNumber = 'C1';
+    testData.releaseDetailsId = 1;
+    testData.streetTreatCaseId = 2;
+    testData.trueStatus = 'In Progress';
+    testData.ambulanceAction = 'STRelease';
+    const data = service.getAssignmentStatus(testData);
+    expect(data.actionStatus).toEqual(testData.trueStatus);
+  });
+
+
+
+
+
 
 });
