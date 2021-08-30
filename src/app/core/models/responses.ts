@@ -93,7 +93,7 @@ export interface Exclusions
 export interface SearchResponse {
     EmergencyCaseId: number;
     EmergencyNumber: number;
-    CallDateTime: string;
+    CallDateTime: string | Date | undefined;
     callerDetails: CallerDetails[] | any;
     AnimalTypeId: number;
     AnimalType: string;

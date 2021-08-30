@@ -104,7 +104,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     
     this.patientForm = this.patientFormInput as FormGroup;
 
-    if(this.patientForm.get('patientId')?.value) {
+    if(this.patientForm?.get('patientId')?.value) {
       this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
     }
     

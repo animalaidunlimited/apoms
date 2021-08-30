@@ -1,29 +1,29 @@
 
 <mat-expansion-panel 
-  [expanded]="outstandingCase.searchCandidate == true" 
-  [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction === 'Release'}" 
+  [expanded]="outstandingCase?.searchCandidate == true" 
+  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction === 'Release'}" 
   hideToggle>
     <mat-expansion-panel-header 
-      [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
-                  'border-green' : outstandingCase.emergencyCodeId == 2,
-                  'border-yellow' : outstandingCase.emergencyCodeId == 3}"
+      [ngClass]="{'border-red' : outstandingCase?.emergencyCodeId == 1,
+                  'border-green' : outstandingCase?.emergencyCodeId == 2,
+                  'border-yellow' : outstandingCase?.emergencyCodeId == 3}"
                   
       [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
 
-          <div fxFlex="15" *ngIf="outstandingCase.ambulanceAction !== 'Release'">
+          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
             <mat-icon 
               aria-label="Open rescue edit" 
               (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
-          <div fxFlex="15" *ngIf="outstandingCase.ambulanceAction === 'Release'">
+          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction === 'Release'">
             <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
           </div>
 
           <div fxFlex="40" style="text-align: center;">
-            {{outstandingCase.emergencyNumber}}
+            {{outstandingCase?.emergencyNumber}}
             <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
-              *ngFor="let patient of outstandingCase.patients">
+              *ngFor="let patient of outstandingCase?.patients">
               ({{patient.animalType}})
             </div>
           </div>
@@ -34,13 +34,13 @@
               (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
-          <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
+          <div flFlex="none">{{outstandingCase?.callDateTime | timeAgo}}</div>
 
         </mat-expansion-panel-header>
 
         <div fxLayout="column" fxLayoutAlign="space-around start">
         
-          <div *ngFor="let callerDetails of outstandingCase.callerDetails">
+          <div *ngFor="let callerDetails of outstandingCase?.callerDetails">
             <div fxLayout="row" fxLayoutAlign="start end">
               <div class="telephone-dash-container">
                 <svg height="11" width="25">
@@ -54,7 +54,7 @@
           </div>
 
           <div class="patients-group" 
-          *ngFor="let patient of outstandingCase.patients" 
+          *ngFor="let patient of outstandingCase?.patients" 
           fxLayout="row-wrap"
           fxLayoutAlign="space-around start">
             <mat-icon 
@@ -65,7 +65,7 @@
               <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
             </div>
           </div>
-          <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-          <div class="animal-location">{{outstandingCase.location}}</div>
+          <div class="CallDateTime">{{outstandingCase?.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+          <div class="animal-location">{{outstandingCase?.location}}</div>
         </div>
       </mat-expansion-panel>

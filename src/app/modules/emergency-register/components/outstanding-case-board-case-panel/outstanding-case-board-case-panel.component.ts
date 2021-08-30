@@ -1,12 +1,35 @@
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-
 @Component({
     selector: 'app-outstanding-case-board-case-panel',
     templateUrl: './outstanding-case-board-case-panel.component.html',
-    styleUrls: ['./outstanding-case-board-case-panel.component.scss']
+    styleUrls: ['./outstanding-case-board-case-panel.component.scss'],
+    animations:
+    [
+      trigger('rescueMoved',
+      [
+        state('void', style({
+          background: 'transparent'
+        })),
+        state('moved',style({
+          background: 'lightsteelblue'
+  
+      })),
+      state('still', style({
+        background: 'transparent'
+      })),
+      transition('moved => still', [
+        animate('1s')
+      ]),
+      transition('still => moved', [
+        animate('0s')
+      ])
+  
+    ])
+  ]
 })
 export class OutstandingCaseBoardCasePanelComponent {
     @Input() outstandingCase!: OutstandingAssignment;

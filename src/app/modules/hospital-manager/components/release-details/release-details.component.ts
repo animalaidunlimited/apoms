@@ -112,10 +112,6 @@ export class ReleaseDetailsComponent implements OnInit {
 
     });
 
-    this.recordForm.get('releaseRequestForm.requestedDate')?.valueChanges.subscribe(value=> {
-        console.log(this.recordForm)
-    });
-
     this.recordForm.get('isAStreetTreatRelease')?.valueChanges.subscribe(value=> {
       if(value) {
         this.streetTreatReleaseTrue();

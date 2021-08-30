@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedPipesModule } from 'src/app/shared-pipes.module';
 describe('OutstandingCaseBoardComponent', () => {
   let component: OutstandingCaseBoardComponent;
   let fixture: ComponentFixture<OutstandingCaseBoardComponent>;
@@ -27,6 +28,7 @@ describe('OutstandingCaseBoardComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         MaterialModule,
+        SharedPipesModule,
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase)
       ],

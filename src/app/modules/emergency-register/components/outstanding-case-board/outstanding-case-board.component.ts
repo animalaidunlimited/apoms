@@ -287,7 +287,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
       EmergencyCaseId: caseSearchResult.emergencyCaseId,
       EmergencyNumber: caseSearchResult.emergencyNumber,
-      CallDateTime: caseSearchResult.callDateTime.toString(),
+      CallDateTime: caseSearchResult.callDateTime?.toString(),
       callerDetails: caseSearchResult.callerDetails,
       AnimalTypeId: 0,
       AnimalType: '',

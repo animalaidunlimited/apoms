@@ -51,7 +51,7 @@ export interface PatientCall {
     patientCallerInteractionId: number;
     patientId: number;
     positiveCallOutcome: boolean;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     assignedTo: number;
     callType: number;
     patientCallerInteractionOutcomeId: number;

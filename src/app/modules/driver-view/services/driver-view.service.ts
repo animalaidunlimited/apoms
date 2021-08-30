@@ -105,24 +105,7 @@ export class DriverViewService extends APIService {
   // To get the current status of the case from assigned, in ambulance, in progress and complete.
   public getAssignmentStatus(driverViewData: DriverAssignment) {
 
-console.log(this.driverViewDetails.value);
      driverViewData?.patients.forEach(patient=> {
-
-
-      if(driverViewData.ambulanceAction === 'STRelease') {
-        console.log(driverViewData)
-                console.log( driverViewData.releaseDetailsId)
-                console.log( driverViewData.releasePickupDate)
-                  console.log( driverViewData.releaseBeginDate)
-                  console.log( driverViewData.visitId)
-
-                    console.log( driverViewData.releaseEndDate)
-                      console.log(driverViewData.streetTreatCaseId)
-                      console.log(!driverViewData.visitBeginDate)
-                  console.log( !driverViewData.visitEndDate)
-
-
-      }
 
       if(
         (!driverViewData.ambulanceArrivalTime
@@ -135,12 +118,10 @@ console.log(this.driverViewDetails.value);
           && driverViewData.rescueTime
           && driverViewData.admissionTime
           && patient.callOutcome.CallOutcome?.CallOutcomeId === 1
-          && driverViewData.inTreatmentAreaId
           && driverViewData.releaseDetailsId  && driverViewData.ambulanceAction!=='Rescue' 
           && !driverViewData.releasePickupDate
           && !driverViewData.releaseBeginDate
           && !driverViewData.releaseEndDate
-          // && driverViewData.ambulanceAction==='STRelease' ? driverViewData.streetTreatCaseId : !driverViewData.streetTreatCaseId
           )
         ) ||
         (
@@ -166,7 +147,6 @@ console.log(this.driverViewDetails.value);
 		      driverViewData.rescueTime &&
           driverViewData.admissionTime &&
           patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
@@ -174,6 +154,7 @@ console.log(this.driverViewDetails.value);
         ) ||
         (
           driverViewData.streetTreatCaseId &&
+          driverViewData.visitDate &&
           driverViewData.visitBeginDate &&
           !driverViewData.visitEndDate
         ) ||
@@ -208,7 +189,6 @@ console.log(this.driverViewDetails.value);
           driverViewData.rescueTime &&
           driverViewData.admissionTime &&
           patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
-          driverViewData.inTreatmentAreaId &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
           !driverViewData.releaseBeginDate &&
@@ -223,7 +203,6 @@ console.log(this.driverViewDetails.value);
           driverViewData.rescueTime &&
           driverViewData.ambulanceArrivalTime &&
           driverViewData.admissionTime &&
-		      // patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.ambulanceAction==='Rescue' &&
           ((!driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId ) || 
           (driverViewData.releaseDetailsId && driverViewData.streetTreatCaseId) || 
@@ -243,6 +222,7 @@ console.log(this.driverViewDetails.value);
         ) ||
         (
           driverViewData.streetTreatCaseId &&
+          driverViewData.visitDate &&
           driverViewData.visitBeginDate &&
           driverViewData.visitEndDate 
         )
@@ -264,9 +244,9 @@ console.log(this.driverViewDetails.value);
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
       if(val.success===1) {
  
-        let localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+        const localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
  
-        let index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
+        const index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
  
         localData[index].isUpdated = false;
  
@@ -289,18 +269,20 @@ console.log(this.driverViewDetails.value);
 
   public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
 
-    console.log(updatedRecord);
     const updatedRecordData = this.getAssignmentStatus(updatedRecord);
 
-    let uId = Number(localStorage.getItem('UserId'));
+    const uId = Number(localStorage.getItem('UserId'));
 
     if(updatedRecordData.rescuerList.includes(uId)) {
+
       const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
+
       const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId &&  
       value.ambulanceAction === updatedRecord.ambulanceAction && this.checkAllPatientIds(updatedRecordData.patients, value));
 
       if(index >=0) 
       {
+
         driverViewLocalStorageData.splice(index,1,updatedRecordData);
         this.driverViewDetails.next(driverViewLocalStorageData);
         localStorage.removeItem('driverViewData');
@@ -309,14 +291,20 @@ console.log(this.driverViewDetails.value);
       }
       else {
         if(updatedRecordData.ambulanceAction==='Release' && updatedRecordData.releaseAmbulanceId && updatedRecordData.releaseAmbulanceAssignmentDate) {
+
           driverViewLocalStorageData.push(updatedRecordData);
+
         }
         if(updatedRecordData.ambulanceAction!=='Release') {
+
           driverViewLocalStorageData.push(updatedRecordData);
+
         }
         
         this.driverViewDetails.next(driverViewLocalStorageData);
+
         localStorage.removeItem('driverViewData');
+
         localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
         
       }
@@ -329,7 +317,9 @@ console.log(this.driverViewDetails.value);
   checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
     
     return driverViewData.patients.every(patient=> {
+
       return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
+
     });
   }
 
@@ -337,10 +327,14 @@ console.log(this.driverViewDetails.value);
   public showSaveResponseStatus(updatedItemError: SuccessOnlyResponse[] ) {
 
     if(updatedItemError.length > 0) {
+
       this.snackBar.errorSnackBar('Some cases not synced with database, Please try again later!', 'Ok');
+
     }
     else if(updatedItemError.length === 0) {
+
       this.snackBar.successSnackBar('All cases synced with database.', 'Ok');
+      
     }
 
     return 0;
