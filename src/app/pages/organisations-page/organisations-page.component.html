@@ -104,9 +104,8 @@
         </fieldset>
 
     </div>
-
     
-    <aau-problem [recordForm]="organisationForm"></aau-problem>
+    <aau-organisation-dropdown [recordForm]="organisationForm" [rows$]="problemRows"></aau-organisation-dropdown>
 
     <fieldset class="form-sub-group">
         <button type="submit"  mat-raised-button color="primary"> Save </button>

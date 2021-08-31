@@ -30,20 +30,23 @@
 		<ng-container matColumnDef="SortOrder">
 			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
 			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element"> 
-				<mat-form-field floatLabel="never" style="width:30%;">
+				<mat-form-field  floatLabel="never" style="width:45%;">
 					<mat-select  formControlName="sortOrder" placeholder="Sort order">
 						<mat-option>None</mat-option>
 						<mat-option *ngFor="let x of dataSource | async; let i = index;" [value]="i+1">
 							{{ i + 1 }}
 						</mat-option>
 					</mat-select> 
+					<mat-error  *ngIf="element.get('sortOrder')?.hasError('uniqueBy')">
+						Sort order should be unique
+					</mat-error>
 				</mat-form-field>
 			</mat-cell>
 		</ng-container>
 
 		<ng-container matColumnDef="IsDeleted" style="overflow: display;">
 			<mat-header-cell *matHeaderCellDef> Disabled </mat-header-cell>
-			<mat-cell *matCellDef="let element; let i = index;"  [formGroup]="element">
+			<mat-cell style="overflow:visible;" *matCellDef="let element; let i = index;"  [formGroup]="element">
 				<mat-checkbox  formControlName="isDeleted" (change)='updateAble(i,$event)'> {{element.get('isDeleted')?.value ? 'disabled' : 'enabled' }}</mat-checkbox>
 			</mat-cell>
 		</ng-container>

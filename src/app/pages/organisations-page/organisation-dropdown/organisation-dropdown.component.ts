@@ -1,9 +1,8 @@
-import { Component, ViewChild, OnInit, AfterViewInit, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
-import { BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 export interface Element {
   ProblemId: number;
@@ -16,47 +15,33 @@ export interface Element {
  * @title Table with editing
  */
  @Component({
-  selector: 'aau-problem',
-  templateUrl: './problem.component.html',
-  styleUrls: ['./problem.component.scss']
+  selector: 'aau-organisation-dropdown',
+  templateUrl: './organisation-dropdown.component.html',
+  styleUrls: ['./organisation-dropdown.component.scss']
 })
-export class ProblemComponent implements AfterViewInit {
+export class OrganisationDropdownComponent implements OnInit {
   constructor(
     private dropDown: DropdownService,
     private fb: FormBuilder
   ){}
 
   @Input() recordForm!:AbstractControl | null;
-  displayedColumns = ['Problem', 'SortOrder', 'IsDeleted', 'actions'];
-
-  dataSource = new BehaviorSubject<AbstractControl[]>([]);
-  rows: FormArray = this.fb.array([]);
+  @Input() rows$!: Observable<FormArray> ;
   
+  rows!:FormArray;
 
+  displayedColumns = ['Problem', 'SortOrder', 'IsDeleted', 'actions'];
+  dataSource = new BehaviorSubject<AbstractControl[]>([]);
+  
   @ViewChild(MatTable) table!: MatTable<Element>;
 
-
-
-  ngAfterViewInit() {
-
-    this.dropDown.getAllProblems().pipe(
-      map(problems => problems.map(problem => ({...problem, Editable: false})))
-    ).subscribe(problems =>  {
-     
-      const problemsGroup: FormGroup[] = problems.map(problem =>  this.fb.group({
-        problemId: problem.ProblemId,
-        problem: problem.Problem,
-        isDeleted: problem.IsDeleted,
-        sortOrder: problem.SortOrder
-      }));
-
-      this.rows =  new FormArray(problemsGroup);
-
-      this.rows.disable();
-
-      this.dataSource.next(this.rows.controls);
-    });
+  ngOnInit() {
     
+    this.rows$.subscribe(data => {
+      this.dataSource.next(data.controls);
+      this.rows = data;
+    })
+
   }
   
   applyFilter(filterValue: string) {
@@ -104,6 +89,7 @@ export class ProblemComponent implements AfterViewInit {
   }
 
   editRow(index:number, $event:Event){
+
     $event.preventDefault();
 
     this.rows.at(index).enable();
@@ -133,8 +119,8 @@ export class ProblemComponent implements AfterViewInit {
       }
 
     }
-    
   }
+
 }
 
 

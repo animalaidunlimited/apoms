@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProblemComponent } from './problem.component';
+import { OrganisationDropdownComponent } from './organisation-dropdown.component';
 
 describe('ProblemComponent', () => {
-  let component: ProblemComponent;
-  let fixture: ComponentFixture<ProblemComponent>;
+  let component: OrganisationDropdownComponent;
+  let fixture: ComponentFixture<OrganisationDropdownComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProblemComponent ]
+      declarations: [ OrganisationDropdownComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProblemComponent);
+    fixture = TestBed.createComponent(OrganisationDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

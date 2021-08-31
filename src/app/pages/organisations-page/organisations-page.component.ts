@@ -4,6 +4,10 @@ import { OrganisationOptionsService } from 'src/app/core/services/organisation-o
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { map } from 'rxjs/internal/operators/map';
+import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
+import { Observable } from 'rxjs';
 
 export interface Position {
     lat: number;
@@ -26,6 +30,7 @@ export class OrganisationsPageComponent implements OnInit {
     markers: Marker[] = [];
     center!: google.maps.LatLngLiteral;
     latlngbounds = new google.maps.LatLngBounds(undefined);
+    problemRows!:Observable<FormArray>;
 
     zoom = 13;
     @ViewChildren('addressSearch') addresstext!: QueryList<ElementRef>;
@@ -36,7 +41,8 @@ export class OrganisationsPageComponent implements OnInit {
         private organisationOptions: OrganisationOptionsService,
         private fb: FormBuilder,
         private changeDetector: ChangeDetectorRef,
-        private snackbar: SnackbarService) {}
+        private snackbar: SnackbarService,
+        private dropDown: DropdownService) {}
     
 
     get address() { return this.organisationForm.get('address') as FormArray; }
@@ -45,9 +51,8 @@ export class OrganisationsPageComponent implements OnInit {
         // tslint:disable-next-line: no-non-null-assertion
         this.organisationId = parseInt(this.organisationOptions.getOrganisationId()!,10);
 
-        this.organisationOptions.organisationDetail.subscribe(
-            (orgDetail) => {
-               
+        this.organisationOptions.organisationDetail.subscribe(orgDetail => {
+            
                 this.organisationForm = this.fb.group({
                     organisationId : this.organisationId,
                     logoUrl: orgDetail.logoUrl,
@@ -57,6 +62,25 @@ export class OrganisationsPageComponent implements OnInit {
                 });
 
             }
+        );
+
+        this.problemRows = this.dropDown.getAllProblems().pipe(
+            map(problems => problems.map(problem => ({...problem, Editable: false}))),
+            map(problems => {
+
+                const problemsGroup: FormGroup[] = problems.map(problem =>  this.fb.group({
+                    problemId: problem.ProblemId,
+                    problem: problem.Problem,
+                    isDeleted: problem.IsDeleted,
+                    sortOrder: problem.SortOrder
+                }));
+            
+                const problemFA =  new FormArray(problemsGroup);
+                problemFA.setValidators([UniqueValidators.uniqueBy('sortOrder')]);
+                problemFA.disable();
+                return problemFA;
+
+            })
         );
 
     }
