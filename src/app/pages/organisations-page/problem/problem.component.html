@@ -1,0 +1,88 @@
+<fieldset class="form-sub-group" >
+	<legend class="legend" i18n>Problem</legend>
+<div class="example-container mat-elevation-z8">
+	<div class="example-header">
+		<mat-form-field>
+			<input matInput #filter (keyup)="applyFilter($any($event.target).value)" placeholder="Filter">
+			<button mat-icon-button matSuffix aria-label="clear" *ngIf="filter.value" (click)="filter.value=''; applyFilter('');">
+        <mat-icon>close</mat-icon>
+      </button>
+		</mat-form-field>
+	</div>
+
+	<div class="add-button-container">
+		<button color="primary" mat-raised-button (click)="addData($event)">
+		  Add data
+		</button>
+	  </div>
+	<mat-table #table [dataSource]="dataSource">
+
+		<ng-container matColumnDef="Problem">
+			<mat-header-cell *matHeaderCellDef> Problem </mat-header-cell>
+			<mat-cell *matCellDef="let element" [formGroup]="element">
+				<mat-form-field floatLabel="never">
+					<input  matInput placeholder="Problem" formControlName="problem">
+
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="SortOrder">
+			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
+			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element"> 
+				<mat-form-field floatLabel="never" style="width:30%;">
+					<mat-select  formControlName="sortOrder" placeholder="Sort order">
+						<mat-option>None</mat-option>
+						<mat-option *ngFor="let x of dataSource | async; let i = index;" [value]="i+1">
+							{{ i + 1 }}
+						</mat-option>
+					</mat-select> 
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="IsDeleted" style="overflow: display;">
+			<mat-header-cell *matHeaderCellDef> Disabled </mat-header-cell>
+			<mat-cell *matCellDef="let element; let i = index;"  [formGroup]="element">
+				<mat-checkbox  formControlName="isDeleted" (change)='updateAble(i,$event)'> {{element.get('isDeleted')?.value ? 'disabled' : 'enabled' }}</mat-checkbox>
+			</mat-cell>
+		</ng-container>
+		
+		<ng-container matColumnDef="actions">
+			<mat-header-cell  *matHeaderCellDef > Actions </mat-header-cell>
+			<mat-cell *matCellDef="let element;let i = index" [formGroup]="element" >
+				<button
+				*ngIf="!element.disabled"
+				mat-mini-fab 
+				color="primary"
+				[disabled]="(dataSource | async)?.values?.length === 1"
+				(click)="saveRow(i,$event)">
+					<mat-icon>save</mat-icon>
+				</button>
+				<button
+				*ngIf="element.disabled"
+				mat-mini-fab 
+				color="primary"
+				[disabled]="(dataSource | async)?.values?.length === 1"
+				(click)="editRow(i,$event)">
+					<mat-icon>edit</mat-icon>
+				</button>
+				<button
+				style="margin-left: 1em;"
+				mat-mini-fab 
+				color="warn"
+				[disabled]="(dataSource | async)?.values?.length === 1"
+				(click)="removeData($event,i)"
+				>
+				<mat-icon>delete</mat-icon>
+			</button>
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+	</mat-table>
+</div>
+
+
+</fieldset>

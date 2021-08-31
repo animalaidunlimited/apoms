@@ -5,9 +5,11 @@ import { OrganisationsPageRoutingModule } from './organisations-page-routing.mod
 import { OrganisationsPageComponent } from './organisations-page.component';
 import { MaterialModule } from './../../material-module';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { ProblemComponent } from './problem/problem.component';
 @NgModule({
     declarations: [
-        OrganisationsPageComponent
+        OrganisationsPageComponent,
+        ProblemComponent
     ],
     imports: [
     

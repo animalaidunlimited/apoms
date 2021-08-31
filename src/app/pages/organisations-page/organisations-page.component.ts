@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LogoService } from 'src/app/core/services/logo/logo.service';
 import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
-import { FormArray, FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
@@ -51,14 +51,13 @@ export class OrganisationsPageComponent implements OnInit {
                 this.organisationForm = this.fb.group({
                     organisationId : this.organisationId,
                     logoUrl: orgDetail.logoUrl,
-                    address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([]),
-                    name: orgDetail.name
+                    address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([this.createItem()]),
+                    name: orgDetail.name,
+                    problems : this.fb.array([])
                 });
 
             }
         );
-        
-        
 
     }
 
@@ -247,15 +246,21 @@ export class OrganisationsPageComponent implements OnInit {
     }
 
     
-    onSubmit(organisationOptions:any){
-        console.log(organisationOptions);
-        this.organisationOptions.updateOrganisationDetail(organisationOptions).then(res => {
-            if(res){
-                this.snackbar.successSnackBar('Organisation details saved successfully', 'OK');
-            } else {
-                this.snackbar.errorSnackBar('Invalid action','OK');
-            }
-        });
+    onSubmit(organisationOptions:FormGroup){
+        const problems = organisationOptions.get('problems')?.value;
+        
+        if(organisationOptions.dirty || problems.length){
+
+            this.organisationOptions.updateOrganisationDetail({ ...organisationOptions?.value,  problems}).then(res => {
+                if(res){
+                    this.snackbar.successSnackBar('Organisation details saved successfully', 'OK');
+                } else {
+                    this.snackbar.errorSnackBar('Invalid action','OK');
+                }
+            });
+
+        }
+        
     }
 
 }

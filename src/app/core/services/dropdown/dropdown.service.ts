@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
-import { map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
@@ -45,7 +45,7 @@ export class DropdownService extends APIService {
     callOutcomes$!: Observable<CallOutcomeResponse[]>;
     callStaff$!: Observable<User[]>;
     callTypes$!: Observable<CallType[]>;
-    crueltyIspectors$!: Observable<User[]>;
+    crueltyInspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
@@ -327,6 +327,16 @@ export class DropdownService extends APIService {
                 }),
             );
         }
+        return this.problems$.pipe(
+            map(problems => problems.filter((problem:any) => problem.IsDeleted === 0))
+        );
+    }
+
+    getAllProblems():Observable<any[]>{
+        if (!this.problems$) {
+           this.getProblems();
+        } 
+        
         return this.problems$;
     }
 
@@ -414,15 +424,15 @@ export class DropdownService extends APIService {
     getCrueltyInspectors(): Observable<User[]> {
         const request = '/CrueltyStaff';
 
-        if (!this.crueltyIspectors$) {
-            this.crueltyIspectors$ = this.getObservable(request).pipe(
+        if (!this.crueltyInspectors$) {
+            this.crueltyInspectors$ = this.getObservable(request).pipe(
                 map((response: User[]) => {
                     return response;
                 }),
             );
         }
 
-        return this.crueltyIspectors$;
+        return this.crueltyInspectors$;
     }
 
     getDispatchers(): Observable<User[]> {

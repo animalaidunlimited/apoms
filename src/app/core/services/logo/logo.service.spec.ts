@@ -15,7 +15,7 @@ describe('LogoService', () => {
         HttpClientTestingModule,
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase),
-      ]
+      ],
     });
     service = TestBed.inject(LogoService);
   });
