@@ -24,7 +24,7 @@ export interface ActiveVehicleLocation {
 
 export interface VehicleLocationDetails {
     vehicleDetails: VehicleDetails;
-    locationHistory: VehicleLocation[];
+    vehicleLocation: LocationHistory;
 }
 
 export interface PolylineOptions {
@@ -35,4 +35,8 @@ export interface PolylineOptions {
 export interface LocationPathSegment {
     vehicleId: number;
     options: PolylineOptions[];
+}
+
+export interface LocationHistory {
+    locationHistory: VehicleLocation[];
 }
