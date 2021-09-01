@@ -273,9 +273,12 @@ export class OrganisationsPageComponent implements OnInit {
     onSubmit(organisationOptions:FormGroup){
         const problems = organisationOptions.get('problems')?.value;
         
-        if(organisationOptions.dirty || problems.length){
 
+       
+        if(organisationOptions.dirty || problems.length){
+ 
             this.organisationOptions.updateOrganisationDetail({ ...organisationOptions?.value,  problems}).then(res => {
+                console.log(res);
                 if(res){
                     this.snackbar.successSnackBar('Organisation details saved successfully', 'OK');
                 } else {

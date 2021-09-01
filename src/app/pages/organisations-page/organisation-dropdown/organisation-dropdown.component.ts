@@ -1,9 +1,9 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 export interface Element {
   ProblemId: number;
   Problem: string;
@@ -21,7 +21,6 @@ export interface Element {
 })
 export class OrganisationDropdownComponent implements OnInit {
   constructor(
-    private dropDown: DropdownService,
     private fb: FormBuilder
   ){}
 
@@ -30,7 +29,7 @@ export class OrganisationDropdownComponent implements OnInit {
   
   rows!:FormArray;
 
-  displayedColumns = ['Problem', 'SortOrder', 'IsDeleted', 'actions'];
+  displayedColumns = ['Problem', 'SortOrder', 'IsDeleted', 'actions', 'position',];
   dataSource = new BehaviorSubject<AbstractControl[]>([]);
   
   @ViewChild(MatTable) table!: MatTable<Element>;
@@ -119,6 +118,27 @@ export class OrganisationDropdownComponent implements OnInit {
       }
 
     }
+  }
+
+  dropTable(event: CdkDragDrop<BehaviorSubject<AbstractControl[]>, any>) {
+   
+    this.dataSource.subscribe(dataSource =>{
+
+      const prevIndex =  dataSource.findIndex((d) => d === event.item.data);
+      
+      dataSource[prevIndex].get('sortOrder')?.setValue(event.currentIndex + 1);
+      
+      dataSource[event.currentIndex].get('sortOrder')?.setValue(prevIndex + 1); 
+
+      moveItemInArray(dataSource, prevIndex, event.currentIndex);
+    
+      dataSource.sort((a,b) =>  a.get('sortOrder')?.value - b.get('sortOrder')?.value);
+
+      this.table.renderRows();
+
+      
+    });
+    
   }
 
 }
