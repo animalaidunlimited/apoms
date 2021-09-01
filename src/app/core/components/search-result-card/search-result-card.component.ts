@@ -52,7 +52,8 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number | undefined, CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string | undefined,  CallOutcomeId: number | undefined, 
+  CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
     maxWidth: '100vw',

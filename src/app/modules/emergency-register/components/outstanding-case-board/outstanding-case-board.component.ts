@@ -1,5 +1,7 @@
 
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Renderer2, ViewChild } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
@@ -120,6 +122,9 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   @ViewChildren('filterChips') filterChips!: MatChipList[];
 
+  @ViewChild('filterDiv') filterDiv!: ElementRef;
+
+
   constructor( 
     private outstandingCaseService: OutstandingCaseService,
     public rescueDialog: MatDialog,
@@ -129,9 +134,21 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
     private dropDown: DropdownService,
-    private outStandingCaseService: OutstandingCaseService) { }
+    private outStandingCaseService: OutstandingCaseService,
+    private renderer: Renderer2) { }
 
   ngOnInit(): void {
+
+    this.renderer.listen('window', 'click',(e:Event)=>{
+
+      // The below logic made the filter list disappear when click outside it.
+      if(!this.filterDiv.nativeElement.contains(e.target)) {
+        this.hideList= true;
+        this.showAmbulancePaths = false;
+        this.changeDetector.detectChanges();
+      }
+
+      });
 
     this.outStandingCaseService.initialise();
 

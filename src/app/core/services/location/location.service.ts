@@ -18,7 +18,7 @@ export class LocationService extends APIService {
 
   locationLogInterval: ReturnType<typeof setTimeout> | undefined;
 
-  locationList$!: BehaviorSubject<LocationPathSegment[]>
+  locationList$: BehaviorSubject<LocationPathSegment[]> = new BehaviorSubject<LocationPathSegment[]>([]);
   logLocation = new BehaviorSubject<boolean>(false);
 
   // TODO - Allow this to be changed in settings.
@@ -49,7 +49,7 @@ export class LocationService extends APIService {
 
 
     // Uncomment the below in order to start sending location updates
-    // this.getActiveVehicleLocations();
+    this.getActiveVehicleLocations();
 
     this.logLocation.subscribe(logLocation => {
 
@@ -66,14 +66,18 @@ export class LocationService extends APIService {
 
   receiveVehicleLocation(locationMessage: ActiveVehicleLocation){
 
+    console.log(locationMessage);
+
     const currentLocations = this.ambulanceLocations$.value;
 
     const updated = currentLocations.map(vehicle => {
 
       if(vehicle.vehicleDetails.vehicleId === locationMessage.vehicleDetails.vehicleId){
+
         vehicle.vehicleLocation.latLng.lat = locationMessage.vehicleLocation.latLng.lat;
         vehicle.vehicleLocation.latLng.lng = locationMessage.vehicleLocation.latLng.lat;
         vehicle.vehicleStaff = locationMessage.vehicleStaff;
+
       }
 
 
@@ -178,11 +182,19 @@ export class LocationService extends APIService {
 
     this.getVehicleLocation(vehicleId).subscribe(locationHistory => {
 
-      const currentHistory = this.locationList$.value;
+      console.log(locationHistory);
 
-      const lines = this.generatePolylines(vehicleId, locationHistory.locationHistory)
+      const currentHistory = this.locationList$?.value ? this.locationList$.value : [];
+
+      console.log(currentHistory)
+
+      const lines = this.generatePolylines(vehicleId, locationHistory.vehicleLocation.locationHistory);
+
+      console.log(lines);
 
       currentHistory.push(lines);
+
+      console.log(currentHistory);
 
       this.locationList$.next(currentHistory);
 

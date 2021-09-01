@@ -41,11 +41,11 @@
 
     <button mat-mini-fab color="primary" *ngIf="!hideMap" [color]="showAmbulancePaths ? filterBtnColor : 'primary'"
     (click)="showAmbulancePaths = !showAmbulancePaths">
-      <img src="assets/icons/ambulance_round.svg" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
+      <img #toogleButton src="assets/icons/ambulance_round.svg" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
     </button>
 
     <button mat-mini-fab [color]="filterKeysArray.length > 0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
-      <mat-icon>filter_alt</mat-icon>
+      <mat-icon #filterListToggleButton>filter_alt</mat-icon>
     </button>
 
 
@@ -62,7 +62,7 @@
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
   <!-- This is the card that shows the ambulance and lets you show their paths -->
-  <div class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
+  <div #toogleButtonDiv  class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
 
     <div class="filter-card">
       <div class="filter-header">

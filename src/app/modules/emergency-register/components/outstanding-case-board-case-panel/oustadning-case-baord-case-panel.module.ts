@@ -11,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     CommonModule,
     MaterialModule,
-    BrowserAnimationsModule,
     SharedPipesModule
   ],
   exports:[OutstandingCaseBoardCasePanelComponent]
