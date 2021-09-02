@@ -293,7 +293,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     async saveForm() {
-
+       
         this.loading = true;
 
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
