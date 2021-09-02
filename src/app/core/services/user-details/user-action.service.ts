@@ -8,7 +8,7 @@ import { APIService } from '../http/api.service';
 export class UserActionService extends APIService{
   endpoint = 'UserAdmin';
   constructor(public http: HttpClient) {
-    super(http);
+  super(http);
   }
 
   public async insertUser(userDetails:any): Promise<any> {

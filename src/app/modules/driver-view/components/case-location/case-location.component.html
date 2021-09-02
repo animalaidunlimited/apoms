@@ -1,0 +1,76 @@
+<div class="mapDiv" #caseMap>
+
+    <google-map
+        height = '100vh'
+        width = '100vw'
+        [center]="center"
+        [zoom]="zoom">
+
+        <map-marker
+        *ngFor="let marker of casesList"
+        [position]="marker.latLngLiteral"
+        [options]="{icon:
+            (
+                marker.ambulanceAction == 'Release'? (
+                    
+                    hasLargeAninmal(marker.patients)?
+                    'assets/icons/large_animal_release_purple.png'
+                    :
+                    'assets/icons/small_animal_release_purple.png'
+                )
+                :
+                (
+                    marker.ambulanceAction == 'Rescue' ? (
+                    hasLargeAninmal(marker.patients) ?
+                            (marker.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
+                            :
+                            marker.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                            :
+                            marker.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                            :
+                            'assets/icons/large_animal_grey.png')
+                        :
+                            (marker.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                            :
+                            marker.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                            :
+                            marker.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                            :
+                            'assets/icons/small_animal_grey.png')
+                    ) :
+
+                    (
+                        marker.ambulanceAction == 'StreetTreat'? (
+                        
+                            hasLargeAninmal(marker.patients)?
+                            'assets/icons/large_animal_ST.png'
+                            :
+                            'assets/icons/small_animal_ST.png'
+                        ) :
+
+                        (
+                            hasLargeAninmal(marker.patients)?
+                            'assets/icons/large_animal_STRelease.png'
+                            :
+                            'assets/icons/small_animal_STRelease.png'
+                        )
+                    )
+                )
+
+            )
+
+        
+}">
+    </map-marker>
+    </google-map>
+
+</div>
+
+<mat-toolbar-row class="horizontalTab">
+
+    <div (click)='changeRoute()' fxLayout='column' class="backIconDiv">
+        <mat-icon aria-label="Complete" style="font-size: 30px;">arrow_back</mat-icon>
+        <p class="iconText">Back</p>
+    </div>
+     
+</mat-toolbar-row>

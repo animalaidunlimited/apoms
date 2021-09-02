@@ -44,8 +44,8 @@
                 <mat-form-field>
                     <mat-label>Surgeon</mat-label>
                     <mat-select formControlName="SurgeonId" [errorStateMatcher]="errorMatcher"  required>
-                            <mat-option *ngFor="let surgeon of surgeons" [value]="surgeon.UserId" >
-                            {{surgeon.FirstName}}
+                            <mat-option *ngFor="let surgeon of surgeons" [value]="surgeon.userId" >
+                            {{surgeon.firstName}}
                             </mat-option>
                     </mat-select>
                 </mat-form-field>

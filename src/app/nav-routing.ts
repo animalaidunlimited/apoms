@@ -2,6 +2,7 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
+import { CaseLocationComponent } from './modules/driver-view/components/case-location/case-location.component';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -75,6 +76,36 @@ export const navRoutes: NavRoute[] = [
             import('./modules/streettreat/pages/teams-page/teams-page.module')
             .then(m => m.TeamsPageModule)
     },
+
+    {
+        data: { title: 'Vehicle List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'vehicle-list',
+        loadChildren: () =>
+            import('./modules/driver-view/pages/vehicle-list-page/vehicle-list-page.module')
+            .then(m => m.VehicleListPageModule)
+    },
+
+    {
+        data: { title: 'Driver View', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        path: 'driver-view',
+        loadChildren: () =>
+            import('./modules/driver-view/components/driver-view/driver-view.module')
+            .then(m => m.DriverViewModule)
+    },
+
+    {
+        data: { title: 'Vehicle Staff Assigner', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Vehicles',
+        path: 'vehicle-staff-assigner',
+        loadChildren: () =>
+            import('./modules/driver-view/components/vehicle-staff-assigner/vehicle-staff-assigner.module')
+            .then(m => m.VehicleStaffAssignerModule)
+    },
+
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
@@ -119,9 +150,15 @@ export const navRoutes: NavRoute[] = [
         loadChildren: () =>
             import('./modules/print-templates/print-templates-page.module')
             .then(m => m.PrintTemplatesPageModule)
+    },
+    {
+        path: 'case-location',
+        loadChildren: () =>
+            import('./modules/driver-view/components/case-location/case-location.module')
+            .then(m => m.CaseLocationModule)
     }
 
-                ];
+];
 
 @Injectable({
     providedIn: 'root',
@@ -140,17 +177,21 @@ export class NavRouteService {
         if(routes){
 
             this.navRoute = routes;
+
         }
 
         if(!this.navRoute.children){
+
             throw new Error ('No routes detected');
+            
         }
+
         this.navRoute.children?.forEach(routeVal=> {
 
             this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
 
                 if(routeVal.data && val) {
-                    routeVal.data.componentPermissionLevel.next(val);
+                    routeVal.data.componentPermissionLevel?.next(val);
                 }
                 this.navRoutes.next(this.getNavRouteList() || []);
             });
@@ -161,7 +202,7 @@ export class NavRouteService {
     }
 
     getNavRouteList() {
-       
+
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 

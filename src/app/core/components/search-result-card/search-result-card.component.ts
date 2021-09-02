@@ -1,4 +1,3 @@
-import { EmergencyCase } from './../../models/emergency-record';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchResponse } from '../../models/responses';
 import { MatDialog } from '@angular/material/dialog';
@@ -53,7 +52,8 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number | undefined, CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string | undefined,  CallOutcomeId: number | undefined, 
+  CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
     maxWidth: '100vw',

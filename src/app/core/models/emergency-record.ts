@@ -5,7 +5,7 @@ export interface EmergencyDetails {
     emergencyCaseId: number;
     guId:string;
     emergencyNumber: number;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     dispatcher: number;
     code: EmergencyCode;
     updateTime: string | Date;
@@ -24,8 +24,8 @@ export interface CallerDetails {
 }
 
 export interface CallOutcome {
-    callOutcome: CallOutcomeResponse;
-    sameAsNumber: number;
+    CallOutcome: CallOutcomeResponse;
+    sameAsNumber: number | null;
 }
 
 export interface LocationDetails {

@@ -43,6 +43,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
 
     @Input() recordForm!: FormGroup;
+    @Input() incomingPatientArray!: Patient[];
+    @Input() isDisplayOnly!: boolean;
 
     @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
@@ -119,7 +121,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.patients = this.recordForm.get('patients') as FormArray;
         
 
-        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;
+        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -127,7 +129,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         .subscribe(newValue => this.emergencyCaseId = newValue);
 
 
-        this.emergencyCaseId
+        this.emergencyCaseId || this.incomingPatientArray.length > 0
         ? this.loadPatientArray(this.emergencyCaseId)
         : this.initPatientArray();
 
@@ -303,35 +305,65 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         admissionTime?.updateValueAndValidity({ emitEvent: false });
     }
 
-    loadPatientArray(emergencyCaseId: number) {
- 
-        this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        // tslint:disable-next-line: deprecation
-        .subscribe((patients: Patients) => {
+    loadPatientArray(emergencyCaseId: number | undefined) {
+
+
+        if(this.incomingPatientArray?.length > 0) {
+
             
-            patients.patients.forEach(patient => {
-                // We get a 0 or 1 from the database, so need to convert to a boolean.
+            this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
                 /* 
                 * loadPatientArray running multiple times on ngOnInit 
                 * animal-selection HTML tag will instantiate ng on init 
-                * Rstrict length of patients array to length of incoming patients 
+                * Restrict length of patients array to length of incoming patients 
                 */
-                if(this.patients.length < patients.patients.length )
+                if(this.patients.length < this.incomingPatientArray.length )
                 {
                     this.patients.push(newPatient);
                 }
             });
 
-            this.setChildOutcomeAsParentPatient(this.patients);
             
-        
-        },
-            err => console.error(err),
-        );
+
+            this.setChildOutcomeAsParentPatient(this.patients);
+
+
+
+        }
+        else if(emergencyCaseId) {
+
+            
+            this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            // tslint:disable-next-line: deprecation
+            .subscribe((patients: Patients) => {
+                
+                patients.patients.forEach(patient => {
+                    // We get a 0 or 1 from the database, so need to convert to a boolean.
+                    patient.deleted = !!+patient.deleted;
+    
+                    const newPatient = this.populatePatient(true, patient);
+                    /* 
+                    * loadPatientArray running multiple times on ngOnInit 
+                    * animal-selection HTML tag will instantiate ng on init 
+                    * Rstrict length of patients array to length of incoming patients 
+                    */
+                    if(this.patients.length < patients.patients.length )
+                    {
+                        this.patients.push(newPatient);
+                    }
+                });
+    
+                this.setChildOutcomeAsParentPatient(this.patients);
+                
+            
+            },
+                err => console.error(err),
+            );   
+        }
     }
 
 

@@ -7,55 +7,66 @@
 
     <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center" [ngStyle]="{'margin-right ' : rescueDetails.get('selfAdmission')?.value ? '20px': '0px' }">
 
-            <mat-form-field>
-                <mat-label>Rescuer 1</mat-label>
-                    <mat-select tabindex="12" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
-                    <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
-                        {{rescuer.FirstName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        <mat-form-field>
+            <mat-label>Code</mat-label>
+            <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
+                [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
-            <mat-form-field>
-                    <mat-label>Rescuer 2</mat-label>
-                        <mat-select tabindex="13" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
-                            <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
-                            {{rescuer.FirstName}}
+                <!-- -->
+                <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
+
+                    <mat-icon [ngClass]="{
+                        'dot-grey' : code?.value?.EmergencyCodeId == 4,
+                        'dot-red' : code?.value?.EmergencyCodeId == 1,
+                        'dot-green' : code?.value?.EmergencyCodeId == 2,
+                        'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
+                        matSuffix>fiber_manual_record</mat-icon>
+                    {{code?.value?.EmergencyCode}}
+                </mat-select-trigger>
+
+                <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
+
+                    <mat-icon [ngClass]="{
+                            'dot-grey' : code.EmergencyCodeId == 4,
+                            'dot-red' : code.EmergencyCodeId == 1,
+                            'dot-green' : code.EmergencyCodeId == 2,
+                            'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
+                    {{code.EmergencyCode}}
+
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Assigned vehicle</mat-label>
+                <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+                <mat-option>N/A</mat-option>
+                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+                    {{vehicle.vehicleNumber}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div formArrayName="rescuers" *ngFor="let rescuer of rescuerArray?.controls; let i = index;">
+
+            <div [formGroupName]="i">
+
+                <mat-form-field>
+                    <mat-label>Rescuer {{i + 1}}</mat-label>
+                    <mat-select tabindex="12" formControlName="rescuerId" [errorStateMatcher]="errorMatcher">
+                        <mat-option>N/A</mat-option>
+                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.userId">
+                            {{rescuer.firstName}}
                         </mat-option>
                     </mat-select>
-            </mat-form-field>
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Code</mat-label>
-                <mat-select #emergencyCode tabindex="14" [formControl]="code" [errorStateMatcher]="errorMatcher"
-                    [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
-                    <!-- -->
-                    <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
+            </div>
 
-                        <mat-icon [ngClass]="{
-                            'dot-grey' : code?.value?.EmergencyCodeId == 4,
-                            'dot-red' : code?.value?.EmergencyCodeId == 1,
-                            'dot-green' : code?.value?.EmergencyCodeId == 2,
-                            'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
-                            matSuffix>fiber_manual_record</mat-icon>
-                        {{code?.value?.EmergencyCode}}
-                    </mat-select-trigger>
 
-                    <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
 
-                        <mat-icon [ngClass]="{
-                                'dot-grey' : code.EmergencyCodeId == 4,
-                                'dot-red' : code.EmergencyCodeId == 1,
-                                'dot-green' : code.EmergencyCodeId == 2,
-                                'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
-                        {{code.EmergencyCode}}
-
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        </div>
 
             <mat-checkbox  formControlName="selfAdmission">Self admission</mat-checkbox>  
 
@@ -64,7 +75,18 @@
 
     <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
+
         <ng-container *ngIf="!rescueDetails.get('selfAdmission')?.value">
+
+
+        <mat-form-field>
+            <mat-label>Ambulance assigned time</mat-label>
+            <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
+            name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
+            placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
+
+        </mat-form-field>
+
 
             <mat-form-field>
                 <input tabindex="15" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"

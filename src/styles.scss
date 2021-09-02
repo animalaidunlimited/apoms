@@ -1,9 +1,15 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-body {
+@media screen and (min-width:600px) {
+
+  body {
     margin: 0 !important;
     font-family: Roboto, Arial, sans-serif;
+  }
+
 }
+
+
 
 $colour-border:#a9abad;
 $primary-font-colour: #626262;
@@ -145,9 +151,17 @@ mat-radio-button{
     max-width: 120px;
     font-size: 13px;
   }
-}
+} 
 
 @media(max-width: 600px) {
+
+  // .mat-dialog-container {
+  //   position: absolute;
+  //   left: 0;
+  //   min-width: 100%;
+  //   height: fit-content !important;
+  //   top: calc(100vh/3.5);
+  // }
 
   .mat-cell {
     font-size: 13px;
@@ -190,11 +204,13 @@ mat-radio-button{
   }
 
   body {
-    margin: 0 !important;
+    // margin: 0 !important;
     font-family: Roboto, Arial, sans-serif;
     font-size: 13px;
+    // margin-top: calc(100vh/13);
+    margin-left: 0;
 
-    & .body:nth-child(1) {
+    .body:nth-child(1) {
       font-size: 13px;
     }
   }
@@ -248,4 +264,18 @@ mat-radio-button{
     max-width: none !important;
     overflow: visible;
   }
+
+  .outstanding-case-board-vehicle-map .mat-dialog-container{
+    min-width: 90vw;
+  }
+  
+}
+
+
+/*
+* Dialogs
+*/
+
+.outstanding-case-board-vehicle-map .mat-dialog-container{
+  padding: 0;
 }
