@@ -30,7 +30,7 @@ export class LocationService extends APIService {
   ];
 
   emptyOptions: PolylineOptions[] = [{
-    strokeColor: "",
+    strokeColor: '',
     path: [],
   }];
 
@@ -65,8 +65,6 @@ export class LocationService extends APIService {
   }
 
   receiveVehicleLocation(locationMessage: ActiveVehicleLocation){
-
-    console.log(locationMessage);
 
     const currentLocations = this.ambulanceLocations$.value;
 
@@ -182,19 +180,11 @@ export class LocationService extends APIService {
 
     this.getVehicleLocation(vehicleId).subscribe(locationHistory => {
 
-      console.log(locationHistory);
-
       const currentHistory = this.locationList$?.value ? this.locationList$.value : [];
-
-      console.log(currentHistory)
 
       const lines = this.generatePolylines(vehicleId, locationHistory.vehicleLocation.locationHistory);
 
-      console.log(lines);
-
       currentHistory.push(lines);
-
-      console.log(currentHistory);
 
       this.locationList$.next(currentHistory);
 
@@ -224,7 +214,7 @@ export class LocationService extends APIService {
       const curr:PolylineOptions = {
         strokeColor: this.getColourForSpeed(locations[i].speed),
         path: [locations[i].latLng, locations[i + 1].latLng]
-      }
+      };
 
       returnArray.options.push(curr);
 
