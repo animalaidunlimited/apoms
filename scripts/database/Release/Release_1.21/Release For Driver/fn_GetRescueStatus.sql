@@ -1,7 +1,5 @@
 DELIMITER !!
-
 DROP FUNCTION IF EXISTS AAU.fn_GetRescueStatus!!
-
 DELIMITER $$
 CREATE FUNCTION AAU.fn_GetRescueStatus(
 	ReleaseDetailsId INT,
@@ -28,12 +26,11 @@ BEGIN
             CallOutcomeId IS NULL AND
             ReleaseDetailsId IS NULL AND
             RequestedUser IS NULL AND
-            RequestedDate IS NULL AND
-            AssignedReleaseVehicleId IS NULL
+            RequestedDate IS NULL
             ) 
             OR
             (
-            AssignedRescueVehicleId IS NULL AND
+            AssignedRescueVehicleId IS NOT NULL AND
             CallOutcomeId IS NOT NULL AND
 			ReleaseDetailsId IS NOT NULL AND
             RequestedUser IS NOT NULL AND
@@ -47,20 +44,8 @@ BEGIN
             AssignedRescueVehicleId IS NOT NULL AND
 			AmbulanceArrivalTime IS NULL AND
             RescueTime IS NULL AND
-            ReleaseDetailsId IS NULL 
+            ReleaseDetailsId IS NULL
             ) 
-            OR
-            (
-            AssignedRescueVehicleId IS NULL AND
-            RescueTime IS NULL AND
-            AdmissionTime IS NULL AND
-            ReleaseDetailsId IS NULL AND
-            RequestedDate IS NULL AND
-            RequestedUser IS NULL AND 
-            AssignedReleaseVehicleId IS NOT NULL AND
-            PickupDate IS NULL
-            -- EndDate IS NULL
-            )
             OR
             (
             AssignedRescueVehicleId IS NOT NULL AND
@@ -69,7 +54,7 @@ BEGIN
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
             RequestedUser IS NOT NULL AND 
-            AssignedReleaseVehicleId IS NULL AND
+            AssignedReleaseVehicleId IS NOT NULL AND
             PickupDate IS NULL
             -- EndDate IS NULL
             )
@@ -148,3 +133,4 @@ BEGIN
 	-- return the rescue status
 	RETURN (rescueReleaseStatus);
 END$$
+DELIMITER ;

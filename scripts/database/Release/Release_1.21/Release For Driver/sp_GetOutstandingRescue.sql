@@ -3,6 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
 
 DELIMITER $$
+
 CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
@@ -175,4 +176,4 @@ INNER JOIN (
 ) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId ;
 
 END$$
-
+DELIMITER ;
