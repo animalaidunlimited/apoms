@@ -25,6 +25,9 @@ import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
+import { VehicleType, Vehicle } from '../../models/driver-view';
+
+
 
 
 
@@ -36,6 +39,7 @@ export interface AnimalTypeResponse {
     providedIn: 'root',
 })
 export class DropdownService extends APIService {
+    [x: string]: any;
     endpoint = 'Dropdown';
 
 
@@ -71,6 +75,8 @@ export class DropdownService extends APIService {
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
     treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
+    vehicleTypes$!: Observable<VehicleType[]>;
+    vehicleList$!: Observable<Vehicle[]>
 
 
 
@@ -441,14 +447,18 @@ export class DropdownService extends APIService {
 
     getCallOutcomes(): Observable<CallOutcomeResponse[]> {
         const request = '/CallOutcomes';
-
+        
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
                 map((response: CallOutcomeResponse[]) => {
-                    return response.sort((a,b) => a.SortOrder - b.SortOrder);
+                    return response.sort((a,b) => (a?.SortOrder || 0) - (b?.SortOrder || 0));
                 }),
             );
         }
+        else {
+           
+        }
+       
         return this.callOutcomes$;
     }
 
@@ -699,6 +709,42 @@ export class DropdownService extends APIService {
 
   return this.treatmentAreas$;
 
+}
+
+getVehicleType(): Observable<VehicleType[]> {
+
+    const request = '/GetVehicleTypes';
+
+    if(!this.vehicleTypes$) {
+        this.vehicleTypes$ = this.getObservable(request).pipe(
+            map((response: VehicleType[])=>{
+                return response;
+            })
+        );
+    }
+
+return this.vehicleTypes$;
+
+}
+
+getVehicleListDropdown(): Observable<Vehicle[]> {
+
+    const request = '/GetVehicleList';
+
+    if(!this.vehicleList$) {
+        this.vehicleList$ = this.getObservable(request).pipe(
+            map((response: Vehicle[])=>{
+                return response;
+            })
+        );
+    }
+
+return this.vehicleList$;
+
+}
+
+getValueFromDynamicFunctionName(functionName: any) {
+    return this[functionName]();
 }
 
 }

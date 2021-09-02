@@ -9,6 +9,7 @@ import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 
 export interface Release {
   id: number;
@@ -53,13 +54,15 @@ export class ReleaseDetailsComponent implements OnInit {
 
   isInstructionRequired!: boolean;
 
-  isStreetTreatRelease!: boolean;
+  isStreetTreat!: boolean;
   isCommented = false;
 
   recordForm: FormGroup = new FormGroup({});
 
   releasers$!:Observable<User[]>;
   specificStaff!: boolean;
+
+  disableStreetTreat = false;
 
   releaseManagers: ReleaseManager[] = [];
 
@@ -88,7 +91,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.isInstructionRequired= false;
 
-    this.isStreetTreatRelease = false;
+    this.isStreetTreat = false;
 
     // Record Form
     this.recordForm = this.fb.group({
@@ -98,22 +101,31 @@ export class ReleaseDetailsComponent implements OnInit {
       }),
       releaseRequestForm: this.fb.group({
         requestedUser: [this.username, Validators.required],
-        requestedDate: [(new Date()).toISOString().substring(0,10), Validators.required]
+        requestedDate: [getCurrentTimeString(), Validators.required]
       }),
       patientId: this.patientId,
       complainerNotes: [''],
       complainerInformed:[],
       Releaser1: [],
-      Releaser2: []
+      Releaser2: [],
+      isAStreetTreatRelease: []
+
+    });
+
+    this.recordForm.get('isAStreetTreatRelease')?.valueChanges.subscribe(value=> {
+      if(value) {
+        this.streetTreatReleaseTrue();
+        this.disableStreetTreat = true;
+      }
+      else {
+        this.disableStreetTreat = false;
+      }
     });
 
     this.initReleaseDetailsForm();
 
-    
-    this.recordForm.statusChanges.subscribe(status => {
-      
-      setTimeout(() => this.formValidity.next(this.recordForm.status === 'VALID' ? false : true),1);
-    
+    this.recordForm.valueChanges.subscribe(() => {
+      this.formValidity.emit(this.recordForm.invalid);
     });
 
   }
@@ -130,7 +142,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
-        
+
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -180,12 +192,12 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   streetTreatReleaseTrue() {
-    this.isStreetTreatRelease = true;
+    this.isStreetTreat = true;
     this.changeDetector.detectChanges();
   }
 
   streetTreatReleaseFalse() {
-    this.isStreetTreatRelease = false;
+    this.isStreetTreat = false;
     this.changeDetector.detectChanges();
   }
 

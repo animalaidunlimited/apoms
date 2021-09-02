@@ -59,10 +59,11 @@ export class AppComponent implements OnInit{
                         this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
                     }
 
-                 });
+                    if(event.data?.vehicleId){
 
-            }
-            else {
+                    }
+
+                 });
 
             }
 

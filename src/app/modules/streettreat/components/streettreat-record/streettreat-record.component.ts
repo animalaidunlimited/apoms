@@ -12,6 +12,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, take, takeUntil } from 'rxjs/operators';
+import { Vehicle } from 'src/app/core/models/driver-view';
 
 
 
@@ -21,6 +22,7 @@ import { map, take, takeUntil } from 'rxjs/operators';
   styleUrls: ['./streettreat-record.component.scss']
 })
 export class StreetTreatRecordComponent implements OnInit {
+
 
   permissionType!: number[];
 
@@ -92,7 +94,8 @@ export class StreetTreatRecordComponent implements OnInit {
           currentLocation: this.inputStreetTreatCase.currentLocation
         }
       ),
-      patientId:[this.patientId,Validators.required],
+      patientId:[this.patientId,Validators.required]
+
     });
 
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
@@ -102,7 +105,7 @@ export class StreetTreatRecordComponent implements OnInit {
         if (media.length === 0) {
           return;
         }
-		  
+
         this.profileUrl = media.find(item => Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
         this.changeDetector.detectChanges();
       });
@@ -142,7 +145,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
 
-    
+
 
   }
 

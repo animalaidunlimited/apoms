@@ -35,8 +35,8 @@
     <mat-form-field class='dispatcherWrapper'>
         <mat-label>Dispatcher</mat-label>
         <mat-select tabindex="11" #dispatcher formControlName="dispatcher" [errorStateMatcher]="errorMatcher">
-            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.UserId">
-                {{dispatcher.FirstName}}
+            <mat-option *ngFor="let dispatcher of dispatchers$ | async" [value]="dispatcher.userId">
+                {{dispatcher.firstName}}
             </mat-option>
         </mat-select>
     </mat-form-field >

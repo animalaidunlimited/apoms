@@ -9,6 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -17,7 +18,7 @@ interface EmergencyCaseIndentifiers {
 
 
 @Component({
-    
+
     // tslint:disable-next-line: component-selector
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
@@ -31,15 +32,17 @@ export class TabBarComponent implements OnInit, OnDestroy {
     selected = new FormControl(0);
 
     tabs = [
-        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' , GUID: new BehaviorSubject<string>('') },
+        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
         { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
     ];
 
-    constructor(private cdr: ChangeDetectorRef,
+    constructor(
+        private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
         private navigationService:NavigationService,
-        private caseService: CaseService) {}
+        private caseService: CaseService
+    ) {}
 
     ngOnInit() {
         this.selected.setValue(1);
@@ -81,7 +84,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
-        const guIdVal = new BehaviorSubject<string>(this.caseService.generateUUID());
+        const guIdVal = new BehaviorSubject<string>(generateUUID());
 
         this.tabs.push({
             id: this.tabs.length,
@@ -141,7 +144,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     openShortcutsDialog($event:Event, tabIndex:number){
         $event.preventDefault();
-        
+
         const dialog = this.dialog.open(KeyboardShortcutsComponent, {
             minWidth: '50%'
         });

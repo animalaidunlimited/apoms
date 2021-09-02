@@ -34,7 +34,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   errorMatcher = new CrossFieldErrorMatcher();
 
   sameAs:boolean | undefined;
-  sameAsId:number | undefined;
+  sameAsId:number | null |undefined;
 
   callOutcome:FormGroup = new FormGroup({});
 

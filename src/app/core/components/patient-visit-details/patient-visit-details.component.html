@@ -1,5 +1,24 @@
 <form [formGroup]="streatTreatForm" >
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
+
+		<mat-form-field appearance="fill">
+			<mat-label>Assign Vehicle</mat-label>
+				<mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+				<mat-option>N/A</mat-option>
+					<mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+					{{vehicle.vehicleNumber}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+			<mat-label>Assigned Date</mat-label>
+			<input formControlName="ambulanceAssignmentTime" type="datetime-local"
+			name="ambulanceAssignmentTime"
+			placeholder="Ambulance assignment time" matInput [errorStateMatcher]="errorMatcher">
+
+		</mat-form-field>
+
 		<mat-form-field appearance="fill">
 			<mat-label>Case priority</mat-label>
 			<mat-select placeholder="Case priority" formControlName="casePriority" [errorStateMatcher]="errorMatcher">
@@ -9,14 +28,14 @@
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field appearance="fill">
+		<!-- <mat-form-field appearance="fill">
 			<mat-label>Team</mat-label>
 			<mat-select formControlName='teamId' [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let name of (teamListData$ | async)" [value]="name.TeamId" >
 					{{name.TeamName}}
 					</mat-option>
 			</mat-select>
-		</mat-form-field>
+		</mat-form-field> -->
 
 		<mat-form-field appearance="fill">
 			<mat-label>Main problem</mat-label>

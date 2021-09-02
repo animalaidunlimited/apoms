@@ -1,0 +1,20 @@
+<div (click)="closeLocationDialog()" class="closeIconDiv">
+    <mat-icon>close</mat-icon>
+</div>
+
+<google-map [zoom]="zoom"
+    [center]="center"
+    height="174px"
+    width="100%"
+    id="googlemap">
+        
+    <map-marker
+        *ngFor="let marker of markers"
+        [position]="marker.position"
+        [label]="marker.label"
+        [options]="marker.options">
+    </map-marker>
+
+</google-map>
+
+

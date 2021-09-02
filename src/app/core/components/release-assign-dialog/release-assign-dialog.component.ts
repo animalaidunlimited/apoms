@@ -15,6 +15,7 @@ interface IncomingCaseDetails {
 export class ReleaseAssignDialogComponent implements OnInit {
 
   formData!: ReleaseDetails;
+  formInvalid = false;
 
   constructor(public dialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
@@ -23,16 +24,21 @@ export class ReleaseAssignDialogComponent implements OnInit {
   ngOnInit() {
 
     this.formData = {
-      releaseId: this.data.caseDetails.releaseId,
+      releaseId: this.data.caseDetails.releaseDetailsId,
       emergencyCaseId: this.data.caseDetails.emergencyCaseId,
       releaseType: this.data.caseDetails.releaseType,
-      Releaser1: this.data.caseDetails.staff1,
-      Releaser2: this.data.caseDetails.staff2,
-      pickupDate: this.data.caseDetails.pickupDate,
-      releaseBeginDate: this.data.caseDetails.releaseBeginDate,
-      releaseEndDate: this.data.caseDetails.releaseEndDate
+      releaseAmbulanceId: this.data.caseDetails.releaseAmbulanceId as number,
+      ambulanceAssignmentTime: this.data.caseDetails.ambulanceAssignmentTime,
+      pickupDate: this.data.caseDetails.releasePickupDate as string,
+      releaseBeginDate: this.data.caseDetails.releaseBeginDate as string,
+      releaseEndDate: this.data.caseDetails.releaseEndDate as string,
+      assignedVehicleId: 0 as number
     };
 
+  }
+
+  setFormValidity($event: boolean){
+    this.formInvalid = $event;
   }
 
   onSaveResponse(result:any){

@@ -3,14 +3,16 @@ import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormG
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeLast, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
+import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
@@ -29,6 +31,7 @@ interface Problem {
 export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   @Input() patientIndex!: number;
+  @Input() isDisplayOnly!: boolean;
   @Input() patientFormInput!: any;
   @Input()
   set callOutcome(callOutcome: string) { this._callOutcome = callOutcome; }
@@ -54,6 +57,8 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   currentPatientSpecies: string | undefined;
   errorMatcher = new CrossFieldErrorMatcher();
   exclusions: Exclusions[] = [] as Exclusions[];
+
+  mediaData!:BehaviorSubject<MediaItem[]>;
 
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
@@ -89,15 +94,19 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     private dialog: MatDialog,
     private printService: PrintTemplateService,
     private userOptions: UserOptionsService,
+    private patientService: PatientService
   ) {
 
 
    }
 
   ngOnInit(): void {
-
     
     this.patientForm = this.patientFormInput as FormGroup;
+
+    if(this.patientForm?.get('patientId')?.value) {
+      this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
+    }
     
     this.exclusions = this.dropdown.getExclusions();
 
