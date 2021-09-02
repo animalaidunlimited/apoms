@@ -24,7 +24,8 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_AdmissionTime DATETIME,
                                     IN prm_UpdateTime DATETIME,
 									IN prm_AssignedAmbulanceId INT,
-                                    IN prm_AmbulanceAssignmentTime DATETIME)
+                                    IN prm_AmbulanceAssignmentTime DATETIME,
+                                    IN prm_SelfAdmission BOOLEAN)
 BEGIN
 
 /*
@@ -87,8 +88,8 @@ INSERT INTO AAU.EmergencyCase
 	Location,
 	Latitude,
 	Longitude,
-	Rescuer1Id,
-	Rescuer2Id,
+	-- Rescuer1Id,
+	-- Rescuer2Id,
 	AmbulanceArrivalTime,
 	RescueTime,
 	AdmissionTime,
@@ -96,7 +97,8 @@ INSERT INTO AAU.EmergencyCase
     Comments,
     GUID,
     AssignedVehicleId,
-    AmbulanceAssignmentTime
+    AmbulanceAssignmentTime,
+	selfAdmission
 )
 VALUES
 (
@@ -111,8 +113,8 @@ VALUES
 	prm_Location,
 	prm_Latitude,
 	prm_Longitude,
-	prm_Rescuer1Id,
-	prm_Rescuer2Id,
+	-- prm_Rescuer1Id,
+	-- prm_Rescuer2Id,
 	prm_AmbulanceArrivalTime,
 	prm_RescueTime,
 	prm_AdmissionTime,
@@ -120,7 +122,8 @@ VALUES
     prm_Comments,
     prm_GUID,
     prm_AssignedAmbulanceId,
-    prm_AmbulanceAssignmentTime
+    prm_AmbulanceAssignmentTime,
+    prm_SelfAdmission 
 );
 
 -- UNLOCK TABLES;
