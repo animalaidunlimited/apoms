@@ -258,7 +258,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             if (Date.parse(this.rescueTime?.value) < Date.parse(this.callDateTime?.value)) {
                 this.rescueTime?.setErrors({ rescueBeforeCallDatetime: true });
-            } else {
+            } else if(this.rescueDetails.get('selfAdmission')?.value !== true){
                 this.rescueTime?.setValidators([Validators.required]);
                 this.rescueTime?.updateValueAndValidity({ emitEvent: false });
             }
