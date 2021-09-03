@@ -34,7 +34,7 @@
               (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
-          <div flFlex="none">{{outstandingCase?.callDateTime}}</div>
+          <div fxFlex="none">{{outstandingCase?.callDateTime | date: "dd-MM-yyyy"}}</div>
 
         </mat-expansion-panel-header>
 
