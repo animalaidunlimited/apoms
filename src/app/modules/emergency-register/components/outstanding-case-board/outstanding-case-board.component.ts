@@ -254,7 +254,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       this.outstandingCaseService.getAutoRefresh()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(value => {
-
+        
         this.autoRefresh = value;
 
       });

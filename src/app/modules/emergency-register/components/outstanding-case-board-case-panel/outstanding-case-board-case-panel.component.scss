@@ -8,6 +8,13 @@
         height: 3.5em;
     }
 }
+.mat-expansion-panel-header {
+    padding: 0 0.5em;
+    span.mat-content {
+        display: flex;
+        align-items: center;
+    }
+}
 .mat-release-panel.mat-expanded {
     border-radius: 20px !important;
 }
