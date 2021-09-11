@@ -6,7 +6,6 @@ import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { debounceTime, map, share } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { UUID } from 'angular2-uuid';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -32,8 +31,6 @@ export class CaseService extends APIService {
     endpoint = 'EmergencyRegister';
     response: EmergencyResponse = {} as EmergencyResponse;
     redirectUrl = '';
-
-    online!: boolean;
 
     saveCaseFail = false;
 
@@ -112,7 +109,7 @@ export class CaseService extends APIService {
             return result;
         }).catch(async error => {
 
-            if (error.status === 504 || !this.online) {
+            if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
 
                 this.saveCaseFail = true;
                 if(this.saveCaseFail) {
@@ -146,7 +143,7 @@ export class CaseService extends APIService {
             })
             .catch(async error => {
 
-                if (error.status === 504 || !this.online) {
+                if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
                     this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                     this.saveCaseFail = true;
@@ -253,10 +250,6 @@ export class CaseService extends APIService {
     public async updateCaseOutcome(outcomeDetails: EmergencyCase): Promise<EmergencyCase> {
 
         return await this.put(outcomeDetails);
-    }
-
-    public generateUUID() : string{
-        return UUID.UUID();
     }
 
     public afterSaveEmergencyResponse() {

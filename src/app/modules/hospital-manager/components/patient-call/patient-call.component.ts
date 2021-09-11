@@ -223,7 +223,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     compareAssignedTo(assinedTo1: User, assignedTo2: User): boolean {
         return assinedTo1 && assignedTo2
-            ? assinedTo1.UserId === assignedTo2.UserId
+            ? assinedTo1.userId === assignedTo2.userId
             : assinedTo1 === assignedTo2;
     }
 }

@@ -1,86 +1,101 @@
 
 
-<!-- <search-result-card *ngIf="infoContent"></search-result-card> -->
+<search-result-card *ngIf="infoContent"></search-result-card>
 
 <google-map height="75vh"
-            width="100%"
-            [options]="options"
-            [center]="center"
-            [zoom]="zoom">
+    width="100%"
+    [options]="options"
+    [center]="center"
+    [zoom]="zoom">
 
-            <div *ngFor="let outstandingActions of (outstandingCases$ | async);">
 
-                <div *ngFor="let states of outstandingActions.statusGroups;">
+    <div *ngFor="let vehicle of (locationList$ | async)">
+        <div *ngFor="let line of vehicle.options">
+            <map-polyline [options]="line"></map-polyline>
+        </div>
+    </div>
 
-                    <div *ngFor="let assignments of states.actions;">
 
-                        <!--TODO alter the emergencyCodeId so that it works for all organisations -->
-                        <!-- #marker="mapMarker" -->
+    <ng-container *ngIf="!vehicleId">
+        <div >
+           
+            <div >
+               
+                <div >
+                    <!--TODO alter the emergencyCodeId so that it works for all organisations -->
 
-                        <map-marker
-                        *ngFor="let action of assignments.ambulanceAssignment"
-                        #marker="mapMarker"
-                        [position]="action.latLngLiteral"
-                        (mapClick)="openInfoWindow(marker, action)"
-                        [options]="{icon:
-                                        (
-                                            action.ambulanceAction == 'Release'? (
-                                                
-                                                hasLargeAninmal(action.patients)?
-                                                    'assets/icons/large_animal_release_purple.png'
-                                                    :
-                                                    'assets/icons/small_animal_release_purple.png'
-                                                )
+                    <map-marker
+                    *ngFor="let outstandingCase of (outstandingCases$ | async);"
+                    #marker="mapMarker"
+                    [position]="outstandingCase.latLngLiteral"
+                    (mapClick)="openInfoWindow(marker, outstandingCase)"
+                    [options]="{icon:
+                                    (
+                                        outstandingCase.ambulanceAction == 'Release'? (
+                                            hasLargeAnimal(outstandingCase.patients)?
+                                                'assets/icons/large_animal_release_purple.png'
                                                 :
-                                                (
-                                                    hasLargeAninmal(action.patients) ?
-                                                            (action.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
-                                                            :
-                                                            action.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
-                                                            :
-                                                            action.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
-                                                            :
-                                                            'assets/icons/large_animal_grey.png')
+                                                'assets/icons/small_animal_release_purple.png'
+                                            )
+                                            :
+                                            (
+                                                hasLargeAnimal(outstandingCase.patients) ?
+                                                        (outstandingCase.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                                                         :
-                                                            (action.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
-                                                            :
-                                                            action.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
-                                                            :
-                                                            action.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
-                                                            :
-                                                            'assets/icons/small_animal_grey.png')
-                                                )
-
-                                        )
-                        }"
-                        >
-                        </map-marker>
-                    </div>
+                                                        outstandingCase.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
+                                                        :
+                                                        outstandingCase.emergencyCodeId == 3 ? 'assets/icons/large_animal_yellow.png'
+                                                        :
+                                                        'assets/icons/large_animal_grey.png')
+                                                    :
+                                                        (outstandingCase.emergencyCodeId == 1 ? 'assets/icons/small_animal_red.png'
+                                                        :
+                                                        outstandingCase.emergencyCodeId == 2 ? 'assets/icons/small_animal_green.png'
+                                                        :
+                                                        outstandingCase.emergencyCodeId == 3 ? 'assets/icons/small_animal_yellow.png'
+                                                        :
+                                                        'assets/icons/small_animal_grey.png')
+                                            )
+                                    )
+                    }"
+                    >
+                    </map-marker>
                 </div>
             </div>
-                        <!-- Add the ambulance locations -->
-                        <map-marker *ngFor="let ambulance of (ambulanceLocations$ | async)"
-                        #ambulanceMarker="mapMarker"
-                        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions)"
-                        [position]="ambulance.latestLocation"
-                        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100, label: ambulance.staff1Abbreviation + ' + ' + ambulance.staff2Abbreviation}">
+        </div>
+    </ng-container>
+    <!-- Add the ambulance locations -->
+                
 
-                        </map-marker>
+    <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
+        <map-marker
+        (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions  )"
+        #ambulanceMarker="mapMarker"
+        [position]="{lat: ambulance.vehicleLocation.latLng.lat, lng: ambulance.vehicleLocation.latLng.lng} || {lat:0, lng:0}"
+        [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100,
+        label: ''}"
+        >
+        </map-marker>
+
+    </div>
 
 
 
-                        <map-info-window>
+    <map-info-window>
 
-                            <div class="ambulance-window" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
+        <div class="ambulance-window" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start">
 
-                                <div *ngFor="let patient of infoContent | async">
+            <outstanding-case-board-ambulance [inMap]="true" [vehicleId]="vehicleId"></outstanding-case-board-ambulance>
 
-                                    <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
+            <div *ngFor="let patient of infoContent | async">
 
-                                </div>
+                <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
+                
 
-                            </div>
+            </div> 
 
-                        </map-info-window>
+        </div>
 
-        </google-map>
+    </map-info-window>
+
+</google-map>

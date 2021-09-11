@@ -1,4 +1,4 @@
-<form [formGroup]="recordForm">
+ <form [formGroup]="recordForm">
 
 <div formGroupName="releaseRequestForm" class="option-wrapper" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
     <mat-form-field appearance="fill">
@@ -16,7 +16,7 @@
 
     <mat-form-field appearance="fill">
         <mat-label>Request time</mat-label>
-        <input matInput formControlName="requestedDate" type="date" name="RequestedDate">
+        <input matInput formControlName="requestedDate" type="datetime-local" name="RequestedDate">
     </mat-form-field>
 
 </div>
@@ -41,8 +41,8 @@
                 <mat-label>Releaser 1</mat-label>
                     <mat-select formControlName="Releaser1">
                         <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                            {{releaser.FirstName}}
+                        <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
+                            {{releaser.firstName}}
                         </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -50,8 +50,8 @@
                 <mat-label>Releaser 2</mat-label>
                     <mat-select formControlName="Releaser2">
                         <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.UserId">
-                            {{releaser.FirstName}}
+                        <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
+                            {{releaser.firstName}}
                         </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -59,14 +59,18 @@
     </div>
 </div>
 
+<div style="margin-left: 10px; margin-bottom: 30px;">
+    <p><mat-checkbox formControlName='isAStreetTreatRelease'>Release needs to be carried out by street treat staff</mat-checkbox></p>
+</div>
+
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
 
-    <mat-slide-toggle [checked]="isStreetTreatRelease" (change)="valueChages($event,4)" class="mat-slider">StreetTreat release</mat-slide-toggle>
+    <mat-slide-toggle [disabled]='disableStreetTreat' [checked]="isStreetTreat" (change)="valueChages($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
 
-    <div [@openCloseDiv]="isStreetTreatRelease" [@visibilityDiv]="isStreetTreatRelease">
+    <div [@openCloseDiv]="isStreetTreat" [@visibilityDiv]="isStreetTreat">
         <app-patient-visit-details
-            [isStreetTreatTrue]="isStreetTreatRelease"
-            [hidden]="!isStreetTreatRelease"
+            [isStreetTreatTrue]="isStreetTreat"
+            *ngIf = "isStreetTreat"
             (streetTreatCaseIdEmit)="streetTreatCaseIdEventHandler($event)"
             [recordForm]="recordForm">
         </app-patient-visit-details>
@@ -75,7 +79,7 @@
 </div>
 
 <div class="disable">
-    <caller-details [recordForm]="recordForm"></caller-details>
+    <caller-details [incomingCallerDetails]='[]' [recordForm]="recordForm"></caller-details>
 </div>
 
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end" style="padding-bottom:20px; padding-top:20px;">

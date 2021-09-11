@@ -15,7 +15,7 @@ export interface StreetTreatTab {
 export interface StreetTreatDetails {
     streetTreatCaseId: number;
     emergencyNumber: string;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     dispatcher: number;
 }
 

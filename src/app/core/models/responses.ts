@@ -1,3 +1,4 @@
+import { LatLngLiteral } from './driver-view';
 import { CallerDetails, CallOutcome, EmergencyDetails } from './emergency-record';
 
 
@@ -31,7 +32,7 @@ export interface PatientResponse {
 }
 
 export interface SearchFieldResponse {
-    sucess: string;
+    success: string;
 }
 
 export interface LocationResponse {
@@ -48,18 +49,22 @@ export interface RescueDetailsParent {
     callOutcome: CallOutcome;
     rescueDetails: RescueDetails;
     emergencyDetails: EmergencyDetails;
+    latLngLiteral: LatLngLiteral;
 }
 
 export interface RescueDetails {
     rescueTime: string | Date;
-    rescuer1Id: number;
-    rescuer2Id: number;
     admissionTime: string | Date;
-    rescuer1Colour: string;
-    rescuer2Colour: string;
     ambulanceArrivalTime: string | Date;
-    rescuer1Abbreviation: string;
-    rescuer2Abbreviation: string;
+    rescuers: Rescuer[];
+}
+
+export interface Rescuer {
+    rescuerId: number;
+    rescuerFirstName: string;
+    rescuerSurname: string;
+    rescuerColour: string;
+    rescuerAbbreviation: string;
 }
 
 export interface Caller {
@@ -88,11 +93,8 @@ export interface Exclusions
 export interface SearchResponse {
     EmergencyCaseId: number;
     EmergencyNumber: number;
-    CallDateTime: string;
+    CallDateTime: string | Date | undefined;
     callerDetails: CallerDetails[] | any;
-    // CallerId: number;
-    // Name: string;
-    // Number: string;
     AnimalTypeId: number;
     AnimalType: string;
     PatientId: number;
@@ -102,8 +104,7 @@ export interface SearchResponse {
     CallOutcome: string | undefined;
     sameAsNumber: number | undefined;
     Location: string;
-    Latitude: number;
-    Longitude: number;
+    latLngLiteral: LatLngLiteral;
     CurrentLocation: string | undefined;
 }
 export interface SearchStreetTreatResponse {

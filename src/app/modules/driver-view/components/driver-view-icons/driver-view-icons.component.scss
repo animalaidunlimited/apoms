@@ -1,0 +1,42 @@
+
+
+.imageIcons {
+    width: 3em;
+}
+
+.mapIcon {
+    width: 2em;
+    margin-left: 5%;
+
+}
+
+.addImageIcon{
+    font-size: 2.2em;
+    margin-left: 5%;
+}
+
+.displayIconDiv {
+
+
+    background-color: white;
+    min-width: 14em;
+    z-index: 99;
+    border-radius: 0.5em;
+    padding: .5em;
+    border: solid 1px #80808054;
+    box-shadow: inset 0px 2px 6px 2px rgb(0 0 0 / 11%);
+    margin-right: 0px !important;
+
+
+}
+
+.iconDivWrapper {
+    padding-top: 6%;
+}
+
+.cancelButtonIcon {
+    position: absolute;
+    top: 0;
+    right: 12%;
+    z-index: 99;
+}

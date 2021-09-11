@@ -1,0 +1,121 @@
+<div fxLayout="column">
+
+  <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
+    <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
+      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
+
+        <div fxLayout="row">
+
+         <!--
+           TODO: Leaving this in, because might want to set it in the organisation settings. Basically because I like it and
+          it does look good.
+
+          <div class="vehicleImage">
+            <img [src]="vehicleDetail.vehicleImage" />
+          </div> -->
+          <div class="vehicleDescription" fxLayout="row">
+            <div class="vehicleNumber">
+              <p (click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
+              <div class="licensePlate" @fadeAnimation fxLayout="row" *ngIf="showPlate">
+                <div class="licensePlateBadge">
+                  <div class="silver"></div>
+                  <span>IND</span>
+                </div>
+                <div class="vehicleRegistrationNumber">
+                  {{vehicleDetail.vehicleRegistrationNumber}}
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="ambulanceCase.vehicleStaff as vehicleStaff">
+              <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
+                  <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
+                    <span *ngIf="vehicleStaff.initials" class="initials">{{ vehicleStaff.initials }}</span> {{ vehicleStaff.firstName }} {{ vehicleStaff.surname }}
+                  </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div fxLayout="row" class="vehicleType">
+          <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+            <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
+            <p>{{vehicle.VehicleType}}</p>
+          </div>
+          <div class="vehicleMap">
+            <button (click)="openMap($event)" mat-mini-fab>
+              <mat-icon>map</mat-icon>
+            </button>
+          </div>
+        </div>
+
+
+
+        <div  class="timer"
+        *ngIf="timer$ | async as timer"
+        [ngClass]="timer.class">
+        {{ timer.time }}
+        </div>
+
+
+        <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
+
+          <div *ngIf="currentCapacity.capacity as capacity">
+
+            <div fxLayout="row" fxLayoutAlign="end" >
+
+              <div>
+                <h3>Capacity</h3>
+                <div class="capacityTitle">
+                  <span>{{vehicleDetail.smallAnimalCapacity}} (S)</span>
+                  <span>{{vehicleDetail.largeAnimalCapacity}} (L)</span>
+                </div>
+              </div>
+
+              <div>
+                <h3>Current</h3>
+                <div class="capacityTitle">
+                  <span>{{capacity.small}} (S)</span>
+                  <span>{{capacity.large}} (L)</span>
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </ng-container>
+
+  <div fxLayout.lt-sm="column" *ngIf="!inMap">
+    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
+
+      <h2>{{getActionStatus(statusId)}}</h2>
+
+      <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
+        <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
+          <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
+
+
+
+            <app-outstanding-case-board-case-panel [outstandingCase]="outstandingCase"
+            (rescueEdit)="openRescueEdit($event)"
+            (mediaDialog)="openMediaDialog($event)"
+            (openCaseEmitter)="openCase($event)"
+
+
+            ></app-outstanding-case-board-case-panel>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+</div>

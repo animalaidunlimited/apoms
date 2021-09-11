@@ -1,4 +1,4 @@
-<div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
+<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
   fxLayout.gt-xs="row" >
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
@@ -47,6 +47,15 @@
       </mat-autocomplete>
 
     </mat-form-field>
+
+    <div class="patients_icons">
+      <thumbnail-slider [mediaData]="mediaData" [patientData]="patientForm" [displayImagesAndButtons]='false'></thumbnail-slider>
+    </div>
+
+    <div class="patients_icons">
+      <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
+      <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
+    </div>
   </div>
 
 
@@ -61,7 +70,7 @@
 
 
   <!-- Calloutcome details-->
-  <div *ngIf="outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
+  <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
@@ -95,9 +104,33 @@
       
     </div>
     <div class="patients_icons">
-      <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
+      <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>
   </div>
+
+</div>
+
+<div *ngIf="isDisplayOnly" class="displayOnlyPatientWrapper">
+
+  <div fxLayout="row" fxLayoutGap='10px' fxLayoutAlign="start center" style="min-height: 2em;"> 
+    <div>
+      {{animalType.value}}
+    </div>
+    <div *ngIf="problemsArray?.value.length > 1">
+      {{problemsArray?.value[0].problem}} + {{problemsArray?.value.length - 1}}
+    </div>
+  
+    <div *ngIf="problemsArray?.value.length == 1">
+      {{problemsArray?.value[0].problem}}
+    </div>
+
+    <div class="mediaIconsWrapper">
+      <thumbnail-slider [mediaData]="mediaData" [patientData]="patientForm" [displayImagesAndButtons]='false'></thumbnail-slider>
+    </div>
+
+  </div>
+
+ 
 
 </div>
