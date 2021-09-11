@@ -222,7 +222,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 							});
 
 						}
-						// this.visitsArray.push(this.getVisitFormGroup());
 					});
 				}
 				else {
