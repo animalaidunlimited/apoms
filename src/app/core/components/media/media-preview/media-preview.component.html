@@ -53,7 +53,7 @@
     </div>
 
 
-    <video autoplay *ngIf="imageData?.type?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
+    <video *ngIf="imageData?.type?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;" controls (click)="toggleVideo($event)" #videoplayer>
         <source src="{{imageData?.full}}" type="video/mp4" />
         Browser not supported
     </video>
