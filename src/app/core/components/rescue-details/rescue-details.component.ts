@@ -285,9 +285,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
              this.assignedVehicleId?.setValidators([Validators.required]);
 
              this.rescueTime?.setValidators([Validators.required]);
-            // this.rescueTime?.updateValueAndValidity({ emitEvent: false });
              this.admissionTime?.setValidators([Validators.required]);
-            // this.admissionTime?.updateValueAndValidity({ emitEvent: false });
          }
 
         this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });

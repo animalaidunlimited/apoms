@@ -5,6 +5,11 @@ import { APIService } from '../http/api.service';
 
 declare const window: any;
 
+interface HealthResponse{
+    status: string,
+    datetime: Date|string
+}
+
 @Injectable({ providedIn: 'root' })
 export class OnlineStatusService  extends APIService{
 
@@ -15,12 +20,12 @@ export class OnlineStatusService  extends APIService{
         return this.internalConnectionChanged;
     }
 
-   
+
     constructor(http: HttpClient) {
         super(http);
         window.addEventListener('online', () => this.updateOnlineStatus());
         window.addEventListener('offline', () => this.updateOnlineStatus());
-       
+
     }
 
     private updateOnlineStatus() {
@@ -28,24 +33,27 @@ export class OnlineStatusService  extends APIService{
 
 
         this.checkApiStatus();
-       
-        
+
+
     }
 
     public checkApiStatus() {
-      
+
         if(!window.navigator.onLine){
             const limitedInterval = setInterval(() => {
-               
-                
+
+
                 if (window.navigator.onLine) {
                     const request = '';
-                    this.get(request).then((status:any) => {
+                    this.get(request).then((rStatus:any) => {
+
+                        const status:HealthResponse = rStatus;
+
                         if(status.status === 'UP'){
                             this.internalConnectionChanged.next(true);
                         }
                     });
-                    
+
                     clearInterval(limitedInterval);
                 }
 
@@ -54,9 +62,9 @@ export class OnlineStatusService  extends APIService{
     }
 
     public updateOnlineStatusAfterUnsuccessfulHTTPRequest(){
-        
+
         this.internalConnectionChanged.next(false);
-        
+
     }
 
     public updateOnlineStatusAfterSuccessfulHTTPRequest(){

@@ -5,7 +5,12 @@
       <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
 
         <div fxLayout="row">
-         <!--  <div class="vehicleImage">
+
+         <!--
+           TODO: Leaving this in, because might want to set it in the organisation settings. Basically because I like it and
+          it does look good.
+
+          <div class="vehicleImage">
             <img [src]="vehicleDetail.vehicleImage" />
           </div> -->
           <div class="vehicleDescription" fxLayout="row">
@@ -47,13 +52,13 @@
 
         <div  class="timer"
         *ngIf="timer$ | async as timer"
-        [ngClass]="timer.class"> 
+        [ngClass]="timer.class">
         {{ timer.time }}
         </div>
 
 
         <div *ngIf="(currentCapacity | async) as currentCapacity" class="vehicleCapacity">
-          
+
           <div *ngIf="currentCapacity.capacity as capacity">
 
             <div fxLayout="row" fxLayoutAlign="end" >
@@ -76,16 +81,16 @@
 
             </div>
 
-            
 
-            
+
+
 
           </div>
         </div>
 
       </div>
 
-      
+
     </div>
   </ng-container>
 
@@ -93,19 +98,19 @@
     <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
 
       <h2>{{getActionStatus(statusId)}}</h2>
-     
+
       <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
         <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
           <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
 
 
-            
-            <app-outstanding-case-board-case-panel [outstandingCase]="outstandingCase" 
-            (rescueEdit)="openRescueEdit($event)" 
-            (mediaDialog)="openMediaDialog($event)" 
-            (openCaseEmitter)="openCase($event)" 
-            
-             
+
+            <app-outstanding-case-board-case-panel [outstandingCase]="outstandingCase"
+            (rescueEdit)="openRescueEdit($event)"
+            (mediaDialog)="openMediaDialog($event)"
+            (openCaseEmitter)="openCase($event)"
+
+
             ></app-outstanding-case-board-case-panel>
           </div>
         </ng-container>

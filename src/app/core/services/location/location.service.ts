@@ -139,14 +139,6 @@ export class LocationService extends APIService {
 
   }
 
-  // toggleLogLocation(){
-
-  //    while(let i = 0; i < 20; i++){
-  //      setTimeout(() => this.getLocation(i / 100),i * 5000);
-  //    }
-
-  // }
-
   getActiveVehicleLocations() : void {
 
     const request = '/ActiveVehicleLocations';
