@@ -35,7 +35,6 @@ describe('ReleaseAssignComponent', () => {
       emergencyCaseId:100,
       releaseType: '',
       releaseAmbulanceId:0,
-      // Releaser2: 1,
       releaseBeginDate: new Date(),
       releaseEndDate: new Date(),
       pickupDate: new Date(),
