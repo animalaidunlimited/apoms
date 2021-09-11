@@ -39,7 +39,7 @@ export interface AnimalTypeResponse {
     providedIn: 'root',
 })
 export class DropdownService extends APIService {
-    [x: string]: any;
+
     endpoint = 'Dropdown';
 
 
@@ -447,7 +447,7 @@ export class DropdownService extends APIService {
 
     getCallOutcomes(): Observable<CallOutcomeResponse[]> {
         const request = '/CallOutcomes';
-        
+
         if (!this.callOutcomes$) {
             this.callOutcomes$ = this.getObservable(request).pipe(
                 map((response: CallOutcomeResponse[]) => {
@@ -456,9 +456,9 @@ export class DropdownService extends APIService {
             );
         }
         else {
-           
+
         }
-       
+
         return this.callOutcomes$;
     }
 
@@ -741,10 +741,6 @@ getVehicleListDropdown(): Observable<Vehicle[]> {
 
 return this.vehicleList$;
 
-}
-
-getValueFromDynamicFunctionName(functionName: any) {
-    return this[functionName]();
 }
 
 }
