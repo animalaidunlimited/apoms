@@ -19,13 +19,12 @@ export class CheckConnectionService {
     this.checkConnection = timer(0,60000).pipe(
       takeUntil(this.ngUnsubscribe),
       switchMap(() => this.onlineStatus.connectionChanged),
-      takeUntil(this.ngUnsubscribe),
       retryWhen(errors =>
         errors.pipe(
           // log error message
           tap(error => console.log(error)),
           // restart after 5 mins
-          delay(5000)
+          delay(60000*5)
         )
       )
     );
