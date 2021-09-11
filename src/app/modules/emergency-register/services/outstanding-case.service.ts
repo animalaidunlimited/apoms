@@ -194,7 +194,7 @@ export class OutstandingCaseService {
     }
   }
 
-  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment ){
+  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment | OutstandingAssignment){
 
     // tslint:disable-next-line: no-shadowed-variable
     const updateCases = (outstandingCases: any, Assignment:any) => {
@@ -225,13 +225,37 @@ export class OutstandingCaseService {
       }
 
     }else{
-      const driverAssignment = { 
-        ...updatedAssignment,
-        assignedVehicleId : updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId,
-        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceAssignmentDate : updatedAssignment.releaseAmbulanceAssignmentDate
-      };
 
-     // outstandingCases.push(driverAssignment );
+      const insertAssignment = updatedAssignment as OutstandingAssignment;
+      let driverAssignment:OutstandingAssignment;
+
+      if(updatedAssignment.ambulanceAction === 'Rescue')
+      {
+        
+        driverAssignment = { 
+          ...insertAssignment,
+          rescueAmbulanceId : updatedAssignment.rescueAmbulanceId ,
+        };
+
+      }
+      else{
+
+        driverAssignment = { 
+          ...insertAssignment,
+          releaseAmbulanceId : updatedAssignment.releaseAmbulanceId,
+        };
+
+      }
+
+      driverAssignment = {
+        ...driverAssignment,
+        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? 
+        // tslint:disable-next-line: no-non-null-assertion
+        new Date((updatedAssignment as DriverAssignment).rescueAmbulanceAssignmentDate!) : 
+        // tslint:disable-next-line: no-non-null-assertion
+        new Date((updatedAssignment as DriverAssignment).releaseAmbulanceAssignmentDate!)
+      };
+      outstandingCases.push(driverAssignment);
     }
     
     
@@ -276,7 +300,7 @@ export class OutstandingCaseService {
  
   filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
     
-    return combineLatest(click$, cases$).pipe(
+    return combineLatest([click$, cases$]).pipe(
       takeUntil(until$),
       map(chipChangeObs => chipChangeObs[1]),
       map(outstandingCases => { 

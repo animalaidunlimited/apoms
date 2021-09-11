@@ -26,7 +26,8 @@ export class ReleaseAssignDialogComponent implements OnInit {
     this.formData = {
       releaseId: this.data.caseDetails.releaseDetailsId,
       emergencyCaseId: this.data.caseDetails.emergencyCaseId,
-      releaseType: this.data.caseDetails.releaseType,
+      // tslint:disable-next-line: no-non-null-assertion
+      releaseType: this.data.caseDetails.releaseType!,
       releaseAmbulanceId: this.data.caseDetails.releaseAmbulanceId as number,
       ambulanceAssignmentTime: this.data.caseDetails.ambulanceAssignmentTime,
       pickupDate: this.data.caseDetails.releasePickupDate as string,
