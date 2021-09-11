@@ -54,21 +54,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
-     
- 
-    // this.checkConnection = timer(0,3000).pipe(
-    //   takeUntil(this.connectionStateSubs),
-    //   switchMap(() => this.onlineStatus.connectionChanged),
-    //   takeUntil(this.ngUnsubscribe),
-    //   retryWhen(errors =>
-    //     errors.pipe(
-    //       // log error message
-    //       tap(error => console.log(error)),
-    //       // restart after 5 seconds
-    //       delay(5000)
-    //     )
-    //   )
-    // );
 
     this.checkConnectionService.checkConnection.subscribe(connectionState => {
 

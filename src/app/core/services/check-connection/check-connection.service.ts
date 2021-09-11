@@ -16,7 +16,7 @@ export class CheckConnectionService {
 
   constructor(private onlineStatus: OnlineStatusService,) { 
 
-    this.checkConnection = timer(0,300).pipe(
+    this.checkConnection = timer(0,60000).pipe(
       takeUntil(this.ngUnsubscribe),
       switchMap(() => this.onlineStatus.connectionChanged),
       takeUntil(this.ngUnsubscribe),
