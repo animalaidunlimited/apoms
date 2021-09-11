@@ -1,17 +1,15 @@
-import { Image, MediaItem,  Gallery, LocalMediaItem, LocalMedia} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery, LocalMedia} from 'src/app/core/models/media';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
-import { delay, retryWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
-import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -22,7 +20,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
-  // public connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
 
   @Input() displayImagesAndButtons!:boolean;
@@ -37,17 +34,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   patientId!:number;
 
-  // checkConnection!:Observable<boolean>;
-
   constructor(
     public dialog: MatDialog,
     public datepipe: DatePipe,
     private patientService:PatientService,
     private onlineStatus: OnlineStatusService,
-    private mediaPasteService: MediaPasteService,
-    private storageService: StorageService,
-    private checkConnectionService: CheckConnectionService
-
+    private mediaPasteService: MediaPasteService
   ) { }
 
 
@@ -55,7 +47,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
 
-    this.checkConnectionService.checkConnection.subscribe(connectionState => {
+    this.onlineStatus.connectionChanged.subscribe(connectionState => {
 
       if(connectionState){
 
@@ -68,15 +60,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
             const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage.imageBase64)], `${this.patientId},{22}`, { type: mime});
             this.mediaPasteService.handleUpload(imageFile,this.patientId, localImage.date as string);
           });
-          
-          this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
-          
-        }
-        else{
 
-          this.checkConnectionService.connectionStateSubs.next();
-          this.checkConnectionService.connectionStateSubs.complete();
-          
+          this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
+
         }
       }
     });
@@ -91,11 +77,11 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
 
       if(!connectionStatus){
-     
+
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
 
           setTimeout(() => {
-            
+
             this.galleryImages = [];
 
             this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId)
@@ -137,8 +123,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   openMediaDialog(): void{
 
     // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-     
-    
+
+
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
 
       minWidth: '75vw',
@@ -156,43 +142,43 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       // tslint:disable-next-line: max-line-length
       const mediaDataIndex = this.mediaPatientItems.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
       const imageIndex = this.galleryImages.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-      
-    
+
+
        if(key === 37){
           if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
-             
+
               const dialogData = {
                   image : this.galleryImages[imageIndex - 1],
                   mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex - 1]
               };
               dialogRef.componentInstance.updateDialog(dialogData);
-              
+
           }
       }
-      
+
        if(key === 39){
-          
+
           if(imageIndex + 1 <= this.galleryImages.length - 1 && mediaDataIndex + 1 <= this.mediaPatientItems.length - 1) {
-             
+
               const dialogData = {
                   image : this.galleryImages[imageIndex + 1],
                   mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex + 1]
               };
               dialogRef.componentInstance.updateDialog(dialogData);
-          } 
-      } 
-      
+          }
+      }
+
     });
- 
+
 
     dialogRef.afterClosed()
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(updatedMedia => {
 
       if(updatedMedia){
-      
+
           if(updatedMedia.isPrimary === true){
-            
+
             // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
 
           }
