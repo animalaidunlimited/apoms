@@ -190,7 +190,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
-			console.log(response);
 
 			if (response?.streetTreatCaseId) {
 				if (response.visits.length > 0) {
