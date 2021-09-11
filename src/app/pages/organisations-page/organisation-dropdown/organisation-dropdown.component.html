@@ -1,5 +1,5 @@
 <fieldset class="form-sub-group" >
-	<legend class="legend" i18n>Problem</legend>
+	<legend class="legend" i18n>{{displayedColumns[0]}}</legend>
 <div class="example-container mat-elevation-z8">
 	<div class="example-header">
 		<mat-form-field>
@@ -15,16 +15,16 @@
 		  Add data
 		</button>
 	  </div>
-	<mat-table #table [dataSource]="dataSource"
+	<mat-table #table [dataSource]="(dataSource | async)!"
 	cdkDropList
-	[cdkDropListData]="dataSource"
+	[cdkDropListData]="(dataSource | async)!"
 	(cdkDropListDropped)="dropTable($event)">
 
-		<ng-container matColumnDef="Problem">
-			<mat-header-cell *matHeaderCellDef> Problem </mat-header-cell>
+		<ng-container [matColumnDef]="displayedColumns[0]">
+			<mat-header-cell *matHeaderCellDef> {{displayedColumns[0]}} </mat-header-cell>
 			<mat-cell *matCellDef="let element" [formGroup]="element">
 				<mat-form-field floatLabel="never">
-					<input  matInput placeholder="Problem" formControlName="problem">
+					<input  matInput [placeholder]="displayedColumns[0]" [formControlName]="textFormControlName">
 
 				</mat-form-field>
 			</mat-cell>
@@ -34,13 +34,13 @@
 			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
 			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element"> 
 				<mat-form-field  floatLabel="never" style="width:45%;">
-					<mat-select  formControlName="sortOrder" placeholder="Sort order">
+					<mat-select  formControlName="sort" placeholder="Sort order">
 						<mat-option>None</mat-option>
 						<mat-option *ngFor="let x of dataSource | async; let i = index;" [value]="i+1">
 							{{ i + 1 }}
 						</mat-option>
 					</mat-select> 
-					<mat-error  *ngIf="element.get('sortOrder')?.hasError('uniqueBy')">
+					<mat-error  *ngIf="element.get('sort')?.hasError('uniqueBy')">
 						Sort order should be unique
 					</mat-error>
 				</mat-form-field>
@@ -57,6 +57,7 @@
 		<ng-container matColumnDef="actions">
 			<mat-header-cell  *matHeaderCellDef > Actions </mat-header-cell>
 			<mat-cell *matCellDef="let element;let i = index" [formGroup]="element" >
+
 				<button
 				*ngIf="!element.disabled"
 				mat-mini-fab 
@@ -65,6 +66,7 @@
 				(click)="saveRow(i,$event)">
 					<mat-icon>save</mat-icon>
 				</button>
+
 				<button
 				*ngIf="element.disabled"
 				mat-mini-fab 
@@ -73,15 +75,16 @@
 				(click)="editRow(i,$event)">
 					<mat-icon>edit</mat-icon>
 				</button>
+
 				<button
 				style="margin-left: 1em;"
 				mat-mini-fab 
 				color="warn"
 				[disabled]="(dataSource | async)?.values?.length === 1"
-				(click)="removeData($event,i)"
-				>
-				<mat-icon>delete</mat-icon>
-			</button>
+				(click)="removeData($event,i)">
+					<mat-icon>delete</mat-icon>
+				</button>
+
 			</mat-cell>
 		</ng-container>
 
@@ -93,7 +96,7 @@
 			</td>
 		  </ng-container>
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: displayedColumns;" style="pointer-events: none;" cdkDrag [cdkDragData]="row"></mat-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;"  cdkDrag [cdkDragData]="row"></mat-row>
 	</mat-table>
 </div>
 

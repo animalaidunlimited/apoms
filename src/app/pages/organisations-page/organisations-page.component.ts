@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LogoService } from 'src/app/core/services/logo/logo.service';
 import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { map } from 'rxjs/internal/operators/map';
 import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 
 export interface Position {
     lat: number;
@@ -18,23 +18,38 @@ export interface Marker {
     label: string;
     options: any;
 }
+
+export interface ProblemDropDown {
+    ProblemId: number;
+    Problem: string;
+    SortOrder: number;
+    Editable : boolean;
+    IsDeleted: 0|1;
+  }
 @Component({
     selector: 'app-organisations-page',
     templateUrl: './organisations-page.component.html',
     styleUrls: ['./organisations-page.component.scss'],
 })
 export class OrganisationsPageComponent implements OnInit {
+
     organisationId!:number;
-    organisationForm:FormGroup = new FormGroup({});
+    organisationForm!:FormGroup ;
     imageSrc!: string | ArrayBuffer;
     markers: Marker[] = [];
     center!: google.maps.LatLngLiteral;
     latlngbounds = new google.maps.LatLngBounds(undefined);
-    problemRows!:Observable<FormArray>;
+
+    problemsDropDown!:Observable<FormArray>;
+    animalTypes!:Observable<FormArray>;
+
+    updateDropDown:number[] = [];
 
     zoom = 13;
     @ViewChildren('addressSearch') addresstext!: QueryList<ElementRef>;
     @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
+
+   
 
     constructor(
         private logoService:LogoService, 
@@ -42,46 +57,93 @@ export class OrganisationsPageComponent implements OnInit {
         private fb: FormBuilder,
         private changeDetector: ChangeDetectorRef,
         private snackbar: SnackbarService,
-        private dropDown: DropdownService) {}
+        private dropDown: DropdownService
+    ) {}
     
 
     get address() { return this.organisationForm.get('address') as FormArray; }
 
     ngOnInit() {
+
+        this.problemsDropDown = this.generateDropDownForOrganisation(this.dropDown.getAllProblems()).pipe(
+            map(problems => 
+                this.generateDropDownFormArray(
+                    problems.map(problem =>  
+                        this.fb.group({
+                            problemId: problem.ProblemId,
+                            problem: problem.Problem,
+                            isDeleted: problem.IsDeleted,
+                            sort: problem.Sort
+                        })
+                    )
+                )
+            )
+        );
+        
+        this.animalTypes = this.generateDropDownForOrganisation(this.dropDown.getAnimalTypes()).pipe(
+            map(animalTypes  => 
+                this.generateDropDownFormArray(
+                    animalTypes.map(animalType =>  
+                        this.fb.group({
+                            animalTypeId: animalType.AnimalTypeId,
+                            animalType: animalType.AnimalType,
+                            isDeleted: animalType.IsDeleted,
+                            sort: animalType.Sort
+                        })
+                    )
+                )
+            )
+        );
+
         // tslint:disable-next-line: no-non-null-assertion
         this.organisationId = parseInt(this.organisationOptions.getOrganisationId()!,10);
 
-        this.organisationOptions.organisationDetail.subscribe(orgDetail => {
-            
+        combineLatest([
+            this.organisationOptions.organisationDetail,
+            this.problemsDropDown,
+            this.animalTypes
+        ]).pipe(
+            map((values) => {
+                const [orgDetail, problems, animalTypes] = values;
+                
                 this.organisationForm = this.fb.group({
                     organisationId : this.organisationId,
                     logoUrl: orgDetail.logoUrl,
                     address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([this.createItem()]),
                     name: orgDetail.name,
-                    problems : this.fb.array([])
+                    problems,
+                    animalTypes
                 });
 
-            }
-        );
-
-        this.problemRows = this.dropDown.getAllProblems().pipe(
-            map(problems => problems.map(problem => ({...problem, Editable: false}))),
-            map(problems => {
-
-                const problemsGroup: FormGroup[] = problems.map(problem =>  this.fb.group({
-                    problemId: problem.ProblemId,
-                    problem: problem.Problem,
-                    isDeleted: problem.IsDeleted,
-                    sortOrder: problem.SortOrder
-                }));
-            
-                const problemFA =  new FormArray(problemsGroup);
-                problemFA.setValidators([UniqueValidators.uniqueBy('sortOrder')]);
-                problemFA.disable();
-                return problemFA;
-
+                return values;
             })
+        ).subscribe(_ => {
+            this.organisationForm.valueChanges.subscribe(value => console.log(value));
+            (this.organisationForm?.get('problems') as FormArray)?.valueChanges.subscribe((problems:FormArray) => {
+             
+                this.updateDropDown.push((problems.at(0) as any)?.problemId);
+
+                this.updateDropDown = [...new Set(this.updateDropDown)];
+
+            }); 
+        });
+
+    }
+
+    generateDropDownForOrganisation(observable:Observable<any[]>){
+        return observable.pipe(
+            map(values => values.map(value => ({...value, Editable: false})) ),
+            map(values => values.sort((a,b) => a.Sort - b.Sort)),
         );
+    }
+
+    generateDropDownFormArray(values:FormGroup[]){
+        const dropDownFormArray = new FormArray(values);
+
+        dropDownFormArray.setValidators([UniqueValidators.uniqueBy('sort')]);
+        dropDownFormArray.disable();
+            
+        return dropDownFormArray; 
 
     }
 
@@ -213,10 +275,6 @@ export class OrganisationsPageComponent implements OnInit {
         this.center = { lat: position.lat, lng: position.lng };
     }
 
-    
-
-    
-
     getPlaceAutocomplete(index:number) {
         if(this.addresstext.get(index)?.nativeElement.value.length < 2)
         {
@@ -248,8 +306,6 @@ export class OrganisationsPageComponent implements OnInit {
         
 
         const result = place as google.maps.places.PlaceResult;
-        
-
 
         this.address.at(index).get('address')?.setValue(result.formatted_address);
         
@@ -266,28 +322,30 @@ export class OrganisationsPageComponent implements OnInit {
             );
         }
 
-
     }
 
     
     onSubmit(organisationOptions:FormGroup){
-        const problems = organisationOptions.get('problems')?.value;
-        
 
-       
-        if(organisationOptions.dirty || problems.length){
+        const updatedDropDown = 
+        (this.organisationForm.get('problems') as FormArray).controls
+        .filter(problem => this.updateDropDown.includes(problem.get('problemId')?.value))
+        .map(problem => problem?.value);
+
+        if(organisationOptions.dirty ){
  
-            this.organisationOptions.updateOrganisationDetail({ ...organisationOptions?.value,  problems}).then(res => {
-                console.log(res);
-                if(res){
-                    this.snackbar.successSnackBar('Organisation details saved successfully', 'OK');
-                } else {
+            this.organisationOptions.updateOrganisationDetail({ ...organisationOptions?.value, updatedDropDown}).then(response => {
+                
+                response ?
+                    this.snackbar.successSnackBar('Organisation details saved successfully', 'OK')
+                :
                     this.snackbar.errorSnackBar('Invalid action','OK');
-                }
+                
             });
 
         }
         
     }
+
 
 }

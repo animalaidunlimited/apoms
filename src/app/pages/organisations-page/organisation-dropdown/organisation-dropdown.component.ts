@@ -1,16 +1,10 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder } from '@angular/forms';
+import { Component, ViewChild, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
-import { BehaviorSubject, Observable } from 'rxjs';
-export interface Element {
-  ProblemId: number;
-  Problem: string;
-  SortOrder: number;
-  Editable : boolean;
-  IsDeleted: 0|1;
-}
+import { BehaviorSubject } from 'rxjs';
+
 /**
  * @title Table with editing
  */
@@ -24,45 +18,69 @@ export class OrganisationDropdownComponent implements OnInit {
     private fb: FormBuilder
   ){}
 
-  @Input() recordForm!:AbstractControl | null;
-  @Input() rows$!: Observable<FormArray> ;
+
+  _displayedColumns!:string[];
+  @Input() recordForm!:FormGroup | AbstractControl;
   
+  @Input() set setDisplayedColumns(displayColumn: string[]){
+    this._displayedColumns = ['SortOrder', 'IsDeleted', 'actions', 'position', ...displayColumn];
+  }
+
+  get displayedColumns() {
+    return this._displayedColumns;
+  }
+  
+
+  @Output() updatedDropdown: EventEmitter<any[] | FormArray> = new EventEmitter();
+
   rows!:FormArray;
 
-  displayedColumns = ['Problem', 'SortOrder', 'IsDeleted', 'actions', 'position',];
+  
   dataSource = new BehaviorSubject<AbstractControl[]>([]);
+ 
+  saveData = new FormArray([]);
   
   @ViewChild(MatTable) table!: MatTable<Element>;
 
+
+  get formArrayControlNames(){
+    return Object.keys((this.recordForm as FormArray).controls[0].value);
+  }
+  
+  get textFormControlName() { 
+   return this.formArrayControlNames[1];
+  }
+
+  get dropDownElement(){
+    return {
+      ...(this.recordForm as FormArray).controls[0]?.value, 
+      [this.formArrayControlNames[0]]:0,
+      [this.formArrayControlNames[1]]:'', isDeleted: 0,
+      sort: 0,
+      isEditable: false
+    };
+  }
+
   ngOnInit() {
     
-    this.rows$.subscribe(data => {
-      this.dataSource.next(data.controls);
-      this.rows = data;
-    })
+    this.dataSource.next((this.recordForm as FormArray).controls);
+    this.rows = (this.recordForm as FormArray);
 
+    console.log(this.displayedColumns);
   }
   
   applyFilter(filterValue: string) {
 
     filterValue = filterValue.trim().toLowerCase(); 
-    
-    this.dataSource.next(filterValue === '' ? this.rows.controls: this.rows.controls.filter(el => el.get('problem')?.value.toLowerCase().indexOf(filterValue) > -1));
+  
+    this.dataSource.next(filterValue === '' ? this.rows.controls: this.rows.controls.filter(el => el.get(this.textFormControlName)?.value.toLowerCase().indexOf(filterValue) > -1));
     
   }
 
   addData($event:Event) {
 
     $event.preventDefault();
-
-    this.rows.push( this.fb.group({
-      problemId: 0,
-      problem: '',
-      isDeleted: 0,
-      sortOrder: 0,
-      isEditable: false
-    }));
-
+    this.rows.push( this.fb.group(this.dropDownElement));
     this.table.renderRows();
 
   }
@@ -88,10 +106,10 @@ export class OrganisationDropdownComponent implements OnInit {
   }
 
   editRow(index:number, $event:Event){
+   
+  $event.preventDefault();
 
-    $event.preventDefault();
-
-    this.rows.at(index).enable();
+  this.rows.at(index).enable({onlySelf:true}); 
 
   }
 
@@ -99,28 +117,11 @@ export class OrganisationDropdownComponent implements OnInit {
 
     $event.preventDefault();
 
-    this.rows.at(index).disable();
-
-    if(this.rows.at(index).dirty){
-
-
-      const saveData = (this.recordForm?.get('problems') as FormArray)
-      const fIndex = saveData?.controls.indexOf(this.rows.at(index)?.value.problemId);
-
-      if(fIndex > -1){
-
-        saveData.at(fIndex).setValue(this.rows.at(index));
-
-      }else{
-
-        saveData?.push(this.rows.at(index));
-
-      }
-
-    }
+    this.rows.at(index).disable({onlySelf:true});   
+    
   }
 
-  dropTable(event: CdkDragDrop<BehaviorSubject<AbstractControl[]>, any>) {
+  dropTable(event: CdkDragDrop<AbstractControl[], any>) {
    
     this.dataSource.subscribe(dataSource =>{
 
@@ -130,12 +131,12 @@ export class OrganisationDropdownComponent implements OnInit {
       
       dataSource[event.currentIndex].get('sortOrder')?.setValue(prevIndex + 1); 
 
+
       moveItemInArray(dataSource, prevIndex, event.currentIndex);
     
       dataSource.sort((a,b) =>  a.get('sortOrder')?.value - b.get('sortOrder')?.value);
 
       this.table.renderRows();
-
       
     });
     
