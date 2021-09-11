@@ -5,7 +5,6 @@ import { BehaviorSubject, interval } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
-import { CheckConnectionService } from 'src/app/core/services/check-connection/check-connection.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { timer } from 'rxjs';
 import { combineLatest } from 'rxjs';
@@ -25,7 +24,6 @@ export class DriverViewService extends APIService {
 
 
   constructor(public http: HttpClient,
-    private checkConnectionService: CheckConnectionService,
     private onlineStatus: OnlineStatusService,
     private snackBar: SnackbarService) {
     super(http);
@@ -118,7 +116,7 @@ export class DriverViewService extends APIService {
           && driverViewData.rescueTime
           && driverViewData.admissionTime
           && patient.callOutcome.CallOutcome?.CallOutcomeId === 1
-          && driverViewData.releaseDetailsId  && driverViewData.ambulanceAction!=='Rescue' 
+          && driverViewData.releaseDetailsId  && driverViewData.ambulanceAction!=='Rescue'
           && !driverViewData.releasePickupDate
           && !driverViewData.releaseBeginDate
           && !driverViewData.releaseEndDate
@@ -134,7 +132,7 @@ export class DriverViewService extends APIService {
       {
         driverViewData.actionStatus = 'Assigned';
       }
-      
+
       if(
         (
           driverViewData.ambulanceArrivalTime
@@ -150,7 +148,7 @@ export class DriverViewService extends APIService {
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
-          !driverViewData.releaseEndDate 
+          !driverViewData.releaseEndDate
         ) ||
         (
           driverViewData.streetTreatCaseId &&
@@ -199,15 +197,15 @@ export class DriverViewService extends APIService {
       }
 
       if(
-        ( 
+        (
           driverViewData.rescueTime &&
           driverViewData.ambulanceArrivalTime &&
           driverViewData.admissionTime &&
           driverViewData.ambulanceAction==='Rescue' &&
-          ((!driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId ) || 
-          (driverViewData.releaseDetailsId && driverViewData.streetTreatCaseId) || 
-          (driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId && !driverViewData.releasePickupDate)) 
-         
+          ((!driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId ) ||
+          (driverViewData.releaseDetailsId && driverViewData.streetTreatCaseId) ||
+          (driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId && !driverViewData.releasePickupDate))
+
         ) ||
         (
           driverViewData.ambulanceArrivalTime &&
@@ -224,34 +222,34 @@ export class DriverViewService extends APIService {
           driverViewData.streetTreatCaseId &&
           driverViewData.visitDate &&
           driverViewData.visitBeginDate &&
-          driverViewData.visitEndDate 
+          driverViewData.visitEndDate
         )
-      ) 
+      )
       {
         driverViewData.actionStatus = 'Complete';
       }
 
-      
-      
+
+
     });
     return driverViewData;
 
   }
 
 
-  public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) { 
+  public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
 
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
       if(val.success===1) {
- 
+
         const localData: DriverAssignment[] =  JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
- 
+
         const index = localData.findIndex(data=> data.emergencyCaseId === driverViewUpdatedData.emergencyCaseId && data.isUpdated === true);
- 
+
         localData[index].isUpdated = false;
- 
+
         localStorage.removeItem('driverViewData');
- 
+
         localStorage.setItem('driverViewData', JSON.stringify(localData));
       }
       else{
@@ -265,7 +263,7 @@ export class DriverViewService extends APIService {
   }
 
 
-  
+
 
   public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
 
@@ -277,17 +275,17 @@ export class DriverViewService extends APIService {
 
       const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));
 
-      const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId &&  
+      const index = driverViewLocalStorageData?.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId &&
       value.ambulanceAction === updatedRecord.ambulanceAction && this.checkAllPatientIds(updatedRecordData.patients, value));
 
-      if(index >=0) 
+      if(index >=0)
       {
 
         driverViewLocalStorageData.splice(index,1,updatedRecordData);
         this.driverViewDetails.next(driverViewLocalStorageData);
         localStorage.removeItem('driverViewData');
         localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
-        
+
       }
       else {
         if(updatedRecordData.ambulanceAction==='Release' && updatedRecordData.releaseAmbulanceId && updatedRecordData.releaseAmbulanceAssignmentDate) {
@@ -300,13 +298,13 @@ export class DriverViewService extends APIService {
           driverViewLocalStorageData.push(updatedRecordData);
 
         }
-        
+
         this.driverViewDetails.next(driverViewLocalStorageData);
 
         localStorage.removeItem('driverViewData');
 
         localStorage.setItem('driverViewData', JSON.stringify(driverViewLocalStorageData));
-        
+
       }
 
     }
@@ -315,7 +313,7 @@ export class DriverViewService extends APIService {
 
 
   checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
-    
+
     return driverViewData.patients.every(patient=> {
 
       return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
@@ -334,7 +332,7 @@ export class DriverViewService extends APIService {
     else if(updatedItemError.length === 0) {
 
       this.snackBar.successSnackBar('All cases synced with database.', 'Ok');
-      
+
     }
 
     return 0;
@@ -346,13 +344,13 @@ export class DriverViewService extends APIService {
     return timer(200).pipe(
       switchMap(() => this.getBackstopHospitalTimer())
     );
-  
+
   }
 
   getBackstopHospitalTimer() {
 
     const timer = this.driverViewDetails.pipe(
-      map(driverViewCases=> 
+      map(driverViewCases=>
       driverViewCases.reduce((newArr:any, driverCase)=> {
         if(driverCase.ambulanceAction==='Rescue' && driverCase.rescueTime !== null && driverCase.actionStatus!=='Complete') {
             const rescueTime = new Date(driverCase.rescueTime as string);
@@ -360,31 +358,31 @@ export class DriverViewService extends APIService {
             {
               newArr.push(rescueTime);
             }
-                  
+
           }
-          
+
           if(driverCase.ambulanceAction==='Release' && driverCase.releasePickupDate !== null && driverCase.actionStatus!=='Complete') {
-  
+
             const pickupTime = new Date(driverCase.releasePickupDate as string);
             if(pickupTime.getDate() === new Date().getDate())
             {
               newArr.push(pickupTime);
             }
-  
+
           }
-          
+
           if(driverCase.ambulanceAction==='StreetTreat' && driverCase.visitBeginDate !== null && driverCase.actionStatus!=='Complete') {
-  
+
             const visitBeginDate = new Date(driverCase.visitBeginDate as string);
             if(visitBeginDate.getDate() === new Date().getDate())
             {
               newArr.push(visitBeginDate);
             }
-  
+
           }
-          
+
           if(driverCase.ambulanceAction==='STRelease' && driverCase.actionStatus!=='Complete') {
-  
+
             if(driverCase.releasePickupDate && !driverCase.releaseEndDate) {
               const pickupTime = new Date(driverCase.releasePickupDate as string);
               if(pickupTime.getDate() === new Date().getDate())
@@ -392,18 +390,18 @@ export class DriverViewService extends APIService {
                 newArr.push(pickupTime);
               }
             }
-  
+
             else if(driverCase.releaseEndDate && driverCase.visitBeginDate && !driverCase.visitEndDate) {
               const visitBeginDate = new Date(driverCase.releasePickupDate as string);
               if(visitBeginDate.getDate() === new Date().getDate())
               {
                 newArr.push(visitBeginDate);
               }
-            } 
+            }
           }
           return newArr;
       },[])
-    ), 
+    ),
     map(datesArray => {
       return new Date(new Date(Math.min.apply(null, datesArray)).getTime() + 150*60000);
     })
@@ -412,25 +410,25 @@ export class DriverViewService extends APIService {
     return combineLatest([interval(1000),timer]).pipe(
       map(time => time[1]),
       map(time => time ? this.backToHospitalTimer(time) : null),
-    
+
       filter(time => time !== null)
-    ); 
+    );
 
   }
 
-  
-     
+
+
 
   backToHospitalTimer(backToHospital: Date){
 
     const formatTime = (hours:number,minutes:number) => {
       return `${hours < 10 ? `0${hours}`: `${hours}`}:${minutes < 10 ? `0${minutes}`: `${minutes}`}`;
     };
-   
+
     const currentTime = new Date();
 
-  
-    
+
+
     if(backToHospital.getTime() - currentTime.getTime() > 0)
     {
       const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
@@ -440,13 +438,13 @@ export class DriverViewService extends APIService {
 
       const hours   = totalHours - ( totalDays * 24 );
       const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
-      
-      
-     
+
+
+
       return ({
         time : formatTime(hours,minutes),
         class : 'timeLeft'
-      }); 
+      });
 
     }
     else{
@@ -455,8 +453,8 @@ export class DriverViewService extends APIService {
       const minutes = parseInt((Math.abs(elapsed) / (1000 * 60) % 60).toString(),10);
       const hours = parseInt((Math.abs(elapsed) / ((1000 * 60 * 60))).toString(), 10);
 
-     
-     
+
+
       if(isNaN(hours))
       {
         return ({
@@ -464,11 +462,11 @@ export class DriverViewService extends APIService {
           class : 'timeLeft'
         });
       }else{
-    
+
         return ({
         time: `- ${formatTime(hours,minutes)}`,
         class: 'timeAgo'
-        }); 
+        });
       }
 
     }
