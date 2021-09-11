@@ -119,4 +119,24 @@
     .admissionAreaWrapper{
         min-width: 100%;
     }
+
+    .displayOnlyPatientWrapper {
+        height: max-content;
+        margin-top: 2%;
+        border: solid 0;
+        box-shadow: 2px 2px 2px 2px grey;
+        align-items: center;
+        padding-left: 25px;
+        padding-top: 1%;
+        margin-bottom: 2%;
+        border-radius: 3px;
+        color: grey;
+        font-weight: bold;
+    }
+
+    .mediaIconsWrapper {
+        color: black;
+        position: absolute;
+        right: 4em;
+    }
 }

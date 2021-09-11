@@ -12,12 +12,13 @@ import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-import { UniqueValidators } from './unique-validators';
+import { UniqueValidators } from '../../validators/unique-validators';
 import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { takeUntil } from 'rxjs/operators';
+import { Vehicle } from '../../models/driver-view';
 
 interface VisitCalender {
 	status: number;
@@ -94,6 +95,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
+	vehicleList$!: Observable<Vehicle[]>;
 
 	minVisitDate = '0';
 
@@ -121,6 +123,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	ngOnInit() {
+		this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 
 		if (!this.recordForm) this.recordForm = new FormGroup({});
 
@@ -130,7 +133,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				streetTreatCaseId: [],
 				patientId: [this.patientId],
 				casePriority: [, Validators.required],
-				teamId: [, Validators.required],
+				assignedVehicleId: [, Validators.required],
+				ambulanceAssignmentTime:['', Validators.required],
 				mainProblem: [, Validators.required],
 				adminNotes: [, Validators.required],
 				streetTreatCaseStatus: [, Validators.required],
@@ -138,9 +142,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			})
 		);
 		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
-
 		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
-
 		this.teamListData$ = this.dropdown.getAllTeams();
 		this.problems$ = this.dropdown.getStreetTreatMainProblems();
 		this.status$ = this.dropdown.getStatus();
@@ -220,8 +222,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 							});
 
 						}
-						this.visitsArray.push(this.getVisitFormGroup());
 					});
+				}
+				else {
+					this.visitsArray.push(this.getVisitFormGroup());
 				}
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);

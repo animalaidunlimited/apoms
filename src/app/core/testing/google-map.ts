@@ -27,7 +27,6 @@ import {
 import {isPlatformBrowser} from '@angular/common';
 import {Observable} from 'rxjs';
 import {MapEventManager} from './map-event-manager';
-import { constants } from 'buffer';
 
 interface GoogleMapsWindow extends Window {
   google?: typeof google;

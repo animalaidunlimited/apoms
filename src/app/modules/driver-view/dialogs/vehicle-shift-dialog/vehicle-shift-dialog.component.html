@@ -1,0 +1,85 @@
+<form [formGroup]="addShiftFormGroup" class="add-shift-dialog" (ngSubmit)="upsertStaffShift()">
+
+    <div fxLayout="row wrap">
+
+        <mat-form-field>
+            <input formControlName="shiftStartTime" type="datetime-local"
+            name="shiftStartTime"
+            [min]="minDate"
+            [max]="maxStartTime"
+            placeholder="Shift start time" [errorStateMatcher]="errorMatcher" matInput>
+
+                <mat-error *ngIf="shiftStartTime?.hasError('inside-other-shift')">
+                Shift start time is inside another shift.
+                </mat-error>
+
+                <mat-error *ngIf="shiftStartTime?.hasError('start-before-end')">
+                Shift start time is after shift end time.
+                </mat-error>
+
+                <mat-error *ngIf="shiftStartTime?.hasError('shift-overlap')">
+                This shift overlaps another shift.
+                </mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="shiftEndTime" type="datetime-local"
+            name="shiftEndTime"
+            [min]="minEndTime"
+            [max]="maxDate"
+            placeholder="Shift end time" [errorStateMatcher]="errorMatcher" matInput>
+
+            <mat-error *ngIf="shiftEndTime?.hasError('inside-other-shift')">
+                Shift end time is inside another shift.
+            </mat-error>
+
+            <mat-error *ngIf="shiftEndTime?.hasError('end-before-start')">
+                Shift end time is before shift start time.
+            </mat-error>
+
+            <mat-error *ngIf="shiftEndTime?.hasError('shift-overlap')">
+                This shift overlaps another shift.
+            </mat-error>
+
+
+        </mat-form-field>
+
+    </div>
+
+    <div fxLayout="column">
+
+        <div formArrayName="vehicleStaff" *ngFor="let staff of staffArray?.controls; let i = index;">
+
+                <div [formGroupName]="i">
+
+                    <mat-form-field>
+                        <mat-label>Staff {{i + 1}}</mat-label>
+                        <mat-select formControlName="userId" [errorStateMatcher]="errorMatcher">
+                            <mat-option>N/A</mat-option>
+                                <mat-option *ngFor="let staff of staff$ | async" [value]="staff.userId">
+                                {{staff.firstName}} {{staff.surname}}
+                            </mat-option>
+                        </mat-select>
+
+                        <mat-error *ngIf="shiftEndTime?.hasError('uniqueBy')">
+                            This staff member is already assigned.
+                        </mat-error>
+
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+
+
+            <button mat-raised-button  color="primary" type="submit" [disabled]="addShiftFormGroup.invalid">
+                <span *ngIf="isEdit">Save</span>
+                <span *ngIf="!isEdit">Add shift</span>
+            </button>
+
+            <button mat-raised-button color="primary" type="button" (click)="resetForm()">Reset</button>
+
+
+        </div>
+    </form>

@@ -7,6 +7,8 @@ import { environment } from 'src/environments/environment';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MaterialModule } from './material-module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedPipesModule } from './shared-pipes.module';
 
 
 describe('AppComponent', () => {
@@ -19,6 +21,8 @@ describe('AppComponent', () => {
                 MaterialModule,
                 HttpClientTestingModule,
                 AngularFireMessagingModule,
+                BrowserAnimationsModule,
+                SharedPipesModule,
                 AngularFireModule.initializeApp(environment.firebase), ],
             declarations: [AppComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

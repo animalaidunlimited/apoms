@@ -1,7 +1,6 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between center">
   <form [formGroup]="searchForm">
-
-    <mat-spinner *ngIf="loading" class="mat-spinner"></mat-spinner>
+  <mat-spinner class="loader"  *ngIf="loading | async" class="mat-spinner"></mat-spinner>
 
   <mat-form-field class="search-box" >
 
@@ -40,9 +39,13 @@
 
   <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box" #filterDiv>
 
+    <button mat-mini-fab color="primary" *ngIf="!hideMap" [color]="showAmbulancePaths ? filterBtnColor : 'primary'"
+    (click)="showAmbulancePaths = !showAmbulancePaths">
+      <img #toogleButton src="assets/icons/ambulance_round.svg" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
+    </button>
 
-    <button mat-mini-fab [color]="filterKeysArray.length>0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
-      <mat-icon>filter_alt</mat-icon>
+    <button mat-mini-fab [color]="filterKeysArray.length > 0 ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
+      <mat-icon #filterListToggleButton>filter_alt</mat-icon>
     </button>
 
 
@@ -50,7 +53,7 @@
       <mat-icon>map</mat-icon>
     </button>
 
-    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshRescues()" >
+    <button *ngIf="!autoRefresh" mat-mini-fab [color]="refreshColour" aria-label="Manual refresh" (click)="refreshCases()" >
       <mat-icon>refresh</mat-icon>
     </button>
 
@@ -58,27 +61,59 @@
     matTooltip="To enable auto refresh, please enable notifications in your browser."
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
+  <!-- This is the card that shows the ambulance and lets you show their paths -->
+  <div #toogleButtonDiv  class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
 
-   <div #chipsDiv class="filterWrapper" [hidden]= "hideList" style="position: relative;" >
+    <div class="filter-card">
+      <div class="filter-header">
+        Toggle ambulance paths
+      </div>
 
-  <div class="filter-card" *ngFor="let options of caseFilter">
-  <div class="filter-header">
-    {{options.showTitle}}
+      <div class="filter-content ambulance-list" *ngFor="let ambulance of (ambulanceLocations$ | async)"
+      fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="center space-between">
+
+        <img src="assets/icons/ambulance_van.png" class="ambulance-icon" alt="Ambulance filter">
+
+          <div fxLayout="column" fxLayoutAlign="center center">
+
+            <div *ngFor="let rescuer of ambulance.vehicleStaff; let i = index;">
+
+              <div>
+                Rescuer {{i + 1}}: {{rescuer.initials}}
+              </div>
+
+            </div>
+
+            <div>
+              <mat-slide-toggle (change)="toggleVehicleLocation($event, ambulance.vehicleDetails.vehicleId)">Show path</mat-slide-toggle>
+            </div>
+          </div>
+
+      </div>
+    </div>
+
   </div>
 
-  <div class="filter-content">
-    <mat-chip-list #filterChips multiple>
-      <mat-chip #filterChip="matChip"
-      (click)="filterChip.toggleSelected()"
-      (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
-      *ngFor="let option of options.groupValues">
-        {{option.value}}
-      </mat-chip>
-    </mat-chip-list>
-  </div>
-</div>
 
+    <!--This is the card that has the filter details on it-->
+  <div #chipsDiv class="filterWrapper" [hidden]="hideList" style="position: relative;" >
 
+    <div class="filter-card" *ngFor="let options of caseFilter">
+      <div class="filter-header">
+        {{options.showTitle}}
+      </div>
+
+      <div class="filter-content">
+        <mat-chip-list #filterChips multiple>
+          <mat-chip #filterChip="matChip"
+          (click)="filterChip.toggleSelected() "
+          (selectionChange)="filterChipSelected(options.groupTitle, filterChip)"
+          *ngFor="let option of options.groupValues">
+            {{option.value}}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -87,191 +122,36 @@
 
 <outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
 
-<div cdkDropListGroup [hidden]="!hideMap" class="outstandingExpansionWrapper">
-    <div class="drag-drop-container" *ngFor="let lane of outstandingCasesArray">
+<div  fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
+  <div class="swimlane">
+    <h2  style="text-align: center;">Received</h2>
+    <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
+   
+      <app-outstanding-case-board-case-panel *ngIf="outstandingCase"
+      [outstandingCase]="outstandingCase" 
+      (rescueEdit)="openRescueEdit($event)"
+      (mediaDialog)="openMediaDialog($event)"
+      (openCaseEmitter)="openCase($event)"
+      ></app-outstanding-case-board-case-panel>
 
-      <h2>{{lane.actionStatusName}}</h2>
-
-        <div class="rescue-group-container" *ngFor="let statusGroup of lane.statusGroups">
-
-        <div fxLayout="row" fxLayoutAlign="space-around center" style="margin-bottom: 15px;">
-        <div fxFlex="none" class="avatar-circle" *ngIf="statusGroup.staff1Abbreviation">
-          <span class="initials">{{statusGroup.staff1Abbreviation}}</span>
-        </div>
-        <div fxFlex="none" class="avatar-circle" *ngIf="statusGroup.staff2Abbreviation">
-          <span class="initials">{{statusGroup.staff2Abbreviation}}</span>
-        </div>
-        </div>
-
-        <div>
-
-          <div *ngFor="let actionGroup of statusGroup.actions">
-
-            <div
-            cdkDropList
-            [cdkDropListData]="actionGroup.ambulanceAssignment"
-            class="drag-drop-list"
-            style="background-color: transparent;"
-            (cdkDropListDropped)="drop($event)">
-            <div *ngFor="let outstandingCase of actionGroup.ambulanceAssignment;" cdkDrag>
-            <div *ngIf="outstandingCase.ambulanceAction==='Rescue' && outstandingCase.filteredCandidate">
-
-            <mat-expansion-panel [expanded]="outstandingCase.searchCandidate == true" hideToggle>
-              <mat-expansion-panel-header
-              fxLayout="row"
-              [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
-                  'border-green' : outstandingCase.emergencyCodeId == 2,
-                  'border-yellow' : outstandingCase.emergencyCodeId == 3}"
-              [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
-
-              <div fxFlex="15">
-
-                <mat-icon aria-label="Open rescue edit"(click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
-              </div>
-
-              <!--<div fxFlex="25">-->
-                <!--TODO - Add another dialog that lets you select which patient you want to add the image to-->
-                <!--<mat-icon class="imageIcon" (click)="openSearchMediaDialog()">add_photo_alternate</mat-icon>-->
-                <!--<mat-icon class="imageIcon">add_photo_alternate</mat-icon>-->
-                <!--<i class="imageCount">{{outstandingCase.mediaCount}}</i>-->
-              <!--</div>-->
-
-                <div fxFlex="40" style="text-align: center;">
-                  {{outstandingCase.emergencyNumber}}
-                  <div fxLayout="row-wrap" fxLayoutAlign="space-around center" *ngFor="let patient of outstandingCase.patients">
-                    ({{patient.animalType}})
-                  </div>
-                </div>
-
-                  <div fxFlex="25">
-                    <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
-                  </div>
-
-                  <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
-
-                </mat-expansion-panel-header>
-
-              <div fxLayout="column" fxLayoutAlign="space-around start" >
-
-                <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
-                <!--<mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>-->
-
-              <div *ngFor="let callerDetails of outstandingCase.callerDetails">
-
-                <div fxLayout="row" fxLayoutAlign="start end">
-
-                    <!-- <div fxLayout="row" fxLayoutAlign="start center" > -->
-                      <div class="telephone-dash-container">
-                        <svg height="11" width="25">
-                        <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                        Sorry, your browser does not support inline SVG.
-                        </svg>
-                    </div>
-
-                    <div class="name">{{callerDetails.callerName}}</div>
-
-                    <div class="telephone">{{callerDetails.callerNumber}}</div>
-                    <!-- </div> -->
-
-                </div>
-
-            </div>
-
-                <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap" fxLayoutAlign="space-around start">
-                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
-                  <div class="media-count">({{patient.mediaCount}})</div>
-                  <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}</div>
-                </div>
-
-                <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-                <div class="animal-location">{{outstandingCase.location}}</div>
-            </div>
-
-            </mat-expansion-panel>
-
-            </div>
-
-            <div *ngIf="outstandingCase.ambulanceAction==='Release' && outstandingCase.filteredCandidate">
-
-              <mat-expansion-panel class="mat-release-panel" [expanded]="outstandingCase.searchCandidate == true"
-
-              hideToggle>
-                <mat-expansion-panel-header
-                fxLayout="row"
-                [@rescueMoved]="outstandingCase.moved ? 'moved' : 'still'">
-
-
-                <div fxFlex="15">
-                  <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
-                </div>
-
-                <!-- TODO - Put this back in when we're ready to start printing cards from the desk -->
-                <!--<div fxFlex="25">
-                  <mat-icon aria-label="Print emergency record" (click)="printEmergencyCard(outstandingCase.emergencyCaseId)">print</mat-icon>
-                </div>-->
-
-                <div fxFlex style="text-align: center;">
-                  <div *ngFor="let patient of outstandingCase.patients">
-                    {{patient.tagNumber}}
-                    ({{patient.animalType}})
-                  </div>
-                </div>
-
-                <div fxFlex="25">
-                  <mat-icon aria-label="Edit record" (click)="openCase(outstandingCase)">create</mat-icon>
-                </div>
-
-                <div flFlex="none">{{outstandingCase.requestedDate | timeAgo}}</div>
-
-                </mat-expansion-panel-header>
-
-                <div fxLayout="column" fxLayoutAlign="space-around start" >
-                  <!--<div class="name">{{outstandingCase.callerName}}</div>-->
-
-                <div fxLayout="column" fxLayoutAlign="space-around start" >
-                    <div *ngFor="let callerDetails of outstandingCase.callerDetails">
-
-                      <div fxLayout="row" fxLayoutAlign="start end">
-
-                          <div class="telephone-dash-container">
-                              <svg height="11" width="25">
-                              <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
-                              Sorry, your browser does not support inline SVG.
-                              </svg>
-                          </div>
-
-                          <div class="name">{{callerDetails.callerName}}</div>
-
-                          <div class="telephone">{{callerDetails.callerNumber}}</div>
-                      </div>
-
-                  </div>
-                </div>
-
-                <div class="patients-group" *ngFor="let patient of outstandingCase.patients" fxLayout="row-wrap" fxLayoutAlign="space-around start">
-                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
-                  <div class="media-count">({{patient.mediaCount}})</div>
-                  <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}</div>
-                </div>
-
-                <!--<div *ngFor="let patient of outstandingCase.patients">
-                  <mat-icon class="imageIcon" (click)="openMediaDialog(patient.patientId, patient.tagNumber)">add_photo_alternate</mat-icon>
-                  {{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
-                </div>-->
-
-
-
-                <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-                <div class="animal-location">{{outstandingCase.location}}</div>
-              </div>
-
-              </mat-expansion-panel>
-
-              </div>
-            </div>
-            </div>
-      </div>
-      </div>
-      </div>
+    </div>
   </div>
+  <div fxFlex="1 1 auto" ngStyle.gt-sm="margin-top:4em;">
+    <div class="ambulanceAssignedCases" *ngFor="let vehicleId of vehicleId$ | async">
 
+
+        <outstanding-case-board-ambulance *ngIf="vehicleId"
+          (openCaseEmitter)="openCase($event)" 
+          (rescueEdit)="openRescueEdit($event)" 
+          (mediaDialog)="openMediaDialog($event)"   
+          [vehicleId]="vehicleId"
+          [matChipObs]="matChipObs"
+          [filterKeysArray]="filterKeysArray"
+          [searchChange$]="searchChange$"
+          [outstandingCases$]="outstandingCases$"
+        ></outstanding-case-board-ambulance>
+
+
+    </div>
+  </div>
+</div>

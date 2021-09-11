@@ -1,0 +1,71 @@
+
+<mat-expansion-panel 
+  [expanded]="outstandingCase?.searchCandidate == true" 
+  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction === 'Release'}" 
+  hideToggle>
+    <mat-expansion-panel-header 
+      [ngClass]="{'border-red' : outstandingCase?.emergencyCodeId == 1,
+                  'border-green' : outstandingCase?.emergencyCodeId == 2,
+                  'border-yellow' : outstandingCase?.emergencyCodeId == 3}"
+                  
+      [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
+
+          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
+            <mat-icon 
+              aria-label="Open rescue edit" 
+              (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+          </div>
+
+          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction === 'Release'">
+            <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
+          </div>
+
+          <div fxFlex="40" style="text-align: center;">
+            {{outstandingCase?.emergencyNumber}}
+            <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
+              *ngFor="let patient of outstandingCase?.patients">
+              ({{patient.animalType}})
+            </div>
+          </div>
+
+          <div fxFlex="25">
+            <mat-icon 
+              aria-label="Edit record" 
+              (click)="openCase(outstandingCase)">create</mat-icon>
+          </div>
+
+          <div flFlex="none">{{outstandingCase?.callDateTime}}</div>
+
+        </mat-expansion-panel-header>
+
+        <div fxLayout="column" fxLayoutAlign="space-around start">
+        
+          <div *ngFor="let callerDetails of outstandingCase?.callerDetails">
+            <div fxLayout="row" fxLayoutAlign="start end">
+              <div class="telephone-dash-container">
+                <svg height="11" width="25">
+                  <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
+                  Sorry, your browser does not support inline SVG.
+                </svg>
+              </div>
+              <div class="name">{{callerDetails.callerName}}</div>
+              <div class="telephone">{{callerDetails.callerNumber}}</div>
+            </div>
+          </div>
+
+          <div class="patients-group" 
+          *ngFor="let patient of outstandingCase?.patients" 
+          fxLayout="row-wrap"
+          fxLayoutAlign="space-around start">
+            <mat-icon 
+              class="imageIcon" 
+              (click)="openMediaDialog({patientId:patient.patientId, tagNumber:patient.tagNumber})">
+              add_photo_alternate</mat-icon>
+              <div class="media-count">({{patient.mediaCount}})</div>
+              <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+            </div>
+          </div>
+          <div class="CallDateTime">{{outstandingCase?.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+          <div class="animal-location">{{outstandingCase?.location}}</div>
+        </div>
+      </mat-expansion-panel>

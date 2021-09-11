@@ -80,8 +80,10 @@ describe('SearchResultCardComponent', () => {
       CallOutcome: '',
       sameAsNumber: 0,
       Location: '',
-      Latitude: 0,
-      Longitude: 0,
+      latLngLiteral: {
+        lat:0,
+        lng:0
+      },
       CurrentLocation: ''};
 
     component.record = component.record;

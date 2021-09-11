@@ -1,0 +1,105 @@
+
+.selectionDivWrapper {
+    margin-top: 10px;
+}
+
+@media (max-width: 600px){
+
+    .selectionDivWrapper {
+        margin-top: calc(100vh/13);
+    }
+
+}
+
+
+.textWrapper {
+    position: relative;
+    bottom: .6em;
+    color: white;
+}
+
+.horizontalTab {
+    position: fixed;
+    width: 100%;
+    height: 54px;
+    left: 0px;
+    bottom: 0px;
+    background: #607d8b;
+    display: flex;
+    justify-content: space-between;
+}
+
+.contentWrapper {
+    margin-bottom: 13%;
+}
+
+.iconText {
+    margin-top: 5px;
+    color: white;
+    width: fit-content;
+    font-size: 8px;
+    display: flex;
+    align-self: center;
+}
+
+.iconTextCallDesk {
+    margin-top: 0;
+    color: white;
+    width: fit-content;
+    font-size: 8px;
+    display: flex;
+    align-self: center;
+}
+
+.iconDiv {
+    border-radius: 50%;
+    color: #607d8b;
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 7px;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+}
+
+::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0 0.35em !important;
+}
+
+.mat-icon {
+    width: 1em !important;
+}
+
+.backIconDiv {
+    border-radius: 50%;
+    background-color: #607d8b;
+    color: white;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 7px;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+}
+
+.refreshButton {
+    position: relative;
+    left: 30%;
+
+    .mat-icon {
+        color: white;
+    }
+}
+
+.timeAgo{
+    font-weight: bold;
+    color:red;
+}
+.timer{
+    display:flex;
+    font-weight: bold;
+    color: grey;
+    font-size: 1.5em;
+    padding-left: 2em;
+}
