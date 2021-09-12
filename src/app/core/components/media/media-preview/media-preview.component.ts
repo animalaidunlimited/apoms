@@ -114,7 +114,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       imageTags:[],
       imageTagsChips: ''
     });
-
+   
     if(!this.data?.upload){
 
 
@@ -164,7 +164,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
            full: mediaItem.mediaItem?.remoteURL !== '' ? mediaItem.mediaItem?.remoteURL as string :  unwrapSafeValue(mediaItem.mediaItem?.localURL) ,
            thumbnail:  mediaItem?.mediaItem?.remoteURL as string,
            type:  mediaItem?.mediaItem?.mediaType as string
-          };
+          }; 
 
           this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddThh:mm'));
           if(this.onlineStatus.connectionChanged.value){
@@ -175,9 +175,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
 
-          this.imageData.patientMediaItemId = media;
+          this.data.mediaData = mediaItem.mediaItem;  
 
-
+          this.data.mediaData.patientMediaItemId = media;
 
           this.checkHeight(mediaItem.mediaItem?.heightPX, mediaItem.mediaItem?.widthPX);
 
@@ -193,7 +193,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         mediaItem.mediaItem.updated = true;
       }
-
+  
     }
 
   }
@@ -243,9 +243,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     Event?.preventDefault();
     const comment = Event?.target;
+    const patientMediaItemId = this.imageData.patientMediaItemId ? this.imageData.patientMediaItemId : this.data.mediaData.patientMediaItemId ;
 
     const commentObject = ({
-      patientMediaItemId : this.imageData.patientMediaItemId,
+      patientMediaItemId,
       comment: (comment as HTMLInputElement).value
     });
 
@@ -257,7 +258,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
-        this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+        this.patientService.getPatientMediaComments(patientMediaItemId).subscribe((comments)=>{
           this.patientMediaComments$.next(comments);
         });
       }
@@ -298,8 +299,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     if(this.recordForm.dirty || removeTag)
     {
-
+      
       this.patientService.savePatientMedia(mediaItem).then((tagsResponse: any) => {
+       
         if (tagsResponse.success === 1) {
 
           this.showSnackBar.successSnackBar('Patient tags updated successfully', 'OK');

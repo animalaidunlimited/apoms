@@ -395,6 +395,7 @@ export class PatientService extends APIService {
 
     }
     public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
+        console.log(comment);
         return await this.post(comment)
         .then(data => {
             if(data?.success === 1){
