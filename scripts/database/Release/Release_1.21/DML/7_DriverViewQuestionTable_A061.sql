@@ -2,20 +2,13 @@ CREATE TABLE IF NOT EXISTS AAU.DriverViewQuestions (
   `QustionId` INT NOT NULL AUTO_INCREMENT,
   `ActionStatusId` INT NULL,
   `ActionStatus` VARCHAR(45) NULL,
-  `InputType` VARCHAR(45) NULL,
+  `SubAction` VARCHAR(45),
+  `FormControlName` VARCHAR(45) NULL,
+  `FormControlType` VARCHAR(45),
   `SortOrder` INT NULL,
+  `Label` VARCHAR(45),
   PRIMARY KEY (`QustionId`));
 
-
-
-
-ALTER TABLE AAU.DriverViewQuestions 
-ADD COLUMN `FormControlType` VARCHAR(45) NULL AFTER `FormControlName`,
-CHANGE COLUMN `InputType` `FormControlName` VARCHAR(45) NULL DEFAULT NULL ;
-
-
-ALTER TABLE AAU.DriverViewQuestions 
-ADD COLUMN `SubAction` VARCHAR(45) NULL AFTER `ActionStatus`;
 
 
 
@@ -35,8 +28,7 @@ INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubActio
 INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('1', 'Rescue', 'Admitted', 'inTreatmentAreaId', 'select', '5');
 
 
-ALTER TABLE AAU.DriverViewQuestions 
-ADD COLUMN `Label` VARCHAR(45) NULL AFTER `SortOrder`;
+
 
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Ambulance arrival time' WHERE (`QustionId` = '1');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Rescue time' WHERE (`QustionId` = '2');
