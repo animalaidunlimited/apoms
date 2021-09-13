@@ -4,6 +4,8 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
 
 DELIMITER $$
 
+-- CALL AAU.sp_GetOutstandingRescues('Jim');
+
 CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
@@ -63,7 +65,7 @@ WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds) AND e
 PatientsCTE AS
 (
     SELECT
-		p.EmergencyCaseId ,
+		p.EmergencyCaseId,
         p.PatientCallOutcomeId,
         p.PatientId,
         JSON_ARRAYAGG(
@@ -99,7 +101,9 @@ PatientsCTE AS
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE) AND p.IsDeleted != 1
-	GROUP BY p.EmergencyCaseId
+	GROUP BY p.EmergencyCaseId,
+        p.PatientCallOutcomeId,
+        p.PatientId
 )
 
 
