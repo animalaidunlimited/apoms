@@ -12,7 +12,8 @@ CREATE PROCEDURE AAU.sp_InsertVehicleListItem(
 												IN prm_SmallAnimalCapacity INT,
                                                 IN prm_MinRescuerCapacity INT,
 												IN prm_MaxRescuerCapacity INT,
-												IN prm_VehicleStatusId INT
+												IN prm_VehicleStatusId INT,
+                                                IN prm_OrganisationId INT
                                             )
 BEGIN
 
@@ -41,7 +42,8 @@ IF vVehicleCount = 0 THEN
 		SmallAnimalCapacity,
         MinRescuerCapacity,
         MaxRescuerCapacity,
-		VehicleStatusId
+		VehicleStatusId,
+		OrganisationId
 	)
 	VALUES(
 		prm_VehicleRegistrationNumber,
@@ -51,7 +53,8 @@ IF vVehicleCount = 0 THEN
         prm_SmallAnimalCapacity,
         prm_MinRescuerCapacity,
         prm_MaxRescuerCapacity,
-        prm_VehicleStatusId
+        prm_VehicleStatusId,
+		prm_OrganisationId
 	);
     
 	SELECT LAST_INSERT_ID(), 1 INTO vVehicleId, vSuccess;
