@@ -38,16 +38,20 @@ export class AuthService extends APIService {
         this.token = this.storage.read(AUTH_TOKEN) || '';
 
         this.loggedIn = new BehaviorSubject<boolean>(this.token.length > 0);
+        console.log(this.loggedIn.value);
 
     }
 
     public async login(username: string, password: string) {
 
         try {
+            console.log('1');
             this.response = (await this.post({
                 username,
                 password
             })) as Response;
+
+            console.log('2');
 
             this.token = this.response.token || '';
 
@@ -79,8 +83,8 @@ export class AuthService extends APIService {
 
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
-        } catch (e) {
-            return Promise.reject(e.message);
+        } catch (error:any) {
+            return Promise.reject(error.message);
         }
     }
 

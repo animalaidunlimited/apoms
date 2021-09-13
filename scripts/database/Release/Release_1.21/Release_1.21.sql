@@ -609,7 +609,7 @@ LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
-LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
+LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(prm_Date AS DATE)
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
@@ -810,7 +810,7 @@ PatientsCTE AS
     LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
     LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
     LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-    LEFT JOIN AAU.StreetTReatCase std ON std.PatientId = p.PatientId
+    LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 	LEFT JOIN
     (
 		SELECT	pmi.PatientId,
@@ -895,7 +895,7 @@ LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
-LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
+LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
@@ -1694,7 +1694,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-START TRANSACTION ;
+-- START TRANSACTION ;
 
 IF vEmNoExists = 0 THEN
 
@@ -1727,8 +1727,7 @@ INSERT INTO AAU.EmergencyCase
 VALUES
 (
 	vOrganisationId,
-	prm_EmergencyNumber,
-    DummyEmNo,
+	DummyEmNo,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
@@ -1748,7 +1747,7 @@ VALUES
 
 -- UNLOCK TABLES;
 
-COMMIT;
+-- COMMIT;
 	
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
     
@@ -1979,21 +1978,30 @@ Purpose: This procedure is used to insert the location, heading, speed and altit
 */
 
 DECLARE vUnique INT;
+DECLARE vUserId INT;
+DECLARE vVehicleId INT;
 DECLARE vOrganisationId INT;
 DECLARE vSuccess INT;
 DECLARE prm_SocketEndPoint VARCHAR(20);
 
 SET vUnique = 0;
+SET vUserId = 0;
+SET vVehicleId = 0;
 SET vSuccess = 0;
 
-SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
+SELECT o.OrganisationId, o.SocketEndPoint, u.UserId INTO vOrganisationId, prm_SocketEndPoint, vUserId
 FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
+SELECT vs.VehicleId INTO vVehicleId
+FROM AAU.VehicleShift vs
+INNER JOIN VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId AND NOW() >= vs.StartTime AND NOW() <= vs.EndTime
+LIMIT 1;
+
 SELECT COUNT(1) INTO vUnique FROM AAU.VehicleLocation WHERE OrganisationId = vOrganisationId AND VehicleId = prm_VehicleId AND Timestamp = prm_Timestamp;
 
-IF vUnique = 0 THEN
+IF vUnique = 0 AND vVehicleId <> 0 THEN
 
 INSERT INTO AAU.VehicleLocation
 (
@@ -2006,11 +2014,12 @@ INSERT INTO AAU.VehicleLocation
 `Heading`,
 `Accuracy`,
 `Altitude`,
-`AltitudeAccuracy`)
+`AltitudeAccuracy`
+)
 VALUES
 (
 vOrganisationId,
-prm_VehicleId,
+vVehicleId,
 prm_Timestamp,
 prm_Latitude,
 prm_Longitude,
@@ -2038,7 +2047,6 @@ CALL AAU.sp_GetVehicleLocationMessage(
 SELECT vSuccess AS `success`, prm_SocketEndPoint AS `socketEndPoint`;
 
 END $$
-
 
 DELIMITER !!
 

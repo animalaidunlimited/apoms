@@ -420,7 +420,6 @@ cellClicked(cell:string, value:any){
       this.openHospitalManagerRecord(value);
 
     }
-
 }
 
 openHospitalManagerRecord(tagNumber: string){
@@ -436,8 +435,6 @@ quickUpdate(row:AbstractControl) {
     this.snackbar.errorSnackBar('You do not have permission to save; please see the admin' , 'OK');
     return;
   }
-
-
 
   const dialogRef = this.dialog.open(PatientEditDialog, {
       width: '500px',
@@ -520,8 +517,6 @@ getTreatmntPriority(element: number) : string {
   const treatmentPriorities = ["Low","Medium","High","Urgent"];
 
   return treatmentPriorities[element - 1];
-
-
 
 }
 
