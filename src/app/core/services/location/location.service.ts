@@ -118,7 +118,6 @@ export class LocationService extends APIService {
       navigator.geolocation.getCurrentPosition(async (position) => {
 
         const vehicleLocation = {
-          vehicleId: 1,
           timestamp: new Date(),
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,

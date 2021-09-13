@@ -53,14 +53,15 @@ END IF;
 
 SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
 vEmNoExists, vUpdateTime, vCurrentCaseId
-FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
+FROM AAU.EmergencyCase
+WHERE EmergencyNumber = prm_EmergencyNumber;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
 FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-START TRANSACTION ;
+-- START TRANSACTION ;
 
 IF vEmNoExists = 0 THEN
 
@@ -93,8 +94,7 @@ INSERT INTO AAU.EmergencyCase
 VALUES
 (
 	vOrganisationId,
-	prm_EmergencyNumber,
-    DummyEmNo,
+	DummyEmNo,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
@@ -114,7 +114,7 @@ VALUES
 
 -- UNLOCK TABLES;
 
-COMMIT;
+-- COMMIT;
 	
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
     
