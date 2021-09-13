@@ -18,7 +18,9 @@ CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `MaxRescuerCapacity` int DEFAULT NULL,
   PRIMARY KEY (`VehicleId`),
   KEY `FK_VehicleVehicleTypeId_VehicleType_VehicleTypeId_idx` (`VehicleTypeId`),
+  KEY `FK_VehicleVehicleStatusId_VehicleStatus_VehicleStatusId_idx` (`VehicleStatusId`),
   KEY `FK_VehicleOrganisationId_OrganisationOrganisationId_idx` (`OrganisationId` ASC),
   CONSTRAINT `FK_VehicleVehicleTypeId_VehicleType_VehicleTypeId` FOREIGN KEY (`VehicleTypeId`) REFERENCES AAU.VehicleType (`VehicleTypeId`),
+  CONSTRAINT `FK_VehicleVehicleStatusId_VehicleStatus_VehicleStatusId` FOREIGN KEY (`VehicleStatusId`) REFERENCES AAU.VehicleType (`VehicleStatusId`),
   CONSTRAINT `FK_VehicleOrganisationId_OrganisationOrganisationId_idx` FOREIGN KEY (`OrganisationId`) REFERENCES AAU.Organisation (`OrganisationId`)
 );
