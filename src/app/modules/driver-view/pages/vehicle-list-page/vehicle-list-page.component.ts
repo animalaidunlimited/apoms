@@ -6,6 +6,7 @@ import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { VehicleService } from '../../services/vehicle.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 
 
@@ -53,7 +54,8 @@ export class VehicleListPageComponent implements OnInit {
   constructor(private dropdown: DropdownService,
               private fb: FormBuilder,
               private vehicleService: VehicleService,
-              private snackBar: SnackbarService) { }
+              private snackBar: SnackbarService,
+              private authService:AuthService) { }
 
   ngOnInit(): void {
     this.vehicleType$ = this.dropdown.getVehicleType();
@@ -62,8 +64,8 @@ export class VehicleListPageComponent implements OnInit {
   }
 
   Submit(vehicleForm: FormGroup) {
-
-    this.vehicleService.upsertVehicleListItem(vehicleForm.value).then(response=> {
+    const organisationId = this.authService.getOrganisationId();
+    this.vehicleService.upsertVehicleListItem({...vehicleForm.value, organisationId}).then(response=> {
       if(response.success === -1) {
         this.snackBar.errorSnackBar('Communication error see adim', 'Ok');
       }
@@ -113,5 +115,4 @@ export class VehicleListPageComponent implements OnInit {
     }
 
   }
-
 }

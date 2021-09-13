@@ -45,7 +45,7 @@ export class AuthService extends APIService {
     public async login(username: string, password: string) {
 
         try {
-            console.log('1');
+            
             this.response = (await this.post({
                 username,
                 password
@@ -110,5 +110,9 @@ export class AuthService extends APIService {
 
     public getOrganisationSocketEndPoint() {
         return this.storage.read('SOCKET_END_POINT');
+    }
+
+    public getOrganisationId() {
+        return this.storage.read('OrganisationId');
     }
 }
