@@ -20,10 +20,11 @@ import { CallerDetails } from '../../models/emergency-record';
 })
 export class SearchResultCardComponent implements OnInit {
 
-  @Input() record!:SearchResponse;
+  @Input() record: SearchResponse | undefined;
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  callerObject!: CallerDetails[];
+  callerObject: CallerDetails[] | undefined;
+
   constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
@@ -34,7 +35,7 @@ export class SearchResultCardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.callerObject = this.record.callerDetails;
+    this.callerObject = this.record?.callerDetails;
 
     this.printService.initialisePrintTemplates();
   }
@@ -52,7 +53,7 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string | undefined,  CallOutcomeId: number | undefined, 
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string | undefined,  CallOutcomeId: number | undefined,
   CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
