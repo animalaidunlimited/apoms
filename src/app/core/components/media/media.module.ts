@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material-module';
 import { MediaPreviewComponent } from './media-preview/media-preview.component';
@@ -9,10 +9,11 @@ import { SharedPipesModule } from 'src/app/shared-pipes.module';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
 import * as Hammer from 'hammerjs';
 
+@Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
   overrides = {
-    swipe: { 
-      direction: Hammer.DIRECTION_ALL 
+    swipe: {
+      direction: Hammer.DIRECTION_ALL
     },
   };
 }

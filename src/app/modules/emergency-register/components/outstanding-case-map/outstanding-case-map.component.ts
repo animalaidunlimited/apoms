@@ -37,8 +37,6 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   options: google.maps.MapOptions = {};
 
-
-
   outstandingCases$!: BehaviorSubject<OutstandingAssignment[]>;
 
   rescues: any = [];
@@ -63,6 +61,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
 
     this.center = this.userOptions.getCoordinates();
+
+    console.log(this.center);
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
     this.options = {

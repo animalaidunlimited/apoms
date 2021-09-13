@@ -29,6 +29,8 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
+    loadBoard = false;
+
     selected = new FormControl(0);
 
     tabs = [
@@ -46,7 +48,9 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.selected.setValue(1);
+
         this.navigationService.isSearchClicked
+
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((clicked)=>
             {
@@ -56,16 +60,16 @@ export class TabBarComponent implements OnInit, OnDestroy {
                 }
             }
         );
+
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
-        sharedMediaItem
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((mediaItem:File[])=>{
+        sharedMediaItem.pipe(takeUntil(this.ngUnsubscribe))
+                        .subscribe((mediaItem:File[])=>{
 
-           if(mediaItem.length > 0){
-                this.openSearchMediaDialog(mediaItem);
-           }
-        });
+                        if(mediaItem.length > 0){
+                                this.openSearchMediaDialog(mediaItem);
+                        }
+                        });
 
     }
 
@@ -149,6 +153,17 @@ export class TabBarComponent implements OnInit, OnDestroy {
             minWidth: '50%'
         });
         dialog.afterClosed().subscribe(()=> this.selected.setValue(tabIndex));
+    }
+
+    tabChanged($event:number){
+
+        console.log($event);
+
+        if($event === 0){
+            this.loadBoard = true;
+        }
+
+        this.selected.setValue($event);
 
     }
 }
