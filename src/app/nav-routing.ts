@@ -186,9 +186,9 @@ export class NavRouteService {
             
         }
 
-        this.navRoute.children?.forEach(routeVal=> {
+        this.navRoute.children?.forEach(async routeVal=> {
 
-            this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
+            await this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
 
                 if(routeVal.data && val) {
                     routeVal.data.componentPermissionLevel?.next(val);
