@@ -124,8 +124,7 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseSTPatientId)
     GROUP BY p.EmergencyCaseId,
-        p.PatientCallOutcomeId,
-        p.PatientId
+    IFNULL(rd.PatientId, p.EmergencyCaseId)
 )
 ,
 DriverViewObject AS
@@ -169,7 +168,11 @@ DriverViewObject AS
             p.PatientId,
             rd.BeginDate,
             rd.EndDate,
-			IF(rd.EndDate,v.VisitId,NULL) VisitId,
+			CASE WHEN
+				rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL AND v.VisitId IS NOT NULL THEN v.VisitId
+                WHEN rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.ReleaseDetailsId IS NOT NULL AND rd.EndDate IS NOT NULL THEN v.VisitId
+                ELSE NULL
+			END visitId,
             v.VisitBeginDate,
             v.VisitEndDate,
             v.VisitTypeId, 
@@ -205,21 +208,25 @@ LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
           
 ),
 
+DriverVehicleUserListCTE AS (
+SELECT JSON_ARRAYAGG(u.UserId) rescuerList, 
+vs.VehicleId 
+FROM AAU.VehicleShift vs  
+INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
+INNER JOIN AAU.User u ON u.UserId = vsu.UserId
+WHERE vs.VehicleId IN (SELECT driverAssignedVehicleId FROM DriverViewObject )
+AND vs.StartDate<= NOW() AND vs.EndDate >= NOW() AND IFNULL(vs.IsDeleted,0) = 0
+-- GROUP BY u.UserId,
+-- vs.VehicleId
+GROUP BY vs.VehicleId
+),
 DriverViewCTE AS (
-SELECT driverData.* , 
-    JSON_ARRAYAGG(
-		driverData.UserId
-    ) as rescuerList
-    FROM
-    (SELECT dvo.*,
-    u.UserId as userId
-	FROM DriverViewObject dvo
-	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = dvo.driverAssignedVehicleId
-	INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
-	INNER JOIN AAU.User u ON u.UserId = vsu.UserId
-	GROUP BY u.UserId
-	) driverData
+	SELECT * 
+    FROM DriverViewObject dvo
+    LEFT JOIN DriverVehicleUserListCTE dvuc ON dvuc.VehicleId = dvo.driverAssignedVehicleId  
+    WHERE IF(AmbulanceAction = 'StreetTreat', VisitBeginDate <= NOW() AND IFNULL(VisitEndDate, NOW()) >= NOW(), VisitBeginDate IS NULL AND VisitEndDate IS NULL)
 )
+
 
 SELECT
 JSON_MERGE_PRESERVE( 
@@ -254,7 +261,7 @@ JSON_OBJECT("rescueAmbulanceAssignmentDate", DATE_Format(AmbulanceAssignmentTime
 JSON_OBJECT("releaseAmbulanceId", ReleaseAssignedVehicleId),
 JSON_OBJECT("releaseAmbulanceAssignmentDate", DATE_Format(ReleaseAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("streetTreatAmbulanceId", StreetTreatAssignedVehicleId),
-JSON_OBJECT("streetTreatAmbulanceAssignmentDate", DATE_Format(StreetTreatAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
+JSON_OBJECT("streetTreatAmbulanceAssignmentDate", DATE_Format(StreetTreatAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")), 
 JSON_OBJECT("admissionTime", DATE_Format(AdmissionTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
 JSON_OBJECT("emergencyNumber", EmergencyNumber),
