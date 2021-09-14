@@ -16,13 +16,20 @@
 
       </div>
 
-      <mat-form-field style="width: 100%; margin-top: 15px" *ngIf="!isPrinting">
-        <mat-label>Filter by tag number</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="E.g. A378" #input>
-      </mat-form-field>
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" style="margin-top: 15px">
+
+        <mat-form-field *ngIf="!isPrinting">
+          <mat-label>Filter by tag number</mat-label>
+          <input matInput (keyup)="applyFilter()" formControlName="filterValue" placeholder="E.g. A378" #input>
+        </mat-form-field>
+
+        <button mat-stroked-button color="primary" (click)="clearFilter()">Clear</button>
+
+      </div>
 
 
-      <table mat-table [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
+
+    <table mat-table [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
 
         <!-- Header row first group -->
     <ng-container matColumnDef="header-row-patient-details-group">
@@ -138,9 +145,10 @@
 
               <mat-radio-group>
                 <mat-radio-button
-                  [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
+                  [checked]="column?.areaId === row.get('Moved to')?.value"
                   (change)="areaChanged(column?.areaId, index)"
                   [value]="column?.areaId">
+
                 </mat-radio-button>
 
               </mat-radio-group>
