@@ -27,7 +27,7 @@ export class EmergencyCaseDialogComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<EmergencyCaseDialogComponent>
   ) {
     this.dataSource = new MatTableDataSource(this.data.emergencyCases);
-    this.emergencyCaseDate = this.data.emergencyCases[0].callDateTime;
+    this.emergencyCaseDate = this.data.emergencyCases[0]?.callDateTime;
    }
 
   ngOnInit(){

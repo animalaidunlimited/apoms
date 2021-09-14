@@ -6,7 +6,6 @@ DELIMITER $$
 
 CREATE PROCEDURE AAU.sp_InsertVehicleLocation (
 IN prm_Username VARCHAR(45),
-IN prm_VehicleId INT,
 IN prm_Timestamp DATETIME,
 IN prm_Latitude DECIMAL(11,8),
 IN prm_Longitude DECIMAL(11,8),
@@ -44,7 +43,7 @@ WHERE UserName = prm_Username LIMIT 1;
 
 SELECT vs.VehicleId INTO vVehicleId
 FROM AAU.VehicleShift vs
-INNER JOIN VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId AND NOW() >= vs.StartTime AND NOW() <= vs.EndTime
+INNER JOIN VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId AND NOW() >= vs.StartDate AND NOW() <= vs.EndDate
 LIMIT 1;
 
 SELECT COUNT(1) INTO vUnique FROM AAU.VehicleLocation WHERE OrganisationId = vOrganisationId AND VehicleId = prm_VehicleId AND Timestamp = prm_Timestamp;

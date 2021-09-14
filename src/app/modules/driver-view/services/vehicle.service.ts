@@ -13,6 +13,11 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { OrganisationOptionService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
+interface UpsertShiftResult{
+  success: number
+  vehicleShiftId: number
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -129,24 +134,34 @@ export class VehicleService  extends APIService {
 
       });
 
-      // If the shift already exists, then replace it with the updated one, otherwise add it into the array.
-      this.currentVehicleShifts.splice(exists, exists > -1 ? 1 : 0, shiftDetails);
 
-      this.currentVehicleShifts.sort((a,b) => a.shiftStartTimeDate.getTime() - b.shiftStartTimeDate.getTime());
 
-      let upsert = shiftDetails.vehicleShiftId ?
+      const upsert = shiftDetails.vehicleShiftId ?
                                   this.putSubEndpoint("/VehicleShiftDetails",shiftDetails) :
                                   this.postSubEndpoint("/VehicleShiftDetails",shiftDetails);
 
-      upsert.then(result => this.processUpsertShiftResult(result));
+      upsert.then((result:UpsertShiftResult) => {
+
+        shiftDetails.vehicleShiftId = result.vehicleShiftId;
+
+        // If the shift already exists, then replace it with the updated one, otherwise add it into the array.
+        this.currentVehicleShifts.splice(exists, exists > -1 ? 1 : 0, shiftDetails);
+
+        this.currentVehicleShifts.sort((a,b) => a.shiftStartTimeDate.getTime() - b.shiftStartTimeDate.getTime());
+
+        this.processUpsertShiftResult(result)
+
+      });
 
     });
 
   }
 
-  private processUpsertShiftResult(result: any) {
+  private processUpsertShiftResult(result: UpsertShiftResult) {
+
 
     if (result.success === 1) {
+
       this.vehicleShifts.next(this.currentVehicleShifts);
       this.snackbar.successSnackBar('Shift updated successfully', 'OK');
 
@@ -154,6 +169,7 @@ export class VehicleService  extends APIService {
     else {
       this.snackbar.errorSnackBar('Error updating shift: please see admin', 'OK');
     }
+
   }
 
   public removeShift(shift: VehicleShift){
