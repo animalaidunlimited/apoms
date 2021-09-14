@@ -13,13 +13,14 @@ import { CallerDetailsDialogComponent } from './dialogs/caller-details-dialog/ca
 import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
 import { DriverActionDialogComponent } from './dialogs/driver-action-dialog/driver-action-dialog.component';
 import { CaseLocationComponent } from './components/case-location/case-location.component';
+import { PatientVisitDetailsComponent } from 'src/app/core/components/patient-visit-details/patient-visit-details.component';
 @NgModule({
   declarations: [ 
     DriverViewAssignmentComponent, 
     DriverViewIconsComponent, 
     CallerDetailsDialogComponent, 
     LocationDialogComponent, 
-    DriverActionDialogComponent, 
+    DriverActionDialogComponent,
     CaseLocationComponent],
   imports: [
     CommonModule,

@@ -11,6 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Vehicle } from '../../models/driver-view';
 import { MatSelectChange } from '@angular/material/select';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
+import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 
 @Component({
   selector: 'app-release-assign',
@@ -29,13 +30,15 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
   vehicleList$!: Observable<Vehicle[]>;
+  vehicleListDisabled!:boolean;
 
   private ngUnsubscribe = new Subject();
 
   constructor(private dropdown: DropdownService,
     private fb: FormBuilder,
     private releaseDetails: ReleaseService,
-    private showSnackBar: SnackbarService
+    private showSnackBar: SnackbarService,
+    private rescueDetailsService: RescueDetailsService
 	) { }
 
   ngOnInit() {
@@ -56,9 +59,17 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       ambulanceAssignmentTime:['']
     });
 
-    this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe(() => {
+    this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe((date) => {
 
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
+      if(date) {
+        this.vehicleListDisabled = false;
+
+        this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
+    }
+    else {
+        this.vehicleListDisabled = true;
+    }
 
     });
 
