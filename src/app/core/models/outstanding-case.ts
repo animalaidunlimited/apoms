@@ -13,12 +13,12 @@ export interface OutstandingCase {
 
 
 export interface OutstandingAssignment {
-    actionStatusId: number;
+    actionStatusId?: number;
     ambulanceAction: string;
     ambulanceAssignmentTime: Date;
     rescueAmbulanceId: number;
     releaseAmbulanceId: number | null;
-    callDateTime: string | Date | undefined;
+    callDateTime: string | Date ;
     callerDetails: CallerDetails[];
     emergencyCaseId: number;
     emergencyCode: string;
@@ -27,12 +27,12 @@ export interface OutstandingAssignment {
     latLngLiteral: LatLngLiteral;
     location: string;
     moved?:boolean | null;
-    patients: ActionPatient[];
+    patients: ActionPatient[] ;
     releasePickupDate: string | null;
     releaseBeginDate?: string ;
     releaseEndDate?: string ;
     releaseDetailsId: number ;
-    releaseType: string;
+    releaseType?: string;
     releaseRequestDate?: string;
     rescueTime?:string;
     searchCandidate?: boolean;

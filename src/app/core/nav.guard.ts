@@ -19,7 +19,8 @@ export class NavGuard implements CanActivateChild {
     private previousUrl = '';
     userHasPermission: BehaviorSubject<number| undefined> = new BehaviorSubject<number | undefined>(undefined);
 
-    constructor(private navigationService: NavigationService,
+    constructor(
+        private navigationService: NavigationService,
         private permissionService:EvaluatePermissionService,
         private router: Router
     ) {}
@@ -27,7 +28,7 @@ export class NavGuard implements CanActivateChild {
     async canActivateChild(
         childRoute: ActivatedRouteSnapshot,
         state: RouterStateSnapshot,
-    ):Promise<boolean | UrlTree>
+    ) : Promise<boolean | UrlTree>
  {
 
         return await this.permissionService.permissionTrueOrFalse(childRoute.data.permissionId).then(val=> {

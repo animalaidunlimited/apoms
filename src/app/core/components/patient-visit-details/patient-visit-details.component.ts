@@ -206,7 +206,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
-			console.log(response);
 
 			if (response?.streetTreatCaseId) {
 				if (response.visits.length > 0) {
@@ -243,7 +242,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						if(response.visits.length > this.visitsArray.length) {
 							this.visitsArray.push(this.getVisitFormGroup());
 						}
-						// this.visitsArray.push(this.getVisitFormGroup());
 					});
 				}
 				else {

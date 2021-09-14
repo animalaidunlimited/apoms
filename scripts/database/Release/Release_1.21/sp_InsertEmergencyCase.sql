@@ -11,14 +11,10 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_CallDateTime DATETIME,
 									IN prm_DispatcherId INT,
 									IN prm_EmergencyCodeId INT,
-									-- IN prm_CallOutcomeId INT,
-                                    -- IN prm_SameAsNumber INT,
                                     IN prm_Comments NVARCHAR(650),
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DECIMAL(11,8),
 									IN prm_Longitude DECIMAL(11,8),
-									-- IN prm_Rescuer1Id INT,
-									-- IN prm_Rescuer2Id INT,
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
@@ -57,14 +53,15 @@ END IF;
 
 SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
 vEmNoExists, vUpdateTime, vCurrentCaseId
-FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
+FROM AAU.EmergencyCase
+WHERE EmergencyNumber = prm_EmergencyNumber;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
 FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-START TRANSACTION ;
+-- START TRANSACTION ;
 
 IF vEmNoExists = 0 THEN
 
@@ -82,50 +79,42 @@ INSERT INTO AAU.EmergencyCase
 	CallDateTime,
 	DispatcherId,
 	EmergencyCodeId,
-	-- CallOutcomeId,
-    -- SameAsEmergencyCaseId,
 	Location,
 	Latitude,
 	Longitude,
-	Rescuer1Id,
-	Rescuer2Id,
+    AssignedVehicleId,
+    AmbulanceAssignmentTime,
 	AmbulanceArrivalTime,
 	RescueTime,
 	AdmissionTime,
     UpdateTime,
     Comments,
-    GUID,
-    AssignedVehicleId,
-    AmbulanceAssignmentTime
+    GUID
 )
 VALUES
 (
 	vOrganisationId,
-	-- prm_EmergencyNumber,
-    DummyEmNo,
+	DummyEmNo,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
-	-- prm_CallOutcomeId,
-    -- vSameAsEmergencyCaseId,
 	prm_Location,
 	prm_Latitude,
 	prm_Longitude,
-	prm_Rescuer1Id,
-	prm_Rescuer2Id,
+	prm_AssignedAmbulanceId,
+    prm_AmbulanceAssignmentTime,
 	prm_AmbulanceArrivalTime,
 	prm_RescueTime,
 	prm_AdmissionTime,
     prm_UpdateTime,
     prm_Comments,
-    prm_GUID,
-    prm_AssignedAmbulanceId,
-    prm_AmbulanceAssignmentTime
+    prm_GUID
+
 );
 
 -- UNLOCK TABLES;
 
-COMMIT;
+-- COMMIT;
 	
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
     

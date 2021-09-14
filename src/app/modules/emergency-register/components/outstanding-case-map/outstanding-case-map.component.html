@@ -1,6 +1,6 @@
 
 
-<!-- <search-result-card *ngIf="infoContent"></search-result-card> -->
+<search-result-card *ngIf="infoContent"></search-result-card>
 
 <google-map height="75vh"
     width="100%"
@@ -18,9 +18,9 @@
 
     <ng-container *ngIf="!vehicleId">
         <div >
-           <!--  *ngFor="let states of outstandingActions.statusGroups;" -->
+
             <div >
-               <!--  *ngFor="let assignments of states.actions;" -->
+
                 <div >
                     <!--TODO alter the emergencyCodeId so that it works for all organisations -->
 
@@ -65,17 +65,17 @@
         </div>
     </ng-container>
     <!-- Add the ambulance locations -->
-                
+
 
     <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
-        <map-marker
+        <!--<map-marker
         (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions  )"
         #ambulanceMarker="mapMarker"
         [position]="{lat: ambulance.vehicleLocation.latLng.lat, lng: ambulance.vehicleLocation.latLng.lng} || {lat:0, lng:0}"
         [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100,
         label: ''}"
         >
-        </map-marker>
+        </map-marker>-->
 
     </div>
 
@@ -90,9 +90,9 @@
             <div *ngFor="let patient of infoContent | async">
 
                 <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
-                
 
-            </div> 
+
+            </div>
 
         </div>
 
