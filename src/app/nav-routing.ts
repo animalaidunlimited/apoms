@@ -192,23 +192,19 @@ export class NavRouteService {
 
         this.userService.getUserPermissions().then((userPermissions:number[]) => {
 
-            
+            this.navRoute.children?.forEach(routeVal=> {
 
+                const permission = this.permissionService.evaluatePermission(routeVal.data?.permissionId, userPermissions);
 
+                    if(routeVal.data && permission) {
+                        routeVal.data.componentPermissionLevel?.next(permission);
+                    }
+                    this.navRoutes.next(this.getNavRouteList() || []);
 
-        });
-
-        this.navRoute.children?.forEach(routeVal=> {
-
-            this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
-
-                if(routeVal.data && val) {
-                    routeVal.data.componentPermissionLevel?.next(val);
-                }
-                this.navRoutes.next(this.getNavRouteList() || []);
             });
 
         });
+
 
 
     }
