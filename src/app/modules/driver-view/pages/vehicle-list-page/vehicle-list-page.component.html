@@ -6,7 +6,7 @@
         </legend>
 
         <div fxLayout="row">
-          <div>
+          <div style="width:60%">
               <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
                   <mat-form-field appearance='fill'>
                       <mat-label>Registration number</mat-label>
@@ -58,7 +58,8 @@
 
               <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start">
 
-                <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+                <div fxLayout="row wrap"  fxLayoutGap="10px" fxLayoutAlign="start end">
+
                     <mat-form-field appearance='fill'>
                         <mat-label>Min. Rescuer Capacity</mat-label>
                         <input type= 'number' formControlName="minRescuerCapacity" matInput>
@@ -77,6 +78,7 @@
                       multiple
                       accept="image/*,video/*"
                       (change)="uploadFile($event)"
+                      
                     />
 
                     <label class="legend1">
@@ -89,8 +91,9 @@
 
               </div>
           </div>
-          <div>
-                <img  [src]="imgURL"  />
+
+          <div style="width:40%">
+                <img style="max-height: 16em;" [src]="imgURL"  />
           </div>
         </div>
 

@@ -1885,6 +1885,7 @@ CREATE PROCEDURE AAU.sp_InsertVehicleListItem(
 	IN prm_VehicleRegistrationNumber VARCHAR(100),
 	IN prm_VehicleNumber VARCHAR(100),
 	IN prm_VehicleTypeId INT,
+	IN prm_VehicleImage VARCHAR(200),
 	IN prm_LargeAnimalCapacity INT,
 	IN prm_SmallAnimalCapacity INT,
 	IN prm_MinRescuerCapacity INT,
@@ -1915,6 +1916,7 @@ IF vVehicleCount = 0 THEN
 		VehicleRegistrationNumber,
 		VehicleNumber,
 		VehicleTypeId,
+		VehicleImage,
 		LargeAnimalCapacity,
 		SmallAnimalCapacity,
         MinRescuerCapacity,
@@ -2394,6 +2396,7 @@ CREATE PROCEDURE AAU.sp_UpdateVehicleListItem(IN prm_Username VARCHAR(65),
 								 IN prm_VehicleRegistrationNumber VARCHAR(100),
 								 IN prm_VehicleNumber VARCHAR(100),
 								 IN prm_VehicleTypeId INT,
+								 IN prm_VehicleImage VARCHAR(200),
 								 IN prm_LargeAnimalCapacity INT,
 								 IN prm_SmallAnimalCapacity INT,
                                  IN prm_MinRescuerCapacity INT,
@@ -2426,7 +2429,8 @@ IF vVehicleCount = 1 THEN
 		SmallAnimalCapacity = prm_SmallAnimalCapacity,
         MinRescuerCapacity = prm_MinRescuerCapacity,
 		MaxRescuerCapacity = prm_MaxRescuerCapacity,
-		VehicleStatusId = prm_VehicleStatusId
+		VehicleStatusId = prm_VehicleStatusId,
+		VehicleImage = prm_VehicleImage
 	WHERE VehicleId = prm_VehicleId;
     
     SELECT 1 INTO vSuccess;
