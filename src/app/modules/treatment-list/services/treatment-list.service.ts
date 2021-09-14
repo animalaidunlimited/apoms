@@ -344,7 +344,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
     this.emitTreatmentObject();
 
-
   }
 
   public getMovedInArray() : AbstractControl[]{
