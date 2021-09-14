@@ -141,7 +141,7 @@ export class VehicleShiftDialogComponent implements OnInit {
     }
 
      const returnGroup = this.fb.group({
-      shiftUUID: [],
+      shiftUUID: [generateUUID()],
       vehicleShiftId: [],
       vehicleId: [this.data.vehicle?.vehicleId, Validators.required],
       shiftStartTime: [],

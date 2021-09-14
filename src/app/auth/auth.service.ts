@@ -38,14 +38,13 @@ export class AuthService extends APIService {
         this.token = this.storage.read(AUTH_TOKEN) || '';
 
         this.loggedIn = new BehaviorSubject<boolean>(this.token.length > 0);
-        console.log(this.loggedIn.value);
 
     }
 
     public async login(username: string, password: string) {
 
         try {
-            
+
             this.response = (await this.post({
                 username,
                 password
