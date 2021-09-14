@@ -20,8 +20,7 @@ import { PatientVisitDetailsComponent } from 'src/app/core/components/patient-vi
     DriverViewIconsComponent, 
     CallerDetailsDialogComponent, 
     LocationDialogComponent, 
-    DriverActionDialogComponent, 
-    // PatientVisitDetailsComponent,
+    DriverActionDialogComponent,
     CaseLocationComponent],
   imports: [
     CommonModule,
