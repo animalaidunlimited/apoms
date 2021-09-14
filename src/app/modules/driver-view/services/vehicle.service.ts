@@ -146,6 +146,8 @@ export class VehicleService  extends APIService {
 
   private processUpsertShiftResult(result: any) {
 
+    console.log(result);
+
     if (result.success === 1) {
       this.vehicleShifts.next(this.currentVehicleShifts);
       this.snackbar.successSnackBar('Shift updated successfully', 'OK');

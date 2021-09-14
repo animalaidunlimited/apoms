@@ -26,9 +26,6 @@ export class AppComponent implements OnInit{
         private messagingService: MessagingService,
         private emergencyTabBar: EmergencyRegisterTabBarService
     ) {
-
-
-
     }
 
     ngOnInit() {
