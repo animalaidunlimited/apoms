@@ -125,7 +125,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	ngOnInit() {
-		// this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 
 		if (!this.recordForm) this.recordForm = new FormGroup({});
 
