@@ -31,6 +31,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('emergencyCode', { read: ElementRef, static: true })
 
     emergencyCode!: ElementRef;
+    vehicleListDisabled = true;
 
     emergencyCodes$!: Observable<EmergencyCode[]>;
 
@@ -48,6 +49,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     currentAmbulanceArrivalTime!: AbstractControl;
     currentRescueTime!: AbstractControl;
     currentTime!: string;
+    rescueDetailsVal!: RescueDetailsParent;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -105,9 +107,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             }),
         );
 
-        this.vehicleList$ = this.dropdowns.getVehicleListDropdown();
-
-        this.rescuers$ = this.dropdowns.getRescuers();
+		this.rescuers$ = this.dropdowns.getRescuers();
         this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 
         this.rescueDetailsService
@@ -136,6 +136,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 });
                 this.zone.run(() => {
                     this.recordForm.patchValue(rescueDetails);
+                    this.rescueDetailsVal = rescueDetails;
                 });
             });
 
@@ -144,6 +145,21 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.recordForm.get('emergencyDetails.code')?.setValue(code);
             this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
+        });
+
+        this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges.subscribe(val=> {
+
+            if(val) {
+                this.vehicleListDisabled = false;
+
+                this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(val);
+            }
+            else {
+                this.vehicleListDisabled = true;
+            }
+
+            this.recordForm.patchValue(this.rescueDetailsVal);
+            
         });
 
         this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
