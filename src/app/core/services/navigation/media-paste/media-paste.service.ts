@@ -76,7 +76,6 @@ export class MediaPasteService {
 
     }
 
-
     this.checkAuthenticated().then(async () => {
 
       // upload the file and return its progress for display
@@ -84,12 +83,12 @@ export class MediaPasteService {
       const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
 
 
-      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '');
+      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '','patient-media');
 
 
       if(newMediaItem.mediaType.indexOf('image') > -1){
 
-        const resizedImage = await this.cropedImage(file);
+        const resizedImage = await this.croppedImage(file);
 
         if(!this.duplicateImage(file.name, patientId) || file.name ==='uploadFile'){
 
@@ -177,7 +176,7 @@ export class MediaPasteService {
 
         this.snackbarService.errorSnackBar('Case saved to local storage', 'OK');
 
-        const resizedImage = await this.cropedImage(file);
+        const resizedImage = await this.croppedImage(file);
         this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
 
         /**
@@ -249,7 +248,38 @@ export class MediaPasteService {
 
   }
 
-  private async cropedImage(file: File) {
+
+
+  handleImageUpload(file: File){
+
+    const returnObject = {
+      url: new BehaviorSubject<string | undefined>(undefined),
+      uploaded: new BehaviorSubject<boolean | undefined>(undefined)
+    };
+
+    if(!file.type.match(/image.*|video.*/)){
+      return;
+    }
+    this.checkAuthenticated().then(async () => {
+
+      const timeString = this.datepipe.transform(new Date(), 'yyyyMMdd_hhmmss');
+      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '','vehicles');
+      if(file.type.match(/image.*/)){
+        const resizedImage = await this.croppedImage(file);
+        const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+        uploadResult.then((result) => {
+
+          result.ref.getDownloadURL().then((url:any) => {
+
+            returnObject.url.next(url);
+           
+        });});
+      }
+    });
+
+    return returnObject;
+  }
+  private async croppedImage(file: File) {
     const options: IResizeImageOptions = {
       maxSize: 5000,
       file
@@ -428,12 +458,12 @@ export class MediaPasteService {
 
   }
 
-  getFileUploadLocation(filename: string, timestamp: string) : string{
+  getFileUploadLocation(filename: string, timestamp: string, path: string) : string{
 
     // Make sure we only save files in the folder for the organisation.
     const organisationFolder = this.authService.getOrganisationSocketEndPoint();
 
-    return `${organisationFolder}/patient-media/${timestamp}_${filename}`;
+    return `${organisationFolder}/${path}/${timestamp}_${filename}`;
 
   }
 

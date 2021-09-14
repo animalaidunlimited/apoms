@@ -43,8 +43,6 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log(this.formData);
-
     this.releasers$ = this.dropdown.getRescuers();
     this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 

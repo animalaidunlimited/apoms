@@ -44,6 +44,7 @@ export class AuthService extends APIService {
     public async login(username: string, password: string) {
 
         try {
+
             this.response = (await this.post({
                 username,
                 password
@@ -79,8 +80,8 @@ export class AuthService extends APIService {
 
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
-        } catch (e) {
-            return Promise.reject(e.message);
+        } catch (error:any) {
+            return Promise.reject(error.message);
         }
     }
 
@@ -106,5 +107,9 @@ export class AuthService extends APIService {
 
     public getOrganisationSocketEndPoint() {
         return this.storage.read('SOCKET_END_POINT');
+    }
+
+    public getOrganisationId() {
+        return this.storage.read('OrganisationId');
     }
 }

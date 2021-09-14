@@ -62,7 +62,7 @@ isStreetTreat!: boolean;
       }
 
       if(fb.type==='datetime-local') {
-        this.dateTimeChanged =  this.formGroup.get(fb.formControlName)?.value ? true : false; 
+        this.dateTimeChanged =  this.formGroup.get(fb.formControlName)?.value ? true : false;
         this.getMinAndMAx(fb);
       }
     });
@@ -73,10 +73,10 @@ isStreetTreat!: boolean;
     updatedRecord.isUpdated = true;
 
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
-    
+
     const driverViewLocalStorageData =  this.driverView.driverViewDetails.value;
 
-    const index = driverViewLocalStorageData.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId && 
+    const index = driverViewLocalStorageData.findIndex(value=> value.emergencyCaseId === updatedRecordData.emergencyCaseId &&
       value.ambulanceAction === updatedRecord.ambulanceAction &&
       this.driverView.checkAllPatientIds(updatedRecordData.patients, value));
 
@@ -98,26 +98,26 @@ isStreetTreat!: boolean;
   }
 
   checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
-    
+
     return driverViewData.patients.every(patient=> {
       return updatedRecordPatients.findIndex(p=> p.patientId === patient.patientId)>-1 ? true : false;
     });
   }
 
-  getMinAndMAx(fb: any) { 
+  getMinAndMAx(fb: any) {
 
     if(fb.actionStatus === 'Rescue') {
 
       if(fb.subAction === 'Arrived') {
-        this.minTime = this.formGroup.get('rescueAmbulanceAssignmentDate')?.value ? 
-          this.formGroup.get('rescueAmbulanceAssignmentDate')?.value : 
+        this.minTime = this.formGroup.get('rescueAmbulanceAssignmentDate')?.value ?
+          this.formGroup.get('rescueAmbulanceAssignmentDate')?.value :
           this.formGroup.get('callDateTime')?.value;
 
         this.maxTime = this.formGroup.get('ambulanceArrivalTime')?.value ? this.formGroup.get('ambulanceArrivalTime')?.value : getCurrentTimeString();
       }
 
       if(fb.subAction === 'Rescued') {
-        this.minTime = this.formGroup.get('ambulanceArrivalTime')?.value ? this.formGroup.get('ambulanceArrivalTime')?.value : 
+        this.minTime = this.formGroup.get('ambulanceArrivalTime')?.value ? this.formGroup.get('ambulanceArrivalTime')?.value :
         this.formGroup.get('rescueAmbulanceAssignmentDate')?.value;
         this.maxTime = this.formGroup.get('admissionTime')?.value ? this.formGroup.get('admissionTime')?.value : getCurrentTimeString();
       }
@@ -132,15 +132,15 @@ isStreetTreat!: boolean;
     if(fb.actionStatus === 'Release') {
 
       if(fb.subAction === 'PickedUp') {
-        this.minTime = this.formGroup.get('releaseAmbulanceAssignmentDate')?.value ? 
-          this.formGroup.get('releaseAmbulanceAssignmentDate')?.value : 
+        this.minTime = this.formGroup.get('releaseAmbulanceAssignmentDate')?.value ?
+          this.formGroup.get('releaseAmbulanceAssignmentDate')?.value :
           this.formGroup.get('callDateTime')?.value;
 
         this.maxTime = this.formGroup.get('releaseBeginDate')?.value ? this.formGroup.get('releaseBeginDate')?.value : getCurrentTimeString();
       }
 
       if(fb.subAction === 'Arrived') {
-        this.minTime = this.formGroup.get('releasePickupDate')?.value ? this.formGroup.get('releasePickupDate')?.value : 
+        this.minTime = this.formGroup.get('releasePickupDate')?.value ? this.formGroup.get('releasePickupDate')?.value :
         this.formGroup.get('releaseAmbulanceAssignmentDate')?.value;
         this.maxTime = this.formGroup.get('releaseEndDate')?.value ? this.formGroup.get('releaseEndDate')?.value : getCurrentTimeString();
       }
@@ -156,8 +156,8 @@ isStreetTreat!: boolean;
     if(fb.actionStatus === 'StreetTreat') {
 
       if(fb.subAction === 'Arrived') {
-        this.minTime = this.formGroup.get('streetTreatAmbulanceAssignmentDate')?.value ? 
-          this.formGroup.get('streetTreatAmbulanceAssignmentDate')?.value : 
+        this.minTime = this.formGroup.get('streetTreatAmbulanceAssignmentDate')?.value ?
+          this.formGroup.get('streetTreatAmbulanceAssignmentDate')?.value :
           this.formGroup.get('callDateTime')?.value;
 
         this.maxTime = this.formGroup.get('visitEndDate')?.value ? this.formGroup.get('visitEndDate')?.value : getCurrentTimeString();
@@ -174,15 +174,15 @@ isStreetTreat!: boolean;
     if(fb.actionStatus === 'STRelease') {
 
       if(fb.subAction === 'PickedUp') {
-        this.minTime = this.formGroup.get('releaseAmbulanceAssignmentDate')?.value ? 
-          this.formGroup.get('releaseAmbulanceAssignmentDate')?.value : 
+        this.minTime = this.formGroup.get('releaseAmbulanceAssignmentDate')?.value ?
+          this.formGroup.get('releaseAmbulanceAssignmentDate')?.value :
           this.formGroup.get('callDateTime')?.value;
 
         this.maxTime = this.formGroup.get('releaseBeginDate')?.value ? this.formGroup.get('releaseBeginDate')?.value : getCurrentTimeString();
       }
 
       if(fb.subAction === 'Arrived') {
-        this.minTime = this.formGroup.get('releasePickupDate')?.value ? this.formGroup.get('releasePickupDate')?.value : 
+        this.minTime = this.formGroup.get('releasePickupDate')?.value ? this.formGroup.get('releasePickupDate')?.value :
         this.formGroup.get('releaseAmbulanceAssignmentDate')?.value;
         this.maxTime = this.formGroup.get('releaseEndDate')?.value ? this.formGroup.get('releaseEndDate')?.value : getCurrentTimeString();
       }
@@ -192,7 +192,7 @@ isStreetTreat!: boolean;
         this.maxTime = getCurrentTimeString();
       }
 
-      
+
       if(fb.subAction === 'Treated') {
         this.minTime = this.formGroup.get('visitBeginDate')?.value ? this.formGroup.get('visitBeginDate')?.value : this.formGroup.get('streetTreatAmbulanceAssignmentDate')?.value ;
         this.maxTime = getCurrentTimeString();
@@ -200,12 +200,12 @@ isStreetTreat!: boolean;
 
 
     }
-    
+
 
   }
 
   setCurrentDateTime(formControlName: string) {
-    
+
     this.formGroup.get(formControlName)?.setValue(getCurrentTimeString());
 
     this.dateTimeChanged = true;
@@ -233,7 +233,7 @@ isStreetTreat!: boolean;
         this.formGroup.get('rescueTime')?.value !== '' &&
         this.formGroup.get(formControlName)?.value !== ''
       ) {
-        
+
         this.formGroup.get(formControlName)?.setErrors({ambulanceArrivalAfterRescue: true});
       }
     }
@@ -255,7 +255,7 @@ isStreetTreat!: boolean;
       }
 
       if (
-        Date.parse(this.formGroup.get(formControlName)?.value) > 
+        Date.parse(this.formGroup.get(formControlName)?.value) >
         Date.parse(this.formGroup.get('admissionTime')?.value) &&
         this.formGroup.get(formControlName)?.value !== ''
       ) {
@@ -266,7 +266,7 @@ isStreetTreat!: boolean;
 
     if(formControlName === 'admissionTime') {
       if (
-        Date.parse(this.formGroup.get(formControlName)?.value) < 
+        Date.parse(this.formGroup.get(formControlName)?.value) <
         Date.parse(this.formGroup.get('rescueTime')?.value) &&
         this.formGroup.get(formControlName)?.value !== ''
       ) {
@@ -282,12 +282,10 @@ isStreetTreat!: boolean;
   getCurrentVehiclelocation() {
 
     const newLatLongLiteral = this.locationService.getCurrentLocation();
-    /* if(newLatLongLiteral) { */
+    
       this.formGroup.get('latLngLiteral')?.setValue(newLatLongLiteral);
       this.formGroup.get('isUpdated')?.setValue(true);
       this.latLngChanged = true;
-  /*   } */
-
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignment) {

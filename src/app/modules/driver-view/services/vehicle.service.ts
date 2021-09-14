@@ -75,13 +75,13 @@ export class VehicleService  extends APIService {
   }
 
   public getVehicleList(): Promise<any> {
-    const request = '?GetVehicleList';
+    const request = '/GetVehicleList';
     return this.get(request);
   }
 
   public getVehicleListObservable() : Observable<Vehicle[]> {
 
-    const request = '?GetVehicleList';
+    const request = '/GetVehicleList';
 
         return this.getObservable(request).pipe(
             map((response: Vehicle[]) => {

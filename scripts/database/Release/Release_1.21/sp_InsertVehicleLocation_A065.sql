@@ -26,21 +26,30 @@ Purpose: This procedure is used to insert the location, heading, speed and altit
 */
 
 DECLARE vUnique INT;
+DECLARE vUserId INT;
+DECLARE vVehicleId INT;
 DECLARE vOrganisationId INT;
 DECLARE vSuccess INT;
 DECLARE prm_SocketEndPoint VARCHAR(20);
 
 SET vUnique = 0;
+SET vUserId = 0;
+SET vVehicleId = 0;
 SET vSuccess = 0;
 
-SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, prm_SocketEndPoint
+SELECT o.OrganisationId, o.SocketEndPoint, u.UserId INTO vOrganisationId, prm_SocketEndPoint, vUserId
 FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
+SELECT vs.VehicleId INTO vVehicleId
+FROM AAU.VehicleShift vs
+INNER JOIN VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId AND NOW() >= vs.StartTime AND NOW() <= vs.EndTime
+LIMIT 1;
+
 SELECT COUNT(1) INTO vUnique FROM AAU.VehicleLocation WHERE OrganisationId = vOrganisationId AND VehicleId = prm_VehicleId AND Timestamp = prm_Timestamp;
 
-IF vUnique = 0 THEN
+IF vUnique = 0 AND vVehicleId <> 0 THEN
 
 INSERT INTO AAU.VehicleLocation
 (
@@ -53,11 +62,12 @@ INSERT INTO AAU.VehicleLocation
 `Heading`,
 `Accuracy`,
 `Altitude`,
-`AltitudeAccuracy`)
+`AltitudeAccuracy`
+)
 VALUES
 (
 vOrganisationId,
-prm_VehicleId,
+vVehicleId,
 prm_Timestamp,
 prm_Latitude,
 prm_Longitude,

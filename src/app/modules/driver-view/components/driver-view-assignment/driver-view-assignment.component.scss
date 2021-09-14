@@ -14,7 +14,6 @@
 .emergencyDetailsCode {
     min-width: 2em;
     height: 2em;
-    // margin-left: -1em;
     margin-bottom: 0.5em;
     border-radius: 50%;
     &.red{
@@ -37,10 +36,9 @@
     backdrop-filter: blur(4px);
     padding-left: 10px;
     border-radius: 15px;
-    width: 100%; 
-    height: max-content; 
+    width: 100%;
+    height: max-content;
     margin-top: 16px;
-    // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 
 }
 
@@ -51,9 +49,6 @@
     margin-bottom: 7px;
     text-align: center;
     vertical-align: middle;
-    // position: absolute;
-    // right: calc(100vw / 3);
-    // top: -7%;
 
     &.STRelease{
         background: #3393B4;

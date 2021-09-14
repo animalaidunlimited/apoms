@@ -7,6 +7,7 @@ import { APIService } from '../http/api.service';
 })
 export class UserActionService extends APIService{
   endpoint = 'UserAdmin';
+  
   constructor(public http: HttpClient) {
   super(http);
   }
