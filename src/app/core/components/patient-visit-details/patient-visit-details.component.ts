@@ -19,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { takeUntil } from 'rxjs/operators';
 import { Vehicle } from '../../models/driver-view';
+import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 
 interface VisitCalender {
 	status: number;
@@ -91,7 +92,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	streatTreatForm!: FormGroup;
 	teamListData$!: Observable<TeamDetails[]>;
 	treatmentPriority$!: Observable<Priority[]>;
-
+	vehicleListDisabled!:boolean;
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
@@ -114,7 +115,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private streetTreatService: StreetTreatService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private rescueDetailsService: RescueDetailsService
 
 	) { }
 
@@ -123,7 +125,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	ngOnInit() {
-		this.vehicleList$ = this.dropdown.getVehicleListDropdown();
+		// this.vehicleList$ = this.dropdown.getVehicleListDropdown();
 
 		if (!this.recordForm) this.recordForm = new FormGroup({});
 
@@ -156,6 +158,20 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 			this.initStreetTreatForm();
 		}, 1);
+
+
+		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.subscribe(date=> {
+			if(date) {
+                this.vehicleListDisabled = false;
+
+                this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
+
+                this.vehicleList$.subscribe(val=> console.log(val));
+            }
+            else {
+                this.vehicleListDisabled = true;
+            }
+		});
 
 
 	}
@@ -222,6 +238,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 								date: visit.visit_date
 							});
 
+						}
+
+						if(response.visits.length > this.visitsArray.length) {
+							this.visitsArray.push(this.getVisitFormGroup());
 						}
 						// this.visitsArray.push(this.getVisitFormGroup());
 					});

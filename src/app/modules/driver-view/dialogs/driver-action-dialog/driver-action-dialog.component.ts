@@ -38,6 +38,9 @@ formGroup = this.data.formGroup ;
 
 patientFormGroup = this.data.formGroup?.get('patients');
 
+
+isStreetTreat!: boolean;
+
   constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private driverView: DriverViewService,
@@ -47,7 +50,17 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
   ngOnInit(): void {
 
+    this.isStreetTreat = false;
+
     this.data.formBuilderArray?.forEach((fb: any)=> {
+
+      if(fb.actionStatus === 'StreetTreat' || fb.actionStatus === 'STRelease') {
+        this.isStreetTreat = true;
+      }
+      else {
+        this.isStreetTreat = false;
+      }
+
       if(fb.type==='datetime-local') {
         this.dateTimeChanged =  this.formGroup.get(fb.formControlName)?.value ? true : false; 
         this.getMinAndMAx(fb);
