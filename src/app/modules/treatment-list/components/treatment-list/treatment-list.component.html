@@ -95,7 +95,14 @@
 
            <div *ngIf="column.type === 'text'" (click)="cellClicked(column.name, row.get(column.name).value)">
               {{row.get(column.name).value}}
+
+              <div *ngIf="column.name === 'Tag number' && row.get('Known as name').value">
+                ({{row.get('Known as name')?.value}})
+              </div>
+
             </div>
+
+
 
             <div *ngIf="column.type === 'select'" class="treatment-priority-select start">
 

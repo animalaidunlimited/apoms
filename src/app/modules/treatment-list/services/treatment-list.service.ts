@@ -266,6 +266,8 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
     }
 
+    console.log(response);
+
     const movedLists:FormArray = this.fb.array([]);
 
     response.forEach(list => {
@@ -379,6 +381,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       patientFormGroup.addControl('patientDetails', patientDetails);
 
     });
+
 
     return returnArray;
 

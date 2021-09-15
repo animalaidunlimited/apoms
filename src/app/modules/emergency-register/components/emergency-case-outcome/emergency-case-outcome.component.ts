@@ -135,35 +135,35 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
               CallOutcomeId : callOutcomeId,
               CallOutcome: 'Admission'
           }, {emitEvent: false});
-          patient?.get('tagNumber')?.setValidators(Validators.required);
+          patient?.get('tagNumber')?.setValidators([Validators.required, Validators.pattern(/^[A-z0-9]*$/)]);
           patient?.get('tagNumber')?.updateValueAndValidity();
 
           patient?.get('isAdmission')?.setValue(true ,{ emitEvent: false });
           patient?.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
 
-          patient?.get('admissionArea')?.setValidators(Validators.required); 
+          patient?.get('admissionArea')?.setValidators(Validators.required);
           patient?.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
         }
-        
+
 
       });
-      
+
 
     }
     else {
       /**
        * At current index if patient outcome is not admisson
-       * reset only current outcome form not even those who has been updated 
-       * previously programmatically  
+       * reset only current outcome form not even those who has been updated
+       * previously programmatically
        */
       this.patientForm?.get('isAdmission')?.setValue(false, { emitEvent: false });
       this.patientForm?.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
-      
+
       this.patientForm?.get('tagNumber')?.clearValidators();
       this.patientForm?.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
       this.patientForm?.get('admissionArea')?.clearValidators();
-      this.patientForm?.get('admissionArea')?.updateValueAndValidity({ emitEvent: false }); 
+      this.patientForm?.get('admissionArea')?.updateValueAndValidity({ emitEvent: false });
 
     }
 
