@@ -2863,6 +2863,9 @@ AND ec.OrganisationId = vOrganisationId
 AND (p.PatientCallOutcomeId = prm_Outcome OR prm_Outcome IS NULL);
 
 END $$
+DELIMITER ;
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_getUserByUsername !!
 
