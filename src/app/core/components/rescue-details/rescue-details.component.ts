@@ -31,7 +31,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('emergencyCode', { read: ElementRef, static: true })
 
     emergencyCode!: ElementRef;
-    vehicleListDisabled = true;
 
     emergencyCodes$!: Observable<EmergencyCode[]>;
 
@@ -116,7 +115,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
-               
+
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
@@ -152,16 +151,16 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges.subscribe(val=> {
 
             if(val) {
-                this.vehicleListDisabled = false;
+                this.recordForm.get('assignedVehicleId')?.enable();
 
                 this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(val);
             }
             else {
-                this.vehicleListDisabled = true;
+                this.recordForm.get('assignedVehicleId')?.disable();
             }
 
             this.recordForm.patchValue(this.rescueDetailsVal);
-            
+
         });
 
         this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
