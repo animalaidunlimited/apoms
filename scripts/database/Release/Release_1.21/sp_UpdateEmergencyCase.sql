@@ -9,14 +9,10 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_CallDateTime DATETIME,
 									IN prm_DispatcherId INT,
 									IN prm_EmergencyCodeId INT,
-									-- IN prm_CallOutcomeId INT,
-                                    -- IN prm_SameAsNumber INT,
                                     IN prm_Comments NVARCHAR(650),
 									IN prm_Location VARCHAR(512),
 									IN prm_Latitude DOUBLE(11,8),
 									IN prm_Longitude DECIMAL(11,8),
-									-- IN prm_Rescuer1Id INT,
-									-- IN prm_Rescuer2Id INT,
 									IN prm_AmbulanceArrivalTime DATETIME,
 									IN prm_RescueTime DATETIME,
 									IN prm_AdmissionTime DATETIME,
@@ -26,6 +22,7 @@ CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
 									IN prm_UserName VARCHAR(64),
                                     IN prm_AssignedAmbulanceId INT,
                                     IN prm_AmbulanceAssignmentTime DATETIME,
+                                    IN prm_SelfAdmission BOOLEAN,
 									OUT prm_OutEmergencyCaseId INT,
                                     OUT prm_SocketEndPoint CHAR(3),
 									OUT prm_Success VARCHAR(64))
@@ -66,13 +63,9 @@ START TRANSACTION;
 						CallDateTime           = prm_CallDateTime,
 						DispatcherId           = prm_DispatcherId,
 						EmergencyCodeId        = prm_EmergencyCodeId,
-						-- CallOutcomeId          = prm_CallOutcomeId,
-                        -- SameAsEmergencyCaseId  = vSameAsEmergencyCaseId,
 						Location               = prm_Location,
 						Latitude               = prm_Latitude,
 						Longitude              = prm_Longitude,
-						-- Rescuer1Id             = prm_Rescuer1Id,
-						-- Rescuer2Id             = prm_Rescuer2Id,
 						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
 						RescueTime             = prm_RescueTime,
 						AdmissionTime          = prm_AdmissionTime,
@@ -81,7 +74,8 @@ START TRANSACTION;
                         UpdateTime			   = prm_UpdateTime,
                         Comments			   = prm_Comments,
                         AssignedVehicleId    = prm_AssignedAmbulanceId,
-                        AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime
+                        AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
+						SelfAdmission           = prm_SelfAdmission
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 COMMIT;
