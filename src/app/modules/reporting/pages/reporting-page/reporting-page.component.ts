@@ -72,6 +72,8 @@ export class ReportingPageComponent implements OnInit {
 
         this.reportingDetails.valueChanges.subscribe((val)=> {
 
+
+
             this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(val.surgeryDate);
             this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
 
@@ -112,11 +114,12 @@ export class ReportingPageComponent implements OnInit {
 
     openEmergencyCaseDialog() {
         this.emergencyCases.pipe(take(1)).subscribe((caseList: EmergencyRecordTable[] | null)=> {
+
             this.dialog.open(EmergencyCaseDialogComponent, {
                 minWidth: '90%',
                 maxHeight: 'auto',
                 data: {
-                    emergencyCases: caseList
+                    emergencyCases: caseList || []
                 }
             });
         });

@@ -1,26 +1,26 @@
 <div class="emergencyWrapper">
-        <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
-        
+        <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
+
                 <mat-tab *ngFor="let tab of tabs; let index = index"
                 label="tab">
-        
+
                         <ng-template mat-tab-label>
                         {{tab.value}}
                         <mat-icon *ngIf="index > 1" (click)="removeTab(index)">{{tab.icon}}</mat-icon>
                         </ng-template>
-        
-                
-                        <outstanding-case-board *ngIf="index == 0"  (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
+
+
+                        <outstanding-case-board *ngIf="index == 0 && loadBoard"  (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
 
                         <record-search *ngIf="index == 1" (openEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
-        
+
                         <emergency-record *ngIf="index > 1" [guId]= "tab.GUID" [emergencyCaseId]="tab.emergencyCaseId"
                         (loadEmergencyNumber)="updateEmergencyNumber($event)"
                          class="tab-icon">
                         </emergency-record>
-        
+
                 </mat-tab>
-        
+
                 <!-- TODO: Fix the positioning of the icon to the middle of the tab. It's off to the right at the moment -->
                 <mat-tab disabled>
                 <ng-template mat-tab-label>
@@ -29,7 +29,7 @@
                         </button>
                 </ng-template>
                 </mat-tab>
-        
+
         </mat-tab-group>
 </div>
 

@@ -194,7 +194,7 @@ export class OutstandingCaseService {
     }
   }
 
-  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment ){
+  receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment | OutstandingAssignment){
 
     // tslint:disable-next-line: no-shadowed-variable
     const updateCases = (outstandingCases: any, Assignment:any) => {
@@ -225,35 +225,62 @@ export class OutstandingCaseService {
       }
 
     }else{
-      const driverAssignment = { 
-        ...updatedAssignment,
-        assignedVehicleId : updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceId : updatedAssignment.releaseAmbulanceId,
-        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? updatedAssignment.rescueAmbulanceAssignmentDate : updatedAssignment.releaseAmbulanceAssignmentDate
-      };
 
-     // outstandingCases.push(driverAssignment );
+      const insertAssignment = updatedAssignment as OutstandingAssignment;
+      let driverAssignment:OutstandingAssignment;
+
+      if(updatedAssignment.ambulanceAction === 'Rescue')
+      {
+        
+        driverAssignment = { 
+          ...insertAssignment,
+          rescueAmbulanceId : updatedAssignment.rescueAmbulanceId ,
+        };
+
+      }
+      else{
+
+        driverAssignment = { 
+          ...insertAssignment,
+          releaseAmbulanceId : updatedAssignment.releaseAmbulanceId,
+        };
+
+      }
+
+      driverAssignment = {
+        ...driverAssignment,
+        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? 
+        // tslint:disable-next-line: no-non-null-assertion
+        new Date((updatedAssignment as DriverAssignment).rescueAmbulanceAssignmentDate!) : 
+        // tslint:disable-next-line: no-non-null-assertion
+        new Date((updatedAssignment as DriverAssignment).releaseAmbulanceAssignmentDate!)
+      };
+      outstandingCases.push(driverAssignment);
     }
     
-    console.log(outstandingCases);
-    this.outstandingCases$.next(outstandingCases);
+
+    // tslint:disable-next-line: no-non-null-assertion
+    const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseDetailsId!, true, false);
+    
+    this.outstandingCases$.next(currentOutstanding);
 
 
   }
 
 
- /*  setMoved(o:any, emergencyCaseId:number, releaseId: number, moved:boolean, timeout:boolean){
+  setMoved(o:any, emergencyCaseId:number, releaseDetailsId: number, moved:boolean, timeout:boolean){
 
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseId === releaseId){
+      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseDetailsId === releaseDetailsId){
 
         o.moved = moved;
 
         if(!timeout){
           setTimeout(() => 
 
-            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseId, false, true))
+            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseDetailsId, false, true))
 
           , 3500);
         }
@@ -265,18 +292,18 @@ export class OutstandingCaseService {
 
       for (p in o) {
           if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, releaseId, moved, timeout);
+              result = this.setMoved(o[p], emergencyCaseId, releaseDetailsId, moved, timeout);
           }
       }
 
       return o;
 
-  } */
+  }
 
  
   filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
     
-    return combineLatest(click$, cases$).pipe(
+    return combineLatest([click$, cases$]).pipe(
       takeUntil(until$),
       map(chipChangeObs => chipChangeObs[1]),
       map(outstandingCases => { 

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 import { CaseLocationComponent } from './modules/driver-view/components/case-location/case-location.component';
+import { UserActionService } from './core/services/user-details/user-action.service';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -170,7 +171,10 @@ export class NavRouteService {
     permission!: boolean;
     userPermissions!: number[];
 
-    constructor(router: Router, private permissionService: EvaluatePermissionService) {
+    constructor(
+        router: Router,
+        private userService: UserActionService,
+        private permissionService: EvaluatePermissionService) {
 
         const routes = router.config.find(route => route.path === sideNavPath);
 
@@ -183,20 +187,24 @@ export class NavRouteService {
         if(!this.navRoute.children){
 
             throw new Error ('No routes detected');
-            
+
         }
 
-        this.navRoute.children?.forEach(routeVal=> {
+        this.userService.getUserPermissions().then((userPermissions:number[]) => {
 
-            this.permissionService.permissionTrueOrFalse(routeVal.data?.permissionId).then(val=> {
+            this.navRoute.children?.forEach(routeVal=> {
 
-                if(routeVal.data && val) {
-                    routeVal.data.componentPermissionLevel?.next(val);
-                }
-                this.navRoutes.next(this.getNavRouteList() || []);
+                const permission = this.permissionService.evaluatePermission(routeVal.data?.permissionId, userPermissions);
+
+                    if(routeVal.data && permission) {
+                        routeVal.data.componentPermissionLevel?.next(permission);
+                    }
+                    this.navRoutes.next(this.getNavRouteList() || []);
+
             });
 
         });
+
 
 
     }

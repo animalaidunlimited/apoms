@@ -4,8 +4,6 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetActiveVehicleLocations!!
 
 DELIMITER $$
 
--- CALL AAU.sp_GetActiveVehicleLocations('Jim');
-
 CREATE PROCEDURE AAU.sp_GetActiveVehicleLocations(IN prm_UserName VARCHAR(45))
 BEGIN
 
@@ -25,7 +23,8 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 
 WITH vehicleListCTE AS 
 (
-SELECT 
+SELECT
+v.VehicleId,
 JSON_OBJECT(
 "vehicleId", v.VehicleId,
 "vehicleRegistrationNumber", v.VehicleRegistrationNumber,
@@ -34,49 +33,54 @@ JSON_OBJECT(
 "largeAnimalCapacity", v.LargeAnimalCapacity,
 "vehicleImage", v.VehicleImage,
 "vehicleTypeId", v.VehicleTypeId) AS `vehicleDetails`,
-
 JSON_OBJECT(
-"speed", Speed,
-"heading", Heading,
-"accuracy", Accuracy,
-"altitude", Altitude,
-"altitudeAccuracy", AltitudeAccuracy,
+"speed", vl.Speed,
+"heading", vl.Heading,
+"accuracy", vl.Accuracy,
+"altitude", vl.Altitude,
+"altitudeAccuracy", vl.AltitudeAccuracy,
 "latLng",
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("lat", vl.Latitude),
-JSON_OBJECT("lng", Longitude))) AS `vehicleLocation`,
+JSON_OBJECT("lng", vl.Longitude))) AS `vehicleLocation`
+FROM AAU.Vehicle v
+LEFT JOIN
+(
+	SELECT	VehicleId, Latitude, Longitude, Speed, Heading, Accuracy, Altitude, AltitudeAccuracy,
+			ROW_NUMBER() OVER (PARTITION BY VehicleId ORDER BY Timestamp DESC) AS `RNum`
+	FROM AAU.VehicleLocation
+	WHERE CAST(Timestamp AS DATE) = CURDATE()
+	AND OrganisationId = vOrganisationId
+) vl ON vl.VehicleId = v.VehicleId AND vl.RNum = 1
+WHERE v.VehicleStatusId = 1
+),
+RescuerCTE AS
+(
+SELECT vs.VehicleId,
 JSON_ARRAYAGG(
 JSON_OBJECT(
 "firstName", u.FirstName,
 "surname", u.Surname,
 "initials", u.Initials,
 "colour", u.Colour)) AS `vehicleStaff`
-FROM AAU.Vehicle v
-LEFT JOIN
-(
-SELECT	VehicleId, Latitude, Longitude, Speed, Heading, Accuracy, Altitude, AltitudeAccuracy,
-		ROW_NUMBER() OVER (PARTITION BY VehicleId ORDER BY Timestamp DESC) AS `RNum`
-FROM AAU.VehicleLocation
-WHERE CAST(Timestamp AS DATE) = '2021-07-04'
-AND OrganisationId = vOrganisationId
-) vl ON vl.VehicleId = v.VehicleId AND vl.RNum = 1
-LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = vl.VehicleId
+FROM AAU.VehicleShift vs
 LEFT JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-WHERE v.VehicleStatusId = 1
-GROUP BY vl.VehicleId,
-vl.Latitude,
-vl.Longitude
+WHERE vs.VehicleId IN (SELECT VehicleId FROM vehicleListCTE)
+AND NOW() BETWEEN vs.StartDate AND vs.EndDate
+GROUP BY vs.VehicleId
 )
 
 SELECT
 JSON_ARRAYAGG(
 JSON_OBJECT(
-"vehicleDetails", vehicleDetails,
-"vehicleLocation", vehicleLocation,
-"vehicleStaff", vehicleStaff
-)) AS `vehicleList`
-FROM vehicleListCTE;
+"vehicleDetails", vl.vehicleDetails,
+"vehicleLocation", vl.vehicleLocation,
+"vehicleStaff", r.vehicleStaff
+)
+) AS `vehicleList`
+FROM vehicleListCTE vl
+LEFT JOIN RescuerCTE r ON r.VehicleId = vl.VehicleId;
 
 END$$
 

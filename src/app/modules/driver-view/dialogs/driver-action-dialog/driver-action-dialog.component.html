@@ -65,9 +65,15 @@
     
         </div>
 
-        <!-- <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="false" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>-->
-
         <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection> 
+
+        <app-patient-visit-details
+            [isStreetTreatTrue]="isStreetTreat"
+            *ngIf = "isStreetTreat"
+            [recordForm]="formGroup">
+        </app-patient-visit-details>
+
+        
 
         <div mat-dialog-action>
 

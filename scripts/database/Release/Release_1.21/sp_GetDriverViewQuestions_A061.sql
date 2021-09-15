@@ -21,9 +21,7 @@ JSON_OBJECT('formControlName', FormControlName),
 JSON_OBJECT('type', FormControlType),
 JSON_OBJECT('sortOrder', SortOrder),
 JSON_OBJECT('functionName', SelectFunctionName),
-JSON_OBJECT('label', Label),
-JSON_OBJECT('idName', IdName),
-JSON_OBJECT('valueName', ValueName)
+JSON_OBJECT('label', Label)
 )) questionList
 FROM AAU.DriverViewQuestions;
 
