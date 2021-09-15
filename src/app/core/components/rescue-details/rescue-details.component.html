@@ -1,7 +1,7 @@
-<form 
-    [formGroup]="rescueDetails" 
-    fxLayout.gt-sm="column" 
-    fxLayoutAlign.gt-sm="center center" 
+<form
+    [formGroup]="rescueDetails"
+    fxLayout.gt-sm="column"
+    fxLayoutAlign.gt-sm="center center"
     fxLayoutGap="20"
     [fxLayout.gt-sm]="rescueDetails.get('selfAdmission')?.value ? 'row' : 'column'">
 
@@ -39,7 +39,7 @@
 
         <mat-form-field>
             <mat-label>Assigned vehicle</mat-label>
-                <mat-select tabindex="12" [disabled]='vehicleListDisabled' formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+                <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
                 <mat-option>N/A</mat-option>
                     <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
                     {{vehicle.vehicleNumber}}
@@ -68,7 +68,7 @@
 
         </div>
 
-            <mat-checkbox  formControlName="selfAdmission">Self admission</mat-checkbox>  
+            <mat-checkbox  formControlName="selfAdmission">Self admission</mat-checkbox>
 
 
     </div>
@@ -112,7 +112,7 @@
                                 Rescue after admission!
                             </mat-error>
             </mat-form-field>
-            
+
         </ng-container>
 
 
