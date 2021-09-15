@@ -102,6 +102,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
+                selfAdmission:false,
                 code: this.code,
                 rescuers: this.fb.array([])
             }),
@@ -115,6 +116,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
+               
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
                     rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
@@ -272,7 +274,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             if (Date.parse(this.rescueTime?.value) < Date.parse(this.callDateTime?.value)) {
                 this.rescueTime?.setErrors({ rescueBeforeCallDatetime: true });
-            } else {
+            } else if(this.rescueDetails.get('selfAdmission')?.value !== true){
                 this.rescueTime?.setValidators([Validators.required]);
                 this.rescueTime?.updateValueAndValidity({ emitEvent: false });
             }

@@ -20,7 +20,8 @@ CREATE PROCEDURE AAU.sp_InsertEmergencyCase(
 									IN prm_AdmissionTime DATETIME,
                                     IN prm_UpdateTime DATETIME,
 									IN prm_AssignedAmbulanceId INT,
-                                    IN prm_AmbulanceAssignmentTime DATETIME)
+                                    IN prm_AmbulanceAssignmentTime DATETIME,
+                                    IN prm_SelfAdmission BOOLEAN)
 BEGIN
 
 /*
@@ -61,7 +62,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
--- START TRANSACTION ;
+START TRANSACTION ;
 
 IF vEmNoExists = 0 THEN
 
@@ -89,7 +90,8 @@ INSERT INTO AAU.EmergencyCase
 	AdmissionTime,
     UpdateTime,
     Comments,
-    GUID
+    GUID,
+	SelfAdmission
 )
 VALUES
 (
@@ -108,13 +110,14 @@ VALUES
 	prm_AdmissionTime,
     prm_UpdateTime,
     prm_Comments,
-    prm_GUID
+    prm_GUID,
+    prm_SelfAdmission 
 
 );
 
 -- UNLOCK TABLES;
 
--- COMMIT;
+COMMIT;
 	
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
     

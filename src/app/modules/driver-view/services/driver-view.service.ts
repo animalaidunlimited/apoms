@@ -290,12 +290,12 @@ export class DriverViewService extends APIService {
       else {
         if(updatedRecordData.ambulanceAction==='Release' && updatedRecordData.releaseAmbulanceId && updatedRecordData.releaseAmbulanceAssignmentDate) {
 
-          driverViewLocalStorageData.push(updatedRecordData);
+          driverViewLocalStorageData?.push(updatedRecordData);
 
         }
         if(updatedRecordData.ambulanceAction!=='Release') {
 
-          driverViewLocalStorageData.push(updatedRecordData);
+          driverViewLocalStorageData?.push(updatedRecordData);
 
         }
 
