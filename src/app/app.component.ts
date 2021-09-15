@@ -26,9 +26,6 @@ export class AppComponent implements OnInit{
         private messagingService: MessagingService,
         private emergencyTabBar: EmergencyRegisterTabBarService
     ) {
-
-
-
     }
 
     ngOnInit() {
@@ -57,10 +54,6 @@ export class AppComponent implements OnInit{
 
                     if(event?.data?.messageData?.staff1){
                         this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
-                    }
-
-                    if(event.data?.vehicleId){
-
                     }
 
                  });

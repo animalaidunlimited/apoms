@@ -1,9 +1,11 @@
+DELIMITER !!
 
-DELIMITER  !!
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues!!
-
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
 
 DELIMITER $$
+
+-- CALL AAU.sp_GetOutstandingRescues('Jim');
+
 CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
 BEGIN
 
@@ -63,7 +65,7 @@ WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds) AND e
 PatientsCTE AS
 (
     SELECT
-		p.EmergencyCaseId ,
+		p.EmergencyCaseId,
         p.PatientCallOutcomeId,
         p.PatientId,
         JSON_ARRAYAGG(
@@ -99,7 +101,9 @@ PatientsCTE AS
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE) AND p.IsDeleted != 1
-	GROUP BY p.EmergencyCaseId
+	GROUP BY p.EmergencyCaseId,
+        p.PatientCallOutcomeId,
+        p.PatientId
 )
 
 
@@ -109,13 +113,12 @@ JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 	JSON_OBJECT('patients', p.Patients),
 	JSON_OBJECT('emergencyCaseId',ec.EmergencyCaseId),
-	JSON_OBJECT('assignedVehicleId',ec.AssignedVehicleId),
+	JSON_OBJECT('rescueAmbulanceId',ec.AssignedVehicleId),
+    JSON_OBJECT('releaseAmbulanceId',rd.AssignedVehicleId),
 	JSON_OBJECT('emergencyNumber',ec.EmergencyNumber),
     JSON_OBJECT('emergencyCode',ec.EmergencyCode),
     JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
     JSON_OBJECT('rescueTime',ec.RescueTime),
-    JSON_OBJECT('staff1',ec.Rescuer1Id),
-	JSON_OBJECT('staff2',ec.Rescuer2Id), 
     JSON_OBJECT('ambulanceAssignmentTime',IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime) ),
 	JSON_OBJECT('actionStatusId',
     AAU.fn_GetRescueStatus(
@@ -137,11 +140,16 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT('callerDetails', ca.CallerDetails),
     JSON_OBJECT("callDateTime", ec.CallDateTime),
     JSON_OBJECT("location", ec.Location),
-    JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
-	JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0)),
-	JSON_OBJECT("releaseId", rd.ReleaseDetailsId),
-	JSON_OBJECT("requestedDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("pickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
+    JSON_OBJECT("latLngLiteral",
+		JSON_MERGE_PRESERVE(
+				JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
+		) 
+    ),
+	
+	JSON_OBJECT("releaseDetailsId", rd.ReleaseDetailsId),
+	JSON_OBJECT("releaseRequestDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("releasePickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
@@ -161,7 +169,8 @@ INNER JOIN (
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT('callerId', c.CallerId),
 	JSON_OBJECT('callerName',c.Name),
-	JSON_OBJECT('callerNumber', c.Number)
+	JSON_OBJECT('callerNumber', c.Number),
+    JSON_OBJECT('callerAlternativeNumber', c.AlternativeNumber)
 	)) AS callerDetails
     FROM AAU.Caller c
     INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId

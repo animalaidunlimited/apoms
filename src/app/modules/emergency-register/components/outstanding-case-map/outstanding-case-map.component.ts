@@ -34,11 +34,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
   locationList$: BehaviorSubject<LocationPathSegment[]>;
-  // polyLineOptions: google.maps.PolylineOptions = {};
 
   options: google.maps.MapOptions = {};
-
-
 
   outstandingCases$!: BehaviorSubject<OutstandingAssignment[]>;
 
@@ -62,7 +59,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   ngOnInit(): void {
 
-    
+
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
@@ -78,14 +75,14 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     ]};
 
     if(this.vehicleId)
-    { 
+    {
 
       this.ambulanceLocations$ = this.ambulanceLocations$.pipe(
         map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId))
       );
 
     }
-   
+
 
   }
 
@@ -107,8 +104,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
         });
       }
     });
-    
-  
+
+
   }
 
 
@@ -117,8 +114,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
     this.googlemap.fitBounds(latlngbounds);
     this.googlemap.panToBounds(latlngbounds);
-    
-  
+
+
   }
 
   openAmbulanceInfoWindow(marker: MapMarker, actions?: ActionGroup[]){
@@ -153,8 +150,8 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     }else{
       this.infoWindow.open(marker);
     }
-   
- 
+
+
   }
 
   openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {

@@ -14,7 +14,7 @@
 
         <mat-form-field>
             <mat-label>Assign Vehicle</mat-label>
-                <mat-select tabindex="12" formControlName="releaseAmbulanceId"
+                <mat-select [disabled]='vehicleListDisabled' tabindex="12" formControlName="releaseAmbulanceId"
                 (selectionChange)="vehicleSelected($event)">
                 <mat-option>N/A</mat-option>
                     <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
@@ -32,25 +32,6 @@
             placeholder="Ambulance assignment time" matInput>
 
         </mat-form-field>
-
-    <!-- <mat-form-field appearance="fill">
-        <mat-label>Releaser 1</mat-label>
-            <mat-select formControlName="Releaser1">
-                <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
-                    {{releaser.firstName}}
-                </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-        <mat-label>Releaser 2</mat-label>
-            <mat-select formControlName="Releaser2">
-                <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let releaser of releasers$ | async" [value]="releaser.userId">
-                    {{releaser.firstName}}
-                </mat-option>
-        </mat-select>
-    </mat-form-field> -->
 
     </div>
 
