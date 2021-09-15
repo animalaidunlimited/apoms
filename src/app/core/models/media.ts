@@ -86,4 +86,13 @@ import { Observable, BehaviorSubject } from 'rxjs';
     patientId: number;
     remoteURL: string;
     mediaItemId: number;
-}
+  }
+
+  
+  export interface DialogMediaData{
+    upload: boolean; 
+    patientId: number | null;
+    image?:Image;
+    mediaData?:MediaItem ;
+    tagNumber:string;
+  }

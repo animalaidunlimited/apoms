@@ -2,7 +2,7 @@ import { takeUntil } from 'rxjs/operators';
 import {  Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Image, MediaItem } from 'src/app/core/models/media';
+import { Image, MediaItem, DialogMediaData } from 'src/app/core/models/media';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 
 @Component({
@@ -23,17 +23,21 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
     ) {}
 
     ngOnInit(): void {
-
+    
     }
 
     openPreviewDialog(image:Image){
+        const previewDialogData:DialogMediaData = {
+            upload:false,
+            patientId:null,
+            image,
+            mediaData: this.mediaPatientItems.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0],
+            tagNumber:''
+        };
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
-            data: {
-                image,
-                mediaData: this.mediaPatientItems.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
-            },
+            data: previewDialogData,
             autoFocus: false
         });
        

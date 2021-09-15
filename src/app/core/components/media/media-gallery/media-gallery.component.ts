@@ -1,4 +1,4 @@
-import { Image, MediaItem,  Gallery, LocalMedia} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery, LocalMedia, DialogMediaData} from 'src/app/core/models/media';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -124,16 +124,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
 
-
+    const uploadDialogData:DialogMediaData = { upload:true, patientId: this.galleryData?.get('patientId')?.value, tagNumber:'' };
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
-
+      
       minWidth: '75vw',
       panelClass: 'media-preview-dialog',
-      data: {
-        upload:true,
-        patientId: this.galleryData?.get('patientId')?.value
-
-      }
+      data: uploadDialogData
 
     });
 

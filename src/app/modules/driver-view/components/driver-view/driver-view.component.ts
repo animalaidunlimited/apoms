@@ -80,8 +80,6 @@ export class DriverViewComponent implements OnInit {
           null
         ));
 
-      const newVehicleIdArray = Array.from(vehicleIdSet);
-
       this.timer$ = this.driverView.getTimer();
 
       const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));

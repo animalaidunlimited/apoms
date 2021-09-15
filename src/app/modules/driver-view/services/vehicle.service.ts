@@ -37,7 +37,7 @@ export class VehicleService  extends APIService {
 
     if(date){
 
-      let request = "/GetVehicleShiftDetails?" + "shiftDate=" + date;
+      const request = '/GetVehicleShiftDetails?' + 'shiftDate=' + date;
 
       this.get(request).then((response:any) => {
 
@@ -56,11 +56,11 @@ export class VehicleService  extends APIService {
 
           return shift;
 
-      });
+        });
 
         this.vehicleShifts.next(this.currentVehicleShifts);
 
-      })
+      });
 
     }
 
@@ -83,20 +83,20 @@ export class VehicleService  extends APIService {
 
     const request = '/GetVehicleList';
 
-        return this.getObservable(request).pipe(
-            map((response: Vehicle[]) => {
-                return response;
-            }),
-        );
+    return this.getObservable(request).pipe(
+      map((response: Vehicle[]) => {
+        return response;
+      }),
+    );
 
   }
 
   public async deleteVehicleListItem(vehicleId : number) : Promise<SuccessOnlyResponse> {
-    let deleteobject = {
-      vehicleId:vehicleId,
+    const deleteObject = {
+      vehicleId,
       isDeleted: true
-    }
-    return await this.put(deleteobject).then((output)=>{
+    };
+    return await this.put(deleteObject).then((output)=>{
       return output;
     }).catch((error:any)=>{
         console.log(error);
@@ -104,11 +104,11 @@ export class VehicleService  extends APIService {
 
   }
 
-  upsertVehicleShift(vehicleId: Number, iShiftDetails:FormGroup) : void {
+  upsertVehicleShift(vehicleId: number, iShiftDetails:FormGroup) : void {
 
     const exists = this.currentVehicleShifts.findIndex(shift => shift.vehicleId === vehicleId && shift.shiftUUID === iShiftDetails.get('shiftUUID')?.value);
 
-    let shiftDetails = iShiftDetails.value as VehicleShift;
+    const shiftDetails = iShiftDetails.value as VehicleShift;
 
     shiftDetails.shiftStartTimeDate = new Date(shiftDetails.shiftStartTime);
     shiftDetails.shiftEndTimeDate = new Date(shiftDetails.shiftEndTime);
@@ -121,7 +121,7 @@ export class VehicleService  extends APIService {
 
       shiftDetails.vehicleStaff.forEach(vehicleStaff => {
 
-        let currentStaffDetails = staff.find(currentStaff => currentStaff.userId === vehicleStaff.userId);
+        const currentStaffDetails = staff.find(currentStaff => currentStaff.userId === vehicleStaff.userId);
 
         vehicleStaff.firstName = '' + currentStaffDetails?.firstName;
         vehicleStaff.surname = '' + currentStaffDetails?.surname;
@@ -134,9 +134,9 @@ export class VehicleService  extends APIService {
 
       this.currentVehicleShifts.sort((a,b) => a.shiftStartTimeDate.getTime() - b.shiftStartTimeDate.getTime());
 
-      let upsert = shiftDetails.vehicleShiftId ?
-                                  this.putSubEndpoint("/VehicleShiftDetails",shiftDetails) :
-                                  this.postSubEndpoint("/VehicleShiftDetails",shiftDetails);
+      const upsert = shiftDetails.vehicleShiftId ?
+                                  this.putSubEndpoint('/VehicleShiftDetails',shiftDetails) :
+                                  this.postSubEndpoint('/VehicleShiftDetails',shiftDetails);
 
       upsert.then(result => this.processUpsertShiftResult(result));
 
@@ -160,7 +160,7 @@ export class VehicleService  extends APIService {
 
     shift.isDeleted = true;
 
-    this.putSubEndpoint("/VehicleShiftDetails",shift).then(result => {
+    this.putSubEndpoint('/VehicleShiftDetails',shift).then(result => {
 
       if (result.success === 1) {
         this.currentVehicleShifts = this.currentVehicleShifts.filter(current => current.shiftUUID !== shift.shiftUUID);
@@ -177,10 +177,10 @@ export class VehicleService  extends APIService {
 
   public getHourRange() : HourRange {
 
-    let start = this.orgOptions.getVehicleAssignerStartHour();
-    let end = this.orgOptions.getVehicleAssignerEndHour();
+    const start = this.orgOptions.getVehicleAssignerStartHour();
+    const end = this.orgOptions.getVehicleAssignerEndHour();
 
-    var range = [];
+    const range = [];
 
     for (let i = start; i <= end; i++) {
       range.push(i);

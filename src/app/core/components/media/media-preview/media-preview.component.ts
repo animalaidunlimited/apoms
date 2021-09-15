@@ -1,5 +1,5 @@
-import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
+import { Image, Tag, Comment, MediaItem, MediaItemReturnObject, DialogMediaData } from './../../../models/media';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnDestroy, OnInit,Renderer2,ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -11,8 +11,11 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
-import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
+import { ɵunwrapSafeValue as unwrapSafeValue } from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+
+
+
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -82,7 +85,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: DialogMediaData,
     private fb: FormBuilder,
     public datePipe:DatePipe,
     private patientService:PatientService,
@@ -107,6 +110,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log(this.data);
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
     this.recordForm = this.fb.group({
@@ -120,7 +124,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       if(this.imageData){
         this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')),
-        this.recordForm.get('imageTags')?.setValue(this.data.mediaData.tags?.map((tag:any) => tag.tag));
+        this.recordForm.get('imageTags')?.setValue((this.data.mediaData?.tags as ( Tag | string)[])?.map((tag:any) => tag.tag));
       }
 
      this.checkHeight();
@@ -131,8 +135,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   checkHeight(dialogDataHeight?:number , dialogDataWidth?:number){
 
-    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
-    const width = dialogDataWidth ? dialogDataWidth :  this.data.image?.width;
+    // tslint:disable-next-line: no-non-null-assertion
+    const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height!;
+    // tslint:disable-next-line: no-non-null-assertion
+    const width = dialogDataWidth ? dialogDataWidth :  this.data.image?.width!;
 
     if(height > 2000 && width > 3000){
       this.imageHeight = 24;
@@ -154,7 +160,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     for(const file of $event?.target?.files ? $event.target.files : $event)
     {
 
-      const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
+      // tslint:disable-next-line: no-non-null-assertion
+      const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId!);
 
       mediaItem.mediaItemId.subscribe(media => {
 
@@ -174,10 +181,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           this.data.upload = false;
 
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
-
+           
           this.imageData.patientMediaItemId = media;
-
-
 
           this.checkHeight(mediaItem.mediaItem?.heightPX, mediaItem.mediaItem?.widthPX);
 
@@ -314,7 +319,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   private getUpdatedPatientMediaItem(): MediaItem {
     return {
-      ...this.data.mediaData,
+      // tslint:disable-next-line: no-non-null-assertion
+      ...this.data.mediaData!,
       datetime: this.recordForm.get('imageDate')?.value,
       tags: this.recordForm.get('imageTags')?.value?.map((tag: { tag: string; }) => ({ tag }))
     };
