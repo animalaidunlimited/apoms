@@ -30,7 +30,6 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
   recordForm!: FormGroup;
   releasers$!: Observable<User[]>;
   vehicleList$!: Observable<Vehicle[]>;
-  vehicleListDisabled!:boolean;
 
   private ngUnsubscribe = new Subject();
 
@@ -62,14 +61,15 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
     this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe((date) => {
 
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
+      
       if(date) {
-        this.vehicleListDisabled = false;
+        this.recordForm.get('releaseAmbulanceId')?.enable()
 
         this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
-    }
-    else {
-        this.vehicleListDisabled = true;
-    }
+      }
+      else {
+        this.recordForm.get('releaseAmbulanceId')?.disable()
+      }
 
     });
 

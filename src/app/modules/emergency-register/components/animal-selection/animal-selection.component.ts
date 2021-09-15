@@ -54,7 +54,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;
 
     @Output() problemTabPressed:EventEmitter<boolean> = new EventEmitter();
-    
+
     @ViewChild('problemsAutoOptions') problemsAutoOptions!: ElementRef;
 
     @ViewChildren(EmergencyRegisterPatientComponent) emergencyRegisterPatients!: QueryList<EmergencyRegisterPatientComponent>;
@@ -80,7 +80,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     emergencyCardHTML = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
-    
+
     treatmentAreaNames$!: Observable<TreatmentArea[]>;
 
     @HostListener('document:keydown.control.p', ['$event'])
@@ -93,7 +93,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         this.addPatientRow();
         this.cdr.detectChanges();
 
-        
+
         const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex].animalTypeInput.nativeElement.focus();
@@ -107,19 +107,19 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         {
             this.emergencyRegisterPatients.first.tagNumber?.nativeElement.focus();
         }
-        
+
     }
 
     ngOnInit() {
 
 
-        
+
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
-        
+
         this.recordForm.addControl('patients', this.fb.array([]));
 
         this.patients = this.recordForm.get('patients') as FormArray;
-        
+
 
         this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
 
@@ -139,7 +139,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             this.setChildOutcomeAsParentPatient(this.patients);
         }
 
-        
+
     }
 
     problemTab($event:boolean){
@@ -154,11 +154,11 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 CallOutcome: 'Admission'
             }, {emitEvent: false});
         }
-        
+
         this.patients.push(patient);
     }
 
-   
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
@@ -198,7 +198,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     populatePatient(isUpdate: boolean, patient: Patient) {
 
         const problems = this.fb.array([]);
-        
+
         patient.problems.forEach(problem => {
 
             problems.push(this.fb.group({
@@ -211,13 +211,13 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         const newPatient = this.getPatient(problems);
 
         this.setValidators(newPatient);
-        
+
         newPatient.patchValue(patient);
-        
+
         if(newPatient.get('admissionAccepted')?.value){
             newPatient.get('admissionArea')?.disable();
         }
-        
+
         return newPatient;
 
     }
@@ -298,7 +298,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
     private updateValueAndValidity(patient: FormGroup, rescuer2Id: AbstractControl | null, rescuer1Id: AbstractControl | null,
         rescueTime: AbstractControl | null, admissionTime: AbstractControl | null) {
 
-        
+
         rescuer2Id?.updateValueAndValidity({ emitEvent: false });
         rescuer1Id?.updateValueAndValidity({ emitEvent: false });
         rescueTime?.updateValueAndValidity({ emitEvent: false });
@@ -310,15 +310,15 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         if(this.incomingPatientArray?.length > 0) {
 
-            
+
             this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
                 const newPatient = this.populatePatient(true, patient);
-                /* 
-                * loadPatientArray running multiple times on ngOnInit 
-                * animal-selection HTML tag will instantiate ng on init 
-                * Restrict length of patients array to length of incoming patients 
+                /*
+                * loadPatientArray running multiple times on ngOnInit
+                * animal-selection HTML tag will instantiate ng on init
+                * Restrict length of patients array to length of incoming patients
                 */
                 if(this.patients.length < this.incomingPatientArray.length )
                 {
@@ -326,7 +326,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                 }
             });
 
-            
+
 
             this.setChildOutcomeAsParentPatient(this.patients);
 
@@ -335,34 +335,34 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         }
         else if(emergencyCaseId) {
 
-            
+
             this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((patients: Patients) => {
-                
+
                 patients.patients.forEach(patient => {
                     // We get a 0 or 1 from the database, so need to convert to a boolean.
                     patient.deleted = !!+patient.deleted;
-    
+
                     const newPatient = this.populatePatient(true, patient);
-                    /* 
-                    * loadPatientArray running multiple times on ngOnInit 
-                    * animal-selection HTML tag will instantiate ng on init 
-                    * Rstrict length of patients array to length of incoming patients 
+                    /*
+                    * loadPatientArray running multiple times on ngOnInit
+                    * animal-selection HTML tag will instantiate ng on init
+                    * Rstrict length of patients array to length of incoming patients
                     */
                     if(this.patients.length < patients.patients.length )
                     {
                         this.patients.push(newPatient);
                     }
                 });
-    
+
                 this.setChildOutcomeAsParentPatient(this.patients);
-                
-            
+
+
             },
                 err => console.error(err),
-            );   
+            );
         }
     }
 
@@ -377,7 +377,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     }
     /**
-     * Same as inside call outcome value changes 
+     * Same as inside call outcome value changes
      *  it is used for when fetching the data from api
      * if api has call outcome admission because valuechanges will not run inside call outcome compoment on
      * ngOnIt
@@ -400,7 +400,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
                             patient.get('isAdmission')?.setValue(true, {emitEvent: false});
                             patient.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
 
-                            patient.get('tagNumber')?.setValidators(Validators.required);
+                            patient.get('tagNumber')?.setValidators([Validators.required, Validators.pattern(/^[A-z0-9]*$/)]);
                             patient.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
                             patient.get('admissionArea')?.setValidators(Validators.required);
@@ -434,15 +434,15 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
           }
         });
       }
-    
+
       printEmergencyCard(patientForm:FormGroup | AbstractControl){
-    
+
         const printTemplateId = this.userOptions.getEmergencyCardTemplateId();
-    
+
         if(patientForm.get('patientId')?.value){
           this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
         }
-    
+
       }
 
 }
