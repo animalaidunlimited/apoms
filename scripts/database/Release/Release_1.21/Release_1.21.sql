@@ -2712,7 +2712,7 @@ SELECT o.SocketEndPoint INTO vSocketEndPoint FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE u.UserName = prm_Username;
 
-SELECT ec.EmergencycaseId INTO vEmergencyCaseId FROM AAU.StreetTreatcase sc
+SELECT ec.EmergencycaseId INTO vEmergencyCaseId FROM AAU.StreetTreatCase sc
 INNER JOIN AAU.Patient p ON p.PatientId = sc.PatientId
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 WHERE sc.StreetTreatCaseId = prm_StreetTreatCaseId;
