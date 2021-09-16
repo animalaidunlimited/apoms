@@ -28,8 +28,7 @@
             </div>
             <ng-container *ngIf="ambulanceCase.vehicleStaff as vehicleStaff">
               <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
-                  <div class="vehicleStaffName" *ngFor="let vehicleStaff of vehicleStaff">
-                    <span *ngIf="vehicleStaff.initials" class="initials">{{ vehicleStaff.initials }}</span>
+                  <div *ngFor="let vehicleStaff of vehicleStaff">
 
                     <div fxFlex="none" class="avatar-circle" [matTooltip]="vehicleStaff.firstName + ' ' + vehicleStaff.surname">
                       <span class="initials">{{ vehicleStaff.initials }}</span>
@@ -76,6 +75,14 @@
             <div fxLayout="row" fxLayoutAlign="end" >
 
               <div>
+                <h3>Current</h3>
+                <div class="capacityTitle">
+                  <span>{{capacity.small}} (S)</span>
+                  <span>{{capacity.large}} (L)</span>
+                </div>
+              </div>
+
+              <div>
                 <h3>Capacity</h3>
                 <div class="capacityTitle">
                   <span>{{vehicleDetail.smallAnimalCapacity}} (S)</span>
@@ -83,13 +90,7 @@
                 </div>
               </div>
 
-              <div>
-                <h3>Current</h3>
-                <div class="capacityTitle">
-                  <span>{{capacity.small}} (S)</span>
-                  <span>{{capacity.large}} (L)</span>
-                </div>
-              </div>
+
 
             </div>
 

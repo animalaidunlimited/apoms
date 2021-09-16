@@ -178,8 +178,6 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
       this.setAcceptedAndRefresh();
 
       this.acceptedFiltered.next(this.accepted.value);
-      //this.patientTable.renderRows();
-
       this.changeDetector.detectChanges();
 
     });
