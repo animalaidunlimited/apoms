@@ -38,10 +38,10 @@ Purpose: Altering status based upon whether the admission area has been added
 EmergencyCaseIds AS
 (
 SELECT EmergencyCaseId
-FROM AAU.Patient 
+FROM AAU.Patient
 WHERE PatientId IN (SELECT PatientId FROM RescueReleaseSTPatientId)
 ),
-CallerCTE AS 
+CallerCTE AS
 (
 SELECT ecr.EmergencyCaseId,
 	JSON_ARRAYAGG(
@@ -92,14 +92,14 @@ PatientsCTE AS
             pp.PatientProblems,
             pp.problemsJSON
 		)) AS Patients
-    FROM AAU.Patient p    
+    FROM AAU.Patient p
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
 		SELECT pp.PatientId,JSON_OBJECT("problems",
 		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(                    
-				JSON_OBJECT("problemId", pp.ProblemId),                        
-				JSON_OBJECT("problem", pr.Problem) 
+			JSON_MERGE_PRESERVE(
+				JSON_OBJECT("problemId", pp.ProblemId),
+				JSON_OBJECT("problem", pr.Problem)
 				)
 			 )
 		) AS problemsJSON,
@@ -129,15 +129,15 @@ PatientsCTE AS
 ,
 DriverViewObject AS
 (
-	SELECT CASE 
-            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL AND rd.IsAStreetTreatRelease = 0 THEN 'Release'
+	SELECT CASE
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NULL AND rd.IsStreetTreatRelease = 0 THEN 'Release'
             WHEN rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL THEN 'StreetTreat'
-            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsAStreetTreatRelease = 1 THEN 'STRelease'
-            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL 
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsStreetTreatRelease = 1 THEN 'STRelease'
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL
             AND prm_AmbulanceAction = 'StreetTreat' THEN 'StreetTreat'
-            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL 
+            WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.EndDate IS NOT NULL
             AND prm_AmbulanceAction = 'Release' THEN 'Release'
-           -- WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsAStreetTreatRelease = 0 THEN 'Release'
+           -- WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsStreetTreatRelease = 0 THEN 'Release'
             ELSE 'Rescue' END
             AS AmbulanceAction,
 			IF((rd.AssignedVehicleId IS NULL AND std.AssignedVehicleId IS NULL),ec.AssignedVehicleId,
@@ -175,43 +175,43 @@ DriverViewObject AS
 			END visitId,
             v.VisitBeginDate,
             v.VisitEndDate,
-            v.VisitTypeId, 
-			v.Date, 
-			v.StatusId, 
-			v.AdminNotes, 
-			v.OperatorNotes, 
+            v.VisitTypeId,
+			v.Date,
+			v.StatusId,
+			v.AdminNotes,
+			v.OperatorNotes,
             ec.AmbulanceArrivalTime,
-            ec.RescueTime,            
+            ec.RescueTime,
 			ec.EmergencyCaseId,
             ec.EmergencyNumber,
             ec.EmergencyCodeId,
             ec.DispatcherId,
             ecd.EmergencyCode,
             ec.CallDateTime,
-            ec.Location,			
+            ec.Location,
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            ) AS latLngLiteral,            
+            ) AS latLngLiteral,
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
-            JSON_OBJECT("patients",p.Patients) AS Patients 
+            JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
-          
+
 ),
 
 DriverVehicleUserListCTE AS (
-SELECT JSON_ARRAYAGG(u.UserId) rescuerList, 
-vs.VehicleId 
-FROM AAU.VehicleShift vs  
+SELECT JSON_ARRAYAGG(u.UserId) rescuerList,
+vs.VehicleId
+FROM AAU.VehicleShift vs
 INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 INNER JOIN AAU.User u ON u.UserId = vsu.UserId
 WHERE vs.VehicleId IN (SELECT driverAssignedVehicleId FROM DriverViewObject )
@@ -221,15 +221,15 @@ AND vs.StartDate<= NOW() AND vs.EndDate >= NOW() AND IFNULL(vs.IsDeleted,0) = 0
 GROUP BY vs.VehicleId
 ),
 DriverViewCTE AS (
-	SELECT * 
+	SELECT *
     FROM DriverViewObject dvo
-    LEFT JOIN DriverVehicleUserListCTE dvuc ON dvuc.VehicleId = dvo.driverAssignedVehicleId  
+    LEFT JOIN DriverVehicleUserListCTE dvuc ON dvuc.VehicleId = dvo.driverAssignedVehicleId
     WHERE IF(AmbulanceAction = 'StreetTreat', VisitBeginDate <= NOW() AND IFNULL(VisitEndDate, NOW()) >= NOW(), VisitBeginDate IS NULL AND VisitEndDate IS NULL)
 )
 
 
 SELECT
-JSON_MERGE_PRESERVE( 
+JSON_MERGE_PRESERVE(
 JSON_OBJECT("actionStatus", null),
 JSON_OBJECT("ambulanceAction", AmbulanceAction),
 JSON_OBJECT("releaseDetailsId", ReleaseDetailsId),
@@ -261,7 +261,7 @@ JSON_OBJECT("rescueAmbulanceAssignmentDate", DATE_Format(AmbulanceAssignmentTime
 JSON_OBJECT("releaseAmbulanceId", ReleaseAssignedVehicleId),
 JSON_OBJECT("releaseAmbulanceAssignmentDate", DATE_Format(ReleaseAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("streetTreatAmbulanceId", StreetTreatAssignedVehicleId),
-JSON_OBJECT("streetTreatAmbulanceAssignmentDate", DATE_Format(StreetTreatAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")), 
+JSON_OBJECT("streetTreatAmbulanceAssignmentDate", DATE_Format(StreetTreatAmbulanceAssignmentTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("admissionTime", DATE_Format(AdmissionTime,"%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("inTreatmentAreaId", InTreatmentAreaId),
 JSON_OBJECT("emergencyNumber", EmergencyNumber),

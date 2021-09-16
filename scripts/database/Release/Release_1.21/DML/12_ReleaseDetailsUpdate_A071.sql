@@ -1,2 +1,3 @@
 ALTER TABLE AAU.ReleaseDetails 
-ADD COLUMN `IsAStreetTreatRelease` TINYINT NULL DEFAULT 0 AFTER `AmbulanceAssignmentTime`;
+ADD COLUMN `IsStreetTreatRelease` TINYINT NULL DEFAULT 0 AFTER `AmbulanceAssignmentTime`;
+

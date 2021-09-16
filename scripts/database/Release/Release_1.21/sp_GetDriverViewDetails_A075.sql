@@ -12,7 +12,7 @@ DECLARE vUserId INT;
 
 SELECT UserId INTO vUserId
 FROM AAU.User
-WHERE UserName = prm_Username; 
+WHERE UserName = prm_Username;
 
 WITH VehicleIdCTE AS
 (
@@ -32,9 +32,9 @@ WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
 
-UNION 
+UNION
 
-SELECT rd.PatientId ,IF(rd.IsAStreetTreatRelease = 1, 'STRelease','Release') 
+SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
 FROM AAU.ReleaseDetails rd
 WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
@@ -44,7 +44,7 @@ UNION
 SELECT st.PatientId , IF(rd.ReleaseDetailsId IS NOT NULL,'STRelease','StreetTreat')
 FROM AAU.StreetTreatCase st
 INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = st.PatientId AND (rd.IsAStreetTreatRelease = 1 AND rd.AssignedVehicleId = st.AssignedVehicleId)
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = st.PatientId AND (rd.IsStreetTreatRelease = 1 AND rd.AssignedVehicleId = st.AssignedVehicleId)
 WHERE ( CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL AND v.VisitId IS NOT NULL )
 AND st.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 )
@@ -55,7 +55,7 @@ SELECT EmergencyCaseId
 FROM AAU.Patient
 WHERE PatientId IN (SELECT PatientId FROM RescueReleaseST)
 ),
-CallerCTE AS 
+CallerCTE AS
 (
 SELECT ecr.EmergencyCaseId,
 	JSON_ARRAYAGG(
@@ -106,14 +106,14 @@ PatientsCTE AS
             pp.PatientProblems,
             pp.problemsJSON
 		)) AS Patients
-    FROM AAU.Patient p    
+    FROM AAU.Patient p
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
 		SELECT pp.PatientId,JSON_OBJECT("problems",
 		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(                    
-				JSON_OBJECT("problemId", pp.ProblemId),                        
-				JSON_OBJECT("problem", pr.Problem) 
+			JSON_MERGE_PRESERVE(
+				JSON_OBJECT("problemId", pp.ProblemId),
+				JSON_OBJECT("problem", pr.Problem)
 				)
 			 )
 		) AS problemsJSON,
@@ -144,7 +144,7 @@ PatientsCTE AS
 DriverViewCTE AS
 (
 SELECT
-		
+
 			rrst.AmbulanceAction,
            -- AS AmbulanceAction,
             rd.ReleaseDetailsId,
@@ -173,31 +173,31 @@ SELECT
 			v.VisitId,
             v.VisitBeginDate,
             v.VisitEndDate,
-            v.VisitTypeId, 
-			v.Date, 
-			v.StatusId, 
-			v.AdminNotes, 
-			v.OperatorNotes, 
+            v.VisitTypeId,
+			v.Date,
+			v.StatusId,
+			v.AdminNotes,
+			v.OperatorNotes,
             ec.AmbulanceArrivalTime,
-            ec.RescueTime,            
+            ec.RescueTime,
 			ec.EmergencyCaseId,
             ec.EmergencyNumber,
             ec.EmergencyCodeId,
             ec.DispatcherId,
             ecd.EmergencyCode,
             ec.CallDateTime,
-            ec.Location,			
+            ec.Location,
             JSON_MERGE_PRESERVE(
             JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
             JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-            ) AS latLngLiteral,            
+            ) AS latLngLiteral,
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
-            JSON_OBJECT("patients",p.Patients) AS Patients 
+            JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
 LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId 
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
@@ -207,7 +207,7 @@ LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
 
 SELECT
 JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE( 
+JSON_MERGE_PRESERVE(
 JSON_OBJECT("actionStatus", null),
 JSON_OBJECT("ambulanceAction", AmbulanceAction),
 JSON_OBJECT("releaseDetailsId", ReleaseDetailsId),

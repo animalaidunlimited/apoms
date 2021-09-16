@@ -75,7 +75,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   ngUnsubscribe = new Subject();
 
   filterKeysArray : FilterKeys[] = [];
-  
+
   showAmbulancePaths = false;
   autoRefresh = false;
   hideList = true;
@@ -115,9 +115,9 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     groupTitle: 'animalType',
     groupValues: []
   }];
-  
+
   searchChange$!:Observable<string>;
-  
+
   @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   @ViewChildren('filterChips') filterChips!: MatChipList[];
@@ -125,7 +125,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   @ViewChild('filterDiv') filterDiv!: ElementRef;
 
 
-  constructor( 
+  constructor(
     private outstandingCaseService: OutstandingCaseService,
     public rescueDialog: MatDialog,
     private dialog: MatDialog,
@@ -164,15 +164,15 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$.pipe(
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.rescueAmbulanceId !== null))
     );
-   
-    this.vehicleId$ = this.outstandingCaseService.getVehicleId(); 
 
-    
+    this.vehicleId$ = this.outstandingCaseService.getVehicleId();
+
+
     this.searchForm = this.fb.group({
       searchTerm: ['']
     });
 
-   
+
    this.searchForm.get('searchTerm')?.valueChanges
     .pipe(
       distinctUntilChanged(),
@@ -184,6 +184,8 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     ));
 
     this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+
+    this.ambulanceLocations$.subscribe(val => console.log(val));
 
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
 
@@ -254,7 +256,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
       this.outstandingCaseService.getAutoRefresh()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(value => {
-        
+
         this.autoRefresh = value;
 
       });
@@ -323,7 +325,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     this.openEmergencyCase.emit(result);
   }
 
-  
+
   toggleVehicleLocation($event:MatSlideToggleChange, vehicleId: number){
     this.locationService.toggleVehicleLocation(vehicleId, $event.checked);
   }
@@ -360,12 +362,12 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     this.openEmergencyCase.emit(emergencyCase);
 
   }
-  
+
 
   ngOnDestroy(){
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
   }
-  
+
 }

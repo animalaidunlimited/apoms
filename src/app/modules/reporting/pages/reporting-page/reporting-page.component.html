@@ -17,7 +17,7 @@
     </button>
 
     <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="row" fxLayoutAlign = "center center">
-        <fieldset class="form-sub-group">
+        <fieldset class="form-sub-group small-box">
             <div *ngFor = "let data of patientCountData">
                 <div *ngIf="data.area === 'Total'">
                     <p class="legend">Total count : {{data.count}}</p>
@@ -28,10 +28,10 @@
 
     <div fxLayout="column" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign = "center center" [formGroup]="reportingDetails">
 
-        <fieldset class="form-sub-group">
+        <fieldset class="form-sub-group small-box">
             <legend class="legend">Case count by date</legend>
 
-            <div fxLayout="row" fxLayoutGap="10px">
+            <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 15px;">
                 <mat-slide-toggle [checked]="isStreetTreatChecked | async" (change)="streetTreatChecked($event)" formControlName="streetTreat">StreetTreat</mat-slide-toggle>
                 <mat-slide-toggle [checked]="isAdmissionChecked | async" (change)="admissionChecked($event)" formControlName="admission">Admission</mat-slide-toggle>
             </div>
@@ -48,7 +48,8 @@
 
         <fieldset class="form-sub-group">
             <legend class="legend">Animal count in each area</legend>
-            <div *ngIf="patientCountData && patientCountData.length > 0" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center" class="count-heading">
+            <div *ngIf="patientCountData && patientCountData.length > 0" fxLayout="row" fxLayoutGap="10px"
+                fxLayoutAlign="space-between center" class="count-heading">
                 <div fxFlex>Area</div>
                 <div fxFlex="15" class="counts">Inf./Adult</div>
                 <div fxFlex="25" class="counts">Priority</div>
@@ -58,16 +59,16 @@
             <div *ngFor = "let value of patientCountData">
                 <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center" *ngIf="value.area != 'Total'">
 
-                    <div fxFlex class="link area">{{value.area}}</div>
+                    <div fxFlex class="area">{{value.area}}</div>
                     <div fxFlex="15" class="counts">{{value.infants}} / {{value.adults}}</div>
                     <div fxFlex="25" class="counts"><span style="color:green">{{value.lowPriority}}</span> / <span style="color:gold">{{value.normalPriority}}</span> / <span style="color:red">{{value.highPriority}}</span></div>
-                    <div fxFlex="7" class="link area">{{value.count}}</div>
+                    <div fxFlex="7" class="area">{{value.count}}</div>
                 </div>
             </div>
         </fieldset>
 
 
-        <fieldset class="form-sub-group">
+        <fieldset class="form-sub-group small-box">
             <legend class="legend">Surgery count by date</legend>
 
             <mat-form-field class="dateFields">

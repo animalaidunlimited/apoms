@@ -46,7 +46,7 @@ FROM AAU.VehicleShift vs
 INNER JOIN VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId AND NOW() >= vs.StartDate AND NOW() <= vs.EndDate
 LIMIT 1;
 
-SELECT COUNT(1) INTO vUnique FROM AAU.VehicleLocation WHERE OrganisationId = vOrganisationId AND VehicleId = prm_VehicleId AND Timestamp = prm_Timestamp;
+SELECT COUNT(1) INTO vUnique FROM AAU.VehicleLocation WHERE OrganisationId = vOrganisationId AND VehicleId = vVehicleId AND Timestamp = prm_Timestamp;
 
 IF vUnique = 0 AND vVehicleId <> 0 THEN
 
@@ -81,7 +81,7 @@ SELECT 1 INTO vSuccess;
 END IF;
 
 CALL AAU.sp_GetVehicleLocationMessage(
-										prm_VehicleId,
+										vVehicleId,
 										prm_Timestamp,
 										prm_Latitude,
 										prm_Longitude,

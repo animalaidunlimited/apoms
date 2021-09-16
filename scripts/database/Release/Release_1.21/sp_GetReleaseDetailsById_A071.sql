@@ -29,32 +29,32 @@ SELECT COUNT(ReleaseDetailsId) INTO vReleaseDetailsIdExists FROM AAU.ReleaseDeta
 
 IF vReleaseDetailsIdExists > 0 THEN
 SELECT
-	JSON_OBJECT( 
+	JSON_OBJECT(
 		"releaseId",rd.ReleaseDetailsId,
 		"patientId",rd.PatientId,
 		"releaseRequestForm",
 			JSON_OBJECT(
-				"requestedUser",u.UserName, 
+				"requestedUser",u.UserName,
 				"requestedDate",DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")
-			), 
+			),
 		"complainerNotes",rd.ComplainerNotes,
 		"complainerInformed",rd.ComplainerInformed,
-        "isAStreetTreatRelease",rd.IsAStreetTreatRelease,
-		-- "Releaser1",rd.Releaser1Id, 
+        "IsStreetTreatRelease",rd.IsStreetTreatRelease,
+		-- "Releaser1",rd.Releaser1Id,
 		-- "Releaser2",rd.Releaser2Id,
         "assignedVehicleId", rd.AssignedVehicleId,
-        "ambulanceAssignmentTime", DATE_FORMAT(rd.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"), 
+        "ambulanceAssignmentTime", DATE_FORMAT(rd.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"),
         "releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"),
 		"releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"),
 		"releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")
-	) 
+	)
 AS Result
 	FROM
         AAU.ReleaseDetails rd
         INNER JOIN AAU.User u ON u.UserId = rd.RequestedUser
         LEFT JOIN AAU.StreetTreatCase s ON rd.PatientID = s.PatientId
         LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
-	WHERE 
+	WHERE
 		rd.PatientId =  prm_PatientId
 	GROUP BY rd.ReleaseDetailsId;
 ELSE
