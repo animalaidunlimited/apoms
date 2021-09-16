@@ -205,6 +205,9 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
 
       this.populateColumnList();
 
+      this.ts.resetTreatmentList();
+      this.changeDetector.detectChanges();
+
       this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
 
     }
