@@ -157,8 +157,6 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     tabChanged($event:number){
 
-        console.log($event);
-
         if($event === 0){
             this.loadBoard = true;
         }

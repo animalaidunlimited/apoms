@@ -121,7 +121,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
     this.sortTreatmentList();
     this.emitTreatmentObject();
-
 }
 
   public receiveMovementMessage(movementRecord: TreatmentListMovement[]) {
@@ -186,7 +185,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
       this.sortTreatmentList();
       this.emitTreatmentObject();
-
 
     });
   }
@@ -266,8 +264,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
     }
 
-    console.log(response);
-
     const movedLists:FormArray = this.fb.array([]);
 
     response.forEach(list => {
@@ -331,6 +327,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
   }
 
   private emitTreatmentObject(){
+
 
     this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
     this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
@@ -508,8 +505,6 @@ public sortTreatmentList(){
 
   const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
   acceptedList.controls.sort(this.sortTreatmentAbstractControls);
-
-  this.emitTreatmentObject();
 
 }
 

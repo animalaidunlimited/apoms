@@ -28,17 +28,17 @@
         padding: 0.2em 0 0.2em 0;
 
         .silver {
-            background: 
+            background:
                conic-gradient(
-                       #d7d7d7, #c3c3c3, #cccccc, #c6c6c6, 
-                       #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8, 
-                       #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf, 
-                       #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5, 
-                       #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd, 
-                       #c4c4c4, #d9d9d9, #cecece, #c5c5c5, 
-                       #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9, 
-                       #d7d7d7) content-box, 
-               linear-gradient(#d4d4d4, #d4d4d4) 
+                       #d7d7d7, #c3c3c3, #cccccc, #c6c6c6,
+                       #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8,
+                       #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf,
+                       #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5,
+                       #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd,
+                       #c4c4c4, #d9d9d9, #cecece, #c5c5c5,
+                       #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9,
+                       #d7d7d7) content-box,
+               linear-gradient(#d4d4d4, #d4d4d4)
                    padding-box;
            width: 0.7em;
            height: 0.7em;
@@ -50,9 +50,9 @@
             margin-top: 0.5em;
         }
 
-        
+
     }
-   
+
 }
 
 .vehicle{
@@ -68,7 +68,7 @@
             font-weight:bold;
             font-size:1.2em;
         }
-        
+
     }
     &RegistrationNumber{
         margin-left:2em;
@@ -96,10 +96,10 @@
                 color: rgb(0 0 0);
                 margin-left: -0.0725em;
             }
-        
+
         }
     }
-    &Image 
+    &Image
     {
         img{
             width: 9em;
@@ -178,7 +178,7 @@
 
     .vehicleType{
         min-width: unset;
-        
+
         &Icon img {
             margin-top: 0.4em;
         }
@@ -187,11 +187,11 @@
     .vehicleCapacity{
         padding-left: 0.2em;
         h3{
-            min-width: 5em;   
+            min-width: 5em;
             text-align: left;
         }
     }
-    
+
     .capacityTitle{
         span{
             width: 8.9em;
@@ -200,15 +200,36 @@
     .swimlane{
         margin: 0 auto;
     }
-   
-    
+
+
 }
 
 .timeAgo{
     font-weight: bold;
     color:red;
 }
+
 .timer{
     display:flex;
     align-items: center;
+}
+
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    background-color: lightsteelblue;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    cursor: default;
+}
+
+.initials {
+    position: relative;
+    top: 15px; /* 25% of parent */
+    font-size: 30px; /* 50% of parent */
+    line-height: 30px; /* 50% of parent */
+    color: #fff;
+    font-weight: bold;
 }
