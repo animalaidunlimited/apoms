@@ -37,7 +37,8 @@ vl.VehicleId,
 		JSON_OBJECT("lng", vl.Longitude))
 	)) AS `locationByVehicleId`
 FROM AAU.VehicleLocation vl
-WHERE OrganisationId = vOrganisationId
+WHERE vl.`Timestamp` >= CURDATE()
+AND OrganisationId = vOrganisationId
 AND VehicleId = prm_VehicleId
 GROUP BY vl.VehicleId
 )

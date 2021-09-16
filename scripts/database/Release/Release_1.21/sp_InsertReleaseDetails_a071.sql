@@ -9,7 +9,7 @@ CREATE PROCEDURE AAU.sp_InsertReleaseDetails(IN prm_UserName NVARCHAR(45),
 												IN prm_ComplainerInformed TINYINT,
 												IN prm_Releaser1Id INT,
 												IN prm_Releaser2Id INT,
-												IN prm_IsAStreetTreatRelease TINYINT,
+												IN prm_IsStreetTreatRelease TINYINT,
 												IN prm_RequestedUser NVARCHAR(45),
 												IN prm_RequestedDate DATETIME,
                                                 IN prm_AssignedVehicleId INT,
@@ -39,10 +39,10 @@ SET vSuccess = 0;
 SELECT COUNT(1) INTO vReleaseCount FROM AAU.ReleaseDetails WHERE PatientId = prm_PatientId;
 
 SELECT o.OrganisationId, u.UserId, o.SocketEndPoint INTO vOrganisationId, vUserId, vSocketEndPoint
-FROM AAU.User u 
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_RequestedUser LIMIT 1;
- 
+
 IF vReleaseCount = 0 THEN
 
 INSERT INTO AAU.ReleaseDetails (OrganisationId,
@@ -54,7 +54,7 @@ INSERT INTO AAU.ReleaseDetails (OrganisationId,
                                 Releaser1Id,
                                 Releaser2Id,
                                 AssignedVehicleId,
-								IsAStreetTreatRelease,
+								IsStreetTreatRelease,
                                 AmbulanceAssignmentTime)
 								VALUES
                                 (vOrganisationId,
@@ -66,7 +66,7 @@ INSERT INTO AAU.ReleaseDetails (OrganisationId,
                                 prm_Releaser1Id,
                                 prm_Releaser2Id,
                                 prm_AssignedVehicleId,
-								prm_IsAStreetTreatRelease,
+								prm_IsStreetTreatRelease,
                                 prm_AmbulanceAssignmentTime
                                 );
 

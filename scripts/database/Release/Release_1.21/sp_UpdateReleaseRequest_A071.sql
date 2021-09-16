@@ -10,7 +10,7 @@ CREATE PROCEDURE AAU.sp_UpdateReleaseRequest(IN prm_UserName VARCHAR(45),
 											IN prm_ComplainerInformed TINYINT,
 											IN prm_Releaser1Id INT,
 											IN prm_Releaser2Id INT,
-											IN prm_IsAStreetTreatRelease TINYINT,
+											IN prm_IsStreetTreatRelease TINYINT,
 											IN prm_RequestedUser NVARCHAR(45),
 											IN prm_RequestedDate DATE,
                                             IN prm_AssignedVehicleId INT,
@@ -32,14 +32,14 @@ DECLARE vSocketEndPoint CHAR(3);
 
 SELECT COUNT(1), MAX(PatientId) INTO vReleaseCount, vPatientId FROM AAU.ReleaseDetails WHERE ReleaseDetailsId = prm_ReleaseId;
 
-SELECT u.UserId, o.SocketEndPoint INTO vUserId, vSocketEndPoint 
-FROM AAU.User u 
+SELECT u.UserId, o.SocketEndPoint INTO vUserId, vSocketEndPoint
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_RequestedUser LIMIT 1;
 
 IF vReleaseCount = 1 THEN
 
-UPDATE AAU.ReleaseDetails 
+UPDATE AAU.ReleaseDetails
 				SET	ComplainerNotes = prm_ComplainerNotes,
                     ComplainerInformed = IF(prm_ComplainerInformed,1,0),
                     Releaser1Id = prm_Releaser1Id,
@@ -48,7 +48,7 @@ UPDATE AAU.ReleaseDetails
                     RequestedDate = prm_RequestedDate,
                     AssignedVehicleId = prm_AssignedVehicleId,
                     AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
-					IsAStreetTreatRelease = prm_IsAStreetTreatRelease
+					IsStreetTreatRelease = prm_IsStreetTreatRelease
 WHERE ReleaseDetailsId = prm_ReleaseId;
 
 SELECT 1 INTO vUpdateSuccess;

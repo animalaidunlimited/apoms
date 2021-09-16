@@ -108,11 +108,11 @@ export class ReleaseDetailsComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
-      isAStreetTreatRelease: []
+      IsStreetTreatRelease: []
 
     });
 
-    this.recordForm.get('isAStreetTreatRelease')?.valueChanges.subscribe(value=> {
+    this.recordForm.get('IsStreetTreatRelease')?.valueChanges.subscribe(value=> {
       if(value) {
         this.streetTreatReleaseTrue();
         this.disableStreetTreat = true;

@@ -10,6 +10,8 @@ $standard-width: 180px;
 .area {
   text-align: left;
   padding-bottom: 15px;
+  color: #607d8b !important;
+  font-weight: bold;
 }
 
 .link-large{
@@ -18,6 +20,12 @@ $standard-width: 180px;
 
 .dateFields {
   width: auto;
+  margin-top: 15px;
+}
+
+.small-box{
+  min-width: 17em;
+  text-align: center;
 }
 
 @media only screen and (min-width:600px){
