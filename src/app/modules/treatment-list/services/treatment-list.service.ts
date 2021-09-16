@@ -237,11 +237,11 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     // Let's get the treatment list and sort it before we send it to the component
     this.get(request).then((unknownResponse:any) => {
 
-       if(!unknownResponse){
+      if(!unknownResponse){
         const response = unknownResponse || [] as TreatmentList[];
         this.prepareTreatmentListSubjects(response);
-       }
-       else if (unknownResponse[0]?.success === -1){
+      }
+      else if (unknownResponse[0]?.success === -1){
         this.snackbar.errorSnackBar('An error has occured in the database. Please see admin', 'OK');
         this.refreshing.next(false);
       }
@@ -254,8 +254,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
   }
 
   public prepareTreatmentListSubjects(response: TreatmentList[]): void {
-
-    this.treatmentListForm = this.getEmptyTreatmentForm();
 
     if(!response){
 
