@@ -106,6 +106,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
                     this.emergencyNumberField.nativeElement.focus();
                 }
 
+                console.log('recordform');
+
                 this.updateEmergencyNumber(val);
             });
     }
@@ -137,6 +139,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
+        console.log('updateEmergencyNumber');
         this.loadEmergencyNumber.emit(emergencyNumber);
     }
 

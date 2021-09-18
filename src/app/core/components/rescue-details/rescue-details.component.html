@@ -12,7 +12,6 @@
             <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
                 [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
-                <!-- -->
                 <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
 
                     <mat-icon [ngClass]="{
