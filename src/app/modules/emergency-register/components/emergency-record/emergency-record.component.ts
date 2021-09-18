@@ -49,7 +49,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown.control',['$event'])
     removeDropDownFocus(){
-        
+
     }
 
     @HostListener('document:keydown.control.shift.r', ['$event'])
@@ -57,7 +57,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
 
         event.preventDefault();
-        
+
         const element = this.elementRef.nativeElement;
 
         if(element.offsetParent){
@@ -293,7 +293,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     async saveForm() {
-       
+
         this.loading = true;
 
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
@@ -419,6 +419,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     emergencyNumberUpdated(emergencyNumber: any) {
+
+        console.log('emitting');
 
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }

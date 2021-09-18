@@ -1686,20 +1686,21 @@ SET vOrganisationId = 0;
 
 IF Prm_EmergencyNumber = -1 THEN
 
-	SELECT (MIN(EmergencyNumber) - 1) INTO DummyEmNo
+	SELECT (MIN(EmergencyNumber) - 1) INTO DummyEmNo 
     FROM AAU.EmergencyCase WHERE EmergencyNumber < 0;
-
-ELSE
+    
+ELSE 
 	SELECT Prm_EmergencyNumber INTO DummyEmNo;
 
 END IF;
 
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
 vEmNoExists, vUpdateTime, vCurrentCaseId
-FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber;
+FROM AAU.EmergencyCase
+WHERE EmergencyNumber = prm_EmergencyNumber;
 
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
-FROM AAU.User u
+FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
@@ -1721,72 +1722,66 @@ INSERT INTO AAU.EmergencyCase
 	CallDateTime,
 	DispatcherId,
 	EmergencyCodeId,
-	-- CallOutcomeId,
-    -- SameAsEmergencyCaseId,
 	Location,
 	Latitude,
 	Longitude,
-	Rescuer1Id,
-	Rescuer2Id,
+    AssignedVehicleId,
+    AmbulanceAssignmentTime,
 	AmbulanceArrivalTime,
 	RescueTime,
 	AdmissionTime,
     UpdateTime,
     Comments,
     GUID,
-    AssignedVehicleId,
-    AmbulanceAssignmentTime,
 	SelfAdmission
 )
 VALUES
 (
 	vOrganisationId,
-	-- prm_EmergencyNumber,
-    DummyEmNo,
+	DummyEmNo,
 	prm_CallDateTime,
 	prm_DispatcherId,
 	prm_EmergencyCodeId,
 	prm_Location,
 	prm_Latitude,
 	prm_Longitude,
-	prm_Rescuer1Id,
-	prm_Rescuer2Id,
+	prm_AssignedAmbulanceId,
+    prm_AmbulanceAssignmentTime,
 	prm_AmbulanceArrivalTime,
 	prm_RescueTime,
 	prm_AdmissionTime,
     prm_UpdateTime,
     prm_Comments,
     prm_GUID,
-    prm_AssignedAmbulanceId,
-    prm_AmbulanceAssignmentTime,
-    prm_SelfAdmission
+    prm_SelfAdmission 
+
 );
 
 -- UNLOCK TABLES;
 
 COMMIT;
-
+	
     SELECT LAST_INSERT_ID(),1 INTO vEmergencyCaseId,vSuccess;
-
+    
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId,ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId,prm_Username,vEmergencyCaseId,'EmergencyCase','Insert', NOW());
-
+    
 ELSEIF vEmNoExists >= 1 THEN
 
 	SELECT 2, vCurrentCaseId INTO vSuccess, vEmergencyCaseId; -- Duplicate
     -- SELECT MAX(EmergencyNumber) INTO vEmergencyNumber FROM AAU.EmergencyCase;
-
+    
 ELSEIF prm_UpdateTime < vUpdateTime THEN
 
 	SELECT 3, vCurrentCaseId INTO vSuccess, vEmergencyCaseId; -- Already updated
 
-ELSE
+ELSE 
 	SELECT 4 INTO vSuccess; -- Other error
     SELECT vCurrentCaseId INTO vEmergencyCaseId;
 END IF;
 
 
-SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;
+SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyNumber,vSocketEndPoint;  
 
 END$$
 
