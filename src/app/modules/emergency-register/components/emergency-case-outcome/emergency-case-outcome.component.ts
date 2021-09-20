@@ -86,7 +86,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(() => {
 
-      this.outcomeChanged();
+    this.outcomeChanged();
 
     });
 
@@ -135,6 +135,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
               CallOutcomeId : callOutcomeId,
               CallOutcome: 'Admission'
           }, {emitEvent: false});
+
           patient?.get('tagNumber')?.setValidators([Validators.required, Validators.pattern(/^[A-z0-9]*$/)]);
           patient?.get('tagNumber')?.updateValueAndValidity();
 

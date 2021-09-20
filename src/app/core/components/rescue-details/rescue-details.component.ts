@@ -145,39 +145,50 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             });
 
         this.code.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(code => {
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(code => {
 
-            this.recordForm.get('emergencyDetails.code')?.setValue(code, {emitEvent: false});
-            this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
+                this.recordForm.get('emergencyDetails.code')?.setValue(code, {emitEvent: false});
+                this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
-        });
+            });
 
         this.rescueDetails.get('selfAdmission')?.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(changedSelfAdmissionValue =>
-            this.selfAdmission = changedSelfAdmissionValue
-            );
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(changedSelfAdmissionValue => {
+
+                this.selfAdmission = changedSelfAdmissionValue;
+
+                if(changedSelfAdmissionValue){
+
+                    this.assignedVehicleId?.setValue(null)
+                    this.ambulanceArrivalTime?.setValue(null)
+                    this.ambulanceAssignmentTime?.setValue(null);
+                    this.rescueTime?.setValue(null)
+
+                }
+
+            });
 
         this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(val=> {
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(val=> {
 
-            this.ambulanceAssigned = val ? true : false;
+                this.ambulanceAssigned = val ? true : false;
 
-            if(val) {
-                this.recordForm.get('assignedVehicleId')?.enable();
+                if(val) {
+                    this.recordForm.get('assignedVehicleId')?.enable();
 
-                this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(val);
-            }
-            else {
-                this.recordForm.get('assignedVehicleId')?.disable();
-                this.vehicleList$ = of([]);
-            }
+                    this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(val);
+                }
+                else {
+                    this.recordForm.get('assignedVehicleId')?.disable();
+                    this.vehicleList$ = of([]);
+                }
 
-            //this.recordForm.patchValue(this.rescueDetailsVal);
+                //this.recordForm.patchValue(this.rescueDetailsVal);
 
-        });
+            });
 
         this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
         this.ambulanceArrivalTime = this.recordForm.get('rescueDetails.ambulanceArrivalTime');
@@ -199,16 +210,16 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     onChanges(): void {
         this.subscribeToValueChanges('rescueDetails');
         this.subscribeToValueChanges('emergencyDetails.callDateTime');
+        this.subscribeToValueChanges('rescueDetails.selfAdmission');
         this.subscribeToValueChanges('callOutcome.CallOutcome');
         this.subscribeToValueChanges('rescueDetails.ambulanceAssignmentTime');
     }
 
     private subscribeToValueChanges(abstractControlName: string) {
         this.recordForm
-            .get(abstractControlName)
-            ?.valueChanges.pipe(takeUntil(this.ngUnsubscribe))
-            // tslint:disable-next-line: deprecation
-            .subscribe((value) => {
+            .get(abstractControlName)?.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
                 // The values won't have bubbled up to the parent yet, so wait for one tick
                 setTimeout(() => this.updateValidators());
             });
@@ -216,13 +227,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     updateValidators() {
 
+        console.log(this.recordForm);
+
         this.ambulanceArrivalTime?.clearValidators();
         this.rescueTime?.clearValidators();
         this.admissionTime?.clearValidators();
+        this.assignedVehicleId?.clearValidators();
+        this.ambulanceAssignmentTime?.clearValidators();
 
         this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
         this.rescueTime?.updateValueAndValidity({ emitEvent: false });
         this.admissionTime?.updateValueAndValidity({ emitEvent: false });
+        this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+        this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
 
         // if assignedVehicleId then set the other to required
         if (this.assignedVehicleId?.value > 0) {
@@ -232,7 +249,8 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             this.code?.setValidators([Validators.required]);
             this.code?.updateValueAndValidity({ emitEvent: false });
-        } else {
+
+        } else if (!this.selfAdmission) {
             this.recordForm.get('emergencyDetails.code')?.clearValidators();
             this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
             this.code?.clearValidators();
@@ -242,13 +260,17 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         // if ambulance arrived then assignedVehicleId, rescue time required
         if (this.ambulanceArrivalTime?.value || this.ambulanceAssignmentTime?.value) {
+
             this.assignedVehicleId?.setValidators([Validators.required]);
+
         } else if(this.ambulanceAssignmentTime?.value === '' || this.ambulanceArrivalTime?.value === ''){
+
             this.assignedVehicleId?.clearValidators();
         }
 
         // if rescue time then assignedVehicleId, ambulance arrived required
         if (this.rescueTime?.value) {
+
             this.assignedVehicleId?.setValidators([Validators.required]);
             this.ambulanceArrivalTime?.setValidators([Validators.required]);
             this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
@@ -314,14 +336,41 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         // When we select admission, we need to check that we have rescue details
 
-         if (admission) {
-             this.assignedVehicleId?.setValidators([Validators.required]);
 
-             this.rescueTime?.setValidators([Validators.required]);
+         if (admission) {
+
              this.admissionTime?.setValidators([Validators.required]);
+             this.admissionTime?.updateValueAndValidity({ emitEvent: false });
+
+             if(!this.selfAdmission){
+
+                this.assignedVehicleId?.setValidators([Validators.required]);
+                this.rescueTime?.setValidators([Validators.required]);
+                this.ambulanceArrivalTime?.setValidators([Validators.required]);
+                this.ambulanceAssignmentTime?.setValidators([Validators.required]);
+                this.code?.setValidators([Validators.required]);
+                this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+
+                this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
+                this.code?.updateValueAndValidity({ emitEvent: false });
+                this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+                this.rescueTime?.updateValueAndValidity({ emitEvent: false });
+                this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
+                this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
+
+             }
          }
 
-        this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+         const streeTreat = patientArray?.controls.some(currentPatient =>
+            currentPatient.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Street treatment approved by ST manager'
+        );
+
+        if (streeTreat) {
+            this.assignedVehicleId?.setValidators([Validators.required]);
+            this.ambulanceAssignmentTime?.setValidators([Validators.required]);
+        }
+
+
     }
 
     setInitialTime(event: any) {
