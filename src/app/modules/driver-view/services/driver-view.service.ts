@@ -271,8 +271,6 @@ export class DriverViewService extends APIService {
 
     const uId = Number(localStorage.getItem('UserId'));
 
-    console.log(updatedRecord);
-
     if(updatedRecordData.rescuerList.includes(uId)) {
 
       const driverViewLocalStorageData: DriverAssignment[] = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))));

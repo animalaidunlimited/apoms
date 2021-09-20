@@ -28,15 +28,26 @@ Purpose: Used to insert a new case.
 Created By: Ankit Singh
 Created On: 27/04/2021
 Purpose: ON DUPLICATE KEY UPDATE Added
+
+Created By: Jim Mackenzie
+Created On: 19/09/2021
+Purpose: Removed ON DUPLICATE KEY UPDATE as it would have never worked without a Unique key which is impossible to add.
 */
 
 DECLARE vStreetTreatCaseId INT;
+DECLARE vCaseExists INT;
 DECLARE vSuccess INT;
 DECLARE vOrganisationId INT;
+
+SET vCaseExists = 0;
 
 SELECT u.OrganisationId INTO vOrganisationId
 FROM AAU.User u
 WHERE UserName = prm_Username LIMIT 1;
+
+SELECT COUNT(1) INTO vCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId AND IsDeleted = 0;
+
+IF vCaseExists = 0 THEN
 
 INSERT INTO AAU.StreetTreatCase(
                         PatientId,
@@ -64,7 +75,13 @@ INSERT INTO AAU.StreetTreatCase(
                         vOrganisationId,
                         prm_AssignedAmbulanceId,
                         prm_AmbulanceAssignmentTime
-						) ON DUPLICATE KEY UPDATE
+						);
+                        
+SELECT 1 INTO vSuccess;
+
+ELSEIF vCaseExists = 1 THEN
+
+ UPDATE AAU.StreetTreatCase SET
                         PriorityId			= prm_PriorityId,
 						StatusId			= prm_StatusId,
 						TeamId				= prm_TeamId,
@@ -74,16 +91,25 @@ INSERT INTO AAU.StreetTreatCase(
 						ClosedDate			= prm_ClosedDate,
 						EarlyReleaseFlag	= prm_EarlyReleaseFlag,
                         AssignedVehicleId = prm_AssignedAmbulanceId,
-                        AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime;
-                        
-	SELECT 1 INTO vSuccess;
-    
+                        AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime
+	WHERE PatientId = prm_PatientId AND IsDeleted = 0;
+
+SELECT 1 INTO vSuccess;
+
+ELSE
+
+SELECT 2 INTO vSuccess;
+
+END IF;	
+
 	SELECT StreetTreatCaseId INTO vStreetTreatCaseId FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
 
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
-    
+
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'Case','Upsert', NOW());
+	VALUES (NULL,vStreetTreatCaseId,'ST Case','Upsert', NOW());
+    
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
-END$$
+    
+END $$
 DELIMITER ;

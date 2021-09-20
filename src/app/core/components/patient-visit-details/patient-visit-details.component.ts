@@ -20,6 +20,7 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
 import { takeUntil } from 'rxjs/operators';
 import { Vehicle } from '../../models/driver-view';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
 
 interface VisitCalender {
 	status: number;
@@ -80,7 +81,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
     private ngUnsubscribe = new Subject();
 
+	callDateTime:string|Date = '';
+	currentTime = getCurrentTimeString();
+
 	errorMatcher = new CrossFieldErrorMatcher();
+
 	loadCalendarComponent = true;
 
 	prevVisits: string[] = [];
@@ -92,7 +97,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	streatTreatForm!: FormGroup;
 	teamListData$!: Observable<TeamDetails[]>;
 	treatmentPriority$!: Observable<Priority[]>;
-	vehicleListDisabled!:boolean;
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
@@ -133,9 +137,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.fb.group({
 				streetTreatCaseId: [],
 				patientId: [this.patientId],
+				callDateTime: [''],
 				casePriority: [, Validators.required],
 				assignedVehicleId: [, Validators.required],
-				ambulanceAssignmentTime:['', Validators.required],
+				ambulanceAssignmentTime: ['', Validators.required],
 				mainProblem: [, Validators.required],
 				adminNotes: [, Validators.required],
 				streetTreatCaseStatus: [, Validators.required],
@@ -161,14 +166,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.subscribe(date=> {
 			if(date) {
-                this.vehicleListDisabled = false;
+				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
+				this.showVisitDate = true;
 
                 this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
-
-                this.vehicleList$.subscribe(val=> console.log(val));
             }
             else {
-                this.vehicleListDisabled = true;
+				this.recordForm.get('streatTreatForm.assignedVehicleId')?.disable();
+				this.showVisitDate = false;
             }
 		});
 
@@ -261,6 +266,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
 
 				this.streatTreatForm.patchValue(response);
+				this.callDateTime = formatDateForMinMax(response.callDateTime);
 
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 

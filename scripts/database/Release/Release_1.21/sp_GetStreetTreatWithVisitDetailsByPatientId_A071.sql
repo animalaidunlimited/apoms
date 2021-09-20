@@ -24,8 +24,10 @@ SELECT
 				JSON_OBJECT(
 					"streetTreatCaseId", s.StreetTreatCaseId,
 				    "patientId",s.PatientId,
+                    "callDateTime", ec.CallDateTime,
 				    "casePriority",s.PriorityId,
 				    -- "teamId",s.TeamId,
+                    "autoAdded", IF(p.PatientCallOutcomeId = 18, true, false),
 					"assignedVehicleId",s.AssignedVehicleId,
 					"ambulanceAssignmentTime",DATE_FORMAT(s.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"),
 				    "mainProblem",s.MainProblemId,
@@ -47,10 +49,10 @@ SELECT
 				)
 		) 
 AS Result
-	FROM
-        AAU.StreetTreatCase s
+	FROM AAU.StreetTreatCase s
+        INNER JOIN AAU.Patient p ON p.PatientId = s.PatientId
+        INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
         LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
-        LEFT JOIN AAU.Patient p ON p.PatientId = s.PatientId
 	WHERE 
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;

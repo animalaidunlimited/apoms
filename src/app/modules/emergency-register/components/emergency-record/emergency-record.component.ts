@@ -420,8 +420,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     emergencyNumberUpdated(emergencyNumber: any) {
 
-        console.log('emitting');
-
         this.loadEmergencyNumber.emit({emergencyNumber, GUID : this.recordForm.get('emergencyDetails.guId')?.value});
     }
 
