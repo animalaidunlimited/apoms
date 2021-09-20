@@ -38,6 +38,7 @@
 
   export interface StreetTreatForm {
     teamId: number;
+    callDateTime: string|Date;
     visits: VisitResponse[];
     patientId: number;
     adminNotes: string;

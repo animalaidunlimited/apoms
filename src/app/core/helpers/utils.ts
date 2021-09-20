@@ -1,7 +1,7 @@
 import { formatDate } from '@angular/common';
 import { UUID } from 'angular2-uuid';
 
-export function getCurrentTimeString() {
+export function getCurrentTimeString() : string {
     let currentTime = new Date();
 
     const wn = window.navigator as any;
@@ -15,7 +15,7 @@ export function getCurrentTimeString() {
     return formatDate(currentTime, 'yyyy-MM-ddTHH:mm', locale);
 }
 
-export function getCurrentDateString() {
+export function getCurrentDateString() : string {
     let currentTime = new Date();
 
     const wn = window.navigator as any;
@@ -30,10 +30,21 @@ export function getCurrentDateString() {
 }
 
 /* Formats the date to correct format*/
-export function formatDateString(date: Date) {
+export function formatDateString(date: Date) : string {
     const wn = window.navigator as any;
     const locale = wn.languages ? wn.languages[0] : 'en-GB';
     return formatDate(date, 'yyyy-MM-dd', locale);
+}
+
+export function formatDateForMinMax(dateString: string | Date) : string {
+
+    const dateVal = Date.parse(dateString.toString());
+
+    const wn = window.navigator as any;
+    const locale = wn.languages ? wn.languages[0] : 'en-GB';
+
+    return formatDate(dateVal, 'yyyy-MM-ddTHH:mm', locale);
+
 }
 
 

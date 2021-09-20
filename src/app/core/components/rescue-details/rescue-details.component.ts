@@ -6,7 +6,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
 import { EmergencyCode } from '../../models/emergency-record';
@@ -37,30 +37,33 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     admissionTime: AbstractControl | undefined | null;
     ambulanceArrivalTime: AbstractControl | undefined | null;
     ambulanceAssignmentTime: AbstractControl | undefined | null;
+    ambulanceAssigned = false;
     assignedVehicleId: AbstractControl | undefined | null;
 
     callDateTimeForm!: AbstractControl;
     callOutcome!: AbstractControl;
     callDateTime: AbstractControl | undefined | null;
 
+    code = new FormControl();
+
     currentCallDateTime!: AbstractControl | undefined | null;
     currentAdmissionTime!: AbstractControl;
     currentAmbulanceArrivalTime!: AbstractControl;
     currentRescueTime!: AbstractControl;
     currentTime!: string;
-    rescueDetailsVal!: RescueDetailsParent;
 
     errorMatcher = new CrossFieldErrorMatcher();
 
+    rescueDetailsVal!: RescueDetailsParent;
     rescueDetails: FormGroup = new FormGroup({});
     rescueDetails$: FormGroup = new FormGroup({});
-    code = new FormControl();
 
     rescueTime: AbstractControl | undefined | null;
-
     rescuerArray!: FormArray;
-
     rescuers$!: Observable<User[]>;
+
+    selfAdmission = false;
+
     vehicleList$!: Observable<Vehicle[]>;
 
 
@@ -101,7 +104,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
-                selfAdmission:false,
+                selfAdmission: false,
                 code: this.code,
                 rescuers: this.fb.array([])
             }),
@@ -141,14 +144,26 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 });
             });
 
-        this.code.valueChanges.subscribe(code =>{
+        this.code.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(code => {
 
-            this.recordForm.get('emergencyDetails.code')?.setValue(code);
+            this.recordForm.get('emergencyDetails.code')?.setValue(code, {emitEvent: false});
             this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
         });
 
-        this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges.subscribe(val=> {
+        this.rescueDetails.get('selfAdmission')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(changedSelfAdmissionValue =>
+            this.selfAdmission = changedSelfAdmissionValue
+            );
+
+        this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(val=> {
+
+            this.ambulanceAssigned = val ? true : false;
 
             if(val) {
                 this.recordForm.get('assignedVehicleId')?.enable();
@@ -157,9 +172,10 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             }
             else {
                 this.recordForm.get('assignedVehicleId')?.disable();
+                this.vehicleList$ = of([]);
             }
 
-            this.recordForm.patchValue(this.rescueDetailsVal);
+            //this.recordForm.patchValue(this.rescueDetailsVal);
 
         });
 
@@ -314,8 +330,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.currentCallDateTime = this.callDateTime;
 
         const currentTime = this.recordForm.get('rescueDetails')?.get(event.target.name)?.value;
-
-        console.log('firing: ' + event);
 
         if (!currentTime) {
             this.recordForm

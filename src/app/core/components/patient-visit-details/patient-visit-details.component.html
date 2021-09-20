@@ -2,8 +2,18 @@
 	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
 
 		<mat-form-field appearance="fill">
-			<mat-label>Assign Vehicle</mat-label>
-				<mat-select tabindex="12" [disabled]='vehicleListDisabled' formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+			<mat-label>Assigned date</mat-label>
+			<input formControlName="ambulanceAssignmentTime" type="datetime-local"
+			[min]="callDateTime"
+			[max]="currentTime"
+			name="ambulanceAssignmentTime"
+			placeholder="Ambulance assignment time" matInput [errorStateMatcher]="errorMatcher">
+
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+			<mat-label>Assign vehicle</mat-label>
+				<mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
 				<mat-option>N/A</mat-option>
 					<mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
 					{{vehicle.vehicleNumber}}
@@ -11,13 +21,7 @@
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field appearance="fill">
-			<mat-label>Assigned Date</mat-label>
-			<input formControlName="ambulanceAssignmentTime" type="datetime-local"
-			name="ambulanceAssignmentTime"
-			placeholder="Ambulance assignment time" matInput [errorStateMatcher]="errorMatcher">
 
-		</mat-form-field>
 
 		<mat-form-field appearance="fill">
 			<mat-label>Case priority</mat-label>

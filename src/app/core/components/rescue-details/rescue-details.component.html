@@ -3,9 +3,10 @@
     fxLayout.gt-sm="column"
     fxLayoutAlign.gt-sm="center center"
     fxLayoutGap="20"
-    [fxLayout.gt-sm]="rescueDetails.get('selfAdmission')?.value ? 'row' : 'column'">
+    [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center" [ngStyle]="{'margin-right ' : rescueDetails.get('selfAdmission')?.value ? '20px': '0px' }">
+    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center"
+    [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
             <mat-label>Code</mat-label>
@@ -36,62 +37,70 @@
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>Assigned vehicle</mat-label>
-                <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
-                <mat-option>N/A</mat-option>
-                    <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
-                    {{vehicle.vehicleNumber}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+            <mat-checkbox *ngIf="!ambulanceAssigned" formControlName="selfAdmission">Self admission</mat-checkbox>
 
-        <div formArrayName="rescuers" *ngFor="let rescuer of rescuerArray?.controls; let i = index;">
+    </div>
 
-            <div [formGroupName]="i">
+    <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
-                <mat-form-field>
-                    <mat-label>Rescuer {{i + 1}}</mat-label>
-                    <mat-select tabindex="12" formControlName="rescuerId" [errorStateMatcher]="errorMatcher">
-                        <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.userId">
-                            {{rescuer.firstName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+        <ng-container *ngIf="!selfAdmission">
 
+            <mat-form-field>
+                <mat-label>Ambulance assigned time</mat-label>
+                <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
+                name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
+                placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
+
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Assigned vehicle</mat-label>
+                    <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+                    <mat-option>N/A</mat-option>
+                        <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+                        {{vehicle.vehicleNumber}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div formArrayName="rescuers" *ngFor="let rescuer of rescuerArray?.controls; let i = index;">
+
+                <div [formGroupName]="i">
+
+                    <mat-form-field>
+                        <mat-label>Rescuer {{i + 1}}</mat-label>
+                        <mat-select tabindex="12" formControlName="rescuerId" [errorStateMatcher]="errorMatcher">
+                            <mat-option>N/A</mat-option>
+                                <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.userId">
+                                {{rescuer.firstName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
 
             </div>
 
-
-
-        </div>
-
-            <mat-checkbox  formControlName="selfAdmission">Self admission</mat-checkbox>
-
+        </ng-container>
 
     </div>
 
     <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
 
-        <ng-container *ngIf="!rescueDetails.get('selfAdmission')?.value">
-
-
-        <mat-form-field>
-            <mat-label>Ambulance assigned time</mat-label>
-            <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
-            name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
-            placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
-
-        </mat-form-field>
-
+        <ng-container *ngIf="!selfAdmission">
 
             <mat-form-field>
-                <input tabindex="15" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"
-                name="ambulanceArrivalTime" [min]="currentCallDateTime" [max]="currentRescueTime"
-                (focus)="setInitialTime($event)" (blur)="updateTimes()"
-                placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
+                <input tabindex="15" #ambulanceArrivalTimeField
+                formControlName="ambulanceArrivalTime"
+                type="datetime-local"
+                name="ambulanceArrivalTime"
+                [min]="currentCallDateTime"
+                [max]="currentRescueTime"
+                (focus)="setInitialTime($event)"
+                (blur)="updateTimes()"
+                placeholder="Ambulance arrival time"
+                [errorStateMatcher]="errorMatcher" matInput>
                     <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
                     Ambulance arrival before call!
                     </mat-error>

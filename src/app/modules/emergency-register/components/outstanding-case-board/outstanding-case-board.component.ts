@@ -185,8 +185,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
     this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
 
-    this.ambulanceLocations$.subscribe(val => console.log(val));
-
     this.refreshColour$ = this.outstandingCaseService.refreshColour;
 
     this.refreshColour$
