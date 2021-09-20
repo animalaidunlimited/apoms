@@ -112,6 +112,8 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     ngOnInit() {
 
+        console.log(this.recordForm.value);
+
 
 
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -264,45 +266,42 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
         patient.valueChanges.subscribe((patientVal)=> {
 
-            const rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
-            const rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');
-            const rescueTime = this.recordForm.get('rescueDetails.rescueTime');
-            const admissionTime = this.recordForm.get('rescueDetails.admissionTime');
+            const controls = [
+                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.rescueTime'},
+                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.admissionTime'},
+                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.assignedVehicleId'},
+                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.ambulanceArrivalTime'},
+                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.code'},
+                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.ambulanceAssignmentTime'}
+                             ];
 
-            if(patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1) {
+            const selfAdmission:boolean = this.recordForm.get('rescueDetails.selfAdmission')?.value || false;
 
-                rescuer2Id?.setValidators([Validators.required]);
-                rescuer1Id?.setValidators([Validators.required]);
-                rescueTime?.setValidators([Validators.required]);
-                admissionTime?.setValidators([Validators.required]);
+                for(let currentControl of controls){
 
-                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
+                    const control = this.recordForm.get(currentControl.controlName);
 
-            }
-
-            else {
-
-                rescuer2Id?.clearValidators();
-                rescuer1Id?.clearValidators();
-                rescueTime?.clearValidators();
-                admissionTime?.clearValidators();
-
-                this.updateValueAndValidity(patient, rescuer2Id, rescuer1Id, rescueTime, admissionTime);
-            }
+                    patientVal.callOutcome.CallOutcome?.CallOutcomeId === 1 && (!selfAdmission || (selfAdmission && currentControl.updateIfSelfAdmission)) ?
+                        this.setRequired(control) :
+                        this.clearValidators(control);
+                }
 
         });
 
     }
 
+    private setRequired(control: AbstractControl | null) : void {
 
-    private updateValueAndValidity(patient: FormGroup, rescuer2Id: AbstractControl | null, rescuer1Id: AbstractControl | null,
-        rescueTime: AbstractControl | null, admissionTime: AbstractControl | null) {
+        control?.setValidators([Validators.required]);
+        control?.updateValueAndValidity({ emitEvent: false });
 
+    }
 
-        rescuer2Id?.updateValueAndValidity({ emitEvent: false });
-        rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-        rescueTime?.updateValueAndValidity({ emitEvent: false });
-        admissionTime?.updateValueAndValidity({ emitEvent: false });
+    private clearValidators(control: AbstractControl | null) : void {
+
+        control?.clearValidators();
+        control?.updateValueAndValidity({ emitEvent: false });
+
     }
 
     loadPatientArray(emergencyCaseId: number | undefined) {

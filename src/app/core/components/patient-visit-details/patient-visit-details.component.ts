@@ -211,6 +211,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
 
+			console.log(response);
+
 			if (response?.streetTreatCaseId) {
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
@@ -315,13 +317,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			visit_date: [date],
 		});
 
-		if (this.castedVisitArray.length > 0) {
-			if (this.prevVisits.length > 0) {
+		if (this.showVisitDate) {
 				visitArray.get('visit_date')?.setValidators(Validators.required);
 			}
 			else {
 				visitArray.get('visit_day')?.setValidators(Validators.required);
-			}
 		}
 		return visitArray;
 	}
