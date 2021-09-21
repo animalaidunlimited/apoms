@@ -13,35 +13,35 @@ import { DriverAssignment } from 'src/app/core/models/driver-view';
 export class OutstandingCaseService {
 
   autoRefreshState = false;
-  
+
   vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
   loading = new BehaviorSubject<boolean>(true);
 
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
   refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
-  outstandingCases$:BehaviorSubject<OutstandingAssignment[]> = new BehaviorSubject<OutstandingAssignment[]>([]);
+  outstandingCases$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-  
+
   constructor(
     private rescueService: RescueDetailsService,
     private zone:NgZone
   ) {
-    
+
    }
 
   initialise(){
 
     this.rescueService.getOutstandingRescues().pipe(
-    map(outstandingCases => 
+    map(outstandingCases =>
       outstandingCases.map(outstandingCase => ({...outstandingCase, searchCandidate: false})))
     ).subscribe(outstandingCases =>
-      { 
-  
+      {
+
         if(outstandingCases){
-     
+
           this.outstandingCases$.next(outstandingCases);
-          
+
           this.zone.run(() => this.refreshColour.next('primary'));
 
           this.loading.next(false);
@@ -53,49 +53,44 @@ export class OutstandingCaseService {
   }
 
   getVehicleId(){
-   
+
     return this.outstandingCases$.pipe(
-   
-      map(outstandingCases => outstandingCases.map(outstandingCase => 
+
+      map(outstandingCases => outstandingCases.map(outstandingCase =>
         outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId
       )),
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase !== null)),
-      map(ids => [...new Set(ids)]) 
+      map(ids => [...new Set(ids)])
 
     );
-   
-  
   }
 
+  getOutstandingCasesByVehicleId(vehicleId: number | null) : Observable<(OutstandingAssignment | DriverAssignment)[]>{
 
- 
-  getOutstandingCasesByVehicleId(vehicleId: number | null){
-    
-    return  this.outstandingCases$.pipe(
-     
-      map(outstandingCases => outstandingCases.filter(outstandingCase => 
+    return this.outstandingCases$.pipe(
+
+      map(outstandingCases => outstandingCases.filter(outstandingCase =>
         vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
       )),
 
     );
-    
+
   }
 
-
   getBackstopHospitalTimer(vehicleId:number){
-    
+
     // tslint:disable-next-line: no-shadowed-variable
     const timer = this.outstandingCases$.pipe(
-    
-      map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) => 
+
+      map(outstandingCases => outstandingCases.reduce((newArr:any, outstandingCase) =>
       {
         if(vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
-          && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null 
+          && ( outstandingCase.ambulanceAction === 'Rescue' && outstandingCase.rescueTime !== null
               || outstandingCase.ambulanceAction === 'Release' && outstandingCase.releasePickupDate !== null))
         {
 
           if(outstandingCase.ambulanceAction === 'Rescue')
-          { 
+          {
             const rescueTime = new Date(outstandingCase.rescueTime as string);
             if(rescueTime.getDate() === new Date().getDate())
             {
@@ -110,12 +105,12 @@ export class OutstandingCaseService {
             {
               newArr.push(pickupTime);
             }
-            
+
           }
-            
+
         }
-        
-        
+
+
         return newArr;
       }, [])
       ),
@@ -123,23 +118,23 @@ export class OutstandingCaseService {
           return new Date(new Date(Math.min.apply(null, datesArray)).getTime() + 150*60000);
       })
     );
-   
+
     return combineLatest([interval(1000),timer]).pipe(
       map(time => time[1]),
       map(time => time ? this.backToHospitalTimer(time) : null),
-    
+
       filter(time => time !== null)
-    ); 
-    
+    );
+
 
   }
 
   getTimer(vehicleId:number){
-    
+
     return timer(200).pipe(
       switchMap(() => this.getBackstopHospitalTimer(vehicleId))
     );
-  
+
   }
 
 
@@ -149,11 +144,9 @@ export class OutstandingCaseService {
     const formatTime = (hours:number,minutes:number) => {
       return `${hours < 10 ? `0${hours}`: `${hours}`}:${minutes < 10 ? `0${minutes}`: `${minutes}`}`;
     };
-   
+
     const currentTime = new Date();
 
-  
-    
     if(backToHospital.getTime() - currentTime.getTime() > 0)
     {
       const totalSeconds     = Math.floor((backToHospital.getTime() - currentTime.getTime())/1000);
@@ -163,13 +156,11 @@ export class OutstandingCaseService {
 
       const hours   = totalHours - ( totalDays * 24 );
       const minutes = totalMinutes - ( totalDays * 24 * 60 ) - ( hours * 60 );
-      
-      
-     
+
       return ({
         time : formatTime(hours,minutes),
         class : 'timeLeft'
-      }); 
+      });
 
     }
     else{
@@ -178,17 +169,15 @@ export class OutstandingCaseService {
       const minutes = parseInt((Math.abs(elapsed) / (1000 * 60) % 60).toString(),10);
       const hours = parseInt((Math.abs(elapsed) / ((1000 * 60 * 60))).toString(), 10);
 
-     
-     
       if(isNaN(hours))
       {
         return null;
       }else{
-    
+
         return ({
         time: `- ${formatTime(hours,minutes)}`,
         class: 'timeAgo'
-        }); 
+        });
       }
 
     }
@@ -196,80 +185,21 @@ export class OutstandingCaseService {
 
   receiveUpdatedRescueMessage(updatedAssignment:DriverAssignment | OutstandingAssignment){
 
-    // tslint:disable-next-line: no-shadowed-variable
-    const updateCases = (outstandingCases: any, Assignment:any) => {
-      const res:any = {};
-      Object.keys(outstandingCases)
-            .forEach(k => res[k] = (Assignment[k] ?? outstandingCases[k]));
-      return res;
-    };
-
-
-
     const outstandingCases = this.outstandingCases$?.value;
-    
+
     const existingCaseIndex = outstandingCases.findIndex( c  => c.emergencyNumber === updatedAssignment.emergencyNumber);
 
-    if(existingCaseIndex > -1){
-
-      outstandingCases[existingCaseIndex] = updateCases(outstandingCases[existingCaseIndex],updatedAssignment);
-
-      outstandingCases[existingCaseIndex].moved = true;
-      if(updatedAssignment.ambulanceAction !== null){
-       
-        // tslint:disable-next-line: max-line-length
-        updatedAssignment.ambulanceAction === 'Rescue' ? 
-          outstandingCases[existingCaseIndex].rescueAmbulanceId =  updatedAssignment.rescueAmbulanceId : 
-          outstandingCases[existingCaseIndex].releaseAmbulanceId =  updatedAssignment.releaseAmbulanceId;
-
-      }
-
-    }else{
-
-      const insertAssignment = updatedAssignment as OutstandingAssignment;
-      let driverAssignment:OutstandingAssignment;
-
-      if(updatedAssignment.ambulanceAction === 'Rescue')
-      {
-        
-        driverAssignment = { 
-          ...insertAssignment,
-          rescueAmbulanceId : updatedAssignment.rescueAmbulanceId ,
-        };
-
-      }
-      else{
-
-        driverAssignment = { 
-          ...insertAssignment,
-          releaseAmbulanceId : updatedAssignment.releaseAmbulanceId,
-        };
-
-      }
-
-      driverAssignment = {
-        ...driverAssignment,
-        ambulanceAssignmentTime: updatedAssignment.ambulanceAction === 'Rescue' ? 
-        // tslint:disable-next-line: no-non-null-assertion
-        new Date((updatedAssignment as DriverAssignment).rescueAmbulanceAssignmentDate!) : 
-        // tslint:disable-next-line: no-non-null-assertion
-        new Date((updatedAssignment as DriverAssignment).releaseAmbulanceAssignmentDate!)
-      };
-      outstandingCases.push(driverAssignment);
-    }
-    
+    // If the assignment already exists, then replace it with the updated one, otherwise add it into the array.
+    outstandingCases.splice(existingCaseIndex, existingCaseIndex > -1 ? 1 : 0, updatedAssignment);
 
     // tslint:disable-next-line: no-non-null-assertion
     const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseDetailsId!, true, false);
-    
-    this.outstandingCases$.next(currentOutstanding);
 
+    this.outstandingCases$.next(currentOutstanding);
 
   }
 
-
   setMoved(o:any, emergencyCaseId:number, releaseDetailsId: number, moved:boolean, timeout:boolean){
-
 
     // Search for the rescue and update its moved flag depending on whether this function
     // is being called by itself or not
@@ -278,7 +208,7 @@ export class OutstandingCaseService {
         o.moved = moved;
 
         if(!timeout){
-          setTimeout(() => 
+          setTimeout(() =>
 
             this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseDetailsId, false, true))
 
@@ -286,7 +216,7 @@ export class OutstandingCaseService {
         }
 
       }
-      
+
       let result;
       let p;
 
@@ -300,13 +230,13 @@ export class OutstandingCaseService {
 
   }
 
- 
-  filterCases(click$:Observable<any>, cases$:Observable<OutstandingAssignment[]>, filters:FilterKeys[], until$:Observable<any>){
-    
+
+  filterCases(click$:Observable<any>, cases$:Observable<(OutstandingAssignment | DriverAssignment)[]>, filters:FilterKeys[], until$:Observable<any>){
+
     return combineLatest([click$, cases$]).pipe(
       takeUntil(until$),
       map(chipChangeObs => chipChangeObs[1]),
-      map(outstandingCases => { 
+      map(outstandingCases => {
 
         if(filters.length > 0)
         {
@@ -317,24 +247,24 @@ export class OutstandingCaseService {
 
           const key = keyObject.group;
           index === 0 ?
-            filteredOutstandingCases.push(outstandingCases.filter((cases:any) => 
+            filteredOutstandingCases.push(outstandingCases.filter((cases:any) =>
 
-              key === 'animalType' ? 
+              key === 'animalType' ?
                 cases?.patients?.some((patient:any) => patient[key] === keyObject.value)
               :
                 cases[key] === keyObject.value
 
             ))
           :
-            filteredOutstandingCases = filteredOutstandingCases.flat().filter((filteredCase:any) => 
+            filteredOutstandingCases = filteredOutstandingCases.flat().filter((filteredCase:any) =>
 
-              key === 'animalType' ? 
+              key === 'animalType' ?
                 filteredCase?.patients?.some((patient:any) => patient[key] === keyObject.value)
               :
                 filteredCase[key] === keyObject.value
 
-            ); 
-          
+            );
+
           });
 
           return filteredOutstandingCases.flat();
@@ -344,14 +274,14 @@ export class OutstandingCaseService {
           return outstandingCases;
 
         }
-       
+
       })
-    ); 
+    );
   }
 
   onSearchChange(searchValue:string ){
 
-  
+
     this.outstandingCases$.value.forEach(outstandingCase => {
 
       const currentValue = this.convertObjectToString(outstandingCase);
@@ -361,9 +291,9 @@ export class OutstandingCaseService {
         outstandingCase.searchCandidate = false;
       }
 
-    }); 
-      
-       
+    });
+
+
   }
 
 
@@ -414,5 +344,5 @@ export class OutstandingCaseService {
     this.zone.run(() => this.haveReceivedFocus.next(true));
 
   }
-  
+
 }

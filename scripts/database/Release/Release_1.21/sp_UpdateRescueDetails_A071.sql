@@ -25,14 +25,13 @@ Purpose: Used to update the status of a patient.
 
 DECLARE vUpdateTime DATETIME;
 DECLARE vOrganisationId INT;
-DECLARE vCallOutcomeId INT;
 DECLARE vSuccess INT;
 DECLARE vSocketEndPoint VARCHAR(3);
 
 DECLARE vEmNoExists INT;
 SET vEmNoExists = 0;
 
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(CallOutcomeId) INTO vEmNoExists, vUpdateTime, vCallOutcomeId 
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01') INTO vEmNoExists, vUpdateTime
 FROM AAU.EmergencyCase 
 WHERE EmergencyCaseId = prm_EmergencyCaseId;
 

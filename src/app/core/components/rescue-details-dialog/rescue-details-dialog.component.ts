@@ -2,8 +2,6 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { PatientResponse } from '../../models/responses';
 
 interface DialogData {
     emergencyCaseId: number;
@@ -32,7 +30,6 @@ export class RescueDetailsDialogComponent implements OnInit {
   constructor(
     private fb:FormBuilder,
     private detector: ChangeDetectorRef,
-    private caseService: CaseService,
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
@@ -97,7 +94,8 @@ export class RescueDetailsDialogComponent implements OnInit {
 
   // saveRescueUpdate() {
 
-  //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and its the part of the emergency outstanding board.
+  //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and it's
+  //   //the part of the emergency outstanding board.
   //   this.caseService.insertOrUpdatePatientFromRescueDetailsDialog(this.data.recordForm.value)
   //   .then(output=> {
 

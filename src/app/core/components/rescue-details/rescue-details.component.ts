@@ -227,8 +227,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     updateValidators() {
 
-        console.log(this.recordForm);
-
         this.ambulanceArrivalTime?.clearValidators();
         this.rescueTime?.clearValidators();
         this.admissionTime?.clearValidators();

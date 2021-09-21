@@ -9,7 +9,8 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { MediaDialogComponent } from '../media/media-dialog/media-dialog.component';
-import { CallerDetails } from '../../models/emergency-record';
+import { CallerDetails, CaseToOpen } from '../../models/emergency-record';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 
 
 @Component({
@@ -21,7 +22,8 @@ import { CallerDetails } from '../../models/emergency-record';
 export class SearchResultCardComponent implements OnInit {
 
   @Input() record: SearchResponse | undefined;
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+ 
+  @Input() source = "";
 
   callerObject: CallerDetails[] | undefined;
 
@@ -30,6 +32,7 @@ export class SearchResultCardComponent implements OnInit {
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
         private userOptions: UserOptionsService,
+        private caseService: CaseService,
         private printService: PrintTemplateService
   ) {}
 
@@ -42,7 +45,7 @@ export class SearchResultCardComponent implements OnInit {
 
   openCase(caseSearchResult: SearchResponse) {
 
-    this.openEmergencyCase.emit(caseSearchResult);
+    this.caseService.openCase({tab: caseSearchResult, source: this.source});
   }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {

@@ -21,6 +21,7 @@ export interface Patient {
     admissionAccepted: boolean | null;
     treatmentPriority: number;
     callOutcome: CallOutcome;
+    mediaCount: number;
 }
 
 export interface UpdatePatientDetails{

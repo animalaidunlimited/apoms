@@ -41,8 +41,6 @@ EmergencyCaseCTE AS
 (
 SELECT  
 ec.EmergencyCaseId,
-ec.Rescuer1Id,
-ec.Rescuer2Id, 
 ec.AssignedVehicleId,
 ec.EmergencyNumber,
 ec.AmbulanceArrivalTime,
@@ -56,8 +54,6 @@ ec.Latitude,
 ec.Longitude,
 ec.ambulanceAssignmentTime
 FROM AAU.EmergencyCase ec
-LEFT JOIN AAU.User r1 ON r1.UserId = ec.Rescuer1Id
-LEFT JOIN AAU.User r2 ON r2.UserId = ec.Rescuer2Id
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
 WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds) AND ec.IsDeleted = 0 OR ec.IsDeleted IS Null 
 ),
@@ -66,31 +62,54 @@ PatientsCTE AS
 (
     SELECT
 		p.EmergencyCaseId,
-        p.PatientCallOutcomeId,
-        p.PatientId,
-        JSON_ARRAYAGG(
-        JSON_MERGE_PRESERVE(
-			JSON_OBJECT('patientId',p.PatientId),
-			JSON_OBJECT('animalTypeId',p.AnimalTypeId),
+        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
+        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        		JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
-            JSON_OBJECT("animalSize", IF(ant.LargeAnimal = 0, 'small', 'large')),
-			JSON_OBJECT('tagNumber',p.TagNumber),
-			JSON_OBJECT('patientStatusId',p.PatientStatusId),
-			JSON_OBJECT('patientStatusDate',p.PatientStatusDate),
-			JSON_OBJECT('patientCallOutcomeId',p.PatientCallOutcomeId),
+            JSON_OBJECT("animalTypeId", p.AnimalTypeId),
+            JSON_OBJECT("patientId", p.PatientId),
+            JSON_OBJECT("position", p.Position),
+            JSON_OBJECT("tagNumber", p.TagNumber),
+            JSON_OBJECT("largeAnimal", ant.LargeAnimal),
+            JSON_OBJECT("admissionAccepted", tl.InAccepted),
+            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
+            JSON_OBJECT("callOutcome",
+				JSON_MERGE_PRESERVE(
+					JSON_OBJECT("CallOutcome",
+						JSON_MERGE_PRESERVE(
+						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
+						JSON_OBJECT("CallOutcome",co.CallOutcome))
+					),
+					JSON_OBJECT("sameAsNumber",p.SameAsEmergencyCaseId)
+                )
+            ),
             JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
-            pp.PatientProblems
-            )
-        ) AS Patients
+            pp.PatientProblems,
+            pp.problemsJSON
+		)) AS Patients
     FROM AAU.Patient p
+    
     INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
     INNER JOIN (
-		SELECT pp.PatientId,
-			JSON_OBJECT("problems", GROUP_CONCAT(pr.Problem)) AS PatientProblems
+		SELECT pp.PatientId,JSON_OBJECT("problems",
+		 JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(
+				JSON_OBJECT("problemId", pp.ProblemId),
+				JSON_OBJECT("problem", pr.Problem)
+				)
+			 )
+		) AS problemsJSON,
+		JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS PatientProblems
 		FROM AAU.PatientProblem pp
 		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
+        WHERE pp.PatientId IN (SELECT PatientId FROM RescuesReleases)
 		GROUP BY pp.PatientId
     ) pp ON pp.PatientId = p.PatientId
+    LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+    LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
+	LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
+    LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
     LEFT JOIN
     (
 		SELECT	pmi.PatientId,
@@ -101,9 +120,8 @@ PatientsCTE AS
 		GROUP BY pmi.PatientId
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE) AND p.IsDeleted != 1
-	GROUP BY p.EmergencyCaseId,
-        p.PatientCallOutcomeId,
-        p.PatientId
+	 GROUP BY p.EmergencyCaseId,
+    IFNULL(rd.PatientId, p.EmergencyCaseId)
 )
 
 
@@ -160,7 +178,7 @@ AS Result
 FROM  EmergencyCaseCTE ec 
 LEFT JOIN PatientsCTE p  ON p.EmergencyCaseId = ec.EmergencyCaseId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.OutTreatmentAreaId IS NULL
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 INNER JOIN (
 	SELECT 

@@ -5,11 +5,13 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
-import { map, takeUntil, tap } from 'rxjs/operators';
-import { ActiveVehicleLocation, LocationPathSegment } from 'src/app/core/models/location';
+import { map, takeUntil } from 'rxjs/operators';
+import { LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
+import { Patient } from 'src/app/core/models/patients';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -23,7 +25,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   @ViewChild(GoogleMap, { static: false }) googlemap!: GoogleMap;
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  //@Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
   ambulanceLocations$!:Observable<any[]>;
 
@@ -37,7 +39,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   options: google.maps.MapOptions = {};
 
-  outstandingCases$!: BehaviorSubject<OutstandingAssignment[]>;
+  outstandingCases$!: BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>;
 
   rescues: any = [];
 
@@ -154,7 +156,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   }
 
-  openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {
+  openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment | DriverAssignment) {
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
@@ -168,15 +170,16 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   }
 
-  hasLargeAnimal(patients:ActionPatient[]) : boolean{
+  hasLargeAnimal(patients:Patient[]) : boolean {
 
-    return patients?.some(patient => patient.animalSize === 'large');
+    return patients?.some(patient => patient?.largeAnimal === 1);
 
   }
 
   openCase(caseSearchResult:SearchResponse)
   {
-    this.openEmergencyCase.emit(caseSearchResult);
+    //this.openEmergencyCase.emit(caseSearchResult);
+    this.caseService.openCase({tab: caseSearchResult, source: "emergencyRegister"});
   }
 
 
