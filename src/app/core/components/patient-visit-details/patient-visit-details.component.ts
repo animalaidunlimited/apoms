@@ -18,9 +18,9 @@ import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.compon
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { takeUntil } from 'rxjs/operators';
-import { Vehicle } from '../../models/driver-view';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
+import { Vehicle } from '../../models/vehicle';
 
 interface VisitCalender {
 	status: number;

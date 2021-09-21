@@ -8,10 +8,10 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 import { takeUntil } from 'rxjs/operators';
-import { Vehicle } from '../../models/driver-view';
 import { MatSelectChange } from '@angular/material/select';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { Vehicle } from '../../models/vehicle';
 
 @Component({
   selector: 'app-release-assign',
@@ -61,7 +61,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
     this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe((date) => {
 
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
-      
+
       if(date) {
         this.recordForm.get('releaseAmbulanceId')?.enable()
 
