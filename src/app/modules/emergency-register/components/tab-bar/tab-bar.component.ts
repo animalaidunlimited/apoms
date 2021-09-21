@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { EmergencyTab } from 'src/app/core/models/emergency-record';
+import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
@@ -49,6 +49,17 @@ export class TabBarComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.selected.setValue(1);
 
+        this.caseService.caseToOpen
+        .pipe(
+            takeUntil(this.ngUnsubscribe)
+        )
+        .subscribe(caseValue => {
+
+            if(caseValue?.source === "emergencyRegister"){
+                this.openCase(caseValue);
+            }
+        });
+
         this.navigationService.isSearchClicked
 
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -70,7 +81,6 @@ export class TabBarComponent implements OnInit, OnDestroy {
                                 this.openSearchMediaDialog(mediaItem);
                         }
                         });
-
     }
 
     ngOnDestroy() {
@@ -103,18 +113,18 @@ export class TabBarComponent implements OnInit, OnDestroy {
         });
     }
 
-    openCase(result: EmergencyTab) {
+    openCase(result: CaseToOpen) {
 
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId === result.EmergencyCaseId
+                card.emergencyCaseId === result.tab.EmergencyCaseId
         );
 
         tabExists
             ? (this.selected.setValue(tabExists.id), this.cdr.detectChanges())
             : this.addTab(
-                  result.EmergencyCaseId,
-                  result.EmergencyNumber
+                  result.tab.EmergencyCaseId,
+                  result.tab.EmergencyNumber
               );
     }
 

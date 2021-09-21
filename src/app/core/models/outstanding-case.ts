@@ -1,5 +1,6 @@
 import { LatLngLiteral } from './driver-view';
 import { CallerDetails } from './emergency-record';
+import { Patient } from './patients';
 
 export interface OutstandingCaseResponse {
     outstandingActions : OutstandingCase[];
@@ -27,7 +28,7 @@ export interface OutstandingAssignment {
     latLngLiteral: LatLngLiteral;
     location: string;
     moved?:boolean | null;
-    patients: ActionPatient[] ;
+    patients: Patient[] ;
     releasePickupDate: string | null;
     releaseBeginDate?: string ;
     releaseEndDate?: string ;

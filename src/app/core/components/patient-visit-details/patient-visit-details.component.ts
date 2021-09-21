@@ -167,13 +167,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.subscribe(date=> {
 			if(date) {
 				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
-				this.showVisitDate = true;
 
                 this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
             }
             else {
 				this.recordForm.get('streatTreatForm.assignedVehicleId')?.disable();
-				this.showVisitDate = false;
             }
 		});
 
@@ -226,6 +224,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						if(!!response.patientReleaseDate){
 							this.minVisitDate = response.patientReleaseDate;
 						}
+
 						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date || this.showVisitDate) {

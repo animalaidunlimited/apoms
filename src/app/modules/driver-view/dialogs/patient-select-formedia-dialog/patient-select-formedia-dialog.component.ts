@@ -26,7 +26,7 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
         problemId:1,
         problem:'Anorexia'
       }],
-      callOutcome: {   
+      callOutcome: {
         CallOutcome: {
           CallOutcome:'Admission',
           CallOutcomeId:1,
@@ -45,7 +45,8 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
       isAdmission: false,
       admissionArea: 1,
       admissionAccepted: true,
-      treatmentPriority: 1
+      treatmentPriority: 1,
+      mediaCount: 0
 
     }];
 
@@ -62,6 +63,6 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
   }
-  
+
 
 }

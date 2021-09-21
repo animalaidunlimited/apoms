@@ -8,13 +8,12 @@ import {
     concatAll,
     distinct,
     map,
-    publishReplay,
     skipWhile,
     takeUntil,
     withLatestFrom,
 } from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
-import { VehicleType } from 'src/app/core/models/driver-view';
+import { DriverAssignment, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
@@ -65,7 +64,7 @@ transition('still => moved', [
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
-    // Input's  
+    // Input's
 
     // Static Input's
     @Input() vehicleId!: number;
@@ -75,13 +74,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     // Dynamic Input's
     @Input() searchChange$!:Observable<string>;
     @Input() matChipObs!: BehaviorSubject<any>;
-    @Input() outstandingCases$!: Observable<OutstandingAssignment[]>;
-    
-    // Output's  
-    @Output() rescueEdit:EventEmitter<OutstandingAssignment> = new EventEmitter();
-    @Output() mediaDialog:EventEmitter<any> = new EventEmitter();
-    @Output() openCaseEmitter:EventEmitter<OutstandingAssignment> = new EventEmitter();
-
+    @Input() outstandingCases$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
 
 
     // Properties
@@ -91,14 +84,14 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     showPlate = false;
 
     // Dynamic
-    vehicleAssignmentList$!: Observable<OutstandingAssignment[]>;
+    vehicleAssignmentList$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
     ambulanceCases$!: Observable<ActiveVehicleLocation>;
     vehicleType$!: Observable<VehicleType>;
     timer$!: Observable<{time:string, class:string} | null>;
     currentCapacity!: Observable<{
         capacity: { small: number; large: number };
     }>;
-    
+
     // Component unsubscribe handler
     ngUnsubscribe = new Subject();
 
@@ -110,18 +103,17 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     ) {}
 
     ngOnInit(): void {
-        
+
 
         this.locationService.getActiveVehicleLocations();
-        
-       
+
+
         this.ambulanceCases$ = this.locationService.ambulanceLocations$.pipe(
             takeUntil(this.ngUnsubscribe),
             map(ambulanceLocations =>
                 ambulanceLocations.filter(
                     ambulanceLocation =>
-                        ambulanceLocation.vehicleDetails.vehicleId ===
-                        this.vehicleId,
+                        ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId,
                 ),
             ),
             skipWhile(ambulanceLocations => ambulanceLocations.length === 0),
@@ -129,10 +121,10 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
             distinct(
                 ambulanceLocations =>
-                    ambulanceLocations.vehicleDetails.vehicleId,
-            ),
+                    ambulanceLocations.vehicleDetails.vehicleId
+            )
         );
-       
+
         this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
             this.matChipObs,
             this.outstandingCases$?.pipe(
@@ -148,8 +140,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             this.ngUnsubscribe
         );
 
-       
-            
+
+
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
             // tslint:disable-next-line: max-line-length
@@ -174,20 +166,20 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 vehicleAssignments?.forEach(vehicleAssignment => {
                     vehicleAssignment.patients?.forEach(patient => {
                         if (
-                            
+
                             // Release count
 
                             (vehicleAssignment.releaseDetailsId === null &&
-                                patient.patientCallOutcomeId !== null &&
+                                patient.callOutcome.CallOutcome.CallOutcomeId !== null &&
                                 vehicleAssignment.rescueTime !== null) ||
 
                             // Rescue count
-                            
+
                             (vehicleAssignment.releaseDetailsId !== null &&
                                 vehicleAssignment.releaseEndDate !== null &&
                                 vehicleAssignment.releasePickupDate !== null)
                         ) {
-                            patient.animalSize === 'small'
+                            patient.largeAnimal === 0
                                 ? (smallPatientCount = smallPatientCount + 1)
                                 : (largePatientCount = largePatientCount + 1);
                         }
@@ -202,9 +194,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 };
             }),
         );
-        
+
         this.timer$ = this.outstandingCaseService.getTimer(this.vehicleId);
-        
+
     }
 
 
@@ -236,23 +228,12 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         }
     }
 
-    openMediaDialog($event:{patientId: number, tagNumber: string | null}): void {
-        this.mediaDialog.emit($event);
-    }
-
-    openRescueEdit(outstandingCase:OutstandingAssignment){
-        this.rescueEdit.emit(outstandingCase);
-    }
-
-    openCase(caseSearchResult:OutstandingAssignment){
-        this.openCaseEmitter.emit(caseSearchResult);
-    }
 
     openMap($event:any){
 
         this.dialog.open(OutstandingCaseMapComponent,
         {
-            panelClass: 'outstanding-case-board-vehicle-map', 
+            panelClass: 'outstanding-case-board-vehicle-map',
             minWidth: '50vw',
             maxWidth: '100%',
             data: this.vehicleId
@@ -260,9 +241,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     }
 
     ngOnDestroy(){
-        
+
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-    
+
     }
 }

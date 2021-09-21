@@ -89,7 +89,7 @@
 
             <div *ngFor="let patient of infoContent | async">
 
-                <search-result-card class="emergency-card" (openEmergencyCase)="openCase($event)" [record]="patient"></search-result-card>
+                <search-result-card class="emergency-card" [record]="patient"></search-result-card>
 
 
             </div>
