@@ -1,5 +1,8 @@
 import { formatDate } from '@angular/common';
 import { UUID } from 'angular2-uuid';
+import { DriverAssignment } from '../models/driver-view';
+import { OutstandingAssignment } from '../models/outstanding-case';
+import { SearchResponse } from '../models/responses';
 
 export function getCurrentTimeString() : string {
     let currentTime = new Date();
@@ -64,3 +67,30 @@ export function isVideoFile(file: File): boolean {
 export function generateUUID() : string{
     return UUID.UUID();
 }
+
+export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAssignment | DriverAssignment) : SearchResponse{
+
+
+    const result:SearchResponse = {
+
+      EmergencyCaseId: caseSearchResult.emergencyCaseId,
+      EmergencyNumber: caseSearchResult.emergencyNumber,
+      CallDateTime: caseSearchResult.callDateTime?.toString(),
+      callerDetails: caseSearchResult.callerDetails,
+      AnimalTypeId: 0,
+      AnimalType: '',
+      PatientId: 0,
+      MediaCount: 0,
+      TagNumber: '',
+      CallOutcomeId: 0,
+      CallOutcome: undefined,
+      sameAsNumber: undefined,
+      Location: caseSearchResult.location,
+      latLngLiteral: caseSearchResult.latLngLiteral,
+      CurrentLocation: undefined,
+
+    };
+
+    return result;
+
+  }

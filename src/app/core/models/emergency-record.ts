@@ -1,5 +1,6 @@
 import { Patient } from './patients';
 import { CallOutcomeResponse } from './call-outcome';
+import { SearchResponse } from './responses';
 
 export interface EmergencyDetails {
     emergencyCaseId: number;
@@ -53,6 +54,11 @@ export interface EmergencyForm {
 
 export interface EmergencyCase {
     emergencyForm: EmergencyForm;
+}
+
+export interface CaseToOpen{
+    tab: SearchResponse;
+    source: string;
 }
 
 export interface EmergencyTab {

@@ -140,6 +140,21 @@ DriverViewObject AS
            -- WHEN rd.ReleaseDetailsId IS NOT NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.IsStreetTreatRelease = 0 THEN 'Release'
             ELSE 'Rescue' END
             AS AmbulanceAction,
+            			AAU.fn_GetRescueStatus(
+						rd.ReleaseDetailsId,
+						rd.RequestedUser,
+						rd.RequestedDate,
+						rd.AssignedVehicleId,
+						rd.PickupDate,
+						rd.BeginDate,
+						rd.EndDate,
+						ec.AssignedVehicleId,
+						ec.AmbulanceArrivalTime,
+						ec.RescueTime,
+						ec.AdmissionTime,
+						p.PatientCallOutcomeId,
+						tl.InTreatmentAreaId
+					) AS `ActionStatusId`,
 			IF((rd.AssignedVehicleId IS NULL AND std.AssignedVehicleId IS NULL),ec.AssignedVehicleId,
 				IF((rd.AssignedVehicleId IS NOT NULL AND std.AssignedVehicleId IS NULL),rd.AssignedVehicleId,
 				IF((rd.AssignedVehicleId IS NULL AND std.AssignedVehicleId IS NOT NULL),std.AssignedVehicleId,
@@ -231,6 +246,7 @@ DriverViewCTE AS (
 SELECT
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("actionStatus", null),
+JSON_OBJECT("actionStatusId", ActionStatusId),
 JSON_OBJECT("ambulanceAction", AmbulanceAction),
 JSON_OBJECT("releaseDetailsId", ReleaseDetailsId),
 JSON_OBJECT("releaseRequestDate", RequestedDate),

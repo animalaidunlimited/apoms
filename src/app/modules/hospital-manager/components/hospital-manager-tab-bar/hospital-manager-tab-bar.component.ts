@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { HospitalManagerTabBarService } from '../../services/hospital-manager-tab-bar.service';
 
 
@@ -11,10 +15,13 @@ import { HospitalManagerTabBarService } from '../../services/hospital-manager-ta
     templateUrl: './hospital-manager-tab-bar.component.html',
     styleUrls: ['./hospital-manager-tab-bar.component.scss'],
 })
-export class HospitalManagerTabBarComponent implements OnInit {
+export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
 
     constructor(private tabBarService: HospitalManagerTabBarService,
-        private navigationService: NavigationService){
+        private navigationService: NavigationService,
+        private caseService: CaseService){
 
     }
 
@@ -23,6 +30,18 @@ export class HospitalManagerTabBarComponent implements OnInit {
     selected = new FormControl(0);
 
     ngOnInit() {
+
+        this.caseService.caseToOpen
+        .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(caseValue => {
+
+        if(caseValue?.source === "hospitalManager"){
+            this.openCase(caseValue);
+        }
+        
+    });
+
+
         this.navigationService.isSearchClicked.subscribe((clicked)=>
             {
                 if(clicked)
@@ -39,6 +58,11 @@ export class HospitalManagerTabBarComponent implements OnInit {
             newTab.forEach(elem => this.addTab(elem));
         });
 
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     addEmptyTab(value: string) {
@@ -86,13 +110,13 @@ export class HospitalManagerTabBarComponent implements OnInit {
         this.selected.setValue(this.tabs.length - 1);
     }
 
-    public openCase(result: SearchResponse) {
+    public openCase(result: CaseToOpen) {
 
         const tabExists = this.tabs.find(
             card =>
-                card.patientId === result.PatientId,
+                card.patientId === result.tab.PatientId,
         );
 
-        tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result);
+        tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result.tab);
     }
 }

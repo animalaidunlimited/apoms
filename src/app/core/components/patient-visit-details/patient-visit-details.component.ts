@@ -18,9 +18,9 @@ import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.compon
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { takeUntil } from 'rxjs/operators';
-import { Vehicle } from '../../models/driver-view';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
+import { Vehicle } from '../../models/vehicle';
 
 interface VisitCalender {
 	status: number;
@@ -179,8 +179,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	ngOnChanges() {
 
-		console.log('Hello')
-
 		if (this.streatTreatForm) {
 			if (this.isStreetTreatTrue) {
 				this.streetTreatSetValidators();
@@ -225,6 +223,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						if(!!response.patientReleaseDate){
 							this.minVisitDate = response.patientReleaseDate;
 						}
+
 						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date || this.showVisitDate) {

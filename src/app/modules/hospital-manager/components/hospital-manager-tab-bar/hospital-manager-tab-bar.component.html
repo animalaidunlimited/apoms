@@ -11,7 +11,7 @@
                     <mat-icon class="tab-icon" (click)="removeTab(i)">{{tab.icon}}</mat-icon>
                 </ng-template>
 
-                <record-search *ngIf="i == 0" (openEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
+                <record-search *ngIf="i == 0" source="hospitalManager" class="tab-icon"></record-search>
                 <patient-record *ngIf="i > 0" [incomingPatient]="tab" class="tab-icon"></patient-record>
 
             </mat-tab>

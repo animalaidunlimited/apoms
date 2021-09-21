@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
@@ -30,11 +30,11 @@ export class RecordSearchComponent implements OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
-    @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
-
     loading = false;
 
     noResults = false;
+
+    @Input() source = "";
 
     searchResultArray!: SearchResponse[];
 
@@ -75,6 +75,6 @@ export class RecordSearchComponent implements OnDestroy {
     }
 
     openCase(searchResult: SearchResponse) {
-        this.openEmergencyCase.emit(searchResult);
+        this.caseService.openCase({tab: searchResult, source: this.source});
     }
 }

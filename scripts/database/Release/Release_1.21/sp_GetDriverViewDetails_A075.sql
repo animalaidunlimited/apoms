@@ -25,7 +25,7 @@ WITH VehicleIdCTE AS
 ),
 
 RescueReleaseST AS
-(SELECT p.PatientId,'Rescue' AmbulanceAction
+(SELECT p.PatientId, 'Rescue' AmbulanceAction
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
@@ -80,8 +80,8 @@ PatientsCTE AS
 (
     SELECT DISTINCT
 		p.EmergencyCaseId,
-        p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
-        p.PatientId,
+        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
+        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -126,7 +126,7 @@ PatientsCTE AS
     LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
     LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
     LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-    LEFT JOIN AAU.StreetTReatCase std ON std.PatientId = p.PatientId
+    LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 	LEFT JOIN
     (
 		SELECT	pmi.PatientId,
@@ -146,7 +146,6 @@ DriverViewCTE AS
 SELECT
 
 			rrst.AmbulanceAction,
-           -- AS AmbulanceAction,
             rd.ReleaseDetailsId,
             rd.AssignedVehicleId AS ReleaseAssignedVehicleId,
             rd.AmbulanceAssignmentTime AS ReleaseAmbulanceAssignmentTime,
