@@ -1,5 +1,30 @@
 import { User } from "./user";
 
+export interface Vehicle {
+  vehicleId: number;
+  vehicleType: string;
+  vehicleNumber: string;
+  vehicleStatus: string;
+  vehicleTypeId: number;
+  vehicleStatusId: number;
+  registrationNumber: string;
+  largeAnimalCapacity: number;
+  smallAnimalCapacity: number;
+  minRescuerCapacity: number;
+  maxRescuerCapacity: number;
+  currentVehicleStaff?: string;
+  imageURL: string;
+}
+
+export interface VehicleType {
+  VehicleTypeId : number;
+  VehicleType: string;
+}
+
+export interface VehicleStatus {
+  VehicleStatusId: number;
+  VehicleStatus: string;
+}
 
 export interface VehicleShift {
     shiftUUID: string;

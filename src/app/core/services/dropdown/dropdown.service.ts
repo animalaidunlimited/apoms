@@ -25,7 +25,7 @@ import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
-import { VehicleType, Vehicle } from '../../models/driver-view';
+import { VehicleType, Vehicle } from '../../models/vehicle';
 
 
 

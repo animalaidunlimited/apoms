@@ -13,7 +13,7 @@ import {
     withLatestFrom,
 } from 'rxjs/operators';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
-import { DriverAssignment, VehicleType } from 'src/app/core/models/driver-view';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
@@ -22,6 +22,7 @@ import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.com
 import {trigger, transition, style, animate, state} from '@angular/animations';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
+import { VehicleType } from 'src/app/core/models/vehicle';
 
 
 const fadeAnimation = trigger('fadeAnimation',[

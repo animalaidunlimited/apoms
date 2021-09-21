@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Vehicle } from 'src/app/core/models/driver-view';
-import { HourRange, VehicleShift } from 'src/app/core/models/vehicle';
+import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';

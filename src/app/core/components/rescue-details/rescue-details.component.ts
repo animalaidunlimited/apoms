@@ -10,7 +10,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
 import { EmergencyCode } from '../../models/emergency-record';
-import { Vehicle } from '../../models/driver-view';
+import { Vehicle } from '../../models/vehicle';
 
 @Component({
   // tslint:disable-next-line: component-selector
