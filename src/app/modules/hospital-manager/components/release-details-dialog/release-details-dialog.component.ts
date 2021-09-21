@@ -26,7 +26,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   }
 
   setFormValidity(isValid:boolean){
-
+    
     this.formInvalid = isValid;
   }
 

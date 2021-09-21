@@ -65,6 +65,7 @@ export interface DriverAssignment {
   visitOperatorNotes: string | null;
   visitStatusId: number | null;
   visitTypeId: number | null;
+  updateTime: string | null;
 }
 
 

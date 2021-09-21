@@ -112,10 +112,6 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
 
     ngOnInit() {
 
-        console.log(this.recordForm.value);
-
-
-
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
         this.recordForm.addControl('patients', this.fb.array([]));
