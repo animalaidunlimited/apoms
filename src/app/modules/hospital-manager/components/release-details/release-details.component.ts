@@ -134,8 +134,6 @@ export class ReleaseDetailsComponent implements OnInit {
 
       this.releaseService.getReleaseDetails(this.patientId).pipe(take(1)).subscribe((formVal:any)=> {
 
-        console.log(formVal);
-
         if(formVal?.success === -1){
           this.showSnackBar.errorSnackBar('Error fetching release details status','OK');
           return;
@@ -144,8 +142,6 @@ export class ReleaseDetailsComponent implements OnInit {
         if(formVal) {
 
           this.recordForm.patchValue(formVal);
-
-          console.log(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
             this.specificStaffTrue();
@@ -160,7 +156,6 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   streetTreatCaseIdEventHandler(streetTreatCaseId:number){
-    console.log(streetTreatCaseId);
 
     if(streetTreatCaseId)
     {
