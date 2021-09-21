@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import {  map } from 'rxjs/operators';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { OutstandingAssignment, OutstandingCaseResponse, UpdateResponse } from 'src/app/core/models/outstanding-case';
-import { Vehicle } from 'src/app/core/models/driver-view';
+import { Vehicle } from 'src/app/core/models/vehicle';
+
 
 @Injectable({
     providedIn: 'root',
@@ -36,7 +37,7 @@ export class RescueDetailsService extends APIService {
         return await this.put(rescueDetails);
     }
 
-   
+
 
     getOutstandingRescues(): Observable<OutstandingAssignment[]> {
         const request = '/OutstandingRescues';
@@ -48,7 +49,7 @@ export class RescueDetailsService extends APIService {
             );
 
 
-        
+
     }
 
     getVehicleListByAssignmentTime(ambulanceAssignmentTime: string) : Observable<Vehicle[]> {

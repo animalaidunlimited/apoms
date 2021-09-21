@@ -2,13 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import { Vehicle, VehicleStatus, VehicleType } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { VehicleService } from '../../services/vehicle.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { MediaPasteService } from './../../../../core/services/navigation/media-paste/media-paste.service';
-
+import { VehicleStatus, Vehicle, VehicleType } from 'src/app/core/models/vehicle';
 
 
 @Component({
@@ -124,29 +123,29 @@ export class VehicleListPageComponent implements OnInit {
   }
 
   uploadFile($event:any) : void {
-  
+
     /* for(const file of $event.target.files)
     {
 
       let imgURL;
 
       var reader = new FileReader();
-  
-        reader.readAsDataURL(this.uploader.nativeElement.files[0]); 
-        reader.onload = (_event) => { 
-          imgURL = reader.result; 
+
+        reader.readAsDataURL(this.uploader.nativeElement.files[0]);
+        reader.onload = (_event) => {
+          imgURL = reader.result;
         }
 
         console.log(imgURL )
       /* const mediaItem = this.mediaPaste.handleImageUpload(file);
-      
+
       mediaItem?.url.subscribe(url => {
         this.vehicleListForm.get('vehicleImage')?.setValue(url);
         console.log(url);
       })
-  
+
     } */
-  
+
     if ($event.target.files.length === 0)
       return;
 
@@ -156,13 +155,13 @@ export class VehicleListPageComponent implements OnInit {
     }
 
     var reader = new FileReader();
- 
-    reader.readAsDataURL($event.target.files[0]); 
-    reader.onload = (_event) => { 
-      this.imgURL = reader.result; 
+
+    reader.readAsDataURL($event.target.files[0]);
+    reader.onload = (_event) => {
+      this.imgURL = reader.result;
     }
 
-    
-  
+
+
   }
 }

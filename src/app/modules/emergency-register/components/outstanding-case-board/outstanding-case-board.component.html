@@ -120,18 +120,16 @@
 
 </div>
 
-<outstanding-case-map (openEmergencyCase)="openCaseFromMap($event)" [hidden]="hideMap"></outstanding-case-map>
+<outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
 
 <div  fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
   <div class="swimlane">
     <h2  style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">
-   
+
+
       <app-outstanding-case-board-case-panel *ngIf="outstandingCase"
-      [outstandingCase]="outstandingCase" 
-      (rescueEdit)="openRescueEdit($event)"
-      (mediaDialog)="openMediaDialog($event)"
-      (openCaseEmitter)="openCase($event)"
+      [outstandingCase]="outstandingCase"
       ></app-outstanding-case-board-case-panel>
 
     </div>
@@ -140,10 +138,8 @@
     <div class="ambulanceAssignedCases" *ngFor="let vehicleId of vehicleId$ | async">
 
 
+
         <outstanding-case-board-ambulance *ngIf="vehicleId"
-          (openCaseEmitter)="openCase($event)" 
-          (rescueEdit)="openRescueEdit($event)" 
-          (mediaDialog)="openMediaDialog($event)"   
           [vehicleId]="vehicleId"
           [matChipObs]="matChipObs"
           [filterKeysArray]="filterKeysArray"

@@ -9,10 +9,9 @@
                         <mat-icon *ngIf="index > 1" (click)="removeTab(index)">{{tab.icon}}</mat-icon>
                         </ng-template>
 
+                        <outstanding-case-board *ngIf="index == 0 && loadBoard"  class="tab-icon"></outstanding-case-board>
 
-                        <outstanding-case-board *ngIf="index == 0 && loadBoard"  (openEmergencyCase)="openCase($event)" class="tab-icon"></outstanding-case-board>
-
-                        <record-search *ngIf="index == 1" (openEmergencyCase)="openCase($event)" class="tab-icon"></record-search>
+                        <record-search *ngIf="index == 1" source="emergencyRegister" class="tab-icon"></record-search>
 
                         <emergency-record *ngIf="index > 1" [guId]= "tab.GUID" [emergencyCaseId]="tab.emergencyCaseId"
                         (loadEmergencyNumber)="updateEmergencyNumber($event)"

@@ -1,31 +1,5 @@
 import { Patient } from '../models/patients';
 
-export interface Vehicle {
-  vehicleId: number;
-  vehicleType: string;
-  vehicleNumber: string;
-  vehicleStatus: string;
-  vehicleTypeId: number;
-  vehicleStatusId: number;
-  registrationNumber: string;
-  largeAnimalCapacity: number;
-  smallAnimalCapacity: number;
-  minRescuerCapacity: number;
-  maxRescuerCapacity: number;
-  currentVehicleStaff?: string;
-  imageURL: string;
-}
-
-export interface VehicleType {
-  VehicleTypeId : number;
-  VehicleType: string;
-}
-
-export interface VehicleStatus {
-  VehicleStatusId: number;
-  VehicleStatus: string;
-}
-
 export interface CallerDetails {
   callerId: number;
   callerName: string;
@@ -39,55 +13,59 @@ export interface LatLngLiteral {
 }
 
 export interface DriverAssignment {
-  location: string;
-  patients: Patient[];
-  patientId: number;
-  rescueTime: string | null;
   actionStatus: string | null;
-  callDateTime: string;
-  visitEndDate?: any;
-  callerDetails: CallerDetails[];
-  emergencyCode: string;
-  latLngLiteral: LatLngLiteral;
-  releaseEndDate: string | null;
-  visitBeginDate: string | null;
+  actionStatusId: number;
+  admissionTime: string | null;
   ambulanceAction: string;
+  ambulanceArrivalTime: string | null;
+  callDateTime: string;
+  callerDetails: CallerDetails[];
+  caseComments: string;
+  dispatcher: number;
   emergencyCaseId: number;
+  emergencyCode: string;
   emergencyCodeId?: number;
   emergencyNumber: number;
-  releaseBeginDate: string | null;
-  releaseDetailsId?: number | null;
-  releasePickupDate: string | null;
-  streetTreatCaseId?: number | null;
-  releaseRequestDate: string | null;
-  streetTreatPriority: string | null;
-  ambulanceArrivalTime: string | null;
+  filterCandidate: boolean;
+  inTreatmentAreaId: number;
+  isUpdated?: boolean;
+  latLngLiteral: LatLngLiteral;
+  location: string;
+  moved: boolean;
   patientCallOutcomeId?: number | null;
-  streetTreatPriorityId?: number | null;
+  patientId: number;
+  patients: Patient[];
+  releaseAmbulanceAssignmentDate: string | null;
+  releaseAmbulanceId: number | null;
+  releaseBeginDate: string | null;
   releaseComplainerNotes: string | null;
+  releaseDetailsId?: number | null;
+  releaseEndDate: string | null;
+  releasePickupDate: string | null;
+  releaseRequestDate: string | null;
+  rescueAmbulanceAssignmentDate: string;
+  rescueAmbulanceId: number;
+  rescueTime: string | null;
+  rescuerList?:number[];
+  searchCandidate: boolean;
+  streetTreatAmbulanceAssignmentDate: string | null;
+  streetTreatAmbulanceId: number | null;
+  streetTreatCaseId?: number | null;
   streetTreatMainProblem: string | null;
   streetTreatMainProblemId?: number | null;
-  isUpdated?: boolean;
-  updateTime: string | null;
-  admissionTime: string | null;
-  inTreatmentAreaId: number;
-  dispatcher: number;
-  caseComments: string;
-  rescueAmbulanceId: number;
-  rescueAmbulanceAssignmentDate: string;
-  releaseAmbulanceId: number | null;
-  releaseAmbulanceAssignmentDate: string | null;
-  visitId: number | null;
-  visitTypeId: number | null;
-  visitDate: string | null;
-  visitStatusId: number | null;
-  visitAdminNotes: string | null;
-  visitOperatorNotes: string | null;
-  visitDay: number;
-  streetTreatAmbulanceId: number | null;
-  streetTreatAmbulanceAssignmentDate: string | null;
-  rescuerList:number[];
+  streetTreatPriority: string | null;
+  streetTreatPriorityId?: number | null;
   trueStatus: string;
+  visitAdminNotes: string | null;
+  visitBeginDate: string | null;
+  visitDate: string | null;
+  visitDay: number;
+  visitEndDate?: any;
+  visitId: number | null;
+  visitOperatorNotes: string | null;
+  visitStatusId: number | null;
+  visitTypeId: number | null;
+  updateTime: string | null;
 }
 
 

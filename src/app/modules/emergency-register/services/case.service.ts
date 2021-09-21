@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
+import { EmergencyCase, CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { debounceTime, map, share } from 'rxjs/operators';
@@ -9,10 +9,14 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 @Injectable({
     providedIn: 'root',
 })
 export class CaseService extends APIService {
+
+    caseToOpen : BehaviorSubject<CaseToOpen | undefined> = new BehaviorSubject<CaseToOpen | undefined>(undefined);
 
     emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
@@ -266,6 +270,11 @@ export class CaseService extends APIService {
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    public openCase(caseToOpen: CaseToOpen) {
+
+        this.caseToOpen.next(caseToOpen);
     }
 
 
