@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
@@ -28,7 +28,9 @@ interface Problem {
   styleUrls: ['./emergency-register-patient.component.scss']
 })
 
-export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
+export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   @Input() patientIndex!: number;
   @Input() isDisplayOnly!: boolean;
@@ -42,6 +44,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @Input() outcome!: boolean;
 
   @Output() problemTab:EventEmitter<boolean> = new EventEmitter();
+  @Output() deletedPatientIndex:EventEmitter<number> = new EventEmitter();
 
   @ViewChild('problemRef') problemRef!: ElementRef;
   @ViewChild('chipList', {static: false}) chipList!: MatChipList;
@@ -51,7 +54,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   @ViewChild('problemRef', { read: MatAutocompleteTrigger }) problemAutoComplete!: MatAutocompleteTrigger;
 
   animalType!: AbstractControl;
-  
+
   private animalTypeValueChangesUnsubscribe = new Subject();
 
   currentPatientSpecies: string | undefined;
@@ -70,7 +73,7 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   removable = true;
   selectable = true;
-  patientDeletedFlag = false; 
+  patientDeletedFlag = false;
   sortedAnimalTypes = this.dropdown.getAnimalTypes();
 
   sortedProblems = this.dropdown.getProblems().pipe(
@@ -101,13 +104,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
    }
 
   ngOnInit(): void {
-    
+
     this.patientForm = this.patientFormInput as FormGroup;
 
     if(this.patientForm?.get('patientId')?.value) {
       this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
     }
-    
+
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -138,8 +141,12 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
- 
+
   animalTypeChangessub(){
     this.animalType?.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
       if(animalType === ''){
@@ -156,14 +163,14 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
 
 
   ngAfterViewInit(): void{
-    
+
     this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
       if(this.chipList?.errorState){
         this.chipList.errorState = this.problemsArray.length === 0;
       }
       this.patientFormProblemSetError();
     });
-    
+
 
     this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
 
@@ -177,13 +184,13 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
     });
 
     this.patientForm?.valueChanges.subscribe(patient => {
-     /** 
+     /**
       * Hide deleted patient
       */
       this.patientDeletedFlag = patient.deleted;
-      
+
     });
-    
+
 
   }
 
@@ -383,13 +390,44 @@ export class EmergencyRegisterPatientComponent implements OnInit,AfterViewInit {
   }
 
   deletePatient(){
-    this.patientForm.get('deleted')?.setValue(true);
+
+    const dialogRef = this.dialog.open(ConfirmationDialog,{
+      data:{
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Yes',
+          cancel: 'No'
+        }
+      }
+    });
+
+    dialogRef.afterClosed()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        if(this.patientForm.get('patientId')?.value){
+          this.patientForm.get('deleted')?.setValue(true);
+        }
+        else {
+          this.deletedPatientIndex.emit(this.patientForm.get('patientId')?.value);
+        }
+      }
+    });
+
+
+
+
+
+
+
+
+
   }
 
   tabPressed($event:Event, patientIndex: number) {
     $event.preventDefault();
 
-    this.tagNumber.nativeElement.focus();   
+    this.tagNumber.nativeElement.focus();
 
   }
 

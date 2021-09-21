@@ -5,7 +5,7 @@
 
   <!-- patient details-->
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
-    
+
     <!-- Animal Dropdown-->
     <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;" fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
@@ -52,10 +52,6 @@
       <thumbnail-slider [mediaData]="mediaData" [patientData]="patientForm" [displayImagesAndButtons]='false'></thumbnail-slider>
     </div>
 
-    <!-- <div class="patients_icons">
-      <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
-      <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
-    </div> -->
   </div>
 
 
@@ -66,7 +62,7 @@
   <button *ngIf="patientDeletedFlag" class="undoButton" type="button" (click)="redoPatient()" mat-mini-fab color="warn">
     <mat-icon>undo</mat-icon>
   </button>
-  
+
 
 
   <!-- Calloutcome details-->
@@ -101,7 +97,7 @@
         </mat-select>
 
       </mat-form-field>
-      
+
     </div>
     <div class="patients_icons">
       <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
@@ -113,14 +109,14 @@
 
 <div *ngIf="isDisplayOnly" class="displayOnlyPatientWrapper">
 
-  <div fxLayout="row" fxLayoutGap='10px' fxLayoutAlign="start center" style="min-height: 2em;"> 
+  <div fxLayout="row" fxLayoutGap='10px' fxLayoutAlign="start center" style="min-height: 2em;">
     <div>
       {{animalType.value}}
     </div>
     <div *ngIf="problemsArray?.value.length > 1">
       {{problemsArray?.value[0].problem}} + {{problemsArray?.value.length - 1}}
     </div>
-  
+
     <div *ngIf="problemsArray?.value.length == 1">
       {{problemsArray?.value[0].problem}}
     </div>
@@ -131,6 +127,6 @@
 
   </div>
 
- 
+
 
 </div>

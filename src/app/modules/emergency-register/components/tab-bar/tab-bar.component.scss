@@ -15,6 +15,18 @@
         margin-top:60px;
     }
 
+    .hotkeys{
+        display: none;
+    }
+
+}
+
+.hotkeys{
+    position: absolute;
+    top: 68px;
+    right: 5px;
+    cursor: pointer;
+    z-index: 100;
 }
 
 :host > .mat-tab-group:first-child ::ng-deep .mat-tab-label:last-child{

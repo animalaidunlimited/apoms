@@ -157,7 +157,8 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
 
     openShortcutsDialog($event:Event, tabIndex:number){
-        $event.preventDefault();
+        //$event.preventDefault();
+        console.log('here');
 
         const dialog = this.dialog.open(KeyboardShortcutsComponent, {
             minWidth: '50%'
