@@ -130,8 +130,6 @@ vehicleSelected($event:MatSelectChange){
 
   saveReleaseDetails() {
 
-    console.log(this.recordForm.getRawValue())
-
     this.releaseDetails.saveRelease(this.recordForm.getRawValue()).then((response: any)=>{
 
       if(response?.success === -1){
