@@ -167,7 +167,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.subscribe(date=> {
 			if(date) {
 				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
-
                 this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
             }
             else {
@@ -209,8 +208,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
 
-			console.log(response);
-
 			if (response?.streetTreatCaseId) {
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
@@ -243,15 +240,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 							});
 
 						}
-
 						if(response.visits.length > this.visitsArray.length) {
 							this.visitsArray.push(this.getVisitFormGroup());
 						}
 					});
 				}
-				else {
-					this.visitsArray.push(this.getVisitFormGroup());
-				}
+				
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 
@@ -272,6 +266,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 
 				this.changeDetectorRef.detectChanges();
+			}
+			else {
+				this.visitsArray.push(this.getVisitFormGroup());
 			}
 		});
 	}
@@ -418,6 +415,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.visitsArray.get('visit_type')?.setValidators([Validators.required]);
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
 
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 		this.changeDetectorRef.detectChanges();
 
 	}
@@ -431,6 +430,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('mainProblem')?.clearValidators();
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
 		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.clearValidators();
 
 		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let i = 0; i < this.visitsArray?.controls.length; i++) {
@@ -447,6 +447,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({ emitEvent: false });
 		this.visitsArray.get('visit_status')?.updateValueAndValidity({ emitEvent: false });
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 
 		this.changeDetectorRef.detectChanges();
 

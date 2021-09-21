@@ -70,7 +70,7 @@
     <div [@openCloseDiv]="isStreetTreat" [@visibilityDiv]="isStreetTreat">
         <app-patient-visit-details
             [isStreetTreatTrue]="isStreetTreat"
-            *ngIf = "isStreetTreat"
+             [hidden] = "!isStreetTreat"
             (streetTreatCaseIdEmit)="streetTreatCaseIdEventHandler($event)"
             [recordForm]="recordForm">
         </app-patient-visit-details>

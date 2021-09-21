@@ -70,6 +70,8 @@ isStreetTreat!: boolean;
 
   async onSubmit(updatedRecord: DriverAssignment) {
 
+    updatedRecord.updateTime = getCurrentTimeString();
+
     updatedRecord.isUpdated = true;
 
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);

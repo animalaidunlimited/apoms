@@ -54,7 +54,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   isInstructionRequired!: boolean;
 
-  isStreetTreat!: boolean;
+  isStreetTreat = false;
   isCommented = false;
 
   recordForm: FormGroup = new FormGroup({});
@@ -91,8 +91,6 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.isInstructionRequired= false;
 
-    this.isStreetTreat = false;
-
     // Record Form
     this.recordForm = this.fb.group({
       releaseId: [],
@@ -112,6 +110,10 @@ export class ReleaseDetailsComponent implements OnInit {
 
     });
 
+    this.recordForm.valueChanges.subscribe(val=> {
+      this.formValidity.emit(this.recordForm.invalid);
+    });
+
     this.recordForm.get('IsStreetTreatRelease')?.valueChanges.subscribe(value=> {
       if(value) {
         this.streetTreatReleaseTrue();
@@ -123,10 +125,6 @@ export class ReleaseDetailsComponent implements OnInit {
     });
 
     this.initReleaseDetailsForm();
-
-    this.recordForm.valueChanges.subscribe(() => {
-      this.formValidity.emit(this.recordForm.invalid);
-    });
 
   }
 
@@ -194,11 +192,15 @@ export class ReleaseDetailsComponent implements OnInit {
   streetTreatReleaseTrue() {
     this.isStreetTreat = true;
     this.changeDetector.detectChanges();
+    this.formValidity.emit(this.isStreetTreat);
   }
 
   streetTreatReleaseFalse() {
     this.isStreetTreat = false;
     this.changeDetector.detectChanges();
+    this.formValidity.emit(this.isStreetTreat);
+
+    
   }
 
   valueChages(toggle: any , position: number) {
@@ -241,6 +243,8 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   onReleaseSubmit() {
+
+
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 
