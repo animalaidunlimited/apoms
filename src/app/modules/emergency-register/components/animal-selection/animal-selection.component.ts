@@ -107,14 +107,10 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         {
             this.emergencyRegisterPatients.first.tagNumber?.nativeElement.focus();
         }
-
     }
+    
 
     ngOnInit() {
-
-        console.log(this.recordForm.value);
-
-
 
         this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
