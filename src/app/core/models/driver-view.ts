@@ -1,31 +1,5 @@
 import { Patient } from '../models/patients';
 
-export interface Vehicle {
-  vehicleId: number;
-  vehicleType: string;
-  vehicleNumber: string;
-  vehicleStatus: string;
-  vehicleTypeId: number;
-  vehicleStatusId: number;
-  registrationNumber: string;
-  largeAnimalCapacity: number;
-  smallAnimalCapacity: number;
-  minRescuerCapacity: number;
-  maxRescuerCapacity: number;
-  currentVehicleStaff?: string;
-  imageURL: string;
-}
-
-export interface VehicleType {
-  VehicleTypeId : number;
-  VehicleType: string;
-}
-
-export interface VehicleStatus {
-  VehicleStatusId: number;
-  VehicleStatus: string;
-}
-
 export interface CallerDetails {
   callerId: number;
   callerName: string;
@@ -40,7 +14,7 @@ export interface LatLngLiteral {
 
 export interface DriverAssignment {
   actionStatus: string | null;
-  actionStatusId?: number;
+  actionStatusId: number;
   admissionTime: string | null;
   ambulanceAction: string;
   ambulanceArrivalTime: string | null;
