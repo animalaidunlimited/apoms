@@ -66,8 +66,8 @@ PatientsCTE AS
 (
     SELECT DISTINCT
 		p.EmergencyCaseId,
-        p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
-        p.PatientId,
+        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
+        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),

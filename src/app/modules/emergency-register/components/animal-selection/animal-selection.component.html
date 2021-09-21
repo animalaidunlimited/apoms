@@ -15,8 +15,9 @@
                 [patientFormInput]="patient"
                 [patientIndex]="patientIndex"
                 (problemTab)="problemTab($event)"
+                (deletedPatientIndex)="deletePatient($event)"
             ></app-emergency-register-patient>
-            
+
         </div>
     <div *ngIf="!outcome && !isDisplayOnly" fxLayout="row" fxLayoutAlign="center center">
         <button

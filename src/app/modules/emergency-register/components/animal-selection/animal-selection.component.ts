@@ -26,7 +26,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
     templateUrl: './animal-selection.component.html',
     styleUrls: ['./animal-selection.component.scss'],
 })
-export class AnimalSelectionComponent implements OnInit,OnDestroy{
+export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
     constructor(
         private fb: FormBuilder,
@@ -108,7 +108,7 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
             this.emergencyRegisterPatients.first.tagNumber?.nativeElement.focus();
         }
     }
-    
+
 
     ngOnInit() {
 
@@ -437,6 +437,13 @@ export class AnimalSelectionComponent implements OnInit,OnDestroy{
         if(patientForm.get('patientId')?.value){
           this.printService.printPatientDocument(printTemplateId, patientForm.get('patientId')?.value);
         }
+
+      }
+
+      deletePatient($event:number){
+
+        const patientIndex = this.patients.controls.findIndex(patient => (patient.get('index')?.value || -1) === $event)
+        this.patients.removeAt(patientIndex);
 
       }
 
