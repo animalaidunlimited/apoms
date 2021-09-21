@@ -68,6 +68,7 @@ export interface DriverAssignment {
   streetTreatMainProblem: string | null;
   streetTreatMainProblemId?: number | null;
   isUpdated?: boolean;
+  updateTime: string | null;
   admissionTime: string | null;
   inTreatmentAreaId: number;
   dispatcher: number;

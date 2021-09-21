@@ -157,12 +157,12 @@ export class DriverViewService extends APIService {
           !driverViewData.visitEndDate
         ) ||
         (
+          driverViewData.ambulanceAction === 'STRelease' &&
           driverViewData.releaseDetailsId &&
           driverViewData.streetTreatCaseId &&
           driverViewData.releaseBeginDate &&
           driverViewData.releasePickupDate &&
           driverViewData.releaseEndDate &&
-          driverViewData.visitId &&
           !driverViewData.visitBeginDate &&
           ! driverViewData.visitEndDate
         )
@@ -204,7 +204,7 @@ export class DriverViewService extends APIService {
           driverViewData.ambulanceAction==='Rescue' &&
           ((!driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId ) ||
           (driverViewData.releaseDetailsId && driverViewData.streetTreatCaseId) ||
-          (driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId && !driverViewData.releasePickupDate))
+          (driverViewData.releaseDetailsId && !driverViewData.streetTreatCaseId))
 
         ) ||
         (
@@ -266,6 +266,8 @@ export class DriverViewService extends APIService {
 
 
   public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
+
+    console.log(updatedRecord);
 
     const updatedRecordData = this.getAssignmentStatus(updatedRecord);
 
