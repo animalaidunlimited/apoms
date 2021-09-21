@@ -63,12 +63,12 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
       
       if(date) {
-        this.recordForm.get('releaseAmbulanceId')?.enable()
+        this.recordForm.get('releaseAmbulanceId')?.enable();
 
         this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
       }
       else {
-        this.recordForm.get('releaseAmbulanceId')?.disable()
+        this.recordForm.get('releaseAmbulanceId')?.disable();
       }
 
     });
@@ -129,6 +129,8 @@ vehicleSelected($event:MatSelectChange){
 }
 
   saveReleaseDetails() {
+
+    console.log(this.recordForm.getRawValue())
 
     this.releaseDetails.saveRelease(this.recordForm.getRawValue()).then((response: any)=>{
 
