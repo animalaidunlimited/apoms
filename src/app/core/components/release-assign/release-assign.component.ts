@@ -61,7 +61,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
     this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe((date) => {
 
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
-      
+
       if(date) {
         this.recordForm.get('releaseAmbulanceId')?.enable();
 
