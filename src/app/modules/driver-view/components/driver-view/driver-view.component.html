@@ -3,20 +3,23 @@
 
    <div fxLayout="row wrap" fxLayoutAlign="center center" class="selectionDivWrapper">
        <!-- Do not delete this code may be some point in the future we may need this again. -->
-       
+
         <!-- <mat-form-field>
             <mat-label>Date</mat-label>
             <input matInput type="datetime-local" formControlName="assignmentDate" name = "AssignmentDate">
         </mat-form-field> -->
+        <div>
+            {{platform.ANDROID || platform.IOS}}
+        </div>
 
         <div  class="timer"
         *ngIf="timer$ | async as timer"
-        [ngClass]="timer.class"> 
+        [ngClass]="timer.class">
         {{ timer.time }}
         </div>
 
         <button mat-mini-fab class="refreshButton" aria-label="Manual refresh" (click)="refreshDate()" >
-            <mat-icon>refresh</mat-icon>  
+            <mat-icon>refresh</mat-icon>
         </button>
    </div>
 

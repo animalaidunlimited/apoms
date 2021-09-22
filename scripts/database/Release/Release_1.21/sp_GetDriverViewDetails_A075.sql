@@ -138,7 +138,8 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
-    p.PatientId
+		p.PatientCallOutcomeId,
+        p.PatientId
 )
 ,
 DriverViewCTE AS

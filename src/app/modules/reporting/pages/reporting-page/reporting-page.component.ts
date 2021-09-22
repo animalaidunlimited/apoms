@@ -48,7 +48,6 @@ export class ReportingPageComponent implements OnInit {
 
     ngOnInit() {
         this.initialiseReporting();
-
     }
 
     initialiseReporting() {

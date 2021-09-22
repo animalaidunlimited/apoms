@@ -24,8 +24,8 @@ import { Subject } from 'rxjs';
 export class SearchResultCardComponent implements OnInit {
 
   @Input() record: SearchResponse | undefined;
- 
-  @Input() source = '';
+
+  @Input() source = "";
 
   callerObject: CallerDetails[] | undefined;
   private ngUnsubscribe =  new Subject();

@@ -9,6 +9,7 @@ import { LocationService } from 'src/app/core/services/location/location.service
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 import { OutstandingCaseService } from 'src/app/modules/emergency-register/services/outstanding-case.service';
+import { Platform } from '@angular/cdk/platform';
 
 @Component({
   selector: 'app-driver-view',
@@ -30,7 +31,7 @@ export class DriverViewComponent implements OnInit {
     private locationService: LocationService,
     private dropDown: DropdownService,
     private router: Router,
-    private oustandingService: OutstandingCaseService) { }
+    public platform: Platform) { }
 
   ngOnInit(): void {
 
@@ -39,8 +40,11 @@ export class DriverViewComponent implements OnInit {
     this.locationService.currentLocation$.pipe(takeUntil(this.ngUnsubscribe)).subscribe();
     this.locationService.getCurrentLocation();
 
-    // Start logging the location of this vehicle.
-    this.locationService.beginLoggingVehicleLocation();
+    // Start logging the location of this vehicle, but only if we're on mobile.
+    if(this.platform.ANDROID || this.platform.IOS){
+      
+      this.locationService.beginLoggingVehicleLocation();
+    }
 
     this.driverViewDetails = this.fb.group({
       assignmentDate: [getCurrentTimeString()],
