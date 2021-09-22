@@ -42,7 +42,7 @@ export class PatientDetailsComponent implements OnInit {
 
     ngOnInit() {
 
-        this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes);
+        this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes).unsubscribe();
 
         this.treatmentPriorities = this.dropdown.getPriority();
 

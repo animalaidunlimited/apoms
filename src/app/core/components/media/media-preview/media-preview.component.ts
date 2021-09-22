@@ -13,6 +13,7 @@ import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
 import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -99,7 +100,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       this.imageData = this.data.image;
       // tslint:disable-next-line: deprecation
-      this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+      this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number)
+      .pipe(takeUntil(this.ngUnsubscribe)).
+      subscribe((comments)=>{
         this.patientMediaComments$.next(comments);
       });
     }
@@ -156,7 +159,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
 
-      mediaItem.mediaItemId.subscribe(media => {
+      mediaItem.mediaItemId.pipe(takeUntil(this.ngUnsubscribe)).subscribe(media => {
 
         if(media){
 
@@ -173,7 +176,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
           this.data.upload = false;
 
-          mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
+          mediaItem.mediaItem?.uploadProgress$?.pipe(takeUntil(this.ngUnsubscribe)).subscribe(progress => this.loading = !(progress === 100 ));
 
           this.imageData.patientMediaItemId = media;
 
@@ -257,7 +260,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
-        this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+        this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).pipe(takeUntil(this.ngUnsubscribe)).subscribe((comments)=>{
           this.patientMediaComments$.next(comments);
         });
       }
@@ -343,7 +346,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     this.checkHeight(dialogData.image.height);
 
-    this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
+    this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).pipe(takeUntil(this.ngUnsubscribe)).subscribe((comments)=>{
       this.patientMediaComments$.next(comments);
     });
 

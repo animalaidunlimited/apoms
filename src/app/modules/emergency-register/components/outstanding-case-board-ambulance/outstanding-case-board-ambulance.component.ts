@@ -126,22 +126,9 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             )
         );
 
-        this.vehicleAssignmentList$ =  this.outstandingCaseService.filterCases(
-            this.matChipObs,
-            this.outstandingCases$?.pipe(
-                takeUntil(this.ngUnsubscribe),
-                map(outstandingCases =>
-                    outstandingCases.filter(
-                        outstandingCase =>
-                        this.vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
-                    ),
-                ),
-            ),
-            this.filterKeysArray,
-            this.ngUnsubscribe
-        );
 
 
+        this.vehicleAssignmentList$ = this.outstandingCaseService.getOutstandingCasesByVehicleId(this.vehicleId);
 
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
@@ -166,24 +153,11 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
                 vehicleAssignments?.forEach(vehicleAssignment => {
                     vehicleAssignment.patients?.forEach(patient => {
-                        if (
 
-                            // Release count
+                        patient.largeAnimal === 0
+                            ? (smallPatientCount = smallPatientCount + 1)
+                            : (largePatientCount = largePatientCount + 1);
 
-                            (vehicleAssignment.releaseDetailsId === null &&
-                                patient.callOutcome.CallOutcome.CallOutcomeId !== null &&
-                                vehicleAssignment.rescueTime !== null) ||
-
-                            // Rescue count
-
-                            (vehicleAssignment.releaseDetailsId !== null &&
-                                vehicleAssignment.releaseEndDate !== null &&
-                                vehicleAssignment.releasePickupDate !== null)
-                        ) {
-                            patient.largeAnimal === 0
-                                ? (smallPatientCount = smallPatientCount + 1)
-                                : (largePatientCount = largePatientCount + 1);
-                        }
                     });
                 });
 

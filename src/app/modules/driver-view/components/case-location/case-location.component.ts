@@ -1,6 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Marker } from 'src/app/core/components/location-details/location-details.component';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { DriverViewService } from '../../services/driver-view.service';
@@ -11,6 +13,8 @@ import { DriverViewService } from '../../services/driver-view.service';
   styleUrls: ['./case-location.component.scss']
 })
 export class CaseLocationComponent implements OnInit, AfterViewInit{
+
+  private ngUnsubscribe = new Subject()
 
   casesList!: DriverAssignment[];
 
@@ -70,7 +74,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
     
     
-    this.driverView.driverViewDetails.subscribe(caseList=> {
+    this.driverView.driverViewDetails.pipe(takeUntil(this.ngUnsubscribe)).subscribe(caseList=> {
       this.casesList = caseList;
       this.findCenter(caseList);
     });
@@ -89,7 +93,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
       this.map.panToBounds(latlngbounds);
 
-      this.map.zoomChanged.subscribe(() => {
+      this.map.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
 
         if(this.map.getZoom() > 12) {
           this.zoom = 13;

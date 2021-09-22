@@ -47,7 +47,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
 
-    this.onlineStatus.connectionChanged.subscribe(connectionState => {
+    this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connectionState => {
 
       if(connectionState){
 
@@ -69,12 +69,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.initMedaiaGallery();
 
-    this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+    this.mediaData?.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
 
   }
 
   ngAfterViewInit() {
-    this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
+    this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe((connectionStatus) => {
 
       if(!connectionStatus){
 
@@ -198,7 +198,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.mediaData)
     {
       // tslint:disable-next-line: deprecation
-      this.mediaData.subscribe(mediaItems => {
+      this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => {
         if(!mediaItems || mediaItems.length === 0)
         {
           return;

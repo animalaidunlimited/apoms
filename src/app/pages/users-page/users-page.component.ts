@@ -236,10 +236,10 @@ export class UsersPageComponent implements OnInit {
         }
       ];
 
-      this.dropdown.getAllTeams().subscribe(team=>{
+      this.dropdown.getAllTeams().pipe(takeUntil(this.ngUnsubscribe)).subscribe(team=>{
         this.teamNames = team;
       });
-      this.dropdown.getUserJobType().subscribe(jobType=>{
+      this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType=>{
         this.jobTypes = jobType;
       });
       this.getrefreshTableData();

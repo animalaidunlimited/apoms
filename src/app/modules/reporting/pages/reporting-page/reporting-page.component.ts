@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
@@ -12,7 +12,7 @@ import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { PatientCountInArea } from 'src/app/core/models/treatment-lists';
 import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';
 
@@ -25,6 +25,7 @@ import { TreatmentListService } from 'src/app/modules/treatment-list/services/tr
 export class ReportingPageComponent implements OnInit {
 
     currentAreaName = '';
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private fb: FormBuilder,
@@ -46,8 +47,6 @@ export class ReportingPageComponent implements OnInit {
     isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     ngOnInit() {
-
-        this.printService.initialisePrintTemplates();
         this.initialiseReporting();
 
     }
@@ -70,16 +69,16 @@ export class ReportingPageComponent implements OnInit {
             this.patientCountData = response;
         });
 
-        this.reportingDetails.valueChanges.subscribe((val)=> {
+        this.reportingDetails.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val)=> {
 
 
 
             this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(val.surgeryDate);
-            this.surgeries.subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
+            this.surgeries.pipe(takeUntil(this.ngUnsubscribe)).subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
 
             if(val.emergencyCaseDate) {
                 this.emergencyCases =  this.reportingService.getEmergencyCaseByDateAndOutcomeOrST(val.emergencyCaseDate, val.streetTreat, val.admission);
-                this.emergencyCases.subscribe(cases=> {
+                this.emergencyCases.pipe(takeUntil(this.ngUnsubscribe)).subscribe(cases=> {
                     if(cases) {
 
 

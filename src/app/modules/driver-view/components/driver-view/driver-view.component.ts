@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { LocationService } from 'src/app/core/services/location/location.service';
@@ -23,6 +23,7 @@ export class DriverViewComponent implements OnInit {
   states!: any;
   showComplete = false;
   timer$!: Observable<{time:string, class:string} | null>;
+  private ngUnsubscribe = new Subject();
 
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
@@ -35,7 +36,7 @@ export class DriverViewComponent implements OnInit {
 
     this.locationService.initialise();
 
-    this.locationService.currentLocation$.subscribe();
+    this.locationService.currentLocation$.pipe(takeUntil(this.ngUnsubscribe)).subscribe();
     this.locationService.getCurrentLocation();
 
     // Start logging the location of this vehicle.
@@ -57,7 +58,7 @@ export class DriverViewComponent implements OnInit {
 
     this.populateDriverView(this.driverViewDetails.get('assignmentDate')?.value);
 
-    this.driverViewDetails.get('assignmentDate')?.valueChanges.subscribe(date=> {
+    this.driverViewDetails.get('assignmentDate')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(date=> {
       if(date) {
         this.populateDriverView(date);
       }

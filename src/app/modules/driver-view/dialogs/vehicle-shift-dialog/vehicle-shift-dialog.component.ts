@@ -2,7 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
@@ -44,6 +45,7 @@ export class VehicleShiftDialogComponent implements OnInit {
   shiftEndTime: AbstractControl | null = null;
 
   isEdit = false;
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private vehicleService: VehicleService,
@@ -100,9 +102,9 @@ export class VehicleShiftDialogComponent implements OnInit {
 
     // Do something to try and limit the times. Note this doesn't work for minutes or seconds. So we
     // also need to handle it in the validators
-    this.shiftStartTime?.valueChanges.subscribe((startChanged:string) => this.minEndTime = startChanged || this.data.currentDate + "T00:00" );
+    this.shiftStartTime?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((startChanged:string) => this.minEndTime = startChanged || this.data.currentDate + "T00:00" );
 
-    this.shiftEndTime?.valueChanges.subscribe((endChanged:string) => this.maxStartTime = endChanged || this.data.currentDate + "T23:59:59");
+    this.shiftEndTime?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((endChanged:string) => this.maxStartTime = endChanged || this.data.currentDate + "T23:59:59");
 
     this.staffArray = this.addShiftFormGroup.get('vehicleStaff') as FormArray;
 

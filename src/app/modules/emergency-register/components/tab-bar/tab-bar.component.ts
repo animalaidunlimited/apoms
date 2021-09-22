@@ -157,13 +157,12 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
 
     openShortcutsDialog($event:Event, tabIndex:number){
-        //$event.preventDefault();
-        console.log('here');
+        // $event.preventDefault();
 
         const dialog = this.dialog.open(KeyboardShortcutsComponent, {
             minWidth: '50%'
         });
-        dialog.afterClosed().subscribe(()=> this.selected.setValue(tabIndex));
+        dialog.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(()=> this.selected.setValue(tabIndex));
     }
 
     tabChanged($event:number){

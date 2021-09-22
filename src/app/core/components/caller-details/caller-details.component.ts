@@ -23,7 +23,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     private ngUnsubscribe = new Subject();
 
     @Input() recordForm!: FormGroup;
-    @Input() incomingCallerDetails : any
+    @Input() incomingCallerDetails : any;
     @ViewChildren(CallerAutocompleteComponent) callerAutoComplete!: QueryList<CallerAutocompleteComponent>;
 
     caller$!: Caller;

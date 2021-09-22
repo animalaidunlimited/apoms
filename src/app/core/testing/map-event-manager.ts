@@ -7,8 +7,8 @@
  */
 
  import {NgZone} from '@angular/core';
- import {BehaviorSubject, Observable, Subscriber} from 'rxjs';
- import {switchMap} from 'rxjs/operators';
+ import {BehaviorSubject, Observable, Subject, Subscriber} from 'rxjs';
+ import {switchMap, takeUntil} from 'rxjs/operators';
 
  type MapEventManagerTarget = {
    addListener: (name: string, callback: (...args: any[]) => void) => google.maps.MapsEventListener;
@@ -20,6 +20,7 @@
    private _pending: {observable: Observable<any>, observer: Subscriber<any>}[] = [];
    private _listeners: google.maps.MapsEventListener[] = [];
    private _targetStream = new BehaviorSubject<MapEventManagerTarget>(undefined);
+   private ngUnsubscribe = new Subject();
 
    /** Clears all currently-registered event listeners. */
    private _clearListeners() {
@@ -70,7 +71,7 @@
      this._targetStream.next(target);
 
      // Add the listeners that were bound before the map was initialized.
-     this._pending.forEach(subscriber => subscriber.observable.subscribe(subscriber.observer));
+     this._pending.forEach(subscriber => subscriber.observable.pipe(takeUntil(this.ngUnsubscribe)).subscribe(subscriber.observer));
      this._pending = [];
    }
 

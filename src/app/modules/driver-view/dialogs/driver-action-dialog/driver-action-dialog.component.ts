@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
@@ -40,6 +42,7 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
 
 isStreetTreat!: boolean;
+  private ngUnsubscribe = new Subject();
 
   constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -212,7 +215,7 @@ isStreetTreat!: boolean;
 
     this.dateTimeChanged = true;
 
-    this.formGroup.valueChanges.subscribe(()=> {
+    this.formGroup.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(()=> {
       this.updateValueAndValidity(formControlName);
     });
 

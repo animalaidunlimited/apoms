@@ -164,7 +164,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   ngAfterViewInit(): void{
 
-    this.patientForm?.get('problems')?.valueChanges.subscribe((problems:Problem[]) => {
+    this.patientForm?.get('problems')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((problems:Problem[]) => {
       if(this.chipList?.errorState){
         this.chipList.errorState = this.problemsArray.length === 0;
       }
@@ -172,7 +172,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     });
 
 
-    this.problemAutoComplete?.panelClosingActions.subscribe(selection => {
+    this.problemAutoComplete?.panelClosingActions.pipe(takeUntil(this.ngUnsubscribe)).subscribe(selection => {
 
       if(!selection){
 
@@ -183,7 +183,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     });
 
-    this.patientForm?.valueChanges.subscribe(patient => {
+    this.patientForm?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(patient => {
      /**
       * Hide deleted patient
       */
@@ -312,7 +312,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       }
       else{
         $event.preventDefault();
-        this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).subscribe(animalType => {
+        this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).pipe(takeUntil(this.ngUnsubscribe)).subscribe(animalType => {
           const matchAnimalType =  animalType.length;
           // if no animal has been selected, then clear the value
           if(matchAnimalType === 0){

@@ -8,6 +8,7 @@ import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../driver-view/services/driver-view.service';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Injectable({
@@ -105,6 +106,9 @@ constructor(
 
             }
         );
+    }
+    ngUnsubscribe(ngUnsubscribe: any): import("rxjs").OperatorFunction<string | null, string | null> {
+        throw new Error('Method not implemented.');
     }
 
     alterPermissionState(currentState:string){

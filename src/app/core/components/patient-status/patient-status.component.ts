@@ -9,9 +9,9 @@ import { Patient, PatientStatusObject } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { PatientStatusResponse } from '../../models/responses';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -35,6 +35,7 @@ export class PatientStatusComponent implements OnInit {
     patientStates$!:Observable<PatientStatusResponse[]>;
     patientStatusForm!:FormGroup;
     tagNumber:string | undefined;
+    private ngUnsubscribe =  new Subject();
 
     constructor(
         private dropdowns: DropdownService,
@@ -76,9 +77,9 @@ export class PatientStatusComponent implements OnInit {
 
         this.currentTime = getCurrentTimeString();
 
-        this.patientStatusForm.valueChanges.subscribe(() => {
+        this.patientStatusForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
 
-            this.patientStates$.subscribe(status => {
+            this.patientStates$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(status => {
 
                 const currentStatus = status.find(state => state.PatientStatusId === this.patientStatusForm.get('patientStatusId')?.value);
 

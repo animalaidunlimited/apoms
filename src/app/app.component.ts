@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
@@ -16,7 +17,7 @@ import { PrintTemplateService } from './modules/print-templates/services/print-t
       ]
 })
 export class AppComponent implements OnInit{
-
+    private ngUnsubscribe = new Subject();
     isPrinting!:BehaviorSubject<boolean>;
     title = 'apoms';
 
@@ -30,7 +31,7 @@ export class AppComponent implements OnInit{
 
     ngOnInit() {
 
-        this.authService.loggedIn.subscribe(loggedIn => {
+        this.authService.loggedIn.pipe(takeUntil(this.ngUnsubscribe)).subscribe(loggedIn => {
 
             if(loggedIn){
 

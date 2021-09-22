@@ -602,8 +602,8 @@ PatientsCTE AS
 (
     SELECT DISTINCT
 		p.EmergencyCaseId,
-        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
-        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
+		p.PatientId, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -660,7 +660,7 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
-    IFNULL(rd.PatientId, p.EmergencyCaseId)
+    p.PatientId
 )
 ,
 DriverViewCTE AS
@@ -1455,7 +1455,7 @@ Purpose: Used to retrieve location history for a particular vehicle.
 DECLARE vOrganisationId INT;
 SET vOrganisationId = 1;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_UserName LIMIT 1;
 
 WITH LocationHistoryCTE AS
 (

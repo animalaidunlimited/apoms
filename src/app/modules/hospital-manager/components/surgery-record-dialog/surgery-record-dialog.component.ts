@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 export interface DialogData {
     patientId: number;
@@ -24,6 +26,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
 
     result: UpdatedSurgery | undefined;
     canExit: FormGroup;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         public dialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
@@ -41,7 +44,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
     ngOnInit() {
 
 
-        this.canExit.valueChanges.subscribe((values: CanExitChange) => {
+        this.canExit.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
             if (values.surgeryDetailsUpdateComplete !== 0) {
                 this.dialogRef.close(this.result);

@@ -4,6 +4,8 @@ import { StreetTreatTab } from 'src/app/core/models/streettreet';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
 import { StreetTreatTabBarService } from '../../services/streettreat-tab-bar.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-streettreat-tab-bar',
@@ -12,6 +14,7 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class StreetTreatTabBarComponent implements OnInit {
   tabs:StreetTreatTab[] = [];
+  private ngUnsubscribe = new Subject();
   constructor(
     private tabBarService: StreetTreatTabBarService,
     private cdr: ChangeDetectorRef
@@ -21,7 +24,7 @@ export class StreetTreatTabBarComponent implements OnInit {
   ngOnInit(): void {
     this.addEmptyTab('Case list',0);
     this.addEmptyTab('Search',1);
-    this.tabBarService.tabCreator.subscribe(newTab => {
+    this.tabBarService.tabCreator.pipe(takeUntil(this.ngUnsubscribe)).subscribe(newTab => {
       newTab.forEach((elem) => this.addTab(elem));
   });
   }

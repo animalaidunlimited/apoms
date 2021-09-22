@@ -6,10 +6,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { TeamDetails } from 'src/app/core/models/team';
 import { ViewChild } from '@angular/core';
 import { TeamDetailsService } from 'src/app/core/services/team-details/team-details.service';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-teams-page',
@@ -23,6 +24,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     @ViewChild(MatTable) table!: MatTable<TeamDetails>;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private teamDetailService: TeamDetailsService,
@@ -63,6 +65,7 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
     getrefreshTableData() {
         this.teamSubsciption = this.teamDetailService
             .getAllTeams()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((teamListData: TeamDetails[]) => {
                 this.dataSource = new MatTableDataSource(teamListData);
                 this.dataSource.sort = this.sort;
@@ -134,7 +137,9 @@ export class TeamsPageComponent implements OnInit, OnDestroy {
             },
         });
 
-        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+        dialogRef.afterClosed()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((confirmed: boolean) => {
             if (confirmed) {
                 this.teamDetails.get('IsDeleted')?.setValue(true);
                 this.submit();

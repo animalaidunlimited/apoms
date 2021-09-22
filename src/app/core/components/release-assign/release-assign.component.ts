@@ -58,7 +58,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       ambulanceAssignmentTime:['']
     });
 
-    this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.subscribe((date) => {
+    this.recordForm.get('ambulanceAssignmentTime')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date) => {
 
       this.formInvalid.emit(this.recordForm.get('ambulanceAssignmentTime')?.invalid);
 

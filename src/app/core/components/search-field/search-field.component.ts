@@ -213,7 +213,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         private dropdowns: DropdownService) { }
 
     ngOnInit(): void {
-        this.navigationService.isSearchClicked.subscribe((clicked) => {
+        this.navigationService.isSearchClicked.pipe(takeUntil(this.ngUnsubscribe)).subscribe((clicked) => {
             if (clicked && this.searchBox) {
                 this.searchBox.nativeElement.focus();
             }

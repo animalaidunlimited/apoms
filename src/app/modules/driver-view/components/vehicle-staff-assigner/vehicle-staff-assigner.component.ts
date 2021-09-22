@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { Vehicle } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
@@ -14,9 +15,12 @@ export class VehicleStaffAssignerComponent implements OnInit {
 
   activeVehicles$!: Observable<Vehicle[]>;
 
+  showInActive = false;
+
   shiftDate = this.fb.group({
     date: []}
   );
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -27,7 +31,7 @@ export class VehicleStaffAssignerComponent implements OnInit {
 
     this.activeVehicles$ = this.vehicleService.getVehicleListObservable();
 
-    this.shiftDate.valueChanges.subscribe(changes => {
+    this.shiftDate.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(changes => {
       this.vehicleService.populateVehicleShiftDetails(changes.date);
     });
 

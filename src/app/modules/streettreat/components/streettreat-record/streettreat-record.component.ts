@@ -100,7 +100,7 @@ export class StreetTreatRecordComponent implements OnInit {
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
 
     if (this.mediaData) {
-      this.mediaData.subscribe(media => {
+      this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(media => {
         if (media.length === 0) {
           return;
         }

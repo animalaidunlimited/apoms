@@ -24,8 +24,6 @@ INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubActio
 INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('4', 'STRelease', 'Arrived', 'releaseBeginDate', 'datetime-local', '2');
 INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('4', 'STRelease', 'Released', 'releaseEndDate', 'datetime-local', '3');
 INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('4', 'STRelease', 'Treated', 'visitEndDate', 'datetime-local', '4');
-INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('1', 'Rescue', 'Admitted', 'patientCallOutcomeId', 'select', '4');
-INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubAction`, `FormControlName`, `FormControlType`, `SortOrder`) VALUES ('1', 'Rescue', 'Admitted', 'inTreatmentAreaId', 'select', '5');
 
 
 
@@ -42,5 +40,3 @@ UPDATE AAU.DriverViewQuestions SET `Label` = 'Pickup date' WHERE (`QustionId` = 
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Release begin date' WHERE (`QustionId` = '10');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Release end date' WHERE (`QustionId` = '11');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Visit end date' WHERE (`QustionId` = '12');
-UPDATE AAU.DriverViewQuestions SET `Label` = 'Patient calloutcome' WHERE (`QustionId` = '13');
-UPDATE AAU.DriverViewQuestions SET `Label` = 'Treatment area' WHERE (`QustionId` = '14');

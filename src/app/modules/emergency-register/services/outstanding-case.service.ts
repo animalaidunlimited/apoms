@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject, combineLatest, interval, Observable, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, interval, Observable, Subject, timer } from 'rxjs';
 import { filter, map, switchMap, takeUntil} from 'rxjs/operators';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { FilterKeys } from '../components/outstanding-case-board/outstanding-case-board.component';
@@ -22,6 +22,11 @@ export class OutstandingCaseService {
   refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
   outstandingCases$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
   haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+  mapList$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
+
+  filteredList$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
+
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private rescueService: RescueDetailsService,
@@ -67,7 +72,7 @@ export class OutstandingCaseService {
 
   getOutstandingCasesByVehicleId(vehicleId: number | null) : Observable<(OutstandingAssignment | DriverAssignment)[]>{
 
-    return this.outstandingCases$.pipe(
+    return this.filteredList$.pipe(
 
       map(outstandingCases => outstandingCases.filter(outstandingCase =>
         vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
@@ -210,7 +215,7 @@ export class OutstandingCaseService {
         if(!timeout){
           setTimeout(() =>
 
-            this.outstandingCases$.subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseDetailsId, false, true))
+            this.outstandingCases$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseDetailsId, false, true))
 
           , 3500);
         }
@@ -231,9 +236,9 @@ export class OutstandingCaseService {
   }
 
 
-  filterCases(click$:Observable<any>, cases$:Observable<(OutstandingAssignment | DriverAssignment)[]>, filters:FilterKeys[], until$:Observable<any>){
+  filterCases(click$:Observable<any>, filters:FilterKeys[], until$:Observable<any>){
 
-    return combineLatest([click$, cases$]).pipe(
+    this.filteredList$ = combineLatest([click$, this.outstandingCases$]).pipe(
       takeUntil(until$),
       map(chipChangeObs => chipChangeObs[1]),
       map(outstandingCases => {
@@ -274,9 +279,10 @@ export class OutstandingCaseService {
           return outstandingCases;
 
         }
-
+ 
       })
     );
+
   }
 
   onSearchChange(searchValue:string ){
@@ -331,7 +337,7 @@ export class OutstandingCaseService {
 
     let currentValue:boolean;
 
-    this.autoRefresh.subscribe(value => {
+    this.autoRefresh.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value => {
       currentValue = value;
     });
 
