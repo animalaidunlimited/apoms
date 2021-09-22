@@ -68,14 +68,13 @@
 
 
     <div *ngFor="let ambulance of (ambulanceLocations$ | async)">
-        <!--<map-marker
+        <map-marker
         (mapClick)="openAmbulanceInfoWindow(ambulanceMarker, ambulance.actions  )"
         #ambulanceMarker="mapMarker"
         [position]="{lat: ambulance.vehicleLocation.latLng.lat, lng: ambulance.vehicleLocation.latLng.lng} || {lat:0, lng:0}"
         [options]="{icon: { url:'assets/icons/ambulance_van.png', anchor: iconAnchor, labelOrigin: iconLabelOrigin }, zIndex: 100,
-        label: ''}"
-        >
-        </map-marker>-->
+        label: ''}">
+        </map-marker>
 
     </div>
 

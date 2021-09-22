@@ -122,7 +122,7 @@
 
 <outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
 
-<div  fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
+<div fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
   <div class="swimlane">
     <h2  style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">

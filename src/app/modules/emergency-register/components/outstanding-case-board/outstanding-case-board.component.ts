@@ -2,7 +2,7 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Renderer2, ViewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { ThemePalette } from '@angular/material/core';
@@ -15,7 +15,6 @@ import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { EmergencyCode } from 'src/app/core/models/emergency-record';
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { SearchResponse } from 'src/app/core/models/responses';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { MessagingService } from '../../services/messaging.service';
@@ -61,7 +60,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   vehicleId$!: Observable<(number | null)[]>;
 
   ambulanceLocations$!:Observable<ActiveVehicleLocation[]>;
-
 
   outstandingCases$!:  Observable<(OutstandingAssignment | DriverAssignment)[]>;
 
@@ -124,7 +122,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   constructor(
     private outstandingCaseService: OutstandingCaseService,
-    private dialog: MatDialog,
     private locationService: LocationService,
     private fb: FormBuilder,
     private messagingService: MessagingService,

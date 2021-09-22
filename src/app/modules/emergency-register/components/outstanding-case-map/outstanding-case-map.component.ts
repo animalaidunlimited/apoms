@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Inject, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Optional } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Inject, AfterViewInit, ChangeDetectorRef, Optional } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { ActionPatient,  ActionGroup, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { ActionGroup, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
