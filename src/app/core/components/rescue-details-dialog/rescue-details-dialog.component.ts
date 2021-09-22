@@ -2,6 +2,8 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 interface DialogData {
     emergencyCaseId: number;
@@ -26,6 +28,7 @@ interface CanExitChange {
 export class RescueDetailsDialogComponent implements OnInit {
     result: UpdateResponse;
     canExit: FormGroup = new FormGroup({});
+    private ngUnsubscribe = new Subject();
 
   constructor(
     private fb:FormBuilder,
@@ -68,7 +71,7 @@ export class RescueDetailsDialogComponent implements OnInit {
       rescueDetailsUpdateComplete: [0]
     });
 
-    this.canExit.valueChanges.subscribe((values:CanExitChange) => {
+    this.canExit.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((values:CanExitChange) => {
 
       // TODO update this to handle any errors and display them to a toast.
       if(values.rescueDetailsUpdateComplete !== 0){

@@ -4,8 +4,8 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase, CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { debounceTime, map, share } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { debounceTime, map, share, takeUntil } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -21,6 +21,7 @@ export class CaseService extends APIService {
     emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
     offlineEmergencyResponse!: EmergencyResponse;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         http: HttpClient,
@@ -280,7 +281,7 @@ export class CaseService extends APIService {
 
     public getConnection() {
 
-        this.onlineStatus.connectionChanged.subscribe(async online=>{
+        this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async online=>{
 
             if(online) {
                 // Insert case from local storage to database.

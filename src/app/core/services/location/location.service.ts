@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { LatLngLiteral } from '../../models/driver-view';
 import { VehicleLocation, LocationPathSegment, PolylineOptions, VehicleLocationDetails, ActiveVehicleLocation } from '../../models/location';
 import { APIService } from '../http/api.service';
@@ -38,6 +38,7 @@ export class LocationService extends APIService {
   emptyLocationList:LocationPathSegment[] = [{
     vehicleId: 0,
     options: this.emptyOptions}];
+  private ngUnsubscribe = new Subject();
 
 
   constructor(
@@ -54,7 +55,7 @@ export class LocationService extends APIService {
     // Uncomment the below in order to start sending location updates
     this.getActiveVehicleLocations();
 
-    this.logLocation.subscribe(logLocation => {
+    this.logLocation.pipe(takeUntil(this.ngUnsubscribe)).subscribe(logLocation => {
 
       if(logLocation) {
         this.locationLogInterval = (setInterval(() => {this.postLocation();}, 30000));
@@ -149,7 +150,7 @@ export class LocationService extends APIService {
 
     const request = '/ActiveVehicleLocations';
 
-    this.getObservable(request).subscribe((response: ActiveVehicleLocation[]) => this.ambulanceLocations$.next(response));
+    this.getObservable(request).pipe(takeUntil(this.ngUnsubscribe)).subscribe((response: ActiveVehicleLocation[]) => this.ambulanceLocations$.next(response));
 
   }
 
@@ -176,7 +177,7 @@ export class LocationService extends APIService {
 
   addVehicleLocation(vehicleId : number) : void{
 
-    this.getVehicleLocation(vehicleId).subscribe(locationHistory => {
+    this.getVehicleLocation(vehicleId).pipe(takeUntil(this.ngUnsubscribe)).subscribe(locationHistory => {
 
       const currentHistory = this.locationList$?.value ? this.locationList$.value : [];
 

@@ -3,8 +3,8 @@ import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { LocalMediaItem, MediaItem, MediaItemReturnObject } from '../../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, of} from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, from, BehaviorSubject, of, Subject} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -33,6 +33,7 @@ interface ResizedImage{
 })
 
 export class MediaPasteService {
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -153,7 +154,7 @@ export class MediaPasteService {
 
             newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
 
-            newMediaItem.mediaItemId.subscribe(id => {
+            newMediaItem.mediaItemId.pipe(takeUntil(this.ngUnsubscribe)).subscribe(id => {
 
               returnObject.mediaItemId.next(id);
 
@@ -361,7 +362,7 @@ export class MediaPasteService {
       this.getVideoDimension(uploadImage);
 
       // Get the dimensions of the image
-      mediaObservable.subscribe((image) => {
+      mediaObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe((image) => {
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;
@@ -479,7 +480,7 @@ export class MediaPasteService {
       throw new Error('No local URL provided');
     }
 
-    this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
+    this.storage.ref(localURLString).getDownloadURL().pipe(takeUntil(this.ngUnsubscribe)).subscribe(url => {
       remoteURL = url;
     });
 

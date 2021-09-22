@@ -5,14 +5,21 @@
 
     </mat-form-field>
 
+    <mat-slide-toggle (change) = 'showInActive = !showInActive' class="mat-slider">Include inactive vehicles</mat-slide-toggle>
+
 </form>
 
 <div style="margin-bottom: 60px;">
 
     <div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container" fxLayout="row" fxLayoutAlign="center center">
 
-        <app-vehicle-shift class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
+        
+        <app-vehicle-shift *ngIf='vehicle.vehicleStatusId == 1' class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
 
+        
+        <app-vehicle-shift *ngIf='vehicle.vehicleStatusId == 2 && showInActive' class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>
+
+        
     </div>
 </div>
 

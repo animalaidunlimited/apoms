@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { NavRoute, NavRouteService } from '../../../nav-routing';
 
 export class Page {
@@ -25,6 +26,7 @@ export class NavigationService {
 
     public isOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth < 840 ? false : true);
     public isSearchClicked: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private ngUnsubscribe = new Subject();
 
     constructor(private navRouteService: NavRouteService) {
         this.navigationItems = navRouteService.getNavRoutes();
@@ -36,7 +38,7 @@ export class NavigationService {
 
     public selectNavigationItemByPath(path: string) {
         // tslint:disable-next-line: deprecation
-        this.navigationItems.subscribe(nav=>
+        this.navigationItems.pipe(takeUntil(this.ngUnsubscribe)).subscribe(nav=>
             this.selectedNavigationItem = nav
             .reduce((flatList:NavRoute[], navItem:NavRoute) => {
                 if (navItem.groupedNavRoutes) {
@@ -95,7 +97,7 @@ export class NavigationService {
         let haveRun = false;
 
         // tslint:disable-next-line: deprecation
-        this.isOpen.subscribe(currentValue => {
+        this.isOpen.pipe(takeUntil(this.ngUnsubscribe)).subscribe(currentValue => {
 
             if(haveRun){
                 return;

@@ -28,7 +28,6 @@ INSERT INTO AAU.DriverViewQuestions (`ActionStatusId`, `ActionStatus`, `SubActio
 
 
 
-
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Ambulance arrival time' WHERE (`QustionId` = '1');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Rescue time' WHERE (`QustionId` = '2');
 UPDATE AAU.DriverViewQuestions SET `Label` = 'Admission Time' WHERE (`QustionId` = '3');

@@ -167,11 +167,11 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
       this.populateColumnList();
     });
 
-    this.ts.getTreatmentList().subscribe(treatmentListObject => {
+    this.ts.getTreatmentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(treatmentListObject => {
 
       this.treatmentListForm = treatmentListObject;
 
-      this.treatmentListForm.addControl("filterValue",new FormControl(''));
+      this.treatmentListForm.addControl('filterValue',new FormControl(''));
 
       this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
@@ -345,16 +345,16 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
 
   applyFilter() : void {
 
-    //Get the incoming value from the filter input
+    // Get the incoming value from the filter input
     const filterValue = this.treatmentListForm.get('filterValue')?.value;
 
-    //Get the value from the accepted list (AbstractControl[]), then filter it down to the matching values
+    // Get the value from the accepted list (AbstractControl[]), then filter it down to the matching values
     const filteredArray = this.accepted.value
                                         .filter(patient =>
                                             (patient.get('Tag number')?.value as string).toLowerCase().includes(filterValue.toLowerCase())
                                         );
 
-    //Emit the newly filtered list
+    // Emit the newly filtered list
     this.acceptedFiltered.next(filteredArray);
 
   }
@@ -387,7 +387,7 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
         },
     });
 
-     dialogRef.afterClosed().subscribe(result => {
+     dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
 
       this.startSave(row);
 
@@ -448,7 +448,7 @@ quickUpdate(row:AbstractControl) {
   });
 
 
-  dialogRef.afterClosed().subscribe((result:AbstractControl) => {
+  dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe((result:AbstractControl) => {
 
     if (result) {
 

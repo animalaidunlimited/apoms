@@ -146,13 +146,13 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     this.outStandingCaseService.initialise();
 
 
-    this.receivedVehicleList$ = this.outstandingCaseService.filterCases(
+    this.outstandingCaseService.filterCases(
       this.matChipObs,
-      this.outstandingCaseService.getOutstandingCasesByVehicleId(null),
       this.filterKeysArray,
       this.ngUnsubscribe
     );
 
+    this.receivedVehicleList$ =  this.outstandingCaseService.getOutstandingCasesByVehicleId(null);
 
     this.outstandingCases$ = this.outstandingCaseService.outstandingCases$.pipe(
       map(outstandingCases => outstandingCases.filter(outstandingCase => outstandingCase.rescueAmbulanceId !== null))

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
@@ -24,6 +24,7 @@ export class VehicleShiftComponent implements OnInit {
   hourRange!: HourRange;
 
   shifts$!: Observable<VehicleShift[]>;
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private vehicleService: VehicleService,
@@ -110,7 +111,7 @@ export class VehicleShiftComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed()
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.vehicleService.removeShift(shift);

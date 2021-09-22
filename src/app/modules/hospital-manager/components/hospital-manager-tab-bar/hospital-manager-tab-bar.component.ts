@@ -42,7 +42,7 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
     });
 
 
-        this.navigationService.isSearchClicked.subscribe((clicked)=>
+        this.navigationService.isSearchClicked.pipe(takeUntil(this.ngUnsubscribe)).subscribe((clicked)=>
             {
                 if(clicked)
                 {
@@ -53,7 +53,7 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
         this.addEmptyTab('Search');
 
         // Watch for any new tabs being opened from other areas of the application.
-        this.tabBarService.tabCreator.subscribe(newTab => {
+        this.tabBarService.tabCreator.pipe(takeUntil(this.ngUnsubscribe)).subscribe(newTab => {
 
             newTab.forEach(elem => this.addTab(elem));
         });

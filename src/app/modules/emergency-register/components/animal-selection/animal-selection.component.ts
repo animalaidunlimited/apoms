@@ -248,7 +248,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
         const patientIdControl = patient?.get('patientId');
 
-        patient.get('tagNumber')?.valueChanges.subscribe(tagVal=> {
+        patient.get('tagNumber')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(tagVal=> {
 
             if(tagVal && patientIdControl) {
                 patient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
@@ -260,7 +260,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
         });
 
 
-        patient.valueChanges.subscribe((patientVal)=> {
+        patient.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((patientVal)=> {
 
             const controls = [
                                 { updateIfSelfAdmission: false, controlName: 'rescueDetails.rescueTime'},
@@ -379,7 +379,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
      */
     setChildOutcomeAsParentPatient(patients: FormArray) {
 
-        patients.controls[0].valueChanges.subscribe(val=> {
+        patients.controls[0].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
             if(val.callOutcome.CallOutcome) {
 

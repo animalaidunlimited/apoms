@@ -2,8 +2,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
@@ -26,6 +26,7 @@ export class VehicleService  extends APIService {
 
   currentVehicleShifts: VehicleShift[] = [];
   vehicleShifts:BehaviorSubject<VehicleShift[]> = new BehaviorSubject<VehicleShift[]>([]);
+  private ngUnsubscribe = new Subject();
 
   constructor(
     public http: HttpClient,
@@ -121,7 +122,7 @@ export class VehicleService  extends APIService {
     shiftDetails.vehicleStaff = shiftDetails.vehicleStaff.filter(staff => staff.userId);
 
     // We need to populate the user details for use in the shift bars
-    this.dropdowns.getRescuers().subscribe(staff => {
+    this.dropdowns.getRescuers().pipe(takeUntil(this.ngUnsubscribe)).subscribe(staff => {
 
       shiftDetails.vehicleStaff.forEach(vehicleStaff => {
 

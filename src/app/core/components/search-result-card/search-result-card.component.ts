@@ -11,6 +11,8 @@ import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/
 import { MediaDialogComponent } from '../media/media-dialog/media-dialog.component';
 import { CallerDetails, CaseToOpen } from '../../models/emergency-record';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -26,6 +28,7 @@ export class SearchResultCardComponent implements OnInit {
   @Input() source = "";
 
   callerObject: CallerDetails[] | undefined;
+  private ngUnsubscribe =  new Subject();
 
   constructor(
         public dialog: MatDialog,
@@ -94,7 +97,7 @@ openSurgeryDialog(
           animalType,
       },
   });
-  dialogRef.afterClosed().subscribe(() => {});
+  dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {});
 }
 
 addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalType:string) {
@@ -139,7 +142,7 @@ openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined, patien
     }
 });
 
-dialogRef.afterClosed().subscribe(() => {}).unsubscribe();
+dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {}).unsubscribe();
 
 
 }

@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ReleaseManager, User } from 'src/app/core/models/user';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -67,6 +67,7 @@ export class ReleaseDetailsComponent implements OnInit {
   releaseManagers: ReleaseManager[] = [];
 
   username = '';
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -110,11 +111,11 @@ export class ReleaseDetailsComponent implements OnInit {
 
     });
 
-    this.recordForm.valueChanges.subscribe(val=> {
+    this.recordForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
       this.formValidity.emit(this.recordForm.invalid);
     });
 
-    this.recordForm.get('IsStreetTreatRelease')?.valueChanges.subscribe(value=> {
+    this.recordForm.get('IsStreetTreatRelease')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value=> {
       if(value) {
         this.streetTreatReleaseTrue();
         this.disableStreetTreat = true;

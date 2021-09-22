@@ -164,7 +164,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		}, 1);
 
 
-		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.subscribe(date=> {
+		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(date=> {
 			if(date) {
 				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
                 this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);

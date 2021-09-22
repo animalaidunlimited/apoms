@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, UpdatePatientDetails, PriorityObject } from 'src/app/core/models/patients';
@@ -25,6 +25,7 @@ export class PatientService extends APIService {
     mediaItemObject! : MediaItem;
 
     returnMediaItem : BehaviorSubject<MediaItem[]> = new BehaviorSubject<MediaItem[]>([]);
+    private ngUnsubscribe = new Subject();
 
     constructor(
         http: HttpClient,
@@ -306,7 +307,7 @@ export class PatientService extends APIService {
         // tslint:disable-next-line: deprecation
         this.getObservable(request).pipe(
             map(mediaItems => mediaItems?.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
-        ).subscribe((media : MediaResponse[])=>{
+        ).pipe(takeUntil(this.ngUnsubscribe)).subscribe((media : MediaResponse[])=>{
 
             if(!media){
                 return;

@@ -1,12 +1,13 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CdkDragDrop, CdkDragEnd, moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable, Subject } from 'rxjs';
 import { PaperDimensions, PrintElement, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { PrintTemplateService } from '../services/print-template.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class PrintTemplatesPageComponent implements OnInit {
   templates:Observable<PrintTemplate[]>;
   paperDimensions:Observable<PaperDimensions[]>;
   printableElements:Observable<PrintElement[]>;
+  private ngUnsubscribe = new Subject();
 
 
   constructor(
@@ -81,7 +83,7 @@ export class PrintTemplatesPageComponent implements OnInit {
     this.setupFormWatchers();
 
     // Unsubscribe from watching resizing the print elements.
-    this.mouseup.subscribe(() => { this.moveUnsubscribe();});
+    this.mouseup.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => { this.moveUnsubscribe();});
   }
 
   setupFormWatchers(){
@@ -90,7 +92,7 @@ export class PrintTemplatesPageComponent implements OnInit {
     this.backgroundImage = this.printPage.get('backgroundImageUrl')?.value;
     this.changeOrientation(this.printPage.get('orientation')?.value);
 
-    this.printPage?.valueChanges.subscribe(() => {
+    this.printPage?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.changeOrientation(this.printPage.get('orientation')?.value);
     });
 
@@ -148,7 +150,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
       const data = event.previousContainer.data as unknown as Observable<PrintElement[]>;
 
-      data.subscribe(elementArray => {
+      data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(elementArray => {
 
         const clone:PrintElement = elementArray[event.previousIndex] as PrintElement;
 
@@ -220,7 +222,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
     this.moveUnsubscribe();
     // Now get the mouse current location
-    this.currentSubscription =  this.mousemove.subscribe(($moveEvent:MouseEvent) => {
+    this.currentSubscription =  this.mousemove.pipe(takeUntil(this.ngUnsubscribe)).subscribe(($moveEvent:MouseEvent) => {
 
       if(width?.value + $moveEvent.movementX >= this.minWidth && !($moveEvent.x < $existingEvent.x && width?.value === this.minWidth)) {
 
@@ -244,7 +246,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
     this.moveUnsubscribe();
 
-            this.currentSubscription = this.mousemove.subscribe(($moveEvent:MouseEvent) => {
+            this.currentSubscription = this.mousemove.pipe(takeUntil(this.ngUnsubscribe)).subscribe(($moveEvent:MouseEvent) => {
 
             if(width?.value + $moveEvent.movementX >= this.minWidth
               && !($moveEvent.x < $existingEvent.x && width?.value === this.minWidth)) {
@@ -263,7 +265,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
     this.moveUnsubscribe();
 
-        this.currentSubscription = this.mousemove.subscribe(($moveEvent:MouseEvent) => {
+        this.currentSubscription = this.mousemove.pipe(takeUntil(this.ngUnsubscribe)).subscribe(($moveEvent:MouseEvent) => {
 
           if(height?.value + $moveEvent.movementY >= this.minHeight
             && !($moveEvent.y < $existingEvent.y && height?.value === this.minHeight)) {

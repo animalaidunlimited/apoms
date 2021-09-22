@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { PrintPatient, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { Router } from '@angular/router';
 import { PatientService } from '../../../core/services/patient/patient.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 
 @Injectable({
@@ -18,6 +18,7 @@ export class PrintTemplateService extends APIService {
   public isPrinting:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
 
   public printTemplates:BehaviorSubject<PrintTemplate[]> = new BehaviorSubject<PrintTemplate[]>([]);
+  private ngUnsubscribe = new Subject();
 
   constructor(
     http: HttpClient,
@@ -37,7 +38,7 @@ export class PrintTemplateService extends APIService {
   public initialisePrintTemplates(){
 
     // TODO type this properly
-    this.getObservable('').subscribe((templates:any[]) => {
+    this.getObservable('').pipe(takeUntil(this.ngUnsubscribe)).subscribe((templates:any[]) => {
       if(templates){
         templates.forEach(template => {
 
@@ -72,7 +73,7 @@ export class PrintTemplateService extends APIService {
 
     let haveRun = false;
 
-    const printTemplateSubscription = this.printTemplates.subscribe(templates => {
+    const printTemplateSubscription = this.printTemplates.pipe(takeUntil(this.ngUnsubscribe)).subscribe(templates => {
 
       if(haveRun){
         return;
@@ -100,7 +101,7 @@ export class PrintTemplateService extends APIService {
 
     let haveRun = false;
 
-    const printTemplateSubscription = this.printTemplates.subscribe(templates => {
+    const printTemplateSubscription = this.printTemplates.pipe(takeUntil(this.ngUnsubscribe)).subscribe(templates => {
 
       if(haveRun){
         return;
@@ -139,10 +140,10 @@ export class PrintTemplateService extends APIService {
   public printPatientDocument(printTemplateId: number, patientId: number) {
 
 
-    this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
+    this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((printTemplate:PrintTemplate) => {
 
       // Get all of the patient details
-      this.patientService.getPrintPatientByPatientId(patientId).subscribe((printPatient:PrintPatient) => {
+      this.patientService.getPrintPatientByPatientId(patientId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((printPatient:PrintPatient) => {
 
         const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 
@@ -179,13 +180,13 @@ export class PrintTemplateService extends APIService {
   public printEmergencyCaseDocument(printTemplateId: number, emergencyCaseId: number){
 
     // Get all of the patient details by Emergency Case Id
-      this.patientService.getPrintPatientsByEmergencyCaseId(emergencyCaseId).subscribe((resultPatient:PrintPatient[]) => {
+      this.patientService.getPrintPatientsByEmergencyCaseId(emergencyCaseId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((resultPatient:PrintPatient[]) => {
 
         const templates:PrintTemplate[] = [];
 
         resultPatient.forEach(printPatient => {
 
-          this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).subscribe((printTemplate:PrintTemplate) => {
+          this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((printTemplate:PrintTemplate) => {
 
             const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 

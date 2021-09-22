@@ -29,7 +29,9 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   ambulanceLocations$!:Observable<any[]>;
 
-  center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
+  center!: google.maps.LatLngLiteral;
+
+  // center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
   iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
@@ -39,7 +41,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
   options: google.maps.MapOptions = {};
 
-  outstandingCases$!: BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>;
+  outstandingCases$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
 
   rescues: any = [];
 
@@ -53,7 +55,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
     public cdr: ChangeDetectorRef,
     @Optional() @Inject(MAT_DIALOG_DATA) public vehicleId: number) {
 
-      this.outstandingCases$ =  this.outstandingCases.outstandingCases$;
+
       this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
       this.locationList$ = this.locationService.locationList$;
 
@@ -62,6 +64,7 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   ngOnInit(): void {
 
 
+    this.outstandingCases$ =  this.outstandingCases.filteredList$;
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
@@ -96,14 +99,16 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngAfterViewInit(){
-    this.ambulanceLocations$.subscribe(ambulanceLocation => {
+    this.ambulanceLocations$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(ambulanceLocation => {
       if(this.vehicleId)
       {
-        this.fitMaps( new google.maps.LatLngBounds(new google.maps.LatLng(ambulanceLocation[0].vehicleLocation.latLng.lat, ambulanceLocation[0].vehicleLocation.latLng.lng)));
-        this.googlemap.zoomChanged.subscribe(() => {
-          this.zoom = 15;
-          this.cdr.detectChanges();
-        });
+
+        this.center = { lat: ambulanceLocation[0].vehicleLocation.latLng.lat , lng: ambulanceLocation[0].vehicleLocation.latLng.lng };
+        // this.fitMaps( new google.maps.LatLngBounds(new google.maps.LatLng(ambulanceLocation[0].vehicleLocation.latLng.lat, ambulanceLocation[0].vehicleLocation.latLng.lng)));
+        // this.googlemap.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+        //   this.zoom = 15;
+        //   this.cdr.detectChanges();
+        // });
       }
     });
 
@@ -112,13 +117,13 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterView
 
 
 
-  fitMaps(latlngbounds: google.maps.LatLngBounds){
+  // fitMaps(latlngbounds: google.maps.LatLngBounds){
 
-    this.googlemap.fitBounds(latlngbounds);
-    this.googlemap.panToBounds(latlngbounds);
+  //   this.googlemap.fitBounds(latlngbounds);
+  //   this.googlemap.panToBounds(latlngbounds);
 
 
-  }
+  // }
 
   openAmbulanceInfoWindow(marker: MapMarker, actions?: ActionGroup[]){
 

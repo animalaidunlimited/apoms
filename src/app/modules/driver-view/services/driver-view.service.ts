@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, interval, Subject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { timer } from 'rxjs';
@@ -21,6 +21,7 @@ export class DriverViewService extends APIService {
   driverViewQuestionList: any;
   driverDataSaveErrorResponse: SuccessOnlyResponse[] = [];
   updateAssignmentCount = 0;
+  private ngUnsubscribe = new Subject();
 
 
   constructor(public http: HttpClient,
@@ -28,7 +29,7 @@ export class DriverViewService extends APIService {
     private snackBar: SnackbarService) {
     super(http);
 
-    this.onlineStatus.connectionChanged.subscribe(connection=> {
+    this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connection=> {
 
       JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData'))))?.forEach((item: DriverAssignment)=> {
         if(connection && item.isUpdated) {
@@ -52,7 +53,7 @@ export class DriverViewService extends APIService {
 
     const request = '?assignmentDate='+ driverViewDate;
 
-    return this.getObservable(request).subscribe(response=> {
+    return this.getObservable(request).pipe(takeUntil(this.ngUnsubscribe)).subscribe(response=> {
 
       if(response){
 
@@ -85,7 +86,7 @@ export class DriverViewService extends APIService {
 
     const request = '?getDriverViewQuestions';
 
-    return this.getObservable(request).subscribe(response=> {
+    return this.getObservable(request).pipe(takeUntil(this.ngUnsubscribe)).subscribe(response=> {
       localStorage.setItem('driverViewQuestions', JSON.stringify(response));
 
       this.driverViewQuestionList = JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewQuestions'))));
@@ -266,8 +267,6 @@ export class DriverViewService extends APIService {
 
 
   public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
-
-    console.log(updatedRecord);
 
     const updatedRecordData = this.getAssignmentStatus(updatedRecord);
 
