@@ -227,6 +227,9 @@ export class LocationService extends APIService {
 
   getColourForSpeed(speed: number) : string | undefined{
 
+    // Speed is currently measured in m/s so it needs to be converted to km/h
+    speed = speed * 60 * 60 / 1000;
+
     const currentSpeedBand = this.speedColours.find(band => speed < band.maxSpeed);
 
     return currentSpeedBand?.colour;
