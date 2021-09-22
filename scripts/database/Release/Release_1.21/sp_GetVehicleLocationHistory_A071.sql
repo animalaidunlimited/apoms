@@ -17,7 +17,7 @@ Purpose: Used to retrieve location history for a particular vehicle.
 DECLARE vOrganisationId INT;
 SET vOrganisationId = 1;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_UserName LIMIT 1;
 
 WITH LocationHistoryCTE AS
 (
