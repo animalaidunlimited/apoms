@@ -78,8 +78,6 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.printService.initialisePrintTemplates();
-
     this.setupFormWatchers();
 
     // Unsubscribe from watching resizing the print elements.

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { LatLngLiteral } from '../../models/driver-view';
 import { VehicleLocation, LocationPathSegment, PolylineOptions, VehicleLocationDetails, ActiveVehicleLocation } from '../../models/location';
 import { APIService } from '../http/api.service';
+import { SnackbarService } from '../snackbar/snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,14 +40,16 @@ export class LocationService extends APIService {
     options: this.emptyOptions}];
 
 
-  constructor(http: HttpClient) {
+  constructor(
+    http: HttpClient,
+    private snack : SnackbarService
+    ) {
     super(http);
   }
 
   initialise(){
 
     this.locationList$ = new BehaviorSubject<LocationPathSegment[]>(this.emptyLocationList);
-
 
     // Uncomment the below in order to start sending location updates
     this.getActiveVehicleLocations();
@@ -128,6 +131,8 @@ export class LocationService extends APIService {
           accuracy: position.coords.accuracy,
         };
 
+        this.snack.successSnackBar(`lat: ${position.coords.latitude}, lng: ${position.coords.longitude}`,"OK")
+
         await this.postSubEndpoint('LogVehicleLocation', vehicleLocation);
 
       });
@@ -135,6 +140,8 @@ export class LocationService extends APIService {
       this.logLocation.next(false);
       alert('Geolocation is not supported by this browser.');
     }
+
+
 
   }
 

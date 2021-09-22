@@ -47,9 +47,7 @@ export class ReportingPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.printService.initialisePrintTemplates();
         this.initialiseReporting();
-
     }
 
     initialiseReporting() {

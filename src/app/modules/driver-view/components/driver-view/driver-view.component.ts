@@ -41,8 +41,8 @@ export class DriverViewComponent implements OnInit {
 
     // Start logging the location of this vehicle, but only if we're on mobile.
     if(this.platform.ANDROID || this.platform.IOS){
+      
       this.locationService.beginLoggingVehicleLocation();
-
     }
 
     this.driverViewDetails = this.fb.group({

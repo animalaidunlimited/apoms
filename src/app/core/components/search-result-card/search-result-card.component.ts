@@ -22,7 +22,7 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 export class SearchResultCardComponent implements OnInit {
 
   @Input() record: SearchResponse | undefined;
- 
+
   @Input() source = "";
 
   callerObject: CallerDetails[] | undefined;
@@ -39,8 +39,6 @@ export class SearchResultCardComponent implements OnInit {
   ngOnInit(): void {
 
     this.callerObject = this.record?.callerDetails;
-
-    this.printService.initialisePrintTemplates();
   }
 
   openCase(caseSearchResult: SearchResponse) {

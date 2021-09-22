@@ -80,8 +80,8 @@ PatientsCTE AS
 (
     SELECT DISTINCT
 		p.EmergencyCaseId,
-        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
-        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        p.PatientCallOutcomeId,
+        p.PatientId, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -138,7 +138,8 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
-    IFNULL(rd.PatientId, p.EmergencyCaseId)
+		p.PatientCallOutcomeId,
+        p.PatientId
 )
 ,
 DriverViewCTE AS
