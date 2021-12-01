@@ -1,5 +1,8 @@
 DELIMITER !!
 
+-- CALL AAU.sp_GetRescueDetailsByEmergencyCaseId(13828)
+
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetRescueDetailsByEmergencyCaseId!!
 
 DELIMITER $$
@@ -81,8 +84,7 @@ LEFT JOIN
 	) vdt ON ec.AmbulanceAssignmentTime >= vdt.StartDate
     AND CURDATE() <= IFNULL(vdt.EndDate, CURDATE())
 	AND vdt.VehicleId = ec.AssignedVehicleId
-WHERE ec.EmergencyCaseId = prm_EmergencyCaseId
-GROUP BY ec.EmergencyCaseId;
+WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
 
 END$$
 

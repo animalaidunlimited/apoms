@@ -5,17 +5,17 @@
         [gallery]="galleryImages.slice(0,3)"
         [mediaPatientItems]="mediaData">
     </media-thumbnails>
-    
+
 </div>
 
 <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center" *ngIf="displayImagesAndButtons">
 
     <button type='button' color="primary" mat-mini-fab>
-        <mat-icon (click)="openMediaDialog()">add_a_photo</mat-icon>
+        <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>
     </button>
 
     <button type='button' color="primary" mat-mini-fab>
-        <mat-icon (click)="openGalleryDialog($event)">collections</mat-icon>
+        <mat-icon (click)="openGalleryDialog($event)" style="cursor: pointer;">collections</mat-icon>
     </button>
 
 </div>
@@ -23,11 +23,11 @@
 <div fxLayout="row" fxLayoutGap='5px' fxLayoutAlign="end center" *ngIf="!displayImagesAndButtons">
 
     <div>
-        <mat-icon (click)="openMediaDialog()">add_a_photo</mat-icon>
+        <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>
     </div>
 
     <div>
-        <mat-icon (click)="openGalleryDialog($event)">collections</mat-icon>
+        <mat-icon (click)="openGalleryDialog($event)" style="cursor: pointer;">collections</mat-icon>
     </div>
 
 </div>

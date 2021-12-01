@@ -3,11 +3,23 @@
 <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
 <div>
-    <div *ngIf="noResults" class="result-count">No results</div>
+    <div fxLayout="column" fxLayoutAlign="center center" style="width: 100%;" *ngIf="noResults">
+
+        <mat-icon class="no-result-icon">search</mat-icon>
+        <div class="no-result-primary-text">No results found</div>
+        <div class="no-result-secondary-text">No results match these search criteria.</div>
+        <div class="no-result-secondary-text">Please try another search</div>
+    </div>
+
+
+
+
 
     <div *ngIf="(searchResults$ | async) as searchResults;">
 
-        <div *ngIf="searchResultArray?.length !== 0;" class="result-count">{{searchResultArray?.length}} results</div>
+        <div *ngIf="searchResultArray?.length !== 0;" class="result-count">
+            {{searchResultArray?.length}} result<span *ngIf="(searchResultArray?.length || 0) > 1">s</span>
+        </div>
 
 
 

@@ -7,7 +7,8 @@
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
 
     <!-- Animal Dropdown-->
-    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;" fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
+    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;"
+    fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher" (keydown.Tab)="isSpeciesBlank($event);false;"
@@ -35,7 +36,8 @@
         </mat-chip>
 
         <input placeholder="Main problem(s)" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
-          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)" (keydown.Shift.Tab)="focusAnimalType($event)">
+          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)"
+          (keydown.Shift.Tab)="focusAnimalType($event)">
 
       </mat-chip-list>
 

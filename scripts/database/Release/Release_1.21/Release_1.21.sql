@@ -1259,8 +1259,7 @@ LEFT JOIN
 	) vdt ON ec.AmbulanceAssignmentTime >= vdt.StartDate
     AND CURDATE() <= IFNULL(vdt.EndDate, CURDATE())
 	AND vdt.VehicleId = ec.AssignedVehicleId
-WHERE ec.EmergencyCaseId = prm_EmergencyCaseId
-GROUP BY ec.EmergencyCaseId;
+WHERE ec.EmergencyCaseId = prm_EmergencyCaseId;
 
 END$$
 
