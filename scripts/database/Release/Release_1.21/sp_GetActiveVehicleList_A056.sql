@@ -41,8 +41,8 @@ JSON_OBJECT(
 "altitudeAccuracy", vl.AltitudeAccuracy,
 "latLng",
 JSON_MERGE_PRESERVE(
-JSON_OBJECT("lat", vl.Latitude),
-JSON_OBJECT("lng", vl.Longitude))) AS `vehicleLocation`
+JSON_OBJECT("lat", IFNULL(vl.Latitude, 0.0)),
+JSON_OBJECT("lng", IFNULL(vl.Longitude, 0.0)))) AS `vehicleLocation`
 FROM AAU.Vehicle v
 LEFT JOIN
 (

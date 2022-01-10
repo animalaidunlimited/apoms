@@ -14,8 +14,8 @@
             <img [src]="vehicleDetail.vehicleImage" />
           </div> -->
           <div class="vehicleDescription" fxLayout="row">
-            <div class="vehicleNumber">
-              <p (click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
+            <div >
+              <p class="vehicleNumber"(click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
               <div class="licensePlate" @fadeAnimation fxLayout="row" *ngIf="showPlate">
                 <div class="licensePlateBadge">
                   <div class="silver"></div>

@@ -11,16 +11,15 @@ import { LocationDetailsModule } from 'src/app/core/components/location-details/
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
-import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { MediaCardComponent } from 'src/app/core/components/media/media-card/media-card.component';
 import { PatientVisitDetailsModule} from 'src/app/core/components/patient-visit-details/patient-visit-details.module';
 import { AnimalSelectionModule } from '../animal-selection/animal-selection.module';
+import { MediaDialogModule } from 'src/app/core/components/media/media-dialog/media-dialog.module';
 
 @NgModule({
     declarations: [
         EmergencyRecordComponent,
         TagNumberDialog,
-        MediaDialogComponent,
         MediaCardComponent,
         EmergencyRecordCommentDialogComponent
     ],
@@ -35,7 +34,8 @@ import { AnimalSelectionModule } from '../animal-selection/animal-selection.modu
         EmergencyDetailsModule,
         EmergencyCaseOutcomeModule,
         PatientVisitDetailsModule,
-        AnimalSelectionModule
+        AnimalSelectionModule,
+        MediaDialogModule
     ],
     exports: [EmergencyRecordComponent,AnimalSelectionModule],
 })
