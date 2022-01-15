@@ -8,9 +8,7 @@
             <mat-label>Date</mat-label>
             <input matInput type="datetime-local" formControlName="assignmentDate" name = "AssignmentDate">
         </mat-form-field> -->
-        <div>
-            {{platform.ANDROID || platform.IOS}}
-        </div>
+
 
         <div  class="timer"
         *ngIf="timer$ | async as timer"
@@ -24,25 +22,23 @@
    </div>
 
     <div *ngFor= "let status of states | async">
-        <app-driver-view-assignment [actionStatus] = "status" [showCompleteFlag]="showComplete">
-
-        </app-driver-view-assignment>
+        <app-driver-view-assignment [actionStatus] = "status" [showCompleteFlag]="showComplete"></app-driver-view-assignment>
     </div>
 
     <mat-toolbar-row *ngIf="!showComplete" class="horizontalTab">
 
         <div fxLayout='column' class="iconDiv">
             <a href="+918769184667" style="color: #607d8b;">
-                <mat-icon aria-label="Complete" style="font-size: 28px;">headset_mic</mat-icon>
+                <mat-icon aria-label="Complete" style="font-size: 28px; cursor:pointer;">headset_mic</mat-icon>
             </a>
             <p class="iconTextCallDesk">Call desk</p>
         </div>
         <div (click)="openMapComponent()" fxLayout='column' class="iconDiv">
-            <mat-icon aria-label="Complete" style="font-size: 30px;">location_on</mat-icon>
+            <mat-icon aria-label="Complete" style="font-size: 30px; cursor:pointer;">location_on</mat-icon>
             <p class="iconText">Map</p>
         </div>
         <div fxLayout='column' class="iconDiv" (click)='showCompleteList()'>
-            <mat-icon aria-label="Complete" color="primary" style="font-size: 30px;">check_circle</mat-icon>
+            <mat-icon aria-label="Complete" color="primary" style="font-size: 30px; cursor:pointer;">check_circle</mat-icon>
             <p class="iconText">Complete</p>
         </div>
 
@@ -50,7 +46,7 @@
 
     <mat-toolbar-row *ngIf="showComplete" class="horizontalTab">
         <div (click)="showCompleteList()" fxLayout='column' class="backIconDiv">
-            <mat-icon aria-label="Complete" style="font-size: 30px;">arrow_back</mat-icon>
+            <mat-icon aria-label="Complete" style="font-size: 30px; cursor:pointer;">arrow_back</mat-icon>
             <p class="iconText">Back</p>
         </div>
     </mat-toolbar-row>

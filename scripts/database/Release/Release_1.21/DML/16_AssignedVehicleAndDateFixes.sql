@@ -519,7 +519,7 @@ CREATE Table VehicleShiftData
 LIKE
 VehicleShiftTemp;
 
-INSERT INTO VehicleShiftData
+INSERT INTO AAU.VehicleShiftData
 SELECT * FROM VehicleShiftTemp;
 
 -- DROP TABLE VehicleShiftData;

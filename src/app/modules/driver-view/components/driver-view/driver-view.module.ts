@@ -14,7 +14,6 @@ import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/
 import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
 import { CaseLocationComponent } from '../case-location/case-location.component';
 import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-select-formedia-dialog/patient-select-formedia-dialog.component';
-import { PatientVisitDetailsComponent } from 'src/app/core/components/patient-visit-details/patient-visit-details.component';
 import { PatientVisitDetailsModule } from 'src/app/core/components/patient-visit-details/patient-visit-details.module';
 
 
@@ -33,7 +32,7 @@ import { PatientVisitDetailsModule } from 'src/app/core/components/patient-visit
     CommonModule,
     DriverViewRoutingModule,
     MaterialModule,
-    CallerDetailsModule, 
+    CallerDetailsModule,
     GoogleMapsModule,
     AnimalSelectionModule,
     PatientVisitDetailsModule

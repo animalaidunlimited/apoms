@@ -59,7 +59,7 @@
             <div *ngFor = "let value of patientCountData">
                 <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center" *ngIf="value.area != 'Total'">
 
-                    <div fxFlex class="area">{{value.area}}</div>
+                    <div fxFlex class="area" (click)="openTreatmentList(value.area)">{{value.area}}</div>
                     <div fxFlex="15" class="counts">{{value.infants}} / {{value.adults}}</div>
                     <div fxFlex="25" class="counts"><span style="color:green">{{value.lowPriority}}</span> / <span style="color:gold">{{value.normalPriority}}</span> / <span style="color:red">{{value.highPriority}}</span></div>
                     <div fxFlex="7" class="area">{{value.count}}</div>

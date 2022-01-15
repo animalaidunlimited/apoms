@@ -1,8 +1,8 @@
 <div fxLayout='row' fxLayoutGap='30px'>
 
     <div *ngIf = "displayIconsDiv" fxLayout='column' class="displayIconDiv">
-        
-        <div (click)="openCallerDetailsDialog(driverViewAssignment)" class="iconDivWrapper" fxLayout='row' fxLayoutGap='7px' class="iconTextDiv">
+
+        <div (click)="openCallerDetailsDialog(driverViewAssignment)" class="iconDivWrapper" fxLayout='row' fxLayoutGap='7px'>
             <img src="assets/icons/callButton.svg" class="imageIcons" alt="call_Button">
             <p>Call complainer</p>
         </div>
@@ -17,7 +17,7 @@
 
     </div>
 
-    <div style="padding-top: 1em;" (click)="displayIconsDiv = !displayIconsDiv">
+    <div style="padding-top: 1em; cursor: pointer;" (click)="displayIconsDiv = !displayIconsDiv">
         <mat-icon>menu</mat-icon>
     </div>
 

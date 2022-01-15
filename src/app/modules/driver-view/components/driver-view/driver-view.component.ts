@@ -8,7 +8,6 @@ import { User } from 'src/app/core/models/user';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
-import { OutstandingCaseService } from 'src/app/modules/emergency-register/services/outstanding-case.service';
 import { Platform } from '@angular/cdk/platform';
 
 @Component({
@@ -42,7 +41,7 @@ export class DriverViewComponent implements OnInit {
 
     // Start logging the location of this vehicle, but only if we're on mobile.
     if(this.platform.ANDROID || this.platform.IOS){
-      
+
       this.locationService.beginLoggingVehicleLocation();
     }
 

@@ -15,7 +15,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .get<G>(`${this.url}/${this.endpoint}` + request)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('GET', error);
         }
 
@@ -53,7 +53,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .delete(`${this.url}/${this.endpoint}/${id}`)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('DELETE', error);
         }
         return response;
@@ -66,7 +66,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .put(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('DELETE', error);
         }
         return response;
@@ -78,7 +78,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .put(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('PUT', error);
         }
         return response;
@@ -90,7 +90,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .put(`${this.url}/${this.endpoint}/${subEndpont}`, body)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('PUT', error);
         }
         return response;
@@ -102,7 +102,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
-        } catch (error) {
+        } catch (error: any) {
             response = this.errorHandler('POST', error);
         }
 
@@ -118,8 +118,7 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}/${subEndpont}`, body)
                 .toPromise();
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
             response = this.errorHandler('POST', error);
         }
 

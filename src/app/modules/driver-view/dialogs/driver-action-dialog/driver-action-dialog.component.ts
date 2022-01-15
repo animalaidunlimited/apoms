@@ -287,7 +287,7 @@ isStreetTreat!: boolean;
   getCurrentVehiclelocation() {
 
     const newLatLongLiteral = this.locationService.getCurrentLocation();
-    
+
       this.formGroup.get('latLngLiteral')?.setValue(newLatLongLiteral);
       this.formGroup.get('isUpdated')?.setValue(true);
       this.latLngChanged = true;

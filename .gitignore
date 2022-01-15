@@ -53,8 +53,6 @@ settings.json
 #index.html
 package-lock.json
 package.json
+/src/environments/environment.ts
 /src/environments/environment.prod.ts
 /src/environments/environment.stage.ts
-/src/app/environments/environment.ts
-/src/app/environments/environment.stage.ts
-/src/app/environments/environment.prod.ts

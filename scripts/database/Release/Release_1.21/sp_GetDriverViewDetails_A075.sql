@@ -2,8 +2,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
+-- CALL AAU.sp_GetDriverViewDetails('2022-01-13T11:59','Jim');
+
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME , IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
 BEGIN
 
 
@@ -30,6 +32,7 @@ FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
+AND p.PatientCallOutcomeId IS NULL
 
 
 UNION
@@ -38,6 +41,7 @@ SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
 FROM AAU.ReleaseDetails rd
 WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
+AND EndDate IS NULL
 
 UNION
 
@@ -78,6 +82,7 @@ UserCTE AS
 ),
 PatientsCTE AS
 (
+
     SELECT DISTINCT
 		p.EmergencyCaseId,
         p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
@@ -139,9 +144,8 @@ PatientsCTE AS
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
 		p.PatientCallOutcomeId,
-        p.PatientId
-)
-,
+        IFNULL(rd.PatientId, p.EmergencyCaseId)        
+),
 DriverViewCTE AS
 (
 SELECT
@@ -197,7 +201,7 @@ FROM PatientsCTE p
 LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
 LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId

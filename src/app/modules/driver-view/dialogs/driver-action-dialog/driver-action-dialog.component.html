@@ -6,11 +6,12 @@
 
     <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
 
-       
+
 
         <div *ngFor="let control of data.formBuilderArray">
-    
+
            <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
+
                 <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
                     <mat-label>{{control.label}}</mat-label>
                     <input type="{{control.type}}" [min]='minTime' [max]='maxTime' [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
@@ -20,8 +21,8 @@
                 [ngClass]="{
                     'blue' : dateTimeChanged == false,
                     'green' : dateTimeChanged == true
-                }" 
-                (click)='setCurrentDateTime(control.formControlName)'>
+                }"
+                (click)="setCurrentDateTime(control.formControlName)">
 
 
                 <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalBeforeCallDatetime')">
@@ -36,16 +37,16 @@
                     Rescue after admission!
                 </mat-error>
 
-                
+
            </div>
-            
+
            <div fxLayout='row' fxLayoutGap='10px'>
                 <div fxLayout='row' fxLayoutGap='20px'>
                     <mat-icon class='crosshairIcon'
                     [ngClass]="{
                         'grey' : latLngChanged == false,
                         'green' : latLngChanged == true
-                    }"   
+                    }"
                     (click)="getCurrentVehiclelocation()">
                         my_location
                     </mat-icon>
@@ -59,13 +60,13 @@
                 </div>
            </div>
 
-           
 
-          
-    
+
+
+
         </div>
 
-        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection> 
+        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
         <app-patient-visit-details
             [isStreetTreatTrue]="isStreetTreat"
@@ -73,14 +74,14 @@
             [recordForm]="formGroup">
         </app-patient-visit-details>
 
-        
+
 
         <div mat-dialog-action>
 
             <button mat-raised-button color="primary" type="submit">Save</button>
-        
+
         </div>
-    
+
     </form>
 
 </div>

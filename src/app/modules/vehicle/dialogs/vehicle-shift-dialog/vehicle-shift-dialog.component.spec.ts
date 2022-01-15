@@ -4,7 +4,7 @@ import { VehicleShiftDialogComponent } from './vehicle-shift-dialog.component';
 import { VehicleService } from '../../services/vehicle.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
-import { MaterialModule } from './../../../../material-module';
+import { MaterialModule } from '../../../../material-module';
 import { DatePipe } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

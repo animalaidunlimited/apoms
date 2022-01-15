@@ -15,6 +15,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { take, takeUntil } from 'rxjs/operators';
 import { PatientCountInArea } from 'src/app/core/models/treatment-lists';
 import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class ReportingPageComponent implements OnInit {
         private fb: FormBuilder,
         private treatmentList: TreatmentListService,
         private dialog: MatDialog,
+        private router: Router,
         private printService: PrintTemplateService,
         private surgeryService: SurgeryService,
         private reportingService : ReportingService) {}
@@ -148,7 +150,12 @@ export class ReportingPageComponent implements OnInit {
 
     }
 
+    openTreatmentList(areaName: string){
 
+        this.router.navigate(['/nav/treatment-list', {areaName}], { replaceUrl: true });
+        this.dialog.closeAll();
+
+      }
 
 
 

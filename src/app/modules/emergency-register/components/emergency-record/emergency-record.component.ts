@@ -52,9 +52,8 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     }
 
-    @HostListener('document:keydown.control.shift.r', ['$event'])
+    @HostListener('document:keydown.control.shift.?', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
-
 
         event.preventDefault();
 

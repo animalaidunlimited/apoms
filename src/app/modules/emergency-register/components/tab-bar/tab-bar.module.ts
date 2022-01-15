@@ -12,7 +12,7 @@ import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-
 import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
 import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
 import { OutstandingCaseBoardModule } from '../outstanding-case-board/outstanding-case-board.module';
-import { ThumbnailSliderModule } from 'src/app/core/components/thumbnail-slider/thumbnail-slider.module';
+import { ThumbnailSliderModule } from 'src/app/core/components/media/thumbnail-slider/thumbnail-slider.module';
 
 
 @NgModule({
