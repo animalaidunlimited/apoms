@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import '../node_modules/@angular/material/theming';
 
 $main-font-color: black;
@@ -37,10 +38,10 @@ $my-app-secondary: (
 
 
 
-$my-app-primary: mat-palette($mat-blue-grey);
+$my-app-primary: mat.define-palette(mat.$blue-grey-palette);
 // $my-app-primary: mat-palette($my-app-primary);
-$my-app-accent:  mat-palette($my-app-secondary);
-$my-app-warn:    mat-palette($mat-red);
+$my-app-accent:  mat.define-palette($my-app-secondary);
+$my-app-warn:    mat.define-palette(mat.$red-palette);
 
 
 
