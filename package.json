@@ -24,11 +24,6 @@
     "build:ci": "ng build --configuration production --configuration=$NPM_CONFIG_ENVIRONMENT --sourceMap=false",
     "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "run-s test:single-run format:fix format:check lint:fix lint:check"
-    }
-  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^12.2.15",
