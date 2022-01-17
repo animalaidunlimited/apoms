@@ -332,14 +332,6 @@ export class DropdownService extends APIService {
         );
     }
 
-    getAllProblems():Observable<any[]>{
-        if (!this.problems$) {
-           this.getProblems();
-        } 
-        
-        return this.problems$;
-    }
-
     getIsoReasons() {
         if (!this.isoReasons$) {
             this.isoReasons$ = [
@@ -708,6 +700,14 @@ export class DropdownService extends APIService {
   }
 
   return this.treatmentAreas$;
+
+}
+
+getDynamicDropdown(dropdowName: string) : Observable<any> {
+
+    const request = `/${dropdowName}`;
+
+    return this.getObservable(request);
 
 }
 

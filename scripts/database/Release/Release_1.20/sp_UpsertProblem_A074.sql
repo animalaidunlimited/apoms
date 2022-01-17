@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertProblem !!
 
 DELIMITER $$
-DROP PROCEDURE IF EXISTS AAU.sp_UpsertProblem(
+CREATE PROCEDURE AAU.sp_UpsertProblem(
     IN prm_OrganisationId INT,
     IN prm_Problem VARCHAR(50),
     IN prm_IsDeleted INT,

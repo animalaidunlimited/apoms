@@ -1,25 +1,26 @@
-<form 
-    [formGroup]="organisationForm" 
+<form
+    [formGroup]="organisationForm"
     *ngIf="organisationForm"
-    (ngSubmit)="onSubmit(organisationForm)" 
-    style="margin:0 0.1em;">
+    (ngSubmit)="onSubmit(organisationForm)"
+    class="organisation-form">
 
-    <div fxLayout="row" >
 
-        <div fxLayout="column">
+    <div fxLayout="column" >
+
+        <div fxLayout="row wrap" fxLayoutAlign="space-around center">
             <fieldset class="form-sub-group">
                 <legend class="legend" i18n>Logo</legend>
                 <div fxLayout="column" fxLayoutAlign="center center" >
-            
+
                     <img [src]="imageSrc ? imageSrc: organisationForm.get('logoUrl')?.value" style="width:10em"/>
                     <button  mat-raised-button color="primary" (click)="logo.click()">Upload logo</button>
                     <input fxHide type="file" #logo (change)="uploadLogo($event)"/>
                 </div>
             </fieldset>
-            
+
             <fieldset class="form-sub-group">
                 <legend class="legend" i18n>Name</legend>
-                <mat-form-field >
+                <mat-form-field style="width: 100%;">
                     <input  type="text" placeholder="Organisation name" matInput formControlName= "name">
                 </mat-form-field>
             </fieldset>
@@ -28,21 +29,21 @@
         <fieldset fxFlex="1 1 auto"  class="form-sub-group" autocomplete=false fxLayout="column">
 
             <legend class="legend" i18n>Address</legend>
-    
+
             <div formArrayName="address" >
 
-                <div fxLayout="row" fxLayoutAlign="start end">
+                <div fxLayout="row wrap">
 
-                    <div fxLayout="column" >
+                    <div fxLayout="column" class="address-row-wrapper">
 
                         <div *ngFor="let item of address?.controls; let i = index">
-    
-                            <div [formGroupName]="i"  fxLayout="row">
+
+                            <div [formGroupName]="i"  fxLayout="row wrap" style="width: 100%;" fxLayoutGap="15px">
 
                                 <mat-form-field>
-                
+
                                     <input
-                                    matInput 
+                                    matInput
                                     type="text"
                                     placeholder="Name"
                                     formControlName="name"
@@ -50,14 +51,15 @@
 
                                 </mat-form-field>
 
-                                <mat-form-field>
-                
+                                <mat-form-field class="address-field">
+
                                         <input
                                         matInput type="text"
                                         placeholder="Address"
                                         (keydown.enter)="performSearch(i, $event)"
                                         #addressSearch
                                         formControlName="address"
+
                                         (keypress)="getPlaceAutocomplete(i)">
 
                                         <mat-icon matSuffix (click)="performSearch(i, $event)" style="cursor: pointer">search</mat-icon>
@@ -68,16 +70,20 @@
                                     <input tabindex="5" formControlName="number" type="tel" placeholder="Alt. Number" matInput  >
                                 </mat-form-field>
 
-                                <button style="margin:0.4em 1em 0 1em;" class="addCallerButton" type="button" (click)="deleteItem($event, i)" mat-mini-fab color="warn">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
+                                <div>
+                                    <button style="margin:0.4em 1em 0 1em;" type="button" (click)="deleteItem($event, i)" mat-mini-fab color="warn">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+
+                                </div>
 
                             </div>
+
                         </div>
 
-                    </div> 
+                    </div>
 
-                    <button  style="margin:0.4em 0em 1.73em 0em;" class="addCallerButton" type="button" (click)="addItem($event)" mat-mini-fab color="primary">
+                    <button  style="margin:0.4em 0em 1.73em 0em;" type="button" (click)="addItem($event)" mat-mini-fab color="primary">
                         <mat-icon>add</mat-icon>
                     </button>
 
@@ -88,7 +94,7 @@
             <google-map
             [zoom]="zoom"
             [center]="center"
-            height="174px"
+            height="300px"
             width="100%"
             id="googlemap">
 
@@ -105,17 +111,22 @@
         </fieldset>
 
     </div>
-    
-   <div  fxLayout="row">
-       <aau-organisation-dropdown
-       [recordForm]="organisationForm!.get('problems')!"
-       [setDisplayedColumns]="['Problem']"
-       ></aau-organisation-dropdown>
 
-       <aau-organisation-dropdown
-       [recordForm]="organisationForm!.get('animalTypes')!"
-       [setDisplayedColumns]="['Animal Type']"
-       ></aau-organisation-dropdown>
+
+   <div fxLayout="column" fxLayoutAlign="center center">
+
+    <fieldset class="form-sub-group" style="width: 90%; margin-bottom: 10px;">
+
+        <legend class="legend" i18n>Update dropdowns</legend>
+
+        <aau-organisation-dropdown></aau-organisation-dropdown>
+
+    </fieldset>
+
+
+
+
+
    </div>
 
     <fieldset class="form-sub-group">

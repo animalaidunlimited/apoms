@@ -1,4 +1,4 @@
 
-<img *ngIf="authService.loggedIn?.value" [src]="(organisationDetail | async).logoUrl" width="195" style="max-height: 140px;" alt="aau_logo"/>
+<img *ngIf="authService.loggedIn?.value" [src]="(organisationDetail | async).logoUrl || 'assets/images/aau_logo.jpg'" width="195" style="max-height: 140px;" alt="aau_logo"/>
 
 <img *ngIf="!authService.loggedIn?.value" src="assets/images/aau_logo.jpg" width="195" style="max-height: 140px;" alt="aau_logo"/>

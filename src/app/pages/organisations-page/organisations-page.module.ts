@@ -6,14 +6,15 @@ import { OrganisationsPageComponent } from './organisations-page.component';
 import { MaterialModule } from './../../material-module';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { OrganisationDropdownComponent } from './organisation-dropdown/organisation-dropdown.component';
+
 @NgModule({
     declarations: [
         OrganisationsPageComponent,
         OrganisationDropdownComponent
     ],
     imports: [
-    
-    CommonModule, 
+
+    CommonModule,
         OrganisationsPageRoutingModule,
         MaterialModule,
         GoogleMapsModule

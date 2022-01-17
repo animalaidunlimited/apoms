@@ -55,13 +55,11 @@ export class AuthService extends APIService {
                 throw new Error('Wrong Credentials!');
             }
             this.userService.userName = username;
-            console.log(this.response);
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
             this.storage.save('OrganisationId', this.response.orgId);
             this.storage.save('UserId', this.response.userId);
-            console.log(this.response);
             return this.redirectUrl;
         } catch (error) {
             return Promise.reject(error);
@@ -104,5 +102,5 @@ export class AuthService extends APIService {
         return false;
     }
 
-    
+
 }

@@ -15,16 +15,31 @@ export class OrganisationOptionsService extends APIService{
         http: HttpClient) {
             super(http);
         }
-    
+
     organisationDetail =  new BehaviorSubject<any>([]);
     endpoint = 'Organisation';
+    defaultCoordinates: google.maps.LatLngLiteral = {
+        lat: 24.57127,
+        lng: 73.691544,
+    };
 
     getOrganisationDetail(){
-        
+
         const request = '?organisationId=' + this.getOrganisationId();
-        
+
         this.getObservable(request).subscribe(response => this.organisationDetail.next(response));
-        
+
+    }
+
+    getDefaultCoordinates() : google.maps.LatLngLiteral{
+        if (!this.defaultCoordinates) {
+            this.defaultCoordinates = {
+                lat: 24.57127,
+                lng: 73.691544,
+            };
+        }
+
+        return this.defaultCoordinates;
     }
 
 

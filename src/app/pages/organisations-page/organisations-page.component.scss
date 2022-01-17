@@ -1,3 +1,25 @@
 .legend{
     margin:0 auto;
 }
+
+.form-sub-group {
+    min-width: 330px;
+}
+
+.organisation-form{
+    margin:0 0.1em;
+}
+
+.address-field {
+    width: inherit;
+}
+
+.address-row-wrapper {
+ width: 100%;
+}
+
+@media only screen and (max-width:600px){
+    .organisation-form{
+        margin:60px 0.1em;
+    }
+}

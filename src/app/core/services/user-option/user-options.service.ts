@@ -13,7 +13,9 @@ export class UserOptionsService{
         lat: 24.57127,
         lng: 73.691544,
     };
+
     notificationDuration = 3;
+    
     minimumDate = new Date('2018-01-01');
 
     constructor(private storage: StorageService) {}
