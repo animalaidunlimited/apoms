@@ -1,5 +1,5 @@
 import { Image, Comment, MediaItem, MediaItemReturnObject } from './../../../models/media';
-import {  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnChanges, OnDestroy, OnInit,Renderer2,SimpleChanges,ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -11,7 +11,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { Platform } from '@angular/cdk/platform';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
-import {ɵunwrapSafeValue as unwrapSafeValue} from '@angular/core';
+import { ɵunwrapSafeValue as unwrapSafeValue } from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 @Component({
   // tslint:disable-next-line: component-selector
@@ -29,14 +29,14 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   selectable = false;
   fullImageView = false;
   imageHeight = 0;
-  
+
   loading = false;
 
   mediaItems: MediaItem [] = [];
 
   innerWidth = 0;
   innerHeight = 0;
-  
+
   private ngUnsubscribe = new Subject();
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -55,7 +55,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   @ViewChild('videoPlayer', { static: true }) videoplayer!: ElementRef;
 
   @ViewChild('imgElement') imgElement!: ElementRef;
-  
+
   @HostListener('document:keydown', ['$event'])
   onDialog(event: KeyboardEvent): void {
 
@@ -65,17 +65,17 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
       // tslint:disable-next-line: deprecation
       if (lisitenKeys.includes(event.keyCode)) {
-        
+
         // tslint:disable-next-line: deprecation
         this.onArrowKey.emit(event.keyCode);
 
       }
 
-    }  
+    }
   }
 
 
-  @HostListener('dragover', ['$event']) 
+  @HostListener('dragover', ['$event'])
   onDragOver(evt:DragEvent) {
     evt.preventDefault();
   }
@@ -96,7 +96,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   ) {
 
     if(this.data?.image){
-      
+
       this.imageData = this.data.image;
       // tslint:disable-next-line: deprecation
       this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
@@ -116,7 +116,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     });
 
     if(!this.data?.upload){
-     
+
 
       if(this.imageData){
         this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(`${this.imageData.date}T${this.imageData.time}` as string),'yyyy-MM-ddThh:mm')),
@@ -126,14 +126,14 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
      this.checkHeight();
 
     }
-    
+
   }
 
   checkHeight(dialogDataHeight?:number , dialogDataWidth?:number){
 
     const height = dialogDataHeight ? dialogDataHeight :  this.data.image?.height;
     const width = dialogDataWidth ? dialogDataWidth :  this.data.image?.width;
-    
+
     if(height > 2000 && width > 3000){
       this.imageHeight = 24;
     }
@@ -145,10 +145,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
- 
-  
+
+
   uploadFile($event:any) : void {
-  
+
     this.loading = true;
 
     for(const file of $event?.target?.files ? $event.target.files : $event)
@@ -157,10 +157,10 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       const mediaItem:MediaItemReturnObject = this.mediaPaster.handleUpload(file, this.data.patientId);
 
       mediaItem.mediaItemId.subscribe(media => {
-        
+
         if(media){
 
-          this.imageData = { 
+          this.imageData = {
            full: mediaItem.mediaItem?.remoteURL !== '' ? mediaItem.mediaItem?.remoteURL as string :  unwrapSafeValue(mediaItem.mediaItem?.localURL) ,
            thumbnail:  mediaItem?.mediaItem?.remoteURL as string,
            type:  mediaItem?.mediaItem?.mediaType as string
@@ -170,23 +170,23 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           if(this.onlineStatus.connectionChanged.value){
             this.showSnackBar.successSnackBar('Uploaded','OK');
           }
-          
+
           this.data.upload = false;
 
           mediaItem.mediaItem?.uploadProgress$?.subscribe(progress => this.loading = !(progress === 100 ));
 
           this.imageData.patientMediaItemId = media;
 
-  
+
 
           this.checkHeight(mediaItem.mediaItem?.heightPX, mediaItem.mediaItem?.widthPX);
 
         }
 
       });
-      
+
       if(mediaItem.result === 'nomedia'){
-        
+
         this.showSnackBar.errorSnackBar('Upload images or video only','OK');
       }
       else if(mediaItem.mediaItem){
@@ -196,11 +196,11 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       else{
        //  console.log('Upload media');
       }
-  
+
     }
-  
+
   }
-  
+
 
   remove(tags:string): void {
 
@@ -243,7 +243,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   submitComment(Event:Event | null): void {
 
- 
+
     Event?.preventDefault();
     const comment = Event?.target;
 
@@ -254,9 +254,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
 
     const mediaCommentResponse = this.patientService.savePatientMediaComment(commentObject);
-    
+
     mediaCommentResponse.then((response:{success:number}) => {
-      
+
       if(response.success === 1){
         this.commentInput.nativeElement.value = '';
         // tslint:disable-next-line: deprecation
@@ -282,7 +282,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     if(!this.recordForm.get('imageTags')?.value){
 
       this.recordForm.get('imageTags')?.setValue([]);
-     
+
     }
 
     const imageTags = this.recordForm.get('imageTags')?.value;
@@ -292,7 +292,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     const mediaItem = this.getUpdatedPatientMediaItem();
 
     this.savePatientMediaItem(mediaItem);
-    
+
   }
 
 
@@ -349,7 +349,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     this.patientService.getPatientMediaComments(this.imageData.patientMediaItemId as number).subscribe((comments)=>{
       this.patientMediaComments$.next(comments);
     });
-    
+
   }
 
   ngOnDestroy() {
@@ -369,7 +369,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
           patientId: this.data.patientId,
       }
     });
-  
+
   }
 
   mediaDrag($event:DragEvent){
@@ -402,13 +402,13 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   onImageClick($event:Event){
 
-    
+
     if(($event.composedPath()[0] as HTMLElement).classList[0] as string === 'mediaPreviewBackgroundImage'){
       $event.preventDefault();
       this.fullImageView = true;
       this.renderer.addClass(this.imgElement.nativeElement ,'fullImageView');
     }
-    
+
 
   }
 
@@ -424,5 +424,5 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
 
 
-} 
+}
 

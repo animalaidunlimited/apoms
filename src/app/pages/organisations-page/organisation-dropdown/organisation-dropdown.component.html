@@ -5,15 +5,15 @@
 		<mat-select placeholder="Select dropdown"
 			formControlName="currentDropdown">
 			<mat-option>None</mat-option>
-			<mat-option *ngFor="let dropdown of dropdowns; let i = index;" [value]="dropdown">
+			<mat-option *ngFor="let dropdown of (dropdowns | async); let i = index;" [value]="dropdown">
 				{{ dropdown.displayName }}
 			</mat-option>
 		</mat-select>
 	</mat-form-field>
 
-
-
-
+	<div class="progress-wrapper">
+		<mat-progress-bar mode="indeterminate" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-progress-bar>
+	</div>
 
 <fieldset class="form-sub-group" style="width: 95%;" *ngIf="currentDisplayName">
 	<legend class="legend" i18n>{{currentDisplayName}}</legend>
@@ -38,7 +38,7 @@
 	</div>
 
 
-	<mat-table #table [dataSource]="(currentDropdownDataSource | async)!"
+	<mat-table #table [dataSource]="currentDropdownDataSource"
 	cdkDropList
 	[cdkDropListData]="(currentDropdownDataSource | async)!"
 	(cdkDropListDropped)="dropTable($event)">
@@ -73,7 +73,7 @@
 		<ng-container matColumnDef="isDeleted" style="overflow: display;">
 			<mat-header-cell *matHeaderCellDef> Disabled </mat-header-cell>
 			<mat-cell style="overflow:visible;" *matCellDef="let element; let i = index;"  [formGroup]="element">
-				<mat-checkbox  formControlName="isDeleted" (change)='updateAble(i,$event)'> {{element.get('isDeleted')?.value ? 'disabled' : 'enabled' }}</mat-checkbox>
+				<mat-checkbox  formControlName="isDeleted" (change)='setUpdatable(i,$event)'> {{element.get('isDeleted')?.value ? 'disabled' : 'enabled' }}</mat-checkbox>
 			</mat-cell>
 		</ng-container>
 

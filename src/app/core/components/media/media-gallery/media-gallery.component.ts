@@ -11,6 +11,7 @@ import { MediaPreviewComponent } from '../media-preview/media-preview.component'
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
+
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-gallery',
@@ -49,8 +50,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
-     
- 
+
+
     this.checkConnection = timer(0,3000).pipe(
       takeUntil(this.connectionStateSubs),
       switchMap(() => this.onlineStatus.connectionChanged),
@@ -77,15 +78,15 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
             const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage.imageBase64)], `${this.patientId},{22}`, { type: mime});
             this.mediaPasteService.handleUpload(imageFile,this.patientId, localImage.date as string);
           });
-          
+
           this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
-          
+
         }
         else{
 
           this.connectionStateSubs.next();
           this.connectionStateSubs.complete();
-          
+
         }
       }
     });
@@ -100,11 +101,11 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
 
       if(!connectionStatus){
-     
+
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
 
           setTimeout(() => {
-            
+
             this.galleryImages = [];
 
             this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId)
@@ -146,8 +147,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   openMediaDialog(): void{
 
     // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-     
-    
+
+
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
 
       minWidth: '75vw',
@@ -165,43 +166,43 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       // tslint:disable-next-line: max-line-length
       const mediaDataIndex = this.mediaPatientItems.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
       const imageIndex = this.galleryImages.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-      
-    
+
+
        if(key === 37){
           if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
-             
+
               const dialogData = {
                   image : this.galleryImages[imageIndex - 1],
                   mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex - 1]
               };
               dialogRef.componentInstance.updateDialog(dialogData);
-              
+
           }
       }
-      
+
        if(key === 39){
-          
+
           if(imageIndex + 1 <= this.galleryImages.length - 1 && mediaDataIndex + 1 <= this.mediaPatientItems.length - 1) {
-             
+
               const dialogData = {
                   image : this.galleryImages[imageIndex + 1],
                   mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex + 1]
               };
               dialogRef.componentInstance.updateDialog(dialogData);
-          } 
-      } 
-      
+          }
+      }
+
     });
- 
+
 
     dialogRef.afterClosed()
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(updatedMedia => {
 
       if(updatedMedia){
-      
+
           if(updatedMedia.isPrimary === true){
-            
+
             // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
 
           }

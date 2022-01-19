@@ -29,7 +29,7 @@ export class LoginPageComponent implements OnInit {
                 password,
             )) as string;
             this.navigateTo(url);
-        } catch (e) {
+        } catch (e:any) {
             this.errorMessage =
                 e.status === 504
                     ? 'Cannot connect to server'

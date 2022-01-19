@@ -35,7 +35,6 @@
               "src/apoms-sw.js",
               "src/manifest.webmanifest"
             ],
-            "sourceMap": false,
             "styles": [
               "src/styles.scss",
               "src/theme.scss",

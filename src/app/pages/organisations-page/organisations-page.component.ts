@@ -66,38 +66,6 @@ export class OrganisationsPageComponent implements OnInit {
 
         this.center = this.organisationOptions.getDefaultCoordinates();
 
-        /*
-        this.problemsDropDown = this.generateDropDownForOrganisation(this.dropDown.getProblems()).pipe(
-            map(problems =>
-                this.generateDropDownFormArray(
-                    problems.map(problem =>
-                        this.fb.group({
-                            problemId: problem.ProblemId,
-                            problem: problem.Problem,
-                            isDeleted: problem.IsDeleted,
-                            sort: problem.Sort
-                        })
-                    )
-                )
-            )
-        );
-
-        this.animalTypes = this.generateDropDownForOrganisation(this.dropDown.getAnimalTypes()).pipe(
-            map(animalTypes  =>
-                this.generateDropDownFormArray(
-                    animalTypes.map(animalType =>
-                        this.fb.group({
-                            animalTypeId: animalType.AnimalTypeId,
-                            animalType: animalType.AnimalType,
-                            isDeleted: animalType.IsDeleted,
-                            sort: animalType.Sort
-                        })
-                    )
-                )
-            )
-        );
-        */
-
         // tslint:disable-next-line: no-non-null-assertion
         this.organisationId = parseInt(this.organisationOptions.getOrganisationId()!,10);
 
@@ -112,38 +80,6 @@ export class OrganisationsPageComponent implements OnInit {
             });
 
         });
-
-        /*
-        combineLatest([
-            this.organisationOptions.organisationDetail,
-            this.problemsDropDown,
-            this.animalTypes
-        ]).pipe(
-            map((values) => {
-                const [orgDetail, problems, animalTypes] = values;
-
-                this.organisationForm = this.fb.group({
-                    organisationId : this.organisationId,
-                    logoUrl: orgDetail.logoUrl,
-                    address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([this.createItem()]),
-                    name: orgDetail.name,
-                    problems,
-                    animalTypes
-                });
-
-                return values;
-            })
-        ).subscribe(_ => {
-
-            (this.organisationForm?.get('problems') as FormArray)?.valueChanges.subscribe((problems:FormArray) => {
-
-                this.updateDropDown.push((problems.at(0) as any)?.problemId);
-
-                this.updateDropDown = [...new Set(this.updateDropDown)];
-
-            });
-        });
-*/
 
     }
 
@@ -172,9 +108,6 @@ export class OrganisationsPageComponent implements OnInit {
     }
 
     updateLocation(latitude: number, longitude: number, index:number) {
-
-
-
 
         const marker: Marker = {
             position: { lat: latitude, lng: longitude },
@@ -214,10 +147,14 @@ export class OrganisationsPageComponent implements OnInit {
 
         addressSearcher.findPlaceFromQuery(searchRequest, (results, status) => {
 
+            if(!results){
+                return;
+            }
+
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 for (const result of results) {
 
-                    if(result.geometry){
+                    if(result.geometry?.location){
 
                         this.updateLocation(
                             result.geometry.location.lat(),
@@ -278,7 +215,12 @@ export class OrganisationsPageComponent implements OnInit {
 
     }
 
-    markerDragEnd(event: google.maps.MouseEvent) {
+    markerDragEnd(event: google.maps.MapMouseEvent) {
+
+        if(!event.latLng){
+            return;
+        }
+
         const position = event.latLng.toJSON();
         this.center = { lat: position.lat, lng: position.lng };
     }
@@ -321,7 +263,7 @@ export class OrganisationsPageComponent implements OnInit {
 
         address.value =  result.formatted_address;
 
-        if(result.geometry){
+        if(result.geometry?.location){
 
             this.updateLocation(
                 result.geometry.location.lat(),

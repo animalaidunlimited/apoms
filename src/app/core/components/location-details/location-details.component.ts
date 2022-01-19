@@ -158,7 +158,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         });
 
     }
-    
+
     invokeEvent(place: any) {
         this.setAddress.emit(place);
 
@@ -166,7 +166,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         this.recordForm.get('locationDetails.location')?.setValue(result.formatted_address);
 
-        if(result.geometry){
+        if(result.geometry?.location){
 
             this.updateLocation(
                 result.geometry.location.lat(),
@@ -204,7 +204,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.changeDetector.detectChanges();
     }
 
-    markerDragEnd(event: google.maps.MouseEvent) {
+    markerDragEnd(event: google.maps.MapMouseEvent) {
+
+        if(!event.latLng){
+            return;
+        }
+
+
         const position = event.latLng.toJSON();
         this.recordForm.get('locationDetails.latitude')?.setValue(position.lat);
         this.recordForm.get('locationDetails.longitude')?.setValue(position.lng);
@@ -224,10 +230,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         };
 
         addressSearcher.findPlaceFromQuery(searchRequest, (results, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
+            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
                 for (const result of results) {
 
-                    if(result.geometry){
+                    if(result.geometry?.location){
 
                         this.updateLocation(
                             result.geometry.location.lat(),

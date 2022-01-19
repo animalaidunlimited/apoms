@@ -319,7 +319,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     this.map.fitBounds(latlngbounds);
       this.map.panToBounds(latlngbounds);
       this.map.zoomChanged.subscribe(() => {
-        if(this.map.getZoom() > 14) {
+        if(this.map.getZoom() || 0 > 14) {
           this.map.zoom = 14;
         }
       });

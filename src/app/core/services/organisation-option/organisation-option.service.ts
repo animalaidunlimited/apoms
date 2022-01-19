@@ -10,18 +10,22 @@ import { StorageService } from '../storage/storage.service';
 })
 export class OrganisationOptionsService extends APIService{
 
+    endpoint = 'Organisation';
+
+    defaultCoordinates: google.maps.LatLngLiteral = {
+        lat: 24.57127,
+        lng: 73.691544,
+    };
+
+    organisationDetail =  new BehaviorSubject<any>([]);
+
     constructor(
         private storage: StorageService,
         http: HttpClient) {
             super(http);
         }
 
-    organisationDetail =  new BehaviorSubject<any>([]);
-    endpoint = 'Organisation';
-    defaultCoordinates: google.maps.LatLngLiteral = {
-        lat: 24.57127,
-        lng: 73.691544,
-    };
+
 
     getOrganisationDetail(){
 

@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/messaging';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
@@ -91,7 +91,7 @@ constructor(
                 this.subscribeToTopics(this.token);
 
             },
-            (err) => {
+            (err:any) => {
                 this.zone.run(() => this.havePermission.next(false));
 
             }

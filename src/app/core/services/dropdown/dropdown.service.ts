@@ -32,6 +32,12 @@ export interface AnimalTypeResponse {
     data: AnimalType[];
 }
 
+export interface EditableDropdown {
+    dropdown: string;
+    displayName: string;
+    request: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -47,6 +53,7 @@ export class DropdownService extends APIService {
     callTypes$!: Observable<CallType[]>;
     crueltyInspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
+    editableDropdowns$!: Observable<EditableDropdown[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
     eyeDischarge$!: any[];
@@ -707,7 +714,31 @@ getDynamicDropdown(dropdowName: string) : Observable<any> {
 
     const request = `/${dropdowName}`;
 
-    return this.getObservable(request);
+    return this.getObservable(request).pipe(map((response: any) => {
+
+        let sortedResponse = response.sort((a: any, b: any) => (a.SortOrder || 99) - (b.SortOrder || 99));
+
+        return sortedResponse;
+
+    }));
+
+}
+
+getEditableDropdowns(): Observable<EditableDropdown[]> {
+    const request = '/GetEditableDropdowns';
+
+    if(!this.editableDropdowns$) {
+      this.editableDropdowns$ = this.getObservable(request).pipe(
+          map((response: EditableDropdown[])=> {
+
+                let sortedResponse = response.sort((a: EditableDropdown, b: EditableDropdown) => a.dropdown < b.dropdown ? -1 : 1);
+
+                return sortedResponse;
+          })
+      );
+  }
+
+  return this.editableDropdowns$;
 
 }
 

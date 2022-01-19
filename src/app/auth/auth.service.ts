@@ -77,7 +77,7 @@ export class AuthService extends APIService {
 
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
-        } catch (e) {
+        } catch (e:any) {
             return Promise.reject(e.message);
         }
     }
