@@ -3,12 +3,16 @@ import { Injectable, NgZone } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
+import { EditableDropdownElement } from 'src/app/core/models/dropdown';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class EditableDropdownService {
+
+  currentTable: string | undefined;
 
   editableDropdownForm:FormArray;
 
@@ -27,7 +31,8 @@ export class EditableDropdownService {
 
   constructor(
     private zone: NgZone,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dropdownService: DropdownService
   ) {
 
     this.editableDropdownForm = this.getEmptyEditableDropdownForm();
@@ -36,8 +41,9 @@ export class EditableDropdownService {
 
   }
 
-  populateEditableDropdownForm(currentDisplayName: string) : void {
+  setEditableDropdown(currentDropdownTable: string) : void {
 
+    this.currentTable = currentDropdownTable;
     this.refreshing.next(true);
 
   }
@@ -47,14 +53,14 @@ export class EditableDropdownService {
     this.editableDropdownForm = this.generateDropDownFormArray(
       dropdownData.map(result => {
 
-          const vals = Object.values(result);
+            const vals = Object.values(result);
 
-            return this.fb.group({
-                id: vals[0],
-                value: vals[1],
-                isDeleted: vals[2],
-                sort: vals[3]
-            })
+            return this.getEmptyElement(
+                          vals[0] as number,
+                          vals[1] as string,
+                          vals[2] as boolean,
+                          vals[3] as number,
+                          false);
           }
         )
     );
@@ -66,17 +72,18 @@ export class EditableDropdownService {
 
   getEmptyEditableDropdownForm() : FormArray {
 
-    return this.fb.array([this.getEmptyElement()]);
+    return this.fb.array([this.getEmptyElement(undefined, undefined, false, undefined, false)]);
 
   }
 
-  getEmptyElement() : FormGroup {
+  getEmptyElement(id? : number, value? : string, isDeleted? : boolean, sort? : number, saving?: boolean) : FormGroup {
 
     return this.fb.group({
-      id: [],
-      value: '',
-      isDeleted: false,
-      sort: []
+      id: [id],
+      value: value,
+      isDeleted: isDeleted,
+      sort: [sort],
+      saving: saving
     });
 
   }
@@ -84,6 +91,7 @@ export class EditableDropdownService {
   addRow() : void {
 
     this.editableDropdownForm.push(this.getEmptyElement());
+
     this.emit();
 
   }
@@ -109,22 +117,45 @@ export class EditableDropdownService {
 
     const prevIndex =  this.editableDropdownForm.controls.findIndex((d) => d === event.item.data);
 
-    console.log('prevIndex: ' + prevIndex);
-    console.log('currentIndex: ' + event.currentIndex);
-
-    //this.editableDropdownForm.controls[prevIndex].get('sort')?.setValue(event.currentIndex + 1);
-
-    //this.editableDropdownForm.controls[event.currentIndex].get('sort')?.setValue(prevIndex + 1);
-
     moveItemInArray(this.editableDropdownForm.controls, prevIndex, event.currentIndex);
 
-    console.log(this.editableDropdownForm.controls);
+    //Update the sort value and save the value to the database.
+    this.editableDropdownForm.controls.forEach((element, index) => {
 
-    this.editableDropdownForm.controls = this.editableDropdownForm.controls.sort((a:AbstractControl, b:AbstractControl) =>  a.get('sort')?.value - b.get('sort')?.value);
+      const currentIndex = element.get('sort');
 
-    console.log(this.editableDropdownForm.controls);
+      //We only need to make a call to the DB if the sort has changed.
+      if(currentIndex?.value !== index + 1){
+
+        element.get('sort')?.setValue(index + 1);
+        this.saveDropdownElement(element);
+
+      }
+
+    });
 
     this.emit();
+
+  }
+
+  saveDropdownElement(dropdownElement: AbstractControl) : void {
+
+    if(!this.currentTable){
+      return;
+    }
+
+    dropdownElement.get('saving')?.setValue(true);
+
+    const updatedElement = dropdownElement.value as EditableDropdownElement;
+
+    this.dropdownService.saveEditableDropdownElement(this.currentTable, updatedElement).then(result => {
+
+      console.log(result);
+      dropdownElement.get('saving')?.setValue(false);
+      this.emit();
+
+    });
+
 
   }
 
@@ -152,8 +183,10 @@ export class EditableDropdownService {
 
   saveRow(index: number) : void {
 
-    this.editableDropdownForm.at(index).disable({onlySelf:true});
-    this.emit();
+    let saveElement = this.editableDropdownForm.at(index)
+
+    saveElement.disable({onlySelf:true});
+    this.saveDropdownElement(saveElement);
 
   }
 

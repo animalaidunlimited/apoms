@@ -6,7 +6,8 @@ import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
-import { DropdownService, EditableDropdown } from 'src/app/core/services/dropdown/dropdown.service';
+import { EditableDropdown } from 'src/app/core/models/dropdown';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { EditableDropdownService } from '../../services/editable-dropdown.service';
 
 
@@ -20,8 +21,6 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-
-
   @ViewChild(MatTable) table!: MatTable<Element>;
 
   currentDropdown: string | undefined;
@@ -29,27 +28,12 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   currentDropdownDataSource: BehaviorSubject<AbstractControl[]>;
 
-  displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'actions', 'position'];
+  displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'actions', 'saving', 'position'];
 
   dropdowns: Observable<EditableDropdown[]> | undefined;
   dropdownForm: FormGroup;
 
-
-
-  //recordForm: FormArray | undefined;
-  //rows!:FormArray;
-
   refreshing: BehaviorSubject<boolean>;
-
-  //get formArrayControlNames(){
-
-  //  return Object.keys((this.recordForm as FormArray)?.controls[0].value);
-  //}
-
-  //get textFormControlName() {
-  // return this.formArrayControlNames[1];
-  //}
-
 
   constructor(
     private fb: FormBuilder,
@@ -64,9 +48,6 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
   this.dropdownForm = this.fb.group({
     currentDropdown: ''
   });
-
-
-
 
 }
 
@@ -86,7 +67,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
         this.currentDropdown = drop.dropdown;
         this.currentDisplayName = drop.displayName;
 
-        this.eDropdownService.populateEditableDropdownForm(this.currentDisplayName);
+        this.eDropdownService.setEditableDropdown(drop.tableName);
 
         let dropData = this.dropdownService.getDynamicDropdown(drop.request);
 

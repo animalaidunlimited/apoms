@@ -17,7 +17,8 @@ SELECT
 	JSON_MERGE_PRESERVE(
 	JSON_OBJECT("dropdown", Dropdown),
 	JSON_OBJECT("displayName", DisplayName),
-    JSON_OBJECT("request", Request)
+    JSON_OBJECT("request", Request),
+    JSON_OBJECT("tableName", TableName)
 	)) EditableDropdowns
 FROM AAU.EditableDropdown;
 

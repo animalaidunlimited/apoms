@@ -25,18 +25,11 @@ import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
+import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 
 
 
-export interface AnimalTypeResponse {
-    data: AnimalType[];
-}
 
-export interface EditableDropdown {
-    dropdown: string;
-    displayName: string;
-    request: string;
-}
 
 @Injectable({
     providedIn: 'root',
@@ -741,5 +734,14 @@ getEditableDropdowns(): Observable<EditableDropdown[]> {
   return this.editableDropdowns$;
 
 }
+
+public async saveEditableDropdownElement(tableName: string, updatedElement : EditableDropdownElement) : Promise<any> {
+
+    const request = '/UpsertDropdownElement';
+
+    return await this.postSubEndpoint(request, {tableName:tableName, ...updatedElement});
+
+}
+
 
 }
