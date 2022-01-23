@@ -112,7 +112,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.OrganisationsPageModule)
     },
     {
-        data: { title: 'Print templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Print Templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',

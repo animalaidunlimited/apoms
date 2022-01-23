@@ -2,6 +2,7 @@
     [formGroup]="organisationForm"
     *ngIf="organisationForm"
     (ngSubmit)="onSubmit(organisationForm)"
+    autocomplete="off"
     class="organisation-form">
 
 
@@ -21,12 +22,12 @@
             <fieldset class="form-sub-group">
                 <legend class="legend" i18n>Name</legend>
                 <mat-form-field style="width: 100%;">
-                    <input  type="text" placeholder="Organisation name" matInput formControlName= "name">
+                    <input  type="text" placeholder="Organisation name" matInput formControlName="name" autocomplete="doNotAutoComplete">
                 </mat-form-field>
             </fieldset>
         </div>
 
-        <fieldset fxFlex="1 1 auto"  class="form-sub-group" autocomplete=false fxLayout="column">
+        <fieldset fxFlex="1 1 auto"  class="form-sub-group" fxLayout="column">
 
             <legend class="legend" i18n>Address</legend>
 
@@ -40,27 +41,29 @@
 
                             <div [formGroupName]="i"  fxLayout="row wrap" style="width: 100%;" fxLayoutGap="15px">
 
-                                <mat-form-field class="name-field">
+                                <mat-form-field class="name-field" autocomplete="none">
 
                                     <input
                                     matInput
                                     type="text"
                                     placeholder="Name"
                                     formControlName="name"
+                                    autocomplete="none"
                                     >
 
                                 </mat-form-field>
 
-                                <mat-form-field class="address-field">
+                                <mat-form-field class="address-field" autocomplete="none">
 
                                         <input
-                                        matInput type="text"
+                                        matInput
+                                        type="text"
                                         placeholder="Address"
                                         (keydown.enter)="performSearch(i, $event)"
                                         #addressSearch
                                         formControlName="address"
-
-                                        (keypress)="getPlaceAutocomplete(i)">
+                                        (keypress)="getPlaceAutocomplete(i)"
+                                        >
 
                                         <mat-icon matSuffix (click)="performSearch(i, $event)" style="cursor: pointer">search</mat-icon>
 
@@ -69,7 +72,7 @@
                                 <div>
 
                                     <mat-form-field class="name-field">
-                                        <input tabindex="5" formControlName="number" type="tel" placeholder="Telephone Number" matInput  >
+                                        <input tabindex="5" formControlName="number" autocomplete="none" type="tel" placeholder="Telephone number" matInput>
                                     </mat-form-field>
 
                                     <button style="margin:0.4em 1em 0 1em;" type="button" (click)="deleteItem($event, i)" mat-mini-fab color="warn">
@@ -95,6 +98,7 @@
             <google-map
             [zoom]="zoom"
             [center]="center"
+            [options]="options"
             height="300px"
             width="100%"
             id="googlemap">
@@ -104,10 +108,13 @@
                     [position]="marker.position"
                     [label]="marker.label"
                     [options]="marker.options"
-                    (mapDragend)="markerDragEnd($event)">
+                    (mapDragend)="markerDragEnd($event, marker)">
                 </map-marker>
 
             </google-map>
+
+            <button type="submit" class="orgnisation-save" mat-raised-button color="primary">Save</button>
+
 
         </fieldset>
 
@@ -125,12 +132,7 @@
     </fieldset>
 
 
-
-
-
    </div>
 
-    <fieldset class="form-sub-group">
-        <button type="submit"  mat-raised-button color="primary"> Save </button>
-    </fieldset>
+
 </form>

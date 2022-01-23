@@ -5,15 +5,8 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { map } from 'rxjs/operators';
+import { OrganisationMarker, OrganisationDetail, OrganisationAddress } from 'src/app/core/models/organisation';
 
-
-
-export interface Marker {
-    position: google.maps.LatLngLiteral;
-    label: string;
-    options: any;
-}
 
 @Component({
     selector: 'app-organisations-page',
@@ -22,35 +15,26 @@ export interface Marker {
 })
 export class OrganisationsPageComponent implements OnInit {
 
+    center!: google.maps.LatLngLiteral;
+    imageSrc!: string | ArrayBuffer;
+    latlngbounds = new google.maps.LatLngBounds(undefined);
+    markers: OrganisationMarker[] = [];
+    options = {maxZoom: 13};
     organisationId!:number;
     organisationForm!:FormGroup ;
-    imageSrc!: string | ArrayBuffer;
-    markers: Marker[] = [];
-    center!: google.maps.LatLngLiteral;
-    latlngbounds = new google.maps.LatLngBounds(undefined);
-
-
-
- //   problemsDropDown!:Observable<FormArray>;
- //   animalTypes!:Observable<FormArray>;
-
     updateDropDown:number[] = [];
-
     zoom = 10;
+
     @ViewChildren('addressSearch') addresstext!: QueryList<ElementRef>;
     @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
-
-
 
     constructor(
         private logoService:LogoService,
         private organisationOptions: OrganisationOptionsService,
         private fb: FormBuilder,
         private changeDetector: ChangeDetectorRef,
-        private snackbar: SnackbarService,
-        private dropDown: DropdownService
+        private snackbar: SnackbarService
     ) {
-
 
         this.organisationForm = this.fb.group({
             address: '',
@@ -70,7 +54,7 @@ export class OrganisationsPageComponent implements OnInit {
         this.organisationId = parseInt(this.organisationOptions.getOrganisationId()!,10);
 
 
-        this.organisationOptions.organisationDetail.subscribe((orgDetail:any) => {
+        this.organisationOptions.organisationDetail.subscribe((orgDetail:OrganisationDetail) => {
 
             this.organisationForm = this.fb.group({
                 organisationId : this.organisationId,
@@ -80,6 +64,7 @@ export class OrganisationsPageComponent implements OnInit {
             });
 
         });
+
 
     }
 
@@ -107,28 +92,56 @@ export class OrganisationsPageComponent implements OnInit {
 
     }
 
-    updateLocation(latitude: number, longitude: number, index:number) {
+    addMarker(latLng: google.maps.LatLngLiteral, index:number) {
 
-        const marker: Marker = {
-            position: { lat: latitude, lng: longitude },
+        const marker: OrganisationMarker = {
+            index,
+            position: latLng,
             label: '',
             options: { draggable: true },
         };
 
-        if(!latitude && !longitude){
+        if(!latLng.lat && !latLng.lng){
             marker.position = this.center;
         }
 
-        this.address?.at(index)?.get('latLng')?.setValue({ lat: latitude, lng: longitude });
-
-        this.latlngbounds.extend(new google.maps.LatLng(latitude, longitude));
-
-        this.map?.fitBounds(this.latlngbounds);
+        this.updateAddressLocation(latLng, index)
 
         this.markers.push(marker);
 
         this.changeDetector.detectChanges();
     }
+
+    updateAddressLocation(latLng: google.maps.LatLngLiteral, index: number) : void {
+
+        this.address?.at(index)?.get('latLng')?.setValue(latLng);
+
+        this.latlngbounds.extend(new google.maps.LatLng(latLng.lat, latLng.lng));
+
+        this.map?.fitBounds(this.latlngbounds);
+
+        if(this.map?.getZoom() || 20 >= 15 ){
+            this.map.zoom = 15;
+        }
+
+        this.organisationForm.markAsDirty();
+
+    }
+
+    markerDragEnd(event: google.maps.MapMouseEvent, marker: OrganisationMarker) {
+
+        if(!event.latLng){
+            return;
+        }
+
+        const currentLocation = event.latLng.toJSON();
+
+        this.center = currentLocation;
+
+        this.updateAddressLocation(currentLocation, marker.index );
+
+    }
+
 
 
     performSearch(index:number, $event:Event) {
@@ -156,9 +169,8 @@ export class OrganisationsPageComponent implements OnInit {
 
                     if(result.geometry?.location){
 
-                        this.updateLocation(
-                            result.geometry.location.lat(),
-                            result.geometry.location.lng(),
+                        this.addMarker(
+                            this.getLatLngLiteral(result.geometry?.location),
                             index
                         );
 
@@ -189,9 +201,9 @@ export class OrganisationsPageComponent implements OnInit {
             const addressGroup = this.fb.array([]);
 
             // tslint:disable-next-line: no-shadowed-variable
-            address.forEach((address:any, index:number) => {
+            address.forEach((address:OrganisationAddress, index:number) => {
 
-                this.updateLocation(address.latLng?.lat, address.latLng?.lng, index);
+                this.addMarker(address.latLng, index);
 
                 addressGroup.push(this.fb.group({
                     name: address.name,
@@ -212,18 +224,8 @@ export class OrganisationsPageComponent implements OnInit {
                 number: ''
             });
         }
-
     }
 
-    markerDragEnd(event: google.maps.MapMouseEvent) {
-
-        if(!event.latLng){
-            return;
-        }
-
-        const position = event.latLng.toJSON();
-        this.center = { lat: position.lat, lng: position.lng };
-    }
 
     getPlaceAutocomplete(index:number) {
         if(this.addresstext.get(index)?.nativeElement.value.length < 2)
@@ -247,13 +249,9 @@ export class OrganisationsPageComponent implements OnInit {
                 this.invokeEvent(place, index );
             }
         });
-
-
-
     }
 
     invokeEvent(place: any, index:number) {
-
 
         const result = place as google.maps.places.PlaceResult;
 
@@ -265,33 +263,30 @@ export class OrganisationsPageComponent implements OnInit {
 
         if(result.geometry?.location){
 
-            this.updateLocation(
-                result.geometry.location.lat(),
-                result.geometry.location.lng(),
-                index
-            );
+            this.addMarker(this.getLatLngLiteral(result.geometry?.location), index );
         }
 
     }
 
+    getLatLngLiteral(latLng: google.maps.LatLng) : google.maps.LatLngLiteral {
+
+        return {lat : latLng.lat(), lng: latLng.lng()}
+
+    }
+
+    onSubmit(organisationOptions:FormGroup){
+
+        console.log(organisationOptions.value);
 
 
-onSubmit(organisationOptions:FormGroup){
+        if(organisationOptions.dirty){
 
+            this.organisationOptions.updateOrganisationDetail(organisationOptions?.value).then(response => {
 
-        const updatedDropDown =
-        (this.organisationForm.get('problems') as FormArray).controls
-        .filter(problem => this.updateDropDown.includes(problem.get('problemId')?.value))
-        .map(problem => problem?.value);
-
-        if(organisationOptions.dirty ){
-
-            this.organisationOptions.updateOrganisationDetail({ ...organisationOptions?.value, updatedDropDown}).then(response => {
-
-                response ?
+                response.success === 1 ?
                     this.snackbar.successSnackBar('Organisation details saved successfully', 'OK')
                 :
-                    this.snackbar.errorSnackBar('Invalid action','OK');
+                    this.snackbar.errorSnackBar('An error has occured: Error number: OPC: 289','OK');
 
             });
 

@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { map } from 'rxjs/operators';
+import { OrganisationDetail } from '../../models/organisation';
+import { SuccessOnlyResponse } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { StorageService } from '../storage/storage.service';
 
@@ -24,8 +26,6 @@ export class OrganisationOptionsService extends APIService{
         http: HttpClient) {
             super(http);
         }
-
-
 
     getOrganisationDetail(){
 
@@ -55,9 +55,12 @@ export class OrganisationOptionsService extends APIService{
         return this.storage.read('OrganisationId');
     }
 
-    async updateOrganisationDetail(orgDetails:any){
+    async updateOrganisationDetail(orgDetails:OrganisationDetail) : Promise<SuccessOnlyResponse>{
+
+        console.log(orgDetails);
 
         return await this.put(orgDetails).then(data => {
+            console.log(data);
             return data;
         })
         .catch(error => {

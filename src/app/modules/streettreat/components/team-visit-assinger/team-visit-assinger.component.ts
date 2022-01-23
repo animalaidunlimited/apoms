@@ -11,10 +11,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { take } from 'rxjs/operators';
 
 
-export interface Position {
-  lat: number;
-  lng: number;
-}
+
 export interface MapMarker {
   marker?:google.maps.Marker;
   options: google.maps.MarkerOptions;
