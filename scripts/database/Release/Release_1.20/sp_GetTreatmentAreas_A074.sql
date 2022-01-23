@@ -23,10 +23,10 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 SELECT
 	JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
-	JSON_OBJECT("areaId", AreaId),
-	JSON_OBJECT("areaName", Area),
+	JSON_OBJECT("areaId", TreatmentAreaId),
+	JSON_OBJECT("areaName", TreatmentArea),
     JSON_OBJECT("deleted", isDeleted),
-    JSON_OBJECT("sortArea", SortArea),
+    JSON_OBJECT("sortArea", SortOrder),
     JSON_OBJECT("abbreviation", Abbreviation),
     JSON_OBJECT("mainArea", TreatmentListMain)
 	)) TreatmentAreas

@@ -21,5 +21,5 @@ INSERT INTO AAU.EditableDropdown (Dropdown, DisplayName, Request, TableName) VAL
 ('patientCallerInteractionOutcomes', 'Patient Caller Interaction Outcomes', 'PatientCallerInteractionOutcomes', 'PatientCallerInteractionOutcome'),
 ('getStreetTreatMainProblem', 'StreetTreat Main Problem', 'GetStreetTreatMainProblem', 'MainProblem'),
 ('getTreatmentAreas', 'Treatment Areas', 'GetTreatmentAreas', 'TreatmentArea'),
-('problem', 'Problem', 'Problems', 'Problems');
+('problem', 'Problem', 'Problems', 'Problem');
 

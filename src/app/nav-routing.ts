@@ -103,10 +103,10 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule)
     },
     {
-        data: { title: 'Organisations' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Organisation' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
-        path: 'organisations',
+        path: 'organisation',
         loadChildren: () =>
             import('./pages/organisations-page/organisations-page.module')
             .then(m => m.OrganisationsPageModule)
@@ -161,7 +161,7 @@ export class NavRouteService {
     }
 
     getNavRouteList() {
-       
+
         return this.navRoute.children?.filter(route => route.data && route.data.title && !!route.data.componentPermissionLevel?.value)
             .reduce((groupedList: NavRoute[], route: NavRoute) => {
 

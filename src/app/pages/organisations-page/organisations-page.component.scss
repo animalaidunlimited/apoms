@@ -11,15 +11,27 @@
 }
 
 .address-field {
-    width: inherit;
+    width: 60%;
+    min-width: 300px;
+
 }
 
 .address-row-wrapper {
  width: 100%;
 }
 
+.name-field{
+ width:20%;
+ min-width: 150px;
+}
+
 @media only screen and (max-width:600px){
     .organisation-form{
         margin:60px 0.1em;
     }
+
+    .mat-form-field {
+        max-width: 95%;
+    }
 }
+

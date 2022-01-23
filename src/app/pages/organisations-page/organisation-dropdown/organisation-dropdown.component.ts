@@ -28,7 +28,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   currentDropdownDataSource: BehaviorSubject<AbstractControl[]>;
 
-  displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'actions', 'saving', 'position'];
+  displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'saving'];
 
   dropdowns: Observable<EditableDropdown[]> | undefined;
   dropdownForm: FormGroup;

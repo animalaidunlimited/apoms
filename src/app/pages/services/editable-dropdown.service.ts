@@ -1,10 +1,11 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, NgZone } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
 import { EditableDropdownElement } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 
 @Injectable({
@@ -15,6 +16,7 @@ export class EditableDropdownService {
   currentTable: string | undefined;
 
   editableDropdownForm:FormArray;
+  filteredEditableDropdownForm:FormArray;
 
   editableDropdownObject: BehaviorSubject<AbstractControl[]>;
 
@@ -32,10 +34,12 @@ export class EditableDropdownService {
   constructor(
     private zone: NgZone,
     private fb: FormBuilder,
+    private snackbar: SnackbarService,
     private dropdownService: DropdownService
   ) {
 
     this.editableDropdownForm = this.getEmptyEditableDropdownForm();
+    this.filteredEditableDropdownForm = this.editableDropdownForm;
 
     this.editableDropdownObject = new BehaviorSubject<AbstractControl[]>(this.editableDropdownForm.controls);
 
@@ -80,9 +84,9 @@ export class EditableDropdownService {
 
     return this.fb.group({
       id: [id],
-      value: value,
+      value: [value, Validators.required],
       isDeleted: isDeleted,
-      sort: [sort],
+      sort: [sort, Validators.required],
       saving: saving
     });
 
@@ -90,7 +94,7 @@ export class EditableDropdownService {
 
   addRow() : void {
 
-    this.editableDropdownForm.push(this.getEmptyElement());
+    this.editableDropdownForm.controls.unshift(this.getEmptyElement());
 
     this.emit();
 
@@ -150,9 +154,16 @@ export class EditableDropdownService {
 
     this.dropdownService.saveEditableDropdownElement(this.currentTable, updatedElement).then(result => {
 
-      console.log(result);
       dropdownElement.get('saving')?.setValue(false);
-      this.emit();
+
+      if(result?.error){
+        this.snackbar.errorSnackBar('A server error has occured: error EDS-156', 'OK');
+      }
+      else {
+        this.emit();
+      }
+
+
 
     });
 
@@ -192,9 +203,10 @@ export class EditableDropdownService {
 
   filterData(filterValue: string) : void {
 
-    this.editableDropdownForm.controls = this.editableDropdownForm.controls
+    this.filteredEditableDropdownForm.controls = this.editableDropdownForm.controls
                                                   .filter(el => filterValue === '' || el.get(this.textFormControlName)?.value.toLowerCase().indexOf(filterValue) > -1);
-    this.emit()
+
+    this.zone.run(() => this.editableDropdownObject.next(this.filteredEditableDropdownForm.controls));
 
     //this.editableDropdownForm = filterValue === '' ?
     //this.rows.controls :
