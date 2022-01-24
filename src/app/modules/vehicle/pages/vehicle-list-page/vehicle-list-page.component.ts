@@ -6,8 +6,8 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { VehicleService } from '../../services/vehicle.service';
 import { AuthService } from 'src/app/auth/auth.service';
-import { MediaPasteService } from './../../../../core/services/navigation/media-paste/media-paste.service';
 import { VehicleStatus, Vehicle, VehicleType } from 'src/app/core/models/vehicle';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 
 
 @Component({
@@ -60,8 +60,8 @@ export class VehicleListPageComponent implements OnInit {
               private fb: FormBuilder,
               private vehicleService: VehicleService,
               private snackBar: SnackbarService,
-              private authService:AuthService,
-              private mediaPaste:MediaPasteService) { }
+              private authService: AuthService,
+              private mediaPaste: MediaPasteService) { }
 
   ngOnInit(): void {
     this.vehicleType$ = this.dropdown.getVehicleType();

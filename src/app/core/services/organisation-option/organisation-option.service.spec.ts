@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OrganisationOptionService } from './organisation-option.service';
+import { OrganisationOptionsService } from './organisation-option.service';
 
-describe('OrganisationOptionService', () => {
-  let service: OrganisationOptionService;
+describe('OrganisationOptionsService', () => {
+  let service: OrganisationOptionsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(OrganisationOptionService);
+    service = TestBed.inject(OrganisationOptionsService);
   });
 
   it('should be created', () => {

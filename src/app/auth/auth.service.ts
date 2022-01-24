@@ -56,7 +56,6 @@ export class AuthService extends APIService {
                 throw new Error('Wrong Credentials!');
             }
             this.userService.userName = username;
-
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
@@ -80,6 +79,7 @@ export class AuthService extends APIService {
 
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
+
         } catch (error:any) {
             return Promise.reject(error.message);
         }

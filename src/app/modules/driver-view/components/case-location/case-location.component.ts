@@ -19,7 +19,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
   casesList!: DriverAssignment[];
 
   isNavigated = 'true';
-  
+
   @ViewChild(GoogleMap) map!: GoogleMap;
 
   mapOptions : google.maps.MapOptions = {};
@@ -34,7 +34,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
   constructor(private driverView: DriverViewService,
     private router: Router,
-    private cdRef:ChangeDetectorRef) { 
+    private cdRef:ChangeDetectorRef) {
     }
 
   ngOnInit(): void {
@@ -54,7 +54,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
   }
 
   hasLargeAninmal(patients:any) : boolean{
-    
+
     return patients.some((patient: any) => patient.largeAnimal);
 
   }
@@ -72,8 +72,8 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit() {
 
-    
-    
+
+
     this.driverView.driverViewDetails.pipe(takeUntil(this.ngUnsubscribe)).subscribe(caseList=> {
       this.casesList = caseList;
       this.findCenter(caseList);
@@ -95,7 +95,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
       this.map.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
 
-        if(this.map.getZoom() > 12) {
+        if(this.map.getZoom() || 0 > 12) {
           this.zoom = 13;
           this.cdRef.detectChanges();
         }
@@ -103,6 +103,6 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
       });
     }
   }
-  
+
 
 }

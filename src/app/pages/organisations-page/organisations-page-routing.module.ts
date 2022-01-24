@@ -7,7 +7,7 @@ const routes: Routes = [
     {
         path: '',
         component: OrganisationsPageComponent,
-        data: { shouldReuse: true, key: 'organisations' },
+        data: { shouldReuse: true, key: 'organisation' },
     },
 ];
 

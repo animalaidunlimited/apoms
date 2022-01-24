@@ -1,4 +1,3 @@
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { Component, Input, OnInit } from '@angular/core';
 import { Form, FormArray, FormBuilder, FormControl, FormControlName, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,7 +17,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   @Input() actionStatus!: string;
   @Input() showCompleteFlag!: any;
-  driverViewAssignments!: Observable<DriverAssignment[]>; 
+  driverViewAssignments!: Observable<DriverAssignment[]>;
 
   recordForm = this.fb.group({
     location: [''],
@@ -84,7 +83,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
+
     this.recordForm.addControl(
       'callerDetails', this.fb.array([this.getCallerFormGroup()])
     );
@@ -97,7 +96,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
     this.callerDetails = this.recordForm.get('callerDetails') as FormArray;
     this.patients = this.recordForm.get('patients') as FormArray;
-      
+
   }
 
   togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignment) {
@@ -119,13 +118,13 @@ export class DriverViewAssignmentComponent implements OnInit {
     }
 
     for(let i=0;i<assignment.patients.length - 1;i++) {
-     
+
       this.patients.push(this.getPatientFormGroup());
-      
+
     }
 
     this.recordForm.patchValue(assignment);
-    
+
     this.openDriverActionDialog(this.driverView.getDriverViewQuestionFormGroupByActionTypeAndSubAction(actionStatusName, subAction) ,
     this.recordForm, assignment.patients, subAction);
 
@@ -155,7 +154,7 @@ export class DriverViewAssignmentComponent implements OnInit {
       mediaCount: [],
       largeAnimal: [],
       callOutcome: [],
-      deleted:0    
+      deleted:0
     });
   }
 

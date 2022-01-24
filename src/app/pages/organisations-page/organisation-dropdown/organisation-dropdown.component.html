@@ -1,0 +1,119 @@
+
+<form [formGroup]="dropdownForm" fxLayout="column" fxLayoutAlign="center center">
+
+	<mat-form-field>
+		<mat-select placeholder="Select dropdown"
+			formControlName="currentDropdown">
+			<mat-option>None</mat-option>
+			<mat-option *ngFor="let dropdown of (dropdowns | async); let i = index;" [value]="dropdown">
+				{{ dropdown.displayName }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<div class="progress-wrapper">
+		<mat-progress-bar mode="indeterminate" *ngIf="(refreshing | async)" style="margin:10px auto;"></mat-progress-bar>
+	</div>
+
+<fieldset class="form-sub-group" *ngIf="currentDisplayName">
+	<legend class="legend" i18n>{{currentDisplayName}}</legend>
+
+
+
+	<div>
+
+		<mat-form-field>
+			<input matInput #filter (keyup)="applyFilter($any($event.target).value)" placeholder="Filter">
+			<button mat-icon-button matSuffix aria-label="clear" *ngIf="filter.value" (click)="filter.value=''; applyFilter('');">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-form-field>
+
+	</div>
+
+	<div class="add-button-container">
+		<button color="primary" mat-raised-button (click)="addData($event)">
+		  Add data
+		</button>
+	</div>
+
+	<div class="table-wrapper">
+
+	<mat-table #table [dataSource]="currentDropdownDataSource"
+	cdkDropList
+	[cdkDropListData]="(currentDropdownDataSource | async)!"
+	(cdkDropListDropped)="dropTable($event)">
+
+		<ng-container matColumnDef="value" sticky>
+			<mat-header-cell *matHeaderCellDef class="value-column"> {{currentDisplayName}} </mat-header-cell>
+			<mat-cell *matCellDef="let element" [formGroup]="element" class="value-column">
+				<mat-form-field floatLabel="never">
+					<input  matInput placeholder="Value" formControlName="value">
+
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="sort">
+			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
+			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element">
+				<mat-form-field floatLabel="never">
+					<mat-select formControlName="sort" placeholder="Sort order">
+						<mat-option>None</mat-option>
+						<mat-option *ngFor="let x of (currentDropdownDataSource | async); let i = index;" [value]="i+1">
+							{{ i + 1 }}
+						</mat-option>
+					</mat-select>
+					<mat-error  *ngIf="element.get('sort')?.hasError('uniqueBy')">
+						Sort order should be unique
+					</mat-error>
+				</mat-form-field>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="isDeleted">
+			<mat-header-cell *matHeaderCellDef style="justify-content: center;"> Disabled </mat-header-cell>
+			<mat-cell *matCellDef="let element; let i = index;"  [formGroup]="element" style="justify-content: center;">
+				<mat-checkbox  formControlName="isDeleted" (change)='setUpdatable(i,$event)'></mat-checkbox>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="saving">
+			<mat-header-cell  *matHeaderCellDef class="actions-header"> Actions </mat-header-cell>
+			<mat-cell *matCellDef="let element;let i = index" [formGroup]="element" class="actions-column">
+
+				<button
+				*ngIf="!element.disabled"
+				mat-mini-fab
+				class="edit-button"
+				color="primary"
+				[disabled]="(currentDropdownDataSource | async)?.values?.length === 1 || element.invalid"
+				(click)="saveRow(i,$event)">
+					<mat-icon>save</mat-icon>
+				</button>
+
+				<button
+				*ngIf="element.disabled"
+				class="edit-button"
+				mat-mini-fab
+				color="primary"
+				[disabled]="(currentDropdownDataSource | async)?.values?.length === 1"
+				(click)="editRow(i,$event)">
+					<mat-icon>edit</mat-icon>
+				</button>
+
+				<mat-spinner *ngIf="element.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
+				<mat-icon style="pointer-events: all; cursor: move;" cdkDragHandle>reorder</mat-icon>
+
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;"  cdkDrag [cdkDragData]="row"></mat-row>
+	</mat-table>
+</div>
+
+
+</fieldset>
+
+</form>

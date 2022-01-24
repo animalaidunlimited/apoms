@@ -91,8 +91,8 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
       }
       else {
-        // It's an acceptance so let's find it in the movement records and then shift it to the correct location
 
+        // It's an acceptance so let's find it in the movement records and then shift it to the correct location
         this.movedListFormArray.controls.forEach(movedList => {
 
           const currentList = movedList.get('movedList') as FormArray;

@@ -9,11 +9,10 @@ import { LocationDetailsComponent } from '../location-details/location-details.c
 @NgModule({
     declarations: [LocationDetailsComponent],
     imports: [
-                CommonModule,
-                MaterialModule,
-                GoogleMapsModule
-            ],
-    exports: [LocationDetailsComponent],
-    entryComponents: []
+        CommonModule,
+        MaterialModule,
+        GoogleMapsModule
+    ],
+    exports: [LocationDetailsComponent]
 })
 export class LocationDetailsModule {}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
-import { map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
@@ -25,15 +25,13 @@ import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
 import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
+import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
 
 
 
 
 
-export interface AnimalTypeResponse {
-    data: AnimalType[];
-}
 
 @Injectable({
     providedIn: 'root',
@@ -51,6 +49,7 @@ export class DropdownService extends APIService {
     callTypes$!: Observable<CallType[]>;
     crueltyInspectors$!: Observable<User[]>;
     dispatchers$!: Observable<User[]>;
+    editableDropdowns$!: Observable<EditableDropdown[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
     eyeDischarge$!: any[];
@@ -333,7 +332,9 @@ export class DropdownService extends APIService {
                 }),
             );
         }
-        return this.problems$;
+        return this.problems$.pipe(
+            map(problems => problems.filter((problem:any) => problem.IsDeleted === 0))
+        );
     }
 
     getIsoReasons() {
@@ -710,6 +711,47 @@ export class DropdownService extends APIService {
   return this.treatmentAreas$;
 
 }
+
+getDynamicDropdown(dropdowName: string) : Observable<any> {
+
+    const request = `/${dropdowName}`;
+
+    return this.getObservable(request).pipe(map((response: any) => {
+
+        let sortedResponse = response.sort((a: any, b: any) => (a.SortOrder || 99) - (b.SortOrder || 99));
+
+        return sortedResponse;
+
+    }));
+
+}
+
+getEditableDropdowns(): Observable<EditableDropdown[]> {
+    const request = '/GetEditableDropdowns';
+
+    if(!this.editableDropdowns$) {
+      this.editableDropdowns$ = this.getObservable(request).pipe(
+          map((response: EditableDropdown[])=> {
+
+                let sortedResponse = response.sort((a: EditableDropdown, b: EditableDropdown) => a.dropdown < b.dropdown ? -1 : 1);
+
+                return sortedResponse;
+          })
+      );
+  }
+
+  return this.editableDropdowns$;
+
+}
+
+public async saveEditableDropdownElement(tableName: string, updatedElement : EditableDropdownElement) : Promise<any> {
+
+    const request = '/UpsertDropdownElement';
+
+    return await this.postSubEndpoint(request, {tableName:tableName, ...updatedElement});
+
+}
+
 
 getVehicleType(): Observable<VehicleType[]> {
 

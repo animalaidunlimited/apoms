@@ -1,0 +1,47 @@
+.table-wrapper {
+  min-width: 320px;
+  max-width: 87vw;
+  overflow-x: auto;
+}
+
+.mat-table{
+  width: 575px;
+  overflow-x: scroll;
+}
+
+.edit-button{
+  box-shadow: none;
+}
+
+
+.add-button-container{
+  padding: 8px 24px 0;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 70%;
+}
+
+.progress-wrapper {
+  width: 100%;
+  min-height: 20px;
+}
+
+.saved-spinner{
+  position: relative;
+  left: 0;
+  overflow: unset;
+}
+
+.actions-header{
+  justify-content: center;
+}
+
+.actions-column{
+  justify-content: space-between;
+}
+
+.value-column{
+  min-width: 40%;
+}

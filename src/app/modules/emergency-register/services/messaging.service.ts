@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { AngularFireMessaging } from '@angular/fire/messaging';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
@@ -9,6 +9,7 @@ import { TreatmentListService } from '../../treatment-list/services/treatment-li
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../driver-view/services/driver-view.service';
 import { takeUntil } from 'rxjs/operators';
+import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 
 
 @Injectable({
@@ -25,11 +26,11 @@ token = '';
 
 constructor(
     private angularFireMessaging: AngularFireMessaging,
-    private authService: AuthService,
     private zone: NgZone,
     private driverView: DriverViewService,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
+    private organisationOptions: OrganisationOptionsService,
     private locationService: LocationService,
     http: HttpClient) {
         super(http);
@@ -101,7 +102,7 @@ constructor(
                 this.subscribeToTopics(this.token);
 
             },
-            (err) => {
+            (err:any) => {
                 this.zone.run(() => this.havePermission.next(false));
 
             }
@@ -131,7 +132,7 @@ constructor(
         ]
 
         // send the token to the server and subscribe it to the relevant topics
-        const organisation = this.authService.getOrganisationSocketEndPoint();
+        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
 
         let result = [];
 
@@ -159,7 +160,7 @@ constructor(
 
     async unsubscribe(){
 
-        const organisation = this.authService.getOrganisationSocketEndPoint();
+        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
 
         const unsubscribeAssignment = {
                             unsubscribe: 'true',

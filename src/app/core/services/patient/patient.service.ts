@@ -259,25 +259,29 @@ export class PatientService extends APIService {
 
                     }
 
-                    let dataItem = patientMediaItem.mediaItem.getValue();
+                    let dataItem = patientMediaItem?.mediaItem.getValue();
 
                     
 
                     if(mediaItem.deleted){
-                        dataItem = dataItem.filter(e => e.patientMediaItemId !== data.mediaItemId);
+                        dataItem = dataItem?.filter(e => e.patientMediaItemId !== data.mediaItemId);
                     }
 
-                    const existingItem = dataItem.findIndex(item => item.patientMediaItemId === data.mediaItemId);
+                    const existingItem = dataItem?.findIndex(item => item.patientMediaItemId === data.mediaItemId);
 
 
                     if(existingItem === -1 ){
-                        dataItem.push(mediaItem);
+                        dataItem?.push(mediaItem);
                     }
                      else {
-                       dataItem[existingItem] = mediaItem;
+                        if(existingItem && dataItem){
+                            dataItem[existingItem] = mediaItem;
+                        }
                     }
-                    
-                    patientMediaItem.mediaItem.next(dataItem);
+                    if(dataItem){
+
+                        patientMediaItem?.mediaItem.next(dataItem);
+                    }
 
                 }
 

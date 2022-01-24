@@ -138,12 +138,12 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
                                                                     column.name !== 'complete' &&
                                                                     column.name !== 'Other')));
 
-this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
-  columns.filter(column =>  column.name !== 'index' &&
-                            column.name !== this.area.areaName &&
-                            column.name !== 'complete' &&
-                            column.name !== 'Moved to' &&
-                            column.name !== 'Other')));
+    this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
+      columns.filter(column =>  column.name !== 'index' &&
+                                column.name !== this.area.areaName &&
+                                column.name !== 'complete' &&
+                                column.name !== 'Moved to' &&
+                                column.name !== 'Other')));
 
     this.treatmentPriorities = this.dropdown.getPriority();
 
@@ -160,9 +160,7 @@ this.filteredMovedInColumns = this.movedInColumns.pipe(map(columns =>
 
     this.resizeObservable$ = fromEvent(window, 'resize');
 
-    this.resizeObservable$.pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(() => {
+    this.resizeObservable$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.smallScreen = window.innerWidth > 840 ? false : true;
       this.populateColumnList();
     });

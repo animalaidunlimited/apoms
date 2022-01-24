@@ -2,7 +2,6 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
-import { CaseLocationComponent } from './modules/driver-view/components/case-location/case-location.component';
 import { UserActionService } from './core/services/user-details/user-action.service';
 
 export interface NavRoute extends Route {
@@ -135,16 +134,16 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.UsersPageModule)
     },
     {
-        data: { title: 'Organisations' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Organisation' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
-        path: 'organisations',
+        path: 'organisation',
         loadChildren: () =>
             import('./pages/organisations-page/organisations-page.module')
             .then(m => m.OrganisationsPageModule)
     },
     {
-        data: { title: 'Print templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Print Templates' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Settings',
         path: 'print-templates',

@@ -13,7 +13,9 @@ export class UserOptionsService{
         lat: 24.57127,
         lng: 73.691544,
     };
-    notifactionDuration = 3;
+
+    notificationDuration = 3;
+    
     minimumDate = new Date('2018-01-01');
 
     constructor(private storage: StorageService) {}
@@ -29,12 +31,12 @@ export class UserOptionsService{
         return this.homeCoordinates$;
     }
 
-    getNotifactionDuration() : number {
-        if (!this.notifactionDuration) {
-            this.notifactionDuration = 5;
+    getNotificationDuration() : number {
+        if (!this.notificationDuration) {
+            this.notificationDuration = 5;
         }
 
-        return this.notifactionDuration;
+        return this.notificationDuration;
     }
 
     getMinimumDate() : Date{
@@ -66,5 +68,5 @@ export class UserOptionsService{
         }
     }
 
-    // TODO implement custom debounce time for autocompletes
+    // TODO implement custom debounce time for autocomplete
 }

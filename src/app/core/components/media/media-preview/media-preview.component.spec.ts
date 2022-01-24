@@ -5,7 +5,7 @@ import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MediaPasteService } from 'src/app/core/services/navigation/media-paste/media-paste.service';
+import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 import { MaterialModule } from 'src/app/material-module';
 import { MediaPreviewComponent } from './media-preview.component';
 import { environment } from 'src/environments/environment';

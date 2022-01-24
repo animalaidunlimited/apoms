@@ -39,7 +39,7 @@ SELECT EmergencyCaseId, -1, 1
 FROM AAU.EmergencyCase
 WHERE EmergencyCaseId NOT IN (SELECT EmergencyCaseId FROM AAU.EmergencyCaller);
 
-
+COMMIT
 
 -- Let's see how many duplicate callers we have
 SELECT EmergencyCaseId

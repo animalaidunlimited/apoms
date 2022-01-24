@@ -11,10 +11,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { take, takeUntil } from 'rxjs/operators';
 
 
-export interface Position {
-  lat: number;
-  lng: number;
-}
+
 export interface MapMarker {
   marker?:google.maps.Marker;
   options: google.maps.MarkerOptions;
@@ -66,7 +63,6 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   infoWindow = new google.maps.InfoWindow();
 
   latlngbounds = new google.maps.LatLngBounds(undefined);
-  latlngboundsArray:google.maps.LatLng[] = [];
 
   markers: MapMarker[] = [];
 
@@ -322,7 +318,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     this.map.fitBounds(latlngbounds);
       this.map.panToBounds(latlngbounds);
       this.map.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-        if(this.map.getZoom() > 14) {
+        if(this.map.getZoom() || 0 > 14) {
           this.map.zoom = 14;
         }
       });

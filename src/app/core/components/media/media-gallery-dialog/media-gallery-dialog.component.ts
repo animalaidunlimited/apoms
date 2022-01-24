@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { Gallery, MediaItem } from 'src/app/core/models/media';
+import { Gallery,  MediaItem } from 'src/app/core/models/media';
 import { MediaThumbnailsComponent } from '../media-thumbnails/media-thumbnails.component';
 @Component({
   // tslint:disable-next-line: component-selector

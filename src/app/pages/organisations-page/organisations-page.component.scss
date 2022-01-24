@@ -1,0 +1,41 @@
+.legend{
+    margin:0 auto;
+}
+
+.form-sub-group {
+    min-width: 330px;
+}
+
+.organisation-form{
+    margin:0 0.1em;
+}
+
+.address-field {
+    width: 60%;
+    min-width: 300px;
+
+}
+
+.address-row-wrapper {
+ width: 100%;
+}
+
+.name-field{
+ width:20%;
+ min-width: 150px;
+}
+
+.orgnisation-save{
+    align-self: center;
+}
+
+@media only screen and (max-width:600px){
+    .organisation-form{
+        margin:60px 0.1em;
+    }
+
+    .mat-form-field {
+        max-width: 95%;
+    }
+}
+

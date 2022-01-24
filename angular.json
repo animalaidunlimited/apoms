@@ -47,7 +47,6 @@
           },
           "configurations": {
             "production": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -80,7 +79,6 @@
               "vendorChunk": false
             },
             "stage": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -112,7 +110,8 @@
               },
               "vendorChunk": false
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -180,15 +179,6 @@
             "production": {
               "devServerTarget": "apoms:serve:production"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }

@@ -4,7 +4,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
   export interface MediaItem{
     mediaItemId: Observable<number>;
-    patientMediaItemId: number;
+    patientMediaItemId?: number;
+    organisationMediaItemId?: number;
     mediaType: string;
     localURL: SafeUrl;
     remoteURL: string;
@@ -18,6 +19,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
     uploadProgress$: Observable<number> | null;
     updated: boolean;
   }
+
+
   export interface LocalMediaItem{
     patientId: number;
     headerType: string;

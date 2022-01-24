@@ -52,7 +52,7 @@ export class PatientStatusComponent implements OnInit {
 
     ngOnInit() {
 
-        this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
+        this.notificationDurationSeconds = this.userOptions.getNotificationDuration();
 
         this.patientStatusForm = this.fb.group({
             patientId: [this.patientId, Validators.required],

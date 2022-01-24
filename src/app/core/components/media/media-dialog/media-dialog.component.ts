@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Platform } from '@angular/cdk/platform';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { MediaItem } from 'src/app/core/models/media';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 

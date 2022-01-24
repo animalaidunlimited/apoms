@@ -12,7 +12,7 @@ export class SnackbarService{
   constructor(public snackBar: MatSnackBar , public userOptions:UserOptionsService, private zone: NgZone) { this.init();}
 
   init(){
-    this.notificationDurationSeconds = this.userOptions.getNotifactionDuration();
+    this.notificationDurationSeconds = this.userOptions.getNotificationDuration();
   }
 
   successSnackBar(message: string , action: string){

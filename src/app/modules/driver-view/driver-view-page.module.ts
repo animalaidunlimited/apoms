@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DriverViewPageRoutingModule } from './driver-view-page-routing.module';
 import { MaterialModule } from 'src/app/material-module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DriverActionDialogComponent } from './dialogs/driver-action-dialog/driver-action-dialog.component';
 
 import { VehicleListPageModule } from '../vehicle/pages/vehicle-list-page/vehicle-list-page.module';
 
@@ -12,10 +13,12 @@ import { CallerDetailsDialogComponent } from './dialogs/caller-details-dialog/ca
 import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
 import { CaseLocationComponent } from './components/case-location/case-location.component';
 import { DriverViewModule } from './components/driver-view/driver-view.module';
+
 @NgModule({
   declarations: [
     DriverViewIconsComponent,
     CallerDetailsDialogComponent,
+    DriverActionDialogComponent,
     LocationDialogComponent,
     CaseLocationComponent
   ],

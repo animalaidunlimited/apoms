@@ -102,11 +102,9 @@ export abstract class APIService<T = any> {
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
                 .toPromise();
-        } catch (error: any) {
-            response = this.errorHandler('POST', error);
-        }
 
-        return response;
+        } catch (error: any) {
+        }
 
     }
 

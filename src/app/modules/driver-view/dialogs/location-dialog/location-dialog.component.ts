@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Marker } from 'src/app/core/components/location-details/location-details.component';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { GoogleMap } from 'src/app/core/testing/google-map';
+
 
 interface DialogData {
   assignmentDetails: DriverAssignment;
@@ -45,7 +44,7 @@ export class LocationDialogComponent implements OnInit {
       ]
     } as google.maps.MapOptions;
 
-   
+
 
     this.initialiseLocation(this.data.assignmentDetails?.latLngLiteral);
   }
@@ -58,7 +57,7 @@ export class LocationDialogComponent implements OnInit {
 
     this.center = { lat: this.data.assignmentDetails?.latLngLiteral.lat , lng: this.data.assignmentDetails?.latLngLiteral.lng };
 
-    const marker: Marker = {  
+    const marker: Marker = {
         position: { lat: coordinates?.lat, lng: coordinates?.lng },
         label: '',
         options: { draggable: true },

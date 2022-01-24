@@ -1,6 +1,6 @@
+@use '@angular/material' as mat;
 @import "variables";
 
-@import '~@angular/material/theming';
 
 @function my-mat-light-theme-foreground($color) {
     @return (
@@ -23,9 +23,9 @@
 
 $my-app-foreground: my-mat-light-theme-foreground($main-font-color);
 
-$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+$my-app-theme: mat.define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-foreground));
-@include angular-material-theme($my-app-theme-with-foreground);
+@include mat.all-component-themes($my-app-theme-with-foreground);
 
 // @include mat-base-typography($custom-typography);
 
@@ -36,7 +36,7 @@ $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-for
 
 // @import "~@ng-select/ng-select/themes/material.theme.css";
 
-// @import '~@angular/material/theming';
+// @import '@angular/material/theming';
 
 // // Define a custom typography config that overrides the font-family as well as the
 // // `headlines` and `body-1` levels.
@@ -80,7 +80,7 @@ $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-for
 
 // @import "~@ng-select/ng-select/themes/material.theme.css";
 
-// @import '~@angular/material/theming';
+// @import '@angular/material/theming';
 
 // // Define a custom typography config that overrides the font-family as well as the
 // // `headlines` and `body-1` levels.

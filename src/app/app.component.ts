@@ -46,18 +46,21 @@ export class AppComponent implements OnInit{
                  this.messagingService.requestPermission();
 
                  // Set up to receive messages from the service worker when the app is in the background.
-                 navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
+                if( navigator.serviceWorker )
+                {
+                    navigator.serviceWorker.addEventListener('message', (event:MessageEvent) => {
 
-                    if(event.data?.image || event.data?.video){
+                        if(event.data?.image || event.data?.video){
 
-                        this.emergencyTabBar.receiveSharedMediaItem(event.data);
-                    }
+                            this.emergencyTabBar.receiveSharedMediaItem(event.data);
+                        }
 
-                    if(event?.data?.messageData?.staff1){
-                        this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
-                    }
+                        if(event?.data?.messageData?.staff1){
+                            this.messagingService.receiveBackgroundMessage(event.data?.firebaseMessaging?.payload);
+                        }
 
-                 });
+                    });
+                }
 
             }
 

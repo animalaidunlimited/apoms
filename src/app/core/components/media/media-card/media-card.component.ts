@@ -161,7 +161,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       this.mediaItem.mediaItemId
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((itemId) => {
-
+       
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
         this.mediaForm.get('updated')?.setValue(true);
 
