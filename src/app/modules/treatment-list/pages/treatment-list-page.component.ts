@@ -48,6 +48,9 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
                               .pipe(
                                 take(1),
                                 map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));
+
+
+
   }
 
   ngOnInit(): void {
@@ -81,6 +84,34 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(value => this.selectedDate = value);
 
+
+
+  }
+
+  ngAfterViewInit() : void {
+
+    this.route.params.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+
+      if(this.route.snapshot.params.areaName){
+
+        this.dropdown.getTreatmentAreas()
+          .pipe(takeUntil(this.ngUnsubscribe))
+          .subscribe(areas =>
+
+            areas.forEach(area => {
+
+              if(area.areaName === this.route.snapshot.params.areaName){
+
+                  this.areas.get('area')?.setValue(area);
+              }
+
+            })
+        )
+
+
+      }
+    });
+
   }
 
   ngOnDestroy() : void {
@@ -105,6 +136,11 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
   }
 
+  compareAreas(a: TreatmentArea, b: TreatmentArea){
+    return a && b
+    ? a.areaId === b.areaId
+    : a === b;
+  }
 
 }
 

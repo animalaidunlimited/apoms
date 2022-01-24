@@ -83,7 +83,7 @@ export const navRoutes: NavRoute[] = [
         group: 'Vehicles',
         path: 'vehicle-list',
         loadChildren: () =>
-            import('./modules/driver-view/pages/vehicle-list-page/vehicle-list-page.module')
+            import('./modules/vehicle/pages/vehicle-list-page/vehicle-list-page.module')
             .then(m => m.VehicleListPageModule)
     },
 
@@ -102,7 +102,7 @@ export const navRoutes: NavRoute[] = [
         group: 'Vehicles',
         path: 'vehicle-staff-assigner',
         loadChildren: () =>
-            import('./modules/driver-view/components/vehicle-staff-assigner/vehicle-staff-assigner.module')
+            import('./modules/vehicle/components/vehicle-staff-assigner/vehicle-staff-assigner.module')
             .then(m => m.VehicleStaffAssignerModule)
     },
 

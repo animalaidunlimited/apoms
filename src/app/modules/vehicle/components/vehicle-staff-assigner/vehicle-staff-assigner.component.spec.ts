@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VehicleStaffAssignerComponent } from './vehicle-staff-assigner.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MaterialModule } from './../../../../material-module';
+import { MaterialModule } from '../../../../material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 describe('VehicleStaffAssignerComponent', () => {
   let component: VehicleStaffAssignerComponent;
@@ -11,8 +11,8 @@ describe('VehicleStaffAssignerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-      
-        FormsModule, 
+
+        FormsModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
         MaterialModule,

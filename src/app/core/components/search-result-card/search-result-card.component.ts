@@ -13,6 +13,7 @@ import { CallerDetails, CaseToOpen } from '../../models/emergency-record';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { Gallery } from '../../models/media';
 
 
 @Component({
@@ -28,6 +29,8 @@ export class SearchResultCardComponent implements OnInit {
   @Input() source = "";
 
   callerObject: CallerDetails[] | undefined;
+  showImageOptions = false;
+
   private ngUnsubscribe =  new Subject();
 
   constructor(
@@ -108,8 +111,30 @@ addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalTyp
       animalType,
   );
 }
+/*
+openGalleryDialog($event: Event): void{
+
+  $event.preventDefault();
+
+  const dialogRef = this.dialog.open(MediaGalleryDialogComponent, {
+      minWidth: '50vw',
+      maxWidth: '100%',
+      panelClass: 'media-gallery-dialog',
+      data: {
+          mediaGallery: this.galleries,
+          mediaPatientItems: this.mediaData
+      }
+  });
+
+}
+*/
+
 
 openMediaDialog(patientId: number, tagNumber: string): void{
+
+
+
+
   const dialogRef = this.dialog.open(MediaDialogComponent, {
       minWidth: '50%',
       data: {
@@ -119,7 +144,10 @@ openMediaDialog(patientId: number, tagNumber: string): void{
   });
 
   dialogRef.afterClosed();
+
+
 }
+
 
 printEmergencyCard(patientId: number){
 

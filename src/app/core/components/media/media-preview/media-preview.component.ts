@@ -14,6 +14,7 @@ import { MediaCaptureComponent } from '../media-capture/media-capture.component'
 import { ɵunwrapSafeValue as unwrapSafeValue } from '@angular/core';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { takeUntil } from 'rxjs/operators';
+
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'media-preview',
@@ -96,6 +97,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     private renderer: Renderer2
   ) {
 
+    console.log(this.data);
+
     if(this.data?.image){
 
       this.imageData = this.data.image;
@@ -114,6 +117,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     this.innerHeight = window.innerHeight;
     this.recordForm = this.fb.group({
       imageDate: '',
+      isPrimary: false,
       imageTags:[],
       imageTagsChips: ''
     });
@@ -271,10 +275,21 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     return item.timestamp;
   }
 
-  updateDate(){
+  updateMediaItem(){
     const mediaItem = this.getUpdatedPatientMediaItem();
 
+    console.log(mediaItem);
+
     this.savePatientMediaItem(mediaItem);
+  }
+
+  toggleIsPrimary(){
+    let currentIsPrimary = this.recordForm.get('isPrimary');
+
+    currentIsPrimary?.setValue(!currentIsPrimary.value);
+    this.recordForm.markAsDirty();
+
+    this.updateMediaItem();
   }
 
   private insertPatientTags(value: string) {
@@ -319,6 +334,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     return {
       ...this.data.mediaData,
       datetime: this.recordForm.get('imageDate')?.value,
+      isPrimary: this.recordForm.get('isPrimary')?.value,
       tags: this.recordForm.get('imageTags')?.value?.map((tag: { tag: string; }) => ({ tag }))
     };
   }

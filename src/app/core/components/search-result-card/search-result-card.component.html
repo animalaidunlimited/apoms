@@ -10,10 +10,27 @@
             <mat-icon>create</mat-icon>
         </button>
 
-        <button mat-icon-button color="primary" class="circle-image-button">
+        <button mat-icon-button color="primary" class="circle-image-button show-images-button">
         <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_photo_alternate</mat-icon>
             <i>{{record.MediaCount}}</i>
         </button>
+
+        <!--<div class="imageOptions" *ngIf="showImageOptions">
+
+            <div fxLayout="row" fxLayoutGap='5px' fxLayoutAlign="space-between center">
+
+                <button mat-icon-button class="circle-image-button">
+                    <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_a_photo</mat-icon>
+                </button>
+
+                <button mat-icon-button class="circle-image-button">
+                    <mat-icon (click)="openGalleryDialog($event)">collections</mat-icon>
+                </button>
+
+            </div>
+
+        </div>-->
+
 
 
 

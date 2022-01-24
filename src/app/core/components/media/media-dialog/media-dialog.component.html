@@ -1,44 +1,10 @@
 
-<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center" style="padding-bottom: 20px;">
-<h1 mat-dialog-title>Media</h1>
+<div style="padding-bottom: 20px;">
 
-<input
-    hidden
-    type="file"
-    #uploader
-    multiple
-    accept="image/*,video/*"
-    (change)="uploadFile($event)"
-/>
-
-<button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
-    <mat-icon>add_a_photo</mat-icon>
-</button>
-
-<button mat-mini-fab color="primary" aria-label="Upload new image" *ngIf="platform.ANDROID || platform.IOS" (click)="openMobileMediaCaptureDialog()">
-    <mat-icon>camera</mat-icon>
-</button>
-
-</div>
-
-<div mat-dialog-content fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start">
-
-    <div *ngIf="mediaItems.length === 0">No images to display</div>
-
-    <div *ngFor="let mediaItem of mediaItems">
-
-        <media-card [tagNumber]="data.tagNumber" [mediaItem]="mediaItem"
-        [isPrimaryChanged]="isPrimaryChanged" (itemDeleted)=onMediaItemDeleted(mediaItem)
-        (updatedMedia)=onMediaUpdate($event)></media-card>
-
-
-    </div>
-
-</div>
+<thumbnail-slider [displayImagesAndButtons]='true' [mediaData]="mediaData" [patientData]="recordForm.get('patientDetails')"></thumbnail-slider>
 
 <div mat-dialog-actions>
 
-  <button type="button" mat-button [disabled]="uploading > 0" (click)="onSave()">Save</button>
-
+  <button type="button" mat-raised-button (click)="closeDialog()">Close</button>
 
 </div>

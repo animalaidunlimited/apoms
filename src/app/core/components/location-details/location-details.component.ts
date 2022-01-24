@@ -38,12 +38,15 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     errorMatcher = new CrossFieldErrorMatcher();
     center!: google.maps.LatLngLiteral;
 
+
+
     constructor(
         private locationService: LocationDetailsService,
         private fb: FormBuilder,
         private userOptions: UserOptionsService,
         private changeDetector: ChangeDetectorRef
     ) {}
+
 
     zoom = 13;
     latitude!: AbstractControl;
@@ -217,7 +220,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         this.center = { lat: position.lat, lng: position.lng };
     }
-
+    
     performSearch() {
 
         const addressSearcher = new google.maps.places.PlacesService(

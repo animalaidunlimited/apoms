@@ -49,8 +49,6 @@ export class DriverViewService extends APIService {
 
   public populateDriverView(driverViewDate: any) {
 
-
-
     const request = '?assignmentDate='+ driverViewDate;
 
     return this.getObservable(request).pipe(takeUntil(this.ngUnsubscribe)).subscribe(response=> {
