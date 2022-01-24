@@ -9,11 +9,12 @@
     releaseId: number;
     emergencyCaseId: number;
     releaseType: string;
-    Releaser1: number;
-    Releaser2: number;
     releaseBeginDate: Date | string;
     releaseEndDate: Date | string;
     pickupDate: Date | string;
+    releaseAmbulanceId: number;
+    ambulanceAssignmentTime: Date;
+    assignedVehicleId:number;
   }
 
   export interface ReleaseResponse {
@@ -37,6 +38,7 @@
 
   export interface StreetTreatForm {
     teamId: number;
+    callDateTime: string|Date;
     visits: VisitResponse[];
     patientId: number;
     adminNotes: string;

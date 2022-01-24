@@ -22,6 +22,7 @@ import { map, take, takeUntil } from 'rxjs/operators';
 })
 export class StreetTreatRecordComponent implements OnInit {
 
+
   permissionType!: number[];
 
   private ngUnsubscribe = new Subject();
@@ -92,17 +93,18 @@ export class StreetTreatRecordComponent implements OnInit {
           currentLocation: this.inputStreetTreatCase.currentLocation
         }
       ),
-      patientId:[this.patientId,Validators.required],
+      patientId:[this.patientId,Validators.required]
+
     });
 
     this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
 
     if (this.mediaData) {
-      this.mediaData.subscribe(media => {
+      this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(media => {
         if (media.length === 0) {
           return;
         }
-		  
+
         this.profileUrl = media.find(item => Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
         this.changeDetector.detectChanges();
       });
@@ -142,7 +144,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
 
 
-    
+
 
   }
 

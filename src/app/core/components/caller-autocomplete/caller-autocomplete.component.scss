@@ -12,6 +12,7 @@
     min-width: 250px;
 }
 
+
 @media only screen and (min-width:767px)
 {
     .callerForm {
@@ -35,6 +36,10 @@
             font-size:1rem;
         }
     }
+    .imageIcons {
+        display: none;
+    }
+    
 }
 
 @media(max-width: 600px) {
@@ -61,6 +66,13 @@
             left: 1px;
             font-size: 1rem;
         }
+    }
+
+    .imageIcons {
+        width: 3em !important;
+        position: relative;
+        margin-left: 25%;
+        margin-bottom: -1em;
     }
 
 }

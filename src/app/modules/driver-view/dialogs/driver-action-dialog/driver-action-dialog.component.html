@@ -1,0 +1,87 @@
+<div (click)="closeDialog()">
+    <mat-icon class="closeIconDiv">close</mat-icon>
+</div>
+
+<div mat-dialog-content>
+
+    <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
+
+       
+
+        <div *ngFor="let control of data.formBuilderArray">
+    
+           <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
+                <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
+                    <mat-label>{{control.label}}</mat-label>
+                    <input type="{{control.type}}" [min]='minTime' [max]='maxTime' [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
+                </mat-form-field>
+
+                <input type="button" *ngIf="control.type == 'datetime-local'" value="{{data.subAction}}" class="actionButton"
+                [ngClass]="{
+                    'blue' : dateTimeChanged == false,
+                    'green' : dateTimeChanged == true
+                }" 
+                (click)='setCurrentDateTime(control.formControlName)'>
+
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalBeforeCallDatetime')">
+                    Ambulance arrival before call!
+                </mat-error>
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalAfterRescue') || formGroup.get(control.formControlName)?.hasError('rescueBeforeAmbulanceArrival')">
+                    Ambulance arrival after rescue!
+                </mat-error>
+
+                <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('rescueAfterAdmission')">
+                    Rescue after admission!
+                </mat-error>
+
+                
+           </div>
+            
+           <div fxLayout='row' fxLayoutGap='10px'>
+                <div fxLayout='row' fxLayoutGap='20px'>
+                    <mat-icon class='crosshairIcon'
+                    [ngClass]="{
+                        'grey' : latLngChanged == false,
+                        'green' : latLngChanged == true
+                    }"   
+                    (click)="getCurrentVehiclelocation()">
+                        my_location
+                    </mat-icon>
+                    <p>Update latest location</p>
+                </div>
+
+
+                <div (click)="openPatientSelectForMediaDialog(formGroup.value)" fxLayout='row' fxLayoutGap='20px'>
+                    <mat-icon class="crosshairIcon">add_a_photo</mat-icon>
+                    <p>Add images</p>
+                </div>
+           </div>
+
+           
+
+          
+    
+        </div>
+
+        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection> 
+
+        <app-patient-visit-details
+            [isStreetTreatTrue]="isStreetTreat"
+            *ngIf = "isStreetTreat"
+            [recordForm]="formGroup">
+        </app-patient-visit-details>
+
+        
+
+        <div mat-dialog-action>
+
+            <button mat-raised-button color="primary" type="submit">Save</button>
+        
+        </div>
+    
+    </form>
+
+</div>
+

@@ -1,16 +1,15 @@
-import { Image, MediaItem,  Gallery,  LocalMedia} from 'src/app/core/models/media';
+import { Image, MediaItem,  Gallery, LocalMedia} from 'src/app/core/models/media';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
-import { delay, retryWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
-import { StorageService } from 'src/app/core/services/storage/storage.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -22,8 +21,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
-  private connectionStateSubs = new Subject();
   @Input() galleryData!:AbstractControl | null;
+
+  @Input() displayImagesAndButtons!:boolean;
 
   @Input() mediaData!:BehaviorSubject<MediaItem[]>;
 
@@ -35,15 +35,12 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   patientId!:number;
 
-  checkConnection!:Observable<boolean>;
-
   constructor(
     public dialog: MatDialog,
     public datepipe: DatePipe,
     private patientService:PatientService,
     private onlineStatus: OnlineStatusService,
     private mediaPasteService: MediaPasteService
-
   ) { }
 
 
@@ -51,22 +48,8 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.patientId = this.galleryData?.get('patientId')?.value;
 
+    this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connectionState => {
 
-    this.checkConnection = timer(0,3000).pipe(
-      takeUntil(this.connectionStateSubs),
-      switchMap(() => this.onlineStatus.connectionChanged),
-      takeUntil(this.ngUnsubscribe),
-      retryWhen(errors =>
-        errors.pipe(
-          // log error message
-          tap(error => console.log(error)),
-          // restart after 5 seconds
-          delay(5000)
-        )
-      )
-    );
-
-    this.checkConnection.subscribe(connectionState => {
       if(connectionState){
 
         if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
@@ -80,25 +63,18 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
           });
 
           this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
-
-        }
-        else{
-
-          this.connectionStateSubs.next();
-          this.connectionStateSubs.complete();
-
         }
       }
     });
 
     this.initMedaiaGallery();
 
-    this.mediaData?.subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+    this.mediaData?.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
 
   }
 
   ngAfterViewInit() {
-    this.onlineStatus.connectionChanged.subscribe((connectionStatus) => {
+    this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe((connectionStatus) => {
 
       if(!connectionStatus){
 
@@ -222,7 +198,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.mediaData)
     {
       // tslint:disable-next-line: deprecation
-      this.mediaData.subscribe(mediaItems => {
+      this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => {
         if(!mediaItems || mediaItems.length === 0)
         {
           return;

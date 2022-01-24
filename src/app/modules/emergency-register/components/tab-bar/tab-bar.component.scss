@@ -7,9 +7,26 @@
     width: 100%;
 }
 @media only screen and (max-width:600px){
+    .emergencyWrapper {
+        margin-top: 12% !important;
+    }
+
     :host > .mat-tab-group{
         margin-top:60px;
     }
+
+    .hotkeys{
+        display: none;
+    }
+
+}
+
+.hotkeys{
+    position: absolute;
+    top: 68px;
+    right: 5px;
+    cursor: pointer;
+    z-index: 100;
 }
 
 :host > .mat-tab-group:first-child ::ng-deep .mat-tab-label:last-child{

@@ -5,7 +5,6 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
 import { EditableDropdown } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { EditableDropdownService } from '../../services/editable-dropdown.service';

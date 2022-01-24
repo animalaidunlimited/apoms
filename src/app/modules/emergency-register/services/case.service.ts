@@ -1,23 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
+import { EmergencyCase, CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { debounceTime, map, share } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { UUID } from 'angular2-uuid';
+import { debounceTime, map, share, takeUntil } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
 @Injectable({
     providedIn: 'root',
 })
 export class CaseService extends APIService {
 
+    caseToOpen : BehaviorSubject<CaseToOpen | undefined> = new BehaviorSubject<CaseToOpen | undefined>(undefined);
+
     emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
     offlineEmergencyResponse!: EmergencyResponse;
+    private ngUnsubscribe = new Subject();
 
     constructor(
         http: HttpClient,
@@ -32,8 +36,6 @@ export class CaseService extends APIService {
     endpoint = 'EmergencyRegister';
     response: EmergencyResponse = {} as EmergencyResponse;
     redirectUrl = '';
-
-    online!: boolean;
 
     saveCaseFail = false;
 
@@ -112,7 +114,7 @@ export class CaseService extends APIService {
             return result;
         }).catch(async error => {
 
-            if (error.status === 504 || !this.online) {
+            if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
 
                 this.saveCaseFail = true;
                 if(this.saveCaseFail) {
@@ -146,7 +148,7 @@ export class CaseService extends APIService {
             })
             .catch(async error => {
 
-                if (error.status === 504 || !this.online) {
+                if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
                     this.toaster.errorSnackBar('Case saved to local storage', 'OK');
 
                     this.saveCaseFail = true;
@@ -255,10 +257,6 @@ export class CaseService extends APIService {
         return await this.put(outcomeDetails);
     }
 
-    public generateUUID() : string{
-        return UUID.UUID();
-    }
-
     public afterSaveEmergencyResponse() {
         return this.emergencyResponse.asObservable();
     }
@@ -275,10 +273,15 @@ export class CaseService extends APIService {
             });
     }
 
+    public openCase(caseToOpen: CaseToOpen) {
+
+        this.caseToOpen.next(caseToOpen);
+    }
+
 
     public getConnection() {
 
-        this.onlineStatus.connectionChanged.subscribe(async online=>{
+        this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(async online=>{
 
             if(online) {
                 // Insert case from local storage to database.

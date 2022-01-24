@@ -6,7 +6,11 @@ import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
+import { LocationService } from 'src/app/core/services/location/location.service';
+import { DriverViewService } from '../../driver-view/services/driver-view.service';
+import { takeUntil } from 'rxjs/operators';
 import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -23,9 +27,11 @@ token = '';
 constructor(
     private angularFireMessaging: AngularFireMessaging,
     private zone: NgZone,
+    private driverView: DriverViewService,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
     private organisationOptions: OrganisationOptionsService,
+    private locationService: LocationService,
     http: HttpClient) {
         super(http);
 
@@ -53,12 +59,17 @@ constructor(
         // This is a rescue message, so pass this on to the outstanding-case service
         if(message?.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
+            this.driverView.recieveUpdateDriverViewMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
         }
 
         // This is an accept/reject message for treatment list records
         if(message?.hasOwnProperty('messageType')){
             this.treatmentList.receiveAcceptRejectMessage(message);
+        }
+
+        if(message?.hasOwnProperty('vehicleLocation')){
+            this.locationService.receiveVehicleLocation(message);
         }
 
         // This is a admission/movement message for treatment list records
@@ -97,6 +108,9 @@ constructor(
             }
         );
     }
+    ngUnsubscribe(ngUnsubscribe: any): import("rxjs").OperatorFunction<string | null, string | null> {
+        throw new Error('Method not implemented.');
+    }
 
     alterPermissionState(currentState:string){
 
@@ -105,24 +119,38 @@ constructor(
 
     async subscribeToTopics(token:string){
 
+        //TODO save this config against each user so we can allow them to turn the messages on and off.
+        //There's no need to have them turned on for everyone
+
+
+        //TODO here we should call the database and get the list of topics the user wants to subscribe to.
+
+        const topics = [
+            "_UPDATING_ASSIGNMENT",
+            "_UPDATING_TREATMENT_LIST",
+            "_UPDATING_VEHICLE_LOCATION"
+        ]
+
         // send the token to the server and subscribe it to the relevant topics
         const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
 
-        const subscriptionBodyAssignment = {
-            token,
-            topic: `${organisation}_UPDATING_ASSIGNMENT`
-        };
+        let result = [];
 
-        const assignmentResult = await this.post(subscriptionBodyAssignment);
+        //Go through the list of topics and subscribe to them all
+        for(let topic of topics){
 
-        const subscriptionBodyTreatmentList = {
-            token,
-            topic: `${organisation}_UPDATING_TREATMENT_LIST`
-        };
+            const subscriptionBodyAssignment = {
+                token,
+                topic: `${organisation}${topic}`
+            };
 
-        const treatmentListResult = await this.post(subscriptionBodyTreatmentList);
+            const subscriptionResult = await this.post(subscriptionBodyAssignment);
 
-        return [assignmentResult, treatmentListResult];
+            result.push(subscriptionResult);
+
+        }
+
+        return [result];
 
     }
 

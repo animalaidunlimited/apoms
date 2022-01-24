@@ -23,8 +23,10 @@ export class LoginPageComponent implements OnInit {
     }
 
     public async login(username: string, password: string) {
+
         try {
-            const url = (await this.authService.login(
+            const url = (
+                await this.authService.login(
                 username,
                 password,
             )) as string;

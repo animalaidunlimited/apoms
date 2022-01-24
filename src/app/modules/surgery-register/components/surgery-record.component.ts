@@ -2,14 +2,14 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { SurgerySite, SurgeryType, SurgeryById, SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 interface Antibiotic {
     id: number;
@@ -63,6 +63,7 @@ export class SurgeryRecordComponent implements OnInit {
         { id: 1, Antibiotics: 'Yes' },
         { id: 2, Antibiotics: 'NO' },
     ];
+    private ngUnsubscribe = new Subject();
 
     constructor(
         private fb: FormBuilder,
@@ -98,7 +99,7 @@ export class SurgeryRecordComponent implements OnInit {
             AnimalTypeId: this.animalType,
         });
 
-        this.surgeryForm.valueChanges.subscribe(() => {
+        this.surgeryForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
             this.surgeryFormInvalid.emit(this.surgeryForm.invalid);
 
         });
@@ -136,7 +137,7 @@ export class SurgeryRecordComponent implements OnInit {
                 else {
                     if (res.success === 1) {
 
-                        const surgeonNameForTable = this.surgeons.find(user => user.UserId === this.surgeryForm.get('SurgeonId')?.value );
+                        const surgeonNameForTable = this.surgeons.find(user => user.userId === this.surgeryForm.get('SurgeonId')?.value );
                         const surgeryTypeForTable = this.surgeryTypes.find(surgeryType => surgeryType.SurgeryTypeId === this.surgeryForm.get('SurgeryTypeId')?.value );
                         const surgerySiteForTable = this.surgerySites.find(surgerySite => surgerySite.SurgerySiteId === this.surgeryForm.get('SurgerySiteId')?.value );
 
@@ -157,7 +158,7 @@ export class SurgeryRecordComponent implements OnInit {
                             date: this.surgeryForm.get('SurgeryDate')?.value,
                             died: this.surgeryForm.get('DiedDate')?.value,
                             site: surgerySiteForTable.SurgerySite,
-                            surgeon: surgeonNameForTable.FirstName,
+                            surgeon: surgeonNameForTable.firstName,
                             type: surgeryTypeForTable.SurgeryType,
                             anesthesiaMinutes: this.surgeryForm.get('AnesthesiaMinutes')?.value,
                             antibioticsGiven: this.surgeryForm.get('AntibioticsGiven')?.value,

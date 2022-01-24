@@ -114,6 +114,8 @@ export class OrganisationsPageComponent implements OnInit {
 
     updateAddressLocation(latLng: google.maps.LatLngLiteral, index: number) : void {
 
+        console.log(latLng);
+
         this.address?.at(index)?.get('latLng')?.setValue(latLng);
 
         this.latlngbounds.extend(new google.maps.LatLng(latLng.lat, latLng.lng));

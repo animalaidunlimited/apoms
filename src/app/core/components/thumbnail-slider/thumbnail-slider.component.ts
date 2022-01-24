@@ -15,13 +15,14 @@ export class ThumbnailSliderComponent implements OnInit{
    
     @Input() mediaData!: BehaviorSubject<MediaItem[]>;
     @Input() patientData!: AbstractControl | null;
+    @Input() displayImagesAndButtons!: boolean;
 
     mediaItems:MediaItem[]=[];
 
     constructor(public datepipe: DatePipe) {}
 
     ngOnInit() {
-        
+
     }
     
 }

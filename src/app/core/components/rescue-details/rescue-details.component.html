@@ -1,103 +1,142 @@
-<form [formGroup]="rescueDetails" fxLayout.gt-sm="column" fxLayoutAlign.gt-sm="center center" fxLayoutGap="20">
+<form
+    [formGroup]="rescueDetails"
+    fxLayout.gt-sm="column"
+    fxLayoutAlign.gt-sm="center center"
+    fxLayoutGap="20"
+    [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center"
+    [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
-            <mat-form-field>
-                <mat-label>Rescuer 1</mat-label>
-                    <mat-select tabindex="12" formControlName="rescuer1Id" [errorStateMatcher]="errorMatcher">
-                    <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
-                        {{rescuer.FirstName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        <mat-form-field>
+            <mat-label>Code</mat-label>
+            <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
+                [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
-            <mat-form-field>
-                    <mat-label>Rescuer 2</mat-label>
-                        <mat-select tabindex="13" formControlName="rescuer2Id" [errorStateMatcher]="errorMatcher">
-                            <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.UserId">
-                            {{rescuer.FirstName}}
-                        </mat-option>
-                    </mat-select>
-            </mat-form-field>
+                <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
 
-            <mat-form-field>
-                <mat-label>Code</mat-label>
-                <mat-select #emergencyCode tabindex="14" [formControl]="code" [errorStateMatcher]="errorMatcher"
-                    [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
+                    <mat-icon [ngClass]="{
+                        'dot-grey' : code?.value?.EmergencyCodeId == 4,
+                        'dot-red' : code?.value?.EmergencyCodeId == 1,
+                        'dot-green' : code?.value?.EmergencyCodeId == 2,
+                        'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
+                        matSuffix>fiber_manual_record</mat-icon>
+                    {{code?.value?.EmergencyCode}}
+                </mat-select-trigger>
 
-                    <!-- -->
-                    <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
+                <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
 
-                        <mat-icon [ngClass]="{
-                            'dot-grey' : code?.value?.EmergencyCodeId == 4,
-                            'dot-red' : code?.value?.EmergencyCodeId == 1,
-                            'dot-green' : code?.value?.EmergencyCodeId == 2,
-                            'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
-                            matSuffix>fiber_manual_record</mat-icon>
-                        {{code?.value?.EmergencyCode}}
-                    </mat-select-trigger>
+                    <mat-icon [ngClass]="{
+                            'dot-grey' : code.EmergencyCodeId == 4,
+                            'dot-red' : code.EmergencyCodeId == 1,
+                            'dot-green' : code.EmergencyCodeId == 2,
+                            'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
+                    {{code.EmergencyCode}}
 
-                    <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-                        <mat-icon [ngClass]="{
-                                'dot-grey' : code.EmergencyCodeId == 4,
-                                'dot-red' : code.EmergencyCodeId == 1,
-                                'dot-green' : code.EmergencyCodeId == 2,
-                                'dot-yellow' : code.EmergencyCodeId == 3}" matSuffix>fiber_manual_record</mat-icon>
-                        {{code.EmergencyCode}}
-
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
+            <mat-checkbox *ngIf="!ambulanceAssigned" formControlName="selfAdmission">Self admission</mat-checkbox>
 
     </div>
 
     <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
 
-        <mat-form-field>
-            <input tabindex="15" #ambulanceArrivalTimeField formControlName="ambulanceArrivalTime" type="datetime-local"
-            name="ambulanceArrivalTime" [min]="currentCallDateTime" [max]="currentRescueTime"
-            (focus)="setInitialTime($event)" (blur)="updateTimes()"
-            placeholder="Ambulance arrival time" [errorStateMatcher]="errorMatcher" matInput>
-
-                <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
-                Ambulance arrival before call!
-                </mat-error>
-
-                <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
-                Ambulance arrival after rescue!
-                </mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-                    <input tabindex="16" formControlName="rescueTime" type="datetime-local" name="rescueTime"
-                    [min]="currentCallDateTime" [max]="currentAdmissionTime"
-                    (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
-
-                        <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
-                        Rescue before call!
-                        </mat-error>
-
-                        <mat-error *ngIf="rescueTime?.hasError('rescueAfterAdmission')">
-                            Rescue after admission!
-                        </mat-error>
-        </mat-form-field>
-
+        <ng-container *ngIf="!selfAdmission">
 
             <mat-form-field>
-                    <input tabindex="17" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+                <mat-label>Ambulance assigned time</mat-label>
+                <input tabindex="12" #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
+                name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
+                placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
 
-                    <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
-                        Admission before call!
-                        </mat-error>
+            </mat-form-field>
 
-                    <mat-error *ngIf="admissionTime?.hasError('rescueAfterAdmission')">
-                        Rescue after admission!
+            <mat-form-field>
+                <mat-label>Assigned vehicle</mat-label>
+                    <mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
+                    <mat-option>N/A</mat-option>
+                        <mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
+                        {{vehicle.vehicleNumber}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div formArrayName="rescuers" *ngFor="let rescuer of rescuerArray?.controls; let i = index;">
+
+                <div [formGroupName]="i">
+
+                    <mat-form-field>
+                        <mat-label>Rescuer {{i + 1}}</mat-label>
+                        <mat-select tabindex="12" formControlName="rescuerId" [errorStateMatcher]="errorMatcher">
+                            <mat-option>N/A</mat-option>
+                                <mat-option *ngFor="let rescuer of rescuers$ | async" [value]="rescuer.userId">
+                                {{rescuer.firstName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+
+        </ng-container>
+
+    </div>
+
+    <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+
+
+        <ng-container *ngIf="!selfAdmission">
+
+            <mat-form-field>
+                <input tabindex="15" #ambulanceArrivalTimeField
+                formControlName="ambulanceArrivalTime"
+                type="datetime-local"
+                name="ambulanceArrivalTime"
+                [min]="currentCallDateTime"
+                [max]="currentRescueTime"
+                (focus)="setInitialTime($event)"
+                (blur)="updateTimes()"
+                placeholder="Ambulance arrival time"
+                [errorStateMatcher]="errorMatcher" matInput>
+                    <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
+                    Ambulance arrival before call!
+                    </mat-error>
+                    <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalAfterRescue')">
+                    Ambulance arrival after rescue!
                     </mat-error>
             </mat-form-field>
 
+            <mat-form-field>
+                        <input tabindex="16" formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                        [min]="currentCallDateTime" [max]="currentAdmissionTime"
+                        (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
+                            <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
+                            Rescue before call!
+                            </mat-error>
+                            <mat-error *ngIf="rescueTime?.hasError('rescueAfterAdmission')">
+                                Rescue after admission!
+                            </mat-error>
+            </mat-form-field>
+
+        </ng-container>
+
+
+        <mat-form-field>
+                <input tabindex="17" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+
+                <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
+                    Admission before call!
+                    </mat-error>
+
+                <mat-error *ngIf="admissionTime?.hasError('rescueAfterAdmission')">
+                    Rescue after admission!
+                </mat-error>
+        </mat-form-field>
+
     </div>
+
+    
 </form>

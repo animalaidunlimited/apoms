@@ -121,7 +121,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
     this.sortTreatmentList();
     this.emitTreatmentObject();
-
 }
 
   public receiveMovementMessage(movementRecord: TreatmentListMovement[]) {
@@ -187,7 +186,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
       this.sortTreatmentList();
       this.emitTreatmentObject();
 
-
     });
   }
 
@@ -239,11 +237,11 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     // Let's get the treatment list and sort it before we send it to the component
     this.get(request).then((unknownResponse:any) => {
 
-       if(!unknownResponse){
+      if(!unknownResponse){
         const response = unknownResponse || [] as TreatmentList[];
         this.prepareTreatmentListSubjects(response);
-       }
-       else if (unknownResponse[0]?.success === -1){
+      }
+      else if (unknownResponse[0]?.success === -1){
         this.snackbar.errorSnackBar('An error has occured in the database. Please see admin', 'OK');
         this.refreshing.next(false);
       }
@@ -256,8 +254,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
   }
 
   public prepareTreatmentListSubjects(response: TreatmentList[]): void {
-
-    this.treatmentListForm = this.getEmptyTreatmentForm();
 
     if(!response){
 
@@ -330,6 +326,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   private emitTreatmentObject(){
 
+
     this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
     this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
 
@@ -343,7 +340,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     this.treatmentListForm = this.getEmptyTreatmentForm();
 
     this.emitTreatmentObject();
-
 
   }
 
@@ -380,6 +376,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       patientFormGroup.addControl('patientDetails', patientDetails);
 
     });
+
 
     return returnArray;
 
@@ -506,8 +503,6 @@ public sortTreatmentList(){
 
   const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
   acceptedList.controls.sort(this.sortTreatmentAbstractControls);
-
-  this.emitTreatmentObject();
 
 }
 

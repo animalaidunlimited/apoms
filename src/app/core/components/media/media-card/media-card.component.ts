@@ -119,7 +119,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
 
     this.tags = this.mediaForm.get('tags') as FormArray;
 
-      this.mediaItem.tags.forEach((tag:any) => {
+      this.mediaItem.tags?.forEach((tag:any) => {
 
         const newTag = JSON.parse(JSON.stringify(tag));
 

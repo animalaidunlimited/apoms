@@ -1,12 +1,17 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Inject, AfterViewInit, ChangeDetectorRef, Optional } from '@angular/core';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { OutstandingAssignment, ActionPatient, OutstandingCase, RescuerGroup, } from 'src/app/core/models/outstanding-case';
+import { ActionGroup, OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { OutstandingCaseService } from '../../services/outstanding-case.service';
-import { MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { CaseService } from '../../services/case.service';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { LocationPathSegment } from 'src/app/core/models/location';
+import { LocationService } from 'src/app/core/services/location/location.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { OutstandingCaseService } from '../../services/outstanding-case.service';
+import { DriverAssignment } from 'src/app/core/models/driver-view';
+import { Patient } from 'src/app/core/models/patients';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -14,42 +19,52 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './outstanding-case-map.component.html',
   styleUrls: ['./outstanding-case-map.component.scss']
 })
-export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
+export class OutstandingCaseMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @ViewChild(GoogleMap, { static: false }) googlemap!: GoogleMap;
+  //@Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
 
-  ambulanceLocations$!:Observable<any>;
+  ambulanceLocations$!:Observable<any[]>;
 
-  center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
+  center!: google.maps.LatLngLiteral;
+
+  // center: google.maps.LatLngLiteral = {} as google.maps.LatLngLiteral;
 
   iconAnchor:google.maps.Point = new google.maps.Point(0, 55);
   iconLabelOrigin:google.maps.Point = new google.maps.Point(37,-5);
   infoContent:BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([]);
 
-  //TODO: Put this back when Angular Google Maps has the typings upgraded.
-  //options : google.maps.MapOptions = {};
-  options : any = {};
+  locationList$: BehaviorSubject<LocationPathSegment[]>;
 
+  options: google.maps.MapOptions = {};
 
-  outstandingCases$:BehaviorSubject<OutstandingCase[]>;
+  outstandingCases$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
 
-  rescues:any = [];
+  rescues: any = [];
 
   zoom = 13;
 
   constructor(
     private userOptions: UserOptionsService,
     private caseService: CaseService,
-    private outstandingCases: OutstandingCaseService) {
-      this.outstandingCases$ = this.outstandingCases.outstandingCases$;
-      this.ambulanceLocations$ = this.outstandingCases.ambulanceLocations$;
+    private locationService: LocationService,
+    private outstandingCases: OutstandingCaseService,
+    public cdr: ChangeDetectorRef,
+    @Optional() @Inject(MAT_DIALOG_DATA) public vehicleId: number) {
+
+
+      this.ambulanceLocations$ = this.locationService.ambulanceLocations$;
+      this.locationList$ = this.locationService.locationList$;
+
    }
 
   ngOnInit(): void {
 
+
+    this.outstandingCases$ =  this.outstandingCases.filteredList$;
     this.center = this.userOptions.getCoordinates();
 
     // Turn off the poi labels as they get in the way. NB you need to set the center here for this to work currently.
@@ -64,15 +79,15 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
       }
     ]};
 
-    this.outstandingCases.outstandingCases$
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(cases => {
+    if(this.vehicleId)
+    {
 
-      if(cases?.length > 0){
-        this.ambulanceLocations$ = this.outstandingCases.getAmbulanceLocations();
-      }
+      this.ambulanceLocations$ = this.ambulanceLocations$.pipe(
+        map(ambulanceLocations => ambulanceLocations.filter(ambulanceLocation => ambulanceLocation.vehicleDetails.vehicleId === this.vehicleId))
+      );
 
-    });
+    }
+
 
   }
 
@@ -83,46 +98,76 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  openAmbulanceInfoWindow(marker: MapMarker, rescues: RescuerGroup){
+  ngAfterViewInit(){
+    this.ambulanceLocations$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(ambulanceLocation => {
+      if(this.vehicleId)
+      {
+
+        this.center = { lat: ambulanceLocation[0].vehicleLocation.latLng.lat , lng: ambulanceLocation[0].vehicleLocation.latLng.lng };
+        // this.fitMaps( new google.maps.LatLngBounds(new google.maps.LatLng(ambulanceLocation[0].vehicleLocation.latLng.lat, ambulanceLocation[0].vehicleLocation.latLng.lng)));
+        // this.googlemap.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+        //   this.zoom = 15;
+        //   this.cdr.detectChanges();
+        // });
+      }
+    });
+
+
+  }
+
+
+
+  // fitMaps(latlngbounds: google.maps.LatLngBounds){
+
+  //   this.googlemap.fitBounds(latlngbounds);
+  //   this.googlemap.panToBounds(latlngbounds);
+
+
+  // }
+
+  openAmbulanceInfoWindow(marker: MapMarker, actions?: ActionGroup[]){
 
     let searchQuery = ' ec.EmergencyCaseId IN (';
 
-    let assignments:OutstandingAssignment[] = [];
+    if(!this.vehicleId){
+      let assignments:OutstandingAssignment[] = [];
 
-    rescues.actions.forEach(action => {
+      actions?.forEach(action => {
 
-      action.ambulanceAssignment.forEach(ambulanceAssignments => {
-        assignments = assignments.concat(ambulanceAssignments);
+        action.ambulanceAssignment.forEach(ambulanceAssignments => {
+          assignments = assignments.concat(ambulanceAssignments);
+        });
       });
-    });
 
-    const emergencyNumbers = assignments.map(rescue => {
+      const emergencyNumbers = assignments.map(rescue => {
 
-      return rescue.emergencyCaseId;
+        return rescue.emergencyCaseId;
 
-    }).join(',');
+      }).join(',');
 
-    searchQuery += emergencyNumbers + ') ';
+      searchQuery += emergencyNumbers + ') ';
 
-    this.caseService.searchCases(searchQuery)
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(result => {
+      this.caseService.searchCases(searchQuery)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result => {
 
-      this.infoContent.next(result);
+        this.infoContent.next(result);
+        this.infoWindow.open(marker);
+      });
+    }else{
       this.infoWindow.open(marker);
-    });
+    }
+
 
   }
 
-  openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment) {
+  openInfoWindow(marker: MapMarker, rescue: OutstandingAssignment | DriverAssignment) {
 
     // Go off and get all the details for the current rescue so we can display all the animals for a rescue
     const searchQuery = 'ec.EmergencyNumber=' + rescue.emergencyNumber;
-
     this.caseService.searchCases(searchQuery)
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(result => {
-
       this.infoContent.next(result);
       this.infoWindow.open(marker);
 
@@ -130,15 +175,16 @@ export class OutstandingCaseMapComponent implements OnInit, OnDestroy {
 
   }
 
-  hasLargeAninmal(patients:ActionPatient[]) : boolean{
+  hasLargeAnimal(patients:Patient[]) : boolean {
 
-    return patients.some(patient => patient.largeAnimal);
+    return patients?.some(patient => patient?.largeAnimal === 1);
 
   }
 
   openCase(caseSearchResult:SearchResponse)
   {
-    this.openEmergencyCase.emit(caseSearchResult);
+    //this.openEmergencyCase.emit(caseSearchResult);
+    this.caseService.openCase({tab: caseSearchResult, source: "emergencyRegister"});
   }
 
 

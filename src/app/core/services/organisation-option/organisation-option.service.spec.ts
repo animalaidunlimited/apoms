@@ -1,18 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OrganisationOptionsService } from './organisation-option.service';
 
-describe('UserOptionsService', () => {
-    beforeEach(() =>
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            providers: [OrganisationOptionsService],
-        }),
-    );
+describe('OrganisationOptionsService', () => {
+  let service: OrganisationOptionsService;
 
-    it('should be created', () => {
-        const service: OrganisationOptionsService = TestBed.get(OrganisationOptionsService);
-        expect(service).toBeTruthy();
-    });
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(OrganisationOptionsService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });

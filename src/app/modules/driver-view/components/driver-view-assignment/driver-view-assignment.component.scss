@@ -1,0 +1,179 @@
+
+.selectionDivWrapper {
+    margin-top: 10px;
+}
+
+@media (max-width: 600px){
+
+    .selectionDivWrapper {
+        margin-top: calc(100vh/13);
+    }
+
+}
+
+.emergencyDetailsCode {
+    min-width: 2em;
+    height: 2em;
+    margin-bottom: 0.5em;
+    border-radius: 50%;
+    &.red{
+        background: red;
+    }
+    &.green{
+        background: green;
+    }
+    &.yellow{
+        background: gold;
+    }
+    &.grey{
+        background: grey;
+    }
+}
+
+.caseDivContainer {
+    background: #FEFEFE;
+    box-shadow: inset 0px 6px 6px 2px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
+    padding-left: 10px;
+    border-radius: 15px;
+    width: 100%;
+    height: max-content;
+    margin-top: 16px;
+
+}
+
+.actionWrapper {
+    width: 88.06px;
+    height: 23px;
+    border-radius: 24px;
+    margin-bottom: 7px;
+    text-align: center;
+    vertical-align: middle;
+
+    &.STRelease{
+        background: #3393B4;
+    }
+
+    &.Release{
+        background: #4DAE00;
+    }
+
+    &.Rescue{
+        background: #7B61FF;
+    }
+    &.StreetTreat{
+        background: #00B8F7;
+    }
+
+}
+
+.textWrapper {
+    position: relative;
+    bottom: .6em;
+    color: white;
+}
+
+.countWrapper {
+    // margin-left: -1rem !important;
+}
+
+.toggleDiv {
+    width: max-content;
+}
+
+.toggleButtonColor {
+    color: green;
+    font-size: 1.6em;
+}
+
+.horizontalTab {
+    position: fixed;
+    width: 100%;
+    height: 54px;
+    left: 0px;
+    bottom: 0px;
+    background: #607d8b;
+    display: flex;
+    justify-content: space-between;
+}
+
+.contentWrapper {
+    margin-bottom: 13%;
+}
+
+.iconText {
+    margin-top: 5px;
+    color: white;
+    width: fit-content;
+    font-size: 8px;
+    display: flex;
+    align-self: center;
+}
+
+.iconDiv {
+    border-radius: 50%;
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 7px;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+}
+
+.form-sub-group {
+    background-color: #F1F1F1 !important;
+        border: 3px solid #A7A7A7 !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+}
+
+::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0 0.35em !important;
+}
+
+.mat-icon {
+    width: 1em !important;
+}
+
+.actionStatusWrapper {
+    margin-top: 0;
+}
+
+.hamburgerIconWrapper{
+    margin-right: 0 !important;
+    position: absolute;
+    right: 1%;
+    top: 1%;
+}
+
+.iconGroupDiv {
+    position: absolute;
+    top: 1%;
+    right: 14%;
+}
+
+p {
+    color: grey;
+    font-weight: bold;
+}
+
+.caseIconWrapper {
+    position: absolute;
+    right: 5%;
+    top: 5%;
+}
+
+.selectionButton {
+    color: green;
+    font-size: 1.3em;
+    position: relative;
+    top: 3px;
+}
+
+.selectionButtonWrapper {
+    background-color: #EDEDED;
+    border: solid 0px;
+    border-radius: 6px;
+    height: 2em;
+}

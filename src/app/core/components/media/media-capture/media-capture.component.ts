@@ -68,7 +68,7 @@ videoHeight = 0;
 
   ngOnDestroy(){
 
-    this.stream.getTracks().forEach((track) => {
+    this.stream.getTracks()?.forEach((track) => {
       track.stop();
     });
 

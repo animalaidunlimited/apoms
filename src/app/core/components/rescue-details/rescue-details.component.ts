@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
@@ -6,10 +6,11 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { takeUntil } from 'rxjs/operators';
 import { EmergencyCode } from '../../models/emergency-record';
+import { Vehicle } from '../../models/vehicle';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -23,15 +24,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     @Input() emergencyCaseId!: number;
     @Input() recordForm!: FormGroup;
     @Output() public result = new EventEmitter<UpdateResponse>();
-    @ViewChild('rescueTimeField', { read: ElementRef, static: true })
-    rescueTimeField!: ElementRef;
-    @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true })
 
-
-    ambulanceArrivalTimeField!: ElementRef;
-
+    @ViewChild('rescueTimeField', { read: ElementRef, static: true }) rescueTimeField!: ElementRef;
+    @ViewChild('ambulanceArrivalTimeField', { read: ElementRef, static: true }) ambulanceArrivalTimeField!: ElementRef;
+    @ViewChild('ambulanceAssignmentTimeField', { read: ElementRef, static: true }) ambulanceAssignmentTimeField!: ElementRef;
     @ViewChild('emergencyCode', { read: ElementRef, static: true })
-
 
     emergencyCode!: ElementRef;
 
@@ -39,10 +36,15 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     admissionTime: AbstractControl | undefined | null;
     ambulanceArrivalTime: AbstractControl | undefined | null;
+    ambulanceAssignmentTime: AbstractControl | undefined | null;
+    ambulanceAssigned = false;
+    assignedVehicleId: AbstractControl | undefined | null;
 
     callDateTimeForm!: AbstractControl;
     callOutcome!: AbstractControl;
     callDateTime: AbstractControl | undefined | null;
+
+    code = new FormControl();
 
     currentCallDateTime!: AbstractControl | undefined | null;
     currentAdmissionTime!: AbstractControl;
@@ -52,14 +54,17 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     errorMatcher = new CrossFieldErrorMatcher();
 
+    rescueDetailsVal!: RescueDetailsParent;
     rescueDetails: FormGroup = new FormGroup({});
     rescueDetails$: FormGroup = new FormGroup({});
-    code = new FormControl();
 
     rescueTime: AbstractControl | undefined | null;
-    rescuer1Id: AbstractControl | undefined | null;
-    rescuer2Id: AbstractControl | undefined | null;
+    rescuerArray!: FormArray;
     rescuers$!: Observable<User[]>;
+
+    selfAdmission = false;
+
+    vehicleList$!: Observable<Vehicle[]>;
 
 
     @HostListener('document:keydown.control.shift.q', ['$event'])
@@ -94,16 +99,18 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.recordForm.addControl(
             'rescueDetails',
             this.fb.group({
-                rescuer1Id: [],
-                rescuer2Id: [],
+                assignedVehicleId: [],
+                ambulanceAssignmentTime: [''],
                 ambulanceArrivalTime: [''],
                 rescueTime: [''],
                 admissionTime: [''],
-                code: this.code
+                selfAdmission: false,
+                code: this.code,
+                rescuers: this.fb.array([])
             }),
         );
 
-        this.rescuers$ = this.dropdowns.getRescuers();
+		this.rescuers$ = this.dropdowns.getRescuers();
         this.rescueDetails = this.recordForm.get('rescueDetails') as FormGroup;
 
         this.rescueDetailsService
@@ -111,7 +118,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             // tslint:disable-next-line: deprecation
             .subscribe((rescueDetails: RescueDetailsParent) => {
+
                 this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
+
+                    rescueDetails?.rescueDetails?.rescuers?.forEach(rescuer => {
+
+                        this.rescuerArray = this.recordForm.get('rescueDetails.rescuers') as FormArray;
+
+                        const rescuerGroup = this.fb.group({
+                            rescuerId: [{value: rescuer.rescuerId, disabled: true}]
+                        });
+
+                        this.rescuerArray.push(rescuerGroup);
+                    });
 
                     const selectedCode = codes.find(code => code.EmergencyCodeId === rescueDetails?.emergencyDetails?.code as any);
 
@@ -121,19 +140,59 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 });
                 this.zone.run(() => {
                     this.recordForm.patchValue(rescueDetails);
+                    this.rescueDetailsVal = rescueDetails;
                 });
             });
 
-        this.code.valueChanges.subscribe(code =>{
+        this.code.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(code => {
 
-            this.recordForm.get('emergencyDetails.code')?.setValue(code);
-            this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
+                this.recordForm.get('emergencyDetails.code')?.setValue(code, {emitEvent: false});
+                this.recordForm.get('rescueDetails.code')?.setValue(code, {emitEvent: false});
 
-        });
+            });
 
-        this.rescuer1Id = this.recordForm.get('rescueDetails.rescuer1Id');
-        this.rescuer2Id = this.recordForm.get('rescueDetails.rescuer2Id');
+        this.rescueDetails.get('selfAdmission')?.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(changedSelfAdmissionValue => {
+
+                this.selfAdmission = changedSelfAdmissionValue;
+
+                if(changedSelfAdmissionValue){
+
+                    this.assignedVehicleId?.setValue(null)
+                    this.ambulanceArrivalTime?.setValue(null)
+                    this.ambulanceAssignmentTime?.setValue(null);
+                    this.rescueTime?.setValue(null)
+
+                }
+
+            });
+
+        this.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(val=> {
+
+                this.ambulanceAssigned = val ? true : false;
+
+                if(val) {
+                    this.recordForm.get('assignedVehicleId')?.enable();
+
+                    this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(val);
+                }
+                else {
+                    this.recordForm.get('assignedVehicleId')?.disable();
+                    this.vehicleList$ = of([]);
+                }
+
+                //this.recordForm.patchValue(this.rescueDetailsVal);
+
+            });
+
+        this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
         this.ambulanceArrivalTime = this.recordForm.get('rescueDetails.ambulanceArrivalTime');
+        this.ambulanceAssignmentTime  = this.recordForm.get('rescueDetails.ambulanceAssignmentTime');
         this.rescueTime = this.recordForm.get('rescueDetails.rescueTime');
         this.admissionTime = this.recordForm.get('rescueDetails.admissionTime');
         this.callDateTime = this.recordForm.get('emergencyDetails.callDateTime');
@@ -151,15 +210,15 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     onChanges(): void {
         this.subscribeToValueChanges('rescueDetails');
         this.subscribeToValueChanges('emergencyDetails.callDateTime');
+        this.subscribeToValueChanges('rescueDetails.selfAdmission');
         this.subscribeToValueChanges('callOutcome.CallOutcome');
-
+        this.subscribeToValueChanges('rescueDetails.ambulanceAssignmentTime');
     }
 
     private subscribeToValueChanges(abstractControlName: string) {
         this.recordForm
-            .get(abstractControlName)
-            ?.valueChanges.pipe(takeUntil(this.ngUnsubscribe))
-            // tslint:disable-next-line: deprecation
+            .get(abstractControlName)?.valueChanges
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => {
                 // The values won't have bubbled up to the parent yet, so wait for one tick
                 setTimeout(() => this.updateValidators());
@@ -171,24 +230,25 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.ambulanceArrivalTime?.clearValidators();
         this.rescueTime?.clearValidators();
         this.admissionTime?.clearValidators();
-        this.rescuer1Id?.clearValidators();
-        this.rescuer2Id?.clearValidators();
+        this.assignedVehicleId?.clearValidators();
+        this.ambulanceAssignmentTime?.clearValidators();
 
         this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
         this.rescueTime?.updateValueAndValidity({ emitEvent: false });
         this.admissionTime?.updateValueAndValidity({ emitEvent: false });
+        this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+        this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
 
-        // if rescuer1Id || rescuer2Id then set the other to required
-        if (this.rescuer1Id?.value > 0 || this.rescuer2Id?.value > 0) {
-            this.rescuer2Id?.setValidators([Validators.required]);
-            this.rescuer1Id?.setValidators([Validators.required]);
+        // if assignedVehicleId then set the other to required
+        if (this.assignedVehicleId?.value > 0) {
 
             this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
             this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
 
             this.code?.setValidators([Validators.required]);
             this.code?.updateValueAndValidity({ emitEvent: false });
-        } else {
+
+        } else if (!this.selfAdmission) {
             this.recordForm.get('emergencyDetails.code')?.clearValidators();
             this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
             this.code?.clearValidators();
@@ -196,16 +256,22 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         }
 
-        // if ambulance arrived then rescuer1Id, rescuer2Id, resuce time required
-        if (this.ambulanceArrivalTime?.value) {
-            this.rescuer2Id?.setValidators([Validators.required]);
-            this.rescuer1Id?.setValidators([Validators.required]);
+        // if ambulance arrived then assignedVehicleId, rescue time required
+        if (this.ambulanceArrivalTime?.value || this.ambulanceAssignmentTime?.value) {
+
+            this.assignedVehicleId?.setValidators([Validators.required]);
+
+        } else if(this.ambulanceAssignmentTime?.value === '' || this.ambulanceArrivalTime?.value === ''){
+
+            this.assignedVehicleId?.clearValidators();
         }
 
-        // if rescue time then rescuer1Id, rescuer2Id, ambulance arrived required
+        // if rescue time then assignedVehicleId, ambulance arrived required
         if (this.rescueTime?.value) {
-            this.rescuer2Id?.setValidators([Validators.required]);
-            this.rescuer1Id?.setValidators([Validators.required]);
+
+            this.assignedVehicleId?.setValidators([Validators.required]);
+            this.ambulanceArrivalTime?.setValidators([Validators.required]);
+            this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
         }
 
         if (
@@ -237,14 +303,13 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.admissionTime?.setErrors({ admissionBeforeCallDatetime: true });
         }
 
-        // if admission time then rescuer1Id, rescuer2Id, ambulance arrived required, rescue time
+        // if admission time then assignedVehicleId, ambulance arrived required, rescue time
         if (this.admissionTime?.value) {
-            this.rescuer2Id?.setValidators([Validators.required]);
-            this.rescuer1Id?.setValidators([Validators.required]);
+            this.assignedVehicleId?.setValidators([Validators.required]);
 
             if (Date.parse(this.rescueTime?.value) < Date.parse(this.callDateTime?.value)) {
                 this.rescueTime?.setErrors({ rescueBeforeCallDatetime: true });
-            } else {
+            } else if(this.rescueDetails.get('selfAdmission')?.value !== true){
                 this.rescueTime?.setValidators([Validators.required]);
                 this.rescueTime?.updateValueAndValidity({ emitEvent: false });
             }
@@ -269,18 +334,41 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
         // When we select admission, we need to check that we have rescue details
 
-         if (admission) {
-             this.rescuer2Id?.setValidators([Validators.required]);
-             this.rescuer1Id?.setValidators([Validators.required]);
 
-             this.rescueTime?.setValidators([Validators.required]);
-            // this.rescueTime?.updateValueAndValidity({ emitEvent: false });
+         if (admission) {
+
              this.admissionTime?.setValidators([Validators.required]);
-            // this.admissionTime?.updateValueAndValidity({ emitEvent: false });
+             this.admissionTime?.updateValueAndValidity({ emitEvent: false });
+
+             if(!this.selfAdmission){
+
+                this.assignedVehicleId?.setValidators([Validators.required]);
+                this.rescueTime?.setValidators([Validators.required]);
+                this.ambulanceArrivalTime?.setValidators([Validators.required]);
+                this.ambulanceAssignmentTime?.setValidators([Validators.required]);
+                this.code?.setValidators([Validators.required]);
+                this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+
+                this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
+                this.code?.updateValueAndValidity({ emitEvent: false });
+                this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+                this.rescueTime?.updateValueAndValidity({ emitEvent: false });
+                this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
+                this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
+
+             }
          }
 
-        this.rescuer1Id?.updateValueAndValidity({ emitEvent: false });
-        this.rescuer2Id?.updateValueAndValidity({ emitEvent: false });
+         const streeTreat = patientArray?.controls.some(currentPatient =>
+            currentPatient.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Street treatment approved by ST manager'
+        );
+
+        if (streeTreat) {
+            this.assignedVehicleId?.setValidators([Validators.required]);
+            this.ambulanceAssignmentTime?.setValidators([Validators.required]);
+        }
+
+
     }
 
     setInitialTime(event: any) {
@@ -339,17 +427,17 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     }
 
     selectEmergencyCode($event: KeyboardEvent) {
- 
+
         // Now we're using a selection trigger the keystroke no longer works, so we need to check for it
         this.emergencyCodes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((codes:EmergencyCode[]) => {
 
-            const selectedCode = codes.find((code:EmergencyCode) => 
+            const selectedCode = codes.find((code:EmergencyCode) =>
                 code.EmergencyCode.substr(0,1).toLowerCase() === $event.key.toLowerCase()
             );
 
             if (selectedCode) {
                 this.recordForm.get('emergencyDetails.code')?.setValue(selectedCode);
-                
+
                 this.code?.setValue(selectedCode,{emitEvent: false});
             }
         });

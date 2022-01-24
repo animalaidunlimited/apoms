@@ -69,7 +69,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
 
 
         });
-        dialogRef.afterClosed().subscribe(() => {
+        dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
             sub.unsubscribe();
         });
     }

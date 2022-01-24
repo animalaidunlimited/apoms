@@ -10,21 +10,22 @@ $standard-width: 180px;
 .area {
   text-align: left;
   padding-bottom: 15px;
+  color: #607d8b !important;
+  font-weight: bold;
 }
 
 .link-large{
   font-size: xx-large;
 }
 
-@media only screen and (max-width:600px){
-  :host {
-      padding-top:60px;
-      display:block;
-  }
-}
-
 .dateFields {
   width: auto;
+  margin-top: 15px;
+}
+
+.small-box{
+  min-width: 17em;
+  text-align: center;
 }
 
 @media only screen and (min-width:600px){

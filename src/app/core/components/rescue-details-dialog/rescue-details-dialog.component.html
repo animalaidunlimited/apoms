@@ -1,5 +1,3 @@
-
-
 <h1 mat-dialog-title
 cdkDrag
 cdkDragRootElement=".cdk-overlay-pane"
@@ -13,6 +11,16 @@ cdkDragHandle>Rescue details - {{data.emergencyNumber}}</h1>
       (result)="onRescueDetailsResult($event)"
       #rescueDetails>
     </rescue-details>
+
+
+
+    <!--<app-emergency-register-patient outcome="outcome"
+    [isDisplayOnly] = "false"
+    [patientFormInput]="patient"
+    [patientIndex]="patientIndex"
+    (problemTab)="problemTab($event)"
+></app-emergency-register-patient>-->
+
 </div>
 <div mat-dialog-actions>
 

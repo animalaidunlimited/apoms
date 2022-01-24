@@ -1,5 +1,5 @@
 export interface CallOutcomeResponse {
-    CallOutcomeId: number;
-    CallOutcome: string;
-    SortOrder: number;
+    CallOutcomeId: number | null;
+    CallOutcome: string | null;
+    SortOrder: number | null;
 }

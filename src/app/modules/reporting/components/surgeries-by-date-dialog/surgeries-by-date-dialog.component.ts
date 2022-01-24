@@ -29,7 +29,7 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
     public dialogRef: MatDialogRef<PatientCallDialogComponent>
   ) {
     this.dataSource = new MatTableDataSource(this.data.surgeries);
-    this.surgeryDate = this.data.surgeries[0].date;
+    this.surgeryDate = this.data.surgeries[0]?.date;
    }
 
   ngOnInit(){

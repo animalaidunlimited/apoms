@@ -17,16 +17,19 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "vendorChunk": true,
+            "aot": true,
             "extractLicenses": false,
             "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
             "namedChunks": true,
             "outputPath": "dist/apoms",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
+            "optimization": false,
+            "outputHashing": "all",
+            "serviceWorker": true,
+            "sourceMap": true,
+            "vendorChunk": false,
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",

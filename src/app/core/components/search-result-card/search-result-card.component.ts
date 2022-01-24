@@ -1,4 +1,3 @@
-import { EmergencyCase } from './../../models/emergency-record';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchResponse } from '../../models/responses';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +9,10 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { SurgeryRecordDialogComponent } from 'src/app/modules/hospital-manager/components/surgery-record-dialog/surgery-record-dialog.component';
 import { ReleaseDetailsDialogComponent } from 'src/app/modules/hospital-manager/components/release-details-dialog/release-details-dialog.component';
 import { MediaDialogComponent } from '../media/media-dialog/media-dialog.component';
-import { CallerDetails } from '../../models/emergency-record';
+import { CallerDetails, CaseToOpen } from '../../models/emergency-record';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -21,28 +23,30 @@ import { CallerDetails } from '../../models/emergency-record';
 })
 export class SearchResultCardComponent implements OnInit {
 
-  @Input() record!:SearchResponse;
-  @Output() public openEmergencyCase = new EventEmitter<SearchResponse>();
+  @Input() record: SearchResponse | undefined;
 
-  callerObject!: CallerDetails[];
+  @Input() source = "";
+
+  callerObject: CallerDetails[] | undefined;
+  private ngUnsubscribe =  new Subject();
+
   constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
         private userOptions: UserOptionsService,
+        private caseService: CaseService,
         private printService: PrintTemplateService
   ) {}
 
   ngOnInit(): void {
 
-    this.callerObject = this.record.callerDetails;
-
-    this.printService.initialisePrintTemplates();
+    this.callerObject = this.record?.callerDetails;
   }
 
   openCase(caseSearchResult: SearchResponse) {
 
-    this.openEmergencyCase.emit(caseSearchResult);
+    this.caseService.openCase({tab: caseSearchResult, source: this.source});
   }
 
 quickUpdate(patientId: number, tagNumber: string | undefined) {
@@ -53,7 +57,8 @@ quickUpdate(patientId: number, tagNumber: string | undefined) {
   });
 }
 
-rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string,  CallOutcomeId: number | undefined, CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
+rescueUpdate(emergencyCaseId: number,  callDateTime: Date | string | undefined,  CallOutcomeId: number | undefined,
+  CallOutcome: string | undefined,  sameAsNumber: number | undefined) {
 
   this.rescueDialog.open(RescueDetailsDialogComponent, {
     maxWidth: '100vw',
@@ -92,7 +97,7 @@ openSurgeryDialog(
           animalType,
       },
   });
-  dialogRef.afterClosed().subscribe(() => {});
+  dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {});
 }
 
 addSurgery(patientId:number, tagNumber:string, emergencyNumber:number, animalType:string) {
@@ -137,7 +142,7 @@ openReleaseDialog(emergencyCaseId: number, tagNumber: string | undefined, patien
     }
 });
 
-dialogRef.afterClosed().subscribe(() => {}).unsubscribe();
+dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {}).unsubscribe();
 
 
 }

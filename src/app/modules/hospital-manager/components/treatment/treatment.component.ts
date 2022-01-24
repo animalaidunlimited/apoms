@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { TreatmentRecord } from 'src/app/core/models/treatment';
@@ -24,6 +26,7 @@ export class TreatmentComponent implements OnInit {
   treatmentRecords = ELEMENT_DATA;
   eyeDischarge!: any[];
   nasalDischarge!: any[];
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private treatmentService: TreatmentService,
@@ -94,7 +97,7 @@ export class TreatmentComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe((confirmed: boolean) => {
       if (confirmed) {
 
         row.deleted = !row.deleted;
@@ -122,7 +125,7 @@ export class TreatmentComponent implements OnInit {
         },
     });
 
-    dialogRef.afterClosed().subscribe(treatment => {
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(treatment => {
 
       if(!treatment){
         return;

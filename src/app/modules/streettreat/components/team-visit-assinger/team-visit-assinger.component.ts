@@ -3,12 +3,12 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 
 
@@ -83,6 +83,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   view:[number,number] = [700,400];
 
   zoom = 11.0;
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -109,7 +110,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
 
-    this.teamsgroup.get('teams')?.valueChanges.subscribe((teamIds)=>{
+    this.teamsgroup.get('teams')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((teamIds)=>{
 
         if(teamIds.length > 0){
           this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
@@ -122,7 +123,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     });
 
-    this.teamsgroup.get('date')?.valueChanges.subscribe((date)=>{
+    this.teamsgroup.get('date')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date)=>{
       this.searchDate = new Date(date);
 
       this.streetTreatServiceSubs =
@@ -159,6 +160,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   private initSwimlane() {
     this.streetTreatServiceSubs =
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
+      .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
 
@@ -172,7 +174,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           this.streetTreatServiceSubs.unsubscribe();
         });
 
-    this.streetTreatService.getChartData().subscribe((data) => {
+    this.streetTreatService.getChartData().pipe(takeUntil(this.ngUnsubscribe)).subscribe((data) => {
       this.initChartData(data);
     });
   }
@@ -315,7 +317,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     this.map.fitBounds(latlngbounds);
       this.map.panToBounds(latlngbounds);
-      this.map.zoomChanged.subscribe(() => {
+      this.map.zoomChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
         if(this.map.getZoom() || 0 > 14) {
           this.map.zoom = 14;
         }

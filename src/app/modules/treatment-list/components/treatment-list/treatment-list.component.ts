@@ -4,13 +4,13 @@ import { MatTable } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { TreatmentRecordComponent } from 'src/app/core/components/treatment-record/treatment-record.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
@@ -71,8 +71,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   columnCountOther = 5;
 
   displayedColumns: Observable<string[]>;
-
-  filterValue = '';
 
   filteredColumns:Observable<Column[]>;
   filteredMovedInColumns:Observable<Column[]>;
@@ -167,21 +165,27 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.populateColumnList();
     });
 
-    this.ts.getTreatmentList().subscribe(treatmentListObject => {
+    this.ts.getTreatmentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(treatmentListObject => {
 
       this.treatmentListForm = treatmentListObject;
-      this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+
+      this.treatmentListForm.addControl('filterValue',new FormControl(''));
 
       this.movedLists = this.treatmentListForm.get('movedLists') as FormArray;
 
-      this.accepted.next(this.acceptedFormArray.controls);
-      this.acceptedFiltered.next(this.accepted.value);
+      this.setAcceptedAndRefresh();
 
+      this.acceptedFiltered.next(this.accepted.value);
       this.changeDetector.detectChanges();
 
     });
 
    }
+
+  private setAcceptedAndRefresh() {
+    this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
+    this.accepted.next(this.acceptedFormArray.controls);
+  }
 
   ngOnChanges(change:SimpleChanges) : void {
 
@@ -198,6 +202,9 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
       this.smallScreen = window.innerWidth > 840 ? false : true;
 
       this.populateColumnList();
+
+      this.ts.resetTreatmentList();
+      this.changeDetector.detectChanges();
 
       this.ts.populateTreatmentList(this.area.areaId, this.selectedDate);
 
@@ -239,9 +246,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     });
 
-   }
-
-
+  }
 
   private populateColumnList() : void {
 
@@ -265,7 +270,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
           mainAreas.push({name: 'complete', type: 'button'});
 
       }
-
           mainAreas.push({name: 'Tag number', type: 'text'});
           mainAreas.push({name: 'Treatment priority', type: 'select'});
           mainAreas.push({name: 'Rel./Died', type: 'button'});
@@ -331,29 +335,31 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private filterAreaList(areaList: TreatmentArea[]) {
+
     return areaList.filter(area => area.areaName !== this.area?.areaName && area.mainArea)
       .map(area => ({ name: area.areaName, areaId: area.areaId, abbreviation: area.abbreviation, type: 'checkbox' }));
+
   }
 
-  applyFilter(event: Event) : void {
+  applyFilter() : void {
 
-    //Get the incoming value from the filtre input
-    const filterValue = (event.target as HTMLInputElement).value;
+    // Get the incoming value from the filter input
+    const filterValue = this.treatmentListForm.get('filterValue')?.value;
 
-    //Get the value from the accepted list (AbstractControl[]), then filter it down to tjhe matching values
+    // Get the value from the accepted list (AbstractControl[]), then filter it down to the matching values
     const filteredArray = this.accepted.value
                                         .filter(patient =>
                                             (patient.get('Tag number')?.value as string).toLowerCase().includes(filterValue.toLowerCase())
                                         );
 
-    //Emit the newly filtered list
+    // Emit the newly filtered list
     this.acceptedFiltered.next(filteredArray);
 
   }
 
-  receiveMessage(){
-  // TODO On incoming message, search through the treatment lists, find any existing records and remove it. Then add the new one.
-
+  clearFilter(){
+    this.treatmentListForm.get('filterValue')?.setValue('');
+    this.acceptedFiltered.next(this.accepted.value);
   }
 
   toggleTreatment(row:AbstractControl){
@@ -379,7 +385,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
         },
     });
 
-     dialogRef.afterClosed().subscribe(result => {
+     dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
 
       this.startSave(row);
 
@@ -418,7 +424,6 @@ cellClicked(cell:string, value:any){
       this.openHospitalManagerRecord(value);
 
     }
-
 }
 
 openHospitalManagerRecord(tagNumber: string){
@@ -435,15 +440,13 @@ quickUpdate(row:AbstractControl) {
     return;
   }
 
-
-
   const dialogRef = this.dialog.open(PatientEditDialog, {
       width: '500px',
       data: { patientId: row.get('PatientId')?.value, tagNumber: row.get('Tag number')?.value },
   });
 
 
-  dialogRef.afterClosed().subscribe((result:AbstractControl) => {
+  dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe((result:AbstractControl) => {
 
     if (result) {
 
@@ -459,11 +462,20 @@ quickUpdate(row:AbstractControl) {
 
 areaChanged(areaId:number|undefined, index: number){
 
+  // We need to get the record that's being moved from the filtered array
+  // Then we need to find that record in the main form group and update it.
+  let filteredRecord = this.acceptedFiltered.value[index];
+
   const acceptedArray = this.treatmentListForm.get('accepted') as FormArray;
 
-  const movedPatient = acceptedArray.at(index);
+  let recordIndex = acceptedArray.controls.findIndex(elem => elem.get('PatientId') === filteredRecord.get('PatientId'))
+
+  const movedPatient = acceptedArray.at(recordIndex);
 
   movedPatient.get('Moved to')?.setValue(areaId);
+
+  this.setAcceptedAndRefresh();
+
   this.changeDetector.detectChanges();
 
   this.moveOut(movedPatient);
@@ -518,8 +530,6 @@ getTreatmntPriority(element: number) : string {
   const treatmentPriorities = ["Low","Medium","High","Urgent"];
 
   return treatmentPriorities[element - 1];
-
-
 
 }
 

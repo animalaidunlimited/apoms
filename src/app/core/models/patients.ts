@@ -6,6 +6,7 @@ export interface Patient {
     createdDate: string | Date;
     position: number;
     animalTypeId: number;
+    largeAnimal: number | null;
     animalType: string;
     problems: Problem[];
     problemsString: string;
@@ -16,10 +17,11 @@ export interface Patient {
     updated: boolean;
     deleted: boolean;
     isAdmission: boolean;
-    admissionArea: number;
-    admissionAccepted: boolean;
+    admissionArea: number | null;
+    admissionAccepted: boolean | null;
     treatmentPriority: number;
     callOutcome: CallOutcome;
+    mediaCount: number;
 }
 
 export interface UpdatePatientDetails{
@@ -50,7 +52,7 @@ export interface PatientCall {
     patientCallerInteractionId: number;
     patientId: number;
     positiveCallOutcome: boolean;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     assignedTo: number;
     callType: number;
     patientCallerInteractionOutcomeId: number;

@@ -2,7 +2,8 @@
 
 <fieldset class="form-sub-group">
 
-      <mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>
+      <!--<mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>-->
+
 
       <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
@@ -16,15 +17,23 @@
 
       </div>
 
-      <mat-form-field style="width: 100%; margin-top: 15px" *ngIf="!isPrinting">
-        <mat-label>Filter by tag number</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="E.g. A378" #input>
-      </mat-form-field>
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" style="margin-top: 15px">
+
+        <mat-form-field *ngIf="!isPrinting">
+          <mat-label>Filter by tag number</mat-label>
+          <input matInput (keyup)="applyFilter()" formControlName="filterValue" placeholder="E.g. A378" #input>
+        </mat-form-field>
+
+        <button mat-stroked-button color="primary" (click)="clearFilter()">Clear</button>
+
+      </div>
 
 
-      <table mat-table [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
 
-        <!-- Header row first group -->
+    <table mat-table [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
+
+
+    <!-- START: Header row first group -->
     <ng-container matColumnDef="header-row-patient-details-group">
       <th mat-header-cell *matHeaderCellDef
           style="text-align: center"
@@ -33,11 +42,28 @@
       </th>
     </ng-container>
 
-    <!-- Header row second group -->
+    <!-- END: Header row first group -->
+
+
+    <!-- START: Header row second group -->
     <ng-container matColumnDef="header-row-moved-out-group">
       <th mat-header-cell *matHeaderCellDef
       class="moved-out-group" [attr.colspan]="columnCountOther"> Move out to</th>
     </ng-container>
+
+    <!-- END: Header row second group -->
+
+    <!-- START: Progress spinner -->
+
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="columnCountPatientDetails + columnCountOther">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </th>
+    </ng-container>
+
+    <!-- END: Progress spinner -->
+
+    <!--START: Table rows-->
 
       <ng-container matColumnDef="index">
         <th mat-header-cell *matHeaderCellDef class="very-small-column"> Count </th>
@@ -88,7 +114,14 @@
 
            <div *ngIf="column.type === 'text'" (click)="cellClicked(column.name, row.get(column.name).value)">
               {{row.get(column.name).value}}
+
+              <div *ngIf="column.name === 'Tag number' && row.get('Known as name').value">
+                ({{row.get('Known as name')?.value}})
+              </div>
+
             </div>
+
+
 
             <div *ngIf="column.type === 'select'" class="treatment-priority-select start">
 
@@ -138,9 +171,10 @@
 
               <mat-radio-group>
                 <mat-radio-button
-                  [checked]="column?.areaId === acceptedFormArray.at(index).get('Moved to')?.value"
+                  [checked]="column?.areaId === row.get('Moved to')?.value"
                   (change)="areaChanged(column?.areaId, index)"
                   [value]="column?.areaId">
+
                 </mat-radio-button>
 
               </mat-radio-group>
@@ -198,10 +232,11 @@
       </ng-container>
 
 
-
-      <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group'];"></tr>
+      <tr mat-header-row *matHeaderRowDef="['header-row-patient-details-group', 'header-row-moved-out-group']; sticky: true"></tr>
 
       <tr mat-header-row *matHeaderRowDef="(displayedColumns | async); sticky: true"></tr>
+
+      <tr mat-header-row *matHeaderRowDef="['progress'];" [hidden]="!(refreshing | async)"></tr>
 
       <tr mat-row *matRowDef="let element; columns: (displayedColumns | async);"
         class="patient-element-row"

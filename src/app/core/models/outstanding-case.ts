@@ -1,4 +1,6 @@
+import { LatLngLiteral } from './driver-view';
 import { CallerDetails } from './emergency-record';
+import { Patient } from './patients';
 
 export interface OutstandingCaseResponse {
     outstandingActions : OutstandingCase[];
@@ -10,6 +12,32 @@ export interface OutstandingCase {
     statusGroups: RescuerGroup[];
 }
 
+
+export interface OutstandingAssignment {
+    actionStatusId?: number;
+    ambulanceAction: string;
+    ambulanceAssignmentTime: Date;
+    rescueAmbulanceId: number;
+    releaseAmbulanceId: number | null;
+    callDateTime: string | Date ;
+    callerDetails: CallerDetails[];
+    emergencyCaseId: number;
+    emergencyCode: string;
+    emergencyCodeId?: number;
+    emergencyNumber: number;
+    latLngLiteral: LatLngLiteral;
+    location: string;
+    moved?:boolean | null;
+    patients: Patient[] ;
+    releasePickupDate: string | null;
+    releaseBeginDate?: string ;
+    releaseEndDate?: string ;
+    releaseDetailsId: number ;
+    releaseType?: string;
+    releaseRequestDate?: string;
+    rescueTime?:string;
+    searchCandidate?: boolean;
+}
 export interface RescuerGroup {
     staff1: number;
     staff1Abbreviation: string;
@@ -24,49 +52,18 @@ export interface ActionGroup {
     ambulanceAssignment: OutstandingAssignment[];
 }
 
-export interface OutstandingAssignment {
-    staff1: number;
-    staff2: number;
-    callerId: number;
-    location: string;
-    patients: ActionPatient[];
-    releaseId: number;
-    callerName: string;
-    pickupDate: string | Date;
-    requestedDate: string | Date;
-    rescueTime: string | Date;
-    actionStatus: number;
-    callDateTime: string | Date;
-    callerDetails: CallerDetails[];
-    callOutcomeId: number;
-    latLngLiteral: google.maps.LatLngLiteral;
-    releaseType: string;
-    releaseEndDate: string | Date;
-    ambulanceAction: string;
-    emergencyCaseId: number;
-    emergencyCodeId: number;
-    emergencyCode: string;
-    emergencyNumber: number;
-    releaseBeginDate: string | Date;
-    ambulanceArrivalTime: string | Date;
-
-    // These are for updated cases coming in via the messaging service
-    staff1Abbreviation: string;
-    staff2Abbreviation: string;
-    staff1Colour: string;
-    staff2Colour: string;
-    moved?: boolean;
-    searchCandidate?: boolean;
-    filteredCandidate?: boolean;
-}
 
 export interface ActionPatient{
+    animalType: string | null;
+    animalTypeId: number;
+    animalSize: string | null;
+    patientCallOutcomeId: number | null;
     patientId: number;
-    tagNumber: string;
-    animalType: string;
-    mediaCount: number;
-    largeAnimal: boolean;
+    patientStatusDate: string | null;
+    patientStatusId: number;
     problems: string;
+    tagNumber: string | null;
+    mediaCount:number;
 }
 
 export interface UpdatedRescue {

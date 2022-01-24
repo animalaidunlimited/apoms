@@ -2,8 +2,8 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { PatientResponse } from '../../models/responses';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 interface DialogData {
     emergencyCaseId: number;
@@ -28,11 +28,11 @@ interface CanExitChange {
 export class RescueDetailsDialogComponent implements OnInit {
     result: UpdateResponse;
     canExit: FormGroup = new FormGroup({});
+    private ngUnsubscribe = new Subject();
 
   constructor(
     private fb:FormBuilder,
     private detector: ChangeDetectorRef,
-    private caseService: CaseService,
     public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
@@ -57,6 +57,12 @@ export class RescueDetailsDialogComponent implements OnInit {
         callDateTime: [''],
         updateTime: ['']
       }),
+
+      latLngLiteral: this.fb.group({
+        lat: [],
+        lng: []
+      }),
+
       updateFromRescueDialog: [true]
     });
 
@@ -65,7 +71,7 @@ export class RescueDetailsDialogComponent implements OnInit {
       rescueDetailsUpdateComplete: [0]
     });
 
-    this.canExit.valueChanges.subscribe((values:CanExitChange) => {
+    this.canExit.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((values:CanExitChange) => {
 
       // TODO update this to handle any errors and display them to a toast.
       if(values.rescueDetailsUpdateComplete !== 0){
@@ -91,7 +97,8 @@ export class RescueDetailsDialogComponent implements OnInit {
 
   // saveRescueUpdate() {
 
-  //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and its the part of the emergency outstanding board.
+  //   // Here we are using the EmergencyRegister route not the patient route because we are updating the patient rescue and it's
+  //   //the part of the emergency outstanding board.
   //   this.caseService.insertOrUpdatePatientFromRescueDetailsDialog(this.data.recordForm.value)
   //   .then(output=> {
 

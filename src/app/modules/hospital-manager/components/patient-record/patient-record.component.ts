@@ -105,7 +105,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
         if(this.mediaData){
 
             // tslint:disable-next-line: deprecation
-            this.mediaData.subscribe(media=>{
+            this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(media=>{
                 if(media.length === 0){
                     return;
                 }

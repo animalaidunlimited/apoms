@@ -1,0 +1,81 @@
+.mat-release-panel{
+    margin-bottom: 8px;
+    border-radius: 30px;
+    min-height: 50px;
+    border-bottom: solid;
+    border-color: grey;
+    .border-green {
+        height: 3.5em;
+    }
+}
+.mat-expansion-panel-header {
+    padding: 0.5em;
+    height: auto;
+    min-height: 45px;
+    span.mat-content {
+        display: flex;
+        align-items: center;
+    }
+}
+.mat-release-panel.mat-expanded {
+    border-radius: 20px !important;
+}
+
+.border-red {
+    border-right: 8px solid red;
+}
+
+.border-green {
+    border-right: 8px solid green;
+}
+
+.border-yellow {
+    border-right: 8px solid gold;
+}
+
+.mat-expansion-panel{
+    margin-bottom: 8px;
+    border: solid .1px lightgray;
+}
+
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover,
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true])
+.mat-expansion-panel-header:hover
+{
+  background-color: lightsteelblue !important;
+}
+
+.CallDateTime, .name, .telephone, .patients-group, .animal-location{
+    margin: 10px 0px 0px 10px;
+    text-align: left;
+}
+
+.telephone-dash-container {
+    height: 100%;
+    margin-bottom: 5px;
+}
+
+.telephone-dash {
+    stroke: #607d8b;
+    stroke-width: 4;
+}
+
+.patient-details{
+    padding-top: 3px;
+}
+
+.media-count{
+    font-weight: bold;
+    color: #607d8b;
+    padding-top:3px;
+    margin-right: 4px;
+}
+
+
+.imageIcon {
+
+    cursor: pointer;
+
+}

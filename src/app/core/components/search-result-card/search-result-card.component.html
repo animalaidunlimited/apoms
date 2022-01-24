@@ -1,4 +1,4 @@
-<mat-card class="emergency-card">
+<mat-card class="emergency-card" *ngIf="record">
 
         <mat-card-header class="emergency-card-header" (click)="openCase(record)">
           <mat-card-title>{{record.EmergencyNumber}} - {{record.TagNumber}}</mat-card-title>

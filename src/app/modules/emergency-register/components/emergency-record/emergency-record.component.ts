@@ -5,7 +5,7 @@ import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { EmergencyResponse, PatientResponse, ProblemResponse } from 'src/app/core/models/responses';
-import { getCurrentTimeString } from 'src/app/core/helpers/utils';
+import { generateUUID, getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -47,8 +47,14 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     hasWritePermission = false;
 
+    @HostListener('document:keydown.control',['$event'])
+    removeDropDownFocus(){
+
+    }
+
     @HostListener('document:keydown.control.shift.r', ['$event'])
     resetFormEvent(event: KeyboardEvent) {
+
 
         event.preventDefault();
 
@@ -159,12 +165,11 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     resetForm() {
 
-
         this.recordForm.reset({});
 
         this.resetPatientFormArray();
 
-        this.guId.next(this.caseService.generateUUID());
+        this.guId.next(generateUUID());
 
         this.loadEmergencyNumber.emit({emergencyNumber : 'New Case*' , GUID: this.guId.value});
 

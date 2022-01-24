@@ -1,13 +1,14 @@
-<div *ngIf="patientForm" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
+<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
   fxLayout.gt-xs="row" >
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
   <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
-    
+
     <!-- Animal Dropdown-->
-    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;" fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
+    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;"
+    fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher" (keydown.Tab)="isSpeciesBlank($event);false;"
@@ -35,7 +36,8 @@
         </mat-chip>
 
         <input placeholder="Main problem(s)" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
-          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)" (keydown.Shift.Tab)="focusAnimalType($event)">
+          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)"
+          (keydown.Shift.Tab)="focusAnimalType($event)">
 
       </mat-chip-list>
 
@@ -47,6 +49,11 @@
       </mat-autocomplete>
 
     </mat-form-field>
+
+    <div class="patients_icons">
+      <thumbnail-slider [mediaData]="mediaData" [patientData]="patientForm" [displayImagesAndButtons]='false'></thumbnail-slider>
+    </div>
+
   </div>
 
 
@@ -57,11 +64,11 @@
   <button *ngIf="patientDeletedFlag" class="undoButton" type="button" (click)="redoPatient()" mat-mini-fab color="warn">
     <mat-icon>undo</mat-icon>
   </button>
-  
+
 
 
   <!-- Calloutcome details-->
-  <div *ngIf="outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
+  <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
@@ -92,12 +99,36 @@
         </mat-select>
 
       </mat-form-field>
-      
+
     </div>
     <div class="patients_icons">
-      <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon>
+      <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
       <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>
   </div>
+
+</div>
+
+<div *ngIf="isDisplayOnly" class="displayOnlyPatientWrapper">
+
+  <div fxLayout="row" fxLayoutGap='10px' fxLayoutAlign="start center" style="min-height: 2em;">
+    <div>
+      {{animalType.value}}
+    </div>
+    <div *ngIf="problemsArray?.value.length > 1">
+      {{problemsArray?.value[0].problem}} + {{problemsArray?.value.length - 1}}
+    </div>
+
+    <div *ngIf="problemsArray?.value.length == 1">
+      {{problemsArray?.value[0].problem}}
+    </div>
+
+    <div class="mediaIconsWrapper">
+      <thumbnail-slider [mediaData]="mediaData" [patientData]="patientForm" [displayImagesAndButtons]='false'></thumbnail-slider>
+    </div>
+
+  </div>
+
+
 
 </div>

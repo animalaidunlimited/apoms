@@ -1,11 +1,12 @@
 import { Patient } from './patients';
 import { CallOutcomeResponse } from './call-outcome';
+import { SearchResponse } from './responses';
 
 export interface EmergencyDetails {
     emergencyCaseId: number;
     guId:string;
     emergencyNumber: number;
-    callDateTime: string | Date;
+    callDateTime: string | Date | undefined;
     dispatcher: number;
     code: EmergencyCode;
     updateTime: string | Date;
@@ -24,8 +25,8 @@ export interface CallerDetails {
 }
 
 export interface CallOutcome {
-    callOutcome: CallOutcomeResponse;
-    sameAsNumber: number;
+    CallOutcome: CallOutcomeResponse;
+    sameAsNumber: number | null;
 }
 
 export interface LocationDetails {
@@ -53,6 +54,11 @@ export interface EmergencyForm {
 
 export interface EmergencyCase {
     emergencyForm: EmergencyForm;
+}
+
+export interface CaseToOpen{
+    tab: SearchResponse;
+    source: string;
 }
 
 export interface EmergencyTab {

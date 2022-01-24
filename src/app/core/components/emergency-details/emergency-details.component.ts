@@ -98,7 +98,9 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(
+                takeUntil(this.ngUnsubscribe)
+            )
             .subscribe(val => {
                 if(!val && this.focusEmergencyNumber){
                     this.emergencyNumberField.nativeElement.focus();
@@ -124,7 +126,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.emergencyDetails.addControl('emergencyNumber',
             new FormControl(
                 '',
-                [Validators.required],
+                [Validators.required, Validators.max(2147483647)],
                 [this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value, 1)]
             )
         );
@@ -135,6 +137,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     updateEmergencyNumber(emergencyNumber: number) {
+
         this.loadEmergencyNumber.emit(emergencyNumber);
     }
 

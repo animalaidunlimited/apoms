@@ -1,0 +1,235 @@
+@import '../../components/outstanding-case-board/outstanding-case-board.component.scss';
+
+.licensePlate{
+    border: 2px solid black;
+    min-width: 10em;
+    max-width: 10em;
+    padding: 0.3em;
+    border-radius: 0.25em;
+    font-weight: 600;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    box-shadow: 0 0.2em 0.1em rgb(0 0 0 / 25%);
+    background:white;
+    position: absolute;
+    left:-1em;
+    top:-1em;
+    &Badge {
+        background-color: #3636c9;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+        min-height: 1em;
+        left: 0;
+        min-width: 2em;
+        padding: 0.2em 0 0.2em 0;
+
+        .silver {
+            background:
+               conic-gradient(
+                       #d7d7d7, #c3c3c3, #cccccc, #c6c6c6,
+                       #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8,
+                       #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf,
+                       #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5,
+                       #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd,
+                       #c4c4c4, #d9d9d9, #cecece, #c5c5c5,
+                       #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9,
+                       #d7d7d7) content-box,
+               linear-gradient(#d4d4d4, #d4d4d4)
+                   padding-box;
+           width: 0.7em;
+           height: 0.7em;
+       }
+
+        span{
+            color: white;
+            font-size: 0.44em;
+            margin-top: 0.5em;
+        }
+
+
+    }
+
+}
+
+.vehicle{
+    justify-content: space-between;
+    padding-right: 2em;
+    position: relative;
+    &Number{
+        position: relative;
+        min-width: max-content;
+
+        p{
+            margin-bottom:0em;
+            font-weight:bold;
+            font-size:1.2em;
+        }
+
+    }
+    &RegistrationNumber{
+        margin-left:2em;
+    }
+    &Staff{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 10em;
+        margin-left: 1em;
+        &Name{
+
+            font-size: 1em;
+            border-radius: 1em;
+            padding: 0.2em 0.5em 0.2em 0;
+            margin: 0.3em 0.2em 0 0;
+            border: 1px solid lightslategray;
+            span.initials {
+                border: 1px solid lightslategray;
+                border-radius: 50%;
+                padding: 0.2em;
+                background: white;
+                font-weight: 600;
+                color: rgb(0 0 0);
+                margin-left: -0.0725em;
+            }
+
+        }
+    }
+    &Image
+    {
+        img{
+            width: 9em;
+            border-radius: 50%;
+            height: 9em;
+            object-fit: cover;
+            object-position: center;
+        }
+        margin-right: 1em ;
+    }
+    &Description{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: 19em;
+        max-height: 8.5em;
+        min-width: 15em;
+        margin-right: 2em;
+    }
+    &Map{
+        position: absolute;
+        top:0.5em;
+        right:0.1em;
+    }
+}
+
+
+.vehicleWrapper{
+    border: 1px solid rgb(96 125 139/35%);
+    border-radius: 0.5em;
+    background:rgb(96 125 139/15%);
+    padding: 0.5em;
+}
+
+.vehicleType{
+    align-items: center;
+    p{
+        margin-left:1em;
+    }
+}
+.vehicleTypeIcon{
+    img{
+        width:2.5em;
+        height: 2.5em;
+    }
+}
+
+.capacityTitle{
+    margin-top: 1.5em;
+    font-size: 1.2em;
+    display: flex;
+    &:nth-child(even){
+        margin-top: 0;
+    }
+    span{
+        width: 4em;
+        display: inline-block;
+        text-align: center;
+    }
+}
+
+.vehicleCapacity{
+    h3{
+        text-align: center;
+        margin-top: 0.1em;
+        margin-bottom: 0.6em;
+    }
+}
+
+.swimlane{
+    margin: 0em 1em 1.5em 0;
+}
+
+
+@media (max-width: 600px){
+
+    .vehicleType{
+        min-width: unset;
+
+        &Icon img {
+            margin-top: 0.4em;
+        }
+    }
+
+    .vehicleCapacity{
+        padding-left: 0.2em;
+        h3{
+            min-width: 5em;
+            text-align: left;
+        }
+    }
+
+    .capacityTitle{
+        span{
+            width: 8.9em;
+        }
+    }
+    .swimlane{
+        margin: 0 auto;
+    }
+
+
+}
+
+.timeAgo{
+    font-weight: bold;
+    color:red;
+}
+
+.timer{
+    display:flex;
+    align-items: center;
+}
+
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    background-color: lightsteelblue;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    cursor: default;
+}
+
+.initials {
+    position: relative;
+    top: 15px; /* 25% of parent */
+    font-size: 30px; /* 50% of parent */
+    line-height: 30px; /* 50% of parent */
+    color: #fff;
+    font-weight: bold;
+}

@@ -2,10 +2,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, NgZone } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { UniqueValidators } from 'src/app/core/components/patient-visit-details/unique-validators';
 import { EditableDropdownElement } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { UniqueValidators } from 'src/app/core/validators/unique-validators';
 
 
 @Injectable({

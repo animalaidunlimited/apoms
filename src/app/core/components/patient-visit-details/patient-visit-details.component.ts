@@ -12,12 +12,15 @@ import { VisitResponse } from 'src/app/core/models/release';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 import { StreetTreatService } from 'src/app/modules/streettreat/services/streettreat.service';
 import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
-import { UniqueValidators } from './unique-validators';
+import { UniqueValidators } from '../../validators/unique-validators';
 import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { takeUntil } from 'rxjs/operators';
+import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
+import { Vehicle } from '../../models/vehicle';
 
 interface VisitCalender {
 	status: number;
@@ -78,7 +81,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
     private ngUnsubscribe = new Subject();
 
+	callDateTime:string|Date = '';
+	currentTime = getCurrentTimeString();
+
 	errorMatcher = new CrossFieldErrorMatcher();
+
 	loadCalendarComponent = true;
 
 	prevVisits: string[] = [];
@@ -90,10 +97,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	streatTreatForm!: FormGroup;
 	teamListData$!: Observable<TeamDetails[]>;
 	treatmentPriority$!: Observable<Priority[]>;
-
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
+	vehicleList$!: Observable<Vehicle[]>;
 
 	minVisitDate = '0';
 
@@ -112,7 +119,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private streetTreatService: StreetTreatService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private rescueDetailsService: RescueDetailsService
 
 	) { }
 
@@ -129,8 +137,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.fb.group({
 				streetTreatCaseId: [],
 				patientId: [this.patientId],
+				callDateTime: [''],
 				casePriority: [, Validators.required],
-				teamId: [, Validators.required],
+				assignedVehicleId: [, Validators.required],
+				ambulanceAssignmentTime: ['', Validators.required],
 				mainProblem: [, Validators.required],
 				adminNotes: [, Validators.required],
 				streetTreatCaseStatus: [, Validators.required],
@@ -138,9 +148,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			})
 		);
 		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
-
 		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
-
 		this.teamListData$ = this.dropdown.getAllTeams();
 		this.problems$ = this.dropdown.getStreetTreatMainProblems();
 		this.status$ = this.dropdown.getStatus();
@@ -154,6 +162,17 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 			this.initStreetTreatForm();
 		}, 1);
+
+
+		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(date=> {
+			if(date) {
+				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
+                this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
+            }
+            else {
+				this.recordForm.get('streatTreatForm.assignedVehicleId')?.disable();
+            }
+		});
 
 
 	}
@@ -202,6 +221,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						if(!!response.patientReleaseDate){
 							this.minVisitDate = response.patientReleaseDate;
 						}
+
 						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date || this.showVisitDate) {
@@ -220,9 +240,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 							});
 
 						}
-						this.visitsArray.push(this.getVisitFormGroup());
+						if(response.visits.length > this.visitsArray.length) {
+							this.visitsArray.push(this.getVisitFormGroup());
+						}
 					});
 				}
+				
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 
@@ -238,10 +261,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
 
 				this.streatTreatForm.patchValue(response);
+				this.callDateTime = formatDateForMinMax(response.callDateTime);
 
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 
 				this.changeDetectorRef.detectChanges();
+			}
+			else {
+				this.visitsArray.push(this.getVisitFormGroup());
 			}
 		});
 	}
@@ -286,13 +313,11 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			visit_date: [date],
 		});
 
-		if (this.castedVisitArray.length > 0) {
-			if (this.prevVisits.length > 0) {
+		if (this.showVisitDate) {
 				visitArray.get('visit_date')?.setValidators(Validators.required);
 			}
 			else {
 				visitArray.get('visit_day')?.setValidators(Validators.required);
-			}
 		}
 		return visitArray;
 	}
@@ -390,6 +415,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.visitsArray.get('visit_type')?.setValidators([Validators.required]);
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
 
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.setValidators([Validators.required]);
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 		this.changeDetectorRef.detectChanges();
 
 	}
@@ -403,6 +430,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('mainProblem')?.clearValidators();
 		this.streatTreatForm.get('adminNotes')?.clearValidators();
 		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.clearValidators();
 
 		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let i = 0; i < this.visitsArray?.controls.length; i++) {
@@ -419,6 +447,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({ emitEvent: false });
 		this.visitsArray.get('visit_status')?.updateValueAndValidity({ emitEvent: false });
 		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
+		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 
 		this.changeDetectorRef.detectChanges();
 

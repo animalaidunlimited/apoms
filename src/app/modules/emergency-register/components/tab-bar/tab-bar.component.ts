@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { EmergencyTab } from 'src/app/core/models/emergency-record';
+import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
@@ -9,6 +9,7 @@ import { CaseService } from '../../services/case.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -17,7 +18,7 @@ interface EmergencyCaseIndentifiers {
 
 
 @Component({
-    
+
     // tslint:disable-next-line: component-selector
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
@@ -28,22 +29,39 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
+    loadBoard = false;
+
     selected = new FormControl(0);
 
     tabs = [
-        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '' , GUID: new BehaviorSubject<string>('') },
+        { id: 0, value: 'Board', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
         { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
     ];
 
-    constructor(private cdr: ChangeDetectorRef,
+    constructor(
+        private cdr: ChangeDetectorRef,
         private emergencytabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
         private navigationService:NavigationService,
-        private caseService: CaseService) {}
+        private caseService: CaseService
+    ) {}
 
     ngOnInit() {
         this.selected.setValue(1);
+
+        this.caseService.caseToOpen
+        .pipe(
+            takeUntil(this.ngUnsubscribe)
+        )
+        .subscribe(caseValue => {
+
+            if(caseValue?.source === "emergencyRegister"){
+                this.openCase(caseValue);
+            }
+        });
+
         this.navigationService.isSearchClicked
+
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((clicked)=>
             {
@@ -53,17 +71,16 @@ export class TabBarComponent implements OnInit, OnDestroy {
                 }
             }
         );
+
         const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
 
-        sharedMediaItem
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((mediaItem:File[])=>{
+        sharedMediaItem.pipe(takeUntil(this.ngUnsubscribe))
+                        .subscribe((mediaItem:File[])=>{
 
-           if(mediaItem.length > 0){
-                this.openSearchMediaDialog(mediaItem);
-           }
-        });
-
+                        if(mediaItem.length > 0){
+                                this.openSearchMediaDialog(mediaItem);
+                        }
+                        });
     }
 
     ngOnDestroy() {
@@ -81,7 +98,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
 
-        const guIdVal = new BehaviorSubject<string>(this.caseService.generateUUID());
+        const guIdVal = new BehaviorSubject<string>(generateUUID());
 
         this.tabs.push({
             id: this.tabs.length,
@@ -96,18 +113,18 @@ export class TabBarComponent implements OnInit, OnDestroy {
         });
     }
 
-    openCase(result: EmergencyTab) {
+    openCase(result: CaseToOpen) {
 
         const tabExists = this.tabs.find(
             card =>
-                card.emergencyCaseId === result.EmergencyCaseId
+                card.emergencyCaseId === result.tab.EmergencyCaseId
         );
 
         tabExists
             ? (this.selected.setValue(tabExists.id), this.cdr.detectChanges())
             : this.addTab(
-                  result.EmergencyCaseId,
-                  result.EmergencyNumber
+                  result.tab.EmergencyCaseId,
+                  result.tab.EmergencyNumber
               );
     }
 
@@ -140,12 +157,21 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
 
     openShortcutsDialog($event:Event, tabIndex:number){
-        $event.preventDefault();
-        
+        // $event.preventDefault();
+
         const dialog = this.dialog.open(KeyboardShortcutsComponent, {
             minWidth: '50%'
         });
-        dialog.afterClosed().subscribe(()=> this.selected.setValue(tabIndex));
+        dialog.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(()=> this.selected.setValue(tabIndex));
+    }
+
+    tabChanged($event:number){
+
+        if($event === 0){
+            this.loadBoard = true;
+        }
+
+        this.selected.setValue($event);
 
     }
 }

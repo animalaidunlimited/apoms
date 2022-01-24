@@ -1,10 +1,9 @@
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Injectable, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { LocalMediaItem,MediaItemReturnObject, MediaItem } from '../../models/media';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { map } from 'rxjs/operators';
-import { Observable, from, BehaviorSubject, of} from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, from, BehaviorSubject, of, Subject} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -16,6 +15,7 @@ import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
 import { LogoService } from '../logo/logo.service';
 import { OrganisationOptionsService } from '../organisation-option/organisation-option.service';
+import { MediaItemReturnObject, MediaItem, LocalMediaItem } from '../../models/media';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -35,6 +35,7 @@ interface ResizedImage{
 })
 
 export class MediaPasteService {
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -56,7 +57,7 @@ export class MediaPasteService {
 
 
   handleUpload(file: File, Id: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
-
+    console.log('hi');
     if(!file.type.match(/image.*|video.*/)){
       return {
         mediaItem: undefined,
@@ -105,7 +106,7 @@ export class MediaPasteService {
 
           // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
-          uploadResult.then((result) => {
+          uploadResult.then((result: any) => {
 
             result.ref.getDownloadURL().then((url:any) => {
 
@@ -135,7 +136,7 @@ export class MediaPasteService {
 
             });
 
-          }).catch(async error => {
+          }).catch(async (error: any) => {
             console.log(error);
           });
         }
@@ -154,7 +155,7 @@ export class MediaPasteService {
 
         // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
-        uploadResult.then((result) => {
+        uploadResult.then((result:any) => {
 
           result.ref.getDownloadURL().then((url:any) => {
 
@@ -164,7 +165,7 @@ export class MediaPasteService {
 
             newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
 
-            newMediaItem.mediaItemId.subscribe(id => {
+            newMediaItem.mediaItemId.pipe(takeUntil(this.ngUnsubscribe)).subscribe(id => {
 
               returnObject.mediaItemId.next(id);
 
@@ -259,6 +260,37 @@ export class MediaPasteService {
 
   }
 
+
+
+  handleImageUpload(file: File){
+
+    const returnObject = {
+      url: new BehaviorSubject<string | undefined>(undefined),
+      uploaded: new BehaviorSubject<boolean | undefined>(undefined)
+    };
+
+    if(!file.type.match(/image.*|video.*/)){
+      return;
+    }
+    this.checkAuthenticated().then(async () => {
+
+      const timeString = this.datepipe.transform(new Date(), 'yyyyMMdd_hhmmss');
+      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '','vehicles');
+      if(file.type.match(/image.*/)){
+        const resizedImage = await this.croppedImage(file);
+        const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+        uploadResult.then((result: any) => {
+
+          result.ref.getDownloadURL().then((url:any) => {
+
+            returnObject.url.next(url);
+
+        });});
+      }
+    });
+
+    return returnObject;
+  }
   private async croppedImage(file: File) {
     const options: IResizeImageOptions = {
       maxSize: 5000,
@@ -342,7 +374,7 @@ export class MediaPasteService {
       this.getVideoDimension(uploadImage);
 
       // Get the dimensions of the image
-      mediaObservable.subscribe((image) => {
+      mediaObservable.pipe(takeUntil(this.ngUnsubscribe)).subscribe((image) => {
 
         newMediaItem.widthPX = image.width;
         newMediaItem.heightPX = image.height;
@@ -433,7 +465,7 @@ export class MediaPasteService {
   async checkAuthenticated(){
 
     if(!this.user){
-      await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( user => {
+      await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( (user : any) => {
         this.user = user;
       });
     }
@@ -461,7 +493,7 @@ export class MediaPasteService {
       throw new Error('No local URL provided');
     }
 
-    this.storage.ref(localURLString).getDownloadURL().subscribe(url => {
+    this.storage.ref(localURLString).getDownloadURL().pipe(takeUntil(this.ngUnsubscribe)).subscribe((url: any) => {
       remoteURL = url;
     });
 

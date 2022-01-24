@@ -44,6 +44,7 @@ export class AuthService extends APIService {
     public async login(username: string, password: string) {
 
         try {
+
             this.response = (await this.post({
                 username,
                 password
@@ -60,6 +61,7 @@ export class AuthService extends APIService {
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
             this.storage.save('OrganisationId', this.response.orgId);
             this.storage.save('UserId', this.response.userId);
+
             return this.redirectUrl;
         } catch (error) {
             return Promise.reject(error);
@@ -77,8 +79,9 @@ export class AuthService extends APIService {
 
             this.storage.save(StorageKey.AUTH_TOKEN, this.token);
             return this.redirectUrl;
-        } catch (e:any) {
-            return Promise.reject(e.message);
+
+        } catch (error:any) {
+            return Promise.reject(error.message);
         }
     }
 
@@ -102,5 +105,12 @@ export class AuthService extends APIService {
         return false;
     }
 
+    public getOrganisationSocketEndPoint() {
+        return this.storage.read('SOCKET_END_POINT');
+    }
 
+    public getOrganisationId() {
+
+        return this.storage.read('OrganisationId');
+    }
 }

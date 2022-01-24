@@ -2,6 +2,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { generateUUID } from 'src/app/core/helpers/utils';
 import { EmergencyCase } from 'src/app/core/models/emergency-record';
 import { Priority } from 'src/app/core/models/priority';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
@@ -115,7 +116,7 @@ export class SettingsPageComponent implements OnInit {
 
     getEmptyEmergencyCaseRecord(tagNumber:string, treatmentPriority: number, admissionArea: number) : any{
 
-        const guid = this.caseService.generateUUID();
+        const guid = generateUUID();
 
         return {
 

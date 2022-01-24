@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { QueryList } from '@angular/core';
 import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
+import { CallerDetails } from '../../models/driver-view';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -22,6 +23,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     private ngUnsubscribe = new Subject();
 
     @Input() recordForm!: FormGroup;
+    @Input() incomingCallerDetails : any;
     @ViewChildren(CallerAutocompleteComponent) callerAutoComplete!: QueryList<CallerAutocompleteComponent>;
 
     caller$!: Caller;
@@ -91,19 +93,31 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             this.callerArray.at(0).get('primaryCaller')?.setValue(true);
         }
 
-        this.callerService.getCallerByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
+        if(this.incomingCallerDetails?.length) {
+
+            this.createAndPopulateCaller(this.incomingCallerDetails);
+        }
+        else {
+            this.callerService.getCallerByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((caller: Callers) => {
-                for(let i=0 ; i< caller.length - 1 ; i++) {
-                    this.callerArray.push(this.callerService.getCallerFormGroup());
-                }
-                this.callerArray.patchValue(caller);
+               this.createAndPopulateCaller(caller);
             });
+        }
+
+
     }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+    }
+
+    createAndPopulateCaller(callerArray: CallerDetails[]) {
+        for(let i=0 ; i< callerArray.length - 1 ; i++) {
+            this.callerArray.push(this.callerService.getCallerFormGroup());
+        }
+        this.callerArray.patchValue(callerArray);
     }
 
 
@@ -130,7 +144,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
     }
 
     primaryCaller(callerIndex: number) {
-        this.callerArray.controls.forEach((element,index)=>{
+        this.callerArray.controls?.forEach((element,index)=>{
             if(index !== callerIndex) {
                 element.get('primaryCaller')?.setValue(false);
             }

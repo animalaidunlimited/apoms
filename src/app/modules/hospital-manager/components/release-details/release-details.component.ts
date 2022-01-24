@@ -1,14 +1,15 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ReleaseManager, User } from 'src/app/core/models/user';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
+import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 
 export interface Release {
   id: number;
@@ -53,7 +54,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   isInstructionRequired!: boolean;
 
-  isStreetTreatRelease!: boolean;
+  isStreetTreat = false;
   isCommented = false;
 
   recordForm: FormGroup = new FormGroup({});
@@ -61,9 +62,12 @@ export class ReleaseDetailsComponent implements OnInit {
   releasers$!:Observable<User[]>;
   specificStaff!: boolean;
 
+  disableStreetTreat = false;
+
   releaseManagers: ReleaseManager[] = [];
 
   username = '';
+  private ngUnsubscribe = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -88,8 +92,6 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.isInstructionRequired= false;
 
-    this.isStreetTreatRelease = false;
-
     // Record Form
     this.recordForm = this.fb.group({
       releaseId: [],
@@ -98,23 +100,32 @@ export class ReleaseDetailsComponent implements OnInit {
       }),
       releaseRequestForm: this.fb.group({
         requestedUser: [this.username, Validators.required],
-        requestedDate: [(new Date()).toISOString().substring(0,10), Validators.required]
+        requestedDate: [getCurrentTimeString(), Validators.required]
       }),
       patientId: this.patientId,
       complainerNotes: [''],
       complainerInformed:[],
       Releaser1: [],
-      Releaser2: []
+      Releaser2: [],
+      IsStreetTreatRelease: []
+
+    });
+
+    this.recordForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
+      this.formValidity.emit(this.recordForm.invalid);
+    });
+
+    this.recordForm.get('IsStreetTreatRelease')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value=> {
+      if(value) {
+        this.streetTreatReleaseTrue();
+        this.disableStreetTreat = true;
+      }
+      else {
+        this.disableStreetTreat = false;
+      }
     });
 
     this.initReleaseDetailsForm();
-
-    
-    this.recordForm.statusChanges.subscribe(status => {
-      
-      setTimeout(() => this.formValidity.next(this.recordForm.status === 'VALID' ? false : true),1);
-    
-    });
 
   }
 
@@ -130,7 +141,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
-        
+
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -180,13 +191,17 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   streetTreatReleaseTrue() {
-    this.isStreetTreatRelease = true;
+    this.isStreetTreat = true;
     this.changeDetector.detectChanges();
+    this.formValidity.emit(this.isStreetTreat);
   }
 
   streetTreatReleaseFalse() {
-    this.isStreetTreatRelease = false;
+    this.isStreetTreat = false;
     this.changeDetector.detectChanges();
+    this.formValidity.emit(this.isStreetTreat);
+
+    
   }
 
   valueChages(toggle: any , position: number) {
@@ -229,6 +244,8 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   onReleaseSubmit() {
+
+
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 

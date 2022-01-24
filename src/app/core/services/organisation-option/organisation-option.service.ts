@@ -21,6 +21,11 @@ export class OrganisationOptionsService extends APIService{
 
     organisationDetail =  new BehaviorSubject<any>([]);
 
+    // Default is 7AM
+    vehicleAssignerStartHour = 7;
+    vehicleAssignerEndHour = 23;
+
+
     constructor(
         private storage: StorageService,
         http: HttpClient) {
@@ -67,5 +72,24 @@ export class OrganisationOptionsService extends APIService{
             console.log(error);
         });
     }
+
+
+  getVehicleAssignerStartHour() : number {
+
+    if (!this.vehicleAssignerStartHour) {
+        this.vehicleAssignerStartHour = 7;
+    }
+
+    return this.vehicleAssignerStartHour;
+  }
+
+  getVehicleAssignerEndHour() : number {
+
+    if (!this.vehicleAssignerEndHour) {
+        this.vehicleAssignerEndHour = 23;
+    }
+
+    return this.vehicleAssignerEndHour;
+  }
 
 }
