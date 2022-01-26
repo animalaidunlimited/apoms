@@ -27,7 +27,6 @@ export class AddSearchMediaDialogComponent {
 
   onSearchQuery(searchQuery:any){
     this.searchResults$ = this.caseService.searchCases(searchQuery);
-
   }
 
   openMediaDialog(tagNumber: string, patientId: number) {

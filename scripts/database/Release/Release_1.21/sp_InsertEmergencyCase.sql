@@ -42,7 +42,7 @@ DECLARE vSuccess INT;
 SET vEmNoExists = 0;
 SET vOrganisationId = 0;
 
-IF Prm_EmergencyNumber = -1 THEN
+IF prm_EmergencyNumber = -1 THEN
 
 	SELECT (MIN(EmergencyNumber) - 1) INTO DummyEmNo 
     FROM AAU.EmergencyCase WHERE EmergencyNumber < 0;

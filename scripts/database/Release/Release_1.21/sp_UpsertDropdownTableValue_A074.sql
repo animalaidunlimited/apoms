@@ -26,12 +26,13 @@ SELECT IF(', prm_ElementId, ' = -1, MAX(',prm_TableName,'Id) + 1, ', prm_Element
     INSERT INTO AAU.',prm_TableName,' (',prm_TableName, 'Id, OrganisationId, ', prm_TableName,', ',
     'IsDeleted, SortOrder) VALUES (@Id, ', vOrganisationId, ', ''', prm_ElementValue, ''', ', prm_IsDeleted, ', ', prm_SortOrder,') ON DUPLICATE KEY UPDATE ', 
 	prm_TableName, ' = ''', prm_ElementValue, ''', IsDeleted = ', prm_IsDeleted, ', SortOrder = ', prm_SortOrder, ';' );
-
-	-- SELECT @statement;
-
+	
     PREPARE stmt FROM @statement;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
+    
+	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId,ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId,prm_Username,prm_ElementId,prm_TableName,'Upsert record', NOW());
  
     SELECT 'success' AS `success`;
   

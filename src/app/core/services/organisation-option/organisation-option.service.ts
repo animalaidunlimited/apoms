@@ -64,7 +64,7 @@ export class OrganisationOptionsService extends APIService{
 
         console.log(orgDetails);
 
-        return await this.put(orgDetails).then(data => {
+        return await this.post(orgDetails).then(data => {
             console.log(data);
             return data;
         })

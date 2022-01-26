@@ -22,4 +22,4 @@ SELECT
 	)) EditableDropdowns
 FROM AAU.EditableDropdown;
 
-END
+END $$

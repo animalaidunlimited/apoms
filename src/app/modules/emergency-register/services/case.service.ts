@@ -139,7 +139,13 @@ export class CaseService extends APIService {
     public async insertCase(emergencyCase: EmergencyCase): Promise<any> {
 
         return await this.baseInsertCase(emergencyCase)
-            .then(result => {
+            .then(async result => {
+
+                console.log(result);
+
+                if(result.callerSuccess === 0){
+                    return await this.saveAndRejectCase(emergencyCase);
+                }
 
                     this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
                     this.getConnection();
@@ -148,22 +154,28 @@ export class CaseService extends APIService {
             })
             .catch(async error => {
 
+                console.log(error);
+
                 if (error.status === 504 || !this.onlineStatus.connectionChanged.value) {
-                    this.toaster.errorSnackBar('Case saved to local storage', 'OK');
-
-                    this.saveCaseFail = true;
-
-                    this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
-                    // The server is offline, so let's save this to the database
-                    return await this.saveToLocalDatabase(
-                        'POST'+ emergencyCase.emergencyForm.emergencyDetails.guId,
-                        emergencyCase,
-                    );
+                    return await this.saveAndRejectCase(emergencyCase);
                 }
                 else{
                     return '';
                 }
             });
+    }
+
+    private async saveAndRejectCase(emergencyCase: EmergencyCase) {
+        this.toaster.errorSnackBar('Case saved to local storage', 'OK');
+
+        this.saveCaseFail = true;
+
+        this.onlineStatus.updateOnlineStatusAfterUnsuccessfulHTTPRequest();
+        // The server is offline, so let's save this to the database
+        return await this.saveToLocalDatabase(
+            'POST' + emergencyCase.emergencyForm.emergencyDetails.guId,
+            emergencyCase
+        );
     }
 
     public getEmergencyCaseById(emergencyCaseId: number) {

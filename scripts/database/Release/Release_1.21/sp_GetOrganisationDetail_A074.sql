@@ -15,4 +15,6 @@ BEGIN
 		AAU.OrganisationMetadata om
 		INNER JOIN AAU.Organisation o ON o.OrganisationId = om.OrganisationId
 	WHERE o.OrganisationId = prm_OrganisationId;
+	
 END$$
+

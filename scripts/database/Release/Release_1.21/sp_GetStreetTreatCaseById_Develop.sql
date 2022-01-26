@@ -94,4 +94,5 @@ WHERE c.StreetTreatCaseId = prm_streetTreatCaseId;
 
 SELECT 1 AS Success;
 
-END
+END $$
+

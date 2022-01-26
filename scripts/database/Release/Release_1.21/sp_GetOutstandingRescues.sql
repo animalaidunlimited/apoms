@@ -198,4 +198,5 @@ INNER JOIN (
 ) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId ;
 
 END$$
+
 DELIMITER ;

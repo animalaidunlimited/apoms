@@ -12,10 +12,6 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-SELECT AnimalTypeId, AnimalType, IsDeleted, Sort AS `SortOrder` FROM AAU.AnimalType WHERE OrganisationId = vOrganisationId;
+SELECT AnimalTypeId, AnimalType, IsDeleted, SortOrder FROM AAU.AnimalType WHERE OrganisationId = vOrganisationId;
 
-END
-
-
-
--- CALL AAU.sp_GetAnimalTypes('Jim');
+END $$

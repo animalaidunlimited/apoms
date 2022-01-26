@@ -15,10 +15,12 @@ measurementId: "G-2FQTQ26YCP"
   };
   // Initialize Firebase
 
+  let messaging;
+
   if (firebase.messaging.isSupported()) {
     firebase.initializeApp(firebaseConfig);
-    
-    const messaging = firebase.messaging();
+
+    messaging = firebase.messaging();
 
   }
 

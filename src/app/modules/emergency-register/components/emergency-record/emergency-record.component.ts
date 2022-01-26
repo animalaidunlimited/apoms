@@ -15,6 +15,10 @@ import { LogsComponent } from 'src/app/core/components/logs/logs.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EmergencyDetailsComponent } from 'src/app/core/components/emergency-details/emergency-details.component';
 
+export interface SaveResult {
+    message: string;
+    failure: number;
+}
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -195,10 +199,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
         patientArray.push(firstPatient);
     }
 
-    getCaseSaveMessage(resultBody: EmergencyResponse) {
+    getCaseSaveMessage(resultBody: EmergencyResponse) : SaveResult {
 
 
-         const result = {
+         const result:SaveResult = {
             message: 'Other error - See admin\n',
             failure: 0
         };
@@ -336,8 +340,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                                     messageResult.failure = 1;
                                 } else {
                                     const resultBody = data as EmergencyResponse;
-
-                                    // this.recordForm.get('callerDetails.callerId')?.setValue(resultBody.callerId);
 
                                     this.emergencyCaseId = resultBody.emergencyCaseId;
 

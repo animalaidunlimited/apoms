@@ -14,5 +14,6 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 SELECT EmergencyCodeId, EmergencyCode, IsDeleted, SortOrder FROM AAU.EmergencyCode WHERE OrganisationId = vOrganisationId;
 
 END$$
+
 DELIMITER ;
 

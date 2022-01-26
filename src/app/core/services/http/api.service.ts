@@ -95,7 +95,7 @@ export abstract class APIService<T = any> {
         }
         return response;
     }
-
+    
     public async post(body: any): Promise<any> {
         let response = null;
         try {
@@ -104,7 +104,10 @@ export abstract class APIService<T = any> {
                 .toPromise();
 
         } catch (error: any) {
+            response = this.errorHandler('POST', error);
         }
+
+        return response;
 
     }
 

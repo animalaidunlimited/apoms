@@ -16,4 +16,5 @@ import { GoogleMapsModule } from '@angular/google-maps';
     GoogleMapsModule
   ]
 })
+
 export class CaseLocationModule { }

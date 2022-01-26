@@ -21,6 +21,7 @@ WITH PatientCTE AS (
 	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
 	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
 	AND p.PatientCallOutcomeId = 1
+    AND p.PatientStatusId IN (1,7)
 ),
 EmergencyCaseCTE AS (
 	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
@@ -58,7 +59,7 @@ JSON_OBJECT("ABC status", p.ABCStatus),
 JSON_OBJECT("Release status", p.ReleaseStatus),
 JSON_OBJECT("Known as name", p.KnownAsName),
 JSON_OBJECT("Release ready", p.ReleaseReady),
-JSON_OBJECT("Actioned by area", ca.`Area`),
+JSON_OBJECT("Actioned by area", ca.TreatmentArea),
 JSON_OBJECT("Moved to", IF(tl.OutAccepted IS NULL AND tl.OutTreatmentAreaId IS NOT NULL, tl.OutTreatmentAreaId, NULL)),
 JSON_OBJECT("Admission", IF(tl.Admission = 1 AND InAccepted IS NULL, 1, 0)), -- This prevents records showing up in new admissions the first move.
 JSON_OBJECT("Move accepted", tl.InAccepted),
@@ -86,7 +87,7 @@ FROM PatientCTE p
 	INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
 	INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
 	INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
-    LEFT JOIN AAU.TreatmentArea ca ON ca.AreaId = tl.ActionedByArea
+    LEFT JOIN AAU.TreatmentArea ca ON ca.TreatmentAreaId = tl.ActionedByArea
 	LEFT JOIN
 	(
 		SELECT DISTINCT t.PatientId

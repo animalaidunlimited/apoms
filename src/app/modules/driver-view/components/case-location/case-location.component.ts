@@ -52,7 +52,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
     } as google.maps.MapOptions;
 
   }
-
+  
   hasLargeAninmal(patients:any) : boolean{
 
     return patients.some((patient: any) => patient.largeAnimal);

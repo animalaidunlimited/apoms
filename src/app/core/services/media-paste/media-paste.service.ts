@@ -288,7 +288,7 @@ export class MediaPasteService {
         });});
       }
     });
-
+    
     return returnObject;
   }
   private async croppedImage(file: File) {
@@ -464,9 +464,15 @@ export class MediaPasteService {
 
   async checkAuthenticated(){
 
+
+    console.log(environment.firebase.email);
+    console.log(environment.firebase.password);
+
     if(!this.user){
       await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( (user : any) => {
         this.user = user;
+      }).catch((error: any) => {
+        console.log(error);
       });
     }
 
