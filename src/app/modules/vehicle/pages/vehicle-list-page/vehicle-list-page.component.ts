@@ -7,7 +7,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { VehicleService } from '../../services/vehicle.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { VehicleStatus, Vehicle, VehicleType } from 'src/app/core/models/vehicle';
-import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
+import { MediaService } from 'src/app/core/services/media/media.service';
 
 
 @Component({
@@ -61,7 +61,7 @@ export class VehicleListPageComponent implements OnInit {
               private vehicleService: VehicleService,
               private snackBar: SnackbarService,
               private authService: AuthService,
-              private mediaPaste: MediaPasteService) { }
+              private mediaPaste: MediaService) { }
 
   ngOnInit(): void {
     this.vehicleType$ = this.dropdown.getVehicleType();

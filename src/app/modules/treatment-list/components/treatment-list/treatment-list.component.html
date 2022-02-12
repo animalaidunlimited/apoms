@@ -17,9 +17,9 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" style="margin-top: 15px">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" style="margin-top: 15px" *ngIf="!isPrinting">
 
-        <mat-form-field *ngIf="!isPrinting">
+        <mat-form-field >
           <mat-label>Filter by tag number</mat-label>
           <input matInput (keyup)="applyFilter()" formControlName="filterValue" placeholder="E.g. A378" #input>
         </mat-form-field>

@@ -12,6 +12,7 @@ const PROXY_CONFIG = [
             "/Login",
             "/Logs",
             "/Logo",
+            "/Media",
             "/Messaging",
             "/Organisation",
             "/Patient",
@@ -24,8 +25,8 @@ const PROXY_CONFIG = [
             "/Teams",
             "/Treatment",
             "/TreatmentList",
-            "/UserAdmin",
             "/Users",
+            "/UserAdmin",
             "/Vehicle"
         ],
         target: "http://localhost:8080/",

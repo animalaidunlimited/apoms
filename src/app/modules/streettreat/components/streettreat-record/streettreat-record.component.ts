@@ -7,11 +7,11 @@ import { StreetTreatTab } from 'src/app/core/models/streettreet';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { MediaItem } from 'src/app/core/models/media';
-import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, take, takeUntil } from 'rxjs/operators';
+import { MediaService } from 'src/app/core/services/media/media.service';
 
 
 
@@ -44,7 +44,7 @@ export class StreetTreatRecordComponent implements OnInit {
     private fb: FormBuilder,
     private streetTreatService: StreetTreatService,
     private dropdown: DropdownService,
-    private patientService: PatientService,
+    private mediaService: MediaService,
     private changeDetector: ChangeDetectorRef,
     private showSnackBar: SnackbarService,
     private route : ActivatedRoute
@@ -83,6 +83,7 @@ export class StreetTreatRecordComponent implements OnInit {
       EarlyReleaseFlag:[],
       IsIsolation:[],
       PriorityId: [''],
+      TeamId: [''],
       emergencyDetails: this.fb.group({
         emergencyCaseId: [this.emergencyCaseId, Validators.required]
       }),
@@ -97,7 +98,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
     });
 
-    this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
+    this.mediaData = this.mediaService.getPatientMediaItemsByPatientId(this.patientId);
 
     if (this.mediaData) {
       this.mediaData.pipe(takeUntil(this.ngUnsubscribe)).subscribe(media => {
@@ -141,13 +142,7 @@ export class StreetTreatRecordComponent implements OnInit {
       }
     }),100);
 
-
-
-
-
-
   }
-
 
   saveForm(){
 

@@ -1,19 +1,35 @@
 <app-search-field (searchString)="onSearchQuery($event)"></app-search-field>
 
+<mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
 <div class="search-results">
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start"  *ngIf="searchResults$ | async as searchResults;">
+    <div fxLayout="column" fxLayoutAlign="center center" style="width: 100%;" *ngIf="noResults">
 
-        <div *ngIf="searchResults.length === 0;">No results</div>
+        <mat-icon class="no-result-icon">search</mat-icon>
+        <div class="no-result-primary-text">No results found</div>
+        <div class="no-result-secondary-text">No results match these search criteria.</div>
+        <div class="no-result-secondary-text">Please try another search</div>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start"  *ngIf="(searchResults$ | async) as searchResults;">
+
+
+
+
+
+        <div *ngIf="searchResults?.length !== 0;" class="result-count">
+            {{searchResults?.length}} result<span *ngIf="(searchResults?.length || 0) > 1">s</span>
+        </div>
+
 
         <div *ngFor="let record of searchResults">
 
-            <app-search-streettreet-result-card class="emergency-card" (openStreetTreatCase)="openCase($event)" [record]="record"></app-search-streettreet-result-card>
+            <app-search-streettreet-result-card (openStreetTreatCase)="openCase($event)" [record]="record"></app-search-streettreet-result-card>
 
         </div>
 
     </div>
 
 
-</div> 
+</div>

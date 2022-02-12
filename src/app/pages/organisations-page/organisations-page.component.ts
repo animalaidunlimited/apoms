@@ -114,8 +114,6 @@ export class OrganisationsPageComponent implements OnInit {
 
     updateAddressLocation(latLng: google.maps.LatLngLiteral, index: number) : void {
 
-        console.log(latLng);
-
         this.address?.at(index)?.get('latLng')?.setValue(latLng);
 
         this.latlngbounds.extend(new google.maps.LatLng(latLng.lat, latLng.lng));
@@ -197,7 +195,7 @@ export class OrganisationsPageComponent implements OnInit {
         this.address.removeAt(index);
     }
 
-    createItem(address?:any):any {
+    createItem(address?:any) : FormGroup | FormArray{
         if(address){
 
             const addressGroup = this.fb.array([]);
@@ -229,7 +227,7 @@ export class OrganisationsPageComponent implements OnInit {
     }
 
 
-    getPlaceAutocomplete(index:number) {
+    getPlaceAutocomplete(index:number) : void {
         if(this.addresstext.get(index)?.nativeElement.value.length < 2)
         {
             return;
@@ -253,7 +251,7 @@ export class OrganisationsPageComponent implements OnInit {
         });
     }
 
-    invokeEvent(place: any, index:number) {
+    invokeEvent(place: any, index:number) : void {
 
         const result = place as google.maps.places.PlaceResult;
 
@@ -276,10 +274,7 @@ export class OrganisationsPageComponent implements OnInit {
 
     }
 
-    onSubmit(organisationOptions:FormGroup){
-
-        console.log(organisationOptions.value);
-
+    onSubmit(organisationOptions:FormGroup) : void {
 
         if(organisationOptions.dirty){
 

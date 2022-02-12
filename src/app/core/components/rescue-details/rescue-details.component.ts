@@ -259,14 +259,13 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         // if ambulance arrived then assignedVehicleId, rescue time required
         if (this.ambulanceArrivalTime?.value || this.ambulanceAssignmentTime?.value) {
 
-            console.log('required');
             this.assignedVehicleId?.setValidators([Validators.required]);
             this.code?.setValidators([Validators.required]);
             this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
             this.code?.updateValueAndValidity({ emitEvent: false });
 
         } else if(this.ambulanceAssignmentTime?.value === '' || this.ambulanceArrivalTime?.value === ''){
-            console.log('clearing');
+
             this.assignedVehicleId?.clearValidators();
         }
 
@@ -390,8 +389,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 ?.get(event.target.name)
                 ?.setValue(getCurrentTimeString());
         }
-
-        console.log(this.recordForm.valid);
 
     }
 

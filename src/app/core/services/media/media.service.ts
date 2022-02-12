@@ -6,16 +6,16 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Observable, from, BehaviorSubject, of, Subject} from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { environment } from 'src/environments/environment';
-import { AuthService } from 'src/app/auth/auth.service';
 import { DatePipe } from '@angular/common';
-import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
-import { LogoService } from '../logo/logo.service';
 import { OrganisationOptionsService } from '../organisation-option/organisation-option.service';
-import { MediaItemReturnObject, MediaItem, LocalMediaItem } from '../../models/media';
+import { Comment, MediaItemReturnObject, MediaItem, LocalMediaItem, MediaItemsDataObject, MediaResponse, MediaUploadResponse } from '../../models/media';
+import { PatientOutcomeResponse } from '../../models/patients';
+import { HttpClient } from '@angular/common/http';
+import { APIService } from '../http/api.service';
 
 interface IResizeImageOptions {
   maxSize: number;
@@ -34,30 +34,34 @@ interface ResizedImage{
   providedIn: 'root'
 })
 
-export class MediaPasteService {
+export class MediaService extends APIService {
+
+  endpoint = 'Media';
+
   private ngUnsubscribe = new Subject();
+
+  mediaItemData : MediaItemsDataObject[] = [];
+  mediaItemId$!: BehaviorSubject<number>;
+  mediaItemObject! : MediaItem;
+
+  returnMediaItem : BehaviorSubject<MediaItem[]> = new BehaviorSubject<MediaItem[]>([]);
+
+  user!: firebase.default.auth.UserCredential;
 
   constructor(
     private sanitizer: DomSanitizer,
     private storage: AngularFireStorage,
     private datepipe: DatePipe,
-    private patientService: PatientService,
     private fireAuth: AngularFireAuth,
     private onlineStatus: OnlineStatusService,
     private snackbarService:SnackbarService,
+    http: HttpClient,
     public datePipe:DatePipe,
     protected storageService: StorageService,
-    private organisationOptions: OrganisationOptionsService) { }
-
-    user!: firebase.default.auth.UserCredential;
-    mediaItemId$!: BehaviorSubject<number>;
-
-
-
-
+    private organisationOptions: OrganisationOptionsService) {  super(http); }
 
   handleUpload(file: File, Id: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
-    console.log('hi');
+
     if(!file.type.match(/image.*|video.*/)){
       return {
         mediaItem: undefined,
@@ -80,105 +84,105 @@ export class MediaPasteService {
     }
 
 
-    this.checkAuthenticated().then(async () => {
+      this.checkAuthenticated().then(async () => {
 
-      // upload the file and return its progress for display
+        // upload the file and return its progress for display
 
-      const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
+        const timeString = this.datepipe.transform(newMediaItem.datetime, 'yyyyMMdd_hhmmss');
 
-      const path = filePath ? filePath : 'patient-media';
+        const path = filePath ? filePath : 'patient-media';
 
-      const uploadLocation = this.getFileUploadLocation(file.name, timeString || '', path);
+        const uploadLocation = this.getFileUploadLocation(file.name, timeString || '', path);
 
 
-      if(newMediaItem.mediaType.indexOf('image') > -1){
+        if(newMediaItem.mediaType.indexOf('image') > -1){
 
-        const resizedImage = await this.croppedImage(file);
+          const resizedImage = await this.croppedImage(file);
 
-        if(!this.duplicateImage(file.name, Id) || file.name ==='uploadFile'){
+          if(!this.duplicateImage(file.name, Id) || file.name ==='uploadFile'){
 
-          newMediaItem.widthPX = resizedImage.width;
-          newMediaItem.heightPX = resizedImage.height;
+            newMediaItem.widthPX = resizedImage.width;
+            newMediaItem.heightPX = resizedImage.height;
 
-          const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+            const uploadResult = this.uploadFile(uploadLocation, resizedImage.image);
+
+            newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
+
+            // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
+
+            uploadResult.then((result: any) => {
+
+              result.ref.getDownloadURL().then((url:any) => {
+
+                newMediaItem.remoteURL = url;
+
+                newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string;
+
+
+                path === 'patient-media'?
+
+
+                  this.savePatientMedia(newMediaItem).then((mediaItems:any) => {
+
+                    this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
+
+                    if(mediaItems.success) {
+
+                      returnObject.mediaItemId.next(mediaItems.mediaItemId);
+
+                    }
+
+                  })
+
+                :
+
+                returnObject.mediaItemId.next(0);
+
+              });
+
+            }).catch(async (error: any) => {
+              console.log(error);
+            });
+          }
+          else{
+
+            this.snackbarService.errorSnackBar('Duplicate Image upload are not allowed', 'OK');
+
+          }
+        }
+        else{
+
+          const uploadResult = this.uploadFile(uploadLocation, file);
 
           newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
 
+
           // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
 
-          uploadResult.then((result: any) => {
+          uploadResult.then((result:any) => {
 
             result.ref.getDownloadURL().then((url:any) => {
 
               newMediaItem.remoteURL = url;
 
-              newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string;
+              const savetoDB : Observable<any> = from(this.savePatientMedia(newMediaItem));
 
+              newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
 
-              path === 'patient-media'?
+              newMediaItem.mediaItemId.pipe(takeUntil(this.ngUnsubscribe)).subscribe(id => {
 
+                returnObject.mediaItemId.next(id);
 
-                this.patientService.savePatientMedia(newMediaItem).then((mediaItems:any) => {
-
-                  this.onlineStatus.updateOnlineStatusAfterSuccessfulHTTPRequest();
-
-                  if(mediaItems.success) {
-
-                    returnObject.mediaItemId.next(mediaItems.mediaItemId);
-
-                  }
-
-                })
-
-              :
-
-              returnObject.mediaItemId.next(0);
-
-            });
-
-          }).catch(async (error: any) => {
-            console.log(error);
-          });
-        }
-        else{
-
-          this.snackbarService.errorSnackBar('Duplicate Image upload are not allowed', 'OK');
-
-        }
-      }
-      else{
-
-        const uploadResult = this.uploadFile(uploadLocation, file);
-
-        newMediaItem.uploadProgress$ = this.getUploadProgress(uploadResult);
-
-
-        // TODO Fix the height and width of video so it doesn't overflow the containing div in the template
-
-        uploadResult.then((result:any) => {
-
-          result.ref.getDownloadURL().then((url:any) => {
-
-            newMediaItem.remoteURL = url;
-
-            const savetoDB : Observable<any> = from(this.patientService.savePatientMedia(newMediaItem));
-
-            newMediaItem.mediaItemId = savetoDB.pipe(map(response => response.mediaItemId));
-
-            newMediaItem.mediaItemId.pipe(takeUntil(this.ngUnsubscribe)).subscribe(id => {
-
-              returnObject.mediaItemId.next(id);
+              });
 
             });
 
           });
 
-        });
-
-      }
+        }
 
 
-    }).catch(async error => {
+      }).catch(async error => {
 
       /**
        * Offline Mode
@@ -288,7 +292,7 @@ export class MediaPasteService {
         });});
       }
     });
-    
+
     return returnObject;
   }
   private async croppedImage(file: File) {
@@ -303,7 +307,7 @@ export class MediaPasteService {
 
   duplicateImage(filename:string,patientId:number){
    let duplicate = false;
-   this.patientService.getPatientMediaItemsByPatientId(patientId)?.value.forEach(async mediaItem => duplicate = mediaItem.remoteURL.includes(filename));
+   this.getPatientMediaItemsByPatientId(patientId)?.value.forEach(async mediaItem => duplicate = mediaItem.remoteURL.includes(filename));
    return duplicate;
   }
 
@@ -464,10 +468,6 @@ export class MediaPasteService {
 
   async checkAuthenticated(){
 
-
-    console.log(environment.firebase.email);
-    console.log(environment.firebase.password);
-
     if(!this.user){
       await this.fireAuth.signInWithEmailAndPassword(environment.firebase.email, environment.firebase.password).then( (user : any) => {
         this.user = user;
@@ -574,6 +574,8 @@ export class MediaPasteService {
   }
 
 
+
+
   getParseMediaObject() {
     if(this.storageService.getItemArray('MEDIA')[0]){
       return JSON.parse(JSON.parse(this.storageService.getItemArray('MEDIA')[0].value as string)) as LocalMediaItem[];
@@ -610,5 +612,179 @@ export class MediaPasteService {
     this.saveToLocalDatabase('MEDIA',JSON.stringify(mediaArray));
 
   }
+
+  public async savePatientMedia(mediaItem: MediaItem) : Promise<void | MediaUploadResponse>{
+
+    return await this.put(mediaItem)
+        .then((data: MediaUploadResponse) => {
+
+            if(data.success === 1){
+
+                //Let's see if this item already exists
+                let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
+                    patientMediaItemVal.patientId === mediaItem.patientId
+                );
+
+                if(!patientMediaItem){
+
+                    // We're loading the service for the first time and the first patient has no photos
+                    patientMediaItem = {
+                        patientId: mediaItem.patientId,
+                        mediaItem : new BehaviorSubject<MediaItem[]>([mediaItem])
+                    };
+
+                    this.mediaItemData.push(patientMediaItem);
+
+                }
+
+                //If this is primary, then ensure all the other images aren't the primary.
+                //The update for the rest in the database is handled in sp_UpdatePatientMedia
+                if(mediaItem.isPrimary){
+
+                  this.mediaItemData.forEach(currentMediaItem => {
+
+                    if(currentMediaItem.patientId === mediaItem.patientId){
+
+
+                    }
+
+                  });
+
+                }
+
+                //Get the media list for the current patient from the bahvior subject.
+                let currentPatientMediaList = patientMediaItem?.mediaItem.getValue();
+
+                //Check if we're being deleted
+                if(mediaItem.deleted){
+                    currentPatientMediaList = currentPatientMediaList?.filter(e => e.patientMediaItemId !== data.mediaItemId);
+                }
+
+                //Check if the incoming item already exists
+                const existingItem = currentPatientMediaList?.findIndex(item => item.patientMediaItemId === data.mediaItemId);
+
+                //If it doesn't exist add it in.
+                if(existingItem === -1 ){
+                    currentPatientMediaList?.push(mediaItem);
+                }
+                 else if(existingItem && currentPatientMediaList){
+                        currentPatientMediaList[existingItem] = mediaItem;
+                }
+
+                //If the current image/video is the primary, then reset all of the others.
+                if(mediaItem.isPrimary){
+                  currentPatientMediaList.forEach(mediaElement => {
+
+                    if(mediaElement.mediaItemId != mediaItem.mediaItemId){
+                      mediaElement.isPrimary = false;
+                    }
+
+                  });
+                }
+
+                if(currentPatientMediaList){
+
+                    patientMediaItem?.mediaItem.next(currentPatientMediaList);
+                }
+
+            }
+
+            return data;
+        })
+        .catch((error:any) => {
+            console.log(error);
+        });
+
+}
+
+public getPatientMediaItemsByPatientId(patientId: number): BehaviorSubject<MediaItem[]> {
+
+    const request = '/PatientMediaItems?patientId=' + patientId;
+
+    let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
+        patientMediaItemVal.patientId === patientId
+    );
+
+    const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
+    patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
+
+    if(!patientMediaItem){
+        patientMediaItem = this.addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject, patientId);
+    }
+
+    // tslint:disable-next-line: deprecation
+    this.getObservable(request).pipe(
+        map(mediaItems => mediaItems?.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
+    ).pipe(takeUntil(this.ngUnsubscribe)).subscribe((media : MediaResponse[])=>{
+
+        if(!media){
+            return;
+        }
+
+        const savedMediaItems: MediaItem[] = media.map(item=>{
+
+            return {
+                mediaItemId : of(item.mediaItemId),
+                patientMediaItemId: item.mediaItemId,
+                mediaType: item.mediaType,
+                localURL: item.localURL,
+                remoteURL: item.remoteURL,
+                isPrimary :item.isPrimary ? true : false,
+                datetime: item.datetime,
+                patientId: item.patientId,
+                heightPX: item.heightPX,
+                widthPX: item.widthPX,
+                tags: item.tags,
+                uploadProgress$: of(100),
+                updated: false,
+                deleted: false
+            };
+
+        });
+
+        if(patientMediaItem){
+            patientMediaItem.mediaItem.next(savedMediaItems);
+        }
+
+    });
+
+    return returnBehaviorSubject;
+}
+
+addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject:BehaviorSubject<MediaItem[]>, patientId:number) : MediaItemsDataObject {
+
+    const newItemData : MediaItemsDataObject = {
+        patientId,
+        mediaItem : returnBehaviorSubject
+    };
+    returnBehaviorSubject.next([]);
+
+    this.mediaItemData.push(newItemData);
+
+    return newItemData;
+
+}
+
+public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
+    return await this.post(comment)
+    .catch(error => {
+        console.log(error);
+    });
+
+}
+
+public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
+
+    const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
+
+    return this.getObservable(request).pipe(
+        map(response => {
+            return  response?.sort((comment1: Comment,comment2:Comment)=> {
+                return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
+            });
+
+        })
+    );
+}
 
 }

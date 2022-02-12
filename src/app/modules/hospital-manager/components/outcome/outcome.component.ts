@@ -101,10 +101,10 @@ export class OutcomeComponent implements OnInit {
 
     toggleAntibioticChip(source:string, antibiotic:Antibiotic, chip: MatChip){
 
-        if(chip.selected){
+        const selectedValue = chip.selected ? antibiotic.antibioticId : null;
 
-            this.antibioticDetails.get(source)?.setValue(antibiotic.antibioticId);
-        }
+        this.antibioticDetails.get(source)?.setValue(selectedValue);
+
     }
 
     setInitialDate($event:MouseEvent){

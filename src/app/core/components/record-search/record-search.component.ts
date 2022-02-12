@@ -60,7 +60,7 @@ export class RecordSearchComponent implements OnDestroy {
 
         this.searchResults$
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((value)=>{
+        .subscribe((value:SearchResponse[])=>{
 
             if(!value){
                 this.noResults = true;

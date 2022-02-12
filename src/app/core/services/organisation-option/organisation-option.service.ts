@@ -62,10 +62,7 @@ export class OrganisationOptionsService extends APIService{
 
     async updateOrganisationDetail(orgDetails:OrganisationDetail) : Promise<SuccessOnlyResponse>{
 
-        console.log(orgDetails);
-
         return await this.post(orgDetails).then(data => {
-            console.log(data);
             return data;
         })
         .catch(error => {

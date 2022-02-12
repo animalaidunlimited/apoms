@@ -40,6 +40,12 @@
     top: 120px;
 } */
 
+.search-result-card{
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+}
+
 .board-card {
     max-width: 220px !important;
     height: -webkit-fit-content;

@@ -6,10 +6,10 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
+import { MediaService } from 'src/app/core/services/media/media.service'
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -38,9 +38,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     public datepipe: DatePipe,
-    private patientService:PatientService,
+    private mediaService: MediaService,
     private onlineStatus: OnlineStatusService,
-    private mediaPasteService: MediaPasteService
+    private MediaService: MediaService
   ) { }
 
 
@@ -52,17 +52,17 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if(connectionState){
 
-        if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)) {
+        if(this.MediaService.imageExsistInLocalStorage(this.patientId)) {
 
-          const localImages:LocalMedia[] = this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId);
+          const localImages:LocalMedia[] = this.MediaService.getPatientMediaImagesFromLocalStorage(this.patientId);
 
           localImages.forEach(localImage => {
             const mime = localImage.imageBase64.split(',')[0].split(':')[1].split(';')[0];
-            const imageFile = new File([this.mediaPasteService.dataURItoBlob(localImage.imageBase64)], `${this.patientId},{22}`, { type: mime});
-            this.mediaPasteService.handleUpload(imageFile,this.patientId, localImage.date as string);
+            const imageFile = new File([this.MediaService.dataURItoBlob(localImage.imageBase64)], `${this.patientId},{22}`, { type: mime});
+            this.MediaService.handleUpload(imageFile,this.patientId, localImage.date as string);
           });
 
-          this.mediaPasteService.deletePatientMediaByPatientId(this.patientId);
+          this.MediaService.deletePatientMediaByPatientId(this.patientId);
         }
       }
     });
@@ -78,13 +78,13 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if(!connectionStatus){
 
-        if(this.mediaPasteService.imageExsistInLocalStorage(this.patientId)){
+        if(this.MediaService.imageExsistInLocalStorage(this.patientId)){
 
           setTimeout(() => {
 
             this.galleryImages = [];
 
-            this.mediaPasteService.getPatientMediaImagesFromLocalStorage(this.patientId)
+            this.MediaService.getPatientMediaImagesFromLocalStorage(this.patientId)
             .forEach((patientImage)=> {
 
               this.galleryImages.push({
@@ -124,15 +124,13 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
 
-
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
 
       minWidth: '75vw',
       panelClass: 'media-preview-dialog',
       data: {
-        upload:true,
+        upload: true,
         patientId: this.galleryData?.get('patientId')?.value
-
       }
 
     });
@@ -213,7 +211,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updateMediaItems(){
 
-    this.patientService.getPatientMediaItemsByPatientId(this.mediaData.value[0].patientId).pipe(
+    this.mediaService.getPatientMediaItemsByPatientId(this.mediaData.value[0].patientId).pipe(
       takeUntil(this.ngUnsubscribe)
     // tslint:disable-next-line: deprecation
     ).subscribe((mediaItems:MediaItem[]) =>

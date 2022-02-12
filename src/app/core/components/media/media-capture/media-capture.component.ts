@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, timer } from 'rxjs';
 import { finalize, take, takeUntil } from 'rxjs/operators';
-import { MediaPasteService } from '../../../services/media-paste/media-paste.service';
+import { MediaService } from 'src/app/core/services/media/media.service';
 
 
 interface IncomingData {
@@ -25,7 +25,7 @@ export class MediaCaptureComponent implements OnInit, OnDestroy {
   @Output() closeMediaDialog!: EventEmitter<boolean>;
 
   capturedImages:string[] = [];
-  
+
 constraints = {
   video: {
       facingMode: 'environment',
@@ -38,8 +38,6 @@ constraints = {
 };
 
 capturing = false;
-
-
 
 mediaRecorder!:MediaRecorder;
 
@@ -56,7 +54,7 @@ videoHeight = 0;
     private renderer: Renderer2,
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private changeDetector: ChangeDetectorRef,
-    private mediaService: MediaPasteService) {
+    private mediaService: MediaService) {
 
   }
 
@@ -186,14 +184,14 @@ uploadAndAddToGallery(newFile:any, type:string){
 
   if(returnObject.mediaItem){
 
-   
+
     returnObject.mediaItem.heightPX = this.videoHeight;
     returnObject.mediaItem.widthPX = this.videoWidth;
-   
+
     returnObject.mediaItemId
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((result) => {
-     
+
       if(returnObject.mediaItem && result){
 
         this.capturedImages.push( returnObject.mediaItem?.remoteURL );
@@ -206,9 +204,9 @@ uploadAndAddToGallery(newFile:any, type:string){
 }
 
   closeDialog($event:Event) {
-   
+
     $event.preventDefault();
-    
+
     this.closeMediaDialog?.emit(true);
   }
 

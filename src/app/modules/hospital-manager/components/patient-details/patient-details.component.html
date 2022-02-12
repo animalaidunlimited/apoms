@@ -9,7 +9,7 @@ ngStyle.lt-sm="padding: 0 5px;"
         <mat-form-field formGroupName="patientDetails">
             <mat-label>Animal type</mat-label>
             <mat-select formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
-                <mat-option *ngFor="let type of animalTypes$" [value]="type.AnimalTypeId">
+                <mat-option *ngFor="let type of (animalTypes$ | async)" [value]="type.AnimalTypeId">
                     {{type.AnimalType}}
                 </mat-option>
             </mat-select>

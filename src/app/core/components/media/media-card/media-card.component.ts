@@ -7,8 +7,8 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { MediaItem } from 'src/app/core/models/media';
-import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
+import { MediaService } from 'src/app/core/services/media/media.service';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private fb:FormBuilder,
-    private patientService: PatientService,
+    private mediaService: MediaService,
     private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -161,12 +161,12 @@ export class MediaCardComponent implements AfterViewInit, OnDestroy, OnInit {
       this.mediaItem.mediaItemId
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((itemId) => {
-       
+
         this.mediaForm.get('patientMediaItemId')?.setValue(itemId);
         this.mediaForm.get('updated')?.setValue(true);
 
         // Save the new or update the media
-        this.patientService.savePatientMedia(this.mediaForm.value);
+        this.mediaService.savePatientMedia(this.mediaForm.value);
 
       });
 

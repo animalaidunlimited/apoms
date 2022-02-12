@@ -6,10 +6,10 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import { MediaPasteService } from './media-paste.service';
+import { MediaService } from './media.service';
 
-describe('MediaPasteService', () => {
-  let service: MediaPasteService;
+describe('MediaService', () => {
+  let service: MediaService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('MediaPasteService', () => {
         DatePipe
       ]
     });
-    service = TestBed.inject(MediaPasteService);
+    service = TestBed.inject(MediaService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 

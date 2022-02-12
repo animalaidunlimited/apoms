@@ -1,0 +1,3 @@
+DROP PROCEDURE IF EXISTS AAU.sp_GetPatientDetailsbyArea;
+DROP PROCEDURE IF EXISTS AAU.sp_GetCensusObject;
+DROP PROCEDURE IF EXISTS AAU.sp_GetCensusErrorRecords;

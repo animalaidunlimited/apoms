@@ -181,8 +181,6 @@ export class LocationService extends APIService {
 
       const currentHistory = this.locationList$?.value ? this.locationList$.value : [];
 
-      console.log(locationHistory);
-
       const lines = this.generatePolylines(vehicleId, locationHistory.vehicleLocation.locationHistory);
 
       currentHistory.push(lines);

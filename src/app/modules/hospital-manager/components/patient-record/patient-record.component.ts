@@ -11,6 +11,7 @@ import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { ReleaseDetails } from 'src/app/core/models/release';
+import { MediaService } from 'src/app/core/services/media/media.service';
 
 
 @Component({
@@ -46,6 +47,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
     constructor(private fb: FormBuilder,
         private snackbar: SnackbarService,
         private changeDetector: ChangeDetectorRef,
+        private mediaService: MediaService,
         private patientService: PatientService,
         private route : ActivatedRoute) {
 
@@ -100,8 +102,8 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
         this.patientId = this.incomingPatient.patientId;
 
-        this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientId);
-        
+        this.mediaData = this.mediaService.getPatientMediaItemsByPatientId(this.patientId);
+
         if(this.mediaData){
 
             // tslint:disable-next-line: deprecation
@@ -110,13 +112,13 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                
+
                 this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
-                
+
                 this.changeDetector.detectChanges();
 
             });
-    
+
         }
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,

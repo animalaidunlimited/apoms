@@ -1,31 +1,18 @@
 import { Injectable } from '@angular/core';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, UpdatePatientDetails, PriorityObject } from 'src/app/core/models/patients';
-import { MediaItem, MediaResponse } from 'src/app/core/models/media';
 import { PrintPatient } from 'src/app/core/models/print-templates';
-import { MediaItemsDataObject, Comment } from 'src/app/core/models/media';
 import { SuccessOnlyResponse } from '../../models/responses';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-
-interface SuccessResult{
-    success: number;
-}
 
 @Injectable({
     providedIn: 'root',
 })
 export class PatientService extends APIService {
-
-    mediaItemData : MediaItemsDataObject[] = [];
-
-    mediaItemObject! : MediaItem;
-
-    returnMediaItem : BehaviorSubject<MediaItem[]> = new BehaviorSubject<MediaItem[]>([]);
-    private ngUnsubscribe = new Subject();
 
     constructor(
         http: HttpClient,
@@ -233,133 +220,7 @@ export class PatientService extends APIService {
         return response;
     }
 
-    public async savePatientMedia(mediaItem: MediaItem){
-      
-        return await this.put(mediaItem)
-            .then((data:{success:number, mediaItemId:number}) => {
 
-                
-                if(data.success === 1){
-                   
-                    let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
-                        patientMediaItemVal.patientId === mediaItem.patientId
-                    );
-
-                    
-
-                    if(!patientMediaItem){
-                        // We're loading the service for the first time and the first patient has no photos
-
-                        patientMediaItem = {
-                            patientId: mediaItem.patientId,
-                            mediaItem : new BehaviorSubject<MediaItem[]>([mediaItem])
-                        };
-
-                        this.mediaItemData.push(patientMediaItem);
-
-                    }
-
-                    let dataItem = patientMediaItem?.mediaItem.getValue();
-
-                    
-
-                    if(mediaItem.deleted){
-                        dataItem = dataItem?.filter(e => e.patientMediaItemId !== data.mediaItemId);
-                    }
-
-                    const existingItem = dataItem?.findIndex(item => item.patientMediaItemId === data.mediaItemId);
-
-
-                    if(existingItem === -1 ){
-                        dataItem?.push(mediaItem);
-                    }
-                     else {
-                        if(existingItem && dataItem){
-                            dataItem[existingItem] = mediaItem;
-                        }
-                    }
-                    if(dataItem){
-
-                        patientMediaItem?.mediaItem.next(dataItem);
-                    }
-
-                }
-
-                return data;
-            })
-            .catch(error => {
-                console.log(error);
-            });
-
-    }
-
-    public getPatientMediaItemsByPatientId(patientId: number): BehaviorSubject<MediaItem[]> {
-
-        const request = '/PatientMediaItems?patientId=' + patientId;
-
-        let patientMediaItem = this.mediaItemData.find(patientMediaItemVal =>
-            patientMediaItemVal.patientId === patientId
-        );
-
-        const returnBehaviorSubject: BehaviorSubject<MediaItem[]> =
-        patientMediaItem ? patientMediaItem.mediaItem : new BehaviorSubject<MediaItem[]>([]);
-
-        if(!patientMediaItem){
-            patientMediaItem = this.addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject, patientId);
-        }
-
-        // tslint:disable-next-line: deprecation
-        this.getObservable(request).pipe(
-            map(mediaItems => mediaItems?.sort((a:any, b:any) => new Date(b?.datetime).getTime() - new Date(a?.datetime).getTime()))
-        ).pipe(takeUntil(this.ngUnsubscribe)).subscribe((media : MediaResponse[])=>{
-
-            if(!media){
-                return;
-            }
-
-            const savedMediaItems: MediaItem[] = media.map(item=>{
-
-                return {
-                    mediaItemId : of(item.mediaItemId),
-                    patientMediaItemId: item.mediaItemId,
-                    mediaType: item.mediaType,
-                    localURL: item.localURL,
-                    remoteURL: item.remoteURL,
-                    isPrimary :item.isPrimary ? true : false,
-                    datetime: item.datetime,
-                    patientId: item.patientId,
-                    heightPX: item.heightPX,
-                    widthPX: item.widthPX,
-                    tags: item.tags,
-                    uploadProgress$: of(100),
-                    updated: false,
-                    deleted: false
-                };
-
-            });
-
-            if(patientMediaItem){
-                patientMediaItem.mediaItem.next(savedMediaItems);
-            }
-
-        });
-
-        return returnBehaviorSubject;
-    }
-
-    addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject:BehaviorSubject<MediaItem[]>, patientId:number) : MediaItemsDataObject {
-
-        const newItemData : MediaItemsDataObject = {
-            patientId,
-            mediaItem : returnBehaviorSubject
-        };
-        returnBehaviorSubject.next([]);
-
-        this.mediaItemData.push(newItemData);
-
-        return newItemData;
-
-    }
 
     public getPatientOutcomeForm(
         patientId: number,
@@ -399,32 +260,7 @@ export class PatientService extends APIService {
         }
 
     }
-    public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
-        return await this.post(comment)
-        .then(data => {
-            if(data?.success === 1){
-                return data;
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
 
-    }
-
-    public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
-
-        const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
-
-        return this.getObservable(request).pipe(
-            map(response => {
-                return  response?.sort((comment1: Comment,comment2:Comment)=> {
-                    return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
-                });
-
-            })
-        );
-    }
 
     public async updatePatientPriority(priorityObject: PriorityObject): Promise<SuccessOnlyResponse> {
         return await this.put(priorityObject)

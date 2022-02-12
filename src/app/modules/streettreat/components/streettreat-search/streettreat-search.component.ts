@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
 import { StreetTreatService } from '../../services/streettreat.service';
 
@@ -11,7 +12,12 @@ import { StreetTreatService } from '../../services/streettreat.service';
 })
 export class StreetTreatSearchComponent implements OnInit {
 
+  private ngUnsubscribe = new Subject();
+
   @Output() public openStreetTreatCase = new EventEmitter<SearchStreetTreatResponse>();
+
+  loading = false;
+  noResults = false;
 
   constructor(
     private streetTreatService: StreetTreatService,
@@ -22,8 +28,28 @@ export class StreetTreatSearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+}
+
   onSearchQuery(searchQuery:string){
-    this.searchResults$ = this.streetTreatService.searchCases(searchQuery);
+
+    this.loading = true;
+    this.noResults = false;
+
+    this.searchResults$ = this.streetTreatService.searchCases(searchQuery).pipe(takeUntil(this.ngUnsubscribe), map( result => {
+
+        this.noResults = result.length === 0;
+
+        this.loading = false;
+
+        return result;
+
+      })
+    );
+
+
   }
 
   openCase(searchResult: SearchStreetTreatResponse) {

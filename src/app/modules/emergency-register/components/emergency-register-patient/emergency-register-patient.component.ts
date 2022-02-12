@@ -12,7 +12,7 @@ import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { MediaService } from 'src/app/core/services/media/media.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
@@ -97,7 +97,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     private dialog: MatDialog,
     private printService: PrintTemplateService,
     private userOptions: UserOptionsService,
-    private patientService: PatientService
+    private mediaService: MediaService
   ) {
 
 
@@ -108,7 +108,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     this.patientForm = this.patientFormInput as FormGroup;
 
     if(this.patientForm?.get('patientId')?.value) {
-      this.mediaData = this.patientService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
+      this.mediaData = this.mediaService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
     }
 
     this.exclusions = this.dropdown.getExclusions();
@@ -198,7 +198,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     return this.dropdown.getAnimalTypes().pipe(
       map(animalTypes => animalTypes.filter(animalType => animalType.AnimalType.toLowerCase().indexOf(fitlerValue) === 0)),
-      map(animalTypes => animalTypes.sort((a,b) => a.Sort - b.Sort))
+      map(animalTypes => animalTypes.sort((a,b) => a.SortOrder - b.SortOrder))
     );
   }
 

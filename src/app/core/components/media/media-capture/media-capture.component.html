@@ -2,9 +2,9 @@
     <button mat-icon-button class="close-button" (click)="closeDialog($event)"[mat-dialog-close]="true">
         <mat-icon class="close-icon" >close</mat-icon>
     </button>
-    
+
     <div class="video-item"></div>
-    
+
     <video #video class="vid" autoplay></video>
 
     <canvas #canvas class="canvas"></canvas>
@@ -13,7 +13,7 @@
 
     <div class='timer' [ngClass]="timer > 24000 ? 'alert' : timer > 14000 ? 'warning' : 'no-warning'" *ngIf="capturing">00:{{timer | date:'ss'}}</div>
 
-    
+
 
     <button mat-mini-fab aria-label="Upload new image" (click)="captureImage()" class="image-capture-button">
         <mat-icon [inline]="true" class="seconday-icon">camera</mat-icon>
@@ -28,13 +28,10 @@
 
   </div>
 
-  <div 
-  style="
-  position: absolute;
-  bottom: 0;">
-    <div  *ngFor="let thumnailPreview of capturedImages ">
-        <img 
-        [src]="thumnailPreview" 
+  <div style="position: absolute; bottom: 0;">
+    <div *ngFor="let thumnailPreview of capturedImages ">
+        <img
+        [src]="thumnailPreview"
         style="
         width: 4em;
         height: 4em;

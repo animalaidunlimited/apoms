@@ -144,6 +144,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				mainProblem: [, Validators.required],
 				adminNotes: [, Validators.required],
 				streetTreatCaseStatus: [, Validators.required],
+				teamId: [, Validators.required],
 				visits: this.fb.array([])
 			})
 		);
@@ -245,7 +246,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						}
 					});
 				}
-				
+
 				this.streetTreatCase = response;
 				this.streetTreatCaseIdEmit.emit(response.streetTreatCaseId);
 

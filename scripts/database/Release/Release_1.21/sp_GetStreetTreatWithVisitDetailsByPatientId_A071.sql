@@ -26,7 +26,7 @@ SELECT
 				    "patientId",s.PatientId,
                     "callDateTime", ec.CallDateTime,
 				    "casePriority",s.PriorityId,
-				    -- "teamId",s.TeamId,
+				    "teamId",s.TeamId,
                     "autoAdded", IF(p.PatientCallOutcomeId = 18, true, false),
 					"assignedVehicleId",s.AssignedVehicleId,
 					"ambulanceAssignmentTime",DATE_FORMAT(s.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"),

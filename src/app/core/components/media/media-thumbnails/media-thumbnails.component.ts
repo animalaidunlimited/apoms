@@ -24,15 +24,20 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
 
     ngOnInit(): void {
 
+        this.mediaPatientItems.subscribe(val => console.log(val));
+
     }
 
+
+
     openPreviewDialog(image:Image){
+
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
             panelClass: 'media-preview-dialog',
             data: {
                 image,
-                mediaData: this.mediaPatientItems.value.filter(media => media.patientMediaItemId === image.patientMediaItemId)[0]
+                mediaData: this.mediaPatientItems.value.find(media => media.patientMediaItemId === image.patientMediaItemId)
             },
             autoFocus: false
         });

@@ -196,6 +196,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
 
+/*
     this.chartData = datesRange;
 
     setTimeout(() => {
@@ -204,6 +205,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
     }, 1000);
+    */
 
     this.customColours = data.teamColours;
   }

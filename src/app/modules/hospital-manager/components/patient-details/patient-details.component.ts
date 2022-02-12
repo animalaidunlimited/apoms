@@ -20,7 +20,7 @@ import { EventEmitter } from '@angular/core';
 })
 
 export class PatientDetailsComponent implements OnInit {
-    animalTypes$:AnimalType[] = [];
+    animalTypes$!:Observable<AnimalType[]>;
     @Input() recordForm!: FormGroup;
     @Output() saving: EventEmitter<boolean> = new EventEmitter(false);
 
@@ -42,7 +42,7 @@ export class PatientDetailsComponent implements OnInit {
 
     ngOnInit() {
 
-        this.dropdown.getAnimalTypes().pipe(take(1)).subscribe(animalTypes => this.animalTypes$ = animalTypes).unsubscribe();
+        this.animalTypes$ = this.dropdown.getAnimalTypes();
 
         this.treatmentPriorities = this.dropdown.getPriority();
 

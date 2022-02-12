@@ -43,6 +43,18 @@ import { Observable, BehaviorSubject } from 'rxjs';
     mediaItem: BehaviorSubject<MediaItem[]>;
   }
 
+  export interface MediaUploadResponse{
+    success: number;
+    mediaItemId: number;
+  }
+
+  export interface SingleMediaItem {
+    upload: boolean,
+    patientId: number,
+    tagNumber: string,
+    image: Image,
+    mediaData: MediaItem | undefined
+  }
   export interface SharedMediaPackage{
     message: string;
     image: File[];

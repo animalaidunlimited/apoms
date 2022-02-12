@@ -5,7 +5,7 @@ import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MediaPasteService } from 'src/app/core/services/media-paste/media-paste.service';
+import { MediaService } from 'src/app/core/services/media/media.service';
 import { MaterialModule } from 'src/app/material-module';
 import { MediaPreviewComponent } from './media-preview.component';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ describe('MediaPreviewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientModule, 
+        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
@@ -29,7 +29,7 @@ describe('MediaPreviewComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
         DatePipe,
-        MediaPasteService
+        MediaService
     ]
     })
     .compileComponents();
