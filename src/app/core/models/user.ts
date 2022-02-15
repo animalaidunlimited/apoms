@@ -27,6 +27,17 @@ export interface UserDetails {
     jobTitleId: number;
     jobTitle: string;
   }
+
 export interface ReleaseManager {
     FirstName: string;
+}
+
+export interface UserAccountDetails{
+    fullname: string;
+    initials: string;
+    preferences: UserPreferences;
+}
+
+export interface UserPreferences {
+    clearSearchOnTabReturn? : boolean;
 }

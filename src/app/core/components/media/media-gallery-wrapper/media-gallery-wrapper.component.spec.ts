@@ -6,11 +6,11 @@ import { MaterialModule } from 'src/app/material-module';
 import { MediaItem } from '../../../models/media';
 import { TimeAgoPipe } from '../media-preview/time-ago.pipe';
 
-import { ThumbnailSliderComponent } from './thumbnail-slider.component';
+import { GalleryWrapperComponent } from './media-gallery-wrapper.component';
 
-describe('ThumbnailSliderComponent', () => {
-    let component: ThumbnailSliderComponent;
-    let fixture: ComponentFixture<ThumbnailSliderComponent>;
+describe('GalleryWrapperComponent', () => {
+    let component: GalleryWrapperComponent;
+    let fixture: ComponentFixture<GalleryWrapperComponent>;
 
     beforeEach(async() => {
         TestBed.configureTestingModule({
@@ -18,7 +18,7 @@ describe('ThumbnailSliderComponent', () => {
                 MaterialModule
             ],
             declarations: [
-                ThumbnailSliderComponent
+                GalleryWrapperComponent
             ],
             providers: [
                 DatePipe,
@@ -29,11 +29,8 @@ describe('ThumbnailSliderComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ThumbnailSliderComponent);
+        fixture = TestBed.createComponent(GalleryWrapperComponent);
         component = fixture.componentInstance;
-
-        component.mediaData = new BehaviorSubject<MediaItem[]>([]);
-
 
         fixture.detectChanges();
     });

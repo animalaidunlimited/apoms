@@ -252,9 +252,9 @@ export class MediaService extends APIService {
         returnObject.mediaItemId.next(1);
 
       }
-      else{
+      else {
 
-        return console.log(error);
+        return error;
 
       }
 
@@ -645,7 +645,15 @@ export class MediaService extends APIService {
 
                     if(currentMediaItem.patientId === mediaItem.patientId){
 
+                      currentMediaItem.mediaItem.getValue().forEach(currentMediaItemVal => {
 
+                        if(currentMediaItemVal.mediaItemId !== mediaItem.mediaItemId){
+
+                          currentMediaItemVal.isPrimary = false;
+
+                        }
+
+                      })
                     }
 
                   });
@@ -667,7 +675,7 @@ export class MediaService extends APIService {
                 if(existingItem === -1 ){
                     currentPatientMediaList?.push(mediaItem);
                 }
-                 else if(existingItem && currentPatientMediaList){
+                 else if(existingItem > -1 && currentPatientMediaList){
                         currentPatientMediaList[existingItem] = mediaItem;
                 }
 
@@ -682,8 +690,9 @@ export class MediaService extends APIService {
                   });
                 }
 
-                if(currentPatientMediaList){
 
+
+                if(currentPatientMediaList){
                     patientMediaItem?.mediaItem.next(currentPatientMediaList);
                 }
 
@@ -785,6 +794,35 @@ public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]
 
         })
     );
+}
+
+//Let's get the media items for the current patient and return an observable of unique dates.
+public getGalleryDatesForPatientId(patientId: number): Observable<string[]> {
+
+    let currentPatient = this.mediaItemData.find(element => element.patientId = patientId);
+
+    let dateArray = currentPatient?.mediaItem.pipe(map(mediaItems =>
+
+      mediaItems.map(mediaItem => this.datePipe.transform(mediaItem.datetime, 'yyyy-MM-dd'))
+                .reduce<(string)[]>((acc, curr) => {
+
+        console.log(curr);
+
+        curr = curr || "1901-01-01";
+
+        if(!acc.includes(curr)){
+            acc.push(curr);
+        }
+
+        return acc;
+
+    }, [])));
+
+
+    return currentPatient && dateArray ? dateArray : of([""]);
+
+
+
 }
 
 }

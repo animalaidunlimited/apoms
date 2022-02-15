@@ -47,6 +47,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions >
-    <button type="submit" mat-raised-button color="primary" (click)="saveTreatment()" [disabled]="treatmentDetails.invalid">Save</button>
+    <button type="submit" mat-raised-button color="primary" (click)="saveTreatment(true)" [disabled]="treatmentDetails.invalid">Save</button>
     <button type="button" mat-raised-button color="primary" mat-dialog-close>Cancel</button>
+    <button mat-mini-fab color="warn" (click)="deleteTreatment()">
+        <mat-icon>delete</mat-icon>
+    </button>
 </mat-dialog-actions>

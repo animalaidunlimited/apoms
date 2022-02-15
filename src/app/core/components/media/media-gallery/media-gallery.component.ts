@@ -6,8 +6,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MediaGalleryDialogComponent } from '../media-gallery-dialog/media-gallery-dialog.component';
 import { DatePipe } from '@angular/common';
-import { MediaService } from 'src/app/core/services/media/media.service'
-import { PatientService } from 'src/app/core/services/patient/patient.service';
+import { MediaService } from 'src/app/core/services/media/media.service';
 import { MediaPreviewComponent } from '../media-preview/media-preview.component';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
 
@@ -21,19 +20,13 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private ngUnsubscribe = new Subject();
 
-  @Input() galleryData!:AbstractControl | null;
+  @Input() patientData!:AbstractControl | null;
 
   @Input() displayImagesAndButtons!:boolean;
 
-  @Input() mediaData!:BehaviorSubject<MediaItem[]>;
-
-  mediaPatientItems!:MediaItem[];
-
-  galleryImages: Image[] = [];
-
-  galleries!:Gallery[];
-
-  patientId!:number;
+  public get patientId() {
+		return this.patientData?.get('patientId')?.value;
+	}
 
   constructor(
     public dialog: MatDialog,
@@ -45,8 +38,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit(): void {
-
-    this.patientId = this.galleryData?.get('patientId')?.value;
 
     this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe(connectionState => {
 
@@ -67,13 +58,15 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.initMedaiaGallery();
+   // this.initMedaiaGallery();
 
-    this.mediaData?.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
+   // this.mediaData?.pipe(takeUntil(this.ngUnsubscribe)).subscribe(mediaItems => this.initMedaiaGalleryProperties(mediaItems));
 
   }
 
   ngAfterViewInit() {
+
+    /*
     this.onlineStatus.connectionChanged.pipe(takeUntil(this.ngUnsubscribe)).subscribe((connectionStatus) => {
 
       if(!connectionStatus){
@@ -100,8 +93,9 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
           });
         }
       }
-    });
 
+    });
+  */
   }
 
   openGalleryDialog($event: Event): void{
@@ -113,8 +107,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
         maxWidth: '100%',
         panelClass: 'media-gallery-dialog',
         data: {
-            mediaGallery: this.galleries,
-            mediaPatientItems: this.mediaData
+          patientId: this.patientId
         }
     });
 
@@ -122,64 +115,13 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openMediaDialog(): void{
 
-    // TODO: Add the service to update the datetime in the image description by emmiting a behavior subject.
-
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
 
       minWidth: '75vw',
       panelClass: 'media-preview-dialog',
       data: {
         upload: true,
-        patientId: this.galleryData?.get('patientId')?.value
-      }
-
-    });
-
-    const sub = dialogRef.componentInstance.onArrowKey.pipe(takeUntil(this.ngUnsubscribe)).subscribe(key => {
-
-      // tslint:disable-next-line: max-line-length
-      const mediaDataIndex = this.mediaPatientItems.findIndex(mediaPatientItem => mediaPatientItem?.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-      const imageIndex = this.galleryImages.findIndex(gal => gal.patientMediaItemId === dialogRef.componentInstance.data.mediaData?.patientMediaItemId);
-
-
-       if(key === 37){
-          if(imageIndex - 1 >= 0 && mediaDataIndex - 1 >= 0){
-
-              const dialogData = {
-                  image : this.galleryImages[imageIndex - 1],
-                  mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex - 1]
-              };
-              dialogRef.componentInstance.updateDialog(dialogData);
-
-          }
-      }
-
-       if(key === 39){
-
-          if(imageIndex + 1 <= this.galleryImages.length - 1 && mediaDataIndex + 1 <= this.mediaPatientItems.length - 1) {
-
-              const dialogData = {
-                  image : this.galleryImages[imageIndex + 1],
-                  mediaData :  dialogRef.componentInstance.data.mediaData = this.mediaPatientItems[mediaDataIndex + 1]
-              };
-              dialogRef.componentInstance.updateDialog(dialogData);
-          }
-      }
-
-    });
-
-
-    dialogRef.afterClosed()
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(updatedMedia => {
-
-      if(updatedMedia){
-
-          if(updatedMedia.isPrimary === true){
-
-            // this.profileUrl = updatedMedia.localURL || updatedMedia.remoteURL || this.profileUrl;
-
-          }
+        patientId: this.patientId
       }
 
     });
@@ -191,6 +133,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngUnsubscribe.complete();
   }
 
+  /*
   initMedaiaGallery(){
 
     if(this.mediaData)
@@ -267,4 +210,5 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.galleries;
 
   }
+  */
 }

@@ -3,7 +3,9 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { UserOptionsService } from '../../services/user-option/user-options.service';
+import { UserPreferences } from '../../models/user';
 
 export interface SearchValue {
     id: number;
@@ -43,6 +45,7 @@ export class RecordSearchComponent implements OnDestroy {
     constructor(
         public dialog: MatDialog,
         public rescueDialog: MatDialog,
+        private userOptions: UserOptionsService,
         public callDialog: MatDialog,
         private caseService: CaseService
     ) {}
@@ -52,7 +55,7 @@ export class RecordSearchComponent implements OnDestroy {
         this.ngUnsubscribe.complete();
     }
 
-    onSearchQuery(searchQuery:string){
+    onSearchQuery(searchQuery:string) : void {
         this.loading = true;
         this.noResults = false;
 
@@ -60,7 +63,7 @@ export class RecordSearchComponent implements OnDestroy {
 
         this.searchResults$
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((value:SearchResponse[])=>{
+        .subscribe((value:SearchResponse[]) => {
 
             if(!value){
                 this.noResults = true;
@@ -74,7 +77,19 @@ export class RecordSearchComponent implements OnDestroy {
 
     }
 
-    openCase(searchResult: SearchResponse) {
+    openCase(searchResult: SearchResponse) : void {
+
+        this.userOptions.getUserPreferences().pipe(takeUntil(this.ngUnsubscribe),
+        map((prefs: UserPreferences) => {
+
+            if(prefs.clearSearchOnTabReturn){
+                this.searchResultArray = [];
+            }
+
+
+        }))
+
+
         this.caseService.openCase({tab: searchResult, source: this.source});
     }
 }

@@ -4,17 +4,20 @@
 <button *ngIf="fullImageView" mat-icon-button class="close-button imageCloseBtn" (click)="removeFullView($event)" >
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
+
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
+
 <div fxLayout="row" fxLayout.lt-sm="column" style="background: #F0F0F0; border-radius: 0.5em;">
+
     <div #imgElement
-    [style.backgroundImage]="'url('+ imageData?.full +')'"
+    [style.backgroundImage]="'url('+ imageLocation +')'"
     class="mediaPreviewBackgroundImage"
     [ngStyle.xs]="'min-height:'+ imageHeight+'vh'"
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
-    *ngIf="imageData?.type?.includes('image') || data.upload"
+    *ngIf="data?.mediaData?.mediaType?.includes('image') || data.upload"
     (click)="onImageClick($event)">
 
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
@@ -53,10 +56,10 @@
     </div>
 
 
-    <video *ngIf="imageData?.type?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;"
+    <video *ngIf="data.mediaData?.mediaType?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;"
             controls (click)="toggleVideo($event)" #videoplayer>
-            
-        <source src="{{imageData?.full}}" type="video/mp4" />
+
+        <source src="{{imageLocation}}" type="video/mp4" />
         Browser not supported
     </video>
 
@@ -64,7 +67,8 @@
         <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
             <mat-form-field class="imageDate" appearance="fill" fxLayout="column">
                 <mat-label>Date</mat-label>
-                <input matInput style="width: 100%;" type="datetime-local" name="imageDate" formControlName="imageDate" style="background: transparent;
+                <input matInput style="width: 100%;" type="datetime-local" name="imageDate"
+                formControlName="imageDate" style="background: transparent;
                 border-top: none;
                 border-right: none;
                 border-left: none;
@@ -117,20 +121,31 @@
                 </ng-container>
             </div>
 
-            <div fxLayout="row" fxLayoutAlign="center space-between" style="width: 100%;">
-                <mat-form-field appearance="fill" style="width: 100%;" fxLayout="column">
-                    <input matInput autocomplete="off" class="commentInput" formControlName="currentComment" type="text" placeholder="Type a comment here" #commentInput />
-                    <mat-icon (click)="submitComment()" style="cursor: pointer;" matSuffix>send</mat-icon>
+            <div fxLayout="row" fxLayoutAlign="center space-between" style="width: 100%; margin-top: 20px">
+                <mat-form-field style="width: 100%;">
+                    <input matInput autocomplete="off" class="commentInput" formControlName="currentComment" type="text" placeholder="Type a comment here" />
                 </mat-form-field>
+
+                <button mat-mini-fab class="sendButton" color="primary" (click)="submitComment()">
+                    <mat-icon>send</mat-icon>
+                </button>
 
             </div>
         </div>
 
-        <button
-        mat-raised-button
-        color="primary"
-        style="max-width: 5rem;margin: 1rem;"
-        (click)="updateMediaItem();">Update</button>
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <button
+            mat-raised-button
+            color="primary"
+            style="max-width: 5rem;margin: 1rem;"
+            (click)="updateMediaItem();">Update</button>
+
+            <button mat-mini-fab color="warn" (click)="deleteMediaItem()">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+
+
 
     </div>
 </div>

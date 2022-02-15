@@ -49,19 +49,16 @@ export class TabBarComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.selected.setValue(1);
 
-        this.caseService.caseToOpen
-        .pipe(
-            takeUntil(this.ngUnsubscribe)
-        )
-        .subscribe(caseValue => {
+        this.caseService.caseToOpen$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(caseValue => {
 
-            if(caseValue?.source === "emergencyRegister"){
-                this.openCase(caseValue);
-            }
-        });
+                if(caseValue?.source === "emergencyRegister"){
+                    this.openCase(caseValue);
+                }
+            });
 
         this.navigationService.isSearchClicked
-
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((clicked)=>
             {
@@ -169,6 +166,11 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
         if($event === 0){
             this.loadBoard = true;
+        }
+        else if($event === 1){
+            setTimeout(() => {
+                this.navigationService.isSearchClicked.next(true);
+            }, 1);
         }
 
         this.selected.setValue($event);

@@ -6,7 +6,7 @@ import { AnimalSelectionComponent } from './animal-selection.component';
 import { EmergencyRegisterPatientComponent } from '../emergency-register-patient/emergency-register-patient.component';
 import { EmergencyCaseOutcomeModule } from '../emergency-case-outcome/emergency-case-outcome.module';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
-import { ThumbnailSliderModule } from 'src/app/core/components/media/thumbnail-slider/thumbnail-slider.module';
+import { GalleryWrapperModule } from 'src/app/core/components/media/media-gallery-wrapper/media-gallery-wrapper.module';
 
 @NgModule({
     declarations: [AnimalSelectionComponent,EmergencyRegisterPatientComponent],
@@ -15,7 +15,7 @@ import { ThumbnailSliderModule } from 'src/app/core/components/media/thumbnail-s
         MaterialModule,
         EmergencyCaseOutcomeModule,
         RescueDetailsModule,
-        ThumbnailSliderModule
+        GalleryWrapperModule
     ],
     exports:[AnimalSelectionComponent,EmergencyRegisterPatientComponent]
 })

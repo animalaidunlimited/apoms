@@ -1,10 +1,7 @@
 
 <div fxLayout="row" class="mediaGalleryContainer" *ngIf="displayImagesAndButtons">
 
-    <media-thumbnails
-        [gallery]="galleryImages.slice(0,3)"
-        [mediaPatientItems]="mediaData">
-    </media-thumbnails>
+    <media-thumbnails [patientId]="patientId" [limitSize]=true></media-thumbnails>
 
 </div>
 

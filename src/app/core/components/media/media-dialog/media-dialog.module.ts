@@ -4,7 +4,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MediaThumbnailsModule } from '../media-thumbnails/media-thumbnails.module';
 import { MediaDialogComponent } from './media-dialog.component';
-import { ThumbnailSliderModule } from '../thumbnail-slider/thumbnail-slider.module';
+import { GalleryWrapperModule } from '../media-gallery-wrapper/media-gallery-wrapper.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { ThumbnailSliderModule } from '../thumbnail-slider/thumbnail-slider.modu
     MaterialModule,
     FlexLayoutModule,
     MediaThumbnailsModule,
-    ThumbnailSliderModule
+    GalleryWrapperModule
   ],
   exports: [MediaDialogComponent]
 })

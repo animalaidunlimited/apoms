@@ -30,17 +30,24 @@ interface TreatmentListMovement {
 
 export class TreatmentListService extends APIService {
 
-  acceptedFormArray: FormArray;
   currentAreaId:number | undefined;
 
   endpoint = 'TreatmentList';
 
   hasPermission = new BehaviorSubject<boolean>(false);
-  movedListFormArray: FormArray;
 
   refreshing = new BehaviorSubject<boolean>(false);
   treatmentListForm:FormGroup;
   treatmentListObject: BehaviorSubject<FormGroup>;
+
+  get acceptedFormArray() : FormArray {
+    return this.treatmentListForm.get('accepted') as FormArray;
+  }
+
+  get movedListFormArray() : FormArray {
+
+    return this.treatmentListForm.get('movedLists') as FormArray;
+  }
 
   constructor(public http: HttpClient,
     private snackbar: SnackbarService,
@@ -50,10 +57,6 @@ export class TreatmentListService extends APIService {
     super(http);
 
     this.treatmentListForm = this.getEmptyTreatmentForm();
-
-    this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
-    this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
-
     this.treatmentListObject = new BehaviorSubject<FormGroup>(this.treatmentListForm);
 
 }
@@ -71,10 +74,10 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
       // Find it in the accepted list
       const removeIndex = this.acceptedFormArray.controls.findIndex(currentPatient => currentPatient.get('PatientId')?.value === acceptReject.patientId);
 
-      const patientToMove = this.acceptedFormArray.at(removeIndex);
+      const patientToMove = this.getAcceptedPatient(acceptReject.patientId);
 
       // Move it from the accepted list to the rejected list if we need to
-      if(!acceptReject.accepted && this.currentAreaId !== acceptReject.actionedByAreaId){
+      if(!acceptReject.accepted && this.currentAreaId !== acceptReject.actionedByAreaId && patientToMove){
 
         patientToMove?.get('Actioned by area')?.setValue(acceptReject.actionedByArea);
         patientToMove?.get('Moved to')?.setValue(null);
@@ -102,7 +105,7 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
           if(foundPatient > -1) {
             const movedPatient = currentList.at(foundPatient);
 
-            if(removeIndex === -1) {
+            if(!patientToMove) {
 
               this.acceptedFormArray.push(movedPatient);
             }
@@ -326,10 +329,6 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   private emitTreatmentObject(){
 
-
-    this.acceptedFormArray = this.treatmentListForm.get('accepted') as FormArray;
-    this.movedListFormArray = this.treatmentListForm.get('movedLists') as FormArray;
-
     this.zone.run(() => this.treatmentListObject.next(this.treatmentListForm));
     this.zone.run(() => this.refreshing.next(false));
 
@@ -363,6 +362,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     response.forEach(() => returnArray.push(this.getEmptyPatient()));
 
     returnArray.patchValue(response);
+
 
     // We need to build a similar array for sending to the patient details update. The first patient details array
     // is named so that we can dynamically add columns to a table. Hence the namings are like 'Release status'
@@ -506,6 +506,19 @@ public sortTreatmentList(){
 
 }
 
+public updateTreatedToday(patientId: number, treated: boolean) : void {
+
+  let treatedPatient = this.getAcceptedPatient(patientId);
+
+  if(treatedPatient){
+
+    treatedPatient.get('treatedToday')?.setValue(treated);
+  }
+
+  this.emitTreatmentObject();
+
+}
+
 private sortTreatmentAbstractControls(a: AbstractControl, b: AbstractControl){
 
   let sortResult = 0;
@@ -534,5 +547,10 @@ private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accept
   };
 }
 
+private getAcceptedPatient(patientId: number) : AbstractControl | undefined{
+
+  return this.acceptedFormArray.controls.find(currentPatient => currentPatient.get('PatientId')?.value === patientId);
+
+}
 
 }

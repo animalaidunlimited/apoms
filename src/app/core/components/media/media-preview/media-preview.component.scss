@@ -28,11 +28,9 @@
 }
 
 .mat-spinner{
-
     position: absolute;
     left: 30rem;
     top: 14rem;
-
 }
 
 ::ng-deep .mat-form-field-appearance-fill
@@ -226,10 +224,15 @@
 }
 .commentInput{
     background: transparent;
-    border-top: 0.1rem solid #707c9752;
+    border-bottom: 0.1rem solid #707c9752;
     padding: 0.5rem  0.5rem 0.1rem 0.5rem !important;
     font-size: 0.9rem;
-    width:calc(100% - 1rem)
+    width:calc(90% - 1rem)
+}
+
+.sendButton {
+    align-self: center;
+    margin-right: 10px;
 }
 
 

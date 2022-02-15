@@ -61,8 +61,6 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   errorMatcher = new CrossFieldErrorMatcher();
   exclusions: Exclusions[] = [] as Exclusions[];
 
-  mediaData!:BehaviorSubject<MediaItem[]>;
-
   filteredAnimalTypes$!:Observable<AnimalType[]>;
   filteredProblems$!: Observable<ProblemDropdownResponse[]>;
 
@@ -106,10 +104,6 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   ngOnInit(): void {
 
     this.patientForm = this.patientFormInput as FormGroup;
-
-    if(this.patientForm?.get('patientId')?.value) {
-      this.mediaData = this.mediaService.getPatientMediaItemsByPatientId(this.patientForm.get('patientId')?.value);
-    }
 
     this.exclusions = this.dropdown.getExclusions();
 

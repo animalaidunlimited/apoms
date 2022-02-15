@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, skip } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { MatSelectChange } from '@angular/material/select';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
+import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 
 @Component({
     selector: 'app-search-field',
@@ -58,11 +59,9 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     searchForm: FormGroup = new FormGroup({});
     searchRows: FormArray = new FormArray([]);
 
-
     errorMatcher = new CrossFieldErrorMatcher();
 
     searchShowing = false;
-
 
     options: SearchValue[] = [
         {
@@ -210,9 +209,11 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         private navigationService: NavigationService,
         public platform: Platform,
         private datepipe: DatePipe,
+        private caseService: CaseService,
         private dropdowns: DropdownService) { }
 
     ngOnInit(): void {
+
         this.navigationService.isSearchClicked.pipe(takeUntil(this.ngUnsubscribe)).subscribe((clicked) => {
             if (clicked && this.searchBox) {
                 this.searchBox.nativeElement.focus();
@@ -223,14 +224,24 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         });
 
     this.navigationService.isSearchClicked
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((clicked)=> {
-        if(clicked && this.searchBox){
-                this.searchBox.nativeElement.focus();
-        }
-    });
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((clicked)=> {
+            if(clicked && this.searchBox){
+                    this.searchBox.nativeElement.focus();
+            }
+        });
 
         this.searchRows = this.searchForm.get('searchRows') as FormArray;
+
+        this.caseService.clearResults$
+            .pipe(takeUntil(this.ngUnsubscribe),
+            skip(1))
+            .subscribe(val =>
+
+                {this.search.searchString = '';
+                console.log(val);
+
+            });
 
     }
     ngOnDestroy() {

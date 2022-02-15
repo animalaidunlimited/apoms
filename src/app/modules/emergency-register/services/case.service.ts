@@ -4,19 +4,23 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { EmergencyCase, CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
-import { debounceTime, map, share, takeUntil } from 'rxjs/operators';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, map, mergeMap, share, skip, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subject, combineLatest, merge } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
-import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
-import { DriverAssignment } from 'src/app/core/models/driver-view';
+
+
+
 @Injectable({
     providedIn: 'root',
 })
 export class CaseService extends APIService {
 
-    caseToOpen : BehaviorSubject<CaseToOpen | undefined> = new BehaviorSubject<CaseToOpen | undefined>(undefined);
+    caseToOpen$ : BehaviorSubject<CaseToOpen | undefined> = new BehaviorSubject<CaseToOpen | undefined>(undefined);
+
+    clearResultsOnTabSwitch$: Observable<boolean | undefined>;
+    clearResults$: BehaviorSubject<SearchResponse[]> = new BehaviorSubject<SearchResponse[]>([] as SearchResponse[]);
 
     emergencyResponse: BehaviorSubject<EmergencyResponse> = new BehaviorSubject<EmergencyResponse>({} as EmergencyResponse);
 
@@ -31,6 +35,19 @@ export class CaseService extends APIService {
         private toaster: SnackbarService
     ) {
         super(http);
+
+        //Depending on the user's preference, clear the results when they switch tabs
+        this.clearResultsOnTabSwitch$ = this.userOptions.getUserPreferences().pipe(map(prefs => prefs.clearSearchOnTabReturn));
+
+        this.caseToOpen$.pipe(skip(1),withLatestFrom(this.clearResultsOnTabSwitch$)).subscribe(clearResults => {
+
+            console.log(clearResults);
+
+            if(clearResults[1]){
+                this.clearResults$.next([] as SearchResponse[]);
+            }
+
+        });
     }
 
     endpoint = 'EmergencyRegister';
@@ -141,8 +158,6 @@ export class CaseService extends APIService {
         return await this.baseInsertCase(emergencyCase)
             .then(async result => {
 
-                console.log(result);
-
                 if(result.callerSuccess === 0){
                     return await this.saveAndRejectCase(emergencyCase);
                 }
@@ -217,15 +232,22 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
-        return this.getObservable(request)
+        const searchResult = this.getObservable(request)
         .pipe(
             debounceTime(1500),
+
             map((response: SearchResponse[]) => {
                 return response;
             }),
             share()
         );
+
+        return merge(this.clearResults$, searchResult);
+
+
     }
+
+    //public clearSearchCases()
 
     private async saveToLocalDatabase(key:any, body:any) {
         // Make a unique identified so we don't overwrite anything in local storage.
@@ -286,8 +308,7 @@ export class CaseService extends APIService {
     }
 
     public openCase(caseToOpen: CaseToOpen) {
-
-        this.caseToOpen.next(caseToOpen);
+        this.caseToOpen$.next(caseToOpen);
     }
 
 

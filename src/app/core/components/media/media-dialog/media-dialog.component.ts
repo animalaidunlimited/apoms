@@ -23,8 +23,6 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
-  mediaData!: BehaviorSubject<MediaItem[]>;
-
   recordForm: FormGroup = new FormGroup({});
 
   constructor(public dialogRef: MatDialogRef<MediaDialogComponent>,
@@ -35,8 +33,6 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
     public platform: Platform) { }
 
   ngOnInit(): void {
-
-    this.mediaData = this.mediaService.getPatientMediaItemsByPatientId(this.data.patientId);
 
     this.recordForm =  this.fb.group({
       patientDetails: this.fb.group({

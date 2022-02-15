@@ -3,21 +3,21 @@ import { SafeUrl } from '@angular/platform-browser';
 import { Observable, BehaviorSubject } from 'rxjs';
 
   export interface MediaItem{
-    mediaItemId: Observable<number>;
-    patientMediaItemId?: number;
-    organisationMediaItemId?: number;
-    mediaType: string;
-    localURL: SafeUrl;
-    remoteURL: string;
-    isPrimary: boolean;
     datetime: Date|string;
     deleted: boolean;
-    patientId: number;
     heightPX: number;
-    widthPX: number;
+    isPrimary: boolean;
+    localURL: SafeUrl;
+    mediaItemId: Observable<number>;
+    mediaType: string;
+    organisationMediaItemId?: number;
+    patientId: number;
+    patientMediaItemId?: number;
+    remoteURL: string;
     tags: Tag[] | string[];
     uploadProgress$: Observable<number> | null;
     updated: boolean;
+    widthPX: number;
   }
 
 
@@ -52,7 +52,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
     upload: boolean,
     patientId: number,
     tagNumber: string,
-    image: Image,
     mediaData: MediaItem | undefined
   }
   export interface SharedMediaPackage{

@@ -17,7 +17,7 @@ import { CrueltyDetailsComponent } from './components/cruelty-details/cruelty-de
 import { OutcomeComponent } from './components/outcome/outcome.component';
 
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
-import { ThumbnailSliderModule } from 'src/app/core/components/media/thumbnail-slider/thumbnail-slider.module';
+import { GalleryWrapperModule } from 'src/app/core/components/media/media-gallery-wrapper/media-gallery-wrapper.module';
 import { PatientStatusModule } from 'src/app/core/components/patient-status/patient-status.module';
 import { RescueDetailsModule } from 'src/app/core/components/rescue-details/rescue-details.module';
 import { EmergencyDetailsModule } from 'src/app/core/components/emergency-details/emergency-details.module';
@@ -64,7 +64,7 @@ import { ReleaseDetailsComponent } from './components/release-details/release-de
         RecordSearchModule,
         LocationDetailsModule,
         CallerDetailsModule,
-        ThumbnailSliderModule,
+        GalleryWrapperModule,
         PatientStatusModule,
         RescueDetailsModule,
         PatientDetailsModule,

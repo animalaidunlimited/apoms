@@ -2,16 +2,16 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 <div fxLayout="column" fxLayoutGap="2rem" style="overflow-x: hidden">
-    <ng-container *ngFor="let gallery of data.mediaGallery; let index = index">
+    <ng-container *ngFor="let date of (mediaGalleryDates | async); let index = index">
         <div ngStyle.gt-sm="width:max-content;" ngStyle.lt-sm="overflow:scroll;">
             <p style="
-            margin: 0 0 0.5em 0; 
+            margin: 0 0 0.5em 0;
             position: sticky;
             left: 0;
-            top: 0;">{{ gallery.date}} </p>
+            top: 0;">{{ date | date : "dd MMM yyyy" }} </p>
             <div fxLayout="row" fxLayoutGap="0.5rem">
-               
-                <media-thumbnails [gallery]="gallery.images" [mediaPatientItems]="data.mediaPatientItems"  ></media-thumbnails>
+
+                <media-thumbnails [patientId]="data.patientId" [limitSize]=false [date]="date" ></media-thumbnails>
             </div>
         </div>
     </ng-container>

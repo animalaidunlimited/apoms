@@ -6,6 +6,7 @@ import { StorageKey } from '../core/services/storage/storage.model';
 import { BootController } from '../../boot-controller';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { BehaviorSubject } from 'rxjs';
+import { UserAccountDetails, UserPreferences } from '../core/models/user';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response {
@@ -15,6 +16,9 @@ export interface Response {
     token: string;
     userId: number;
     orgId: number;
+    name: string;
+    initials: string;
+    preferences: string;
 }
 
 @Injectable({
@@ -28,6 +32,8 @@ export class AuthService extends APIService {
     socketEndPoint!: string;
     token: string;
 
+
+
     constructor(
         http: HttpClient,
         private ngZone: NgZone,
@@ -40,6 +46,8 @@ export class AuthService extends APIService {
         this.loggedIn = new BehaviorSubject<boolean>(this.token.length > 0);
 
     }
+
+
 
     public async login(username: string, password: string) {
 
@@ -55,12 +63,20 @@ export class AuthService extends APIService {
             if (!this.response.success) {
                 throw new Error('Wrong Credentials!');
             }
-            this.userService.userName = username;
+            this.userService.setUserName(username);
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
             this.storage.save('SOCKET_END_POINT', this.response.socketEndPoint);
             this.storage.save('OrganisationId', this.response.orgId);
             this.storage.save('UserId', this.response.userId);
+
+            const userDetails: UserAccountDetails = {
+                fullname: this.response.name,
+                initials: this.response.initials,
+                preferences: JSON.parse(this.response.preferences) || {}
+            }
+
+            this.userService.saveUserDetails(userDetails);
 
             return this.redirectUrl;
         } catch (error) {
@@ -89,12 +105,23 @@ export class AuthService extends APIService {
         return this.token;
     }
 
+    public getUserId(): number {
+        return +(this.storage.read('UserId') || -1);
+    }
+
     public logout() {
 
         this.loggedIn.next(false);
 
         this.token = '';
         this.storage.remove(AUTH_TOKEN);
+        this.storage.remove('SOCKET_END_POINT');
+        this.storage.remove('UserId');
+        this.storage.remove('OrganisationId');
+        this.storage.remove('UserDetails');
+        this.storage.remove('driverViewData');
+        this.storage.remove('driverViewQuestions');
+
 
         this.ngZone.runOutsideAngular(() =>
             BootController.getbootControl().restart(),

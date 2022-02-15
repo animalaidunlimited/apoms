@@ -362,18 +362,6 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     this.acceptedFiltered.next(this.accepted.value);
   }
 
-  toggleTreatment(row:AbstractControl){
-
-    const treated = row.get('treatedToday');
-
-    if(!treated?.value){
-      treated?.setValue(!treated.value);
-    }
-
-    row.get('saving')?.setValue(true, {emitEvent: false});
-    this.openTreatmentDialog(row);
-
-  }
 
   openTreatmentDialog(row:AbstractControl): void {
 

@@ -84,8 +84,8 @@
         </div>
 
         <mat-chip-list *ngIf="!isPrinting">
-          <mat-chip #treatedChip="matChip" (click)="toggleTreatment(row)">
-            <mat-icon [class.is-hidden]="!row.treatedToday" class="complete">check_circle</mat-icon>
+          <mat-chip #treatedChip="matChip" class="treated-chip" (click)="openTreatmentDialog(row)">
+            <mat-icon [class.is-hidden]="!row.get('treatedToday').value || row.get('treatedToday').value === 0" class="complete">check_circle</mat-icon>
           </mat-chip>
         </mat-chip-list>
 

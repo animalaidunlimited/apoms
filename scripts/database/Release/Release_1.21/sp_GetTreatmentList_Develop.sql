@@ -93,6 +93,7 @@ FROM PatientCTE p
 		SELECT DISTINCT t.PatientId
 		FROM AAU.Treatment t
 		WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
+        AND t.IsDeleted = false
 	) t ON t.PatientId = p.PatientId
 GROUP BY CASE
 WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admissions'

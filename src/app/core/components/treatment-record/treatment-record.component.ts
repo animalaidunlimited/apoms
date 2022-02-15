@@ -1,13 +1,17 @@
 import { DatePipe } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { TreatmentRecord, TreatmentResponse } from '../../models/treatment';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { TreatmentService } from '../../services/treatment/treatment.service';
+import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 
 interface DialogData{
   patientId : number;
@@ -20,25 +24,17 @@ interface DialogData{
   styleUrls: ['./treatment-record.component.scss']
 })
 
-export class TreatmentRecordComponent implements OnInit {
+export class TreatmentRecordComponent implements OnInit, OnDestroy {
 
-  constructor(
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private snackbar: SnackbarService,
-    private dialogRef:MatDialogRef<TreatmentRecordComponent>,
-    private treatmentService: TreatmentService,
-    private dropdown: DropdownService,
-    private datepipe: DatePipe
-  ) { }
+  private ngUnsubscribe = new Subject();
 
   @ViewChild('edChips', { static: true }) edChips!: MatChipList;
   @ViewChild('ndChips', { static: true }) ndChips!: MatChipList;
 
+  currentTime = getCurrentTimeString();
+
   eyeDischarge = this.dropdown.getEyeDischarge();
   nasalDischarge = this.dropdown.getNasalDischarge();
-
-  currentTime = getCurrentTimeString();
 
   treatmentDetails = this.fb.group({
     treatmentId: [],
@@ -47,14 +43,34 @@ export class TreatmentRecordComponent implements OnInit {
     nextTreatmentDateTime: [],
     eyeDischarge: [],
     nasalDischarge: [],
-    comment: []
+    comment: [],
+    isDeleted: false
   });
+
+  constructor(
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private snackbar: SnackbarService,
+    public dialog: MatDialog,
+    private dialogRef:MatDialogRef<TreatmentRecordComponent>,
+    private treatmentService: TreatmentService,
+    private treatmentListService: TreatmentListService,
+    private dropdown: DropdownService,
+    private datepipe: DatePipe
+  ) { }
+
+
 
 
   ngOnInit(): void {
 
     this.initialiseTreatmentDetails();
 
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   async initialiseTreatmentDetails(){
@@ -69,8 +85,8 @@ export class TreatmentRecordComponent implements OnInit {
 
       // We may be opening from the treatment list or from the patient record, so handle both.
       const treatmentDetails:TreatmentRecord = this.data.treatmentId !== 0 ?
-      await this.treatmentService.getTreatmentByTreatmentId(this.data.treatmentId) :
-      await this.treatmentService.getLastTreatmentByDate(this.data.patientId, date);
+        await this.treatmentService.getTreatmentByTreatmentId(this.data.treatmentId) :
+        await this.treatmentService.getLastTreatmentByDate(this.data.patientId, date);
 
       this.treatmentDetails.patchValue(treatmentDetails);
 
@@ -116,7 +132,38 @@ ndChipSelected(chip: MatChip){
 
 }
 
-saveTreatment(){
+deleteTreatment(){
+
+  const dialogRef = this.dialog.open(ConfirmationDialog,{
+    data:{
+      message: 'Are you sure want to delete this treatment?',
+      buttonText: {
+        ok: 'Yes',
+        cancel: 'No'
+      }
+    }
+  });
+
+  dialogRef.afterClosed()
+  .pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((confirmed: boolean) => {
+
+    if (confirmed) {
+      this.treatmentDetails.get('isDeleted')?.setValue(true);
+
+      this.treatmentListService.updateTreatedToday(this.data.patientId, false);
+
+      this.saveTreatment(false);
+    }
+  });
+
+}
+
+saveTreatment(treated: boolean){
+
+  this.treatmentDetails.get('treatedToday')?.setValue(treated);
+
+  this.treatmentListService.updateTreatedToday(this.data.patientId, treated);
 
   this.treatmentService.saveTreatment(this.treatmentDetails.value).then((result:TreatmentResponse) => {
 

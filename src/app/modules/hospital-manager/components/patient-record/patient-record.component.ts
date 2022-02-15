@@ -112,7 +112,6 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-
                 this.profileUrl = media.find(item=>Boolean(item.isPrimary) === true)?.remoteURL || media[0].remoteURL || '../../../../../../assets/images/image_placeholder.png';
 
                 this.changeDetector.detectChanges();

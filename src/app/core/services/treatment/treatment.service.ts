@@ -46,12 +46,4 @@ public async saveTreatment(saveData:TreatmentRecord): Promise<any>{
 
 }
 
-
-
-deleteTreatmentsByDate(treatmentDate: string | Date){
-
-  return {success : 1};
-
-}
-
 }

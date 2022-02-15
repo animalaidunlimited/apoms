@@ -115,7 +115,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   searchChange$!:Observable<string>;
 
-   @ViewChildren('filterChips') filterChips!: MatChipList[];
+  @ViewChildren('filterChips') filterChips!: MatChipList[];
 
   @ViewChild('filterDiv') filterDiv!: ElementRef;
 

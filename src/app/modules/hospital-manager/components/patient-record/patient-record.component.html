@@ -11,7 +11,7 @@
                         [profileUrl]="profileUrl">
                     </animal-header>
 
-                    <thumbnail-slider [displayImagesAndButtons]='true' [mediaData]="mediaData" [patientData]="recordForm.get('patientDetails')"></thumbnail-slider>
+                    <media-gallery-wrapper [displayImagesAndButtons]='true' [patientData]="recordForm.get('patientDetails')"></media-gallery-wrapper>
 
                     <fieldset class="form-sub-group" autocomplete=false>
                         <legend class="legend" i18n>Status</legend>

@@ -31,14 +31,14 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        this.caseService.caseToOpen
+        this.caseService.caseToOpen$
         .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(caseValue => {
 
         if(caseValue?.source === "hospitalManager"){
             this.openCase(caseValue);
         }
-        
+
     });
 
 
@@ -118,5 +118,18 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
         );
 
         tabExists ? this.selected.setValue(tabExists.id) : this.addTab(result.tab);
+    }
+
+    tabChanged($event:number){
+
+        if($event === 0){
+            setTimeout(() => {
+                this.navigationService.isSearchClicked.next(true);
+            }, 1);
+
+        }
+
+        this.selected.setValue($event);
+
     }
 }

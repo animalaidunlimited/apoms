@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
 
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserActionService extends APIService{
+
   endpoint = 'UserAdmin';
-  
+
   constructor(public http: HttpClient) {
   super(http);
   }
@@ -29,5 +32,7 @@ export class UserActionService extends APIService{
     const request = '?Username=' + null;
     return this.get(request);
   }
+
+
 
 }
