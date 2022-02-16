@@ -39,9 +39,10 @@ export class CaseService extends APIService {
         //Depending on the user's preference, clear the results when they switch tabs
         this.clearResultsOnTabSwitch$ = this.userOptions.getUserPreferences().pipe(map(prefs => prefs.clearSearchOnTabReturn));
 
-        this.caseToOpen$.pipe(skip(1),withLatestFrom(this.clearResultsOnTabSwitch$)).subscribe(clearResults => {
-
-            console.log(clearResults);
+        this.caseToOpen$.pipe(
+                            skip(1),
+                            withLatestFrom(this.clearResultsOnTabSwitch$))
+                        .subscribe(clearResults => {
 
             if(clearResults[1]){
                 this.clearResults$.next([] as SearchResponse[]);

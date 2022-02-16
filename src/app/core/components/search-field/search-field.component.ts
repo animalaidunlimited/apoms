@@ -236,12 +236,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         this.caseService.clearResults$
             .pipe(takeUntil(this.ngUnsubscribe),
             skip(1))
-            .subscribe(val =>
-
-                {this.search.searchString = '';
-                console.log(val);
-
-            });
+            .subscribe(_ => this.search.searchString = '');
 
     }
     ngOnDestroy() {

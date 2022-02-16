@@ -18,6 +18,12 @@ export interface Marker {
     options: any;
 }
 
+interface LocationFormChanges {
+    location: string;
+    latitiude: number;
+    longitude: number;
+}
+
 @Component({
     // tslint:disable-next-line: component-selector
     selector: 'location-details',
@@ -32,13 +38,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('addressSearch') addresstext: any;
+    @ViewChild('locationWrapper') locationWrapper: any;
     @ViewChild('googlemap') googlemap: any;
-
 
     errorMatcher = new CrossFieldErrorMatcher();
     center!: google.maps.LatLngLiteral;
 
-
+    removeAddress = false;
 
     constructor(
         private locationService: LocationDetailsService,
@@ -54,11 +60,14 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     mapOptions : google.maps.MapOptions = {};
 
-    locationDetails!: FormGroup;
-
     location$!: Location;
 
     markers: Marker[] = [];
+
+    get locationDetails() : FormGroup {
+        return this.recordForm.get('locationDetails') as FormGroup;
+    }
+
 
     @HostListener('document:keydown.control.l', ['$event'])
     focusLocation(event: KeyboardEvent) {
@@ -67,6 +76,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     ngOnInit() {
+
         this.mapOptions = {
             streetViewControl: false,
             center: this.center,
@@ -88,7 +98,37 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             }),
         );
 
-        this.locationDetails = this.recordForm.get('locationDetails') as FormGroup;
+        this.initialiseLocationForm();
+
+        // If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
+        this.initialiseLatLong();
+
+        this.locationDetails.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((changes: LocationFormChanges) => {
+
+            if(!changes.latitiude && !changes.longitude && !changes.location){
+                this.clearAutocomplete();
+                this.initialiseLatLong();
+            }
+        });
+    }
+
+    private initialiseLatLong() {
+        if (!this.latitude || !this.longitude) {
+
+            const coords = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
+
+            const coordinates: Location = {
+                latitude: coords.lat,
+                longitude: coords.lng,
+                location: ''
+            };
+
+            this.initialiseLocation(coordinates);
+
+        }
+    }
+
+    private initialiseLocationForm() {
 
         this.locationService
             .getLocationByEmergencyCaseId(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value)
@@ -98,8 +138,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
 
                 // If we have the lat and long then update the location
-                if (location.locationDetails?.latitude && location.locationDetails?.longitude)
-                {
+                if (location.locationDetails?.latitude && location.locationDetails?.longitude) {
 
                     this.initialiseLocation(location.locationDetails);
                     this.updateLocation(
@@ -110,31 +149,17 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
                 // Sometimes for older records we might have the address, but no lat long. In this case, search for the location
                 // If no results are found then set the location to be the center of user's lat/long.
-                if((!location.locationDetails?.latitude || !location.locationDetails?.longitude) && location.locationDetails?.location){
+                if ((!location.locationDetails?.latitude || !location.locationDetails?.longitude) && location.locationDetails?.location) {
 
-                    this.performSearch();
+                    this.performSearch(null);
                 }
 
             });
-
-            // If there was no lat/long provided initially or the above search didn't return a result, then set to default location.
-            if (!this.latitude || !this.longitude ){
-
-                const coords = this.userOptions.getCoordinates() as google.maps.LatLngLiteral;
-
-                const coordinates:Location = {
-                    latitude: coords.lat,
-                    longitude: coords.lng,
-                    location: ''
-                };
-
-                this.initialiseLocation(coordinates);
-
-            }
     }
 
     ngAfterViewInit() {
-        this.getPlaceAutocomplete();
+
+      this.getPlaceAutocomplete();
     }
 
     ngOnDestroy() {
@@ -143,17 +168,31 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     getPlaceAutocomplete() {
+
+        const cityCircle = new google.maps.Circle({
+            center: this.center,
+            radius: 20000,
+          });
+
+        let bounds = cityCircle.getBounds();
+
         const autocomplete = new google.maps.places.Autocomplete(
             this.addresstext.nativeElement,
             {
                 // TODO update this based on the settings of the user
                 componentRestrictions: { country: 'IN' },
                 types: ['geocode'],
-            },
+                fields: ['name', 'geometry', 'formatted_address']
+            }
         );
+
+        if(bounds){
+            autocomplete.setBounds(bounds);
+        }
 
         google.maps.event.addListener(autocomplete, 'place_changed', () => {
             const place = autocomplete.getPlace();
+
 
             if(place?.formatted_address){
                 this.invokeEvent(place);
@@ -163,6 +202,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     invokeEvent(place: any) {
+
         this.setAddress.emit(place);
 
         const result = place as google.maps.places.PlaceResult;
@@ -177,6 +217,21 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             );
         }
 
+        this.clearAutocomplete();
+
+
+    }
+
+    // The Google maps Autocomplete isn't meant to be used on a page that has data cleared from it.
+    clearAutocomplete() : void {
+
+        this.removeAddress = !this.removeAddress;
+
+        setTimeout(() => {
+        this.removeAddress = !this.removeAddress;
+        this.getPlaceAutocomplete();
+        this.addresstext.nativeElement.focus();
+        },1);
 
     }
 
@@ -213,15 +268,20 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             return;
         }
 
-
         const position = event.latLng.toJSON();
         this.recordForm.get('locationDetails.latitude')?.setValue(position.lat);
         this.recordForm.get('locationDetails.longitude')?.setValue(position.lng);
 
         this.center = { lat: position.lat, lng: position.lng };
     }
-    
-    performSearch() {
+
+
+
+    performSearch($event: Event | null) {
+
+        if($event){
+            $event.preventDefault();
+        }
 
         const addressSearcher = new google.maps.places.PlacesService(
             this.addresstext.nativeElement,

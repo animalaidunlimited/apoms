@@ -12,18 +12,13 @@
         <div class="no-result-secondary-text">Please try another search</div>
     </div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start"  *ngIf="(searchResults$ | async) as searchResults;">
-
-
-
-
+    <div fxLayout="column" fxLayoutAlign="start"  *ngIf="(searchResults$ | async) as searchResults;">
 
         <div *ngIf="searchResults?.length !== 0;" class="result-count">
             {{searchResults?.length}} result<span *ngIf="(searchResults?.length || 0) > 1">s</span>
         </div>
 
-
-        <div *ngFor="let record of searchResults">
+        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngFor="let record of searchResults">
 
             <app-search-streettreet-result-card (openStreetTreatCase)="openCase($event)" [record]="record"></app-search-streettreet-result-card>
 

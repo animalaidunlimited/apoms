@@ -5,14 +5,14 @@
 
     <div fxLayout="column" fxLayoutAlign="start">
 
-        <mat-form-field class="locationWrapper">
+        <mat-form-field class="locationWrapper" #locationWrapper *ngIf="!removeAddress">
             <input
             tabindex="6" matInput type="text"
             placeholder="Animal location"
             formControlName="location"
-            (keydown.enter)="performSearch()"
+            (keydown.shift.f)="performSearch($event)"
             [errorStateMatcher]="errorMatcher" #addressSearch>
-            <mat-icon matSuffix (click)="performSearch()" style="cursor: pointer">search</mat-icon>
+            <mat-icon matSuffix (click)="performSearch(null)" style="cursor: pointer">search</mat-icon>
         </mat-form-field>
 
       <div fxFlex >
