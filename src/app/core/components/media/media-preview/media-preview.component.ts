@@ -13,7 +13,7 @@ import { OnlineStatusService } from 'src/app/core/services/online-status/online-
 import { takeUntil } from 'rxjs/operators';
 import { MediaService } from 'src/app/core/services/media/media.service';
 import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
-import { setImageLocation } from 'src/app/core/helpers/media';
+import { getImageLocation } from 'src/app/core/helpers/media';
 
 
 
@@ -33,7 +33,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
   selectable = false;
   fullImageView = false;
   imageHeight = 0;
-  imageLocation = "src/assets/images/placeholder.png";
+  imageLocation = "";
 
   loading = false;
 
@@ -122,7 +122,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     if(this.data.mediaData){
 
-        this.imageLocation = setImageLocation(this.data.mediaData);
+        this.imageLocation = getImageLocation(this.data.mediaData);
 
         this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(this.data.mediaData?.datetime as string),'yyyy-MM-ddTHH:mm')),
         this.recordForm.get('imageTags')?.setValue(this.data.mediaData?.tags?.map((tag:any) => tag.tag));
@@ -165,6 +165,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     {
 
       const mediaItem:MediaItemReturnObject = this.mediaService.handleUpload(file, this.data.patientId);
+
+      this.imageLocation = getImageLocation(mediaItem.mediaItem);
 
       //Update the media item ID if we're uploading so that the user can update straight away.
       mediaItem.mediaItemId.subscribe(incomingMediaItemId => {
@@ -392,7 +394,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   updateDialog(dialogData: SingleMediaItem){
 
-    this.imageLocation = setImageLocation(dialogData.mediaData);
+    this.imageLocation = getImageLocation(dialogData.mediaData);
 
     this.recordForm = this.fb.group({
       imageDate: [

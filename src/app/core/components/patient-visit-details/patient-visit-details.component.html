@@ -12,7 +12,7 @@
 		</mat-form-field>
 
 		<mat-form-field appearance="fill">
-			<mat-label>Assign vehicle</mat-label>
+			<mat-label>Assigned vehicle</mat-label>
 				<mat-select tabindex="12" formControlName="assignedVehicleId" [errorStateMatcher]="errorMatcher">
 				<mat-option>N/A</mat-option>
 					<mat-option *ngFor="let vehicle of vehicleList$ | async" [value]="vehicle.vehicleId">
@@ -36,7 +36,7 @@
 			<mat-label>Main problem</mat-label>
 			<mat-select formControlName="mainProblem" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let problem of (problems$ | async)" [value]="problem.MainProblemId">
-					{{ problem.MainProblem}}
+					{{ problem.MainProblem }}
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
@@ -50,10 +50,12 @@
 			<mat-label>Case status</mat-label>
 			<mat-select formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">
-					{{ status.Status}}
+					{{ status.Status }}
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
+
+
 
 	</div>
 	<div class="visitsWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
@@ -109,7 +111,7 @@
 					</mat-form-field>
 					<mat-form-field appearance="fill" class="admin" gdArea.lt-md="admin" ngClass.lt-md="full-width">
 						<mat-label>Admin notes</mat-label>
-						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
+						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize [errorStateMatcher]="errorMatcher"
 							cdkAutosizeMaxRows="5" formControlName="visit_comments"></textarea>
 					</mat-form-field>
 

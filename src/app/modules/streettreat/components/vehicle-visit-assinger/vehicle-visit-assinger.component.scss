@@ -31,7 +31,7 @@
     flex-direction: column !important;
     place-items: flex-start;
   }
-  .Team_Compare{
+  .AssignedVehicle_Compare{
     grid-column: 1 / -1;
   }
   .cdk-drag-preview {
@@ -69,7 +69,7 @@
           display: inline-block;
           margin-left: 15px;
         }
-        &_TeamColour{
+        &_VehicleColour{
           width:40px;
           height:40px;
         }
@@ -156,7 +156,7 @@ ngx-charts-bar-vertical-stacked{
 .mat-expansion-panel.chart_bar_expansion {
   margin: 10px 10px 25px 10px;
 }
-::ng-deep .Team_Compare_date {
+::ng-deep .AssignedVehicle_Compare_date {
   & .mat-form-field-appearance-fill .mat-form-field-flex {
     padding: 0em 0.1em 0 0.75em;
     min-width: 30%;
@@ -168,7 +168,7 @@ ngx-charts-bar-vertical-stacked{
     }
   }
 }
-::ng-deep .Team_Compare_list{
+::ng-deep .AssignedVehicle_Compare_list{
   & .mat-form-field-appearance-fill .mat-form-field-flex {
     padding: 0em 0.1em 0em 0.75em;
     & .mat-form-field-empty.mat-form-field-label{
@@ -179,7 +179,7 @@ ngx-charts-bar-vertical-stacked{
     }
   }
 }
-::ng-deep .Team_Comapre_Visit_btn{
+::ng-deep .AssignedVehicle_Comapre_Visit_btn{
   margin: 0.2rem 0.2rem 0.2rem 0rem;
   & button {
     padding: 0.36rem;
@@ -250,23 +250,23 @@ ngx-charts-bar-vertical-stacked{
     margin-left:5px;
   }
 
-  ::ng-deep .Team_Compare_date {
+  ::ng-deep .AssignedVehicle_Compare_date {
     & .mat-form-field {
       max-width: 90% !important;
     }
   }
-  ::ng-deep .Team_Compare_list{
+  ::ng-deep .AssignedVehicle_Compare_list{
     & .mat-form-field {
       max-width: 90% !important;
     }
   }
-  ::ng-deep .Team_Comapre_Visit_btn{
+  ::ng-deep .AssignedVehicle_Comapre_Visit_btn{
 
     & button {
       padding:0.2rem;
     }
   }
-  .Team_Compare{
+  .AssignedVehicle_Compare{
     margin-right: 0.5rem;
   }
 
@@ -274,7 +274,7 @@ ngx-charts-bar-vertical-stacked{
 
 
 @media only screen and (min-width: 1440px) {
-   
+
   .card_wrapper{
     margin-top:0;
   }
@@ -282,7 +282,7 @@ ngx-charts-bar-vertical-stacked{
   .streetTreatPanel .mat-expansion-panel-header{
       padding: 7px 5px 5px 5px;
   }
-  
+
   .timeline {
       margin-top: 5px;
   }

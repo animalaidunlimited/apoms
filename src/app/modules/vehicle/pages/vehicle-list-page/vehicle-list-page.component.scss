@@ -6,6 +6,16 @@ $colour-border:#a9abad;
 $primary-font-colour: #626262;
 $standard-width: 180px;
 
+.streettreat-toggle {
+  align-self: center;
+}
+
+.upload-image{
+  align-self: center;
+  padding-bottom: 20px;
+  padding-left: 10px;
+}
+
 
 .legend1 {
   font-size: medium;
@@ -73,7 +83,7 @@ cursor: pointer;
     display: none;
   }
 
-  .mat-row { 
+  .mat-row {
     flex-direction: column;
     align-items: start;
     padding: 4px 20px;
@@ -84,7 +94,7 @@ cursor: pointer;
   .mat-row:hover{
       background-color: #8F99A0;
       cursor: pointer;
-    
+
     }
 
   mat-cell:first-of-type {

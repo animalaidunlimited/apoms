@@ -35,9 +35,10 @@
         <mat-icon *ngIf="!recordForm.dirty && !syncedToLocalStorage && emergencyCaseId" style="color:seagreen"
           matTooltip="Changes saved to server">cloud_done</mat-icon>
       </div>
-   
+
+      <!--[disabled]="recordForm.invalid"-->
       <button mat-raised-button color="primary" tabindex="16" type="submit"
-      [disabled]="recordForm.invalid">Save</button>
+      >Save</button>
 
       <button mat-raised-button color="secondary" tabindex="17" type="button" (click)="resetForm()">Reset</button>
 

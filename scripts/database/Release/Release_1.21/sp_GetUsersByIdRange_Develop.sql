@@ -3,14 +3,17 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
 
 DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetUsersByIdRange(IN prm_UserName VARCHAR(64))
+CREATE PROCEDURE AAU.sp_GetUsersByIdRange (IN prm_UserName VARCHAR(64))
 BEGIN
 /*
 Created By: Jim Mackenzie
 Created On: 22/08/2018
 Purpose: Used to return a single user from the database. Initially
 		 for edit purposes.
+         
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Removing StreetTreat team
 */
 
 DECLARE vOrganisationId INT;
@@ -32,8 +35,6 @@ JSON_OBJECT("initials",UserDetails.Initials),
 JSON_OBJECT("colour",UserDetails.Colour),
 JSON_OBJECT("telephone",UserDetails.Telephone),
 JSON_OBJECT("userName",UserDetails.UserName),
-JSON_OBJECT("teamId",UserDetails.TeamId),
-JSON_OBJECT("team",UserDetails.TeamName),
 JSON_OBJECT("roleId",UserDetails.RoleId),
 JSON_OBJECT("role",UserDetails.RoleName),
 JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
@@ -42,10 +43,9 @@ JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
 JSON_OBJECT("permissionArray",userDetails.PermissionArray)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
-			u.UserName, u.Password, t.TeamId, t.TeamName, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
+			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
             AS IsDeleted
-		FROM AAU.User u
-		LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
+		FROM AAU.User u		
 		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
 		LEFT JOIN (SELECT 
 					ujt.UserId,
@@ -53,7 +53,7 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 					GROUP_CONCAT(jt.Title) AS JobTitle
 					FROM AAU.UserJobType ujt
 					INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId
-					Where ujt.IsDeleted = 0
+					WHERE ujt.IsDeleted = 0
                     GROUP BY ujt.UserId
 					ORDER BY UserId ASC) jobTitle
 	ON jobTitle.UserId = u.UserId
@@ -64,5 +64,5 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
-END $$
+END$$
 DELIMITER ;

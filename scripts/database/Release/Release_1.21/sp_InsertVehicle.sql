@@ -1,9 +1,10 @@
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertVehicleListItem !!
+DROP PROCEDURE IF EXISTS AAU.sp_InsertVehicle !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_InsertVehicleListItem(
+CREATE PROCEDURE AAU.sp_InsertVehicle(
 												IN prm_Username VARCHAR(65),
 												IN prm_VehicleRegistrationNumber VARCHAR(100),
 												IN prm_VehicleNumber VARCHAR(100),
@@ -12,7 +13,10 @@ CREATE PROCEDURE AAU.sp_InsertVehicleListItem(
 												IN prm_SmallAnimalCapacity INT,
                                                 IN prm_MinRescuerCapacity INT,
 												IN prm_MaxRescuerCapacity INT,
-												IN prm_VehicleStatusId INT
+												IN prm_VehicleStatusId INT,
+                                                IN prm_StreetTreatVehicle INT,
+                                                IN prm_StreetTreatDefaultVehicle INT,
+                                                IN prm_VehicleColour VARCHAR(64)
                                             )
 BEGIN
 
@@ -35,6 +39,12 @@ AND VehicleRegistrationNumber = prm_VehicleRegistrationNumber;
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username;
 
 IF vVehicleCount = 0 THEN
+
+	IF prm_StreetTreatDefaultVehicle = 1 THEN
+    
+    UPDATE AAU.Vehicle SET prm_StreetTreatDefaultVehicle = 0 WHERE OrganisationId = vOrganisationId;
+    
+    END IF;
 	
     INSERT INTO AAU.Vehicle (
 		VehicleRegistrationNumber,
@@ -45,6 +55,9 @@ IF vVehicleCount = 0 THEN
         MinRescuerCapacity,
         MaxRescuerCapacity,
 		VehicleStatusId,
+        StreetTreatVehicle,
+        StreetTreatDefaultVehicle,
+        VehicleColour,
 		OrganisationId
 	)
 	VALUES(
@@ -56,6 +69,9 @@ IF vVehicleCount = 0 THEN
         prm_MinRescuerCapacity,
         prm_MaxRescuerCapacity,
         prm_VehicleStatusId,
+        prm_StreetTreatVehicle,
+        prm_StreetTreatDefaultVehicle,
+        prm_VehicleColour,
 		vOrganisationId
 	);
     
@@ -68,7 +84,6 @@ ELSEIF vVehicleCount > 0 THEN
 ELSE
 
 	SELECT 3 INTO vSuccess;
-
 
 END IF; 
 

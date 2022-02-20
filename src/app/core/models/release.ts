@@ -37,7 +37,7 @@
   }
 
   export interface StreetTreatForm {
-    teamId: number;
+    assignedVehicleId: number;
     callDateTime: string|Date;
     visits: VisitResponse[];
     patientId: number;

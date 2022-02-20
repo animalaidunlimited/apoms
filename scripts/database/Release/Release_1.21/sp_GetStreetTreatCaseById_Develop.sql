@@ -3,9 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById !!
 
 DELIMITER $$
-
-
-CREATE PROCEDURE AAU.sp_GetStreetTreatCaseById( IN prm_streetTreatCaseId INT)
+CREATE PROCEDURE AAU.sp_GetStreetTreatCaseById ( IN prm_streetTreatCaseId INT)
 BEGIN
 
 /*
@@ -23,7 +21,11 @@ Description: Adding Primary Caller Name and Number.
 
 Modified By: Ankit Singh
 Modified On: 28/01/2021
-Description: Adding Case END and Begin Date. 
+Description: Adding Case END and Begin Date.
+
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Replacing team with assigned vehicle.
 */
 
 
@@ -35,7 +37,7 @@ SELECT	c.StreetTreatCaseId AS CaseId,
 		at.AnimalTypeId,
 		c.PriorityId,
 		c.StatusId,
-		c.TeamId,
+		c.AssignedVehicleId,
         ec.EmergencyCaseId,
 		p.Description AS AnimalName,
 		caller.Name AS ComplainerName,
@@ -94,5 +96,5 @@ WHERE c.StreetTreatCaseId = prm_streetTreatCaseId;
 
 SELECT 1 AS Success;
 
-END $$
-
+END$$
+DELIMITER ;

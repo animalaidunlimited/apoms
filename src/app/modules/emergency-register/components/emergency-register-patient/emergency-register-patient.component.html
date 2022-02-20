@@ -43,7 +43,7 @@
 
       <mat-autocomplete class="problemAutocomplete" autoActiveFirstOption #problemAuto="matAutocomplete"
         (optionSelected)="updatePatientProblemArray($event)">
-        <mat-option *ngFor="let problem of filteredProblems$ | async" [value]="problem.ProblemId">
+        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
           {{problem.Problem}}
         </mat-option>
       </mat-autocomplete>

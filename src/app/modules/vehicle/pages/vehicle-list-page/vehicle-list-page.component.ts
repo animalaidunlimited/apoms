@@ -34,7 +34,9 @@ export class VehicleListPageComponent implements OnInit {
     'smallAnimalCapacity',
     'minRescuerCapacity',
     'maxRescuerCapacity',
-    'vehicleStatus'
+    'vehicleStatus',
+    'streetTreatVehicle',
+    'streetTreatDefaultVehicle'
   ];
 
   dataSource!: MatTableDataSource<Vehicle[]> ;
@@ -51,6 +53,9 @@ export class VehicleListPageComponent implements OnInit {
     vehicleStatusId:[],
     minRescuerCapacity:[],
     maxRescuerCapacity:[],
+    streetTreatVehicle: [],
+    streetTreatDefaultVehicle: [],
+    vehicleColour: [],
     organisationId: this.authService.getOrganisationId(),
     vehicleImage:''
   });

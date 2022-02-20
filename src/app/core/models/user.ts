@@ -20,8 +20,6 @@ export interface UserDetails {
     colour: string;
     telephone: number;
     userName: string;
-    teamId: number;
-    team: string;
     roleId: number;
     role: string;
     jobTitleId: number;

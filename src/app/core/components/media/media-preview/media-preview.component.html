@@ -20,6 +20,7 @@
     *ngIf="data?.mediaData?.mediaType?.includes('image') || data.upload"
     (click)="onImageClick($event)">
 
+
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
         <ng-container *ngIf="data.upload && !loading" >
 

@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 export interface Release {
   id: number;
@@ -51,6 +52,8 @@ export class ReleaseDetailsComponent implements OnInit {
   @Input() patientId!: number;
   @Input() emergencyCaseId!: number;
   @Output() formValidity = new EventEmitter<boolean>(false);
+
+  errorMatcher = new CrossFieldErrorMatcher();
 
   isInstructionRequired!: boolean;
 
@@ -201,7 +204,7 @@ export class ReleaseDetailsComponent implements OnInit {
     this.changeDetector.detectChanges();
     this.formValidity.emit(this.isStreetTreat);
 
-    
+
   }
 
   valueChages(toggle: any , position: number) {
@@ -244,8 +247,6 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
   onReleaseSubmit() {
-
-
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
 

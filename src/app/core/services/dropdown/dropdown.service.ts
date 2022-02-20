@@ -18,7 +18,6 @@ import { User, ReleaseManager } from '../../models/user';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
-import { TeamDetails } from '../../models/team';
 import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
@@ -66,7 +65,6 @@ export class DropdownService extends APIService {
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;
     jobTypes$!: Observable<UserJobType[]>;
-	team$!: Observable<TeamDetails[]>;
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
 	priority$!:Observable<Priority[]>;
@@ -602,20 +600,6 @@ export class DropdownService extends APIService {
 
         return this.paperDimensions$;
     }
-
-    getAllTeams(): Observable<TeamDetails[]>{
-        const request = '/GetAllTeams';
-
-        if(!this.team$) {
-          this.team$ = this.getObservable(request).pipe(
-            map(response=>{
-              return response;
-            })
-          );
-        }
-        return this.team$;
-      }
-
 
   getUserJobType(): Observable<UserJobType[]> {
     const request = '/GetJobTypes';

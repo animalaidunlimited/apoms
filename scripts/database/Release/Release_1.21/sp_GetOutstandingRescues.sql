@@ -170,14 +170,31 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("releasePickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
 	JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
+	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.SpecificStaff IS NULL,"",CONCAT(" + Specific staff", rd.SpecificStaff)), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
 	JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release'))
 )  )
 AS Result
 
 FROM  EmergencyCaseCTE ec 
 LEFT JOIN PatientsCTE p  ON p.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+LEFT JOIN 
+(
+	SELECT rd.PatientId,
+					rd.ReleaseDetailsId,
+					rd.RequestedUser,
+					rd.RequestedDate,
+					rd.AssignedVehicleId,
+                    rd.ambulanceAssignmentTime,
+					rd.PickupDate,
+					rd.BeginDate,
+					rd.EndDate,
+					rd.ComplainerNotes,
+					CONCAT(" (", r1.Initials, ", ", r2.Initials, ")") AS `SpecificStaff`
+	FROM AAU.ReleaseDetails rd
+	LEFT JOIN AAU.User r1 ON r1.UserId = rd.Releaser1Id
+	LEFT JOIN AAU.User r2 ON r2.UserId = rd.Releaser2Id
+) rd ON rd.PatientId = p.PatientId
+
 LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.OutTreatmentAreaId IS NULL
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
 INNER JOIN (

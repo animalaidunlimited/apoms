@@ -3,9 +3,9 @@ import { MediaItem } from '../models/media';
 
 
 
-export function setImageLocation(currentItem : MediaItem | undefined) : string {
+export function getImageLocation(currentItem : MediaItem | undefined) : string {
 
-    let location = "src/assets/images/placeholder.png";
+    let location = "assets/images/image_placeholder.png";
 
     if(currentItem){
       location = currentItem?.remoteURL !== '' ? currentItem?.remoteURL : unwrapSafeValue(currentItem.localURL);

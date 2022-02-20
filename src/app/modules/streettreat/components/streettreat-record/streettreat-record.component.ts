@@ -83,7 +83,7 @@ export class StreetTreatRecordComponent implements OnInit {
       EarlyReleaseFlag:[],
       IsIsolation:[],
       PriorityId: [''],
-      TeamId: [''],
+      AssignedVehicleId: [''],
       emergencyDetails: this.fb.group({
         emergencyCaseId: [this.emergencyCaseId, Validators.required]
       }),
@@ -148,6 +148,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
     if(this.hasWritePermission) {
      this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
+
        if(response.success === 1)
          {
            this.showSnackBar.successSnackBar('Street Treat updated successfully','OK');

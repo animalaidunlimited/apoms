@@ -33,12 +33,13 @@
     right:4px;
     top:22px;
 }
+*/
+
 .circle-image-button {
-    @extend %circle-fab-button;
-    @include circle-fab-button(40px);
-    right: 10px;
-    top: 120px;
-} */
+    position: absolute;
+    right: 6px;
+    top: 135px;
+}
 
 .search-result-card{
     height: -webkit-fit-content;

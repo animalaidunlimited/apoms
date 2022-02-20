@@ -7,15 +7,14 @@ CREATE PROCEDURE AAU.sp_UpsertStreetTreatCase(
 		IN prm_Username VARCHAR(45),
 		IN prm_PatientId INT,
 		IN prm_PriorityId INT,
-		IN prm_StatusId INT,
-		IN prm_TeamId INT,
+		IN prm_StatusId INT,		
 		IN prm_MainProblemId INT,
 		IN prm_AdminComments VARCHAR(256),
 		IN prm_OperatorNotes VARCHAR(256),
 		IN prm_ClosedDate DATE,
 		IN prm_EarlyReleaseFlag BOOLEAN,
 		IN prm_AnimalDescription VARCHAR(256),
-        In prm_AssignedAmbulanceId INT,
+        IN prm_AssignedVehicleId INT,
         IN prm_AmbulanceAssignmentTime DATETIME
 )
 BEGIN
@@ -53,7 +52,6 @@ INSERT INTO AAU.StreetTreatCase(
                         PatientId,
 						PriorityId,
 						StatusId,
-						TeamId,
                         MainProblemId,
 						AdminComments,
 						OperatorNotes,
@@ -66,14 +64,13 @@ INSERT INTO AAU.StreetTreatCase(
                         prm_PatientId,
 						prm_PriorityId,
 						prm_StatusId,
-						prm_TeamId,
                         prm_MainProblemId,
 						prm_AdminComments,
 						prm_OperatorNotes,
                         prm_ClosedDate,
                         prm_EarlyReleaseFlag,
                         vOrganisationId,
-                        prm_AssignedAmbulanceId,
+                        prm_AssignedVehicleId,
                         prm_AmbulanceAssignmentTime
 						);
                         
@@ -82,15 +79,14 @@ SELECT 1 INTO vSuccess;
 ELSEIF vCaseExists = 1 THEN
 
  UPDATE AAU.StreetTreatCase SET
-                        PriorityId			= prm_PriorityId,
-						StatusId			= prm_StatusId,
-						TeamId				= prm_TeamId,
-						MainProblemId		= prm_MainProblemId,
-						AdminComments		= prm_AdminComments,
-						OperatorNotes		= prm_OperatorNotes,
-						ClosedDate			= prm_ClosedDate,
-						EarlyReleaseFlag	= prm_EarlyReleaseFlag,
-                        AssignedVehicleId = prm_AssignedAmbulanceId,
+                        PriorityId				= prm_PriorityId,
+						StatusId				= prm_StatusId,
+						AssignedVehicleId		= prm_AssignedVehicleId,
+						MainProblemId			= prm_MainProblemId,
+						AdminComments			= prm_AdminComments,
+						OperatorNotes			= prm_OperatorNotes,
+						ClosedDate				= prm_ClosedDate,
+						EarlyReleaseFlag		= prm_EarlyReleaseFlag,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime
 	WHERE PatientId = prm_PatientId AND IsDeleted = 0;
 

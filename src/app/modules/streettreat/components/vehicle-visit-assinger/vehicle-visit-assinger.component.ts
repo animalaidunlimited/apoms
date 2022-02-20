@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
-import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, TeamColour } from 'src/app/core/models/streettreet';
+import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, VehicleColour } from 'src/app/core/models/streettreet';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export interface MapMarker {
   marker?:google.maps.Marker;
   options: google.maps.MarkerOptions;
   streetTreatCaseId?: number;
-  teamId:number;
+  vehicleId:number;
 }
 
 interface StreetTreatTabResult {
@@ -28,11 +28,11 @@ interface StreetTreatTabResult {
 
 
 @Component({
-  selector: 'app-team-visit-assinger',
-  templateUrl: './team-visit-assinger.component.html',
-  styleUrls: ['./team-visit-assinger.component.scss']
+  selector: 'app-vehicle-visit-assinger',
+  templateUrl: './vehicle-visit-assinger.component.html',
+  styleUrls: ['./vehicle-visit-assinger.component.scss']
 })
-export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
+export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
 
   @Output() public openStreetTreatCase = new EventEmitter<StreetTreatTabResult>();
 
@@ -45,7 +45,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   chartExpanded = false;
   chartData!: ChartData[];
 
-  customColours:TeamColour[] = [];
+  customColours:VehicleColour[] = [];
 
   filteredStreetTreatCases !: StreetTreatCases[] | null | undefined;
   gradient = false;
@@ -77,8 +77,8 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   streetTreatCaseByVisitDateResponse !: StreetTreatCases[] |  null;
   streetTreatServiceSubs:Subscription = new Subscription();
 
-  teamsDropDown:StreetTreatCases[] | null=[];
-  teamsgroup!:FormGroup;
+  caseDropDown:StreetTreatCases[] | null=[];
+  assignedVehicleGroup!:FormGroup;
 
   view:[number,number] = [700,400];
 
@@ -105,15 +105,15 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.teamsgroup = this.fb.group({
-      teams:[''],
+    this.assignedVehicleGroup = this.fb.group({
+      vehicles:[''],
       date:[this.datePipe.transform(new Date(),'yyyy-MM-dd')]
     });
 
-    this.teamsgroup.get('teams')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((teamIds)=>{
+    this.assignedVehicleGroup.get('vehicles')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((vehicleIds)=>{
 
-        if(teamIds.length > 0){
-          this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> teamIds.indexOf(streetTreatCase.TeamId) > -1);
+        if(vehicleIds.length > 0){
+          this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> vehicleIds.indexOf(streetTreatCase.VehicleId) > -1);
         }
         else {
           this.filteredStreetTreatCases = this.streetTreatCaseByVisitDateResponse;
@@ -123,7 +123,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     });
 
-    this.teamsgroup.get('date')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date)=>{
+    this.assignedVehicleGroup.get('date')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date)=>{
       this.searchDate = new Date(date);
 
       this.streetTreatServiceSubs =
@@ -138,7 +138,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
           if(streetTreatCaseByVisitDateResponse?.Cases)
           {
-            this.teamsDropDown = streetTreatCaseByVisitDateResponse?.Cases;
+            this.caseDropDown = streetTreatCaseByVisitDateResponse?.Cases;
             this.initMarkers(this.filteredStreetTreatCases);
           }
           else{
@@ -167,7 +167,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
           if (streetTreatCaseByVisitDateResponse?.Cases) {
             this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse.Cases;
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
-            this.teamsDropDown = streetTreatCaseByVisitDateResponse.Cases;
+            this.caseDropDown = streetTreatCaseByVisitDateResponse.Cases;
             const todayDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
             this.initMarkers(streetTreatCaseByVisitDateResponse.Cases);
           }
@@ -196,7 +196,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     datesRange.forEach((date) => date.series.sort((a,b) => a.name < b.name ? -1 : 1));
 
-/*
+
     this.chartData = datesRange;
 
     setTimeout(() => {
@@ -205,13 +205,13 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         chartDate.addEventListener('click', () => this.onDateClick(chartDate));
       });
     }, 1000);
-    */
 
-    this.customColours = data.teamColours;
+
+    this.customColours = data.vehicleColours;
   }
 
   refreshRescues(){
-    if(this.teamsgroup.get('date')?.value === ''){
+    if(this.assignedVehicleGroup.get('date')?.value === ''){
       this.noVisits();
     }
     else{
@@ -247,17 +247,17 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         event.currentIndex);
     }
 
-    let TeamId = {...event.container} as any;
+    let AssignedVehicleId = {...event.container} as any;
 
-    TeamId = parseInt(TeamId.__ngContext__[0].id, 10);
+    AssignedVehicleId = parseInt(AssignedVehicleId.__ngContext__[0].id, 10);
 
     const StreetTreatCaseId = event.item.data.StreetTreatCaseId;
 
-    this.streetTreatService.updateVisitTeamByTeamId({TeamId,StreetTreatCaseId}).then((visitTeamUpdateResponse) =>{
+    this.streetTreatService.updateVisitAssignedVehicle({AssignedVehicleId, StreetTreatCaseId}).then((visitVehicleUpdateResponse) =>{
 
-      if(visitTeamUpdateResponse[0].success === 1){
+      if(visitVehicleUpdateResponse[0].success === 1){
 
-        if(this.teamsgroup.get('date')?.value === ''){
+        if(this.assignedVehicleGroup.get('date')?.value === ''){
           this.noVisits();
         }
         else {
@@ -297,13 +297,13 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
         this.markers.push({
 
           streetTreatCaseId:visitResponse.StreetTreatCaseId,
-          teamId:streetTreatResponse.TeamId,
+          vehicleId:streetTreatResponse.VehicleId,
           options:{
             position: { lat: visitResponse.Position.Latitude, lng: visitResponse.Position.Longitude },
             draggable: true,
             icon:{
               ...this.icon,
-              fillColor: streetTreatResponse.TeamColour
+              fillColor: streetTreatResponse.VehicleColour
             }
           }
         });
@@ -332,33 +332,33 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
     return item.StreetTreatCaseId;
   }
 
-  trackByTeamId(index:number, item:StreetTreatCases)
+  trackByVehicleId(index:number, item:StreetTreatCases)
   {
-    return item.TeamId;
+    return item.VehicleId;
   }
 
   markersTrack(index:number, item:MapMarker)
   {
-    return item.teamId;
+    return item.vehicleId;
   }
 
   onSelect($event:ChartSelectObject){
 
     if(this.filteredStreetTreatCases)
     {
-      this.teamsgroup.get('teams')?.patchValue([],{ emitEvent: false });
+      this.assignedVehicleGroup.get('teams')?.patchValue([],{ emitEvent: false });
     }
 
     const dateString = $event.series.split('/');
     const date = this.datePipe.transform(new Date(new Date().getFullYear(), +dateString[1] - 1 , +dateString[0]),'yyyy-MM-dd');
 
-    if(this.teamsgroup.get('date')?.value !== date){
-      this.teamsgroup.get('date')?.patchValue(date);
+    if(this.assignedVehicleGroup.get('date')?.value !== date){
+      this.assignedVehicleGroup.get('date')?.patchValue(date);
     }
 
     setTimeout(()=>{
-      const TeamId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.TeamName === $event.name)[0]?.TeamId;
-      this.teamsgroup.get('teams')?.patchValue([TeamId]);
+      const VehicleId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.VehicleNumber === $event.name)[0]?.VehicleId;
+      this.assignedVehicleGroup.get('teams')?.patchValue([VehicleId]);
     },100);
   }
 
@@ -370,7 +370,7 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
 
     date = this.datePipe.transform(date,'yyyy-MM-dd');
 
-    this.teamsgroup.get('date')?.patchValue(date);
+    this.assignedVehicleGroup.get('date')?.patchValue(date);
 
   }
 
@@ -394,13 +394,13 @@ export class TeamVisitAssingerComponent implements OnInit, AfterViewInit {
   noVisits($event?:Event){
     $event?.preventDefault();
     $event?.stopPropagation();
-    this.teamsgroup.get('date')?.patchValue('', { emitEvent: false });
+    this.assignedVehicleGroup.get('date')?.patchValue('', { emitEvent: false });
 
     this.streetTreatService.getActiveStreetTreatCasesWithNoVisits().pipe(take(1)).subscribe((cases)=>{
 
       this.streetTreatCaseByVisitDateResponse = cases;
       this.filteredStreetTreatCases = cases;
-      this.teamsDropDown  = cases;
+      this.caseDropDown  = cases;
       this.initMarkers(cases);
 
     });

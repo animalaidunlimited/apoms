@@ -264,11 +264,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
             const controls = [
                                 { updateIfSelfAdmission: false, controlName: 'rescueDetails.rescueTime'},
-                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.admissionTime'},
                                 { updateIfSelfAdmission: false, controlName: 'rescueDetails.assignedVehicleId'},
                                 { updateIfSelfAdmission: false, controlName: 'rescueDetails.ambulanceArrivalTime'},
-                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.code'},
-                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.ambulanceAssignmentTime'}
+                                { updateIfSelfAdmission: false, controlName: 'rescueDetails.ambulanceAssignmentTime'},
+                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.admissionTime'},
+                                { updateIfSelfAdmission: true, controlName: 'rescueDetails.code'}
                              ];
 
             const selfAdmission:boolean = this.recordForm.get('rescueDetails.selfAdmission')?.value || false;
@@ -321,15 +321,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
                 }
             });
 
-
-
             this.setChildOutcomeAsParentPatient(this.patients);
-
-
 
         }
         else if(emergencyCaseId) {
-
 
             this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
             .pipe(takeUntil(this.ngUnsubscribe))

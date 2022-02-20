@@ -1,18 +1,18 @@
 
-<mat-expansion-panel 
-  [expanded]="outstandingCase?.searchCandidate == true" 
-  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction === 'Release'}" 
+<mat-expansion-panel
+  [expanded]="outstandingCase?.searchCandidate == true"
+  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction === 'Release'}"
   hideToggle>
-    <mat-expansion-panel-header 
+    <mat-expansion-panel-header
       [ngClass]="{'border-red' : outstandingCase?.emergencyCodeId == 1,
                   'border-green' : outstandingCase?.emergencyCodeId == 2,
                   'border-yellow' : outstandingCase?.emergencyCodeId == 3}"
-                  
+
       [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
 
           <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
-            <mat-icon 
-              aria-label="Open rescue edit" 
+            <mat-icon
+              aria-label="Open rescue edit"
               (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
@@ -29,8 +29,8 @@
           </div>
 
           <div fxFlex="25">
-            <mat-icon 
-              aria-label="Edit record" 
+            <mat-icon
+              aria-label="Edit record"
               (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
@@ -39,7 +39,7 @@
         </mat-expansion-panel-header>
 
         <div fxLayout="column" fxLayoutAlign="space-around start">
-        
+
           <div *ngFor="let callerDetails of outstandingCase?.callerDetails">
             <div fxLayout="row" fxLayoutAlign="start end">
               <div class="telephone-dash-container">
@@ -53,16 +53,16 @@
             </div>
           </div>
 
-          <div class="patients-group" 
-          *ngFor="let patient of outstandingCase?.patients" 
+          <div class="patients-group"
+          *ngFor="let patient of outstandingCase?.patients"
           fxLayout="row-wrap"
           fxLayoutAlign="space-around start">
-            <mat-icon 
-              class="imageIcon" 
+            <mat-icon
+              class="imageIcon"
               (click)="openMediaDialog({patientId:patient.patientId, tagNumber:patient.tagNumber})">
               add_photo_alternate</mat-icon>
               <div class="media-count">({{patient.mediaCount}})</div>
-              <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problems}}
+              <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problemsString}}
             </div>
           </div>
           <div class="CallDateTime">{{outstandingCase?.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>

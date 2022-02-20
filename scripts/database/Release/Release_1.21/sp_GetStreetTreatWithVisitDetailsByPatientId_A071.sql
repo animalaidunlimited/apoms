@@ -3,16 +3,18 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatWithVisitDetailsByPatientId !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId(IN prm_PatientId INT)
+CREATE PROCEDURE AAU.sp_GetStreetTreatWithVisitDetailsByPatientId (IN prm_PatientId INT)
 BEGIN
 DECLARE vStreetTreatCaseIdExists INT;
 /*
 Created By: Ankit Singh
 Created On: 23/02/2020
-Purpose: Used to fetch streettreat case with visits by patient id
+Purpose: Used to fetch streettreat case with visits by patient id.
+
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Replacing team with assigned vehicle.
 */
-
-
 
 SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId=prm_PatientId;
 
@@ -26,7 +28,7 @@ SELECT
 				    "patientId",s.PatientId,
                     "callDateTime", ec.CallDateTime,
 				    "casePriority",s.PriorityId,
-				    "teamId",s.TeamId,
+				    "assignedVehicleId", s.AssignedVehicleId,
                     "autoAdded", IF(p.PatientCallOutcomeId = 18, true, false),
 					"assignedVehicleId",s.AssignedVehicleId,
 					"ambulanceAssignmentTime",DATE_FORMAT(s.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"),

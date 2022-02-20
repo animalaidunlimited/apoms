@@ -26,7 +26,7 @@
 
     <mat-form-field appearance="fill" class="select">
         <mat-label>Notes for complainer</mat-label>
-        <textarea matInput  formControlName="complainerNotes" class="select"></textarea>
+        <textarea matInput formControlName="complainerNotes" class="select" [errorStateMatcher]="errorMatcher"></textarea>
     </mat-form-field>
 </div>
 

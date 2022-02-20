@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
-import { TeamDetails } from 'src/app/core/models/team';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -76,8 +75,6 @@ export class UsersPageComponent implements OnInit {
 
     permissionGroupObject!: UserPermissions[];
 
-    teamNames!: TeamDetails[];
-
     userList!: UserDetails[];
 
     jobTypes!: UserJobType[];
@@ -116,8 +113,6 @@ export class UsersPageComponent implements OnInit {
           colour: '',
           telephone: 0,
           userName: '',
-          teamId: 0,
-          team: '',
           roleId: 0,
           role: '',
           jobTitleId: 0,
@@ -132,7 +127,6 @@ export class UsersPageComponent implements OnInit {
       'initials',
       'telephone',
       'userName',
-      'team',
       'role',
       'jobTitle'
     ];
@@ -147,7 +141,6 @@ export class UsersPageComponent implements OnInit {
       password: [''],
       colour:[''],
       isStreetTreatUser:[],
-      teamId:[],
       roleId:[],
       jobTitleId:[],
       permissionArray:[]
@@ -238,9 +231,6 @@ export class UsersPageComponent implements OnInit {
         }
       ];
 
-      this.dropdown.getAllTeams().pipe(takeUntil(this.ngUnsubscribe)).subscribe(team=>{
-        this.teamNames = team;
-      });
       this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType=>{
         this.jobTypes = jobType;
       });
@@ -248,15 +238,12 @@ export class UsersPageComponent implements OnInit {
 
     }
 
-
     getrefreshTableData() {
-      
+
       this.userAction.getUsersByIdRange(this.userService.getUserName()).then((userListData: UserDetails[])=>{
         this.userList = userListData;
         this.initialiseTable(this.userList);
       });
-
-
 
     }
 
@@ -386,22 +373,13 @@ export class UsersPageComponent implements OnInit {
 
     selectRow(selectedUser:any)
     {
-      if(typeof(selectedUser.jobTitleId)==='string'){
+      if(typeof(selectedUser.jobTitleId) === 'string'){
         let jobTypeId = [];
         jobTypeId = selectedUser.jobTitleId!==null?selectedUser.jobTitleId.split(',').map(Number):null;
         selectedUser.jobTitleId = jobTypeId;
       }
 
-      const isAStreetTreatUser = selectedUser.teamId!== null? true:false;
-
       this.userDetails.patchValue(selectedUser);
-
-      this.userDetails.get('isStreetTreatUser')?.setValue(isAStreetTreatUser);
-
-      const streetTreatUser = this.userDetails.get('isStreetTreatUser')?.value;
-
-      this.streetTreatdropdown = streetTreatUser ? true : false;
-      this.currentState = 'closed' ? 'open' : 'closed';
 
     }
 

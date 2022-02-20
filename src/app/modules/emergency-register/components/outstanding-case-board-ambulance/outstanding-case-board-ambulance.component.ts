@@ -132,7 +132,6 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
-            // tslint:disable-next-line: max-line-length
             withLatestFrom(
                 this.ambulanceCases$,
                 (vehicleTypes, ambulanceLocation) =>

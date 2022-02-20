@@ -1,18 +1,17 @@
+import { E } from '@angular/cdk/keycodes';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeLast, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { MediaItem } from 'src/app/core/models/media';
 import { Exclusions, ProblemDropdownResponse } from 'src/app/core/models/responses';
 import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { MediaService } from 'src/app/core/services/media/media.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
@@ -67,35 +66,21 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   patientForm: FormGroup = new FormGroup({});
   problemInput = new FormControl();
   problemsArray!: FormArray;
-  problemsExclusions!: string[];
+  problemsExclusions$ = new BehaviorSubject<string[]>(['']);
 
   removable = true;
   selectable = true;
   patientDeletedFlag = false;
   sortedAnimalTypes = this.dropdown.getAnimalTypes();
 
-  sortedProblems = this.dropdown.getProblems().pipe(
-    map( problems =>
-      {
-        const selectedProblems =  this.problemsArray?.value as Problem[];
-        const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
-        return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
-      }
-    ),
-    map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
-  );
-
   treatmentAreaNames$!: Observable<TreatmentArea[]>;
-
-
 
   constructor(
     private dropdown: DropdownService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private printService: PrintTemplateService,
-    private userOptions: UserOptionsService,
-    private mediaService: MediaService
+    private userOptions: UserOptionsService
   ) {
 
 
@@ -110,7 +95,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
     this.animalType = this.patientForm?.get('animalType') as AbstractControl;
-
+    this.hideIrrelevantProblems(this.animalType.value);
 
     this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
       startWith(''),
@@ -120,20 +105,24 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       )
     );
 
-
-    this.filteredProblems$ = this.problemInput?.valueChanges.pipe(
-      startWith(''),
-      map(problem => typeof problem === 'string' ? problem : problem.Problem),
-      switchMap((problem:string) => {
-        return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
-      }),
-    );
-
-
-
     this.problemsArray = this.patientForm?.get('problems') as FormArray;
 
+    //This is a workaround as combineLatest only works after each observable has emmited one value. So emit a value here so we can combine
+    //everything and do the filtering successfully.
+    this.problemsArray.enable();
+
+    this.filteredProblems$ = combineLatest([this.dropdown.getProblems(), this.problemsExclusions$, this.problemsArray.valueChanges]).pipe(takeUntil(this.ngUnsubscribe),
+    map(([problems, exclusions, currentProblems]) =>
+
+            //Here we want to filter out anything that exists in the exclusion list (like a cat can never have "can't fly" as a problem)
+            //Also we want to filter out any problems that are already in the current problems array
+            problems.filter(problem =>
+                        !(exclusions || []).includes(problem.Problem.trim()) && !(currentProblems as Problem[] || []).some(p => p.problemId === problem.ProblemId)
+
+    )));
+
   }
+
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -196,6 +185,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     );
   }
 
+  /*
   problemFilter(filterValue:string) {
 
     return this.dropdown.getProblems().pipe(
@@ -207,7 +197,9 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         if(selectedProblems.length > 0){
 
           const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem.trim());
-          const filteredProblemsArray = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()));
+          const filteredProblemsArray = problems.filter(problem =>
+            !problemsArray.includes(problem.Problem.trim()) && !this.problemsExclusions.includes(problem.Problem.trim()));
+
           return filteredProblemsArray;
 
         }else{
@@ -215,10 +207,9 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         }
 
       }),
-      map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0))),
-      map(problems => this.problemsExclusions ? problems.filter(problem => !this.problemsExclusions.includes(problem.Problem.trim())):problems)
-    );
+      map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0))));
   }
+  */
 
   animalSelected($event:MatAutocompleteSelectedEvent):void {
 
@@ -272,7 +263,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         return;
     }
 
-    this.problemsExclusions = currentExclusions[0]?.exclusionList;
+    this.problemsExclusions$.next(currentExclusions[0]?.exclusionList);
+
 
   }
 
@@ -306,13 +298,15 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       }
       else{
         $event.preventDefault();
+
         this.animalFilter(this.animalTypeInput.nativeElement.value.toLowerCase()).pipe(takeUntil(this.ngUnsubscribe)).subscribe(animalType => {
           const matchAnimalType =  animalType.length;
+
           // if no animal has been selected, then clear the value
           if(matchAnimalType === 0){
             this.animalType?.setValue('');
             this.animalTypeInput.nativeElement.value = '';
-            this.filteredProblems$ = this.problemFilter('');
+            //this.filteredProblems$ = this.problemFilter('');
           }
           else{
             this.problemRef.nativeElement.focus();
@@ -335,17 +329,17 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       this.patientFormProblemSetError();
 
     }
-    else {
-      this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
+    //else {
+    //  this.sortedProblems.pipe(map(problems => problems.map(problem => problem.Problem))).forEach(problems => {
 
-        const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
+    //    const matchProblem = problems.filter(problem => problem === problemRefElement.value.trim());
 
-        if(matchProblem.length === 0){
-          problemRefElement.value = '';
-        }
+    //    if(matchProblem.length === 0){
+    //      problemRefElement.value = '';
+    //    }
 
-      });
-    }
+    //  });
+    //}
   }
 
   private patientFormProblemSetError() {

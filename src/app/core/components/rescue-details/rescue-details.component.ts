@@ -34,17 +34,19 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     emergencyCodes$!: Observable<EmergencyCode[]>;
 
-    admissionTime: AbstractControl | undefined | null;
-    ambulanceArrivalTime: AbstractControl | undefined | null;
-    ambulanceAssignmentTime: AbstractControl | undefined | null;
     ambulanceAssigned = false;
-    assignedVehicleId: AbstractControl | undefined | null;
 
     callDateTimeForm!: AbstractControl;
     callOutcome!: AbstractControl;
-    callDateTime: AbstractControl | undefined | null;
 
     code = new FormControl();
+
+    get assignedVehicleId() { return this.recordForm.get('rescueDetails.assignedVehicleId')};
+    get ambulanceArrivalTime() { return this.recordForm.get('rescueDetails.ambulanceArrivalTime')};
+    get ambulanceAssignmentTime () { return this.recordForm.get('rescueDetails.ambulanceAssignmentTime')};
+    get rescueTime() { return this.recordForm.get('rescueDetails.rescueTime')};
+    get admissionTime() { return this.recordForm.get('rescueDetails.admissionTime')};
+    get callDateTime() { return this.recordForm.get('emergencyDetails.callDateTime')};
 
     currentCallDateTime!: AbstractControl | undefined | null;
     currentAdmissionTime!: AbstractControl;
@@ -58,7 +60,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescueDetails: FormGroup = new FormGroup({});
     rescueDetails$: FormGroup = new FormGroup({});
 
-    rescueTime: AbstractControl | undefined | null;
     rescuerArray!: FormArray;
     rescuers$!: Observable<User[]>;
 
@@ -190,12 +191,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             });
 
-        this.assignedVehicleId = this.recordForm.get('rescueDetails.assignedVehicleId');
-        this.ambulanceArrivalTime = this.recordForm.get('rescueDetails.ambulanceArrivalTime');
-        this.ambulanceAssignmentTime  = this.recordForm.get('rescueDetails.ambulanceAssignmentTime');
-        this.rescueTime = this.recordForm.get('rescueDetails.rescueTime');
-        this.admissionTime = this.recordForm.get('rescueDetails.admissionTime');
-        this.callDateTime = this.recordForm.get('emergencyDetails.callDateTime');
+
 
         this.updateTimes();
 
@@ -274,7 +270,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             this.assignedVehicleId?.setValidators([Validators.required]);
             this.ambulanceArrivalTime?.setValidators([Validators.required]);
-            this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
+            this.ambulanceAssignmentTime?.setValidators([Validators.required]);
+
+             this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+             this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
+             this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
         }
 
         if (
@@ -299,6 +299,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.rescueTime?.setErrors({ rescueBeforeCallDatetime: true });
         }
 
+
         if (
             Date.parse(this.admissionTime?.value) < Date.parse(this.callDateTime?.value) &&
             this.admissionTime?.value !== ''
@@ -306,26 +307,33 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
             this.admissionTime?.setErrors({ admissionBeforeCallDatetime: true });
         }
 
+
         // if admission time then assignedVehicleId, ambulance arrived required, rescue time
         if (this.admissionTime?.value) {
+
             this.assignedVehicleId?.setValidators([Validators.required]);
 
             if (Date.parse(this.rescueTime?.value) < Date.parse(this.callDateTime?.value)) {
+
                 this.rescueTime?.setErrors({ rescueBeforeCallDatetime: true });
+
             } else if(this.rescueDetails.get('selfAdmission')?.value !== true){
+
+                console.log('rescue time required');
+
                 this.rescueTime?.setValidators([Validators.required]);
                 this.rescueTime?.updateValueAndValidity({ emitEvent: false });
+
             }
         }
 
         if (
-            Date.parse(this.rescueTime?.value) > Date.parse(this.admissionTime?.value) &&
-            this.admissionTime?.value !== ''
+            Date.parse(this.rescueTime?.value) > Date.parse(this.admissionTime?.value)
         ) {
-
             this.rescueTime?.setErrors({ rescueAfterAdmission: true });
-
+            this.rescueTime?.updateValueAndValidity({ emitEvent: false });
             this.admissionTime?.setErrors({ rescueAfterAdmission: true });
+            this.admissionTime?.updateValueAndValidity({ emitEvent: false });
         }
 
 
@@ -376,8 +384,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
     setInitialTime(event: any) {
         // TODO put this back in when we go live with the desk doing realtime entries
-
-
 
         this.currentCallDateTime = this.callDateTime;
 

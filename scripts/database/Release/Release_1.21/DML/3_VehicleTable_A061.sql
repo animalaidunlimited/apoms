@@ -1,6 +1,4 @@
 
-
-
 CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `VehicleId` int NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
@@ -10,10 +8,13 @@ CREATE TABLE IF NOT EXISTS AAU.Vehicle (
   `LargeAnimalCapacity` int DEFAULT NULL,
   `SmallAnimalCapacity` int DEFAULT NULL,
   `VehicleStatusId` int DEFAULT NULL,
+  `StreetTreatDefaultVehicle` int DEFAULT NULL,
+  `StreetTreatVehicle` int DEFAULT NULL,
   `CreatedDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `IsDeleted` tinyint DEFAULT '0',
   `DeletedDate` datetime DEFAULT NULL,
   `VehicleImage` varchar(650) DEFAULT NULL,
+  `VehicleColour` varchar(20) DEFAULT NULL,
   `MinRescuerCapacity` int DEFAULT NULL,
   `MaxRescuerCapacity` int DEFAULT NULL,
   PRIMARY KEY (`VehicleId`),

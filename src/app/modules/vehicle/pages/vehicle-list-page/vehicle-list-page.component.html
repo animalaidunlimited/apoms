@@ -30,45 +30,42 @@
 
               </div>
 
-              <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start">
+              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+                  <mat-form-field appearance='fill'>
+                      <mat-label>Small Animal Capacity</mat-label>
+                      <input type= 'number' formControlName="smallAnimalCapacity" matInput>
+                  </mat-form-field>
 
-                  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-                      <mat-form-field appearance='fill'>
-                          <mat-label>Small Animal Capacity</mat-label>
-                          <input type= 'number' formControlName="smallAnimalCapacity" matInput>
-                      </mat-form-field>
+                  <mat-form-field appearance='fill'>
+                      <mat-label>Large Animal Capacity</mat-label>
 
-                      <mat-form-field appearance='fill'>
-                          <mat-label>Large Animal Capacity</mat-label>
+                      <input type= 'number' formControlName="largeAnimalCapacity" matInput>
+                  </mat-form-field>
 
-                          <input type= 'number' formControlName="largeAnimalCapacity" matInput>
-                      </mat-form-field>
+                  <mat-form-field appearance="fill">
+                      <mat-label>Status</mat-label>
+                      <mat-select formControlName="vehicleStatusId">
+                        <mat-option *ngFor="let status of vehicleStatus" [value]="status.VehicleStatusId">
+                          {{status.VehicleStatus}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
 
-                      <mat-form-field appearance="fill">
-                          <mat-label>Status</mat-label>
-                          <mat-select formControlName="vehicleStatusId">
-                            <mat-option *ngFor="let status of vehicleStatus" [value]="status.VehicleStatusId">
-                              {{status.VehicleStatus}}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
-
-                  </div>
               </div>
 
-              <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start">
+              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+                  <mat-form-field appearance='fill'>
+                      <mat-label>Min. Rescuer Capacity</mat-label>
+                      <input type= 'number' formControlName="minRescuerCapacity" matInput>
+                  </mat-form-field>
 
-                <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-                    <mat-form-field appearance='fill'>
-                        <mat-label>Min. Rescuer Capacity</mat-label>
-                        <input type= 'number' formControlName="minRescuerCapacity" matInput>
-                    </mat-form-field>
+                  <mat-form-field appearance='fill'>
+                      <mat-label>Max. Rescuer Capacity</mat-label>
 
-                    <mat-form-field appearance='fill'>
-                        <mat-label>Max. Rescuer Capacity</mat-label>
+                      <input type= 'number' formControlName="maxRescuerCapacity" matInput>
+                  </mat-form-field>
 
-                        <input type= 'number' formControlName="maxRescuerCapacity" matInput>
-                    </mat-form-field>
+                  <div class="upload-image">
 
                     <input
                       hidden
@@ -79,15 +76,34 @@
                       (change)="uploadFile($event)"
                     />
 
-                    <label class="legend1">
+                    <label >
                       <button mat-mini-fab color="primary" aria-label="Upload new image" (click)="uploader.click()">
                           <mat-icon>add_a_photo</mat-icon>
                       </button>
                       Upload Image
                     </label>
-                </div>
+                  </div>
 
               </div>
+
+              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+
+                <mat-form-field appearance='fill'>
+                  <mat-label>Pick color</mat-label>
+                  <input type="color" formControlName="vehicleColour" matInput>
+                </mat-form-field>
+
+                <div class="streettreat-toggle">
+                  <mat-slide-toggle formControlName="streetTreatVehicle" >StreetTreat vehicle</mat-slide-toggle>
+                </div>
+
+                <div class="streettreat-toggle">
+                  <mat-slide-toggle style="margin-left: 36px;" formControlName="streetTreatDefaultVehicle" >StreetTreat default</mat-slide-toggle>
+                </div>
+
+
+              </div>
+
           </div>
           <div>
                 <img  [src]="imgURL"  />
@@ -162,6 +178,22 @@
         <mat-cell *matCellDef="let row">
           <span class="mobile-label">Max. Capacity(Rescuer):</span>
           {{row.maxRescuerCapacity}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="streetTreatVehicle">
+        <mat-header-cell *matHeaderCellDef> StreetTreat </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">StreetTreat:</span>
+          {{row.streetTreatVehicle === 1 ? 'true' : ''}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="streetTreatDefaultVehicle">
+        <mat-header-cell *matHeaderCellDef> StreetTreat default </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">StreetTreat default:</span>
+          {{row.streetTreatDefaultVehicle === 1 ? 'true' : ''}}
         </mat-cell>
       </ng-container>
 

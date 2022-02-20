@@ -20,6 +20,8 @@ export interface ProblemResponse {
 export interface ProblemDropdownResponse {
     ProblemId: number;
     Problem: string;
+    IsDeleted: boolean;
+    SortOrder: number;
 }
 
 export interface PatientResponse {

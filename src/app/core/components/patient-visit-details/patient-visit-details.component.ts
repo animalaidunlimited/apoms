@@ -1,6 +1,5 @@
 
 import { VisitType } from '../../models/visit-type';
-import { TeamDetails } from '../../models/team';
 import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
@@ -17,10 +16,11 @@ import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { takeUntil } from 'rxjs/operators';
-import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
+import { map, takeUntil } from 'rxjs/operators';
 import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
 import { Vehicle } from '../../models/vehicle';
+import { VehicleService } from 'src/app/modules/vehicle/services/vehicle.service';
+import { DatePipe } from '@angular/common';
 
 interface VisitCalender {
 	status: number;
@@ -95,14 +95,13 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	status$!: Observable<Status[]>;
 	streetTreatCase!: any;
 	streatTreatForm!: FormGroup;
-	teamListData$!: Observable<TeamDetails[]>;
 	treatmentPriority$!: Observable<Priority[]>;
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
 	vehicleList$!: Observable<Vehicle[]>;
 
-	minVisitDate = '0';
+	minVisitDate!: string|Date;
 
 	@Input() dateSelected!: string[];
 	@Input() isStreetTreatTrue!: boolean;
@@ -120,7 +119,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		private dropdown: DropdownService,
 		private streetTreatService: StreetTreatService,
 		private dialog: MatDialog,
-		private rescueDetailsService: RescueDetailsService
+		private datepipe: DatePipe,
+		private vehicleService: VehicleService
 
 	) { }
 
@@ -144,37 +144,27 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				mainProblem: [, Validators.required],
 				adminNotes: [, Validators.required],
 				streetTreatCaseStatus: [, Validators.required],
-				teamId: [, Validators.required],
 				visits: this.fb.array([])
 			})
 		);
+
 		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
 		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
-		this.teamListData$ = this.dropdown.getAllTeams();
 		this.problems$ = this.dropdown.getStreetTreatMainProblems();
 		this.status$ = this.dropdown.getStatus();
 		this.visitType$ = this.dropdown.getVisitType();
 		this.treatmentPriority$ = this.dropdown.getPriority();
+		this.vehicleList$ = this.vehicleService.getVehicleListObservable().pipe(map(vehicles => vehicles.filter(vehicle => vehicle.streetTreatVehicle)));
 
 		setTimeout(() => {
 			if (!this.isStreetTreatTrue) {
 				this.clearValidators();
 			}
+			else {
+				this.initStreetTreatForm();
+			}
 
-			this.initStreetTreatForm();
 		}, 1);
-
-
-		this.recordForm.get('streatTreatForm.ambulanceAssignmentTime')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(date=> {
-			if(date) {
-				this.recordForm.get('streatTreatForm.assignedVehicleId')?.enable();
-                this.vehicleList$ = this.rescueDetailsService.getVehicleListByAssignmentTime(date);
-            }
-            else {
-				this.recordForm.get('streatTreatForm.assignedVehicleId')?.disable();
-            }
-		});
-
 
 	}
 
@@ -219,13 +209,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						 * tentative dates like day 0, day 1
 						 */
 
-						if(!!response.patientReleaseDate){
-							this.minVisitDate = response.patientReleaseDate;
-						}
-
 						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date || this.showVisitDate) {
+
+							this.minVisitDate = response.autoAdded ?
+													this.datepipe.transform(response.callDateTime,'yyyy-MM-dd') || ''
+													:
+													this.datepipe.transform(response.patientReleaseDate,'yyyy-MM-dd') || '';
 
 							// Set Validators Visit Date Unique When Date are finialized
 							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
@@ -308,7 +299,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			visitId: [],
 			visit_status: [1, Validators.required],
 			visit_type: [1, Validators.required],
-			visit_comments: [],
+			visit_comments: [, Validators.required],
 			operator_notes: [],
 			visit_day: [0],
 			visit_date: [date],
@@ -398,26 +389,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
 		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
-		this.streatTreatForm.get('casePriority')?.setValidators([Validators.required]);
-		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({ emitEvent: false });
 
-		this.streatTreatForm.get('teamId')?.setValidators([Validators.required]);
-		this.streatTreatForm.get('teamId')?.updateValueAndValidity({ emitEvent: false });
+		this.clearAndUpdateValidity(true);
 
-		this.streatTreatForm.get('mainProblem')?.setValidators([Validators.required]);
-		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({ emitEvent: false });
-
-		this.streatTreatForm.get('adminNotes')?.setValidators([Validators.required]);
-		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({ emitEvent: false });
-
-		this.visitsArray.get('visit_status')?.setValidators([Validators.required]);
-		this.visitsArray.get('visit_status')?.updateValueAndValidity({ emitEvent: false });
-
-		this.visitsArray.get('visit_type')?.setValidators([Validators.required]);
-		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
-
-		this.streatTreatForm.get('ambulanceAssignmentTime')?.setValidators([Validators.required]);
-		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 		this.changeDetectorRef.detectChanges();
 
 	}
@@ -426,32 +400,33 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.streatTreatForm.reset();
 		this.streatTreatForm.get('PatientId')?.setValue(this.patientId);
 
-		this.streatTreatForm.get('casePriority')?.clearValidators();
-		this.streatTreatForm.get('teamId')?.clearValidators();
-		this.streatTreatForm.get('mainProblem')?.clearValidators();
-		this.streatTreatForm.get('adminNotes')?.clearValidators();
-		this.streatTreatForm.get('streetTreatCaseStatus')?.clearValidators();
-		this.streatTreatForm.get('ambulanceAssignmentTime')?.clearValidators();
+		this.clearAndUpdateValidity(false);
 
 		// eslint-disable-next-line @typescript-eslint/prefer-for-of
 		for (let i = 0; i < this.visitsArray?.controls.length; i++) {
 			this.visitsArray.removeAt(i);
 		}
 
-		this.visitsArray.get('visit_status')?.clearValidators();
-		this.visitsArray.get('visit_type')?.clearValidators();
-
-		this.streatTreatForm.get('streetTreatCaseStatus')?.updateValueAndValidity({ emitEvent: false });
-		this.streatTreatForm.get('casePriority')?.updateValueAndValidity({ emitEvent: false });
-		this.streatTreatForm.get('teamId')?.updateValueAndValidity({ emitEvent: false });
-		this.streatTreatForm.get('mainProblem')?.updateValueAndValidity({ emitEvent: false });
-		this.streatTreatForm.get('adminNotes')?.updateValueAndValidity({ emitEvent: false });
-		this.visitsArray.get('visit_status')?.updateValueAndValidity({ emitEvent: false });
-		this.visitsArray.get('visit_type')?.updateValueAndValidity({ emitEvent: false });
 		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 
 		this.changeDetectorRef.detectChanges();
 
+	}
+
+	private clearAndUpdateValidity(setRequired: boolean) {
+
+		const controlsToClear = ['casePriority', 'assignedVehicleId', 'mainProblem', 'adminNotes', 'streetTreatCaseStatus', 'ambulanceAssignmentTime',
+			'visit_status', 'visit_type'];
+
+		for (const control of controlsToClear) {
+
+			setRequired ?
+				this.streatTreatForm.get(control)?.setValidators([Validators.required])
+				:
+				this.streatTreatForm.get(control)?.clearValidators();
+			this.streatTreatForm.get(control)?.updateValueAndValidity({ emitEvent: false });
+
+		}
 	}
 
 	onSelect(selectedDate: Date | null) {

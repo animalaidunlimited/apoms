@@ -58,23 +58,14 @@ export const navRoutes: NavRoute[] = [
             then(m => m.TreatmentListPageModule)
     },
     {
-        data: { title: 'Case List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
-        icon: '',
-        group: 'Street Treat',
+        data: { title: 'Street Treat', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: '',
         path: 'street-treat',
         loadChildren: () =>
             import(
                 './modules/streettreat/streettreat-page.module')
                 .then(m => m.StreetTreatPageModule)
-    },
-    {
-        data: { title: 'Teams', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
-        icon: 'none',
-        group: 'Street Treat',
-        path: 'teams',
-        loadChildren: () =>
-            import('./modules/streettreat/pages/teams-page/teams-page.module')
-            .then(m => m.TeamsPageModule)
     },
 
     {

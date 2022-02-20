@@ -1,9 +1,9 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleListRange !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetVehicles !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetVehicleListRange(IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetVehicles(IN prm_Username VARCHAR(45))
 BEGIN
 
 /*
@@ -32,7 +32,10 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("maxRescuerCapacity", vehicleDetails.MaxRescuerCapacity),
 	JSON_OBJECT("vehicleStatusId", vehicleDetails.VehicleStatusId),
 	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus),
-    JSON_OBJECT("imageURL", vehicleDetails.VehicleImage)
+    JSON_OBJECT("imageURL", vehicleDetails.VehicleImage),
+    JSON_OBJECT("streetTreatDefaultVehicle", vehicleDetails.streetTreatDefaultVehicle),
+    JSON_OBJECT("streetTreatVehicle", vehicleDetails.streetTreatVehicle),
+    JSON_OBJECT("vehicleColour", vehicleDetails.vehicleColour)
 )) AS vehicleList
 FROM
 (SELECT vl.VehicleId,
@@ -46,7 +49,10 @@ FROM
     vl.MaxRescuerCapacity,
 	vl.VehicleStatusId,
 	vs.VehicleStatus,
-    vl.VehicleImage
+    vl.VehicleImage,
+    vl.StreetTreatDefaultVehicle,
+    vl.StreetTreatVehicle,
+    vl.VehicleColour
 FROM AAU.Vehicle vl
 INNER JOIN AAU.VehicleType vt ON vt.VehicleTypeId = vl.VehicleTypeId
 INNER JOIN AAU.VehicleStatus vs ON vs.VehicleStatusId = vl.VehicleStatusId

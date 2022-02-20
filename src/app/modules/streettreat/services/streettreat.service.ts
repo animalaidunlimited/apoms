@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { ActiveCasesForTeamByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
+import { ActiveCasesForVehicleByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 
@@ -80,17 +80,17 @@ export class StreetTreatService extends APIService {
         console.log(error);
     });
   }
-  public getActiveCasesForTeamByDate(teamId: number,date: Date){
-    const request = `?date=${date}&teamid=${teamId}`;
+  public getActiveCasesForVehicleByDate(vehicleId: number,date: Date){
+    const request = `?date=${date}&assignedVehicleId=${vehicleId}`;
     return this.getObservable(request).pipe(
-      map((response:ActiveCasesForTeamByDateResponse)=>{
+      map((response:ActiveCasesForVehicleByDateResponse)=>{
         return response;
       })
     );
   }
 
-  public async updateVisitTeamByTeamId(teamVisitData:any){
-    return await this.put(teamVisitData);
+  public async updateVisitAssignedVehicle(vehicleVisitData:any){
+    return await this.put(vehicleVisitData);
   }
 
   public getChartData(){

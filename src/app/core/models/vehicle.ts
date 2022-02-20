@@ -14,6 +14,9 @@ export interface Vehicle {
   maxRescuerCapacity: number;
   currentVehicleStaff?: string;
   imageURL: string;
+  vehicleColour: string;
+  streetTreatVehicle: boolean | number;
+  streetTreatDefaultVehicle: boolean | number;
 }
 
 export interface VehicleType {

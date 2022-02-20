@@ -3,7 +3,7 @@ DELIMITER !!
 DROP PROCEDURE IF EXISTS AAU.sp_GetCaseById !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetCaseById( IN prm_streetTreatCaseId INT, OUT Success INT)
+CREATE PROCEDURE AAU.sp_GetCaseById ( IN prm_streetTreatCaseId INT, OUT Success INT)
 BEGIN
 
 /*
@@ -17,7 +17,11 @@ Description: Adding Main Problem Id.
 
 Modified By: Jim Mackenzie
 Modified On: 07/12/2020
-Description: Altering to run from new Apoms tables
+Description: Altering to run from new Apoms tables.
+
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Replacing team with assigned vehicle.
 */
 
 SELECT	c.StreetTreatCaseId AS CaseId,
@@ -28,7 +32,7 @@ SELECT	c.StreetTreatCaseId AS CaseId,
 		at.AnimalTypeId,
 		c.PriorityId,
 		c.StatusId,
-		c.TeamId,
+		c.AssignedVehicleId,
 		p.Description AS AnimalName,
 		ec.Name AS ComplainerName,
 		ec.Number AS ComplainerNumber,

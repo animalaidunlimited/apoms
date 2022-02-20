@@ -1,9 +1,10 @@
 <ng-container *ngFor="let image of mediaPatientItems" >
-    <div *ngIf="image.mediaType !=='video'" class="mediaGalleryImages" (click)="openPreviewDialog(image)" [style.backgroundImage]="'url('+ image?.remoteURL +')'">
+    <div *ngIf="!image.mediaType.includes('video')" class="mediaGalleryImages" (click)="openPreviewDialog(image)" [style.backgroundImage]="'url('+ image?.remoteURL +')'">
         <span class="imagesTime">{{image.datetime | date : "HH:mm"}}</span>
     </div>
-    <video *ngIf="image.mediaType === 'video'" (click)="openPreviewDialog(image)" controls class="mediaGalleryImages">
+    <video *ngIf="image.mediaType.includes('video')" (click)="openPreviewDialog(image)" controls class="mediaGalleryImages">
         <source src="{{image?.remoteURL}}" type="video/mp4" />
         Browser not supported
     </video>
+
 </ng-container>

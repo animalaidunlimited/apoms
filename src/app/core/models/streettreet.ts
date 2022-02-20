@@ -41,7 +41,7 @@ export interface StreetTreatSearchResponse {
     AnimalTypeId: number;
     PriorityId: number;
     StatusId: number;
-    TeamId: number;
+    AssignedVehicleId: number;
     AnimalName: string;
     ComplainerName: string;
     ComplainerNumber: string;
@@ -69,11 +69,6 @@ export interface StreetTreatSearchResponse {
     AdminNotes:string;
     OperatorNotes:string;
     IsDeleted: 0|1| null;
-}
-
-export interface Team {
-    TeamId: number;
-    TeamName: string;
 }
 
 export interface Visit {
@@ -129,9 +124,9 @@ export interface StreetTreatCaseVisit {
 }
 
 export interface StreetTreatCases {
-    TeamId: number;
-    TeamName: string;
-    TeamColour: string;
+    VehicleId: number;
+    VehicleNumber: string;
+    VehicleColour: string;
     StreetTreatCaseVisits: StreetTreatCaseVisit[];
 }
 
@@ -141,7 +136,7 @@ export interface StreetTreatCaseByVisitDateResponse {
     UrgentCases: number;
 }
 
-export interface ActiveCasesForTeamByDateResponse {
+export interface ActiveCasesForVehicleByDateResponse {
     CaseId: number;
     EmergencyNumber: number;
     TagNumber: string;
@@ -156,8 +151,8 @@ export interface ActiveCasesForTeamByDateResponse {
     Address: string;
     Priority: string;
     PriorityId: number;
-    TeamName: string;
-    TeamId: number;
+    VehicleNumber: string;
+    VehicleId: number;
     Latitude: number;
     Longitude: number;
     ComplainerName: string;
@@ -181,19 +176,19 @@ export interface ChartData {
     series: Series[] | never[];
 }
 
-export interface TeamColour {
+export interface VehicleColour {
     name: string;
     value: string;
 }
 
-export interface ChartSelectObject extends TeamColour {
+export interface ChartSelectObject extends VehicleColour {
     label: string;
     series: string;
 }
 
 export interface ChartResponse {
     chartData: ChartData[];
-    teamColours: TeamColour[];
+    vehicleColours: VehicleColour[];
 }
 
 export interface StreetTreatScoreCard {

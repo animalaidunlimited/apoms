@@ -806,8 +806,6 @@ public getGalleryDatesForPatientId(patientId: number): Observable<string[]> {
       mediaItems.map(mediaItem => this.datePipe.transform(mediaItem.datetime, 'yyyy-MM-dd'))
                 .reduce<(string)[]>((acc, curr) => {
 
-        console.log(curr);
-
         curr = curr || "1901-01-01";
 
         if(!acc.includes(curr)){
