@@ -238,7 +238,6 @@ export class DriverViewService extends APIService {
 
   public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
 
-
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
       if(val.success===1) {
 
