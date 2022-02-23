@@ -42,7 +42,7 @@ SELECT
         "IsStreetTreatRelease",rd.IsStreetTreatRelease,
 		"Releaser1",rd.Releaser1Id,
 		"Releaser2",rd.Releaser2Id,
-        "assignedVehicleId", rd.AssignedVehicleId,
+        "releaseAmbulanceId", rd.AssignedVehicleId,
         "ambulanceAssignmentTime", DATE_FORMAT(rd.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s"),
         "releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"),
 		"releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s"),

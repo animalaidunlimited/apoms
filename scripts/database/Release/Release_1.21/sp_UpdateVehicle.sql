@@ -16,7 +16,8 @@ CREATE PROCEDURE AAU.sp_UpdateVehicle(IN prm_Username VARCHAR(65),
 												 IN prm_VehicleStatusId INT,
 												 IN prm_StreetTreatVehicle INT,
 												 IN prm_StreetTreatDefaultVehicle INT,
-                                                 IN prm_VehicleColour VARCHAR(64))
+                                                 IN prm_VehicleColour VARCHAR(64),
+												 IN prm_VehicleImage VARCHAR(650))
 BEGIN
 
 /*
@@ -55,7 +56,8 @@ IF vVehicleCount = 1 THEN
 		VehicleStatusId = prm_VehicleStatusId,
         StreetTreatVehicle = prm_StreetTreatVehicle,
         StreetTreatDefaultVehicle = prm_StreetTreatDefaultVehicle,
-        VehicleColour = prm_VehicleColour
+        VehicleColour = prm_VehicleColour,
+        VehicleImage = prm_VehicleImage
 	WHERE VehicleId = prm_VehicleId;    
    
     SELECT 1 INTO vSuccess;

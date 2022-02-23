@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { BehaviorSubject, interval, Subject } from 'rxjs';
+import { BehaviorSubject, interval, Observable, Subject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
@@ -238,6 +238,7 @@ export class DriverViewService extends APIService {
 
   public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
 
+
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
       if(val.success===1) {
 
@@ -339,14 +340,14 @@ export class DriverViewService extends APIService {
 
 
   // Using the same code again from the outstanding case service but need to refactor it so that the same code works for both board and driver view.
-  getTimer(){
+  getTimer() : Observable<{ time: string; class: string;} | null> {
     return timer(200).pipe(
       switchMap(() => this.getBackstopHospitalTimer())
     );
 
   }
 
-  getBackstopHospitalTimer() {
+  getBackstopHospitalTimer() : Observable<{ time: string; class: string;} | null> {
 
     const timer = this.driverViewDetails.pipe(
       map(driverViewCases=>

@@ -3,7 +3,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
+import { AdmissionAcceptReject, PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -29,6 +29,8 @@ interface TreatmentListMovement {
 
 
 export class TreatmentListService extends APIService {
+
+  admissionAcceptReject = new BehaviorSubject<AdmissionAcceptReject>({patientId: -1, accepted: false});
 
   currentAreaId:number | undefined;
 
@@ -443,6 +445,10 @@ public async movePatientOutOfArea(currentPatient:AbstractControl, areaId: number
 
 public async acceptRejectMoveIn(acceptedMovePatient:AbstractControl, accepted:boolean){
 
+  if(acceptedMovePatient.get('Admission')?.value){
+    this.admissionAcceptReject.next({patientId: acceptedMovePatient.get('PatientId')?.value, accepted});
+}
+
   const params = this.extractTreatmentListMoveInObject(acceptedMovePatient, accepted);
 
   this.putSubEndpoint('AcceptRejectMoveIn', params).then((response: SuccessOnlyResponse) => {
@@ -497,6 +503,10 @@ private acceptMoveIn(movedPatient: AbstractControl) {
   const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
   acceptedList.push(movedPatient);
   acceptedList.controls.sort(this.sortTreatmentAbstractControls);
+
+  if(movedPatient.get('Admission')?.value){
+      this.admissionAcceptReject.next({patientId: movedPatient.get('PatientId')?.value, accepted: true});
+  }
 }
 
 public sortTreatmentList(){

@@ -10,6 +10,11 @@ export interface TreatmeantListObject{
     selectedDate: Date | string;
   }
 
+  export interface AdmissionAcceptReject{
+      patientId: number;
+      accepted: boolean;
+  }
+
   export interface TreatmentListPatient {
     patientId: number | undefined;
     tagNumber: string;

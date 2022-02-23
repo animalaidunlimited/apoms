@@ -110,6 +110,8 @@ export class ReleaseDetailsComponent implements OnInit {
       complainerInformed:[],
       Releaser1: [],
       Releaser2: [],
+      releaseAmbulanceId: [],
+      ambulanceAssignmentTime: [],
       IsStreetTreatRelease: []
 
     });
@@ -144,7 +146,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
-
+          
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -248,11 +250,9 @@ export class ReleaseDetailsComponent implements OnInit {
 
   onReleaseSubmit() {
 
-    this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse[]) => {
+    this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse) => {
 
-      const failure = results.some((result:SuccessOnlyResponse) => result.success === -1);
-
-      if(failure){
+      if(results.success === -1){
         this.showSnackBar.errorSnackBar('Error updating release details','OK');
       }
       else

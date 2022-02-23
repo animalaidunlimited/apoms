@@ -53,8 +53,9 @@ LEFT JOIN
 		tl.PatientId,
 		ta.TreatmentArea
 	FROM AAU.TreatmentList tl
-	INNER JOIN AAU.TreatmentArea ta ON ta.TreatmentAreaId = tl.InTreatmentAreaId
-    WHERE OutOfHospital IS NULL
+	INNER JOIN AAU.TreatmentArea ta ON  (ta.TreatmentAreaId = tl.InTreatmentAreaId AND InAccepted = 1) OR
+										(ta.TreatmentAreaId = tl.OutTreatmentAreaId AND NULLIF(InAccepted, 0) IS NULL)
+    WHERE NULLIF(OutOfHospital,0) IS NULL
     AND OutDate IS NULL
 ) LatestArea ON LatestArea.PatientId = p.PatientId
 WHERE p.PatientStatusId IN (1,7)

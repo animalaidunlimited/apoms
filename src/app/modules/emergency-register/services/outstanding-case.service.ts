@@ -192,49 +192,45 @@ export class OutstandingCaseService {
 
     const outstandingCases = this.outstandingCases$?.value;
 
-    const existingCaseIndex = outstandingCases.findIndex( c  => c.emergencyNumber === updatedAssignment.emergencyNumber);
+    const existingCaseIndex = outstandingCases.findIndex( c  => c.patientId === updatedAssignment.patientId);
 
     // If the assignment already exists, then replace it with the updated one, otherwise add it into the array.
     outstandingCases.splice(existingCaseIndex, existingCaseIndex > -1 ? 1 : 0, updatedAssignment);
 
-    // tslint:disable-next-line: no-non-null-assertion
-    const currentOutstanding = this.setMoved(outstandingCases, updatedAssignment.emergencyCaseId, updatedAssignment.releaseDetailsId!, true, false);
+    this.setMoved(updatedAssignment.emergencyCaseId, updatedAssignment.releaseDetailsId!, true, false, 1);
 
-    this.outstandingCases$.next(currentOutstanding);
+    this.outstandingCases$.next(outstandingCases);
 
   }
 
-  setMoved(o:any, emergencyCaseId:number, releaseDetailsId: number, moved:boolean, timeout:boolean){
+  setMoved(emergencyCaseId:number, releaseDetailsId: number, moved:boolean, timeout:boolean, source: number) : void {
 
-    // Search for the rescue and update its moved flag depending on whether this function
-    // is being called by itself or not
-      if( o?.emergencyCaseId === emergencyCaseId && o?.releaseDetailsId === releaseDetailsId){
+    //Get the current outstanding cases as they stand right now.
+    let outstandingCases = this.outstandingCases$.value;
 
-        o.moved = moved;
+    //Search through and find the correct case to update
+    outstandingCases.forEach(current => {
 
+      //We've found the case so set the moved value appropriately.
+      if(current.emergencyCaseId === emergencyCaseId && current.releaseDetailsId === releaseDetailsId){
+        current.moved = moved;
+
+        //Now in 3.5 seconds set the moved flag to false.
         if(!timeout){
           setTimeout(() =>
-
-            this.outstandingCases$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(cases => this.setMoved(cases, emergencyCaseId, releaseDetailsId, false, true))
-
+            this.setMoved(emergencyCaseId, releaseDetailsId, false, true, 2)
           , 3500);
         }
 
+      //emit the updated list of outstanding cases and exit the forEach.
+      this.outstandingCases$.next(outstandingCases);
+      return
+
       }
 
-      let result;
-      let p;
-
-      for (p in o) {
-          if( o.hasOwnProperty(p) && typeof o[p] === 'object' ) {
-              result = this.setMoved(o[p], emergencyCaseId, releaseDetailsId, moved, timeout);
-          }
-      }
-
-      return o;
+    });
 
   }
-
 
   filterCases(click$:Observable<any>, filters:FilterKeys[], until$:Observable<any>){
 

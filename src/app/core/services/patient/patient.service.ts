@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Patients,
@@ -14,13 +14,14 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 })
 export class PatientService extends APIService {
 
+    endpoint = 'Patient';
+
     constructor(
         http: HttpClient,
         private fb: FormBuilder) {
         super(http);
     }
 
-    endpoint = 'Patient';
 
     public checkTagNumberExists(
         tagNumber: string,
@@ -289,8 +290,6 @@ export class PatientService extends APIService {
           animalTypeId: control.get('animalTypeId')?.value
         });
       }
-
-
 
 }
 

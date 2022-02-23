@@ -59,6 +59,7 @@ export interface RescueDetails {
     admissionTime: string | Date;
     ambulanceArrivalTime: string | Date;
     rescuers: Rescuer[];
+    selfAdmission: boolean;
 }
 
 export interface Rescuer {
@@ -130,7 +131,6 @@ export interface SearchStreetTreatResponse {
     NextVisit: string;
     TagNumber: string;
     UserName: string;
-    sameAsNumber: string | undefined;
     streetTreatCaseSuccess? : number;
     ReleaseStatus: 'Pending' | 'Released';
 }

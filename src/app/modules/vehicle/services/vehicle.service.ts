@@ -26,6 +26,7 @@ export class VehicleService  extends APIService {
 
   currentVehicleShifts: VehicleShift[] = [];
   vehicleShifts:BehaviorSubject<VehicleShift[]> = new BehaviorSubject<VehicleShift[]>([]);
+
   private ngUnsubscribe = new Subject();
 
   constructor(
@@ -79,7 +80,7 @@ export class VehicleService  extends APIService {
     }
   }
 
-  public getVehicleList(): Promise<any> {
+  public getVehicleList(): Promise<Vehicle[] | null> {
     const request = '/GetVehicleList';
     return this.get(request);
   }

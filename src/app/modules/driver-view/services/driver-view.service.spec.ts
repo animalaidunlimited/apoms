@@ -157,7 +157,7 @@ describe('DriverViewService', () => {
     expect(data.actionStatus).toEqual(trueStatusVal);
   });
 
-  
+
 // Tests for release
 
   it('Should give assignment status as Assigned for release with assigned ambulance id and time.', ()=> {
@@ -230,10 +230,10 @@ describe('DriverViewService', () => {
 
   });
 
-  
+
 // Tests for ST
   it('Should give assigned for ST.', ()=> {
-    
+
     testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
     testData.patients[0].tagNumber = 'ST1';
     testData.streetTreatCaseId = 22;
@@ -247,7 +247,7 @@ describe('DriverViewService', () => {
   });
 
   it('Should give In progress for ST.', ()=> {
-    
+
     testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
     testData.patients[0].tagNumber = 'ST1';
     testData.visitId = 18;
@@ -263,7 +263,7 @@ describe('DriverViewService', () => {
   });
 
   it('Should give complete for ST.', ()=> {
-    
+
     testData.patients[0].callOutcome.CallOutcome.CallOutcomeId = 18;
     testData.patients[0].tagNumber = 'ST1';
     testData.streetTreatCaseId = 22;

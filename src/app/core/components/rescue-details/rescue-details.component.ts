@@ -319,8 +319,6 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
             } else if(this.rescueDetails.get('selfAdmission')?.value !== true){
 
-                console.log('rescue time required');
-
                 this.rescueTime?.setValidators([Validators.required]);
                 this.rescueTime?.updateValueAndValidity({ emitEvent: false });
 

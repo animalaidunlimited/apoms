@@ -23,6 +23,7 @@
 
     legend {
       color:black;
+      font-size: large;
     }
 
   }
@@ -101,6 +102,10 @@
 
 .complete-column{
   padding-left: 6px;
+}
+
+.large-text{
+  font-size: large;
 }
 
 :host ::ng-deep .center-columnm{

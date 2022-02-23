@@ -38,8 +38,8 @@ IF prm_AddToStreetTreat = 1 THEN
         
 		IF vStreetTreatCaseExists = 0 AND vPatientExists < 1 THEN
         
-        INSERT INTO AAU.StreetTreatCase (PatientId,PriorityId,StatusId,AssignedVehicleId,MainProblemId,AdminComments,OrganisationId)
-			VALUES(prm_PatientId, 4, 1, vAssignedVehicleId, 6, 'Added by Apoms',vOrganisationId);
+        INSERT INTO AAU.StreetTreatCase (PatientId, PriorityId, StatusId, AssignedVehicleId, AmbulanceAssignmentTime, MainProblemId, AdminComments, OrganisationId)
+			VALUES(prm_PatientId, 4, 1, vAssignedVehicleId, NOW(), 6, 'Added by Apoms',vOrganisationId);
             
 			SELECT LAST_INSERT_ID(),stTagNumber INTO vCaseId,vTagNumber;
             
@@ -55,7 +55,7 @@ ELSEIF prm_AddToStreetTreat = 0 THEN
 	SELECT COUNT(1) INTO vStreetTreatCaseExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;  
  
 	IF vStreetTreatCaseExists = 1 THEN
-		UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = now() WHERE PatientId = prm_PatientId;
+		UPDATE AAU.Patient SET TagNumber = NULL, UpdateTime = NOW(), PatientStatusId = 1, PatientStatusDate = NULL WHERE PatientId = prm_PatientId;
 		
 		DELETE FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId 
 		AND StreetTreatCaseId NOT IN (

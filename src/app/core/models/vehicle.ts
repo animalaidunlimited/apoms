@@ -19,6 +19,12 @@ export interface Vehicle {
   streetTreatDefaultVehicle: boolean | number;
 }
 
+//export interface VehicleUpsertResponse {
+//  vehicleId: number;
+//  success: number;
+//}
+
+
 export interface VehicleType {
   VehicleTypeId : number;
   VehicleType: string;

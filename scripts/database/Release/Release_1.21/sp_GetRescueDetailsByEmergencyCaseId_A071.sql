@@ -1,6 +1,6 @@
 DELIMITER !!
 
--- CALL AAU.sp_GetRescueDetailsByEmergencyCaseId(13828)
+-- CALL AAU.sp_GetRescueDetailsByEmergencyCaseId(69474)
 
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRescueDetailsByEmergencyCaseId!!
@@ -49,6 +49,7 @@ JSON_OBJECT("ambulanceArrivalTime", DATE_FORMAT(ec.AmbulanceArrivalTime, "%Y-%m-
 JSON_OBJECT("admissionTime", DATE_FORMAT(ec.AdmissionTime, "%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("rescueTime", DATE_FORMAT(ec.RescueTime, "%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("assignedVehicleId", ec.assignedVehicleId),
+JSON_OBJECT("selfAdmission", ec.SelfAdmission),
 JSON_OBJECT("ambulanceAssignmentTime", DATE_FORMAT(ec.AmbulanceAssignmentTime, "%Y-%m-%dT%H:%i:%s")),
 JSON_OBJECT("rescuers", RescuerDetails)
 ))

@@ -78,8 +78,8 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
       this.releaseDetails.getReleaseDetails(this.patientId || -1)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(release => {
-          this.formData = release as ReleaseDetails;
 
+          this.formData = release as ReleaseDetails;
           this.recordForm.patchValue(this.formData);
       });
 

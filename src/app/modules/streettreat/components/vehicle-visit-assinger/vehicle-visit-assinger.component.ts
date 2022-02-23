@@ -126,6 +126,12 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
     this.assignedVehicleGroup.get('date')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date)=>{
       this.searchDate = new Date(date);
 
+
+
+      if(isNaN(this.searchDate.getTime()) ){
+        return;
+      }
+
       this.streetTreatServiceSubs =
         this.streetTreatService
         .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
@@ -267,10 +273,10 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
           .pipe(take(1))
           .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-            streetTreatCaseByVisitDateResponse.Cases?.forEach(team =>
-                team.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));
+            streetTreatCaseByVisitDateResponse.Cases?.forEach(vehicle =>
+                vehicle.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));
 
-            this.showSnackBar.successSnackBar('StreetTreat case team updated successfully','OK');
+            this.showSnackBar.successSnackBar('StreetTreat case updated successfully','OK');
 
             this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse.Cases;
             this.initMarkers(this.filteredStreetTreatCases);
@@ -280,7 +286,7 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
         }
       }
       else {
-        this.showSnackBar.errorSnackBar('Error updating streettreat case team status','OK');
+        this.showSnackBar.errorSnackBar('Error updating streettreat case status','OK');
       }
     });
 
@@ -346,7 +352,7 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
 
     if(this.filteredStreetTreatCases)
     {
-      this.assignedVehicleGroup.get('teams')?.patchValue([],{ emitEvent: false });
+      this.assignedVehicleGroup.get('vehicles')?.patchValue([],{ emitEvent: false });
     }
 
     const dateString = $event.series.split('/');
@@ -358,7 +364,7 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
 
     setTimeout(()=>{
       const VehicleId = this.streetTreatCaseByVisitDateResponse?.filter((streetTreatCase)=> streetTreatCase.VehicleNumber === $event.name)[0]?.VehicleId;
-      this.assignedVehicleGroup.get('teams')?.patchValue([VehicleId]);
+      this.assignedVehicleGroup.get('vehicles')?.patchValue([VehicleId]);
     },100);
   }
 

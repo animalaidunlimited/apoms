@@ -13,6 +13,16 @@
     <div fxFlex="60%" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
 
         <mat-form-field>
+            <mat-label>Ambulance assignment time</mat-label>
+            <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime"
+            type="datetime-local"
+            name="ambulanceAssignmentTime" (focus)="setInitialDate($event)"
+            [errorStateMatcher]="errorMatcher"
+            placeholder="Ambulance assignment time" matInput>
+
+        </mat-form-field>
+
+        <mat-form-field>
             <mat-label>Assign Vehicle</mat-label>
                 <mat-select tabindex="12" formControlName="releaseAmbulanceId"
                 (selectionChange)="vehicleSelected($event)">
@@ -23,15 +33,7 @@
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>Assigned Date</mat-label>
-            <input #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime"
-            type="datetime-local"
-            name="ambulanceAssignmentTime" (focus)="setInitialDate($event)"
-            [errorStateMatcher]="errorMatcher"
-            placeholder="Ambulance assignment time" matInput>
 
-        </mat-form-field>
 
     </div>
 

@@ -176,7 +176,7 @@ export class UsersPageComponent implements OnInit {
         },
         {
           groupNameId: 2,
-          groupName: 'Hospital Manager',
+          groupName: 'Hospital manager',
           permissions: [{
             permissionId: 3,
             permissionType: 'Read'
@@ -198,7 +198,7 @@ export class UsersPageComponent implements OnInit {
         }
         ,{
           groupNameId: 4,
-          groupName: 'Treatment List',
+          groupName: 'Treatment list',
           permissions: [{
             permissionId: 7,
             permissionType: 'Read'
@@ -226,6 +226,28 @@ export class UsersPageComponent implements OnInit {
             permissionType: 'Read'
           }, {
             permissionId : 12,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 7,
+          groupName: 'Driver view',
+          permissions: [{
+            permissionId: 13,
+            permissionType: 'Read'
+          }, {
+            permissionId : 14,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 8,
+          groupName: 'Vehicles',
+          permissions: [{
+            permissionId: 15,
+            permissionType: 'Read'
+          }, {
+            permissionId : 16,
             permissionType: 'Write'
           }]
         }
@@ -267,7 +289,7 @@ export class UsersPageComponent implements OnInit {
       this.dataSource.sort = this.sort;
     }
 
-    Submit(userDetailsForm: any) {
+    submit(userDetailsForm: any) {
 
       if(this.hasWritePermission) {
         this.loading = true;

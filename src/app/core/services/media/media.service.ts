@@ -116,7 +116,7 @@ export class MediaService extends APIService {
 
                 newMediaItem.remoteURL = url;
 
-                newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm') as string;
+                newMediaItem.datetime = this.datePipe.transform(new Date(),'yyyy-MM-ddTHH:mm') as string;
 
 
                 path === 'patient-media'?
@@ -212,7 +212,7 @@ export class MediaService extends APIService {
             if(mediaItem.patientId === Id){
 
 
-              mediaItem.media.push({date:  this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl});
+              mediaItem.media.push({date:  this.datePipe.transform(new Date(),'yyyy-MM-ddTHH:mm'), imageBase64:resizedImage.dataUrl});
             }
             return mediaItem;
           });
@@ -236,7 +236,7 @@ export class MediaService extends APIService {
 
             const localMedia = this.getParseMediaObject();
 
-            localMedia.push({headerType:'POST',patientId: Id, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddThh:mm'), imageBase64:resizedImage.dataUrl}]});
+            localMedia.push({headerType:'POST',patientId: Id, media:[{date: this.datePipe.transform(new Date(),'yyyy-MM-ddTHH:mm'), imageBase64:resizedImage.dataUrl}]});
 
             this.saveToLocalDatabase(
               'MEDIA', JSON.stringify(localMedia)

@@ -34,6 +34,7 @@ export class DriverViewComponent implements OnInit {
 
   ngOnInit(): void {
 
+
     this.locationService.initialise();
 
     this.locationService.currentLocation$.pipe(takeUntil(this.ngUnsubscribe)).subscribe();
@@ -86,7 +87,12 @@ export class DriverViewComponent implements OnInit {
 
       const newVehicleIdArray = Array.from(vehicleIdSet);
 
-      this.timer$ = this.driverView.getTimer();
+      //Without a setTimeout this caused a changedAfterChecked error and I didn't want to bring in a
+      //change detector just for this.
+      setTimeout(()=> {
+        this.timer$ = this.driverView.getTimer();
+      },0)
+
 
       const statesList = new Set(driverAssignments.map(assignments=> assignments.actionStatus));
       return statesList;

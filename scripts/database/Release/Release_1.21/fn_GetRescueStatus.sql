@@ -115,19 +115,6 @@ BEGIN
 				CallOutcomeId IS NULL OR
 				InTreatmentAreaId IS NULL
 				)
-            ) 
-            OR
-            (
-            AssignedRescueVehicleId IS NOT NULL AND
-            RescueTime IS NOT NULL AND
-            AdmissionTime IS NOT NULL AND
-            ReleaseDetailsId IS NOT NULL AND
-            RequestedDate IS NOT NULL AND
-            RequestedUser IS NOT NULL AND 
-            AssignedReleaseVehicleId IS NOT NULL AND
-            PickupDate IS NOT NULL AND 
-            BeginDate IS NOT NULL AND 
-            EndDate IS NULL
             )
 			THEN SET rescueReleaseStatus = 5;        
         

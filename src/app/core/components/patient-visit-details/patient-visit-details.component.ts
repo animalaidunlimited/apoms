@@ -156,6 +156,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.treatmentPriority$ = this.dropdown.getPriority();
 		this.vehicleList$ = this.vehicleService.getVehicleListObservable().pipe(map(vehicles => vehicles.filter(vehicle => vehicle.streetTreatVehicle)));
 
+
 		setTimeout(() => {
 			if (!this.isStreetTreatTrue) {
 				this.clearValidators();
@@ -164,7 +165,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 				this.initStreetTreatForm();
 			}
 
-		}, 1);
+		}, 0);
 
 	}
 
@@ -502,6 +503,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		};
 
 	}
+
+	//Take a date as input and comapre it with today's date. If they match return true,
+	//if they don't match return false
+	isToday(visitDate: string | Date){
+		const today = new Date();
+		const visit = new Date(visitDate);
+		return today.toDateString() === visit.toDateString();
+	}
+
 
 
 }

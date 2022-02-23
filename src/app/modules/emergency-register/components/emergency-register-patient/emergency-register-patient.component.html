@@ -11,13 +11,13 @@
     fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
-        [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher" (keydown.Tab)="isSpeciesBlank($event);false;"
+        [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
         (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
 
       <mat-autocomplete class="speciesAutocomplete" autoActiveFirstOption #animalAuto="matAutocomplete"
         (optionSelected)="animalSelected($event)">
 
-        <mat-option *ngFor="let animal of filteredAnimalTypes$ | async" [value]="animal">
+        <mat-option *ngFor="let animal of filteredAnimalTypes$" [value]="animal">
           {{ animal.AnimalType }}
         </mat-option>
       </mat-autocomplete>
@@ -27,7 +27,7 @@
     <!-- Main Problem -->
     <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
 
-      <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank($event)" required>
+      <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
 
         <mat-chip *ngFor="let problem of problemsArray?.value" style="margin-right: 5px" [selectable]="selectable"
           [removable]="removable" (removed)="remove(problem.problemId)">

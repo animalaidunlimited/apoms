@@ -69,7 +69,7 @@ export const navRoutes: NavRoute[] = [
     },
 
     {
-        data: { title: 'Vehicle List', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Vehicle List', permissionId:[15,16], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Vehicles',
         path: 'vehicle-list',
@@ -77,18 +77,17 @@ export const navRoutes: NavRoute[] = [
             import('./modules/vehicle/pages/vehicle-list-page/vehicle-list-page.module')
             .then(m => m.VehicleListPageModule)
     },
-
     {
-        data: { title: 'Driver View', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Driver View', permissionId:[13,14], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         path: 'driver-view',
         loadChildren: () =>
-            import('./modules/driver-view/components/driver-view/driver-view.module')
-            .then(m => m.DriverViewModule)
+            import('./modules/driver-view/driver-view-page.module')
+            .then(m => m.DriverViewPageModule)
     },
 
     {
-        data: { title: 'Vehicle Staff Assigner', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Vehicle Staff Assigner', permissionId:[15,16], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Vehicles',
         path: 'vehicle-staff-assigner',

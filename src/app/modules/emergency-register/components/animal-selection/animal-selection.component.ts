@@ -84,7 +84,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
     treatmentAreaNames$!: Observable<TreatmentArea[]>;
 
     @HostListener('document:keydown.control.p', ['$event'])
-
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
         if(this.outcome){

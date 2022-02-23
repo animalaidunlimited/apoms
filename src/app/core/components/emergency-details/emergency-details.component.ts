@@ -68,7 +68,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.minimumDate =
             this.datePipe.transform(
                 this.userOptions.getMinimumDate(),
-                'yyyy-MM-ddThh:mm:ss.ms',
+                'yyyy-MM-ddTHH:mm:ss.ms',
             ) || '';
 
         this.emergencyDetails = this.recordForm.get(

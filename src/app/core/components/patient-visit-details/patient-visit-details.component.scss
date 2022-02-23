@@ -1,3 +1,16 @@
+.visit-today{
+    background-color: #c6d2e1ba;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.visit_row_data{
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 35px;
+}
+
 @mixin border($bg-color) {
     border-radius: 50%;
     & .mat-calendar-body-cell-content {
@@ -93,7 +106,7 @@
                 grid-column-gap: 10px;
 
                 box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
-                margin-bottom: 25px;
+
                 border-radius: 25px;
                 padding: 15px 15px 45px 15px;
                 grid-template-columns: 1fr 2fr 1.74fr;
@@ -130,7 +143,7 @@
         width: 32.6%;
         margin-right: 0 !important;
     }
-    
+
 }
 @media only screen and (max-width: 600px) {
     .calendar-toggle {

@@ -182,7 +182,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
         if(itemId){
 
-          this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddThh:mm'));
+          this.recordForm.get('imageDate')?.setValue(this.datePipe.transform(new Date(mediaItem?.mediaItem?.datetime as string),'yyyy-MM-ddTHH:mm'));
           if(this.onlineStatus.connectionChanged.value){
             this.showSnackBar.successSnackBar('Upload successful','OK');
           }
@@ -398,7 +398,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     this.recordForm = this.fb.group({
       imageDate: [
-        this.datePipe.transform(new Date(this.data.mediaData?.datetime as string),'yyyy-MM-ddThh:mm')
+        this.datePipe.transform(new Date(this.data.mediaData?.datetime as string),'yyyy-MM-ddTHH:mm')
         || ''
       ],
       imageTags:[dialogData.mediaData?.tags?.map((tag:any) => tag.tag) || []],

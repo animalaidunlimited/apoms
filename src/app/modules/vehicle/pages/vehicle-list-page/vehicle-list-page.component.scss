@@ -16,6 +16,30 @@ $standard-width: 180px;
   padding-left: 10px;
 }
 
+.vehicle-image {
+
+  margin-bottom: 20px;
+
+  img {
+      border-radius: 50%;
+      height: 17em;
+      width: 17em;
+      background-color: white;
+      object-fit: cover;
+      object-position: center;
+  }
+}
+
+.uploading-spinner{
+  position: absolute;
+  left: calc(50% - 53px);
+  top: 200px;
+}
+
+.vehicle-form {
+  width: 100%;
+}
+
 
 .legend1 {
   font-size: medium;

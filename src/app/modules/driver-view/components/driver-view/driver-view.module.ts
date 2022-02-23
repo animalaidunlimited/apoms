@@ -29,8 +29,8 @@ import { CaseLocationModule } from '../case-location/case-location.module';
   ],
   imports: [
     CommonModule,
-    CaseLocationModule,
     DriverViewRoutingModule,
+    CaseLocationModule,
     MaterialModule,
     CallerDetailsModule,
     GoogleMapsModule,

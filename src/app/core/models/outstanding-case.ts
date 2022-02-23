@@ -34,6 +34,7 @@ export interface OutstandingAssignment {
     releaseEndDate?: string ;
     releaseDetailsId: number ;
     releaseType?: string;
+    patientId: number;
     releaseRequestDate?: string;
     rescueTime?:string;
     searchCandidate?: boolean;

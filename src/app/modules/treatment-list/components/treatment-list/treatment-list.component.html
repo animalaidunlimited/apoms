@@ -108,8 +108,9 @@
             <td mat-cell *matCellDef="let row; let index = dataIndex;"
             [formGroupName]="index"
             [class.small-column]="column.name !== 'Treatment priority'"
-            [class.center-columnm]="column.name !== 'Tag number'"
             [class.select-width]="column.name == 'Treatment priority'"
+            [class.center-columnm]="column.name !== 'Tag number'"
+            [class.large-text]="column.name === 'Tag number'"
             [class.link]="column.name === 'Tag number'">
 
            <div *ngIf="column.type === 'text'" (click)="cellClicked(column.name, row.get(column.name).value)">

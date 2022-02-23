@@ -16,7 +16,8 @@ CREATE PROCEDURE AAU.sp_InsertVehicle(
 												IN prm_VehicleStatusId INT,
                                                 IN prm_StreetTreatVehicle INT,
                                                 IN prm_StreetTreatDefaultVehicle INT,
-                                                IN prm_VehicleColour VARCHAR(64)
+                                                IN prm_VehicleColour VARCHAR(64),
+                                                IN prm_VehicleImage VARCHAR(650)
                                             )
 BEGIN
 
@@ -58,7 +59,8 @@ IF vVehicleCount = 0 THEN
         StreetTreatVehicle,
         StreetTreatDefaultVehicle,
         VehicleColour,
-		OrganisationId
+		OrganisationId,
+        VehicleImage
 	)
 	VALUES(
 		prm_VehicleRegistrationNumber,
@@ -72,7 +74,8 @@ IF vVehicleCount = 0 THEN
         prm_StreetTreatVehicle,
         prm_StreetTreatDefaultVehicle,
         prm_VehicleColour,
-		vOrganisationId
+		vOrganisationId,
+        prm_VehicleImage
 	);
     
 	SELECT LAST_INSERT_ID(), 1 INTO vVehicleId, vSuccess;

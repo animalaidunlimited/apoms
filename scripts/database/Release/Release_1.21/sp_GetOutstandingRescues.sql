@@ -130,6 +130,7 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 	JSON_OBJECT('patients', p.Patients),
+    JSON_OBJECT('patientId',p.PatientId),
 	JSON_OBJECT('emergencyCaseId',ec.EmergencyCaseId),
 	JSON_OBJECT('rescueAmbulanceId',ec.AssignedVehicleId),
     JSON_OBJECT('releaseAmbulanceId',rd.AssignedVehicleId),
@@ -137,7 +138,7 @@ JSON_MERGE_PRESERVE(
     JSON_OBJECT('emergencyCode',ec.EmergencyCode),
     JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
     JSON_OBJECT('rescueTime',ec.RescueTime),
-    JSON_OBJECT('ambulanceAssignmentTime',IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime) ),
+    JSON_OBJECT('ambulanceAssignmentTime',DATE_FORMAT(IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime), "%Y-%m-%dT%H:%i:%s") ),
 	JSON_OBJECT('actionStatusId',
     AAU.fn_GetRescueStatus(
 				rd.ReleaseDetailsId,
@@ -184,7 +185,7 @@ LEFT JOIN
 					rd.RequestedUser,
 					rd.RequestedDate,
 					rd.AssignedVehicleId,
-                    rd.ambulanceAssignmentTime,
+                    rd.AmbulanceAssignmentTime,
 					rd.PickupDate,
 					rd.BeginDate,
 					rd.EndDate,

@@ -31,8 +31,10 @@ Purpose: Altering status based upon whether the admission area has been added
 ***************************************************************************/
 
  WITH RescueReleaseSTPatientId AS (
-	SELECT PatientId FROM AAU.Patient
+	SELECT PatientId
+    FROM AAU.Patient
     WHERE EmergencyCaseId = prm_EmergencyCaseId
+    AND IFNULL(prm_PatientId, PatientId) = PatientId
 ),
 
 EmergencyCaseIds AS
@@ -72,7 +74,7 @@ PatientsCTE AS
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
-            JSON_OBJECT("patientId", p.PatientId),
+            JSON_OBJECT("patientId", IFNULL(rd.PatientId, p.PatientId)),
             JSON_OBJECT("position", p.Position),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),

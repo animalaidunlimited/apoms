@@ -4,8 +4,6 @@ import { DriverViewPageRoutingModule } from './driver-view-page-routing.module';
 import { MaterialModule } from 'src/app/material-module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
-import { VehicleListPageModule } from '../vehicle/pages/vehicle-list-page/vehicle-list-page.module';
-
 import { DriverViewModule } from './components/driver-view/driver-view.module';
 
 @NgModule({
@@ -15,7 +13,6 @@ import { DriverViewModule } from './components/driver-view/driver-view.module';
     DriverViewPageRoutingModule,
     MaterialModule,
     DragDropModule,
-    VehicleListPageModule,
     DriverViewModule
   ]
 })

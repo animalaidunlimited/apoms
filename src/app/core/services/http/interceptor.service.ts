@@ -48,9 +48,14 @@ export class HttpConfigInterceptor implements HttpInterceptor {
                         // TODO: Not found; show toast
                         console.log(error);
                     }
+                    if (error.status === 504) {
+                        // TODO: We're offline, handle.
+                        console.log(error);
+                    }
                 }
                 return throwError(error);
             }),
         );
     }
+
 }

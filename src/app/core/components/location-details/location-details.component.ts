@@ -37,7 +37,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     @Input() recordForm!: FormGroup;
     @Output() setAddress: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('addressSearch') addresstext: any;
+    @ViewChild('addressSearch', { static: false }) addresstext: any;
     @ViewChild('locationWrapper') locationWrapper: any;
     @ViewChild('googlemap') googlemap: any;
 
@@ -107,7 +107,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
             if(!changes.latitiude && !changes.longitude && !changes.location){
                 this.clearAutocomplete();
-                this.initialiseLatLong();
             }
         });
     }
@@ -229,9 +228,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         setTimeout(() => {
         this.removeAddress = !this.removeAddress;
+        this.changeDetector.detectChanges();
         this.getPlaceAutocomplete();
-        this.addresstext.nativeElement.focus();
-        },1);
+        this.initialiseLatLong();
+        },0);
 
     }
 

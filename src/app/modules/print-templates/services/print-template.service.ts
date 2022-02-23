@@ -6,6 +6,7 @@ import { APIService } from 'src/app/core/services/http/api.service';
 import { Router } from '@angular/router';
 import { PatientService } from '../../../core/services/patient/patient.service';
 import { map, takeUntil } from 'rxjs/operators';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 
 @Injectable({
@@ -23,6 +24,7 @@ export class PrintTemplateService extends APIService {
   constructor(
     http: HttpClient,
     private patientService: PatientService,
+    private snackbar: SnackbarService,
     private router: Router) {
     super(http);
   }
@@ -137,13 +139,20 @@ export class PrintTemplateService extends APIService {
     return this.put(template);
   }
 
-  public printPatientDocument(printTemplateId: number, patientId: number) {
+  public printPatientDocument(printTemplateId: number, patientId: number) : void {
 
 
     this.printTemplateSubscription = this.getPrintTemplate(printTemplateId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((printTemplate:PrintTemplate) => {
 
+
+
       // Get all of the patient details
       this.patientService.getPrintPatientByPatientId(patientId).pipe(takeUntil(this.ngUnsubscribe)).subscribe((printPatient:PrintPatient) => {
+
+        if(printPatient.emergencyNumber === -1){
+          this.snackbar.errorSnackBar('Error printing template: please see administrator', 'OK');
+          return;
+        }
 
         const newTemplate = this.populatePrintTemplateWithPatientData(printTemplate, printPatient);
 

@@ -10,6 +10,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
 import { generateUUID } from 'src/app/core/helpers/utils';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 interface EmergencyCaseIndentifiers {
     emergencyNumber : number | string;
@@ -43,10 +44,14 @@ export class TabBarComponent implements OnInit, OnDestroy {
         private emergencytabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
         private navigationService:NavigationService,
-        private caseService: CaseService
+        private caseService: CaseService,
+        private printService: PrintTemplateService
     ) {}
 
     ngOnInit() {
+
+        this.printService.initialisePrintTemplates();
+
         this.selected.setValue(1);
 
         this.caseService.caseToOpen$

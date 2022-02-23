@@ -38,6 +38,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
     }
 
   ngOnInit(): void {
+
     this.mapOptions = {
       streetViewControl: false,
       center: this.center,
@@ -52,7 +53,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
     } as google.maps.MapOptions;
 
   }
-  
+
   hasLargeAninmal(patients:any) : boolean{
 
     return patients.some((patient: any) => patient.largeAnimal);
@@ -64,10 +65,11 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
     caseListVal?.forEach(val=> {
       if(val.latLngLiteral){
         this.bounds.extend(new google.maps.LatLng(val.latLngLiteral.lat, val.latLngLiteral.lng));
+        this.fitMaps(this.bounds);
       }
     });
 
-    this.fitMaps(this.bounds);
+
   }
 
   ngAfterViewInit() {

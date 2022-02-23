@@ -1,12 +1,19 @@
 <form [formGroup]='vehicleListForm'  autocomplete="off">
 
+  <mat-spinner [diameter]="100" class="uploading-spinner" *ngIf="uploading"></mat-spinner>
+
     <fieldset class="form-sub-group">
         <legend class="legend">Vehicle List
             <mat-icon></mat-icon>
         </legend>
 
-        <div fxLayout="row">
-          <div>
+        <div fxLayout="row wrap" class="vehicle-form">
+
+          <div *ngIf="imgURL" fxFlex.gt-sm="20" fxFlex.lt-md="100"  fxLayoutAlign="center center" class="vehicle-image">
+            <img  [src]="imgURL"  />
+          </div>
+
+          <div fxFlex="fill">
               <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
                   <mat-form-field appearance='fill'>
                       <mat-label>Registration number</mat-label>
@@ -105,13 +112,11 @@
               </div>
 
           </div>
-          <div>
-                <img  [src]="imgURL"  />
-          </div>
+
         </div>
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-            <button type='submit' mat-raised-button color='primary' (click)="Submit(vehicleListForm)">Save</button>
+            <button type='submit' mat-raised-button color='primary' [disabled]="uploading" (click)="submit(vehicleListForm)">Save</button>
 
             <button type='button' (click)="deleteVehicle(vehicleListForm.get('vehicleId')?.value)" mat-raised-button color='primary'>Delete</button>
 

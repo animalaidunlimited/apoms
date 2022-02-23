@@ -35,7 +35,7 @@ JSON_MERGE_PRESERVE(
     JSON_OBJECT("imageURL", vehicleDetails.VehicleImage),
     JSON_OBJECT("streetTreatDefaultVehicle", vehicleDetails.streetTreatDefaultVehicle),
     JSON_OBJECT("streetTreatVehicle", vehicleDetails.streetTreatVehicle),
-    JSON_OBJECT("vehicleColour", vehicleDetails.vehicleColour)
+    JSON_OBJECT("vehicleColour", IFNULL(vehicleDetails.vehicleColour,"#000000"))
 )) AS vehicleList
 FROM
 (SELECT vl.VehicleId,

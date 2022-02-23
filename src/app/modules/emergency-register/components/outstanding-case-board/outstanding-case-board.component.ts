@@ -119,7 +119,6 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
   @ViewChild('filterDiv') filterDiv!: ElementRef;
 
-
   constructor(
     private outstandingCaseService: OutstandingCaseService,
     private locationService: LocationService,
@@ -160,11 +159,9 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
     this.vehicleId$ = this.outstandingCaseService.getVehicleId();
 
-
     this.searchForm = this.fb.group({
       searchTerm: ['']
     });
-
 
    this.searchForm.get('searchTerm')?.valueChanges
     .pipe(

@@ -17,15 +17,6 @@ import { MediaService } from 'src/app/core/services/media/media.service';
 })
 export class VehicleListPageComponent implements OnInit {
 
-
-  imgURL!:string | ArrayBuffer | null;
-
-  vehicleStatus: VehicleStatus[] = [
-    {VehicleStatusId: 1, VehicleStatus: 'Active'},
-    {VehicleStatusId: 2, VehicleStatus: 'Inactive'},
-    {VehicleStatusId: 3, VehicleStatus: 'Damaged'}
-  ];
-
   displayedColumns: string[] = [
     'vehicleType',
     'registrationNumber',
@@ -39,7 +30,17 @@ export class VehicleListPageComponent implements OnInit {
     'streetTreatDefaultVehicle'
   ];
 
-  dataSource!: MatTableDataSource<Vehicle[]> ;
+  dataSource!: MatTableDataSource<Vehicle> ;
+
+  imgURL:string | ArrayBuffer | null = "assets/images/image_placeholder.png";
+
+  uploading = false;
+
+  vehicleStatus: VehicleStatus[] = [
+    {VehicleStatusId: 1, VehicleStatus: 'Active'},
+    {VehicleStatusId: 2, VehicleStatus: 'Inactive'},
+    {VehicleStatusId: 3, VehicleStatus: 'Damaged'}
+  ];
 
   vehicleType$!: Observable<VehicleType[]>;
 
@@ -61,6 +62,7 @@ export class VehicleListPageComponent implements OnInit {
   });
 
 
+
   constructor(private dropdown: DropdownService,
               private fb: FormBuilder,
               private vehicleService: VehicleService,
@@ -68,13 +70,13 @@ export class VehicleListPageComponent implements OnInit {
               private authService: AuthService,
               private mediaPaste: MediaService) { }
 
-  ngOnInit(): void {
+  ngOnInit() : void {
     this.vehicleType$ = this.dropdown.getVehicleType();
     this.refreshVehicleTable();
 
   }
 
-  Submit(vehicleForm: FormGroup) {
+  submit(vehicleForm: FormGroup) {
 
     this.vehicleService.upsertVehicleListItem(vehicleForm.value).then(response=> {
       if(response.success === -1) {
@@ -94,18 +96,25 @@ export class VehicleListPageComponent implements OnInit {
 
   }
 
-  refreshVehicleTable() {
+  refreshVehicleTable() : void {
     this.vehicleService.getVehicleList().then((vehicleListTabledata)=> {
-      this.dataSource = vehicleListTabledata;
+
+      if(vehicleListTabledata){
+        this.dataSource = new MatTableDataSource(vehicleListTabledata);
+      }
+
     });
   }
 
-  selectRow(selectedVehicle: any) {
+  selectRow(selectedVehicle: Vehicle) : void {
+
     this.vehicleListForm.patchValue(selectedVehicle);
+    this.imgURL = selectedVehicle.imageURL || "assets/images/image_placeholder.png";
 
   }
 
-  deleteVehicle(vehicleId : number) {
+  deleteVehicle(vehicleId : number) : void {
+
     if(vehicleId) {
       this.vehicleService.deleteVehicleListItem(vehicleId).then(successResponse=> {
 
@@ -129,30 +138,35 @@ export class VehicleListPageComponent implements OnInit {
 
   uploadFile($event:any) : void {
 
-    /* for(const file of $event.target.files)
+    this.uploading = true;
+
+    for(const file of $event.target.files)
     {
 
       let imgURL;
 
       var reader = new FileReader();
 
-        reader.readAsDataURL(this.uploader.nativeElement.files[0]);
-        reader.onload = (_event) => {
-          imgURL = reader.result;
-        }
+      reader.readAsDataURL(file);
+      reader.onload = (_event) => {
+        imgURL = reader.result;
+      }
 
-        console.log(imgURL )
-      /* const mediaItem = this.mediaPaste.handleImageUpload(file);
+      const mediaItem = this.mediaPaste.handleImageUpload(file);
 
       mediaItem?.url.subscribe(url => {
-        this.vehicleListForm.get('vehicleImage')?.setValue(url);
-        console.log(url);
+
+        if(url) {
+          this.uploading = false;
+          this.vehicleListForm.get('vehicleImage')?.setValue(url);
+        }
       })
 
-    } */
+    }
 
-    if ($event.target.files.length === 0)
+    if ($event.target.files.length === 0){
       return;
+    }
 
     var mimeType = $event.target.files[0].type;
     if (mimeType.match(/image\/*/) == null) {

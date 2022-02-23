@@ -40,8 +40,6 @@ export class AppComponent implements OnInit{
                     this.messagingService.unsubscribe();
                  });
 
-                 this.printService.initialisePrintTemplates();
-
                  this.messagingService.requestPermission();
 
                  // Set up to receive messages from the service worker when the app is in the background.
