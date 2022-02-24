@@ -12,7 +12,7 @@ const environmentTargetPath = './src/environments/environment.ts';
 // Load node modules
 const colors = require('colors');
 
-require('dotenv').configure();
+require('dotenv').config();
 
 if(process.env.API_URL?.includes('stag')){
     console.log('Staging');

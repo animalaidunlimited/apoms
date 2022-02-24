@@ -228,7 +228,7 @@ describe('DropdownService', () => {
 
     it('getAnimalTypes() should return data', () => {
 
-        const animalTypes:AnimalType[] = [{ AnimalTypeId: 1, AnimalType: 'Cat', Sort: 10 }];
+        const animalTypes:AnimalType[] = [{ AnimalTypeId: 1, AnimalType: 'Cat', SortOrder: 10, IsDeleted: 0 }];
 
         service.getAnimalTypes().subscribe(res => {
             expect(res).toEqual(animalTypes);

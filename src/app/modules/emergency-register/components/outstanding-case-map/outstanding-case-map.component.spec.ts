@@ -2,13 +2,13 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { createMapSpy, createMapConstructorSpy } from 'src/app/core/testing/fake-google-map-utils';
-import { DEFAULT_OPTIONS } from 'src/app/core/testing/google-map';
+//import { DEFAULT_OPTIONS } from 'src/app/core/testing/google-map';
 import { environment } from 'src/environments/environment';
 import { OutstandingCaseMapComponent } from './outstanding-case-map.component';
 
@@ -33,9 +33,9 @@ describe('OutstandingCaseMapComponent', () => {
       providers: [
         MatSnackBar,
         Overlay,
-        
+
       ],
-      declarations: [ OutstandingCaseMapComponent, ],
+      declarations: [ OutstandingCaseMapComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
@@ -45,8 +45,8 @@ describe('OutstandingCaseMapComponent', () => {
     fixture = TestBed.createComponent(OutstandingCaseMapComponent);
     component = fixture.componentInstance;
 
-    mapSpy = createMapSpy(DEFAULT_OPTIONS);
-    mapConstructorSpy = createMapConstructorSpy(mapSpy);
+    //mapSpy = createMapSpy(DEFAULT_OPTIONS);
+    //mapConstructorSpy = createMapConstructorSpy(mapSpy);
 
     TestBed.compileComponents();
 

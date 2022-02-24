@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocationService } from './location.service';
 
 
@@ -8,8 +9,8 @@ describe('LocationTrackingService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      providers: [LocationService]
+      imports: [ HttpClientModule ],
+      providers: [ MatSnackBar, LocationService ]
     });
     service = TestBed.inject(LocationService);
   });

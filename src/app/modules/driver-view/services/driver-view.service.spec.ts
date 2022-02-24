@@ -51,6 +51,7 @@ describe('DriverViewService', () => {
                   },
                   sameAsNumber: null
               },
+              mediaCount: 0,
               largeAnimal: 1,
               animalTypeId: 2,
               admissionArea: null,
@@ -110,7 +111,12 @@ describe('DriverViewService', () => {
       rescueAmbulanceAssignmentDate: '2021-08-23T10:50:00',
       releaseAmbulanceAssignmentDate: null,
       streetTreatAmbulanceAssignmentDate: null,
-      trueStatus:''
+      trueStatus:'',
+      actionStatusId: 0,
+      filterCandidate: false,
+      moved: false,
+      searchCandidate: false,
+      updateTime: '2021-08-23T10:50:00'
   };
   });
 

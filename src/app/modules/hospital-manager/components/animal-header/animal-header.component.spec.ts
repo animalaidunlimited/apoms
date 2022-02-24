@@ -14,8 +14,8 @@ import { MaterialModule } from 'src/app/material-module';
 import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AngularFireMessagingModule } from '@angular/fire/messaging';
-import { AngularFireModule } from '@angular/fire';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
+import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';

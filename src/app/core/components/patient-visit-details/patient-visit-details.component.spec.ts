@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
@@ -31,6 +32,7 @@ describe('PatientVisitDetailsComponent', () => {
         BrowserAnimationsModule
     ],
       providers: [
+        DatePipe,
         {
           provide: MAT_DIALOG_DATA,
           useValue: dialogData },

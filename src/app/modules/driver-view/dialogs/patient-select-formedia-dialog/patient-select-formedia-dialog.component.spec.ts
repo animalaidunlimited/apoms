@@ -27,10 +27,10 @@ describe('PatientSelectFormediaDialogComponent', () => {
   });
 
   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(PatientSelectFormediaDialogComponent);  
+    fixture = TestBed.createComponent(PatientSelectFormediaDialogComponent);
     component = fixture.componentInstance;
-    
-    component.formGroup = fb.group({});  
+
+    component.formGroup = fb.group({});
 
     component.patients = [{
       animalType: 'Dog',
@@ -42,7 +42,7 @@ describe('PatientSelectFormediaDialogComponent', () => {
         problemId:1,
         problem:'Anorexia'
       }],
-      callOutcome: {   
+      callOutcome: {
         CallOutcome: {
           CallOutcome:'Admission',
           CallOutcomeId:1,
@@ -61,10 +61,10 @@ describe('PatientSelectFormediaDialogComponent', () => {
       isAdmission: false,
       admissionArea: 1,
       admissionAccepted: true,
-      treatmentPriority: 1
-
+      treatmentPriority: 1,
+      mediaCount: 0
     }];
-    
+
     fixture.detectChanges();
 
   }));

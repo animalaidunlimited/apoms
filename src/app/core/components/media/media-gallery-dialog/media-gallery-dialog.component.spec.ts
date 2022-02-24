@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material-module';
-
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
 import { MediaGalleryDialogComponent } from './media-gallery-dialog.component';
+import { DatePipe } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MediaGalleryDialogComponent', () => {
   let component: MediaGalleryDialogComponent;
@@ -11,10 +14,13 @@ describe('MediaGalleryDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        MaterialModule
+        MaterialModule,
+        HttpClientTestingModule,
+        AngularFireModule.initializeApp(environment.firebase)
       ],
       declarations: [ MediaGalleryDialogComponent ],
       providers: [
+        DatePipe,
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} }
       ]

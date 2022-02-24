@@ -40,7 +40,6 @@ describe('SearchStreettreetResultCardComponent', () => {
       NextVisit: 'manana',
       TagNumber: 'tag',
       UserName: 'Boba',
-      sameAsNumber: undefined,
       ReleaseStatus: 'Released'
   }
 

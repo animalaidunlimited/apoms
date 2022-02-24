@@ -6,8 +6,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessagingService } from '../../services/messaging.service';
-import { AngularFireMessaging, AngularFireMessagingModule } from '@angular/fire/messaging';
-import { AngularFireModule } from '@angular/fire';
+import { AngularFireMessaging, AngularFireMessagingModule } from '@angular/fire/compat/messaging';
+import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -23,7 +23,7 @@ describe('OutstandingCaseBoardComponent', () => {
       imports:[
   MatDialogModule,
         HttpClientTestingModule,
-        FormsModule, 
+        FormsModule,
         MatSnackBarModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
@@ -42,7 +42,7 @@ describe('OutstandingCaseBoardComponent', () => {
           useValue: {}
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        
+
       ],
       declarations: [ OutstandingCaseBoardComponent ]
     })
