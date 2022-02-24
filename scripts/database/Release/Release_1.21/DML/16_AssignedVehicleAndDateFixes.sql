@@ -558,9 +558,9 @@ DELETE FROM AAU.VehicleShiftUser
 WHERE VehicleShiftId != -1;
 
 
-SELECT DISTINCT Rescuer1Id 
-FROM AAU.EmergencyCase;
-
+SELECT *
+FROM AAU.EmergencyCase
+WHERE Rescuer1Id IS NOT NULL AND Rescuer2Id IS NULL;
 -- UPDATE ASSIGNED VEHICLE ID AND ASSIGNMENT TIME IN EMERGENCY CASE.
 
 UPDATE AAU.EmergencyCase
@@ -588,7 +588,8 @@ SET Rescuer2Id = NULL
 WHERE Rescuer2Id = 0 AND REscuer1Id IS NOT NULL;
 
 
-SELECT DISTINCT * FROM AAU.EmergencyCase
+SELECT *
+FROM AAU.EmergencyCase
 WHERE Rescuer1Id IS NOT NULL
 AND SelfAdmission IS NULL
 AND AssignedVehicleId IS NULL

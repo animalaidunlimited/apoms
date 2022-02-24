@@ -32,7 +32,7 @@
     "@angular/common": "^13.1.2",
     "@angular/compiler": "^13.1.2",
     "@angular/core": "^13.1.2",
-    "@angular/fire": "^7.2.0",
+    "@angular/fire": "^7.2.1",
     "@angular/flex-layout": "^13.0.0-beta.36",
     "@angular/forms": "^13.1.2",
     "@angular/google-maps": "^13.1.2",
@@ -44,7 +44,7 @@
     "@angular/service-worker": "^13.1.2",
     "@firebase/messaging": "^0.7.15",
     "@swimlane/ngx-charts": "^16.0.0",
-    "@types/dom-mediacapture-record": "1.0.7",
+    "@types/dom-mediacapture-record": "^1.0.11",
     "@types/google.maps": "^3.47.2",
     "@types/uuid": "^8.3.4",
     "ally.js": "^1.4.1",
@@ -105,7 +105,7 @@
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.4.4",
+    "typescript": "^4.5.5",
     "webpack-bundle-analyzer": "^4.5.0"
   },
   "optionalDependencies": {
