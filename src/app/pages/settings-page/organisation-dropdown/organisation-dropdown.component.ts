@@ -17,7 +17,7 @@ import { EditableDropdownService } from '../../services/editable-dropdown.servic
 })
 
 export class OrganisationDropdownComponent implements OnInit, OnDestroy {
-
+  
   private ngUnsubscribe = new Subject();
 
   @ViewChild(MatTable) table!: MatTable<Element>;

@@ -94,11 +94,14 @@ WHERE c.StreetTreatCaseId = prm_streetTreatCaseId;
 
 SELECT 1 AS Success;
 
-END$$
+END $$
 
 DELIMITER !!
+
 DROP FUNCTION IF EXISTS AAU.fn_GetRescueStatus!!
+
 DELIMITER $$
+
 CREATE FUNCTION AAU.fn_GetRescueStatus(
 	ReleaseDetailsId INT,
 	RequestedUser VARCHAR(45),
@@ -232,208 +235,54 @@ BEGIN
 	RETURN (rescueReleaseStatus);
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
+DROP PROCEDURE IF EXISTS AAU.sp_DeleteItemFromVehicleList !!
 
 DELIMITER $$
-
-
-CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
+CREATE PROCEDURE AAU.sp_DeleteItemFromVehicleList(IN prm_Username VARCHAR(65),
+												IN prm_VehicleId INT)
 BEGIN
 
+/*
+Created By: Arpit Trivedi
+Created On: 19/05/2021
+Purpose: To delete vehicle from the vehicleList table.
+*/
+
+DECLARE vSuccess INT;
 DECLARE vOrganisationId INT;
+DECLARE VehicleIdCount INT;
 
-SELECT u.OrganisationId INTO vOrganisationId
-FROM AAU.User u
-WHERE UserName = prm_Username LIMIT 1;
+SET VehicleIdCount = 0;
 
-WITH RescuesReleases AS
-(
-SELECT PatientId
-FROM  AAU.Patient p
-WHERE p.OrganisationId = vOrganisationId
-AND p.PatientCallOutcomeId IS NULL
-AND p.IsDeleted = 0
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User
+WHERE UserName = prm_Username;
 
-UNION
+SELECT COUNT(1) INTO VehicleIdCount FROM AAU.Vehicle WHERE VehicleId = prm_VehicleId;
 
-SELECT PatientId
-FROM AAU.ReleaseDetails rd
-WHERE rd.OrganisationId = vOrganisationId
-AND rd.EndDate IS NULL
+IF VehicleIdCount = 1 THEN
 
-),
-EmergencyCaseIds AS
-(
-SELECT EmergencyCaseId
-FROM AAU.Patient
-WHERE PatientId IN (SELECT PatientId FROM RescuesReleases)
-),
-EmergencyCaseCTE AS
-(
-SELECT  
-ec.EmergencyCaseId,
-ec.AssignedVehicleId,
-ec.EmergencyNumber,
-ec.AmbulanceArrivalTime,
-ec.RescueTime,
-ec.AdmissionTime,
-ec.EmergencyCodeId,
-ec.CallDateTime,
-ecd.EmergencyCode,
-ec.Location,
-ec.Latitude,
-ec.Longitude,
-ec.ambulanceAssignmentTime
-FROM AAU.EmergencyCase ec
-LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
-WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds) AND ec.IsDeleted = 0 OR ec.IsDeleted IS Null 
-),
+	UPDATE AAU.Vehicle SET
+	IsDeleted = 1,
+	DeletedDate = CURDATE()
+	WHERE VehicleId = prm_VehicleId;
 
-PatientsCTE AS
-(
-    SELECT
-		p.EmergencyCaseId,
-        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
-        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
-        		JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(
-            JSON_OBJECT("animalType", ant.AnimalType),
-            JSON_OBJECT("animalTypeId", p.AnimalTypeId),
-            JSON_OBJECT("patientId", p.PatientId),
-            JSON_OBJECT("position", p.Position),
-            JSON_OBJECT("tagNumber", p.TagNumber),
-            JSON_OBJECT("largeAnimal", ant.LargeAnimal),
-            JSON_OBJECT("admissionAccepted", tl.InAccepted),
-            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
-            JSON_OBJECT("callOutcome",
-				JSON_MERGE_PRESERVE(
-					JSON_OBJECT("CallOutcome",
-						JSON_MERGE_PRESERVE(
-						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
-						JSON_OBJECT("CallOutcome",co.CallOutcome))
-					),
-					JSON_OBJECT("sameAsNumber",p.SameAsEmergencyCaseId)
-                )
-            ),
-            JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
-            pp.PatientProblems,
-            pp.problemsJSON
-		)) AS Patients
-    FROM AAU.Patient p
+	SELECT 1 INTO vSuccess;
+	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_Username,prm_VehicleId,'VehicleList','Delete', NOW());
+ 
+
+ELSE 
+	SELECT 2 INTO vSuccess;
     
-    INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
-    INNER JOIN (
-		SELECT pp.PatientId,JSON_OBJECT("problems",
-		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(
-				JSON_OBJECT("problemId", pp.ProblemId),
-				JSON_OBJECT("problem", pr.Problem)
-				)
-			 )
-		) AS problemsJSON,
-		JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS PatientProblems
-		FROM AAU.PatientProblem pp
-		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
-        WHERE pp.PatientId IN (SELECT PatientId FROM RescuesReleases)
-		GROUP BY pp.PatientId
-    ) pp ON pp.PatientId = p.PatientId
-    LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
-    LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
-	LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-    LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
-    LEFT JOIN
-    (
-		SELECT	pmi.PatientId,
-				COUNT(pmi.PatientId) as mediaCount
-		FROM AAU.PatientMediaItem pmi
-        WHERE pmi.PatientId IN (SELECT PatientId FROM RescuesReleases)
-        AND pmi.IsDeleted = 0
-		GROUP BY pmi.PatientId
-    ) pmi ON pmi.PatientId = p.PatientId
-    WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE) AND p.IsDeleted != 1
-	 GROUP BY p.EmergencyCaseId,
-    IFNULL(rd.PatientId, p.EmergencyCaseId)
-)
+END IF;
 
+SELECT vSuccess AS success;
 
-
-SELECT  
-JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE(
-	JSON_OBJECT('patients', p.Patients),
-	JSON_OBJECT('emergencyCaseId',ec.EmergencyCaseId),
-	JSON_OBJECT('rescueAmbulanceId',ec.AssignedVehicleId),
-    JSON_OBJECT('releaseAmbulanceId',rd.AssignedVehicleId),
-	JSON_OBJECT('emergencyNumber',ec.EmergencyNumber),
-    JSON_OBJECT('emergencyCode',ec.EmergencyCode),
-    JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
-    JSON_OBJECT('rescueTime',ec.RescueTime),
-    JSON_OBJECT('ambulanceAssignmentTime',IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime) ),
-	JSON_OBJECT('actionStatusId',
-    AAU.fn_GetRescueStatus(
-				rd.ReleaseDetailsId,
-				rd.RequestedUser,
-				rd.RequestedDate,
-				rd.AssignedVehicleId,
-				rd.PickupDate,
-				rd.BeginDate,
-				rd.EndDate,
-                ec.AssignedVehicleId,
-				ec.AmbulanceArrivalTime,
-				ec.RescueTime,
-				ec.AdmissionTime,
-                p.PatientCallOutcomeId,
-                tl.InTreatmentAreaId
-            )
-		),
-	JSON_OBJECT('callerDetails', ca.CallerDetails),
-    JSON_OBJECT("callDateTime", ec.CallDateTime),
-    JSON_OBJECT("location", ec.Location),
-    JSON_OBJECT("latLngLiteral",
-		JSON_MERGE_PRESERVE(
-				JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
-				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
-		) 
-    ),
-	
-	JSON_OBJECT("releaseDetailsId", rd.ReleaseDetailsId),
-	JSON_OBJECT("releaseRequestDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releasePickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
-	JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release'))
-)  )
-AS Result
-
-FROM  EmergencyCaseCTE ec 
-LEFT JOIN PatientsCTE p  ON p.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.OutTreatmentAreaId IS NULL
-LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
-INNER JOIN (
-	SELECT 
-    ecr.EmergencyCaseId,
-	JSON_ARRAYAGG(
-	JSON_MERGE_PRESERVE(
-	JSON_OBJECT('callerId', c.CallerId),
-	JSON_OBJECT('callerName',c.Name),
-	JSON_OBJECT('callerNumber', c.Number),
-    JSON_OBJECT('callerAlternativeNumber', c.AlternativeNumber)
-	)) AS callerDetails
-    FROM AAU.Caller c
-    INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
-    WHERE ecr.IsDeleted = 0
-    AND ecr.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds)
-    GROUP BY ecr.EmergencyCaseId
-) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId ;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveVehicleLocations!!
@@ -477,8 +326,8 @@ JSON_OBJECT(
 "altitudeAccuracy", vl.AltitudeAccuracy,
 "latLng",
 JSON_MERGE_PRESERVE(
-JSON_OBJECT("lat", vl.Latitude),
-JSON_OBJECT("lng", vl.Longitude))) AS `vehicleLocation`
+JSON_OBJECT("lat", IFNULL(vl.Latitude, 0.0)),
+JSON_OBJECT("lng", IFNULL(vl.Longitude, 0.0)))) AS `vehicleLocation`
 FROM AAU.Vehicle v
 LEFT JOIN
 (
@@ -522,10 +371,46 @@ END$$
 
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetAnimalTypes !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME , IN prm_Username VARCHAR(45))
+
+CREATE PROCEDURE AAU.sp_GetAnimalTypes(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT AnimalTypeId, AnimalType, IsDeleted, SortOrder FROM AAU.AnimalType WHERE OrganisationId = vOrganisationId;
+
+END $$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCallTypes !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetCallTypes(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT CallTypeId, CallType, IsDeleted, SortOrder FROM AAU.CallType WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
+
+-- CALL AAU.sp_GetDriverViewDetails('2022-01-13T11:59','Jim');
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
 BEGIN
 
 
@@ -552,6 +437,7 @@ FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
 WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
+AND p.PatientCallOutcomeId IS NULL
 
 
 UNION
@@ -560,6 +446,7 @@ SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
 FROM AAU.ReleaseDetails rd
 WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
+AND EndDate IS NULL
 
 UNION
 
@@ -600,6 +487,7 @@ UserCTE AS
 ),
 PatientsCTE AS
 (
+
     SELECT DISTINCT
 		p.EmergencyCaseId,
         p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
@@ -660,9 +548,9 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
-    p.PatientId
-)
-,
+		p.PatientCallOutcomeId,
+        IFNULL(rd.PatientId, p.EmergencyCaseId)        
+),
 DriverViewCTE AS
 (
 SELECT
@@ -718,10 +606,10 @@ FROM PatientsCTE p
 LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
 LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
-LEFT JOIN AAU.priority p ON p.PriorityId = std.PriorityId
+LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(prm_Date AS DATE)
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
@@ -778,7 +666,6 @@ FROM DriverViewCTE;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewQuestions !!
@@ -801,7 +688,6 @@ JSON_OBJECT('subAction', SubAction),
 JSON_OBJECT('formControlName', FormControlName),
 JSON_OBJECT('type', FormControlType),
 JSON_OBJECT('sortOrder', SortOrder),
-JSON_OBJECT('functionName', SelectFunctionName),
 JSON_OBJECT('label', Label)
 )) questionList
 FROM AAU.DriverViewQuestions;
@@ -810,6 +696,203 @@ FROM AAU.DriverViewQuestions;
 END$$
 
 DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetDropdownByAssignmentDate !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetDropdownByAssignmentDate (IN prm_Username VARCHAR(45),
+IN prm_AssignmentDate DATETIME)
+BEGIN
+
+/*
+Created by: Arpit Trivedi
+Created Date: 09-09-2021
+Purpose: To get the vehicle list by assigned date 
+*/
+
+
+SELECT vs.VehicleId AS `vehicleId` ,
+vs.VehicleShiftId AS `vehicleShiftId`,
+CONCAT(v.VehicleNumber,vsu.VehicleStaff) AS `vehicleNumber`,
+v.VehicleRegistrationNumber AS `vehicleRegistrationNumber`
+FROM AAU.VehicleShift vs
+INNER JOIN AAU.Vehicle v ON v.VehicleId = vs.VehicleId
+LEFT JOIN
+(
+	SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(u.Initials),")") AS `VehicleStaff`
+	FROM AAU.VehicleShiftUser vsu
+	LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
+	GROUP BY VehicleShiftId
+) vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
+WHERE v.OrganisationId = 1
+AND prm_AssignmentDate > vs.StartDate AND prm_AssignmentDate < vs.EndDate
+AND vs.IsDeleted IS NULL;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetEditableDropdowns !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetEditableDropdowns ()
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 2022-01-19
+Description: Procedure for getting dropdowns that are editable for the organisation settings page.
+*/
+
+SELECT
+	JSON_ARRAYAGG(
+	JSON_MERGE_PRESERVE(
+	JSON_OBJECT("dropdown", Dropdown),
+	JSON_OBJECT("displayName", DisplayName),
+    JSON_OBJECT("request", Request),
+    JSON_OBJECT("tableName", TableName)
+	)) EditableDropdowns
+FROM AAU.EditableDropdown;
+
+END $$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCaseByDate !!
+
+DELIMITER $$
+
+
+CREATE PROCEDURE AAU.sp_GetEmergencyCaseByDate (IN prm_UserName VARCHAR(45),
+												IN prm_Date DATETIME,
+												IN prm_Outcome INT)
+BEGIN
+
+/*
+CreatedDate: 20/01/2021
+CreatedBy: Arpit Trivedi
+Purpose: To get the emergencycase count on date
+*/
+
+DECLARE vOrganisationId INT;
+
+SELECT o.OrganisationId INTO vOrganisationId
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+SELECT
+ec.EmergencyNumber as "emergencyNumber",
+DATE_Format(ec.CallDateTime,"%Y-%m-%dT%H:%i:%s") as "callDateTime",
+at.AnimalType as "animalType",
+p.TagNumber as "tagNumber",
+ec.Location as "location",
+u.FirstName as "dispatcher",
+v.`staff1`,
+v.`staff2`,
+co.CallOutcome as "callOutcome"
+FROM AAU.EmergencyCase ec
+INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
+INNER JOIN AAU.User u ON u.UserId = ec.DispatcherId
+INNER JOIN AAU.PatientProblem pp ON pp.PatientId = p.PatientId
+INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
+LEFT JOIN
+(
+SELECT vs.VehicleId, MIN(u.FirstName) as `staff1`, MAX(u.FirstName) as `staff2`
+FROM AAU.VehicleShift vs
+INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
+INNER JOIN AAU.User u ON u.UserId = vsu.UserId
+WHERE NOW() BETWEEN vs.StartDate AND vs.EndDate
+GROUP BY vs.VehicleId
+) v ON v.VehicleId = ec.AssignedVehicleId
+WHERE CAST(ec.CallDateTime AS DATE) = prm_Date
+AND ec.OrganisationId = vOrganisationId
+AND (p.PatientCallOutcomeId = prm_Outcome OR prm_Outcome IS NULL);
+
+END $$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCodes !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetEmergencyCodes(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT EmergencyCodeId, EmergencyCode, IsDeleted, SortOrder FROM AAU.EmergencyCode WHERE OrganisationId = vOrganisationId;
+
+END$$
+
+DELIMITER ;
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetMainProblem !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetMainProblem(IN prm_UserName VARCHAR(45))
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 08/05/2019
+Purpose: Used to return list of main problems for cases.
+*/
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT MainProblemId, MainProblem, IsDeleted, SortOrder
+FROM AAU.MainProblem
+WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetOrganisationDetail !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetOrganisationDetail(IN prm_OrganisationId INT)
+BEGIN
+	SELECT 
+		JSON_OBJECT(
+		'logoUrl', om.LogoURL,
+		'address', om.Address,
+		'name', o.Organisation
+		) AS Organisation
+	FROM 
+		AAU.OrganisationMetadata om
+		INNER JOIN AAU.Organisation o ON o.OrganisationId = om.OrganisationId
+	WHERE o.OrganisationId = prm_OrganisationId;
+	
+END$$
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutcomes !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetOutcomes(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT CallOutcomeId, CallOutcome, IsDeleted, SortOrder FROM AAU.CallOutcome WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescueByEmergencyCaseId !!
@@ -1051,7 +1134,7 @@ DriverViewCTE AS (
 	SELECT *
     FROM DriverViewObject dvo
     LEFT JOIN DriverVehicleUserListCTE dvuc ON dvuc.VehicleId = dvo.driverAssignedVehicleId
-    -- WHERE IF(AmbulanceAction = 'StreetTreat', VisitBeginDate <= NOW() AND IFNULL(VisitEndDate, NOW()) >= NOW(), VisitBeginDate IS NULL AND VisitEndDate IS NULL)
+   -- WHERE IF(AmbulanceAction = 'StreetTreat', VisitBeginDate <= NOW() AND IFNULL(VisitEndDate, NOW()) >= NOW(), VisitBeginDate IS NULL AND VisitEndDate IS NULL)
 )
 
 
@@ -1109,6 +1192,260 @@ FROM DriverViewCTE;
 
 END$$
 DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetOutstandingRescues !!
+
+DELIMITER $$
+
+-- CALL AAU.sp_GetOutstandingRescues('Jim');
+
+CREATE PROCEDURE AAU.sp_GetOutstandingRescues(IN prm_UserName VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+
+SELECT u.OrganisationId INTO vOrganisationId
+FROM AAU.User u
+WHERE UserName = prm_Username LIMIT 1;
+
+WITH RescuesReleases AS
+(
+SELECT PatientId
+FROM  AAU.Patient p
+WHERE p.OrganisationId = vOrganisationId
+AND p.PatientCallOutcomeId IS NULL
+AND p.IsDeleted = 0
+
+UNION
+
+SELECT PatientId
+FROM AAU.ReleaseDetails rd
+WHERE rd.OrganisationId = vOrganisationId
+AND rd.EndDate IS NULL
+
+),
+EmergencyCaseIds AS
+(
+SELECT EmergencyCaseId
+FROM AAU.Patient
+WHERE PatientId IN (SELECT PatientId FROM RescuesReleases)
+),
+EmergencyCaseCTE AS
+(
+SELECT  
+ec.EmergencyCaseId,
+ec.AssignedVehicleId,
+ec.EmergencyNumber,
+ec.AmbulanceArrivalTime,
+ec.RescueTime,
+ec.AdmissionTime,
+ec.EmergencyCodeId,
+ec.CallDateTime,
+ecd.EmergencyCode,
+ec.Location,
+ec.Latitude,
+ec.Longitude,
+ec.ambulanceAssignmentTime
+FROM AAU.EmergencyCase ec
+LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
+WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds) AND ec.IsDeleted = 0 OR ec.IsDeleted IS Null 
+),
+
+PatientsCTE AS
+(
+    SELECT
+		p.EmergencyCaseId,
+        MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
+        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        		JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(
+            JSON_OBJECT("animalType", ant.AnimalType),
+            JSON_OBJECT("animalTypeId", p.AnimalTypeId),
+            JSON_OBJECT("patientId", p.PatientId),
+            JSON_OBJECT("position", p.Position),
+            JSON_OBJECT("tagNumber", p.TagNumber),
+            JSON_OBJECT("largeAnimal", ant.LargeAnimal),
+            JSON_OBJECT("admissionAccepted", tl.InAccepted),
+            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
+            JSON_OBJECT("callOutcome",
+				JSON_MERGE_PRESERVE(
+					JSON_OBJECT("CallOutcome",
+						JSON_MERGE_PRESERVE(
+						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
+						JSON_OBJECT("CallOutcome",co.CallOutcome))
+					),
+					JSON_OBJECT("sameAsNumber",p.SameAsEmergencyCaseId)
+                )
+            ),
+            JSON_OBJECT("mediaCount", IFNULL(pmi.mediaCount,0)),
+            pp.PatientProblems,
+            pp.problemsJSON
+		)) AS Patients
+    FROM AAU.Patient p
+    
+    INNER JOIN AAU.AnimalType ant ON ant.AnimalTypeId = p.AnimalTypeId
+    INNER JOIN (
+		SELECT pp.PatientId,JSON_OBJECT("problems",
+		 JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(
+				JSON_OBJECT("problemId", pp.ProblemId),
+				JSON_OBJECT("problem", pr.Problem)
+				)
+			 )
+		) AS problemsJSON,
+		JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS PatientProblems
+		FROM AAU.PatientProblem pp
+		INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
+        WHERE pp.PatientId IN (SELECT PatientId FROM RescuesReleases)
+		GROUP BY pp.PatientId
+    ) pp ON pp.PatientId = p.PatientId
+    LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+    LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
+	LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
+    LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
+    LEFT JOIN
+    (
+		SELECT	pmi.PatientId,
+				COUNT(pmi.PatientId) as mediaCount
+		FROM AAU.PatientMediaItem pmi
+        WHERE pmi.PatientId IN (SELECT PatientId FROM RescuesReleases)
+        AND pmi.IsDeleted = 0
+		GROUP BY pmi.PatientId
+    ) pmi ON pmi.PatientId = p.PatientId
+    WHERE p.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseCTE) AND p.IsDeleted != 1
+	 GROUP BY p.EmergencyCaseId,
+    IFNULL(rd.PatientId, p.EmergencyCaseId)
+)
+
+
+
+SELECT  
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+	JSON_OBJECT('patients', p.Patients),
+	JSON_OBJECT('emergencyCaseId',ec.EmergencyCaseId),
+	JSON_OBJECT('rescueAmbulanceId',ec.AssignedVehicleId),
+    JSON_OBJECT('releaseAmbulanceId',rd.AssignedVehicleId),
+	JSON_OBJECT('emergencyNumber',ec.EmergencyNumber),
+    JSON_OBJECT('emergencyCode',ec.EmergencyCode),
+    JSON_OBJECT('emergencyCodeId',ec.EmergencyCodeId),
+    JSON_OBJECT('rescueTime',ec.RescueTime),
+    JSON_OBJECT('ambulanceAssignmentTime',IF(rd.ReleaseDetailsId IS NULL, ec.ambulanceAssignmentTime, rd.ambulanceAssignmentTime) ),
+	JSON_OBJECT('actionStatusId',
+    AAU.fn_GetRescueStatus(
+				rd.ReleaseDetailsId,
+				rd.RequestedUser,
+				rd.RequestedDate,
+				rd.AssignedVehicleId,
+				rd.PickupDate,
+				rd.BeginDate,
+				rd.EndDate,
+                ec.AssignedVehicleId,
+				ec.AmbulanceArrivalTime,
+				ec.RescueTime,
+				ec.AdmissionTime,
+                p.PatientCallOutcomeId,
+                tl.InTreatmentAreaId
+            )
+		),
+	JSON_OBJECT('callerDetails', ca.CallerDetails),
+    JSON_OBJECT("callDateTime", ec.CallDateTime),
+    JSON_OBJECT("location", ec.Location),
+    JSON_OBJECT("latLngLiteral",
+		JSON_MERGE_PRESERVE(
+				JSON_OBJECT("lat",IFNULL(ec.Latitude, 0.0)),
+				JSON_OBJECT("lng",IFNULL(ec.Longitude, 0.0))
+		) 
+    ),
+	
+	JSON_OBJECT("releaseDetailsId", rd.ReleaseDetailsId),
+	JSON_OBJECT("releaseRequestDate", DATE_FORMAT(rd.RequestedDate, "%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("releasePickupDate", DATE_FORMAT(rd.PickupDate, "%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("releaseBeginDate", DATE_FORMAT(rd.BeginDate, "%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("releaseEndDate", DATE_FORMAT(rd.EndDate, "%Y-%m-%dT%H:%i:%s")),
+	JSON_OBJECT("releaseType", CONCAT(IF(rd.ReleaseDetailsId IS NULL,"","Normal"), IF(IFNULL(rd.ComplainerNotes,"") <> ""," + Complainer special instructions",""), IF(rd.Releaser1Id IS NULL,""," + Specific staff"), IF(std.StreetTreatCaseId IS NULL,""," + StreetTreat release"))),
+	JSON_OBJECT("ambulanceAction", IF(rd.ReleaseDetailsId IS NULL, 'Rescue', 'Release'))
+)  )
+AS Result
+
+FROM  EmergencyCaseCTE ec 
+LEFT JOIN PatientsCTE p  ON p.EmergencyCaseId = ec.EmergencyCaseId
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.OutTreatmentAreaId IS NULL
+LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = rd.PatientId
+INNER JOIN (
+	SELECT 
+    ecr.EmergencyCaseId,
+	JSON_ARRAYAGG(
+	JSON_MERGE_PRESERVE(
+	JSON_OBJECT('callerId', c.CallerId),
+	JSON_OBJECT('callerName',c.Name),
+	JSON_OBJECT('callerNumber', c.Number),
+    JSON_OBJECT('callerAlternativeNumber', c.AlternativeNumber)
+	)) AS callerDetails
+    FROM AAU.Caller c
+    INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
+    WHERE ecr.IsDeleted = 0
+    AND ecr.EmergencyCaseId IN (SELECT EmergencyCaseId FROM EmergencyCaseIds)
+    GROUP BY ecr.EmergencyCaseId
+) ca ON  ca.EmergencyCaseId = ec.EmergencyCaseId ;
+
+END$$
+
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetPatientCallerInteractionOutcomes !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetPatientCallerInteractionOutcomes (IN prm_Username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT PatientCallInteractionOutcomeId AS `PatientCallOutcomeId`, PatientCallInteractionOutcome AS `PatientCallOutcome`, IsDeleted, SortOrder FROM AAU.PatientCallerInteractionOutcome WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetPatientStates !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetPatientStates(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT PatientStatusId, PatientStatus, IsDeleted, SortOrder FROM AAU.PatientStatus WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS  AAU.sp_GetProblems !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetProblems(IN prm_username VARCHAR(45))
+BEGIN
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT ProblemId, Problem, IsDeleted, SortOrder
+FROM AAU.Problem
+WHERE OrganisationId = vOrganisationId AND ProblemId > -1;
+
+END$$
 
 DELIMITER !!
 
@@ -1175,8 +1512,10 @@ END IF;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
+
+-- CALL AAU.sp_GetRescueDetailsByEmergencyCaseId(13828)
+
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRescueDetailsByEmergencyCaseId!!
 
@@ -1328,7 +1667,212 @@ ELSE
 END IF;
 END$$
 DELIMITER ;
+DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_GetSurgerySite !!
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetSurgerySite(IN prm_UserName VARCHAR(45))
+BEGIN
+/*
+Created By: Arpit Trivedi
+Created On: 22/04/2020
+Purpose: For SurgerySite Dropdown.
+*/
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT SurgerySiteId, SurgerySite, IsDeleted, SortOrder FROM AAU.SurgerySite WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetSurgeryType !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetSurgeryType(IN prm_UserName VARCHAR(45))
+BEGIN
+/*
+Created By: Arpit Trivedi
+Created On: 22/04/2020
+Purpose: For SurgeryType Dropdown.
+*/
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT SurgeryTypeId, SurgeryType, IsDeleted, SortOrder FROM AAU.SurgeryType WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentAreas !!
+
+-- CALL  AAU.sp_GetTreatmentAreas('Jim');
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetTreatmentAreas(IN prm_UserName VARCHAR(45))
+BEGIN
+
+/*
+Developer: Jim Mackenzie
+Development Date: 28/Mar/2021
+Purpose: This procedure brings back the Treatment areas for the treatment list. The lists 
+		 are split into main areas and areas that will display in the 'other' section.
+*/
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT
+	JSON_ARRAYAGG(
+	JSON_MERGE_PRESERVE(
+	JSON_OBJECT("areaId", TreatmentAreaId),
+	JSON_OBJECT("areaName", TreatmentArea),
+    JSON_OBJECT("deleted", isDeleted),
+    JSON_OBJECT("sortArea", SortOrder),
+    JSON_OBJECT("abbreviation", Abbreviation),
+    JSON_OBJECT("mainArea", TreatmentListMain)
+	)) TreatmentAreas
+FROM AAU.TreatmentArea
+WHERE OrganisationId = vOrganisationId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentList !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetTreatmentList( IN prm_TreatmentAreaId INT, IN prm_TreatmentListDate DATE )
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 2021-04-11
+Purpose: Procedure for inserting admission and moved in records to the treatment list.
+*/
+
+WITH PatientCTE AS (
+	SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.PatientStatusDate, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
+	p.Sex, p.Description, p.KnownAsName, p.MainProblems,
+	CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
+	FROM AAU.Patient p
+	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
+	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND p.PatientCallOutcomeId = 1
+),
+EmergencyCaseCTE AS (
+	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
+	FROM AAU.EmergencyCase ec
+	WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
+),
+RecordSplitCTE AS
+(
+SELECT
+CASE
+WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admissions'
+WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'moved in from'
+WHEN tl.OutAccepted = 0 THEN 'rejected from'
+ELSE 'accepted' END AS `RecordType`,
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("treatmentListId" , tl.TreatmentListId),
+JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
+JSON_OBJECT("PatientId" , p.PatientId),
+JSON_OBJECT("PatientStatusId" , p.PatientStatusId),
+JSON_OBJECT("PatientStatus" , p.PatientStatus),
+JSON_OBJECT("Tag number" , p.TagNumber),
+JSON_OBJECT("Species" , aty.AnimalType),
+JSON_OBJECT("Age" , p.Age),
+JSON_OBJECT("Sex" , p.Sex),
+JSON_OBJECT("Description" , p.Description),
+JSON_OBJECT("Main Problems" , p.MainProblems),
+JSON_OBJECT("animalTypeId" , p.animalTypeId),
+JSON_OBJECT("Caller name" , c.Name),
+JSON_OBJECT("Number" , c.Number),
+JSON_OBJECT("Call date" , ec.CallDateTime),
+JSON_OBJECT("Temperament", p.Temperament),
+JSON_OBJECT("Treatment priority", p.TreatmentPriority),
+JSON_OBJECT("ABC status", p.ABCStatus),
+JSON_OBJECT("Release status", p.ReleaseStatus),
+JSON_OBJECT("Known as name", p.KnownAsName),
+JSON_OBJECT("Release ready", p.ReleaseReady),
+JSON_OBJECT("Actioned by area", ca.`Area`),
+JSON_OBJECT("Moved to", IF(tl.OutAccepted IS NULL AND tl.OutTreatmentAreaId IS NOT NULL, tl.OutTreatmentAreaId, NULL)),
+JSON_OBJECT("Admission", IF(tl.Admission = 1 AND InAccepted IS NULL, 1, 0)), -- This prevents records showing up in new admissions the first move.
+JSON_OBJECT("Move accepted", tl.InAccepted),
+JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
+))patientDetails		
+FROM PatientCTE p	
+	INNER JOIN EmergencyCaseCTE ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+    INNER JOIN
+    (
+		SELECT InAccepted, Admission, PatientId, TreatmentListId, OutOfHospital, InTreatmentAreaId, InDate,
+        OutTreatmentAreaId, OutAccepted, OutDate,
+		IF(OutAccepted = 0, OutTreatmentAreaId,IFNULL(LAG(InTreatmentAreaId, 1) OVER (PARTITION BY PatientId ORDER BY TreatmentListId), OutTreatmentAreaId)) as `ActionedByArea`
+		FROM AAU.TreatmentList tld
+        WHERE (prm_TreatmentListDate <= IFNULL(CAST(IF(OutAccepted IS NULL, NULL, OutDate) AS DATE), prm_TreatmentListDate)
+        AND CAST(InDate AS DATE) <= prm_TreatmentListDate)
+    ) tl ON tl.PatientId = p.PatientId
+    AND NULLIF(OutAccepted, 0) IS NULL
+    AND InTreatmentAreaId = prm_TreatmentAreaId
+    AND
+		(
+			NULLIF(OutOfHospital,0) IS NULL
+			OR
+			CAST(p.PatientStatusDate AS DATE) = prm_TreatmentListDate
+		)
+	INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
+	INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
+	INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
+    LEFT JOIN AAU.TreatmentArea ca ON ca.AreaId = tl.ActionedByArea
+	LEFT JOIN
+	(
+		SELECT DISTINCT t.PatientId
+		FROM AAU.Treatment t
+		WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
+	) t ON t.PatientId = p.PatientId
+GROUP BY CASE
+WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admissions'
+WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'moved in from'
+WHEN tl.OutAccepted = 0 THEN 'rejected from'
+ELSE 'accepted' END
+)
+
+SELECT
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE(
+JSON_OBJECT("treatmentListType",RecordType),
+JSON_OBJECT("treatmentList",patientDetails)
+)) AS `TreatmentList`
+FROM RecordSplitCTE;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_getUserByUsername !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_getUserByUsername(IN UserName VARCHAR(64))
+BEGIN
+
+	SELECT u.UserId,u.OrganisationId, u.UserName, u.Password , t.TeamName, t.TeamId, o.SocketEndPoint
+    FROM AAU.User u
+    LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
+    INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+    WHERE u.UserName = UserName;
+END$$
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUserPermissionsByUsername !!
@@ -1343,7 +1887,6 @@ WHERE Username = prm_Username;
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByJobTypeId !!
@@ -1374,7 +1917,6 @@ AND u.isDeleted = 0;
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleListRange !!
@@ -1434,7 +1976,6 @@ AND vl.OrganisationId = vOrganisationId
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleLocationHistory !!
@@ -1501,7 +2042,6 @@ INNER JOIN LocationHistoryCTE lh ON lh.VehicleId = v.VehicleId;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleLocationMessage!!
@@ -1578,7 +2118,6 @@ INNER JOIN rescuersCTE r ON r.VehicleId = v.VehicleId;
 
 
 END$$
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleLocationHistory!!
@@ -1647,7 +2186,6 @@ INNER JOIN LocationHistoryCTE lh ON lh.VehicleId = v.VehicleId;
 
 
 END $$
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleShiftDetails !!
@@ -1706,7 +2244,6 @@ FROM ShiftCTE s
 LEFT JOIN UserCTE u ON u.VehicleShiftId = s.VehicleShiftId;
 
 END$$
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicleListDropdown!!
@@ -1734,20 +2271,23 @@ SELECT OrganisationId INTO vOrganisationId
 FROM AAU.User
 WHERE UserName = prm_Username LIMIT 1;
 
+
+
 SELECT
-v.VehicleId AS vehicleId,
-v.VehicleRegistrationNumber AS vehicleRegistrationNumber,
-CONCAT(v.VehicleNumber, IFNULL(vsu.VehicleStaff,' UNK')) AS vehicleNumber
-FROM AAU.Vehicle v
-LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId AND
-NOW() >= vs.StartDate AND
-NOW() <= IFNULL(vs.EndDate, NOW())
+	v.VehicleId AS vehicleId,
+	v.VehicleRegistrationNumber AS vehicleRegistrationNumber,
+	CONCAT(v.VehicleNumber, IFNULL(vsu.VehicleStaff,' UNK')) AS vehicleNumber
+	FROM AAU.Vehicle v
+	LEFT JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId AND
+	NOW() >= vs.StartDate AND
+	NOW() <= IFNULL(vs.EndDate, NOW()) AND
+    v.VehicleStatusId = 1
 LEFT JOIN
 (
-SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(IFNULL(u.Initials,"UNK")),")") AS VehicleStaff
-FROM AAU.VehicleShiftUser vsu
-LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-GROUP BY VehicleShiftId
+	SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(IFNULL(u.Initials,"UNK")),")") AS VehicleStaff
+	FROM AAU.VehicleShiftUser vsu
+	LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
+	GROUP BY VehicleShiftId
 ) vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 WHERE v.OrganisationId = vOrganisationId;
 
@@ -1771,7 +2311,6 @@ SELECT VehicleTypeId, VehicleType FROM AAU.VehicleType;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertEmergencyCase !!
@@ -1918,7 +2457,6 @@ SELECT vSuccess as success, vEmergencyCaseId, prm_EmergencyNumber AS vEmergencyN
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails !!
@@ -2015,7 +2553,6 @@ SELECT vReleaseId, vSuccess AS success, vSocketEndPoint AS socketEndPoint;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertVehicleListItem !!
@@ -2095,7 +2632,6 @@ SELECT vVehicleId AS vehicleId, vSuccess AS success;
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertVehicleLocation !!
@@ -2193,6 +2729,14 @@ SELECT vSuccess AS `success`, prm_SocketEndPoint AS `socketEndPoint`;
 
 END $$
 
+
+
+
+
+
+
+
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertVehicleShift!!
@@ -2246,7 +2790,6 @@ END IF;
 SELECT prm_VehicleShiftId AS vehicleShiftId, vSuccess AS 'success';
 
 END$$
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCase !!
@@ -2333,7 +2876,7 @@ START TRANSACTION;
                         Comments			   = prm_Comments,
                         AssignedVehicleId    = prm_AssignedAmbulanceId,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
-						SelfAdmission           = prm_SelfAdmission
+						selfAdmission           = prm_SelfAdmission
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 COMMIT;
@@ -2359,12 +2902,34 @@ ELSE
 	SELECT 5 INTO prm_Success; -- Other error   
 END IF;
 
-CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL, 'Rescue');
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL);
 
 END$$
 
 DELIMITER ;
+DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateOrganisationDetail !!
+
+DELIMITER $$
+
+CREATE  PROCEDURE AAU.sp_UpdateOrganisationDetail (
+    IN prm_Address JSON,
+	IN prm_Organisation VARCHAR(100),
+	IN prm_OrganisationId INT
+)
+BEGIN
+DECLARE vSuccess INT DEFAULT 0;
+
+	UPDATE AAU.OrganisationMetadata om
+    INNER JOIN AAU.Organisation o ON o.OrganisationId = prm_organisationId
+		SET 
+			om.Address = prm_Address,
+			o.Organisation = prm_Organisation;
+	
+	SELECT 1 INTO vSuccess;
+	SELECT vSuccess;
+END$$
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseRequest !!
@@ -2439,7 +3004,6 @@ SELECT vUpdateSuccess AS success, vSocketEndPoint AS socketEndPoint;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateRescueDetails !!
@@ -2528,7 +3092,6 @@ SELECT vSocketEndPoint AS socketEndPoint, vSuccess AS success;
 
 END$$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateVehicleListItem !!
@@ -2588,7 +3151,6 @@ SELECT prm_VehicleId AS vehicleId, vSuccess AS success;
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateVehicleShiftStaff!!
@@ -2712,6 +3274,66 @@ END IF;
 SELECT prm_VehicleShiftId AS vehicleShiftId, vSuccess AS 'success';
 
 END$$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UploadOrganisationLogo !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UploadOrganisationLogo( 
+			IN prm_remoteURL VARCHAR(500),
+			IN prm_organisationId INT
+)
+BEGIN
+
+DECLARE vSuccess INT;
+
+	INSERT INTO AAU.OrganisationMetadata(LogoURL,OrganisationId) 
+	VALUES (prm_remoteURL, prm_organisationId) 
+	ON DUPLICATE KEY UPDATE LogoURL = prm_remoteURL;
+
+SELECT 1 INTO vSuccess;
+SELECT vSuccess;
+
+END$$
+DELIMITER ;DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertDropdownTableValue !!
+
+-- CALL AAU.sp_UpsertDropdownTableValue("Jim","AnimalType",-1,"Crow",0,28);
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpsertDropdownTableValue(IN prm_Username VARCHAR(45), IN prm_TableName VARCHAR(45), IN prm_ElementId INT, IN prm_ElementValue VARCHAR(100), IN prm_IsDeleted INT, IN prm_SortOrder INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 08/05/2019
+Purpose: Used to return list of main problems for cases.
+*/
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+	SET @statement = CONCAT('SET @Id = -1;
+
+SELECT IF(', prm_ElementId, ' = -1, MAX(',prm_TableName,'Id) + 1, ', prm_ElementId,' ) INTO @Id FROM AAU.',prm_TableName,'; 
+    
+    INSERT INTO AAU.',prm_TableName,' (',prm_TableName, 'Id, OrganisationId, ', prm_TableName,', ',
+    'IsDeleted, SortOrder) VALUES (@Id, ', vOrganisationId, ', ''', prm_ElementValue, ''', ', prm_IsDeleted, ', ', prm_SortOrder,') ON DUPLICATE KEY UPDATE ', 
+	prm_TableName, ' = ''', prm_ElementValue, ''', IsDeleted = ', prm_IsDeleted, ', SortOrder = ', prm_SortOrder, ';' );
+
+	-- SELECT @statement;
+
+    PREPARE stmt FROM @statement;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+ 
+    SELECT 'success' AS `success`;
+  
+END;
+
 
 DELIMITER !!
 
@@ -2828,7 +3450,6 @@ END IF;
     
 END $$
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertVisit !!
@@ -2953,273 +3574,4 @@ CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(vEmergencyCaseId, null, 'Stree
 
 END$$
 DELIMITER ;
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetEmergencyCaseByDate !!
-
-DELIMITER $$
-
-CREATE PROCEDURE AAU.sp_GetEmergencyCaseByDate (IN prm_UserName VARCHAR(45),
-												IN prm_Date DATETIME,
-												IN prm_Outcome INT)
-BEGIN
-
-/*
-CreatedDate: 20/01/2021
-CreatedBy: Arpit Trivedi
-Purpose: To get the emergencycase count on date
-*/
-
-DECLARE vOrganisationId INT;
-
-SELECT o.OrganisationId INTO vOrganisationId
-FROM AAU.User u
-INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-WHERE UserName = prm_Username LIMIT 1;
-
-SELECT
-ec.EmergencyNumber as "emergencyNumber",
-DATE_Format(ec.CallDateTime,"%Y-%m-%dT%H:%i:%s") as "callDateTime",
-at.AnimalType as "animalType",
-p.TagNumber as "tagNumber",
-ec.Location as "location",
-u.FirstName as "dispatcher",
-v.`staff1`,
-v.`staff2`,
-co.CallOutcome as "callOutcome"
-FROM AAU.EmergencyCase ec
-INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-INNER JOIN AAU.User u ON u.UserId = ec.DispatcherId
-INNER JOIN AAU.PatientProblem pp ON pp.PatientId = p.PatientId
-INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-LEFT JOIN
-(
-SELECT vs.VehicleId, MIN(u.FirstName) as `staff1`, MAX(u.FirstName) as `staff2`
-FROM AAU.VehicleShift vs
-INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
-INNER JOIN AAU.User u ON u.UserId = vsu.UserId
-WHERE NOW() BETWEEN vs.StartDate AND vs.EndDate
-GROUP BY vs.VehicleId
-) v ON v.VehicleId = ec.AssignedVehicleId
-WHERE CAST(ec.CallDateTime AS DATE) = prm_Date
-AND ec.OrganisationId = vOrganisationId
-AND (p.PatientCallOutcomeId = prm_Outcome OR prm_Outcome IS NULL);
-
-END $$
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_getUserByUsername !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_getUserByUsername(IN UserName VARCHAR(64))
-BEGIN
-
-	SELECT u.UserId,u.OrganisationId, u.UserName, u.Password , t.TeamName, t.TeamId, o.SocketEndPoint
-    FROM AAU.User u
-    LEFT JOIN AAU.Team t ON t.TeamId = u.TeamId
-    INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-    WHERE u.UserName = UserName;
-END$$
-DELIMITER ;
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetDropdownByAssignmentDate !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetDropdownByAssignmentDate (IN prm_Username VARCHAR(45),
-IN prm_AssignmentDate DATETIME)
-BEGIN
-
-/*
-Created by: Arpit Trivedi
-Created Date: 09-09-2021
-Purpose: To get the vehicle list by assigned date 
-*/
-
-
-SELECT vs.VehicleId AS `vehicleId` ,
-vs.VehicleShiftId AS `vehicleShiftId`,
-CONCAT(v.VehicleNumber,vsu.VehicleStaff) AS `vehicleNumber`,
-v.VehicleRegistrationNumber AS `vehicleRegistrationNumber`
-FROM AAU.VehicleShift vs
-INNER JOIN AAU.Vehicle v ON v.VehicleId = vs.VehicleId
-LEFT JOIN
-(
-	SELECT VehicleShiftId, CONCAT(" - (",GROUP_CONCAT(u.Initials),")") AS `VehicleStaff`
-	FROM AAU.VehicleShiftUser vsu
-	LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
-	GROUP BY VehicleShiftId
-) vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
-WHERE v.OrganisationId = 1
-AND prm_AssignmentDate > vs.StartDate AND prm_AssignmentDate < vs.EndDate
-AND vs.IsDeleted IS NULL;
-
-END$$
-DELIMITER ;
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetTreatmentList !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetTreatmentList( IN prm_TreatmentAreaId INT, IN prm_TreatmentListDate DATE )
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 2021-04-11
-Purpose: Procedure for inserting admission and moved in records to the treatment list.
-*/
-
-WITH PatientCTE AS (
-	SELECT p.EmergencyCaseId, p.PatientId, p.PatientStatusId, ps.PatientStatus, p.PatientStatusDate, p.TagNumber, p.AnimalTypeId, p.TreatmentPriority, p.ABCStatus, p.ReleaseStatus, p.Temperament, p.Age,
-	p.Sex, p.Description, p.KnownAsName, p.MainProblems,
-	CASE WHEN p.ABCStatus IN (1, 3) AND p.ReleaseStatus = 3 THEN "Ready for release" ELSE "" END AS `ReleaseReady`
-	FROM AAU.Patient p
-	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
-	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
-	AND p.PatientCallOutcomeId = 1
-),
-EmergencyCaseCTE AS (
-	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
-	FROM AAU.EmergencyCase ec
-	WHERE ec.EmergencyCaseId IN (SELECT EmergencyCaseId FROM PatientCTE)
-),
-RecordSplitCTE AS
-(
-SELECT
-CASE
-WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admissions'
-WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'moved in from'
-WHEN tl.OutAccepted = 0 THEN 'rejected from'
-ELSE 'accepted' END AS `RecordType`,
-JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("treatmentListId" , tl.TreatmentListId),
-JSON_OBJECT("Emergency number" , ec.EmergencyNumber),
-JSON_OBJECT("PatientId" , p.PatientId),
-JSON_OBJECT("PatientStatusId" , p.PatientStatusId),
-JSON_OBJECT("PatientStatus" , p.PatientStatus),
-JSON_OBJECT("Tag number" , p.TagNumber),
-JSON_OBJECT("Species" , aty.AnimalType),
-JSON_OBJECT("Age" , p.Age),
-JSON_OBJECT("Sex" , p.Sex),
-JSON_OBJECT("Description" , p.Description),
-JSON_OBJECT("Main Problems" , p.MainProblems),
-JSON_OBJECT("animalTypeId" , p.animalTypeId),
-JSON_OBJECT("Caller name" , c.Name),
-JSON_OBJECT("Number" , c.Number),
-JSON_OBJECT("Call date" , ec.CallDateTime),
-JSON_OBJECT("Temperament", p.Temperament),
-JSON_OBJECT("Treatment priority", p.TreatmentPriority),
-JSON_OBJECT("ABC status", p.ABCStatus),
-JSON_OBJECT("Release status", p.ReleaseStatus),
-JSON_OBJECT("Known as name", p.KnownAsName),
-JSON_OBJECT("Release ready", p.ReleaseReady),
-JSON_OBJECT("Actioned by area", ca.`Area`),
-JSON_OBJECT("Moved to", IF(tl.OutAccepted IS NULL AND tl.OutTreatmentAreaId IS NOT NULL, tl.OutTreatmentAreaId, NULL)),
-JSON_OBJECT("Admission", IF(tl.Admission = 1 AND InAccepted IS NULL, 1, 0)), -- This prevents records showing up in new admissions the first move.
-JSON_OBJECT("Move accepted", tl.InAccepted),
-JSON_OBJECT("treatedToday", IF(t.PatientId IS NULL,FALSE,TRUE))
-))patientDetails		
-FROM PatientCTE p	
-	INNER JOIN EmergencyCaseCTE ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-    INNER JOIN
-    (
-		SELECT InAccepted, Admission, PatientId, TreatmentListId, OutOfHospital, InTreatmentAreaId, InDate,
-        OutTreatmentAreaId, OutAccepted, OutDate,
-		IF(OutAccepted = 0, OutTreatmentAreaId,IFNULL(LAG(InTreatmentAreaId, 1) OVER (PARTITION BY PatientId ORDER BY TreatmentListId), OutTreatmentAreaId)) as `ActionedByArea`
-		FROM AAU.TreatmentList tld
-        WHERE (prm_TreatmentListDate <= IFNULL(CAST(IF(OutAccepted IS NULL, NULL, OutDate) AS DATE), prm_TreatmentListDate)
-        AND CAST(InDate AS DATE) <= prm_TreatmentListDate)
-    ) tl ON tl.PatientId = p.PatientId
-    AND NULLIF(OutAccepted, 0) IS NULL
-    AND InTreatmentAreaId = prm_TreatmentAreaId
-    AND
-		(
-			NULLIF(OutOfHospital,0) IS NULL
-			OR
-			CAST(p.PatientStatusDate AS DATE) = prm_TreatmentListDate
-		)
-	INNER JOIN AAU.AnimalType aty ON aty.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId AND ecr.PrimaryCaller = 1
-	INNER JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
-    LEFT JOIN AAU.TreatmentArea ca ON ca.AreaId = tl.ActionedByArea
-	LEFT JOIN
-	(
-		SELECT DISTINCT t.PatientId
-		FROM AAU.Treatment t
-		WHERE CAST(t.TreatmentDateTime AS DATE) = CURDATE()
-	) t ON t.PatientId = p.PatientId
-GROUP BY CASE
-WHEN tl.InAccepted IS NULL AND tl.Admission = 1 THEN 'admissions'
-WHEN tl.InAccepted IS NULL AND tl.Admission = 0 THEN 'moved in from'
-WHEN tl.OutAccepted = 0 THEN 'rejected from'
-ELSE 'accepted' END
-)
-
-SELECT
-JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE(
-JSON_OBJECT("treatmentListType",RecordType),
-JSON_OBJECT("treatmentList",patientDetails)
-)) AS `TreatmentList`
-FROM RecordSplitCTE;
-
-END$$
-DELIMITER ;
-
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_DeleteItemFromVehicleList !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_DeleteItemFromVehicleList(IN prm_Username VARCHAR(65),
-												IN prm_VehicleId INT)
-BEGIN
-
-/*
-Created By: Arpit Trivedi
-Created On: 19/05/2021
-Purpose: To delete vehicle from the vehicleList table.
-*/
-
-DECLARE vSuccess INT;
-DECLARE vOrganisationId INT;
-DECLARE VehicleIdCount INT;
-
-SET VehicleIdCount = 0;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User
-WHERE UserName = prm_Username;
-
-SELECT COUNT(1) INTO VehicleIdCount FROM AAU.Vehicle WHERE VehicleId = prm_VehicleId;
-
-IF VehicleIdCount = 1 THEN
-
-	UPDATE AAU.Vehicle SET
-	IsDeleted = 1,
-	DeletedDate = CURDATE()
-	WHERE VehicleId = prm_VehicleId;
-
-	SELECT 1 INTO vSuccess;
-	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username,prm_VehicleId,'VehicleList','Delete', NOW());
- 
-
-ELSE 
-	SELECT 2 INTO vSuccess;
-    
-END IF;
-
-SELECT vSuccess AS success;
-
-
-END$$
-DELIMITER ;
-
+
