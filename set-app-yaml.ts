@@ -3,7 +3,7 @@ const { writeFile, existsSync, mkdirSync } = require('fs');
 
 const colors = require('colors');
 
-require('dotenv').load();
+require('dotenv').config();
 
 const environment = process.env.DEPLOYMENT_ENVIRONMENT || 'other';
 
