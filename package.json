@@ -44,7 +44,7 @@
     "@angular/service-worker": "^13.1.2",
     "@firebase/messaging": "^0.7.15",
     "@swimlane/ngx-charts": "^16.0.0",
-    "@types/dom-mediacapture-record": "^1.0.7",
+    "@types/dom-mediacapture-record": "1.0.7",
     "@types/google.maps": "^3.47.2",
     "@types/uuid": "^8.3.4",
     "ally.js": "^1.4.1",
