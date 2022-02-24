@@ -6,7 +6,7 @@ import { StorageKey } from '../core/services/storage/storage.model';
 import { BootController } from '../../boot-controller';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { BehaviorSubject } from 'rxjs';
-import { UserAccountDetails, UserPreferences } from '../core/models/user';
+import { UserAccountDetails } from '../core/models/user';
 const { AUTH_TOKEN } = StorageKey;
 
 export interface Response {

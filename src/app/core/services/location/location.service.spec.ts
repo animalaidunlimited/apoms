@@ -1,3 +1,4 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,7 +11,7 @@ describe('LocationTrackingService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientModule ],
-      providers: [ MatSnackBar, LocationService ]
+      providers: [ MatSnackBar, Overlay, LocationService ]
     });
     service = TestBed.inject(LocationService);
   });

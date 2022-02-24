@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { OutstandingCaseBoardAmbulanceComponent } from './outstanding-case-board-ambulance.component';
 
 describe('OutstandingCaseBoardAmbulanceComponent', () => {
@@ -14,12 +15,13 @@ describe('OutstandingCaseBoardAmbulanceComponent', () => {
                 HttpClientTestingModule,
             ],
             providers: [
+                MatSnackBar,
                 {
                   provide: MatDialogRef,
                   useValue: {}
                 },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
-                  
+
              ],
             declarations: [ OutstandingCaseBoardAmbulanceComponent ]
         })

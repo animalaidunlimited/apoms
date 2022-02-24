@@ -4,6 +4,9 @@ import { LogoService } from './logo.service';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
+import { Overlay } from '@angular/cdk/overlay';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('LogoService', () => {
   let service: LogoService;
@@ -16,6 +19,7 @@ describe('LogoService', () => {
         AngularFireMessagingModule,
         AngularFireModule.initializeApp(environment.firebase),
       ],
+      providers: [ DatePipe, MatSnackBar, Overlay ]
     });
     service = TestBed.inject(LogoService);
   });

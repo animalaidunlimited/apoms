@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { RescueDetailsComponent } from './rescue-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray, AbstractControl, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -242,6 +242,7 @@ describe('RescueDetailsComponent', () => {
 
         const ambulanceArrivalTime = new Date();
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(ambulanceArrivalTime);
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(ambulanceArrivalTime);
         component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
         component.recordForm.get('rescueDetails.code')?.setValue(1);
         component.updateValidators();
@@ -252,6 +253,7 @@ describe('RescueDetailsComponent', () => {
     it('Valid form - Rescue time only, with driver/worker', () => {
         component.recordForm.get('rescueDetails.rescueTime')?.setValue(new Date());
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(new Date());
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(new Date());
         component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
         component.recordForm.get('rescueDetails.code')?.setValue(1);
 
@@ -265,6 +267,7 @@ describe('RescueDetailsComponent', () => {
 
         component.recordForm.get('rescueDetails.rescueTime')?.setValue(new Date());
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(new Date());
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(new Date());
         component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
         component.recordForm.get('rescueDetails.admissionTime')?.setValue(new Date());
         component.recordForm.get('rescueDetails.code')?.setValue(1);
@@ -278,13 +281,15 @@ describe('RescueDetailsComponent', () => {
 
     it('Valid form - Ambulance arrival and Rescue time only', () => {
 
-        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
+
+
         component.recordForm.get('rescueDetails.code')?.setValue(1);
 
         const currentTime = new Date();
         component.recordForm.get('rescueDetails.rescueTime')?.setValue(currentTime);
-
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(currentTime);
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(currentTime);
+        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
 
 
         component.updateValidators();
@@ -301,6 +306,9 @@ describe('RescueDetailsComponent', () => {
         const currentTime = new Date();
 
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(currentTime);
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(currentTime);
+        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
+
 
         component.recordForm.get('rescueDetails.rescueTime')?.setValue(currentTime);
 
@@ -320,12 +328,14 @@ describe('RescueDetailsComponent', () => {
     it('Valid form - Ambulance arrival time before, Rescue time before Admission time', () => {
 
 
-        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
+
 
         const ambulanceArrivalTime = new Date();
         ambulanceArrivalTime.setHours(ambulanceArrivalTime.getHours() - 4);
         component.recordForm.get('rescueDetails.ambulanceArrivalTime')?.setValue(ambulanceArrivalTime);
 
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue(ambulanceArrivalTime);
+        component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(10);
         component.recordForm.get('rescueDetails.code')?.setValue(1);
 
         const rescueTime = new Date();

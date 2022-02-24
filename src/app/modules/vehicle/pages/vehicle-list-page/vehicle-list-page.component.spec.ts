@@ -4,6 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VehicleListPageComponent } from './vehicle-list-page.component';
 import { MaterialModule } from '../../../../material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
+
 describe('VehicleListPageComponent', () => {
   let component: VehicleListPageComponent;
   let fixture: ComponentFixture<VehicleListPageComponent>;
@@ -15,10 +19,13 @@ describe('VehicleListPageComponent', () => {
   HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
+        HttpClientTestingModule,
         MaterialModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        AngularFireModule.initializeApp(environment.firebase)
       ],
-      declarations: [ VehicleListPageComponent ]
+      declarations: [ VehicleListPageComponent ],
+      providers: [ DatePipe ]
     })
     .compileComponents();
   });

@@ -111,7 +111,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
 
-    this.hideIrrelevantProblems(this.animalType.value);
+    this.hideIrrelevantProblems(this.animalType?.value);
 
     this.dropdown.getAnimalTypes().pipe(takeUntil(this.ngUnsubscribe))
                                   .subscribe(animalTypes => this.initialiseAnimalTypeDropdown(animalTypes));
@@ -125,18 +125,18 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     //    animalType ? of(this.animalFilter(animalType.toLowerCase())) : of(this.sortedAnimalTypes)
     //  )
     //);
-
+    
     this.treatmentListService.admissionAcceptReject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(patient => {
 
-      if(this.patientForm.get('patientId')?.value === patient.patientId) {
-        this.patientForm.get('admissionAccepted')?.setValue(patient.accepted);
+      if(this.patientForm?.get('patientId')?.value === patient.patientId) {
+        this.patientForm?.get('admissionAccepted')?.setValue(patient.accepted);
 
         if(patient.accepted) {
-          this.patientForm.get('admissionArea')?.disable();
+          this.patientForm?.get('admissionArea')?.disable();
           this.snackbar.successSnackBar('Admission accepted', 'OK');
         }
         else {
-          this.patientForm.get('admissionArea')?.setValue('');
+          this.patientForm?.get('admissionArea')?.setValue('');
           this.snackbar.warningSnackBar('Admission rejected', 'OK');
 
         }
@@ -274,10 +274,10 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     this.currentPatientSpecies = $event.option.viewValue;
 
-    this.patientForm.get('animalType')?.setValue($event.option.viewValue);
-    this.patientForm.get('animalTypeId')?.setValue($event.option?.value.AnimalTypeId);
+    this.patientForm?.get('animalType')?.setValue($event.option.viewValue);
+    this.patientForm?.get('animalTypeId')?.setValue($event.option?.value.AnimalTypeId);
 
-    this.patientForm.get('updated')?.setValue(true);
+    this.patientForm?.get('updated')?.setValue(true);
 
     this.hideIrrelevantProblems($event.option.viewValue);
 
@@ -299,7 +299,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     if (problemIndex === -1) {
       this.problemsArray.push(problemsGroup);
-      this.patientForm.get('updated')?.setValue(true);
+      this.patientForm?.get('updated')?.setValue(true);
     }
     this.problemRef.nativeElement.value = '';
   }
@@ -318,7 +318,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
     // two for the new patient type, followed by an unset for the old patient type
 
-    if(!(this.patientForm.get('animalType')?.value === animal)){
+    if(!(this.patientForm?.get('animalType')?.value === animal)){
         return;
     }
 
@@ -400,12 +400,12 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   private patientFormProblemSetError() {
     if (this.chipList?.errorState === true) {
-      this.patientForm.setErrors({
+      this.patientForm?.setErrors({
         problemsRequired: true
       });
     }
     else {
-      this.patientForm.setErrors(null);
+      this.patientForm?.setErrors(null);
     }
   }
 
@@ -447,11 +447,11 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((confirmed: boolean) => {
       if (confirmed) {
-        if(this.patientForm.get('patientId')?.value){
-          this.patientForm.get('deleted')?.setValue(true);
+        if(this.patientForm?.get('patientId')?.value){
+          this.patientForm?.get('deleted')?.setValue(true);
         }
         else {
-          this.deletedPatientIndex.emit(this.patientForm.get('patientId')?.value);
+          this.deletedPatientIndex.emit(this.patientForm?.get('patientId')?.value);
         }
       }
     });
@@ -481,7 +481,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   }
 
   redoPatient(){
-    this.patientForm.get('deleted')?.setValue(false);
+    this.patientForm?.get('deleted')?.setValue(false);
   }
 
   focusAnimalType(event:Event){

@@ -68,10 +68,6 @@ export class OrganisationsPageComponent implements OnInit {
 
     }
 
-    setCurrentDropdown($event:any){
-    }
-
-
     uploadLogo($event:Event){
 
         if((($event.target as HTMLInputElement).files as FileList).length){

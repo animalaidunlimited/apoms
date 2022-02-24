@@ -1,6 +1,6 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectorRef, Component,  Input,  OnDestroy,  OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ChangeDetectorRef, Component,  OnDestroy,  OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -22,7 +22,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatTable) table!: MatTable<Element>;
 
-  currentDropdown: string | undefined;
+  currentDropdownValue: string | undefined;
   currentDisplayName: string | undefined;
 
   currentDropdownDataSource: BehaviorSubject<AbstractControl[]>;
@@ -30,7 +30,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
   displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'saving'];
 
   dropdowns: Observable<EditableDropdown[]> | undefined;
-  dropdownForm: FormGroup;
+  dropdownForm = this.fb.group({currentDropdown: ''});
 
   refreshing: BehaviorSubject<boolean>;
 
@@ -44,9 +44,6 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
   this.currentDropdownDataSource = this.eDropdownService.editableDropdownObject;
   this.refreshing = this.eDropdownService.refreshing;
 
-  this.dropdownForm = this.fb.group({
-    currentDropdown: ''
-  });
 
 }
 
@@ -63,7 +60,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
         const drop:EditableDropdown = dropdown.currentDropdown;
 
-        this.currentDropdown = drop.dropdown;
+        this.currentDropdownValue = drop.dropdown;
         this.currentDisplayName = drop.displayName;
 
         this.eDropdownService.setEditableDropdown(drop.tableName);
@@ -73,7 +70,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
         this.generateDropDownForOrganisation(dropData).subscribe(dropdownResult => this.eDropdownService.repopulateDropDownFormArray(dropdownResult));
       });
 
-      this.currentDropdownDataSource.subscribe((vals) => {
+      this.currentDropdownDataSource.subscribe(() => {
 
         this.changeDetector.detectChanges();
     });

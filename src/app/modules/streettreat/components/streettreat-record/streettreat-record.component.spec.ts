@@ -6,9 +6,11 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/material-module';
-
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
 import { StreetTreatRecordComponent } from './streettreat-record.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 describe('StreettreatRecordComponent', () => {
   let component: StreetTreatRecordComponent;
@@ -29,8 +31,10 @@ describe('StreettreatRecordComponent', () => {
         MaterialModule,
         BrowserAnimationsModule,
         RouterTestingModule,
+        AngularFireModule.initializeApp(environment.firebase)
     ],
     providers: [
+      DatePipe,
       { provide: ActivatedRoute, useValue: fakeActivatedRoute },
       { provide: FormBuilder, useValue: formBuilder }
     ],

@@ -1,5 +1,11 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
+import { Overlay } from '@angular/cdk/overlay';
+import { DatePipe } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire/compat';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
 import { OrganisationsPageComponent } from './organisations-page.component';
 
 describe('OrganisationsPageComponent', () => {
@@ -8,15 +14,22 @@ describe('OrganisationsPageComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
+            imports: [ HttpClientTestingModule,
+                ReactiveFormsModule,
+                AngularFireModule.initializeApp(environment.firebase) ],
             declarations: [OrganisationsPageComponent],
+            providers: [    DatePipe,
+                            MatSnackBar,
+                            Overlay
+                        ]
         }).compileComponents();
     }));
 
-    beforeEach(() => {
+    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
         fixture = TestBed.createComponent(OrganisationsPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
+    }));
 
     it('should create', () => {
         expect(component).toBeTruthy();

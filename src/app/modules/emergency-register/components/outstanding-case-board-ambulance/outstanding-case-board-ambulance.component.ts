@@ -144,7 +144,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
             concatAll(),
         );
 
-        this.currentCapacity = this.vehicleAssignmentList$.pipe(
+        this.currentCapacity = this.vehicleAssignmentList$?.pipe(
             takeUntil(this.ngUnsubscribe),
             map(vehicleAssignments => {
                 let smallPatientCount = 0;
@@ -175,7 +175,7 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
 
     getOutstandingCasesByStatusId(statusId: number) {
-        return this.vehicleAssignmentList$.pipe(
+        return this.vehicleAssignmentList$?.pipe(
             map(outstandingCases =>
                 outstandingCases.filter(
                     outStandingCases =>

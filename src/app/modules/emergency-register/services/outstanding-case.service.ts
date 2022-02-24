@@ -72,7 +72,7 @@ export class OutstandingCaseService {
 
   getOutstandingCasesByVehicleId(vehicleId: number | null) : Observable<(OutstandingAssignment | DriverAssignment)[]>{
 
-    return this.filteredList$.pipe(
+    return this.filteredList$?.pipe(
 
       map(outstandingCases => outstandingCases.filter(outstandingCase =>
         vehicleId === (outstandingCase.ambulanceAction === 'Rescue' ? outstandingCase.rescueAmbulanceId : outstandingCase.releaseAmbulanceId )
