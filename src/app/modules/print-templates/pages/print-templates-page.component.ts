@@ -7,7 +7,7 @@ import { PrintTemplateService } from '../services/print-template.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({

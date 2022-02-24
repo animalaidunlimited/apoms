@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { OrganisationDetail } from '../../models/organisation';
 import { SuccessOnlyResponse } from '../../models/responses';
 import { APIService } from '../http/api.service';
