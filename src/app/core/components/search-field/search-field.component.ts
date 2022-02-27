@@ -373,6 +373,12 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         });
     }
 
+    clearSearch(){
+        this.search.searchString='';
+        this.searchShowing = false;
+        this.searchString.emit(undefined);
+    }
+
 
     isDate(dateStr: string) {
         if (dateStr === '' || dateStr.toString().length < 9 || dateStr.toString().length > 11 || dateStr.indexOf('-') < -1 || dateStr.indexOf('/') < -1) {
@@ -403,33 +409,33 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         const regex = this.options
             .filter(option => option.searchValue != null)
             .map(item => {
-                return '(?=' + item.searchValue + ')';
+                return '(?=' + item.searchValue + ':)';
             })
             .join('|');
 
 
         const delimiter = new RegExp(regex);
 
-        let firstChar;
-
-        firstChar = this.search.searchString.toLowerCase().charAt(0);
+        const firstChar = this.search.searchString.toLowerCase().charAt(0);
         const searchString = this.search.searchString;
-        const searchTerm = this.search.searchString.split(':')[this.search.searchString.split(':').length - 1];
 
         let toSplit = this.search.searchString;
 
-        if (searchString.toLowerCase().search(delimiter) !== 0) {
+        //Check if the search string contains a colon
+        if (searchString.indexOf(':') == -1) {
+
+        //if (searchString.toLowerCase().search(delimiter) !== 0) {
 
             if (searchString.length < 8) {
 
                 if (parseInt(firstChar, 10) <= 9 && parseInt(firstChar, 10) >= 0 && /^\d+$/.test(searchString)) {
 
-                    toSplit = 'emno:' + this.search.searchString;
+                    toSplit = 'emno:' + searchString;
 
                 }
                 else if ((searchString.trim().split(' ').length - 1) === 0) {
 
-                    toSplit = 'tagno:' + this.search.searchString;
+                    toSplit = 'tagno:' + searchString;
 
                 }
 
@@ -437,19 +443,20 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             else if (searchString.length > 8 && searchString.length < 11) {
                 if (searchString.indexOf('/') > -1 || searchString.indexOf('-') > -1 && this.isDate(searchString)) {
 
-                    toSplit = 'calldate:' + this.search.searchString;
+                    toSplit = 'calldate:' + searchString;
 
                 } else if (/^\d+$/.test(searchString)) {
 
-                    toSplit = 'cnumber:' + this.search.searchString;
+                    toSplit = 'cnumber:' + searchString;
                 }
             }
             else {
 
-                toSplit = 'location:' + this.search.searchString;
+                toSplit = 'location:' + searchString;
 
             }
         }
+
         return toSplit.split(delimiter);
     }
 

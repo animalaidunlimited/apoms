@@ -962,11 +962,14 @@ WITH casesCTE AS
 	SELECT st.StreetTreatCaseId
 	FROM AAU.StreetTreatCase st
 	WHERE OrganisationId = vOrganisationId
+	AND st.StatusId < 3
+    AND st.IsDeleted = 0
     AND st.StreetTreatCaseid NOT IN (
 		SELECT
 			v.StreetTreatCaseid
 		FROM AAU.Visit v
 		WHERE v.statusid < 3 AND v.date > CURDATE()
+        AND v.IsDeleted = 0
     )
 ),
 visitsCTE AS
@@ -2042,7 +2045,7 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-SELECT CallOutcomeId, CallOutcome, IsDeleted, SortOrder FROM AAU.CallOutcome WHERE OrganisationId = vOrganisationId;
+SELECT CallOutcomeId, CallOutcome, IsDeleted, SortOrder FROM AAU.CallOutcome WHERE OrganisationId = vOrganisationId OR CallOutcomeId IN (1,18);
 
 END$$
 DELIMITER ;
@@ -2716,6 +2719,7 @@ SELECT
 		"complainerNotes",rd.ComplainerNotes,
 		"complainerInformed",rd.ComplainerInformed,
         "IsStreetTreatRelease",rd.IsStreetTreatRelease,
+        "isStreetTreat", IF(s.StreetTreatCaseId IS NOT NULL, TRUE, FALSE),
 		"Releaser1",rd.Releaser1Id,
 		"Releaser2",rd.Releaser2Id,
         "releaseAmbulanceId", rd.AssignedVehicleId,
@@ -2953,10 +2957,10 @@ DECLARE vSuccess INT;
 DECLARE visitExists INT;
 DECLARE vStreetTreatCaseIdExists INT;
 
-SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.Streettreatcase WHERE PatientId = prm_PatientId;
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
 
 SELECT COUNT(DISTINCT s.StreetTreatCaseId) INTO visitExists
-FROM AAU.StreettreatCase s
+FROM AAU.StreetTreatCase s
 INNER JOIN AAU.Visit v ON s.PatientId = prm_PatientId 
 WHERE (v.IsDeleted IS NULL OR v.IsDeleted = 0);
 
@@ -2984,7 +2988,7 @@ SELECT
 	) 
 AS Result
 	FROM AAU.Visit v
-        INNER JOIN AAU.Streettreatcase s ON s.StreetTreatCaseId = v.StreetTreatCaseId AND s.PatientId = prm_PatientId
+        INNER JOIN AAU.StreetTreatCase s ON s.StreetTreatCaseId = v.StreetTreatCaseId AND s.PatientId = prm_PatientId
 	WHERE IFNULL(v.IsDeleted,0) = 0;
         
 ELSEIF visitExists = 0  AND vStreetTreatCaseIdExists > 0 THEN 
@@ -3473,39 +3477,72 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetUserById !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
+
+-- CALL AAU.sp_GetUsersByIdRange('Jim')
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetUserById (IN prm_userId INT)
+CREATE PROCEDURE AAU.sp_GetUsersByIdRange(IN prm_UserName VARCHAR(64))
 BEGIN
 /*
 Created By: Jim Mackenzie
 Created On: 22/08/2018
 Purpose: Used to return a single user from the database. Initially
-		 for edit purposes.         
+		 for edit purposes.
          
 Modified By: Jim Mackenzie
 Modified On: 17/02/2022
-Description: Removing SreetTreat team
+Description: Removing StreetTreat team
 */
 
-	-- Dont really need to do much here, just return the user record
-    -- for the moment
-	SELECT	u.UserId, 
-			u.FirstName,
-			u.Surname,
-			u.UserName,
-			u.Password,
-			u.Telephone,
-			r.RoleId,
-			r.RoleName,
-			IF(u.IsDeleted, 'Yes', 'No') AS IsDeleted    
-    FROM AAU.User u
-    LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
-    WHERE u.UserId = prm_userId;
+DECLARE vOrganisationId INT;
+
+SET vOrganisationId = 0;
+
+SELECT OrganisationId INTO vOrganisationId
+FROM AAU.User u 
+WHERE UserName = prm_Username LIMIT 1;
+
+SELECT 
+
+JSON_ARRAYAGG(
+JSON_MERGE_PRESERVE( 
+JSON_OBJECT("userId",UserDetails.UserId),
+JSON_OBJECT("firstName",UserDetails.FirstName),
+JSON_OBJECT("surName",UserDetails.Surname),
+JSON_OBJECT("initials",UserDetails.Initials),
+JSON_OBJECT("colour",UserDetails.Colour),
+JSON_OBJECT("telephone",UserDetails.Telephone),
+JSON_OBJECT("userName",UserDetails.UserName),
+JSON_OBJECT("roleId",UserDetails.RoleId),
+JSON_OBJECT("role",UserDetails.RoleName),
+JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
+JSON_OBJECT("jobTitle",UserDetails.JobTitle),
+JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
+JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
+))  AS userDetails
+FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
+			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
+            AS IsDeleted
+		FROM AAU.User u		
+		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
+		LEFT JOIN (SELECT 
+					ujt.UserId,
+					GROUP_CONCAT(jt.JobTypeId) AS JobTypeId,
+					GROUP_CONCAT(jt.Title) AS JobTitle
+					FROM AAU.UserJobType ujt
+					INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId
+					WHERE ujt.IsDeleted = 0
+                    GROUP BY ujt.UserId
+					ORDER BY UserId ASC) jobTitle
+	ON jobTitle.UserId = u.UserId
+    WHERE u.UserId <> -1
+    AND u.OrganisationId = vOrganisationId) UserDetails;
+        
+-- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
+
 
 END$$
-DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUserByUsername !!
@@ -5808,10 +5845,10 @@ SET vUpdateSuccess = 0;
 SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
 
 -- Check that the incoming username doesn't exist
-SELECT COUNT(1) INTO vUsernameCount FROM AAU.user WHERE UserId <> prm_UserId AND UserName = prm_UserName;
+SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
 
 -- Check that the incoming first name, surname and telephone don't already exist
-SELECT COUNT(1) INTO vComboKeyCount FROM AAU.user WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
+SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
 																				AND	Surname		= prm_Surname
 																				AND	Telephone	= prm_Telephone;
 
@@ -6456,23 +6493,25 @@ SET vVisitDateExists = 0;
 SET vSuccess = -1;
 
 SELECT COUNT(1) INTO vVisitExisits
-FROM AAU.Visit WHERE
-VisitId = prm_VisitId
+FROM AAU.Visit
+WHERE VisitId = prm_VisitId
 AND StreetTreatCaseId = prm_StreetTreatCaseId
 AND (IsDeleted = 0 OR IsDeleted IS NULL);
 
 SELECT COUNT(1) INTO vVisitDateExists
-FROM AAU.Visit WHERE
-StreetTreatCaseId = prm_StreetTreatCaseId AND
+FROM AAU.Visit
+WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND
 VisitId != prm_VisitId AND
 Date = prm_VisitDate AND
 isDeleted = 0;
 
-SELECT o.SocketEndPoint INTO vSocketEndPoint FROM AAU.User u
+SELECT o.SocketEndPoint INTO vSocketEndPoint
+FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE u.UserName = prm_Username;
 
-SELECT ec.EmergencycaseId INTO vEmergencyCaseId FROM AAU.StreetTreatcase sc
+SELECT ec.EmergencycaseId INTO vEmergencyCaseId 
+FROM AAU.StreetTreatCase sc
 INNER JOIN AAU.Patient p ON p.PatientId = sc.PatientId
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 WHERE sc.StreetTreatCaseId = prm_StreetTreatCaseId;

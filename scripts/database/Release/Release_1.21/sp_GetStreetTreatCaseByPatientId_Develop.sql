@@ -18,10 +18,10 @@ DECLARE vSuccess INT;
 DECLARE visitExists INT;
 DECLARE vStreetTreatCaseIdExists INT;
 
-SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.Streettreatcase WHERE PatientId = prm_PatientId;
+SELECT COUNT(StreetTreatCaseId) INTO vStreetTreatCaseIdExists FROM AAU.StreetTreatCase WHERE PatientId = prm_PatientId;
 
 SELECT COUNT(DISTINCT s.StreetTreatCaseId) INTO visitExists
-FROM AAU.StreettreatCase s
+FROM AAU.StreetTreatCase s
 INNER JOIN AAU.Visit v ON s.PatientId = prm_PatientId 
 WHERE (v.IsDeleted IS NULL OR v.IsDeleted = 0);
 
@@ -49,7 +49,7 @@ SELECT
 	) 
 AS Result
 	FROM AAU.Visit v
-        INNER JOIN AAU.Streettreatcase s ON s.StreetTreatCaseId = v.StreetTreatCaseId AND s.PatientId = prm_PatientId
+        INNER JOIN AAU.StreetTreatCase s ON s.StreetTreatCaseId = v.StreetTreatCaseId AND s.PatientId = prm_PatientId
 	WHERE IFNULL(v.IsDeleted,0) = 0;
         
 ELSEIF visitExists = 0  AND vStreetTreatCaseIdExists > 0 THEN 

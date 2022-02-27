@@ -30,7 +30,7 @@ export class SettingsPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.releaseVersion = '1.0.20.1';
+        this.releaseVersion = '1.21';
     }
 
     refreshApp(){

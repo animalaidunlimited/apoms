@@ -31,14 +31,14 @@ SET vVisitDateExists = 0;
 SET vSuccess = -1;
 
 SELECT COUNT(1) INTO vVisitExisits
-FROM AAU.Visit WHERE
-VisitId = prm_VisitId
+FROM AAU.Visit
+WHERE VisitId = prm_VisitId
 AND StreetTreatCaseId = prm_StreetTreatCaseId
 AND (IsDeleted = 0 OR IsDeleted IS NULL);
 
 SELECT COUNT(1) INTO vVisitDateExists
-FROM AAU.Visit WHERE
-StreetTreatCaseId = prm_StreetTreatCaseId AND
+FROM AAU.Visit
+WHERE StreetTreatCaseId = prm_StreetTreatCaseId AND
 VisitId != prm_VisitId AND
 Date = prm_VisitDate AND
 isDeleted = 0;
@@ -47,14 +47,15 @@ SELECT o.SocketEndPoint INTO vSocketEndPoint FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE u.UserName = prm_Username;
 
-SELECT ec.EmergencycaseId INTO vEmergencyCaseId FROM AAU.StreetTreatcase sc
+SELECT ec.EmergencycaseId INTO vEmergencyCaseId
+FROM AAU.StreetTreatCase sc
 INNER JOIN AAU.Patient p ON p.PatientId = sc.PatientId
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 WHERE sc.StreetTreatCaseId = prm_StreetTreatCaseId;
 
 IF prm_VisitId IS NULL THEN
 
-	INSERT INTO AAU.Visit(
+	INSERT INTO AAU.Visit (
 			StreetTreatCaseId,
 			VisitTypeId,
 			Date,

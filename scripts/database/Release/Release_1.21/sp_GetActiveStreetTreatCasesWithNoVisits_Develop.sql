@@ -30,11 +30,14 @@ WITH casesCTE AS
 	SELECT st.StreetTreatCaseId
 	FROM AAU.StreetTreatCase st
 	WHERE OrganisationId = vOrganisationId
+	AND st.StatusId < 3
+    AND st.IsDeleted = 0
     AND st.StreetTreatCaseid NOT IN (
 		SELECT
 			v.StreetTreatCaseid
 		FROM AAU.Visit v
 		WHERE v.statusid < 3 AND v.date > CURDATE()
+        AND v.IsDeleted = 0
     )
 ),
 visitsCTE AS

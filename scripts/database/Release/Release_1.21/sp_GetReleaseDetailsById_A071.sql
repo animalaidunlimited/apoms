@@ -40,6 +40,7 @@ SELECT
 		"complainerNotes",rd.ComplainerNotes,
 		"complainerInformed",rd.ComplainerInformed,
         "IsStreetTreatRelease",rd.IsStreetTreatRelease,
+        "isStreetTreat", IF(s.StreetTreatCaseId IS NOT NULL, TRUE, FALSE),
 		"Releaser1",rd.Releaser1Id,
 		"Releaser2",rd.Releaser2Id,
         "releaseAmbulanceId", rd.AssignedVehicleId,

@@ -113,7 +113,6 @@ export class ReleaseDetailsComponent implements OnInit {
       releaseAmbulanceId: [],
       ambulanceAssignmentTime: [],
       IsStreetTreatRelease: []
-
     });
 
     this.recordForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
@@ -146,7 +145,7 @@ export class ReleaseDetailsComponent implements OnInit {
         }
 
         if(formVal) {
-          
+
           this.recordForm.patchValue(formVal);
 
           if(this.recordForm.get('Releaser1')?.value) {
@@ -155,6 +154,8 @@ export class ReleaseDetailsComponent implements OnInit {
           if((this.recordForm.get('complainerNotes')?.value)){
             this.isCommented = true;
           }
+
+          this.isStreetTreat = formVal.isStreetTreat === 1;
         }
       });
     }

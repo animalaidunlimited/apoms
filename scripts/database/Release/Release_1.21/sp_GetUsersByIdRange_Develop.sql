@@ -2,8 +2,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
 
+-- CALL AAU.sp_GetUsersByIdRange('Jim')
+
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetUsersByIdRange (IN prm_UserName VARCHAR(64))
+CREATE PROCEDURE AAU.sp_GetUsersByIdRange(IN prm_UserName VARCHAR(64))
 BEGIN
 /*
 Created By: Jim Mackenzie
@@ -40,7 +42,7 @@ JSON_OBJECT("role",UserDetails.RoleName),
 JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
 JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
-JSON_OBJECT("permissionArray",userDetails.PermissionArray)
+JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
@@ -58,11 +60,9 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 					ORDER BY UserId ASC) jobTitle
 	ON jobTitle.UserId = u.UserId
     WHERE u.UserId <> -1
-    AND u.OrganisationId = vOrganisationId
-    ORDER BY u.UserId ASC) UserDetails;
+    AND u.OrganisationId = vOrganisationId) UserDetails;
         
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
-END$$
-DELIMITER ;
+END

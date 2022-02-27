@@ -126,8 +126,6 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
     this.assignedVehicleGroup.get('date')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((date)=>{
       this.searchDate = new Date(date);
 
-
-
       if(isNaN(this.searchDate.getTime()) ){
         return;
       }

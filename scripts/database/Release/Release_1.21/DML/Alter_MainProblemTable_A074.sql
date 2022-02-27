@@ -4,12 +4,10 @@ CREATE PROCEDURE `?`()
 BEGIN
   DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
 	ALTER TABLE AAU.MainProblem
-	ADD COLUMN SortOrder INT NULL AFTER IsDeleted,
-    ADD COLUMN OrganisationId INT NULL AFTER MainProblemId;
+	ADD COLUMN SortOrder INT NULL AFTER IsDeleted;
     
     UPDATE AAU.MainProblem SET OrganisationId = 1 WHERE OrganisationId IS NULL;
-	
-  
+	  
 END //
 DELIMITER ;
 CALL `?`();

@@ -34,6 +34,7 @@ export class VehicleShiftComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.vehicle.imageURL = this.vehicle.imageURL || "assets/images/image_placeholder.png";
 
 
     this.hourRange = this.vehicleService.getHourRange();
@@ -67,7 +68,7 @@ export class VehicleShiftComponent implements OnInit {
 
   }
 
-  // A function that determines the length of the shift in minutes and resturns that as a % of 24 hours
+  // A function that determines the length of the shift in minutes and returns that as a % of 24 hours
   getShiftLengthAsPercentageOf24Hours(endTime: number, startTime: number) : number {
 
     const shiftLengthInSeconds = Math.round((endTime - startTime) / 1000);

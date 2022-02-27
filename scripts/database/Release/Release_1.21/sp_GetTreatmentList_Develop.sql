@@ -26,6 +26,7 @@ WITH PatientCTE AS (
 		OR
 		p.PatientStatusDate >= prm_TreatmentListDate
     )
+    AND p.IsDeleted = 0
 ),
 EmergencyCaseCTE AS (
 	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`

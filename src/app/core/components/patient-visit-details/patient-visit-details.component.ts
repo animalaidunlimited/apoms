@@ -81,6 +81,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
     private ngUnsubscribe = new Subject();
 
+	@Input() dateSelected!: string[];
+	@Input() isStreetTreatTrue!: boolean;
+	@Input() recordForm!: FormGroup;
+
+	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
+	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
+
+	@ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
+
 	callDateTime:string|Date = '';
 	currentTime = getCurrentTimeString();
 
@@ -102,15 +111,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	vehicleList$!: Observable<Vehicle[]>;
 
 	minVisitDate!: string|Date;
-
-	@Input() dateSelected!: string[];
-	@Input() isStreetTreatTrue!: boolean;
-	@Input() recordForm!: FormGroup;
-
-	@Output() public saveSuccessResponse = new EventEmitter<VisitResponse[]>();
-	@Output() streetTreatCaseIdEmit = new EventEmitter<number>();
-
-	@ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
 
 	constructor(
 
@@ -156,23 +156,13 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.treatmentPriority$ = this.dropdown.getPriority();
 		this.vehicleList$ = this.vehicleService.getVehicleListObservable().pipe(map(vehicles => vehicles.filter(vehicle => vehicle.streetTreatVehicle)));
 
-
-		setTimeout(() => {
-			if (!this.isStreetTreatTrue) {
-				this.clearValidators();
-			}
-			else {
-				this.initStreetTreatForm();
-			}
-
-		}, 0);
-
 	}
 
 	ngOnChanges() {
 
 		if (this.streatTreatForm) {
 			if (this.isStreetTreatTrue) {
+				this.initStreetTreatForm();
 				this.streetTreatSetValidators();
 			}
 			else if (!this.isStreetTreatTrue) {
