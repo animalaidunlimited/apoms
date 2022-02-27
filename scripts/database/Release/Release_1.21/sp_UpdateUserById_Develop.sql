@@ -36,10 +36,10 @@ SET vUpdateSuccess = 0;
 SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
 
 -- Check that the incoming username doesn't exist
-SELECT COUNT(1) INTO vUsernameCount FROM AAU.user WHERE UserId <> prm_UserId AND UserName = prm_UserName;
+SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
 
 -- Check that the incoming first name, surname and telephone don't already exist
-SELECT COUNT(1) INTO vComboKeyCount FROM AAU.user WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
+SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
 																				AND	Surname		= prm_Surname
 																				AND	Telephone	= prm_Telephone;
 

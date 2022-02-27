@@ -2036,6 +2036,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetOutcomes !!
 
+-- CALL AAU.sp_GetOutcomes('Haris')
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetOutcomes(IN prm_username VARCHAR(45))
 BEGIN
@@ -3385,6 +3387,7 @@ WITH PatientCTE AS (
 		OR
 		p.PatientStatusDate >= prm_TreatmentListDate
     )
+    AND p.IsDeleted = 0
 ),
 EmergencyCaseCTE AS (
 	SELECT ec.EmergencyCaseId, ec.EmergencyNumber, DATE_Format(ec.CallDatetime,"%Y-%m-%d") AS `CallDatetime`
@@ -3477,6 +3480,75 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_GetUserById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetUserById (IN prm_userId INT)
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 22/08/2018
+Purpose: Used to return a single user from the database. Initially
+		 for edit purposes.         
+         
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Removing SreetTreat team
+*/
+
+	-- Dont really need to do much here, just return the user record
+    -- for the moment
+	SELECT	u.UserId, 
+			u.FirstName,
+			u.Surname,
+			u.UserName,
+			u.Password,
+			u.Telephone,
+			r.RoleId,
+			r.RoleName,
+			IF(u.IsDeleted, 'Yes', 'No') AS IsDeleted    
+    FROM AAU.User u
+    LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
+    WHERE u.UserId = prm_userId;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetUserByUsername !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetUserByUsername (IN UserName VARCHAR(64))
+BEGIN
+
+/*
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Removing StreetTreat team.
+*/
+
+	SELECT u.UserId,u.OrganisationId, u.UserName, u.FirstName, u.Surname, u.Initials, u.preferences, u.Password , o.SocketEndPoint
+    FROM AAU.User u
+    INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+    WHERE u.UserName = UserName;
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetUserPermissionsByUsername !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetUserPermissionsByUsername(IN prm_Username VARCHAR(45))
+BEGIN
+
+SELECT PermissionArray FROM AAU.User
+WHERE Username = prm_Username;
+
+END$$
+
+DELIMITER ;
+DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
 
 -- CALL AAU.sp_GetUsersByIdRange('Jim')
@@ -3543,108 +3615,6 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 
 
 END$$
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetUserByUsername !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetUserByUsername (IN UserName VARCHAR(64))
-BEGIN
-
-/*
-Modified By: Jim Mackenzie
-Modified On: 17/02/2022
-Description: Removing StreetTreat team.
-*/
-
-	SELECT u.UserId,u.OrganisationId, u.UserName, u.FirstName, u.Surname, u.Initials, u.preferences, u.Password , o.SocketEndPoint
-    FROM AAU.User u
-    INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-    WHERE u.UserName = UserName;
-END$$
-DELIMITER ;
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetUserPermissionsByUsername !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetUserPermissionsByUsername(IN prm_Username VARCHAR(45))
-BEGIN
-
-SELECT PermissionArray FROM AAU.User
-WHERE Username = prm_Username;
-
-END$$
-
-DELIMITER ;
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByIdRange !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetUsersByIdRange (IN prm_UserName VARCHAR(64))
-BEGIN
-/*
-Created By: Jim Mackenzie
-Created On: 22/08/2018
-Purpose: Used to return a single user from the database. Initially
-		 for edit purposes.
-         
-Modified By: Jim Mackenzie
-Modified On: 17/02/2022
-Description: Removing StreetTreat team
-*/
-
-DECLARE vOrganisationId INT;
-
-SET vOrganisationId = 0;
-
-SELECT OrganisationId INTO vOrganisationId
-FROM AAU.User u 
-WHERE UserName = prm_Username LIMIT 1;
-
-SELECT 
-
-JSON_ARRAYAGG(
-JSON_MERGE_PRESERVE( 
-JSON_OBJECT("userId",UserDetails.UserId),
-JSON_OBJECT("firstName",UserDetails.FirstName),
-JSON_OBJECT("surName",UserDetails.Surname),
-JSON_OBJECT("initials",UserDetails.Initials),
-JSON_OBJECT("colour",UserDetails.Colour),
-JSON_OBJECT("telephone",UserDetails.Telephone),
-JSON_OBJECT("userName",UserDetails.UserName),
-JSON_OBJECT("roleId",UserDetails.RoleId),
-JSON_OBJECT("role",UserDetails.RoleName),
-JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
-JSON_OBJECT("jobTitle",UserDetails.JobTitle),
-JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
-JSON_OBJECT("permissionArray",userDetails.PermissionArray)
-))  AS userDetails
-FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
-			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
-            AS IsDeleted
-		FROM AAU.User u		
-		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId
-		LEFT JOIN (SELECT 
-					ujt.UserId,
-					GROUP_CONCAT(jt.JobTypeId) AS JobTypeId,
-					GROUP_CONCAT(jt.Title) AS JobTitle
-					FROM AAU.UserJobType ujt
-					INNER JOIN AAU.JobType jt ON jt.JobTypeId = ujt.JobTypeId
-					WHERE ujt.IsDeleted = 0
-                    GROUP BY ujt.UserId
-					ORDER BY UserId ASC) jobTitle
-	ON jobTitle.UserId = u.UserId
-    WHERE u.UserId <> -1
-    AND u.OrganisationId = vOrganisationId
-    ORDER BY u.UserId ASC) UserDetails;
-        
--- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
-
-
-END$$
-DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUsersByJobTypeId !!
@@ -5518,9 +5488,7 @@ END IF;
 SELECT vSuccess AS `success`, prm_PatientMediaItemId AS `mediaItemId`;
 
 
-END$
-
-DELIMITER !!
+ENDDELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseDetails !!
 
@@ -5845,10 +5813,10 @@ SET vUpdateSuccess = 0;
 SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
 
 -- Check that the incoming username doesn't exist
-SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
+SELECT COUNT(1) INTO vUsernameCount FROM AAU.user WHERE UserId <> prm_UserId AND UserName = prm_UserName;
 
 -- Check that the incoming first name, surname and telephone don't already exist
-SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
+SELECT COUNT(1) INTO vComboKeyCount FROM AAU.user WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
 																				AND	Surname		= prm_Surname
 																				AND	Telephone	= prm_Telephone;
 
@@ -6505,12 +6473,11 @@ VisitId != prm_VisitId AND
 Date = prm_VisitDate AND
 isDeleted = 0;
 
-SELECT o.SocketEndPoint INTO vSocketEndPoint
-FROM AAU.User u
+SELECT o.SocketEndPoint INTO vSocketEndPoint FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE u.UserName = prm_Username;
 
-SELECT ec.EmergencycaseId INTO vEmergencyCaseId 
+SELECT ec.EmergencycaseId INTO vEmergencyCaseId
 FROM AAU.StreetTreatCase sc
 INNER JOIN AAU.Patient p ON p.PatientId = sc.PatientId
 INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
@@ -6518,7 +6485,7 @@ WHERE sc.StreetTreatCaseId = prm_StreetTreatCaseId;
 
 IF prm_VisitId IS NULL THEN
 
-	INSERT INTO AAU.Visit(
+	INSERT INTO AAU.Visit (
 			StreetTreatCaseId,
 			VisitTypeId,
 			Date,

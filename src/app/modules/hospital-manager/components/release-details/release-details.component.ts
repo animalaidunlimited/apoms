@@ -133,7 +133,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   }
 
-  initReleaseDetailsForm(){
+  initReleaseDetailsForm() : void{
 
     if(this.patientId) {
 
@@ -162,7 +162,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   }
 
-  streetTreatCaseIdEventHandler(streetTreatCaseId:number){
+  streetTreatCaseIdEventHandler(streetTreatCaseId:number) : void{
 
     if(streetTreatCaseId)
     {
@@ -170,7 +170,7 @@ export class ReleaseDetailsComponent implements OnInit {
     }
   }
 
-  setRequired(name: string) {
+  setRequired(name: string) : void {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name]?.setValidators(Validators.required);
 
@@ -178,7 +178,7 @@ export class ReleaseDetailsComponent implements OnInit {
     this.recordForm.controls[name].updateValueAndValidity();
   }
 
-  setNotRequired(name: string) {
+  setNotRequired(name: string) : void {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     this.recordForm.controls[name].clearValidators();
     // eslint-disable-next-line @typescript-eslint/dot-notation
@@ -186,23 +186,23 @@ export class ReleaseDetailsComponent implements OnInit {
   }
 
 
-  specificStaffTrue() {
+  specificStaffTrue() : void {
     this.specificStaff = true;
     this.setRequired('Releaser1');
   }
 
-  specificStaffFalse() {
+  specificStaffFalse() : void {
     this.specificStaff = false;
     this.setNotRequired('Releaser1');
   }
 
-  streetTreatReleaseTrue() {
+  streetTreatReleaseTrue() : void {
     this.isStreetTreat = true;
     this.changeDetector.detectChanges();
     this.formValidity.emit(this.isStreetTreat);
   }
 
-  streetTreatReleaseFalse() {
+  streetTreatReleaseFalse() : void {
     this.isStreetTreat = false;
     this.changeDetector.detectChanges();
     this.formValidity.emit(this.isStreetTreat);
@@ -210,7 +210,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   }
 
-  valueChages(toggle: any , position: number) {
+  valueChages(toggle: any , position: number) : void {
     switch(position) {
       case 2 : {
         if(toggle.checked) {
@@ -249,7 +249,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   }
 
-  onReleaseSubmit() {
+  onReleaseSubmit() : void {
 
     this.releaseService.saveRelease(this.recordForm.value).then((results:SuccessOnlyResponse) => {
 

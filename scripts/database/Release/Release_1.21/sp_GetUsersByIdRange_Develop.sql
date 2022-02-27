@@ -65,4 +65,4 @@ FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
-END
+END$$

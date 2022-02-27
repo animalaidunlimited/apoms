@@ -156,6 +156,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.treatmentPriority$ = this.dropdown.getPriority();
 		this.vehicleList$ = this.vehicleService.getVehicleListObservable().pipe(map(vehicles => vehicles.filter(vehicle => vehicle.streetTreatVehicle)));
 
+		setTimeout(() => {
+			if (!this.isStreetTreatTrue) {
+				this.clearValidators();
+			}
+			else {
+				this.initStreetTreatForm();
+			}
+
+		}, 0);
 	}
 
 	ngOnChanges() {
