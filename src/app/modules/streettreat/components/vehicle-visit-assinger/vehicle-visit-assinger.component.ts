@@ -136,8 +136,6 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
         .pipe(take(1))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
 
-          console.log(streetTreatCaseByVisitDateResponse);
-
           this.filteredStreetTreatCases = streetTreatCaseByVisitDateResponse?.Cases;
           this.streetTreatCaseByVisitDateResponse = streetTreatCaseByVisitDateResponse?.Cases;
 
@@ -168,8 +166,6 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
       this.streetTreatService.getActiveStreetTreatCasesWithVisitByDate(new Date())
       .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((streetTreatCaseByVisitDateResponse) => {
-
-          console.log(streetTreatCaseByVisitDateResponse);
 
 
           if (streetTreatCaseByVisitDateResponse?.Cases) {
@@ -274,8 +270,6 @@ export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
           .getActiveStreetTreatCasesWithVisitByDate(this.searchDate)
           .pipe(take(1))
           .subscribe((streetTreatCaseByVisitDateResponse) => {
-
-            console.log(streetTreatCaseByVisitDateResponse);
 
             streetTreatCaseByVisitDateResponse.Cases?.forEach(vehicle =>
                 vehicle.StreetTreatCaseVisits.sort((a,b) => a.AnimalDetails.TagNumber < b.AnimalDetails.TagNumber ? 1 : -1));

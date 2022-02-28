@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
+-- CALL AAU.sp_GetDriverViewDetails('2022-02-28T11:23','jim');
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
 BEGIN
@@ -37,9 +39,8 @@ UNION
 
 SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
 FROM AAU.ReleaseDetails rd
-WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(CAST(rd.EndDate AS DATE), CURDATE()) )
+WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(DATE_ADD(CAST(rd.EndDate AS DATE), INTERVAL 1 DAY), CURDATE()) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
-AND EndDate IS NULL
 
 UNION
 
@@ -83,8 +84,10 @@ PatientsCTE AS
 
     SELECT DISTINCT
 		p.EmergencyCaseId,
-        p.PatientCallOutcomeId AS `PatientCallOutcomeId`,
-		p.PatientId, -- Tricking the query to group rescues together, but keep releases apart.
+        p.PatientCallOutcomeId AS `PatientCallOutcomeId`,        
+		IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        MIN(rrst.AmbulanceAction) AS `AmbulanceAction`,
+        MAX(IFNULL(rd.PatientId, 0)) AS `IsRelease`,
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -130,6 +133,7 @@ PatientsCTE AS
     LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
     LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
     LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
+    LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 	LEFT JOIN
     (
 		SELECT	pmi.PatientId,
@@ -148,7 +152,7 @@ DriverViewCTE AS
 (
 SELECT
 
-			rrst.AmbulanceAction,
+			p.AmbulanceAction,
             rd.ReleaseDetailsId,
             rd.AssignedVehicleId AS ReleaseAssignedVehicleId,
             rd.AmbulanceAssignmentTime AS ReleaseAmbulanceAssignmentTime,
@@ -196,12 +200,11 @@ SELECT
             JSON_OBJECT("callerDetails",c.callerDetails) AS callerDetails,
             JSON_OBJECT("patients",p.Patients) AS Patients
 FROM PatientsCTE p
-LEFT JOIN RescueReleaseST rrst ON rrst.PatientId = p.PatientId
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
-LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1 AND p.IsRelease > 0
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId AND p.IsRelease > 0
+LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId AND p.IsRelease > 0
 LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
 LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(prm_Date AS DATE)
@@ -257,4 +260,4 @@ callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
 
-END
+END$$

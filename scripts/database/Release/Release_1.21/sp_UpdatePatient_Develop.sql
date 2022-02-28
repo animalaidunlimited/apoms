@@ -77,4 +77,5 @@ END IF;
 SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
 
 END$$
+
 DELIMITER ;

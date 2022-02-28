@@ -85,5 +85,4 @@ END IF;
 
 SELECT vSuccess AS `success`, prm_PatientMediaItemId AS `mediaItemId`;
 
-
-END
+END$$

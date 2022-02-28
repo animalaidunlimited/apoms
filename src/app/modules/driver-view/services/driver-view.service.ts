@@ -10,6 +10,7 @@ import { timer } from 'rxjs';
 import { combineLatest } from 'rxjs';
 import { Patient } from 'src/app/core/models/patients';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
+import { Console } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -111,11 +112,10 @@ export class DriverViewService extends APIService {
           && !driverViewData.streetTreatCaseId
         ) ||
         (
-          (driverViewData.ambulanceArrivalTime
-          && driverViewData.rescueTime
-          && driverViewData.admissionTime
-          && patient.callOutcome.CallOutcome?.CallOutcomeId === 1
-          && driverViewData.releaseDetailsId  && driverViewData.ambulanceAction!=='Rescue'
+          (
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1
+          && driverViewData.releaseDetailsId
+          && driverViewData.ambulanceAction!=='Rescue'
           && !driverViewData.releasePickupDate
           && !driverViewData.releaseBeginDate
           && !driverViewData.releaseEndDate
@@ -140,9 +140,6 @@ export class DriverViewService extends APIService {
           && !driverViewData.streetTreatCaseId
         ) ||
         (
-          driverViewData.ambulanceArrivalTime &&
-		      driverViewData.rescueTime &&
-          driverViewData.admissionTime &&
           patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
@@ -182,9 +179,6 @@ export class DriverViewService extends APIService {
           !driverViewData.streetTreatCaseId
         ) ||
         (
-          driverViewData.ambulanceArrivalTime &&
-          driverViewData.rescueTime &&
-          driverViewData.admissionTime &&
           patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
@@ -207,9 +201,7 @@ export class DriverViewService extends APIService {
 
         ) ||
         (
-          driverViewData.ambulanceArrivalTime &&
-		      driverViewData.rescueTime &&
-          driverViewData.admissionTime &&
+          patient.callOutcome.CallOutcome?.CallOutcomeId === 1 &&
           driverViewData.releaseDetailsId &&
           driverViewData.releasePickupDate &&
           driverViewData.releaseBeginDate &&
