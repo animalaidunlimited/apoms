@@ -60,7 +60,7 @@ describe('RescueDetailsComponent', () => {
        const patient =
        fb.group({
            patientId: [],
-           position: [0],
+           GUID: [0],
            animalTypeId: [5, Validators.required],
            animalType: ['Puppy', Validators.required],
            problems: fb.array([]),

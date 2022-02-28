@@ -4,7 +4,7 @@ import { Problem } from './problem';
 export interface Patient {
     patientId: number;
     createdDate: string | Date;
-    position: number;
+    GUID: string;
     animalTypeId: number;
     largeAnimal: number | null;
     animalType: string;

@@ -11,6 +11,7 @@ ALTER TABLE AAU.StreetTreatCase CHANGE COLUMN `TeamId` `AssignedVehicleId` INT(1
 ADD INDEX `FK_StreetTreatCaseVehicleId_VehicleVehicleId_idx` (`AssignedVehicleId` ASC) VISIBLE,
 ADD COLUMN `AmbulanceAssignmentTime` DATETIME NULL AFTER `AssignedVehicleId`;
 
+UPDATE AAU.StreetTreatCase SET OrganisationId = 1;
   
 END //
 DELIMITER ;

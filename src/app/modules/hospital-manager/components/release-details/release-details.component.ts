@@ -210,7 +210,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
   }
 
-  valueChages(toggle: any , position: number) : void {
+  valueChanges(toggle: any , position: number) : void {
     switch(position) {
       case 2 : {
         if(toggle.checked) {

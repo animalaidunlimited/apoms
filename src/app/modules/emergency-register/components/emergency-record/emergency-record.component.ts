@@ -256,7 +256,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
                 patientFormArray.controls.forEach(currentPatient => {
                     if (
-                        currentPatient.get('position')?.value === patient.position
+                        currentPatient.get('GUID')?.value === patient.GUID
                     ) {
                         currentPatient.get('patientId')?.setValue(patient.patientId);
 

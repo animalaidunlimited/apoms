@@ -2,10 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
--- CALL AAU.sp_GetDriverViewDetails('2022-01-13T11:59','Jim');
-
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
 BEGIN
 
 
@@ -92,7 +90,7 @@ PatientsCTE AS
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", p.PatientId),
-            JSON_OBJECT("position", p.Position),
+            JSON_OBJECT("GUID", p.GUID),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),
@@ -259,5 +257,4 @@ callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
 
-END$$
-DELIMITER ;
+END

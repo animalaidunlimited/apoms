@@ -25,7 +25,7 @@ describe('DriverViewService', () => {
       visitDay:0,
       patients: [
           {
-              position: 1,
+              GUID: '1',
               createdDate:'',
               duplicateTag:false,
               patientStatusId: 0,

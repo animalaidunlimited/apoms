@@ -22,7 +22,7 @@
 </div>
 
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px" class="option-wrapper">
-    <mat-slide-toggle [checked]="isCommented" (change)="valueChages($event,2)" class="mat-slider">Complainer special instruction</mat-slide-toggle>
+    <mat-slide-toggle [checked]="isCommented" (change)="valueChanges($event,2)" class="mat-slider">Complainer special instruction</mat-slide-toggle>
 
     <mat-form-field appearance="fill" class="select">
         <mat-label>Notes for complainer</mat-label>
@@ -33,7 +33,7 @@
 
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
 
-    <mat-slide-toggle [checked]="specificStaff" class="toggleDiv" (change)="valueChages($event,3)" class="mat-slider">Specific staff</mat-slide-toggle>
+    <mat-slide-toggle [checked]="specificStaff" class="toggleDiv" (change)="valueChanges($event,3)" class="mat-slider">Specific staff</mat-slide-toggle>
 
     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
         <div [@openCloseDiv]= specificStaff [@visibilityDiv]= specificStaff>
@@ -65,7 +65,7 @@
 
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
 
-    <mat-slide-toggle [disabled]='disableStreetTreat' [checked]="isStreetTreat" (change)="valueChages($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
+    <mat-slide-toggle [disabled]='disableStreetTreat' [checked]="isStreetTreat" (change)="valueChanges($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
 
     <div [@openCloseDiv]="isStreetTreat" [@visibilityDiv]="isStreetTreat">
         <app-patient-visit-details

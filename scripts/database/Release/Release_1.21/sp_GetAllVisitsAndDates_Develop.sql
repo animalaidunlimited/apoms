@@ -26,14 +26,14 @@ WITH chart AS (
 		v.Date,
         JSON_OBJECT(
 		"name",ve.VehicleNumber,
-		"value",count(ve.VehicleNumber)
+		"value",count(ve.VehicleId)
         ) AS series
 	FROM AAU.Visit v
 	LEFT JOIN AAU.StreetTreatCase st ON st.StreetTreatCaseId= v.StreetTreatCaseId 
 	INNER JOIN AAU.Vehicle ve ON ve.VehicleId = st.AssignedVehicleId
 	WHERE v.IsDeleted = 0 AND v.Date BETWEEN DATE(NOW()) - INTERVAL 7 DAY AND DATE(NOW()) + INTERVAL 14 DAY
     AND st.OrganisationId = vOrganisationId
-    GROUP BY v.Date, ve.VehicleNumber
+    GROUP BY v.Date, ve.VehicleId
 ),
 vehicleColours AS (
 	SELECT JSON_ARRAYAGG(JSON_OBJECT("name",v.VehicleNumber,"value", v.VehicleColour)) AS vehicleColours FROM AAU.Vehicle v WHERE v.OrganisationId = vOrganisationId

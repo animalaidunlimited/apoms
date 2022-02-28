@@ -35,7 +35,7 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
         sameAsNumber:0,
       },
       createdDate:'2021-12-21 14:55:16',
-      position: 1,
+      GUID: '1',
       largeAnimal:0,
       problemsString:'Anorexia',
       duplicateTag:false,

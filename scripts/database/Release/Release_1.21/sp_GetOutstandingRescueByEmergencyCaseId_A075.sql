@@ -75,7 +75,7 @@ PatientsCTE AS
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", IFNULL(rd.PatientId, p.PatientId)),
-            JSON_OBJECT("position", p.Position),
+            JSON_OBJECT("GUID", p.GUID),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),

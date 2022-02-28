@@ -1111,7 +1111,7 @@ visitsCTE AS
         stc.MainProblemId,
         ec.EmergencyCaseId,
         pr.Priority AS CasePriority,
-        s.Status AS CaseStatus,
+        cs.Status AS CaseStatus,
         at.AnimalType,
         s.Status AS VisitStatus,
 	ROW_NUMBER() OVER (PARTITION BY stc.StreetTreatCaseId ORDER BY v.Date DESC) AS RNum
@@ -1122,6 +1122,7 @@ visitsCTE AS
 	INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = stc.PriorityId
 	INNER JOIN AAU.Status s ON s.StatusId = v.StatusId
+    INNER JOIN AAU.Status cs ON cs.StatusId = stc.StatusId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
 	WHERE stc.StreetTreatCaseId IN (SELECT StreetTreatCaseId FROM casesCTE)
     AND v.isDeleted = 0
@@ -1515,43 +1516,12 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_getCurrentPatientsByEmergencyCaseId !!
-DROP PROCEDURE IF EXISTS AAU.sp_GetCurrentPatientsByEmergencyCaseId !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetCurrentPatientsByEmergencyCaseId( IN prm_EmergencyCaseId INT, OUT prm_Success INT)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 23/02/2020
-Purpose: Used to return a patients by Emergency Case Id.
-
-Modified By: Jim Mackenzie
-Modified On: 28/02/2022
-Modification: Replacing Position with GUID.
-*/
-
-SELECT
-p.PatientId,
-p.EmergencyCaseId,
-p.GUID,
-p.AnimalTypeId,
-p.TagNumber
-FROM AAU.Patient p
-WHERE p.EmergencyCaseId = prm_EmergencyCaseId;
-
-SELECT 1 INTO prm_Success;
-
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
+-- CALL AAU.sp_GetDriverViewDetails('2022-01-13T11:59','Jim');
+
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetDriverViewDetails (IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
 BEGIN
 
 
@@ -1638,7 +1608,7 @@ PatientsCTE AS
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", p.PatientId),
-            JSON_OBJECT("GUID", p.GUID),
+            JSON_OBJECT("position", p.Position),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),
@@ -1805,7 +1775,9 @@ callerDetails,
 Patients))AS DriverViewData
 FROM DriverViewCTE;
 
-ENDDELIMITER !!
+END$$
+DELIMITER ;
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewQuestions !!
 
@@ -2158,7 +2130,7 @@ PatientsCTE AS
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", IFNULL(rd.PatientId, p.PatientId)),
-            JSON_OBJECT("GUID", p.GUID),
+            JSON_OBJECT("position", p.Position),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),
@@ -2453,7 +2425,7 @@ PatientsCTE AS
             JSON_OBJECT("animalType", ant.AnimalType),
             JSON_OBJECT("animalTypeId", p.AnimalTypeId),
             JSON_OBJECT("patientId", p.PatientId),
-            JSON_OBJECT("GUID", p.GUID),
+            JSON_OBJECT("position", p.Position),
             JSON_OBJECT("tagNumber", p.TagNumber),
             JSON_OBJECT("largeAnimal", ant.LargeAnimal),
             JSON_OBJECT("admissionAccepted", tl.InAccepted),
@@ -2604,64 +2576,6 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetPatientByPatientId !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetPatientByPatientId(IN prm_PatientId INT )
-BEGIN
-
-
-/*
-Created By: Jim Mackenzie
-Created On: 29/03/2020
-Purpose: Used to return a Patient by ID.
-
-Modfied By: Jim Mackenzie
-Modfied On: 07/10/2020
-Purpose: Adding patient detail columns
-
-Modfied By: Jim Mackenzie
-Modfied On: 16/02/2021
-Purpose: Adding patient age column
-*/
-
-SELECT	    
-
-JSON_MERGE_PRESERVE(
-	JSON_OBJECT("PatientId", p.PatientId),
-	JSON_OBJECT("GUID", p.GUID),
-	JSON_OBJECT("animalTypeId", p.AnimalTypeId),
-	JSON_OBJECT("tagNumber", p.TagNumber),
-    JSON_OBJECT("createdDate", DATE_FORMAT(ec.CallDateTime,"%Y-%m-%dT%H:%i:%s")),
-	JSON_OBJECT("patientStatusId", p.PatientStatusId),
-	JSON_OBJECT("patientStatusDate", DATE_FORMAT(p.PatientStatusDate, "%Y-%m-%d")),
-	JSON_OBJECT("isDeleted", p.IsDeleted),
-    JSON_OBJECT("PN", p.PN),
-    JSON_OBJECT("suspectedRabies", p.SuspectedRabies),
-    JSON_OBJECT("currentLocation", ps.PatientStatus),    
-    JSON_OBJECT("mainProblems", p.MainProblems),
-    JSON_OBJECT("description", p.Description),
-    JSON_OBJECT("sex", p.Sex),
-    JSON_OBJECT("treatmentPriority", p.TreatmentPriority),
-    JSON_OBJECT("abcStatus", p.ABCStatus),
-    JSON_OBJECT("releaseStatus", p.ReleaseStatus),
-    JSON_OBJECT("age", p.Age),
-    JSON_OBJECT("temperament", p.Temperament),
-    JSON_OBJECT("knownAsName", p.KnownAsName)
-    
-) AS Result   
-    
-FROM AAU.Patient p
-INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
-INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-WHERE p.PatientId = prm_PatientId;
-
-
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetPatientCallerInteractionOutcomes !!
 
 DELIMITER $$
@@ -2674,89 +2588,6 @@ SET vOrganisationId = 1;
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT PatientCallInteractionOutcomeId AS `PatientCallOutcomeId`, PatientCallInteractionOutcome AS `PatientCallOutcome`, IsDeleted, SortOrder FROM AAU.PatientCallerInteractionOutcome WHERE OrganisationId = vOrganisationId;
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
-DROP PROCEDURE IF EXISTS AAU.sp_GetPatientsByEmergencyCaseId !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetPatientsByEmergencyCaseId( IN prm_EmergencyCaseId INT)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 23/02/2020
-Purpose: Used to return all patients for a case by EmergencyCaseId
-
-Modified By: Jim Mackenzie
-Modified On: 27/04/2021
-Purpose: Moving the check for call outcome to patient and adding in admission acceptance flag.
-
-Modified By: Jim Mackenzie
-Modified On: 28/02/2022
-Purpose: Replacing Position with GUID
-*/
-
-
-With PatientCTE AS (
-	SELECT PatientId FROM AAU.Patient WHERE EmergencyCaseId = prm_emergencyCaseId AND IsDeleted = 0
-)
-
-SELECT 
-JSON_OBJECT(
-	"patients",
-	 JSON_ARRAYAGG(
-		JSON_MERGE_PRESERVE(
-			JSON_OBJECT("patientId", p.PatientId),
-			JSON_OBJECT("GUID", p.GUID),
-			JSON_OBJECT("tagNumber", p.TagNumber),
-			JSON_OBJECT("animalTypeId", p.AnimalTypeId),
-			JSON_OBJECT("animalType", at.AnimalType),
-			JSON_OBJECT("updated", false),
-			JSON_OBJECT("deleted", p.IsDeleted),
-			JSON_OBJECT("duplicateTag", false),
-            JSON_OBJECT("admissionAccepted", tl.InAccepted),
-            JSON_OBJECT("admissionArea", tl.InTreatmentAreaId),
-            JSON_OBJECT("callOutcome",
-				JSON_MERGE_PRESERVE(
-					JSON_OBJECT("CallOutcome",
-						JSON_MERGE_PRESERVE(
-						JSON_OBJECT("CallOutcomeId",p.PatientCallOutcomeId),
-						JSON_OBJECT("CallOutcome",co.CallOutcome))
-					),
-					JSON_OBJECT("sameAsNumber",saec.EmergencyNumber)
-                )
-            ),
-            pp.problemsJSON,
-            pp.problemsString				
-			)
-		 )
-) AS Result
-			
-FROM  AAU.Patient p
-INNER JOIN
-	(
-	SELECT pp.patientId, JSON_OBJECT("problems",
-		 JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(                    
-				JSON_OBJECT("problemId", pp.ProblemId),                        
-				JSON_OBJECT("problem", pr.Problem) 
-				)
-			 )
-		) AS problemsJSON,
-        JSON_OBJECT("problemsString", GROUP_CONCAT(pr.Problem)) AS ProblemsString
-	FROM AAU.PatientProblem pp
-	INNER JOIN AAU.Problem pr ON pr.ProblemId = pp.ProblemId
-    WHERE pp.PatientId IN (SELECT PatientId FROM PatientCTE)
-	GROUP BY pp.patientId
-	) pp ON pp.patientId = p.patientId
-INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-LEFT JOIN AAU.EmergencyCase saec ON saec.EmergencyCaseId = p.SameAsEmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1
-LEFT JOIN AAU.CallOutcome co ON co.CallOutcomeId = p.PatientCallOutcomeId
-GROUP BY p.EmergencyCaseId;
 
 END$$
 DELIMITER ;
@@ -4519,105 +4350,6 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_InsertPatient !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_InsertPatient(
-IN prm_Username VARCHAR(128),
-IN prm_EmergencyCaseId INT,
-IN prm_GUID VARCHAR(128),
-IN prm_AnimalTypeId INT,
-IN prm_TagNumber VARCHAR(45),
-IN prm_PatientCallOutcomeId  INT,
-IN prm_SameAsEmergencyNumber INT,
-IN prm_TreatmentPriority INT,
-IN prm_PatientStatusId INT,
-IN prm_PatientStatusDate DATETIME
-)
-BEGIN
-
-DECLARE vOrganisationId INT;
-DECLARE vPatientExists INT;
-DECLARE vPatientId INT;
-DECLARE vTagExists INT;
-DECLARE vSuccess INT;
-DECLARE vTagNumber VARCHAR(20);
-DECLARE vSameAsEmergencyCaseId INT;
-
-SET vPatientExists = 0;
-SET vTagExists = 0;
-SET vTagNumber = NULL;
-SET vSameAsEmergencyCaseId = NULL;
-
-
-SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND GUID = prm_GUID AND IsDeleted = 0;
-
-SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
-
-SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
-
-IF vPatientExists = 0 AND vTagExists = 0 THEN
-
-	INSERT INTO AAU.Patient
-		(
-			OrganisationId,
-			EmergencyCaseId,
-			GUID,
-			AnimalTypeId,
-			TagNumber,
-            PatientCallOutcomeId,
-            SameAsEmergencyCaseId,
-            TreatmentPriority,
-			PatientStatusId,
-            PatientStatusDate
-		)
-		VALUES
-		(
-			vOrganisationId,
-			prm_EmergencyCaseId,
-			prm_GUID,
-			prm_AnimalTypeId,
-			UPPER(prm_TagNumber),
-            prm_PatientCallOutcomeId,
-            vSameAsEmergencyCaseId,
-            prm_TreatmentPriority,
-			prm_PatientStatusId,
-            prm_PatientStatusDate 
-		);
-
-	SELECT 1 INTO vSuccess;
-    SELECT LAST_INSERT_ID(),prm_TagNumber INTO vPatientId,vTagNumber;
-
-    IF IFNULL(prm_TagNumber,'') <> '' THEN
-		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;
-    END IF;
-
-
-
-	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username,vPatientId,'Patient','Insert', NOW());
-
-ELSEIF vPatientExists > 0 THEN
-
-	SELECT 2 INTO vSuccess;
-
-ELSEIF vTagExists > 0 THEN
-
-	SELECT 3 INTO vSuccess;
-
-ELSE
-
-	SELECT 4 INTO vSuccess;
-END IF;
-
-SELECT vPatientId AS patientId, vSuccess AS success , vTagNumber;
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_InsertReleaseDetails !!
 
 DELIMITER $$
@@ -5759,86 +5491,6 @@ SELECT vSuccess AS `success`, prm_PatientMediaItemId AS `mediaItemId`;
 
 ENDDELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatient !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdatePatient(
-									IN prm_UserName VARCHAR(64),
-									IN prm_PatientId INT,
-									IN prm_EmergencyCaseId INT,
-									IN prm_GUID VARCHAR(128),
-									IN prm_AnimalTypeId INT,
-                                    IN prm_IsDeleted INT,
-                                    IN prm_TagNumber VARCHAR(45),
-                                    IN prm_PatientCallOutcomeId INT,
-                                    IN prm_SameAsEmergencyNumber INT,
-									IN prm_PatientStatusDate DATETIME
-)
-BEGIN
-
-DECLARE vOrganisationId INT;
-DECLARE vPatientExists INT;
-DECLARE vPatientId INT;
-DECLARE vTagNumber VARCHAR(45);
-DECLARE vExistingTagNumber VARCHAR(45);
-DECLARE vSameAsEmergencyCaseId INT;
-DECLARE vSuccess INT;
-
-SET vTagNumber = NULL;
-SET vSameAsEmergencyCaseId = NULL;
-
-SELECT COUNT(1) INTO vPatientExists
-FROM AAU.Patient WHERE PatientId <> prm_PatientId
-AND EmergencyCaseId = prm_EmergencyCaseId
-AND GUID = prm_GUID AND IsDeleted = 0;
-
-SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
-
-SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
-
-IF vPatientExists = 0 THEN
-
-	UPDATE AAU.Patient SET
-			GUID		= prm_GUID,
-			AnimalTypeId	= prm_AnimalTypeId,
-			TagNumber		= IF(prm_IsDeleted = 1, NULL, UPPER(prm_TagNumber)),
-            PatientCallOutcomeId = prm_PatientCallOutcomeId,
-            SameAsEmergencyCaseId = vSameAsEmergencyCaseId,
-            IsDeleted		= prm_IsDeleted,
-            PatientStatusDate = prm_PatientStatusDate,
-            DeletedDate		= CASE
-								WHEN prm_IsDeleted = FALSE THEN NULL
-                                WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
-							  END
-	WHERE PatientId = prm_PatientId;
-
-    -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
-		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
-    END IF;
-
-	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
-
-    SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
-
-ELSEIF vPatientExists >= 1 THEN
-
-	SELECT 2 INTO vSuccess;
-
-ELSE
-
-	SELECT 3 INTO vSuccess;
-END IF;
-
-SELECT vPatientId AS patientId, vTagNumber, vSuccess AS success;
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateReleaseDetails !!
 
 DELIMITER $$
@@ -6162,10 +5814,10 @@ SET vUpdateSuccess = 0;
 SELECT COUNT(1), Password INTO vUserCount, vPassword FROM AAU.User WHERE UserId = prm_UserId;
 
 -- Check that the incoming username doesn't exist
-SELECT COUNT(1) INTO vUsernameCount FROM AAU.User WHERE UserId <> prm_UserId AND UserName = prm_UserName;
+SELECT COUNT(1) INTO vUsernameCount FROM AAU.user WHERE UserId <> prm_UserId AND UserName = prm_UserName;
 
 -- Check that the incoming first name, surname and telephone don't already exist
-SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
+SELECT COUNT(1) INTO vComboKeyCount FROM AAU.user WHERE UserId <> prm_UserId	AND	FirstName	= prm_FirstName
 																				AND	Surname		= prm_Surname
 																				AND	Telephone	= prm_Telephone;
 

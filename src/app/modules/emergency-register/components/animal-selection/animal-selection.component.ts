@@ -19,6 +19,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -167,7 +168,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
         const patient =
             this.fb.group({
                 patientId: [],
-                position: [(this.patients?.length || 0) + 1],
+                GUID: [generateUUID()],
                 animalTypeId: ['', Validators.required],
                 animalType: ['', Validators.required],
                 problems: this.fb.array([]),
@@ -223,7 +224,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
         const newPatient = this.fb.group({
             patientId: [],
-            position: [],
+            GUID: [],
             animalTypeId: ['', Validators.required],
             animalType: ['', Validators.required],
             problems,

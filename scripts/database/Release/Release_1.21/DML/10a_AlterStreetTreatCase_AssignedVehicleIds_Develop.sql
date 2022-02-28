@@ -37,6 +37,12 @@ UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST1 WHERE AssignedVehicleId 
 UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = 2;
 UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = 3;
 
+UPDATE AAU.StreetTreatCase st
+INNER JOIN AAU.Patient p ON p.PatientId = st.PatientId
+INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+SET st.AmbulanceAssignmentTime = ec.CallDateTime
+WHERE st.AmbulanceAssignmentTime IS NULL;
+
 ALTER TABLE `AAU`.`StreetTreatCase`
 ADD CONSTRAINT `FK_StreetTreatCaseVehicleId_VehicleVehicleId`
   FOREIGN KEY (`AssignedVehicleId`)
