@@ -35,9 +35,9 @@ SELECT
 				    "mainProblem",s.MainProblemId,
 				    "adminNotes",s.AdminComments,
 				    "streetTreatCaseStatus",s.StatusId,
-                    "patientReleaseDate",IF(p.PatientStatusId = 8, p.PatientStatusDate, null),
+                    "patientReleaseDate",IF(p.PatientStatusId IN (2,8), p.PatientStatusDate, null),
 					"visits",
-					JSON_ARRAYAGG(
+					IF(MAX(v.VisitId) IS NOT NULL, JSON_ARRAYAGG(
 						JSON_OBJECT(
 								"visitId",v.VisitId,
 								"visit_day",v.Day,
@@ -47,14 +47,15 @@ SELECT
                                 "visit_date",v.Date,
                                 "operator_notes",v.OperatorNotes
 						 )
-					)
+					), JSON_ARRAY())
+                    
 				)
 		) 
 AS Result
 	FROM AAU.StreetTreatCase s
         INNER JOIN AAU.Patient p ON p.PatientId = s.PatientId
         INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-        LEFT JOIN AAU.Visit v  ON s.StreetTreatCaseId = v.StreetTreatCaseId AND (v.IsDeleted IS NULL OR v.IsDeleted = 0)
+        LEFT JOIN AAU.Visit v ON s.StreetTreatCaseId = v.StreetTreatCaseId AND IFNULL(v.IsDeleted,0) = 0
 	WHERE 
 		s.PatientId =  prm_PatientId
 	GROUP BY s.StreetTreatCaseId;

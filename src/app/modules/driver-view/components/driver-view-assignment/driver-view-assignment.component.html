@@ -22,7 +22,6 @@
                         'yellow' : assignments.streetTreatPriorityId == 3}">
                     </div>
 
-
                     <p>EmNo:{{assignments.emergencyNumber}}</p>
 
                     <div fxLayout='row wrap' fxLayoutAlign='start'>
@@ -65,11 +64,11 @@
                         Arrived
                         <mat-icon *ngIf = "assignments.ambulanceArrivalTime" class="selectionButton">check_circle</mat-icon>
                     </button>
-                    <button (click)="togglebuttonSelection('Rescued', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.ambulanceArrivalTime" (click)="togglebuttonSelection('Rescued', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Rescued
                         <mat-icon *ngIf = "assignments.rescueTime" class="selectionButton">check_circle</mat-icon>
                     </button>
-                    <button (click)="togglebuttonSelection('Admitted', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.ambulanceArrivalTime || !assignments.rescueTime" (click)="togglebuttonSelection('Admitted', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Admitted
                         <mat-icon *ngIf="assignments.admissionTime" class="selectionButton">check_circle</mat-icon>
                     </button>
@@ -82,17 +81,17 @@
                         <mat-icon *ngIf = "assignments.releasePickupDate" class="selectionButton">check_circle</mat-icon>
                     </button>
 
-                    <button (click)="togglebuttonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.releasePickupDate" (click)="togglebuttonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Arrived
                         <mat-icon *ngIf = "assignments.releaseBeginDate" class="selectionButton">check_circle</mat-icon>
                     </button>
 
-                    <button (click)="togglebuttonSelection('Released', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.releasePickupDate || !assignments.releaseBeginDate" (click)="togglebuttonSelection('Released', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Released
                         <mat-icon *ngIf="assignments.releaseEndDate" class="selectionButton">check_circle</mat-icon>
                     </button>
 
-                    <button (click)="togglebuttonSelection('Treated', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.releaseEndDate || !assignments.releasePickupDate || !assignments.releaseBeginDate" (click)="togglebuttonSelection('Treated', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Treated
                         <mat-icon *ngIf="assignments.visitEndDate" class="selectionButton">check_circle</mat-icon>
                     </button>
@@ -105,11 +104,11 @@
                         Picked up
                         <mat-icon *ngIf = "assignments.releasePickupDate" class="selectionButton">check_circle</mat-icon>
                     </button>
-                    <button (click)="togglebuttonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.releasePickupDate" (click)="togglebuttonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Arrived
                         <mat-icon *ngIf = "assignments.releaseBeginDate" class="selectionButton">check_circle</mat-icon>
                     </button>
-                    <button (click)="togglebuttonSelection('Released', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="!assignments.releasePickupDate || !assignments.releaseBeginDate" (click)="togglebuttonSelection('Released', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Released
                         <mat-icon *ngIf="assignments.releaseEndDate" class="selectionButton">check_circle</mat-icon>
                     </button>
@@ -122,7 +121,7 @@
                         Arrived
                         <mat-icon *ngIf = "assignments.visitBeginDate" class="selectionButton">check_circle</mat-icon>
                     </button>
-                    <button (click)="togglebuttonSelection('Treated', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
+                    <button [disabled]="assignments.visitBeginDate" (click)="togglebuttonSelection('Treated', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Treated
                         <mat-icon *ngIf="assignments.visitEndDate" class="selectionButton">check_circle</mat-icon>
                     </button>

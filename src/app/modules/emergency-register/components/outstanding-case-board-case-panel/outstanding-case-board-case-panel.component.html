@@ -1,7 +1,7 @@
 
 <mat-expansion-panel
   [expanded]="outstandingCase?.searchCandidate == true"
-  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction === 'Release'}"
+  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction !== 'Rescue'}"
   hideToggle>
     <mat-expansion-panel-header
       [ngClass]="{'border-red' : outstandingCase?.emergencyCodeId == 1,
@@ -16,7 +16,7 @@
               (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
-          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction === 'Release'">
+          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Rescue'">
             <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
           </div>
 
@@ -24,7 +24,7 @@
             {{outstandingCase?.emergencyNumber}}
             <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
               *ngFor="let patient of outstandingCase?.patients">
-              ({{patient.animalType}})
+              ({{outstandingCase?.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
             </div>
           </div>
 

@@ -242,7 +242,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 result.failure++;
             }
         });
-
+        
         // Check all of the patients and their problems succeeded
         // If then don't succeed, build and show an error message
         resultBody.patients.forEach((patient: PatientResponse) => {
@@ -255,19 +255,17 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                 ) as FormArray;
 
                 patientFormArray.controls.forEach(currentPatient => {
-                    if (
-                        currentPatient.get('GUID')?.value === patient.GUID
-                    ) {
-                        currentPatient.get('patientId')?.setValue(patient.patientId);
+                    if (currentPatient.get('GUID')?.value === patient.GUID ) {
 
+                        currentPatient.get('patientId')?.setValue(patient.patientId);
                         currentPatient.get('tagNumber')?.setValue(patient.tagNumber);
+                        currentPatient.get('tagNumber')?.updateValueAndValidity({emitEvent: false});
                     }
                 });
             }
             else if(patient.admissionSuccess === -1) {
                 result.failure = 2;
             }
-
             else {
                 result.message +=
                     'Error adding the patient: ' +

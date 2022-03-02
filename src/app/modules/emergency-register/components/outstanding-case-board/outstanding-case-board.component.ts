@@ -6,7 +6,6 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChildren } from '@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { ThemePalette } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, takeUntil, map } from 'rxjs/operators';

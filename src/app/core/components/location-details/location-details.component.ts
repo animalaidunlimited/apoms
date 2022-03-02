@@ -216,9 +216,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             );
         }
 
-        this.clearAutocomplete();
-
-
     }
 
     // The Google maps Autocomplete isn't meant to be used on a page that has data cleared from it.
@@ -248,6 +245,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         this.markers.push(marker);
         this.updateLocation(coordinates.latitude, coordinates.longitude);
+        this.changeDetector.detectChanges();
     }
 
     updateLocation(latitude: number, longitude: number) {

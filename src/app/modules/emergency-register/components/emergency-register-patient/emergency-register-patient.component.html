@@ -35,7 +35,7 @@
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
 
-        <input placeholder="Main problem(s)" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
+        <input placeholder="Main problem(s)" tabindex="9" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
           [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)"
           (keydown.Shift.Tab)="focusAnimalType($event)">
 
@@ -76,7 +76,7 @@
 
       <mat-label>Tag number</mat-label>
 
-      <input matInput #tagNumber  formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
+      <input matInput #tagNumber formControlName="tagNumber" [errorStateMatcher]="errorMatcher">
 
       <mat-error *ngIf="patientForm.get('tagNumber')?.hasError('tagNumberTaken')">
         The tag number already exists.

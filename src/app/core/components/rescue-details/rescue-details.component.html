@@ -11,6 +11,7 @@
         <mat-form-field>
             <mat-label>Code</mat-label>
             <mat-select tabindex="10" [formControl]="code" [errorStateMatcher]="errorMatcher"
+                #emergencyCode
                 [compareWith]="compareEmergencyCodes" (keydown)="selectEmergencyCode($event)">
 
                 <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
@@ -47,10 +48,22 @@
 
             <mat-form-field>
                 <mat-label>Ambulance assigned time</mat-label>
-                <input tabindex="12" #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime" type="datetime-local"
+                <input tabindex="12" #ambulanceAssignmentTimeField formControlName="ambulanceAssignmentTime"
+                [min]="callDateTime?.value || currentTime"
+                [max]="rescueTime?.value || currentTime"
+                type="datetime-local"
                 name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
+                (blur)="updateTimes()"
                 placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
-
+                    <mat-error *ngIf="ambulanceAssignmentTime?.hasError('ambulanceAssignedAfterRescue')">
+                        Ambulance assigned after rescue!
+                    </mat-error>
+                    <mat-error *ngIf="ambulanceAssignmentTime?.hasError('ambulanceAssignedAfterArrival')">
+                        Ambulance assigned after arrival!
+                    </mat-error>
+                    <mat-error *ngIf="ambulanceAssignmentTime?.hasError('ambulanceAssignedBeforeCall')">
+                        Ambulance assigned before call!
+                    </mat-error>
             </mat-form-field>
 
             <mat-form-field>
@@ -95,8 +108,8 @@
                 formControlName="ambulanceArrivalTime"
                 type="datetime-local"
                 name="ambulanceArrivalTime"
-                [min]="currentCallDateTime"
-                [max]="currentRescueTime"
+                [min]="callDateTime?.value || currentTime"
+                [max]="rescueTime?.value || currentTime"
                 (focus)="setInitialTime($event)"
                 (blur)="updateTimes()"
                 placeholder="Ambulance arrival time"
@@ -110,9 +123,11 @@
             </mat-form-field>
 
             <mat-form-field>
-                        <input tabindex="16" formControlName="rescueTime" type="datetime-local" name="rescueTime"
-                        [min]="currentCallDateTime" [max]="currentAdmissionTime"
-                        (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher" #rescueTimeField matInput>
+                        <input tabindex="16" #rescueTimeField
+                        formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                        [min]="callDateTime?.value || currentTime" [max]="admissionTime?.value || currentTime"
+                        (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher"
+                         matInput>
                             <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
                             Rescue before call!
                             </mat-error>
@@ -125,7 +140,7 @@
 
 
         <mat-form-field>
-                <input tabindex="17" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="currentRescueTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+                <input tabindex="17" formControlName="admissionTime" name="admissionTime" type="datetime-local" [min]="rescueTime?.value || currentTime" [max]="currentTime" (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
 
                 <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
                     Admission before call!
@@ -138,5 +153,5 @@
 
     </div>
 
-    
+
 </form>

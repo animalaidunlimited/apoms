@@ -30,6 +30,15 @@ Purpose: Altering status based upon whether the admission area has been added
 
 ***************************************************************************/
 
+DECLARE vOrganisationId INT;
+DECLARE vTimeNow DATETIME;
+SET vOrganisationId = 1;
+
+SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vTimeNow
+FROM  AAU.Organisation o
+INNER JOIN AAU.EmergencyCase ec ON ec.OrganisationId = o.OrganisationId
+WHERE ec.EmergencyCaseId = prm_EmergencyCaseId LIMIT 1;
+
  WITH RescueReleaseSTPatientId AS (
 	SELECT PatientId
     FROM AAU.Patient
@@ -69,7 +78,8 @@ PatientsCTE AS
     SELECT DISTINCT
 		p.EmergencyCaseId,
         MAX(p.PatientCallOutcomeId) AS `PatientCallOutcomeId`,
-        IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+        MAX(COALESCE(rd.PatientId, std.PatientId, 0)) AS `IsReleased`,
+        COALESCE(rd.PatientId, std.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -126,7 +136,7 @@ PatientsCTE AS
     ) pmi ON pmi.PatientId = p.PatientId
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseSTPatientId)
     GROUP BY p.EmergencyCaseId,
-    IFNULL(rd.PatientId, p.EmergencyCaseId)
+    COALESCE(rd.PatientId, std.PatientId, p.EmergencyCaseId)
 )
 ,
 DriverViewObject AS
@@ -185,11 +195,7 @@ DriverViewObject AS
             p.PatientId,
             rd.BeginDate,
             rd.EndDate,
-			CASE WHEN
-				rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL AND v.VisitId IS NOT NULL THEN v.VisitId
-                WHEN rd.ReleaseDetailsId IS NULL AND std.StreetTreatCaseId IS NOT NULL AND rd.ReleaseDetailsId IS NOT NULL AND rd.EndDate IS NOT NULL THEN v.VisitId
-                ELSE NULL
-			END visitId,
+			v.VisitId,
             v.VisitBeginDate,
             v.VisitEndDate,
             v.VisitTypeId,
@@ -215,12 +221,12 @@ DriverViewObject AS
 FROM PatientsCTE p
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
-LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND p.IsReleased > 0 AND Admission = 1
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId AND p.IsReleased > 0
+LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId AND p.IsReleased > 0
 LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
-LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId
+LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(vTimeNow AS DATE)
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId
 
 ),
@@ -232,9 +238,7 @@ FROM AAU.VehicleShift vs
 INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
 INNER JOIN AAU.User u ON u.UserId = vsu.UserId
 WHERE vs.VehicleId IN (SELECT driverAssignedVehicleId FROM DriverViewObject )
-AND vs.StartDate<= NOW() AND vs.EndDate >= NOW() AND IFNULL(vs.IsDeleted,0) = 0
--- GROUP BY u.UserId,
--- vs.VehicleId
+AND vs.StartDate<= vTimeNow AND vs.EndDate >= vTimeNow AND IFNULL(vs.IsDeleted,0) = 0
 GROUP BY vs.VehicleId
 ),
 DriverViewCTE AS (

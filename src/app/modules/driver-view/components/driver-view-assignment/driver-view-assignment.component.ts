@@ -132,6 +132,8 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   openDriverActionDialog(formBuilderArrayVal: any,assignmentFormGroup: FormGroup, patientsArray: Patient[] , subAction: string) {
 
+
+
     const dialogRef = this.dialog.open(DriverActionDialogComponent, {
       disableClose: true,
       minWidth: '100vw',

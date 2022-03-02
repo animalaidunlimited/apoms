@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDriverViewDetails !!
 
--- CALL AAU.sp_GetDriverViewDetails('2022-02-28T11:23','jim');
+-- CALL AAU.sp_GetDriverViewDetails('2022-03-01T11:23','jim');
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetDriverViewDetails(IN prm_Date DATETIME, IN prm_Username VARCHAR(45))
@@ -11,10 +11,14 @@ BEGIN
 
 DECLARE vVehicleId INT;
 DECLARE vUserId INT;
+DECLARE vTimeNow DATETIME;
+DECLARE vDateNow DATETIME;
 
-SELECT UserId INTO vUserId
-FROM AAU.User
-WHERE UserName = prm_Username;
+SELECT u.UserId, CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset), CAST(CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) AS DATE) INTO vUserId, vTimeNow, vDateNow
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE u.UserName = prm_Username LIMIT 1;
+
 
 WITH VehicleIdCTE AS
 (
@@ -30,16 +34,17 @@ RescueReleaseST AS
 (SELECT p.PatientId, 'Rescue' AmbulanceAction
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), CURDATE())) )
+WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), vDateNow)) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 AND p.PatientCallOutcomeId IS NULL
+AND p.IsDeleted = 0
 
 
 UNION
 
 SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
 FROM AAU.ReleaseDetails rd
-WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(DATE_ADD(CAST(rd.EndDate AS DATE), INTERVAL 1 DAY), CURDATE()) )
+WHERE ( CAST(prm_Date AS DATE) >= CAST(rd.AmbulanceAssignmentTime AS DATE) AND CAST(prm_Date AS DATE) <= IFNULL(DATE_ADD(CAST(rd.EndDate AS DATE), INTERVAL 1 DAY), vDateNow) )
 AND rd.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 
 UNION
@@ -50,6 +55,8 @@ INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = st.StreetTreatCaseId
 LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = st.PatientId AND (rd.IsStreetTreatRelease = 1 AND rd.AssignedVehicleId = st.AssignedVehicleId)
 WHERE ( CAST(v.Date AS DATE) = CAST(prm_Date AS DATE) AND st.AmbulanceAssignmentTime IS NOT NULL AND v.VisitId IS NOT NULL )
 AND st.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
+AND v.IsDeleted = 0
+AND st.IsDeleted = 0
 )
 ,
 EmergencyCaseIds AS
@@ -57,6 +64,7 @@ EmergencyCaseIds AS
 SELECT EmergencyCaseId
 FROM AAU.Patient
 WHERE PatientId IN (SELECT PatientId FROM RescueReleaseST)
+AND IsDeleted = 0
 ),
 CallerCTE AS
 (
@@ -85,9 +93,9 @@ PatientsCTE AS
     SELECT DISTINCT
 		p.EmergencyCaseId,
         p.PatientCallOutcomeId AS `PatientCallOutcomeId`,        
-		IFNULL(rd.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
+		COALESCE(rd.PatientId, std.PatientId, p.EmergencyCaseId) AS `PatientId`, -- Tricking the query to group rescues together, but keep releases apart.
         MIN(rrst.AmbulanceAction) AS `AmbulanceAction`,
-        MAX(IFNULL(rd.PatientId, 0)) AS `IsRelease`,
+        MAX(COALESCE(rd.PatientId, std.PatientId, 0)) AS `IsReleased`,
 		JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
             JSON_OBJECT("animalType", ant.AnimalType),
@@ -146,7 +154,7 @@ PatientsCTE AS
     WHERE p.PatientId IN (SELECT PatientId FROM RescueReleaseST)
     GROUP BY p.EmergencyCaseId,
 		p.PatientCallOutcomeId,
-        IFNULL(rd.PatientId, p.EmergencyCaseId)        
+        COALESCE(rd.PatientId, std.PatientId, p.EmergencyCaseId)   
 ),
 DriverViewCTE AS
 (
@@ -202,12 +210,12 @@ SELECT
 FROM PatientsCTE p
 LEFT JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
 LEFT JOIN CallerCTE c ON c.EmergencyCaseId = ec.EmergencyCaseId
-LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1 AND p.IsRelease > 0
-LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId AND p.IsRelease > 0
-LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId AND p.IsRelease > 0
+LEFT JOIN AAU.TreatmentList tl ON tl.PatientId = p.PatientId AND tl.Admission = 1 AND p.IsReleased > 0
+LEFT JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId AND p.IsReleased > 0
+LEFT JOIN AAU.StreetTreatCase std ON std.PatientId = p.PatientId AND p.IsReleased > 0 AND std.IsDeleted = 0
 LEFT JOIN AAU.Priority p ON p.PriorityId = std.PriorityId
 LEFT JOIN AAU.MainProblem mp ON mp.MainProblemId = std.MainProblemId
-LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = CAST(prm_Date AS DATE)
+LEFT JOIN AAU.Visit v ON v.StreetTreatCaseId = std.StreetTreatCaseId AND v.Date = vDateNow AND v.IsDeleted = 0
 LEFT JOIN AAU.EmergencyCode ecd ON ecd.EmergencyCodeId = ec.EmergencyCodeId)
 
 SELECT

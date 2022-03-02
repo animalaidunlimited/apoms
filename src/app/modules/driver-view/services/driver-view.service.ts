@@ -60,6 +60,8 @@ export class DriverViewService extends APIService {
           this.getAssignmentStatus(data);
         })
 
+        localStorage.removeItem('driverViewData');
+
         localStorage.setItem('driverViewData', JSON.stringify(response));
 
         this.driverViewDetails.next(JSON.parse(JSON.parse(JSON.stringify(localStorage.getItem('driverViewData')))));
@@ -227,7 +229,6 @@ export class DriverViewService extends APIService {
 
   }
 
-
   public async saveDriverViewDataFromLocalStorage(driverViewUpdatedData: DriverAssignment) {
 
     await this.put(driverViewUpdatedData).then((val:SuccessOnlyResponse)=> {
@@ -252,9 +253,7 @@ export class DriverViewService extends APIService {
     }
     });
   }
-
-
-
+  
 
   public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
 

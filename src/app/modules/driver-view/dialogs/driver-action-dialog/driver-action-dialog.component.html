@@ -24,6 +24,10 @@
                 }"
                 (click)="setCurrentDateTime(control.formControlName)">
 
+                <div *ngIf="!actionButtonEnabled" style="color: red; font-size:small">
+                    Error: Unable to treat; Please add a StreetTreat visit for today.
+                </div>
+
 
                 <mat-error *ngIf="formGroup.get(control.formControlName)?.hasError('ambulanceArrivalBeforeCallDatetime')">
                     Ambulance arrival before call!

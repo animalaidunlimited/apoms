@@ -40,8 +40,8 @@ formGroup = this.data.formGroup ;
 
 patientFormGroup = this.data.formGroup?.get('patients');
 
-
-isStreetTreat!: boolean;
+  actionButtonEnabled = true;
+  isStreetTreat!: boolean;
   private ngUnsubscribe = new Subject();
 
   constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
@@ -59,10 +59,15 @@ isStreetTreat!: boolean;
 
       if(fb.actionStatus === 'StreetTreat' || fb.actionStatus === 'STRelease') {
         this.isStreetTreat = true;
+
+        if(!this.formGroup.get('visitId')?.value){
+            this.actionButtonEnabled = false;
+        }
       }
       else {
         this.isStreetTreat = false;
       }
+
 
       if(fb.type==='datetime-local') {
         this.dateTimeChanged =  this.formGroup.get(fb.formControlName)?.value ? true : false;
@@ -171,6 +176,7 @@ isStreetTreat!: boolean;
       if(fb.subAction === 'Treated') {
         this.minTime = this.formGroup.get('visitBeginDate')?.value ? this.formGroup.get('visitBeginDate')?.value :  this.formGroup.get('callDateTime')?.value;
         this.maxTime = getCurrentTimeString();
+
       }
 
 
@@ -212,6 +218,16 @@ isStreetTreat!: boolean;
   setCurrentDateTime(formControlName: string) {
 
     this.formGroup.get(formControlName)?.setValue(getCurrentTimeString());
+
+    if(formControlName === 'visitEndDate'){
+      const visitBegin = this.formGroup.get('visitBeginDate');
+      const releaseDate = this.formGroup.get('releaseEndDate')?.value;
+
+      if(!visitBegin?.value) {
+        visitBegin?.setValue(releaseDate);
+      }
+
+    }
 
     this.dateTimeChanged = true;
 

@@ -33,7 +33,6 @@ BEGIN
             ) 
             OR
             (
-            AssignedRescueVehicleId IS NOT NULL AND
             CallOutcomeId IS NOT NULL AND
 			ReleaseDetailsId IS NOT NULL AND
             RequestedUser IS NOT NULL AND
@@ -51,9 +50,6 @@ BEGIN
             ) 
             OR
             (
-            AssignedRescueVehicleId IS NOT NULL AND
-            RescueTime IS NOT NULL AND
-            AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
             RequestedUser IS NOT NULL AND 
@@ -72,9 +68,6 @@ BEGIN
             )
             OR
             (
-            AssignedRescueVehicleId IS NOT NULL AND
-            RescueTime IS NOT NULL AND
-            AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
             RequestedUser IS NOT NULL AND 
@@ -92,9 +85,6 @@ BEGIN
             )
             OR
             (
-            AssignedRescueVehicleId IS NOT NULL AND
-            RescueTime IS NOT NULL AND
-            AdmissionTime IS NOT NULL AND
             ReleaseDetailsId IS NOT NULL AND
             RequestedDate IS NOT NULL AND
             RequestedUser IS NOT NULL AND 

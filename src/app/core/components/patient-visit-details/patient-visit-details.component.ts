@@ -200,6 +200,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		.subscribe((response) => {
 
 			if (response?.streetTreatCaseId) {
+
+				this.showVisitDate = (response.autoAdded || !!response.patientReleaseDate);
+
+
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
 						/**
@@ -208,8 +212,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						 * else
 						 * tentative dates like day 0, day 1
 						 */
-
-						this.showVisitDate = (!!visit.visit_date || response.autoAdded || !!response.patientReleaseDate);
 
 						if (visit.visit_date || this.showVisitDate) {
 
