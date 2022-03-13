@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicles !!
 
+CALL AAU.sp_GetVehicles('Jim')
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetVehicles(IN prm_Username VARCHAR(45))
 BEGIN
@@ -34,7 +36,7 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus),
     JSON_OBJECT("imageURL", vehicleDetails.VehicleImage),
     JSON_OBJECT("streetTreatDefaultVehicle", vehicleDetails.streetTreatDefaultVehicle),
-    JSON_OBJECT("streetTreatVehicle", vehicleDetails.streetTreatVehicle),
+    JSON_OBJECT("streetTreatVehicle", IFNULL(vehicleDetails.streetTreatVehicle, 0)),
     JSON_OBJECT("vehicleColour", IFNULL(vehicleDetails.vehicleColour,"#000000"))
 )) AS vehicleList
 FROM

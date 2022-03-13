@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithVisitByDate !!
 
+-- CALL AAU.sp_GetActiveCasesWithVisitByDate('2022-03-03');
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesWithVisitByDate (IN prm_VisitDate DATE)
 BEGIN

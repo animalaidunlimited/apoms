@@ -41,7 +41,7 @@ SELECT
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId,
+            c.AssignedVehicleId AS `VehicleId`,
             ec.Latitude,
             ec.Longitude,
 			ec.Name AS ComplainerName,

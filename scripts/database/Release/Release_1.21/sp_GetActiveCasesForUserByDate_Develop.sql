@@ -2,8 +2,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUserByDate !!
 
+-- CALL AAU.sp_GetActiveCasesForUserByDate('Jim', '2022-03-03');
+
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForUserByDate(	IN prm_userId INT,
+CREATE PROCEDURE AAU.sp_GetActiveCasesForUserByDate(	IN prm_username VARCHAR(64),
 														IN prm_visitDate DATE
 														)
 BEGIN
@@ -27,9 +29,15 @@ Description: Replacing team with assigned vehicle.
 */
 
 DECLARE prmVisitDate DATE;
+DECLARE vUserId INT;
+DECLARE vTimeNow DATETIME;
 
 	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
-    -- SELECT CURDATE() INTO prmVisitDate;
+    
+    SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset), UserId INTO vTimeNow, vUserId
+	FROM AAU.User u
+	INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+	WHERE u.UserName = prm_username LIMIT 1;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -47,14 +55,14 @@ DECLARE prmVisitDate DATE;
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId,
+            c.AssignedVehicleId AS `VehicleId`,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
             ec.Number AS ComplainerNumber,
             c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
@@ -65,7 +73,7 @@ DECLARE prmVisitDate DATE;
 		SELECT ec.EmergencyCaseId, 
         c.Name, 
         c.Number,
-        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
+        ec.CallDateTime,
         ec.Latitude, 
         ec.Longitude, 
         ec.Location, 
@@ -79,8 +87,9 @@ DECLARE prmVisitDate DATE;
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId
-    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = prm_userId
+    INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId
+	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId AND vTimeNow BETWEEN vs.StartDate AND vs.EndDate
+    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,

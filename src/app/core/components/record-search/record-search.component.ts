@@ -3,7 +3,7 @@ import { CaseService } from 'src/app/modules/emergency-register/services/case.se
 import { MatDialog } from '@angular/material/dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, skip, takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { UserPreferences } from '../../models/user';
 
@@ -62,7 +62,7 @@ export class RecordSearchComponent implements OnDestroy {
         this.searchResults$ = this.caseService.searchCases(searchQuery);
 
         this.searchResults$
-        .pipe(takeUntil(this.ngUnsubscribe))
+        .pipe(takeUntil(this.ngUnsubscribe), skip(1))
         .subscribe((value:SearchResponse[]) => {
 
             if(!value){
@@ -73,6 +73,7 @@ export class RecordSearchComponent implements OnDestroy {
                 return new Date(date2.CallDateTime).valueOf() - new Date(date1.CallDateTime).valueOf();
             });
             this.loading = false;
+
         });
 
     }

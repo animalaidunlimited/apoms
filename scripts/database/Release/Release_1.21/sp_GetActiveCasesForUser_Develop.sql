@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUser !!
 
+-- CALL AAU.sp_GetActiveCasesForUser('Jim');
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesForUser( IN prm_username VARCHAR(45) )
 BEGIN
@@ -40,14 +42,14 @@ Description: Replacing team with assigned vehicle.
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId,
+            c.AssignedVehicleId AS `VehicleId`,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
             ec.Number AS ComplainerNumber,
             c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
@@ -56,9 +58,9 @@ Description: Replacing team with assigned vehicle.
     INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
     INNER JOIN (
 		SELECT ec.EmergencyCaseId, 
+        ec.CallDateTime,
         c.Name, 
         c.Number,
-        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
         ec.Latitude, 
         ec.Longitude, 
         ec.Location, 

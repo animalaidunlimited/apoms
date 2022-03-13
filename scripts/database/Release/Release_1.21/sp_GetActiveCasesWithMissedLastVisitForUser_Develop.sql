@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithMissedLastVisitForUser !!
 
+-- CALL AAU.sp_GetActiveCasesWithMissedLastVisitForUser('Jim')
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesWithMissedLastVisitForUser ( IN prm_UserName VARCHAR(45) )
 BEGIN
@@ -24,6 +26,12 @@ Modified On: 17/02/2022
 Description: Replacing team with assigned vehicle.
 */
 
+	DECLARE vTimeNow DATETIME;
+
+    SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vTimeNow
+	FROM AAU.User u
+	INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+	WHERE u.UserName = prm_UserName LIMIT 1;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -41,7 +49,7 @@ Description: Replacing team with assigned vehicle.
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId,
+            c.AssignedVehicleId AS `VehicleId`,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
@@ -72,9 +80,11 @@ Description: Replacing team with assigned vehicle.
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId
-    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = prm_userId
-    INNER JOIN AAU.USER u ON u.UserName = prm_UserName AND u.UserId = vsu.UserId
+    INNER JOIN AAU.User u ON u.UserName = prm_UserName
+    INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId
+	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId AND vTimeNow BETWEEN vs.StartDate AND vs.EndDate
+    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = u.UserId
+    
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,
@@ -106,7 +116,7 @@ FROM
 			SELECT StreetTreatCaseId, MAX(Date) AS LastVisit
 			FROM AAU.Visit
 			WHERE IsDeleted = FALSE
-			AND Date <= CURDATE()
+			AND Date <= CAST(vTimeNow AS DATE)
 			GROUP BY StreetTreatCaseId
 	) lv
     INNER JOIN AAU.Visit v ON lv.StreetTreatCaseId = v.StreetTreatCaseId

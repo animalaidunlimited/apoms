@@ -233,6 +233,10 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
+        if(!searchString){
+            this.clearResults$.next([]);
+        }
+
         const searchResult = this.getObservable(request)
         .pipe(
             debounceTime(1500),

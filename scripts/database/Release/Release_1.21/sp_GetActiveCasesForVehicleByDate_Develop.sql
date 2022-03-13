@@ -1,9 +1,12 @@
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForAssignedVehicleByDate !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForVehicleByDate !!
+
+-- CALL AAU.sp_GetActiveCasesForVehicleByDate(23, '2022-03-03');
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForAssignedVehicleByDate(	IN prm_assignedVehicleId INT,
+CREATE PROCEDURE AAU.sp_GetActiveCasesForVehicleByDate(	IN prm_assignedVehicleId INT,
 														IN prm_visitDate DATE
 													)
 BEGIN
@@ -42,25 +45,25 @@ DECLARE prmVisitDate DATE;
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId,
+            c.AssignedVehicleId AS `VehicleId`,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
             ec.Number AS ComplainerNumber,
             c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
             mp.MainProblem
-	FROM AAU.StreetTreatCase c
+	FROM AAU.StreetTreatCase c    
     INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
     INNER JOIN (
 		SELECT ec.EmergencyCaseId, 
         c.Name, 
-        c.Number,
-        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
+        c.Number,        
+        ec.CallDateTime,
         ec.Latitude, 
         ec.Longitude, 
         ec.Location, 
@@ -73,7 +76,7 @@ DECLARE prmVisitDate DATE;
 	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Vehicle v ON v.VehicleIdId = c.AssignedVehicleId AND (t.AssignedVehicleId = prm_assignedVehicleId OR prm_assignedVehicleId = 1)
+	INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId AND (c.AssignedVehicleId = prm_assignedVehicleId OR prm_assignedVehicleId = 1)
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
 	LEFT JOIN
 		(

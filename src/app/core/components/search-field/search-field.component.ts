@@ -149,16 +149,17 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             inputType: 'dropdown',
             searchValue: 'outcome',
             databaseField: 'p.PatientCallOutcomeId',
-            dropdownName: 'calloutcome',
+            dropdownName: 'callOutcome',
             name: 'Patient call outcome',
             inNotIn: false
         },
         {
             id: 11,
-            inputType: 'text',
+            inputType: 'dropdown',
             searchValue: 'cloc',
-            databaseField: 'search.CurrentLocation',
-            name: 'Current area',
+            databaseField: 'search.TreatmentAreaId',
+            dropdownName: 'treatmentArea',
+            name: 'Treatment area',
             inNotIn: false
         },
         {
@@ -520,10 +521,10 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
         return this.observableFactory(dropdownType).pipe(
             map((dropdowns: any) =>
                 dropdowns.map((dropdown: any) =>
-                ({
-                    id: Object.values(dropdown)[0],
-                    value: Object.values(dropdown)[1]
-                })
+                    ({
+                        id: Object.values(dropdown)[0],
+                        value: Object.values(dropdown)[1]
+                    })
                 ))
         );
     }
@@ -531,9 +532,30 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     observableFactory(dropdownType: string | undefined) {
 
         if (dropdownType) {
-            return dropdownType === 'calloutcome' ? this.dropdowns.getCallOutcomes() :
-            dropdownType === 'tycall' ? this.dropdowns.getYesNo() :
-            dropdownType === 'problem' ? this.dropdowns.getProblems() : this.dropdowns.getAnimalTypes();
+
+            // a Switch statement that looks at the dropdown parameter and returns the correct observable
+            switch (dropdownType) {
+
+                case 'callOutcome':
+                    return this.dropdowns.getCallOutcomes();
+
+                case 'tycall':
+                    return this.dropdowns.getYesNo();
+
+                case 'problem':
+                    return this.dropdowns.getProblems();
+
+                case 'treatmentArea':
+                    return this.dropdowns.getTreatmentAreas().pipe(map(areas =>
+                        areas.map(area => ({
+                            id: area.areaId,
+                            value: area.areaName
+                        }))
+                    ));
+
+                default:
+                    return this.dropdowns.getAnimalTypes();
+            }
         }
         return of();
     }
