@@ -179,12 +179,118 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUserByDate !!
-
--- CALL AAU.sp_GetActiveCasesForUserByDate('Jim', '2022-03-03');
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForAssignedVehicleByDate !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForUserByDate(	IN prm_username VARCHAR(64),
+CREATE PROCEDURE AAU.sp_GetActiveCasesForAssignedVehicleByDate(	IN prm_assignedVehicleId INT,
+														IN prm_visitDate DATE
+													)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 18/11/2020
+Purpose: Used to return active cases for the StreetTreat mobile app.
+
+Modified By: Jim Mackenzie
+Modified On: 07/12/2020
+Description: Altering to run from new Apoms tables.
+
+Modified By: Jim Mackenzie
+Modified On: 17/02/2022
+Description: Replacing team with assigned vehicle.
+*/
+
+DECLARE prmVisitDate DATE;
+
+	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
+
+	SELECT
+			c.StreetTreatCaseId AS CaseId,
+			ec.EmergencyNumber,
+            p.TagNumber,
+			at.AnimalType,
+            at.AnimalTypeId,
+            s.Status,
+            s.StatusId,
+			p.Description AS AnimalName,
+			nv.NextVisit,
+            nv.NextVisitStatusId,
+			pc.PercentComplete,
+			ec.Location AS Address,
+			pr.Priority,
+            pr.PriorityId,
+            v.VehicleNumber,
+            c.AssignedVehicleId,
+            ec.Latitude,
+            ec.Longitude,
+            ec.Name AS ComplainerName,
+            ec.Number AS ComplainerNumber,
+            c.AdminComments AS AdminNotes,
+            c.OperatorNotes,
+            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            c.ClosedDate,
+            c.EarlyReleaseFlag,
+            c.MainProblemId,
+            mp.MainProblem
+	FROM AAU.StreetTreatCase c
+    INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
+    INNER JOIN (
+		SELECT ec.EmergencyCaseId, 
+        c.Name, 
+        c.Number,
+        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
+        ec.Latitude, 
+        ec.Longitude, 
+        ec.Location, 
+        ec.EmergencyNumber 
+        FROM AAU.EmergencyCase ec
+		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
+		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
+		WHERE ecr.PrimaryCaller = 1
+    ) ec ON ec.EmergencyCaseId = p.EmergencyCaseId
+	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
+	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
+	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
+	INNER JOIN AAU.Vehicle v ON v.VehicleIdId = c.AssignedVehicleId AND (t.AssignedVehicleId = prm_assignedVehicleId OR prm_assignedVehicleId = 1)
+    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
+	LEFT JOIN
+		(
+		SELECT StreetTreatCaseId,
+		SUM(CASE WHEN StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete
+		FROM AAU.Visit
+        GROUP BY StreetTreatCaseId
+		) AS pc ON pc.StreetTreatCaseId = c.StreetTreatCaseId
+
+INNER JOIN
+(
+   SELECT v.StreetTreatCaseId, v.StatusId AS NextVisitStatusId, fv.NextVisit
+   FROM
+   (
+        SELECT StreetTreatCaseId, MIN(Date) AS NextVisit
+        FROM AAU.Visit
+        WHERE Date >= prmVisitDate
+        AND IsDeleted = FALSE
+        GROUP BY StreetTreatCaseId
+	) fv
+
+	INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = fv.StreetTreatCaseId
+		AND fv.NextVisit = v.Date
+        AND v.IsDeleted = 0
+) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
+
+	WHERE nv.NextVisit = prmVisitDate -- Only get active cases
+    AND c.IsDeleted = 0
+    AND p.TagNumber IS NOT NULL
+    AND nv.NextVisit <= IFNULL(c.ClosedDate, DATE_ADD(NOW(), INTERVAL 10 YEAR));
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUserByDate !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetActiveCasesForUserByDate(	IN prm_userId INT,
 														IN prm_visitDate DATE
 														)
 BEGIN
@@ -208,15 +314,9 @@ Description: Replacing team with assigned vehicle.
 */
 
 DECLARE prmVisitDate DATE;
-DECLARE vUserId INT;
-DECLARE vTimeNow DATETIME;
 
 	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
-    
-    SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset), UserId INTO vTimeNow, vUserId
-	FROM AAU.User u
-	INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-	WHERE u.UserName = prm_username LIMIT 1;
+    -- SELECT CURDATE() INTO prmVisitDate;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -234,14 +334,14 @@ DECLARE vTimeNow DATETIME;
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
+            c.AssignedVehicleId,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
             ec.Number AS ComplainerNumber,
             c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
@@ -252,7 +352,7 @@ DECLARE vTimeNow DATETIME;
 		SELECT ec.EmergencyCaseId, 
         c.Name, 
         c.Number,
-        ec.CallDateTime,
+        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
         ec.Latitude, 
         ec.Longitude, 
         ec.Location, 
@@ -266,9 +366,8 @@ DECLARE vTimeNow DATETIME;
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-    INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId
-	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId AND vTimeNow BETWEEN vs.StartDate AND vs.EndDate
-    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId
+	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId
+    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = prm_userId
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,
@@ -304,8 +403,6 @@ DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForUser !!
-
--- CALL AAU.sp_GetActiveCasesForUser('Jim');
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesForUser( IN prm_username VARCHAR(45) )
@@ -345,14 +442,14 @@ Description: Replacing team with assigned vehicle.
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
+            c.AssignedVehicleId,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
             ec.Number AS ComplainerNumber,
             c.AdminComments AS AdminNotes,
             c.OperatorNotes,
-            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
+            CAST(COALESCE(ec.STAssignedDate, p.PatientStatusDate) AS DATE) AS ReleasedDate,
             c.ClosedDate,
             c.EarlyReleaseFlag,
             c.MainProblemId,
@@ -361,9 +458,9 @@ Description: Replacing team with assigned vehicle.
     INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
     INNER JOIN (
 		SELECT ec.EmergencyCaseId, 
-        ec.CallDateTime,
         c.Name, 
         c.Number,
+        IF(ec.CallOutcomeId = 18, ec.CallDateTime, NULL) AS `STAssignedDate`,
         ec.Latitude, 
         ec.Longitude, 
         ec.Location, 
@@ -412,120 +509,7 @@ END$$
 DELIMITER ;
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForAssignedVehicleByDate !!
-DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesForVehicleByDate !!
-
--- CALL AAU.sp_GetActiveCasesForVehicleByDate(23, '2022-03-03');
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetActiveCasesForVehicleByDate(	IN prm_assignedVehicleId INT,
-														IN prm_visitDate DATE
-													)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 18/11/2020
-Purpose: Used to return active cases for the StreetTreat mobile app.
-
-Modified By: Jim Mackenzie
-Modified On: 07/12/2020
-Description: Altering to run from new Apoms tables.
-
-Modified By: Jim Mackenzie
-Modified On: 17/02/2022
-Description: Replacing team with assigned vehicle.
-*/
-
-DECLARE prmVisitDate DATE;
-
-	SELECT IFNULL(prm_visitDate, CURDATE()) INTO prmVisitDate;
-
-	SELECT
-			c.StreetTreatCaseId AS CaseId,
-			ec.EmergencyNumber,
-            p.TagNumber,
-			at.AnimalType,
-            at.AnimalTypeId,
-            s.Status,
-            s.StatusId,
-			p.Description AS AnimalName,
-			nv.NextVisit,
-            nv.NextVisitStatusId,
-			pc.PercentComplete,
-			ec.Location AS Address,
-			pr.Priority,
-            pr.PriorityId,
-            v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
-            ec.Latitude,
-            ec.Longitude,
-            ec.Name AS ComplainerName,
-            ec.Number AS ComplainerNumber,
-            c.AdminComments AS AdminNotes,
-            c.OperatorNotes,
-            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
-            c.ClosedDate,
-            c.EarlyReleaseFlag,
-            c.MainProblemId,
-            mp.MainProblem
-	FROM AAU.StreetTreatCase c    
-    INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
-    INNER JOIN (
-		SELECT ec.EmergencyCaseId, 
-        c.Name, 
-        c.Number,        
-        ec.CallDateTime,
-        ec.Latitude, 
-        ec.Longitude, 
-        ec.Location, 
-        ec.EmergencyNumber 
-        FROM AAU.EmergencyCase ec
-		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
-		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
-		WHERE ecr.PrimaryCaller = 1
-    ) ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
-	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
-	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId AND (c.AssignedVehicleId = prm_assignedVehicleId OR prm_assignedVehicleId = 1)
-    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-	LEFT JOIN
-		(
-		SELECT StreetTreatCaseId,
-		SUM(CASE WHEN StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete
-		FROM AAU.Visit
-        GROUP BY StreetTreatCaseId
-		) AS pc ON pc.StreetTreatCaseId = c.StreetTreatCaseId
-
-INNER JOIN
-(
-   SELECT v.StreetTreatCaseId, v.StatusId AS NextVisitStatusId, fv.NextVisit
-   FROM
-   (
-        SELECT StreetTreatCaseId, MIN(Date) AS NextVisit
-        FROM AAU.Visit
-        WHERE Date >= prmVisitDate
-        AND IsDeleted = FALSE
-        GROUP BY StreetTreatCaseId
-	) fv
-
-	INNER JOIN AAU.Visit v ON v.StreetTreatCaseId = fv.StreetTreatCaseId
-		AND fv.NextVisit = v.Date
-        AND v.IsDeleted = 0
-) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
-
-	WHERE nv.NextVisit = prmVisitDate -- Only get active cases
-    AND c.IsDeleted = 0
-    AND p.TagNumber IS NOT NULL
-    AND nv.NextVisit <= IFNULL(c.ClosedDate, DATE_ADD(NOW(), INTERVAL 10 YEAR));
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithMissedLastVisitForUser !!
-
--- CALL AAU.sp_GetActiveCasesWithMissedLastVisitForUser('Jim')
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesWithMissedLastVisitForUser ( IN prm_UserName VARCHAR(45) )
@@ -549,12 +533,6 @@ Modified On: 17/02/2022
 Description: Replacing team with assigned vehicle.
 */
 
-	DECLARE vTimeNow DATETIME;
-
-    SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vTimeNow
-	FROM AAU.User u
-	INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-	WHERE u.UserName = prm_UserName LIMIT 1;
 
 	SELECT
 			c.StreetTreatCaseId AS CaseId,
@@ -572,7 +550,7 @@ Description: Replacing team with assigned vehicle.
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
+            c.AssignedVehicleId,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
@@ -603,11 +581,9 @@ Description: Replacing team with assigned vehicle.
 	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
 	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
     INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-    INNER JOIN AAU.User u ON u.UserName = prm_UserName
-    INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId
-	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId AND vTimeNow BETWEEN vs.StartDate AND vs.EndDate
-    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = u.UserId
-    
+	INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = c.AssignedVehicleId
+    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = prm_userId
+    INNER JOIN AAU.USER u ON u.UserName = prm_UserName AND u.UserId = vsu.UserId
 	LEFT JOIN
 		(
 		SELECT StreetTreatCaseId,
@@ -639,7 +615,7 @@ FROM
 			SELECT StreetTreatCaseId, MAX(Date) AS LastVisit
 			FROM AAU.Visit
 			WHERE IsDeleted = FALSE
-			AND Date <= CAST(vTimeNow AS DATE)
+			AND Date <= CURDATE()
 			GROUP BY StreetTreatCaseId
 	) lv
     INNER JOIN AAU.Visit v ON lv.StreetTreatCaseId = v.StreetTreatCaseId
@@ -696,7 +672,7 @@ Description: Replacing team with assigned vehicle.
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
+            c.AssignedVehicleId,
             ec.Latitude,
             ec.Longitude,
             ec.Name AS ComplainerName,
@@ -764,8 +740,6 @@ DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetActiveCasesWithVisitByDate !!
-
--- CALL AAU.sp_GetActiveCasesWithVisitByDate('2022-03-03');
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetActiveCasesWithVisitByDate (IN prm_VisitDate DATE)
@@ -892,7 +866,7 @@ SELECT
 			pr.Priority,
             pr.PriorityId,
             v.VehicleNumber,
-            c.AssignedVehicleId AS `VehicleId`,
+            c.AssignedVehicleId,
             ec.Latitude,
             ec.Longitude,
 			ec.Name AS ComplainerName,
@@ -1477,67 +1451,6 @@ SELECT AnimalTypeId, AnimalType, IsDeleted, SortOrder FROM AAU.AnimalType WHERE 
 END $$
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetCallerByNameAndNumber !!
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetCallerByNameAndNumber( IN prm_UserName VARCHAR(45), IN prm_CallerName VARCHAR(45), IN prm_CallerNumber VARCHAR(45), OUT prm_Success INT)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 23/02/2020
-Purpose: Used to return a Caller by Name and Number.
-*/
-
-DECLARE vOrganisationId INT;
-DECLARE vCallerExists INT;
-
-SET vCallerExists = 0;
-
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_UserName;
-
-
-SELECT COUNT(1) INTO vCallerExists 
-FROM AAU.Caller c
-INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
-WHERE c.Name = prm_CallerName
-AND c.Number = prm_CallerNumber AND ecr.IsDeleted = 0
-AND c.OrganisationId = vOrganisationId;
-
-SELECT	
-	ecr.CallerId,
-	c.Name,
-	c.PreferredName,
-	c.Number,
-	c.AlternativeNumber,
-	IF(ecr.PrimaryCaller = FALSE , 0 , 1) AS PrimaryCaller,
-	c.Email,
-	c.Address,
-	c.CreatedDate,
-	c.IsDeleted,
-	c.DeletedDate
-FROM AAU.Caller c
-INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
-WHERE c.Name = prm_CallerName
-AND c.Number = prm_CallerNumber
-AND ecr.IsDeleted = 0
-AND c.OrganisationId = vOrganisationId
-LIMIT 1;
-
-SELECT 1 INTO prm_Success;
-
-IF vCallerExists > 1 THEN
-
-SELECT 2 INTO prm_Success;
-
-END IF;
-
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetCallTypes !!
 
 DELIMITER $$
@@ -1749,7 +1662,7 @@ RescueReleaseST AS
 (SELECT p.PatientId, 'Rescue' AmbulanceAction
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), vDateNow)) )
+WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), vDateNow)) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0
@@ -2028,10 +1941,6 @@ Created Date: 09-09-2021
 Purpose: To get the vehicle list by assigned date 
 */
 
-DECLARE vOrganisationId INT;
-SET vOrganisationId = 1;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT vs.VehicleId AS `vehicleId` ,
 vs.VehicleShiftId AS `vehicleShiftId`,
@@ -2046,7 +1955,7 @@ LEFT JOIN
 	LEFT JOIN AAU.User u ON u.UserId = vsu.UserId
 	GROUP BY VehicleShiftId
 ) vsu ON vsu.VehicleShiftId = vs.VehicleShiftId
-WHERE v.OrganisationId = vOrganisationId
+WHERE v.OrganisationId = 1
 AND prm_AssignmentDate > vs.StartDate AND prm_AssignmentDate < vs.EndDate
 AND vs.IsDeleted IS NULL;
 
@@ -2234,8 +2143,7 @@ BEGIN
 		JSON_OBJECT(
 		'logoUrl', om.LogoURL,
 		'address', om.Address,
-		'name', o.Organisation,
-        'driverViewDeskNumber', om.DriverViewDeskNumber
+		'name', o.Organisation
 		) AS Organisation
 	FROM 
 		AAU.OrganisationMetadata om
@@ -3197,130 +3105,6 @@ DELIMITER ;
 
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetSearchedCases !!
-
--- CALL AAU.sp_GetDriverViewDetails('2022-03-01T11:23','jim');
-
-DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetSearchedCases(
-											IN prm_CaseId INT,
-											IN prm_EmergencyNumber INT,
-											IN prm_TagNumber VARCHAR(64),
-											IN prm_AnimalTypeId INT,
-                                            IN prm_StatusId INT,
-											IN prm_AnimalName VARCHAR(64),
-											IN prm_PriorityId INT,
-											IN prm_VehicleId INT,											
-                                            IN prm_EarlyReleaseFlag BOOLEAN)
-BEGIN
-
-/*
-Created By: Jim Mackenzie
-Created On: 30/08/2018
-Purpose: Used to return active cases for the Admin screen
-*/
-
-	SELECT
-			c.StreetTreatCaseId AS CaseId,
-			ec.EmergencyNumber,
-            p.TagNumber,
-			at.AnimalType,
-            at.AnimalTypeId,
-            s.Status,
-            s.StatusId,
-			p.Description AS AnimalName,
-			nv.NextVisit,
-            nv.NextVisitStatusId,
-			pc.PercentComplete,
-            pc.VisitList,
-			ec.Location AS Address,
-			pr.Priority,
-            pr.PriorityId,
-            v.VehicleNumber,
-			v.VehicleId,
-            ec.Latitude,
-            ec.Longitude,
-            ec.Name AS ComplainerName,
-            ec.Number AS ComplainerNumber,
-            c.AdminComments AS AdminNotes,
-            c.OperatorNotes,
-            CAST(COALESCE(IF(p.PatientCallOutcomeId = 18, ec.CallDateTime, NULL), p.PatientStatusDate) AS DATE) AS ReleasedDate,
-            c.ClosedDate,
-            c.EarlyReleaseFlag,
-            c.MainProblemId,
-            mp.MainProblem
-	FROM AAU.StreetTreatCase c
-    INNER JOIN AAU.Patient p ON p.PatientId = c.PatientId
-    INNER JOIN (
-		SELECT ec.EmergencyCaseId,
-        ec.CallDateTime,
-        c.Name, 
-        c.Number,
-        ec.Latitude, 
-        ec.Longitude, 
-        ec.Location, 
-        ec.EmergencyNumber 
-        FROM AAU.EmergencyCase ec
-		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
-		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
-		WHERE ecr.PrimaryCaller = 1
-    ) ec ON ec.EmergencyCaseId = p.EmergencyCaseId
-	INNER JOIN AAU.Status s ON s.StatusId = c.StatusId
-	INNER JOIN AAU.Priority pr ON pr.PriorityId = c.PriorityId
-	INNER JOIN AAU.AnimalType at ON at.AnimalTypeId = p.AnimalTypeId
-	INNER JOIN AAU.Vehicle v ON v.VehicleId = c.AssignedVehicleId
-    INNER JOIN AAU.MainProblem mp ON mp.MainProblemId = c.MainProblemId
-	LEFT JOIN
-		(
-		SELECT v.StreetTreatCaseId,
-		SUM(CASE WHEN v.StatusId >= 3 THEN 1 ELSE 0 END) / COUNT(1) AS PercentComplete,
-        GROUP_CONCAT(s.Status ORDER BY v.Date DESC) AS VisitList
-		FROM AAU.Visit v
-        INNER JOIN AAU.Status s ON s.StatusId = v.StatusId
-        WHERE v.Date < current_date
-        GROUP BY v.StreetTreatCaseId
-		) AS pc ON pc.StreetTreatCaseId = c.StreetTreatCaseId
-
-	LEFT JOIN
-    (
-    SELECT nvr.StreetTreatCaseId, nvr.NextVisit, v.StatusId AS NextVisitStatusId
-    FROM
-		(
-		SELECT StreetTreatCaseId,
-		MIN(Date) AS NextVisit
-		FROM AAU.Visit
-		WHERE Date >= CURDATE()
-		AND StatusId IN (1,2)
-        GROUP BY StreetTreatCaseId
-		) AS nvr
-	INNER JOIN AAU.Visit v ON v.Date = nvr.NextVisit
-            AND v.StreetTreatCaseId = nvr.StreetTreatCaseId
-	) nv ON nv.StreetTreatCaseId = c.StreetTreatCaseId
-		
-	WHERE
-    (c.StreetTreatCaseId = prm_CaseId OR prm_CaseId IS NULL)
-    AND
-	(ec.EmergencyNumber = prm_EmergencyNumber OR prm_EmergencyNumber IS NULL)
-	AND
-	(p.TagNumber = prm_TagNumber OR prm_TagNumber IS NULL)
-	AND
-	(p.AnimalTypeId = prm_AnimalTypeId OR prm_AnimalTypeId IS NULL)
-    AND
-    (c.StatusId = prm_StatusId OR prm_StatusId IS NULL)
-	AND
-	(p.Description = prm_AnimalName OR prm_AnimalName IS NULL)
-	AND
-	(c.PriorityId = prm_PriorityId OR prm_PriorityId IS NULL)
-	AND
-	(c.AssignedVehicleId = prm_VehicleId OR prm_VehicleId IS NULL)
-    AND
-    (c.EarlyReleaseFlag = prm_EarlyReleaseFlag OR prm_EarlyReleaseFlag IS NULL);
-											
-
-END$$
-DELIMITER ;
-DELIMITER !!
-
 DROP PROCEDURE IF EXISTS AAU.sp_GetStreetTreatCaseById !!
 
 DELIMITER $$
@@ -3999,8 +3783,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetUserByUsername !!
 
--- CALL AAU.sp_GetUserByUsername('Jim');
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetUserByUsername (IN UserName VARCHAR(64))
 BEGIN
@@ -4011,40 +3793,10 @@ Modified On: 17/02/2022
 Description: Removing StreetTreat team.
 */
 
-DECLARE vUserId INT;
-DECLARE vOrganisationId INT;
-DECLARE vUserName VARCHAR(64);
-DECLARE vFirstName VARCHAR(128);
-DECLARE vLastName VARCHAR(128);
-DECLARE vInitials CHAR(2);
-DECLARE vPreferences JSON;
-DECLARE vPassword VARCHAR(255);
-DECLARE vSocketEndPoint VARCHAR(20);
-DECLARE vTimeZoneOffset VARCHAR(10);
-DECLARE vVehicleId INT;
-DECLARE vVehicleNumber VARCHAR(100);
-
-	SELECT u.UserId,u.OrganisationId, u.UserName, u.FirstName, u.Surname, u.Initials, u.Preferences, u.Password , o.SocketEndPoint, o.TimeZoneOffset
-		INTO
-		   vUserId, vOrganisationId, vUserName, vFirstName, vLastName, vInitials, vPreferences, vPassword, vSocketEndPoint, vTimeZoneOffset
+	SELECT u.UserId,u.OrganisationId, u.UserName, u.FirstName, u.Surname, u.Initials, u.preferences, u.Password , o.SocketEndPoint
     FROM AAU.User u
     INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
-    WHERE u.UserName = UserName;   
-    
-    SELECT v.VehicleId, v.VehicleNumber INTO vVehicleId, vVehicleNumber
-    FROM
-    (
-    SELECT v.VehicleId, v.VehicleNumber, ROW_NUMBER() OVER (ORDER BY v.StreetTreatDefaultVehicle, v.VehicleId DESC) AS `RNum` 
-    FROM AAU.Vehicle v
-    INNER JOIN AAU.VehicleShift vs ON vs.VehicleId = v.VehicleId AND CONVERT_TZ(NOW(),'+00:00',vTimeZoneOffset) BETWEEN vs.StartDate AND vs.EndDate
-    INNER JOIN AAU.VehicleShiftUser vsu ON vsu.VehicleShiftId = vs.VehicleShiftId AND vsu.UserId = vUserId
-    ) v
-    WHERE v.RNum = 1;
-    
-    
-	SELECT vUserId AS UserId, vOrganisationId AS OrganisationId, vUserName AS UserName, vFirstName AS FirstName, vLastName AS LastName,
-    vInitials AS Initials, vPreferences AS Preferences, vPassword AS Password, vSocketEndPoint AS SocketEndPoint, vVehicleId AS VehicleId, vVehicleNumber AS VehicleNumber;
-    
+    WHERE u.UserName = UserName;
 END$$
 DELIMITER ;
 DELIMITER !!
@@ -4405,7 +4157,7 @@ JSON_MERGE_PRESERVE(
 	JSON_OBJECT("vehicleStatus", vehicleDetails.VehicleStatus),
     JSON_OBJECT("imageURL", vehicleDetails.VehicleImage),
     JSON_OBJECT("streetTreatDefaultVehicle", vehicleDetails.streetTreatDefaultVehicle),
-    JSON_OBJECT("streetTreatVehicle", IFNULL(vehicleDetails.streetTreatVehicle, 0)),
+    JSON_OBJECT("streetTreatVehicle", vehicleDetails.streetTreatVehicle),
     JSON_OBJECT("vehicleColour", IFNULL(vehicleDetails.vehicleColour,"#000000"))
 )) AS vehicleList
 FROM
@@ -4681,16 +4433,15 @@ ELSE
 
 END IF;
 
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
+vEmNoExists, vUpdateTime, vCurrentCaseId
+FROM AAU.EmergencyCase
+WHERE EmergencyNumber = prm_EmergencyNumber;
+
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
 FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
-
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
-vEmNoExists, vUpdateTime, vCurrentCaseId
-FROM AAU.EmergencyCase
-WHERE EmergencyNumber = prm_EmergencyNumber
-AND OrganisationId = vOrganisationId;
 
 START TRANSACTION ;
 
@@ -4894,13 +4645,14 @@ SET vTagExists = 0;
 SET vTagNumber = NULL;
 SET vSameAsEmergencyCaseId = NULL;
 
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND GUID = prm_GUID AND IsDeleted = 0;
 
-SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber AND OrganisationId = vOrganisationId;
+SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
 
-SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber AND OrganisationId = vOrganisationId;
+SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 IF vPatientExists = 0 AND vTagExists = 0 THEN
 
@@ -4934,11 +4686,10 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 	SELECT 1 INTO vSuccess;
     SELECT LAST_INSERT_ID(),prm_TagNumber INTO vPatientId,vTagNumber;
 
-/*
     IF IFNULL(prm_TagNumber,'') <> '' THEN
 		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;
     END IF;
-*/
+
 
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
@@ -5824,8 +5575,7 @@ START TRANSACTION;
                         AssignedVehicleId    = prm_AssignedAmbulanceId,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
 						selfAdmission           = prm_SelfAdmission
-			WHERE EmergencyCaseId = prm_EmergencyCaseId
-            AND OrganisationId = vOrganisationId;
+			WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
 COMMIT;
 
@@ -6879,7 +6629,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertDropdownTableValue !!
 
--- CALL AAU.sp_UpsertDropdownTableValue("Haris","EmergencyCode",-1,"Green",0,1);
+-- CALL AAU.sp_UpsertDropdownTableValue("Jim","AnimalType",-1,"Crow",0,28);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertDropdownTableValue(IN prm_Username VARCHAR(45), IN prm_TableName VARCHAR(45), IN prm_ElementId INT, IN prm_ElementValue VARCHAR(100), IN prm_IsDeleted INT, IN prm_SortOrder INT)
@@ -6896,25 +6646,20 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-	SET @Id = 0;
+	SET @statement = CONCAT('SET @Id = -1;
 
-	SET @statement = CONCAT('SELECT IF(', prm_ElementId, ' = -1, MAX(',prm_TableName,'Id) + 1, ', prm_ElementId,' ) INTO @Id FROM AAU.',prm_TableName,';');
-	        
-    PREPARE stmt FROM @statement;
-    EXECUTE stmt;    
+SELECT IF(', prm_ElementId, ' = -1, MAX(',prm_TableName,'Id) + 1, ', prm_ElementId,' ) INTO @Id FROM AAU.',prm_TableName,'; 
     
-    SET @upsertStatement = CONCAT('INSERT INTO AAU.',prm_TableName,' (',prm_TableName, 'Id, OrganisationId, ', prm_TableName,', ',
-    'IsDeleted, SortOrder) VALUES (',@Id,', ', vOrganisationId, ', ''', prm_ElementValue, ''', ', prm_IsDeleted, ', ', prm_SortOrder,') ON DUPLICATE KEY UPDATE ', 
+    INSERT INTO AAU.',prm_TableName,' (',prm_TableName, 'Id, OrganisationId, ', prm_TableName,', ',
+    'IsDeleted, SortOrder) VALUES (@Id, ', vOrganisationId, ', ''', prm_ElementValue, ''', ', prm_IsDeleted, ', ', prm_SortOrder,') ON DUPLICATE KEY UPDATE ', 
 	prm_TableName, ' = ''', prm_ElementValue, ''', IsDeleted = ', prm_IsDeleted, ', SortOrder = ', prm_SortOrder, ';' );
-    
-	PREPARE upsert FROM @upsertStatement;
-    EXECUTE upsert;
-    
+	
+    PREPARE stmt FROM @statement;
+    EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
-    DEALLOCATE PREPARE upsert;    
-
+    
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId,ChangeTable, LoggedAction, DateTime)
-	VALUES (vOrganisationId,prm_Username,IFNULL(prm_ElementId, @Id),prm_TableName,'Upsert record', NOW());
+	VALUES (vOrganisationId,prm_Username,prm_ElementId,prm_TableName,'Upsert record', NOW());
  
     SELECT 'success' AS `success`;
   
@@ -6932,7 +6677,6 @@ DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertOrganisationDetail (
     IN prm_Address JSON,
 	IN prm_Organisation VARCHAR(100),
-    IN prm_DriverViewDeskNumber VARCHAR(20),
 	IN prm_OrganisationId INT
 )
 BEGIN
@@ -6940,10 +6684,9 @@ DECLARE vSuccess INT DEFAULT 0;
 
 UPDATE AAU.Organisation SET Organisation = prm_Organisation WHERE OrganisationId = prm_OrganisationId;
 
-INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId, DriverViewDeskNumber)
-VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber) ON DUPLICATE KEY UPDATE
-			Address = prm_Address,
-            DriverViewDeskNumber = prm_DriverViewDeskNumber;
+INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId)
+VALUES (prm_Address, prm_OrganisationId) ON DUPLICATE KEY UPDATE
+			Address = prm_Address;
 	
 	SELECT 1 INTO vSuccess;
 	SELECT vSuccess;

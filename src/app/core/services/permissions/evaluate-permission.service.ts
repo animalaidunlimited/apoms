@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserActionService } from '../user-details/user-action.service';
+import { UserDetailsService } from '../user-details/user-details.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class EvaluatePermissionService {
 
   permissionGivenToUser!: number[];
 
-  constructor(private userService: UserActionService) { }
+  constructor(private userService: UserDetailsService) { }
 
   public async permissionTrueOrFalse(componentPermissionArray: number[]) : Promise<number | undefined>{
 

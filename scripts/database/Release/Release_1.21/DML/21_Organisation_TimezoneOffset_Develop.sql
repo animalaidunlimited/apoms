@@ -8,7 +8,6 @@ BEGIN
 ALTER TABLE AAU.Organisation ADD TimeZoneOffset VARCHAR(10) AFTER SocketEndPoint;
 
 UPDATE AAU.Organisation SET TimeZoneOffset = '+5:30';
-
   
 END //
 DELIMITER ;

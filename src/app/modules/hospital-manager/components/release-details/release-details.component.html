@@ -22,10 +22,10 @@
 </div>
 
 <div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px" class="option-wrapper">
-    <mat-slide-toggle [checked]="isCommented" (change)="valueChanges($event,2)" class="mat-slider">Complainer special instruction</mat-slide-toggle>
+    <mat-slide-toggle [checked]="isCommented" (change)="valueChanges($event,2)" class="mat-slider">Caller special instruction</mat-slide-toggle>
 
     <mat-form-field appearance="fill" class="select">
-        <mat-label>Notes for complainer</mat-label>
+        <mat-label>Notes for caller</mat-label>
         <textarea matInput formControlName="complainerNotes" class="select" [errorStateMatcher]="errorMatcher"></textarea>
     </mat-form-field>
 </div>
@@ -83,7 +83,7 @@
 </div>
 
 <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end" style="padding-bottom:20px; padding-top:20px;">
-    <mat-slide-toggle formControlName="complainerInformed" class="mat-slider">Complainer informed</mat-slide-toggle>
+    <mat-slide-toggle formControlName="complainerInformed" class="mat-slider">Caller informed</mat-slide-toggle>
 </div>
 
 </form>

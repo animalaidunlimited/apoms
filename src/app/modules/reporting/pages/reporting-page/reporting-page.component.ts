@@ -7,7 +7,6 @@ import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { MatDialog } from '@angular/material/dialog';
 import { SurgeriesByDateDialogComponent } from '../../components/surgeries-by-date-dialog/surgeries-by-date-dialog.component';
-import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
@@ -33,7 +32,6 @@ export class ReportingPageComponent implements OnInit {
         private treatmentList: TreatmentListService,
         private dialog: MatDialog,
         private router: Router,
-        private printService: PrintTemplateService,
         private surgeryService: SurgeryService,
         private reportingService : ReportingService) {}
 

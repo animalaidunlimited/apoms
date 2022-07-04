@@ -2,7 +2,7 @@ import { Route, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
-import { UserActionService } from './core/services/user-details/user-action.service';
+import { UserDetailsService } from './core/services/user-details/user-details.service';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -85,7 +85,6 @@ export const navRoutes: NavRoute[] = [
             import('./modules/driver-view/driver-view-page.module')
             .then(m => m.DriverViewPageModule)
     },
-
     {
         data: { title: 'Vehicle Staff Assigner', permissionId:[15,16], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
@@ -95,7 +94,15 @@ export const navRoutes: NavRoute[] = [
             import('./modules/vehicle/components/vehicle-staff-assigner/vehicle-staff-assigner.module')
             .then(m => m.VehicleStaffAssignerModule)
     },
-
+    {
+        data: { title: 'Staff Rota', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: '',
+        path: 'staff-rota',
+        loadChildren: () =>
+            import('./modules/staff-rota/staff-rota.module')
+            .then(m => m.StaffRotaModule)
+    },
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
@@ -162,7 +169,7 @@ export class NavRouteService {
 
     constructor(
         router: Router,
-        private userService: UserActionService,
+        private userService: UserDetailsService,
         private permissionService: EvaluatePermissionService) {
 
         const routes = router.config.find(route => route.path === sideNavPath);

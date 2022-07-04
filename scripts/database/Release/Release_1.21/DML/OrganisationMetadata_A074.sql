@@ -3,6 +3,7 @@ CREATE TABLE AAU.OrganisationMetadata (
 	OrganisationId int(11) NOT NULL,
 	LogoURL varchar(500) NULL,
 	Address json DEFAULT NULL,
+    DriverViewDeskNumber VARCHAR(20) NULL,
 	PRIMARY KEY (OrganisationId),
 	UNIQUE KEY OrganisationId (OrganisationMetaDataId)
 );

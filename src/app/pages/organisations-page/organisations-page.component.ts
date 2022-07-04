@@ -60,7 +60,8 @@ export class OrganisationsPageComponent implements OnInit {
                 organisationId : this.organisationId,
                 logoUrl: orgDetail.logoUrl,
                 address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([this.createItem()]),
-                name: orgDetail.name
+                name: orgDetail.name,
+                driverViewDeskNumber: orgDetail.driverViewDeskNumber
             });
 
         });
@@ -279,7 +280,7 @@ export class OrganisationsPageComponent implements OnInit {
                 response.success === 1 ?
                     this.snackbar.successSnackBar('Organisation details saved successfully', 'OK')
                 :
-                    this.snackbar.errorSnackBar('An error has occured: Error number: OPC: 289','OK');
+                    this.snackbar.errorSnackBar('An error has occured: Error number: OPC: 283','OK');
 
             });
 

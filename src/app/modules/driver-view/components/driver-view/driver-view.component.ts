@@ -9,6 +9,7 @@ import { LocationService } from 'src/app/core/services/location/location.service
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { DriverViewService } from '../../services/driver-view.service';
 import { Platform } from '@angular/cdk/platform';
+import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 
 @Component({
   selector: 'app-driver-view',
@@ -28,6 +29,7 @@ export class DriverViewComponent implements OnInit {
   constructor( private fb: FormBuilder,
     private driverView: DriverViewService,
     private locationService: LocationService,
+    private organisationOptions: OrganisationOptionsService,
     private dropDown: DropdownService,
     private router: Router,
     public platform: Platform) { }

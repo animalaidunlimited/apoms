@@ -30,14 +30,13 @@ SET vTagExists = 0;
 SET vTagNumber = NULL;
 SET vSameAsEmergencyCaseId = NULL;
 
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT COUNT(1) INTO vPatientExists FROM AAU.Patient WHERE EmergencyCaseId = prm_EmergencyCaseId AND GUID = prm_GUID AND IsDeleted = 0;
 
-SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber;
+SELECT COUNT(1) INTO vTagExists FROM AAU.Patient WHERE TagNumber = prm_TagNumber AND OrganisationId = vOrganisationId;
 
-SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber AND OrganisationId = vOrganisationId;
 
 IF vPatientExists = 0 AND vTagExists = 0 THEN
 
@@ -71,10 +70,11 @@ IF vPatientExists = 0 AND vTagExists = 0 THEN
 	SELECT 1 INTO vSuccess;
     SELECT LAST_INSERT_ID(),prm_TagNumber INTO vPatientId,vTagNumber;
 
+/*
     IF IFNULL(prm_TagNumber,'') <> '' THEN
 		UPDATE AAU.Census SET PatientId = vPatientId WHERE TagNumber = vTagNumber;
     END IF;
-
+*/
 
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)

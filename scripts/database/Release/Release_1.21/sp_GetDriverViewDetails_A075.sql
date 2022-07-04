@@ -34,7 +34,7 @@ RescueReleaseST AS
 (SELECT p.PatientId, 'Rescue' AmbulanceAction
 FROM AAU.EmergencyCase ec
 INNER JOIN AAU.Patient p ON p.EmergencyCaseId = ec.EmergencyCaseId
-WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), CAST(ec.RescueTime AS DATE), vDateNow)) )
+WHERE ( CAST(prm_Date AS DATE) >= CAST(ec.AmbulanceAssignmentTime AS DATE) AND (CAST(prm_Date AS DATE) <=  COALESCE(CAST(ec.AdmissionTime AS DATE), vDateNow)) )
 AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0

@@ -1,0 +1,82 @@
+
+<div fxLayout="row" fxLayoutAlign="start start">
+
+  <div class="group-header">
+    <div class="group-header-text">Periods</div>
+  </div>
+
+  <div *ngFor="let period of rotationPeriods" fxLayout="column">
+
+    <div class="rotation-period"></div>
+
+  </div>
+
+  <div class="add-rotation-period">
+    <button class="addrotationPeriodButton" type="button" (click)="addRotationPeriod()" mat-mini-fab color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+</div>
+
+<div cdkDropListGroup>
+
+  <div>
+
+    <div *ngFor="let group of groups" class="rota-group" fxLayout="row">
+
+      <div class="group-header">
+        <div class="group-header-text">Group name: </div>
+      </div>
+
+      <div *ngFor="let period of rotationPeriods" fxLayout="column">
+
+        <div class="rotation-period"
+        cdkDropList
+        [cdkDropListData]="userList"
+        (cdkDropListDropped)="drop($event, period.id, group.id)">
+
+            <div class="staff-member" cdkDrag>
+              {{getGroupPeriodAssignedStaff(group.id, period.id)}}
+            </div>
+
+      </div>
+
+
+
+      </div>
+
+    </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <button class="addCallerButton" type="button" (click)="addAreaShift()" mat-mini-fab color="primary">
+          <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
+  </div>
+
+  <div fxLayout="row">
+
+      <div class="group-header">
+        <div class="group-header-text">Unassigned staff: </div>
+      </div>
+
+      <div
+      cdkDropList
+      [cdkDropListData]="userList">
+
+        <div *ngFor="let user of userList" fxLayout="row" cdkDrag>
+                  <div class="staff-member" >{{user.firstName}}</div>
+        </div>
+
+      </div>
+
+
+  </div>
+
+</div>
+
+
+
+

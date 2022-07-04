@@ -8,7 +8,8 @@ export interface OrganisationMarker {
 export interface OrganisationDetail{
     logoUrl: string;
     name: string;
-    address: OrganisationAddress[]
+    address: OrganisationAddress[],
+    driverViewDeskNumber: string
 }
 
 export interface OrganisationAddress{

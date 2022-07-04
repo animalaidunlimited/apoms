@@ -7,7 +7,7 @@ import { APIService } from '../http/api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserActionService extends APIService{
+export class UserDetailsService extends APIService{
 
   endpoint = 'UserAdmin';
 

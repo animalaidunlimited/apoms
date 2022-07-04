@@ -63,6 +63,7 @@ export class AuthService extends APIService {
             if (!this.response.success) {
                 throw new Error('Wrong Credentials!');
             }
+
             this.userService.setUserName(username);
             this.loggedIn.next(true);
             this.storage.save(AUTH_TOKEN, this.token);
@@ -73,7 +74,7 @@ export class AuthService extends APIService {
             const userDetails: UserAccountDetails = {
                 fullname: this.response.name,
                 initials: this.response.initials,
-                preferences: JSON.parse(this.response.preferences) || {}
+                preferences: JSON.parse(this.response?.preferences) || {}
             }
 
             this.userService.saveUserDetails(userDetails);

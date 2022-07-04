@@ -52,15 +52,16 @@ ELSE
 
 END IF;
 
-SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
-vEmNoExists, vUpdateTime, vCurrentCaseId
-FROM AAU.EmergencyCase
-WHERE EmergencyNumber = prm_EmergencyNumber;
-
 SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
 FROM AAU.User u 
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
+
+SELECT COUNT(1), IFNULL(MAX(UpdateTime), '1901-01-01'), MAX(EmergencyCaseId) INTO 
+vEmNoExists, vUpdateTime, vCurrentCaseId
+FROM AAU.EmergencyCase
+WHERE EmergencyNumber = prm_EmergencyNumber
+AND OrganisationId = vOrganisationId;
 
 START TRANSACTION ;
 

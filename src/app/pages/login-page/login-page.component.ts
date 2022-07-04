@@ -24,14 +24,20 @@ export class LoginPageComponent implements OnInit {
 
     public async login(username: string, password: string) {
 
+        this.errorMessage = '';
+
         try {
             const url = (
                 await this.authService.login(
                 username,
                 password,
             )) as string;
+
             this.navigateTo(url);
+
         } catch (e:any) {
+
+
             this.errorMessage =
                 e.status === 504
                     ? 'Cannot connect to server'

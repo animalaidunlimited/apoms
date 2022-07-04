@@ -22,7 +22,8 @@
     "configure:ci": "ts-node set-environment.ts",
     "app-config:ci": "ts-node set-app-yaml.ts",
     "build:ci": "ng build --configuration=$NPM_CONFIG_ENVIRONMENT --sourceMap=false",
-    "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom"
+    "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom",
+    "source-map-explorer": "source-map-explorer dist/apoms/**/*.js"
   },
   "private": true,
   "dependencies": {
@@ -58,6 +59,7 @@
     "hammerjs": "^2.0.8",
     "ng-table-virtual-scroll": "^1.3.8",
     "rxjs": "^6.6.7",
+    "source-map-explorer": "^2.5.2",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"
   },

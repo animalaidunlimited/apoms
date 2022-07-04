@@ -9,7 +9,8 @@ BEGIN
 		JSON_OBJECT(
 		'logoUrl', om.LogoURL,
 		'address', om.Address,
-		'name', o.Organisation
+		'name', o.Organisation,
+        'driverViewDeskNumber', om.DriverViewDeskNumber
 		) AS Organisation
 	FROM 
 		AAU.OrganisationMetadata om

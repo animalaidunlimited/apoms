@@ -85,7 +85,8 @@ START TRANSACTION;
                         AssignedVehicleId    = prm_AssignedAmbulanceId,
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
 						selfAdmission           = prm_SelfAdmission
-			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+			WHERE EmergencyCaseId = prm_EmergencyCaseId
+            AND OrganisationId = vOrganisationId;
 
 COMMIT;
 

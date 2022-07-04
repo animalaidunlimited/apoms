@@ -1,18 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserDetails, UserJobType } from 'src/app/core/models/user';
 import { FormBuilder, Validators } from '@angular/forms';
-import { UserActionService } from 'src/app/core/services/user-details/user-action.service';
+import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { state, style, transition, animate, trigger, group } from '@angular/animations';
+import { state, style, transition, animate, trigger } from '@angular/animations';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { UserOptionsService } from './../../core/services/user-option/user-options.service';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 
 
 interface StreetTreatRole {
@@ -100,9 +100,9 @@ export class UsersPageComponent implements OnInit {
     @ViewChild(MatTable) table!: MatTable<UserDetails>;
 
     constructor(private dropdown : DropdownService,
-      private userService: UserOptionsService,
+      private userOptionsService: UserOptionsService,
       private fb : FormBuilder,
-      private userAction : UserActionService,
+      private userDetailsService : UserDetailsService,
       private snackBar: SnackbarService,
       private route: ActivatedRoute) {
         const emptyUser = {
@@ -250,6 +250,17 @@ export class UsersPageComponent implements OnInit {
             permissionId : 16,
             permissionType: 'Write'
           }]
+        },
+        {
+          groupNameId: 8,
+          groupName: 'Staff Rota',
+          permissions: [{
+            permissionId: 17,
+            permissionType: 'Read'
+          }, {
+            permissionId : 18,
+            permissionType: 'Write'
+          }]
         }
       ];
 
@@ -262,7 +273,7 @@ export class UsersPageComponent implements OnInit {
 
     getrefreshTableData() {
 
-      this.userAction.getUsersByIdRange(this.userService.getUserName()).then((userListData: UserDetails[])=>{
+      this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
         this.userList = userListData;
         this.initialiseTable(this.userList);
       });
@@ -302,7 +313,7 @@ export class UsersPageComponent implements OnInit {
         }
 
         if(userDetailsForm.valid) {
-          this.userAction.insertUser(userDetailsForm.value).then((res : any)=>{
+          this.userDetailsService.insertUser(userDetailsForm.value).then((res : any)=>{
             this.loading = false;
 
             if(res.success) {

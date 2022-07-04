@@ -4,7 +4,7 @@ import { NavigationService } from './navigation.service';
 import { NavRoute, NavRouteService } from '../../../nav-routing';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { UserActionService } from '../user-details/user-action.service';
+import { UserDetailsService } from '../user-details/user-details.service';
 import { routes } from '../../../app-routing.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EvaluatePermissionService } from '../permissions/evaluate-permission.service';
@@ -36,7 +36,7 @@ describe('NavigationService', () => {
                 NavigationService,
                 NavRouteService,
                 EvaluatePermissionService,
-                UserActionService
+                UserDetailsService
             ],
         });
 
