@@ -255,7 +255,7 @@ export class DriverViewService extends APIService {
   }
   
 
-  public recieveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
+  public receiveUpdateDriverViewMessage(updatedRecord:DriverAssignment) {
 
     const updatedRecordData = this.getAssignmentStatus(updatedRecord);
 

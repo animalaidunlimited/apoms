@@ -47,8 +47,6 @@ export class AuthService extends APIService {
 
     }
 
-
-
     public async login(username: string, password: string) {
 
         try {
@@ -61,6 +59,7 @@ export class AuthService extends APIService {
             this.token = this.response.token || '';
 
             if (!this.response.success) {
+                console.log('here');
                 throw new Error('Wrong Credentials!');
             }
 
@@ -81,11 +80,13 @@ export class AuthService extends APIService {
 
             return this.redirectUrl;
         } catch (error) {
+
             return Promise.reject(error);
         }
     }
 
     public async mockLogin(email: string, password: string) {
+
         try {
             if (!(email === 'user' && password === 'user')) {
                 throw new Error(

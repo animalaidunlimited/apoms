@@ -11,7 +11,7 @@ import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
-import { OrganisationOptionsService } from '../organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from '../organisation-option/organisation-option.service';
 import { Comment, MediaItemReturnObject, MediaItem, LocalMediaItem, MediaItemsDataObject, MediaResponse, MediaUploadResponse } from '../../models/media';
 import { PatientOutcomeResponse } from '../../models/patients';
 import { HttpClient } from '@angular/common/http';
@@ -58,7 +58,7 @@ export class MediaService extends APIService {
     http: HttpClient,
     public datePipe:DatePipe,
     protected storageService: StorageService,
-    private organisationOptions: OrganisationOptionsService) {  super(http); }
+    private organisationDetails: OrganisationDetailsService) {  super(http); }
 
   handleUpload(file: File, Id: number, offlineUploadDate?:string, filePath?:string): MediaItemReturnObject {
 
@@ -77,6 +77,7 @@ export class MediaService extends APIService {
         mediaItemId: new BehaviorSubject<number | undefined>(undefined),
         result: 'success'
     };
+
     if(offlineUploadDate){
 
       newMediaItem.datetime = offlineUploadDate;
@@ -481,7 +482,7 @@ export class MediaService extends APIService {
   getFileUploadLocation(filename: string, timestamp: string, folder:string) : string{
 
     // Make sure we only save files in the folder for the organisation.
-    const organisationFolder = this.organisationOptions.getOrganisationSocketEndPoint();
+    const organisationFolder = this.organisationDetails.getOrganisationSocketEndPoint();
 
     return `${organisationFolder}/${folder}/${timestamp}_${filename}`;
 

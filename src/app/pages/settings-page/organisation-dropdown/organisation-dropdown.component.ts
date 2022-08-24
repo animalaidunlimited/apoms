@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { EditableDropdown } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { EditableDropdownService } from '../../services/editable-dropdown.service';
+import { EditableDropdownService } from '../../../core/services/editable-dropdown/editable-dropdown.service';
 
 
  @Component({

@@ -37,6 +37,7 @@ export class LoginPageComponent implements OnInit {
 
         } catch (e:any) {
 
+            console.log(e);
 
             this.errorMessage =
                 e.status === 504

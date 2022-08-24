@@ -58,7 +58,7 @@ export const navRoutes: NavRoute[] = [
             then(m => m.TreatmentListPageModule)
     },
     {
-        data: { title: 'Street Treat', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'StreetTreat', permissionId:[5,6], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',
         path: 'street-treat',
@@ -67,7 +67,6 @@ export const navRoutes: NavRoute[] = [
                 './modules/streettreat/streettreat-page.module')
                 .then(m => m.StreetTreatPageModule)
     },
-
     {
         data: { title: 'Vehicle List', permissionId:[15,16], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
@@ -113,7 +112,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.ReportingPageModule)
     },
     {
-        data: { title: 'Settings' ,permissionId:[], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Settings' ,permissionId:[11,12], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'settings_applications',
         group: 'Settings',
         path: 'settings',

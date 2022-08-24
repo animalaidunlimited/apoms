@@ -184,20 +184,9 @@ export class UsersPageComponent implements OnInit {
             permissionId : 4,
             permissionType: 'Write'
           }]
-        },
-        {
-          groupNameId: 3,
-          groupName: 'StreetTreat',
-          permissions: [{
-            permissionId: 5,
-            permissionType: 'Read'
-          }, {
-            permissionId : 6,
-            permissionType: 'Write'
-          }]
         }
         ,{
-          groupNameId: 4,
+          groupNameId: 3,
           groupName: 'Treatment list',
           permissions: [{
             permissionId: 7,
@@ -208,40 +197,18 @@ export class UsersPageComponent implements OnInit {
           }]
         },
         {
+          groupNameId: 4,
+          groupName: 'StreetTreat',
+          permissions: [{
+            permissionId: 5,
+            permissionType: 'Read'
+          }, {
+            permissionId : 6,
+            permissionType: 'Write'
+          }]
+        },
+        {
           groupNameId: 5,
-          groupName: 'Reporting',
-          permissions: [{
-            permissionId: 9,
-            permissionType: 'Read'
-          }, {
-            permissionId : 10,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 6,
-          groupName: 'Admin',
-          permissions: [{
-            permissionId: 11,
-            permissionType: 'Read'
-          }, {
-            permissionId : 12,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 7,
-          groupName: 'Driver view',
-          permissions: [{
-            permissionId: 13,
-            permissionType: 'Read'
-          }, {
-            permissionId : 14,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 8,
           groupName: 'Vehicles',
           permissions: [{
             permissionId: 15,
@@ -252,7 +219,18 @@ export class UsersPageComponent implements OnInit {
           }]
         },
         {
-          groupNameId: 8,
+          groupNameId: 6,
+          groupName: 'Driver view',
+          permissions: [{
+            permissionId: 13,
+            permissionType: 'Read'
+          }, {
+            permissionId : 14,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 7,
           groupName: 'Staff Rota',
           permissions: [{
             permissionId: 17,
@@ -261,7 +239,31 @@ export class UsersPageComponent implements OnInit {
             permissionId : 18,
             permissionType: 'Write'
           }]
+        },
+        {
+          groupNameId: 8,
+          groupName: 'Reporting',
+          permissions: [{
+            permissionId: 9,
+            permissionType: 'Read'
+          }, {
+            permissionId : 10,
+            permissionType: 'Write'
+          }]
+        },
+        {
+          groupNameId: 9,
+          groupName: 'Settings',
+          permissions: [{
+            permissionId: 11,
+            permissionType: 'Read'
+          }, {
+            permissionId : 12,
+            permissionType: 'Write'
+          }]
         }
+
+
       ];
 
       this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType=>{

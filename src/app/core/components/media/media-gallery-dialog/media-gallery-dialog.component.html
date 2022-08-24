@@ -3,6 +3,7 @@
 </button>
 <div fxLayout="column" fxLayoutGap="2rem" style="overflow-x: hidden">
     <ng-container *ngFor="let date of (mediaGalleryDates | async); let index = index">
+        
         <div ngStyle.gt-sm="width:max-content;" ngStyle.lt-sm="overflow:scroll;">
             <p style="
             margin: 0 0 0.5em 0;

@@ -1,3 +1,5 @@
+import { SafeUrl } from "@angular/platform-browser";
+
 export interface OrganisationMarker {
     index: number;
     position: google.maps.LatLngLiteral;
@@ -6,7 +8,7 @@ export interface OrganisationMarker {
 }
 
 export interface OrganisationDetail{
-    logoUrl: string;
+    logoUrl: SafeUrl | undefined;
     name: string;
     address: OrganisationAddress[],
     driverViewDeskNumber: string

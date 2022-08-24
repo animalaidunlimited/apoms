@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { OrganisationDetail } from '../../models/organisation';
 import { SuccessOnlyResponse } from '../../models/responses';
@@ -9,7 +10,7 @@ import { StorageService } from '../storage/storage.service';
 @Injectable({
     providedIn: 'root',
 })
-export class OrganisationOptionsService extends APIService{
+export class OrganisationDetailsService extends APIService{
 
     endpoint = 'Organisation';
 
@@ -18,7 +19,12 @@ export class OrganisationOptionsService extends APIService{
         lng: 73.691544,
     };
 
-    organisationDetail =  new BehaviorSubject<any>([]);
+    organisationDetail =  new BehaviorSubject<OrganisationDetail>({
+        logoUrl: '',
+        name: 'Animal Aid Unlimited',
+        address: [],
+        driverViewDeskNumber: ''
+    });
 
     // Default is 7AM
     vehicleAssignerStartHour = 7;
@@ -59,6 +65,24 @@ export class OrganisationOptionsService extends APIService{
         return this.storage.read('OrganisationId');
     }
 
+    getVehicleAssignerStartHour() : number {
+
+        if (!this.vehicleAssignerStartHour) {
+            this.vehicleAssignerStartHour = 7;
+        }
+    
+        return this.vehicleAssignerStartHour;
+    }
+
+    getVehicleAssignerEndHour() : number {
+
+    if (!this.vehicleAssignerEndHour) {
+        this.vehicleAssignerEndHour = 23;
+    }
+
+    return this.vehicleAssignerEndHour;
+    }
+
     async updateOrganisationDetail(orgDetails:OrganisationDetail) : Promise<SuccessOnlyResponse>{
 
         return await this.post(orgDetails).then(data => {
@@ -69,23 +93,25 @@ export class OrganisationOptionsService extends APIService{
         });
     }
 
+    updateOrganisationLogo(logoURL: SafeUrl | undefined) : void {
 
-  getVehicleAssignerStartHour() : number {
+        if(!logoURL){
+            return;
+        }
 
-    if (!this.vehicleAssignerStartHour) {
-        this.vehicleAssignerStartHour = 7;
+        let currentDetails = this.organisationDetail.value;
+
+        console.log(currentDetails);
+
+        currentDetails.logoUrl = logoURL;
+
+        this.organisationDetail.next(currentDetails);
+
     }
 
-    return this.vehicleAssignerStartHour;
-  }
 
-  getVehicleAssignerEndHour() : number {
 
-    if (!this.vehicleAssignerEndHour) {
-        this.vehicleAssignerEndHour = 23;
-    }
 
-    return this.vehicleAssignerEndHour;
-  }
+
 
 }

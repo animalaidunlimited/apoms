@@ -1,15 +1,14 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { BehaviorSubject } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { APIService } from '../../../core/services/http/api.service';
 import { HttpClient } from '@angular/common/http';
 import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../driver-view/services/driver-view.service';
-import { takeUntil } from 'rxjs/operators';
-import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 
 @Injectable({
@@ -22,15 +21,16 @@ currentMessage = new BehaviorSubject(Boolean(false));
 endpoint = 'Messaging';
 havePermission = new BehaviorSubject(Boolean(false));
 haveReceivedFocus = new BehaviorSubject(Boolean(false));
-token = '';
+token:string|null = null;
 
 constructor(
     private angularFireMessaging: AngularFireMessaging,
     private zone: NgZone,
+    private snackbar: SnackbarService,
     private driverView: DriverViewService,
     private treatmentList: TreatmentListService,
     private outstandingCase: OutstandingCaseService,
-    private organisationOptions: OrganisationOptionsService,
+    private organisationDetails: OrganisationDetailsService,
     private locationService: LocationService,
     http: HttpClient) {
         super(http);
@@ -59,7 +59,7 @@ constructor(
         // This is a rescue message, so pass this on to the outstanding-case service
         if(message?.hasOwnProperty('actionStatus')){
             this.outstandingCase.receiveUpdatedRescueMessage(message);
-            this.driverView.recieveUpdateDriverViewMessage(message);
+            this.driverView.receiveUpdateDriverViewMessage(message);
             this.zone.run(() => this.currentMessage.next(payload.data));
         }
 
@@ -94,16 +94,26 @@ constructor(
     // Request permission, if it's granted then subscribe to the required topics.
     // If not granted then emit to let watchers know
     requestPermission() {
+
+
         this.angularFireMessaging.requestToken.subscribe(
             (token) => {
                 this.zone.run(() => this.havePermission.next(true));
 
-                this.token = token || '';
-                this.subscribeToTopics(this.token);
+                this.token = token;
+
+                if(this.token){
+                    this.subscribeToTopics(this.token);
+                }
+                else {
+                    this.snackbar.warningSnackBar("An error occurred when subscribing to messaging","OK");
+                }
+                
 
             },
             (err:any) => {
                 this.zone.run(() => this.havePermission.next(false));
+                console.log(err);
 
             }
         );
@@ -132,7 +142,7 @@ constructor(
         ]
 
         // send the token to the server and subscribe it to the relevant topics
-        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
+        const organisation = this.organisationDetails.getOrganisationSocketEndPoint();
 
         let result = [];
 
@@ -160,7 +170,11 @@ constructor(
 
     async unsubscribe(){
 
-        const organisation = this.organisationOptions.getOrganisationSocketEndPoint();
+        if(!this.token){
+            return;
+        }
+
+        const organisation = this.organisationDetails.getOrganisationSocketEndPoint();
 
         const unsubscribeAssignment = {
                             unsubscribe: 'true',

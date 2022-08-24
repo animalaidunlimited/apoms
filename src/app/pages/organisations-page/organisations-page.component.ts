@@ -1,10 +1,9 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LogoService } from 'src/app/core/services/logo/logo.service';
-import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { OrganisationMarker, OrganisationDetail, OrganisationAddress } from 'src/app/core/models/organisation';
 
 
@@ -24,13 +23,14 @@ export class OrganisationsPageComponent implements OnInit {
     organisationForm!:FormGroup ;
     updateDropDown:number[] = [];
     zoom = 10;
+    uploadingImage = false;
 
     @ViewChildren('addressSearch') addresstext!: QueryList<ElementRef>;
     @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
 
     constructor(
         private logoService:LogoService,
-        private organisationOptions: OrganisationOptionsService,
+        private organisationDetails: OrganisationDetailsService,
         private fb: FormBuilder,
         private changeDetector: ChangeDetectorRef,
         private snackbar: SnackbarService
@@ -48,13 +48,13 @@ export class OrganisationsPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.center = this.organisationOptions.getDefaultCoordinates();
+        this.center = this.organisationDetails.getDefaultCoordinates();
 
         // tslint:disable-next-line: no-non-null-assertion
-        this.organisationId = parseInt(this.organisationOptions.getOrganisationId()!,10);
+        this.organisationId = parseInt(this.organisationDetails.getOrganisationId()!,10);
 
 
-        this.organisationOptions.organisationDetail.subscribe((orgDetail:OrganisationDetail) => {
+        this.organisationDetails.organisationDetail.subscribe((orgDetail:OrganisationDetail) => {
 
             this.organisationForm = this.fb.group({
                 organisationId : this.organisationId,
@@ -70,9 +70,11 @@ export class OrganisationsPageComponent implements OnInit {
     }
 
     uploadLogo($event:Event){
-
+        
         if((($event.target as HTMLInputElement).files as FileList).length){
 
+
+            this.uploadingImage = true;
             const file = (($event.target as HTMLInputElement).files as FileList)[0];
 
             const reader = new FileReader();
@@ -82,10 +84,23 @@ export class OrganisationsPageComponent implements OnInit {
 
             const result = this.logoService.uploadLogo(file, this.organisationId);
 
+            result.mediaItemId.subscribe(success => {
+
+                if(success === 0){
+                    this.uploadingImage = false;
+
+                    this.organisationDetails.updateOrganisationLogo(result.mediaItem?.localURL);
+                }
+            });
+            
+
 
         }else{
+            console.log('hiding');
+            this.uploadingImage = false;
             return;
         }
+        
 
     }
 
@@ -271,16 +286,16 @@ export class OrganisationsPageComponent implements OnInit {
 
     }
 
-    onSubmit(organisationOptions:FormGroup) : void {
+    onSubmit(organisationDetails:FormGroup) : void {
 
-        if(organisationOptions.dirty){
+        if(organisationDetails.dirty){
 
-            this.organisationOptions.updateOrganisationDetail(organisationOptions?.value).then(response => {
+            this.organisationDetails.updateOrganisationDetail(organisationDetails?.value).then(response => {
 
                 response.success === 1 ?
                     this.snackbar.successSnackBar('Organisation details saved successfully', 'OK')
                 :
-                    this.snackbar.errorSnackBar('An error has occured: Error number: OPC: 283','OK');
+                    this.snackbar.errorSnackBar('An error has occurred: Error number: OPC: 283','OK');
 
             });
 

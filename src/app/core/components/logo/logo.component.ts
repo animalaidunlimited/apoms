@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { OrganisationOptionsService } from '../../services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from '../../services/organisation-option/organisation-option.service';
 
 @Component({
     selector: 'app-logo',
@@ -10,17 +10,16 @@ import { OrganisationOptionsService } from '../../services/organisation-option/o
 export class LogoComponent implements OnInit {
 
     constructor(
-        private organisationOptions:OrganisationOptionsService,
+        private organisationDetails:OrganisationDetailsService,
         public authService: AuthService
     ) {}
-
-    logo = 'assets/images/aau_logo.jpg';
-    organisationDetail = this.organisationOptions.organisationDetail;
+    
+    organisationDetail = this.organisationDetails.organisationDetail;
     
     ngOnInit() {
         if(this.authService.loggedIn?.value)
         {
-            this.organisationOptions.getOrganisationDetail();
+            this.organisationDetails.getOrganisationDetail();
         }
         
     }

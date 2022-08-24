@@ -1,7 +1,10 @@
+
+
 ::ng-deep .media-preview-dialog .mat-dialog-container {
     padding: 0 !important;
-    position:relative;
+    position: relative;
     overflow: visible;
+    margin-top: 3vh;
 }
 
 .close-button {
@@ -47,7 +50,7 @@
 
 .mediaPreviewBackgroundImage{
     background-size: contain;
-    min-width: 73%;
+    min-width: 70%;
     background-repeat: no-repeat;
     min-height: 70vh;
     background-position: center;

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MediaItemReturnObject } from '../../models/media';
 import { APIService } from '../http/api.service';
 import { MediaService } from '../media/media.service';
 
@@ -14,7 +15,7 @@ export class LogoService extends APIService {
         private MediaService: MediaService
     ){super(http);}
 
-    uploadLogo(file:File, organisationId: number)
+    uploadLogo(file:File, organisationId: number) : MediaItemReturnObject
     {
 
         const mediaItem = this.MediaService.handleUpload(file, organisationId, (new Date()).toString(), 'logo');
@@ -33,5 +34,7 @@ export class LogoService extends APIService {
 
             }
         });
+
+        return mediaItem;
     }
 }

@@ -1,7 +1,10 @@
 ::ng-deep .media-gallery-dialog {
-    max-height: 70vh;
+    max-height: 96vh;
     position:relative !important;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
 }
+
 .close-button {
     position: absolute;
     top: 0;
@@ -27,8 +30,8 @@
         .mat-dialog-container{ 
 
             max-width: 90vw !important;
-            max-height: 90vh !important;
-            overflow: hidden;
+            // max-height: 90vh !important;
+            overflow: scroll;
             padding:1em;
         }
     }

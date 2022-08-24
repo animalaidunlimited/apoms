@@ -9,7 +9,7 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { OrganisationOptionsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface UpsertShiftResult{
@@ -33,7 +33,7 @@ export class VehicleService  extends APIService {
     public http: HttpClient,
     private dropdowns: DropdownService,
     private snackbar: SnackbarService,
-    private orgOptions: OrganisationOptionsService
+    private orgOptions: OrganisationDetailsService
     ) {
     super(http);
   }
