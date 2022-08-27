@@ -61,10 +61,6 @@
               ],
               "buildOptimizer": true,
               "extractLicenses": true,
-              "index": {
-                "input": "src/index.prod.html",
-                "output": "index.html"
-              },
               "namedChunks": false,
               "ngswConfigPath": "ngsw-config.json",
               "optimization": true,
@@ -93,10 +89,6 @@
               ],
               "buildOptimizer": true,
               "extractLicenses": true,
-              "index": {
-                "input": "src/index.stage.html",
-                "output": "index.html"
-              },
               "namedChunks": false,
               "ngswConfigPath": "ngsw-config.json",
               "optimization": true,
