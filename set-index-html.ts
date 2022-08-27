@@ -42,7 +42,7 @@ const indexHTML = `
 
 
 console.log(colors.magenta('The file `index.html` will be updated.'));
-writeFile(environmentTargetPath, envConfigFile, function (err:string) {
+writeFile(environmentTargetPath, indexHTML, function (err:string) {
    if (err) {
        throw console.error(err);
    } else {
