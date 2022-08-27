@@ -35,12 +35,12 @@ export class LoginPageComponent implements OnInit {
 
             this.navigateTo(url);
 
-        } catch (e:any) {
+        } catch (error:any) {
 
-            console.log(e);
+            console.log(error);
 
             this.errorMessage =
-                e.status === 504
+                error.status === 504
                     ? 'Cannot connect to server'
                     : 'Wrong Credentials!';
         }

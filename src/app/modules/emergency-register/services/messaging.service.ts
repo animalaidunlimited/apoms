@@ -111,9 +111,9 @@ constructor(
                 
 
             },
-            (err:any) => {
+            (error:any) => {
                 this.zone.run(() => this.havePermission.next(false));
-                console.log(err);
+                console.log(error);
 
             }
         );

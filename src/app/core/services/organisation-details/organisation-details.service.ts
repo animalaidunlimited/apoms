@@ -47,8 +47,6 @@ export class OrganisationDetailsService extends APIService{
         const request = '?organisationId=' + this.getOrganisationId();
 
         this.getObservable(request).subscribe(response => {
-
-            console.log(response);
             
             this.organisationDetail.next(response)
         
@@ -124,7 +122,6 @@ export class OrganisationDetailsService extends APIService{
     async updateOrganisationDetail(orgDetails:OrganisationDetail) : Promise<SuccessOnlyResponse>{
 
         return await this.post(orgDetails).then(data => {
-            console.log(data);
             return data;
         })
         .catch(error => {
@@ -139,8 +136,6 @@ export class OrganisationDetailsService extends APIService{
         }
 
         let currentDetails = this.organisationDetail.value;
-
-        console.log(currentDetails);
 
         currentDetails.logoUrl = logoURL;
 

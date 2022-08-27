@@ -109,9 +109,6 @@ export class StaffRotaPageComponent implements OnInit {
 
   drop(event: CdkDragDrop<any>, periodId: string, groupId: string){
 
-    console.log(periodId);
-    console.log(groupId);
-
     const user = this.userList[event.previousIndex];
 
     const addedTask:StaffTask = {

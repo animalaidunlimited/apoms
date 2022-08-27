@@ -96,7 +96,6 @@ export class OrganisationsPageComponent implements OnInit {
 
 
         }else{
-            console.log('hiding');
             this.uploadingImage = false;
             return;
         }
