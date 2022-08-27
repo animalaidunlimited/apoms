@@ -869,7 +869,7 @@ BEGIN
 		'name', o.Organisation
 		) AS Organisation
 	FROM 
-		AAU.OrganisationMetadata om
+		AAU.OrganisationMetaData om
 		INNER JOIN AAU.Organisation o ON o.OrganisationId = om.OrganisationId
 	WHERE o.OrganisationId = prm_OrganisationId;
 	
@@ -2921,7 +2921,7 @@ CREATE  PROCEDURE AAU.sp_UpdateOrganisationDetail (
 BEGIN
 DECLARE vSuccess INT DEFAULT 0;
 
-	UPDATE AAU.OrganisationMetadata om
+	UPDATE AAU.OrganisationMetaData om
     INNER JOIN AAU.Organisation o ON o.OrganisationId = prm_organisationId
 		SET 
 			om.Address = prm_Address,
@@ -3287,7 +3287,7 @@ BEGIN
 
 DECLARE vSuccess INT;
 
-	INSERT INTO AAU.OrganisationMetadata(LogoURL,OrganisationId) 
+	INSERT INTO AAU.OrganisationMetaData(LogoURL,OrganisationId) 
 	VALUES (prm_remoteURL, prm_organisationId) 
 	ON DUPLICATE KEY UPDATE LogoURL = prm_remoteURL;
 

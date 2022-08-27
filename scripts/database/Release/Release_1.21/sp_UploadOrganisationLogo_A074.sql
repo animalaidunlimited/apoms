@@ -11,7 +11,7 @@ BEGIN
 
 DECLARE vSuccess INT;
 
-	INSERT INTO AAU.OrganisationMetadata(LogoURL,OrganisationId) 
+	INSERT INTO AAU.OrganisationMetaData(LogoURL,OrganisationId) 
 	VALUES (prm_remoteURL, prm_organisationId) 
 	ON DUPLICATE KEY UPDATE LogoURL = prm_remoteURL;
 

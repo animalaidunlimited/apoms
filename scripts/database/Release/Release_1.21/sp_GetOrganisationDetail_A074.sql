@@ -15,7 +15,7 @@ BEGIN
         'vehicleDefaults', om.VehicleDefaults
 		) AS Organisation
 	FROM 
-		AAU.OrganisationMetadata om
+		AAU.OrganisationMetaData om
 		INNER JOIN AAU.Organisation o ON o.OrganisationId = om.OrganisationId
 	WHERE o.OrganisationId = prm_OrganisationId;
 	

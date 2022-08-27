@@ -2238,7 +2238,7 @@ BEGIN
         'driverViewDeskNumber', om.DriverViewDeskNumber
 		) AS Organisation
 	FROM 
-		AAU.OrganisationMetadata om
+		AAU.OrganisationMetaData om
 		INNER JOIN AAU.Organisation o ON o.OrganisationId = om.OrganisationId
 	WHERE o.OrganisationId = prm_OrganisationId;
 	
@@ -6867,7 +6867,7 @@ BEGIN
 
 DECLARE vSuccess INT;
 
-	INSERT INTO AAU.OrganisationMetadata(LogoURL,OrganisationId) 
+	INSERT INTO AAU.OrganisationMetaData(LogoURL,OrganisationId) 
 	VALUES (prm_remoteURL, prm_organisationId) 
 	ON DUPLICATE KEY UPDATE LogoURL = prm_remoteURL;
 
@@ -6942,7 +6942,7 @@ DECLARE vSuccess INT DEFAULT 0;
 
 UPDATE AAU.Organisation SET Organisation = prm_Organisation WHERE OrganisationId = prm_OrganisationId;
 
-INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId, DriverViewDeskNumber)
+INSERT INTO AAU.OrganisationMetaData (Address, OrganisationId, DriverViewDeskNumber)
 VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber) ON DUPLICATE KEY UPDATE
 			Address = prm_Address,
             DriverViewDeskNumber = prm_DriverViewDeskNumber;

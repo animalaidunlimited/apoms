@@ -56,6 +56,11 @@ jobs:
           ANGULAR_FIRE_EMAIL: ${{ secrets.ANGULAR_FIRE_EMAIL }}
           ANGULAR_FIRE_PASSWORD: ${{ secrets.ANGULAR_FIRE_PASSWORD }}
 
+      - name: Configure index.html
+        run: npm run index-config:ci
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
       - name: Build
         run: npm run build:ci
         env:

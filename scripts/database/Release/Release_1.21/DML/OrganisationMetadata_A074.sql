@@ -1,5 +1,5 @@
-CREATE TABLE AAU.OrganisationMetadata (
-	OrganisationMetadataId int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE AAU.OrganisationMetaData (
+	OrganisationMetaDataId int(11) NOT NULL AUTO_INCREMENT,
 	OrganisationId int(11) NOT NULL,
 	LogoURL varchar(500) NULL,
 	Address json DEFAULT NULL,
@@ -8,8 +8,8 @@ CREATE TABLE AAU.OrganisationMetadata (
 	UNIQUE KEY OrganisationId (OrganisationMetaDataId)
 );
 
-ALTER TABLE `AAU`.`OrganisationMetadata` 
-ADD CONSTRAINT `FK_OrganisationMetadata_Organisation`
+ALTER TABLE `AAU`.`OrganisationMetaData` 
+ADD CONSTRAINT `FK_OrganisationMetaData_Organisation`
   FOREIGN KEY (`OrganisationId`)
   REFERENCES `AAU`.`Organisation` (`OrganisationId`)
   ON DELETE NO ACTION

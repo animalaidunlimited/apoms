@@ -18,7 +18,7 @@ DECLARE vSuccess INT DEFAULT 0;
 
 UPDATE AAU.Organisation SET Organisation = prm_Organisation WHERE OrganisationId = prm_OrganisationId;
 
-INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId, DriverViewDeskNumber, VehicleDefaults)
+INSERT INTO AAU.OrganisationMetaData (Address, OrganisationId, DriverViewDeskNumber, VehicleDefaults)
 VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber, prm_VehicleDefaults) ON DUPLICATE KEY UPDATE
 			Address = prm_Address,
             DriverViewDeskNumber = prm_DriverViewDeskNumber,
