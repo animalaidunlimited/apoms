@@ -81,7 +81,7 @@ export class UsersPageComponent implements OnInit {
 
     hide = true;
 
-    streetTreatdropdown = false;
+    streetTreatDropdown = false;
 
     isChecked = true;
 
@@ -107,8 +107,9 @@ export class UsersPageComponent implements OnInit {
       private route: ActivatedRoute) {
         const emptyUser = {
           userId : 0,
+          employeeNumber: '',
           firstName: '',
-          surName: '',
+          surname: '',
           initials: '',
           colour: '',
           telephone: 0,
@@ -122,8 +123,9 @@ export class UsersPageComponent implements OnInit {
       }
 
     displayedColumns: string[] = [
+      'employeeNumber',
       'firstName',
-      'surName',
+      'surname',
       'initials',
       'telephone',
       'userName',
@@ -133,8 +135,9 @@ export class UsersPageComponent implements OnInit {
 
     userDetails = this.fb.group({
       userId : [],
+      employeeNumber : ['',Validators.required],
       firstName : ['',Validators.required],
-      surName: ['',Validators.required],
+      surname: ['',Validators.required],
       telephone:[],
       initials: [''],
       userName:['',Validators.required],
@@ -377,7 +380,7 @@ export class UsersPageComponent implements OnInit {
 
     afterSaveActions() {
       this.refreshPage();
-      this.streetTreatdropdown = false;
+      this.streetTreatDropdown = false;
     }
 
     refreshPage() {
@@ -387,13 +390,13 @@ export class UsersPageComponent implements OnInit {
 
     resetForm() {
       this.userDetails.reset();
-      this.streetTreatdropdown = false;
+      this.streetTreatDropdown = false;
     }
 
 
     changed(){
       if(this.isChecked) {
-        this.streetTreatdropdown = !this.streetTreatdropdown;
+        this.streetTreatDropdown = !this.streetTreatDropdown;
       }
     }
 

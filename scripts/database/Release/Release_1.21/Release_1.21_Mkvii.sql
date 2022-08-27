@@ -2232,12 +2232,10 @@ CREATE PROCEDURE AAU.sp_GetOrganisationDetail(IN prm_OrganisationId INT)
 BEGIN
 	SELECT 
 		JSON_OBJECT(
-        'organisationId', o.OrganisationId,
 		'logoUrl', om.LogoURL,
 		'address', om.Address,
 		'name', o.Organisation,
-        'driverViewDeskNumber', om.DriverViewDeskNumber,
-        'vehicleDefaults', om.VehicleDefaults
+        'driverViewDeskNumber', om.DriverViewDeskNumber
 		) AS Organisation
 	FROM 
 		AAU.OrganisationMetadata om
@@ -4098,9 +4096,8 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE( 
 JSON_OBJECT("userId",UserDetails.UserId),
-JSON_OBJECT("employeeNumber",UserDetails.EmployeeNumber),
 JSON_OBJECT("firstName",UserDetails.FirstName),
-JSON_OBJECT("surname",UserDetails.Surname),
+JSON_OBJECT("surName",UserDetails.Surname),
 JSON_OBJECT("initials",UserDetails.Initials),
 JSON_OBJECT("colour",UserDetails.Colour),
 JSON_OBJECT("telephone",UserDetails.Telephone),
@@ -4112,7 +4109,7 @@ JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
 ))  AS userDetails
-FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
+FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
             AS IsDeleted
 		FROM AAU.User u		
@@ -4154,7 +4151,7 @@ SET vOrganisationId = 1;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-SELECT jt.UserId AS `userId`, u.EmployeeNumber AS `employeeNumber`, u.FirstName AS `firstName`, u.Surname AS `surname`, u.initials AS `initials`, u.Colour AS `Colour`
+SELECT jt.UserId AS `userId`, u.FirstName AS `firstName`, u.Surname AS `surname`, u.initials AS `initials`, u.Colour AS `Colour`
 FROM AAU.UserJobType jt
 INNER JOIN AAU.User u ON u.UserId = jt.UserId
 WHERE jt.JobTypeId = prm_JobTypeId
@@ -5173,7 +5170,6 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertUser (IN prm_User VARCHAR(45),
-									IN prm_EmployeeNumber VARCHAR(32),
 									IN prm_FirstName NVARCHAR(64),
 									IN prm_Surname NVARCHAR(64),
 									IN prm_Initials NVARCHAR(64),
@@ -5217,29 +5213,27 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 IF vUserCount = 0 THEN
 
 INSERT INTO AAU.User (OrganisationId,
-						EmployeeNumber,
-						FirstName,
-						Surname,
-						Initials,
-						Colour,
-						Telephone,
-						UserName,
-						Password,
-						RoleId,
-						PermissionArray)
+					   FirstName,
+                       Surname,
+                       Initials,
+                       Colour,
+                       Telephone,
+                       UserName,
+                       Password,
+                       RoleId,
+                       PermissionArray)
 				VALUES
 						(
-						vOrganisationId,
-                        prm_EmployeeNumber,
+                        vOrganisationId,
 						prm_FirstName,
 						prm_Surname,
-						prm_Initials,
-						prm_Colour,
+                        prm_Initials,
+                        prm_Colour,
 						prm_Telephone,
-						prm_UserName,
-						prm_Password,
+                        prm_UserName,
+                        prm_Password,
 						prm_RoleId,
-						prm_PermissionArray
+                        prm_PermissionArray
 						);
 
 
@@ -6485,7 +6479,6 @@ DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
 
 DELIMITER $$
 CREATE PROCEDURE  AAU.sp_UpdateUserById (IN prm_UserId INT,
-										IN prm_EmployeeNumber VARCHAR(32),
 										IN prm_FirstName NVARCHAR(64),
 										IN prm_Surname NVARCHAR(64),
                                         IN prm_Initials NVARCHAR(64),
@@ -6502,10 +6495,6 @@ BEGIN
 Created By: Jim Mackenzie
 Created On: 22/08/2018
 Purpose: Used to update a user by id.
-
-Modified By: Jim Mackenzie
-Modified On: 25/08/2022
-Purpose: Adding in employee number. Yes, I know it's stored as a varchar, but you try telling any business that only numbers should be used for an employee number.
 */
 
 DECLARE vUserCount INT;
@@ -6533,8 +6522,7 @@ SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND
 IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 
 	UPDATE AAU.User
-		SET	EmployeeNumber = prm_EmployeeNumber,
-			FirstName	= prm_FirstName,
+		SET	FirstName	= prm_FirstName,
 			Surname		= prm_Surname,
             Initials    = prm_Initials,
             Colour      = prm_Colour,
@@ -6947,19 +6935,17 @@ CREATE PROCEDURE AAU.sp_UpsertOrganisationDetail (
     IN prm_Address JSON,
 	IN prm_Organisation VARCHAR(100),
     IN prm_DriverViewDeskNumber VARCHAR(20),
-	IN prm_OrganisationId INT,
-    IN prm_VehicleDefaults JSON
+	IN prm_OrganisationId INT
 )
 BEGIN
 DECLARE vSuccess INT DEFAULT 0;
 
 UPDATE AAU.Organisation SET Organisation = prm_Organisation WHERE OrganisationId = prm_OrganisationId;
 
-INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId, DriverViewDeskNumber, VehicleDefaults)
-VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber, prm_VehicleDefaults) ON DUPLICATE KEY UPDATE
+INSERT INTO AAU.OrganisationMetadata (Address, OrganisationId, DriverViewDeskNumber)
+VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber) ON DUPLICATE KEY UPDATE
 			Address = prm_Address,
-            DriverViewDeskNumber = prm_DriverViewDeskNumber,
-            VehicleDefaults = prm_VehicleDefaults;
+            DriverViewDeskNumber = prm_DriverViewDeskNumber;
 	
 	SELECT 1 INTO vSuccess;
 	SELECT vSuccess;

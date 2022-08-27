@@ -1,5 +1,6 @@
 export interface User {
     userId: number;
+    employeeNumber: string;
     firstName: string;
     surname: string;
     initials: string;
@@ -14,8 +15,9 @@ export interface UserJobType {
 
 export interface UserDetails {
     userId : number;
+    employeeNumber: string;
     firstName: string;
-    surName: string;
+    surname: string;
     initials: string;
     colour: string;
     telephone: number;
@@ -27,6 +29,7 @@ export interface UserDetails {
   }
 
 export interface ReleaseManager {
+    EmployeeNumber: string;
     FirstName: string;
 }
 

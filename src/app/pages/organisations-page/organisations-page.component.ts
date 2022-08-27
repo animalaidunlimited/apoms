@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LogoService } from 'src/app/core/services/logo/logo.service';
-import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { OrganisationMarker, OrganisationDetail, OrganisationAddress } from 'src/app/core/models/organisation';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 
 
 @Component({
@@ -300,7 +300,6 @@ export class OrganisationsPageComponent implements OnInit {
             });
 
         }
-
 
     }
 

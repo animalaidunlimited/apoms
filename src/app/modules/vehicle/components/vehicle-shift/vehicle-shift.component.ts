@@ -18,7 +18,7 @@ export class VehicleShiftComponent implements OnInit {
   @Input() shiftDate!: Date;
 
   currentDayStart!:Date;
-  currentDayEnd!:Date;
+  currentDayEnd!:Date;  
 
   hours:number[] = [];
   hourRange!: HourRange;
@@ -29,43 +29,53 @@ export class VehicleShiftComponent implements OnInit {
   constructor(
     private vehicleService: VehicleService,
     private dialog: MatDialog
-  ) {
-   }
+  ) {}
 
   ngOnInit(): void {
 
     this.vehicle.imageURL = this.vehicle.imageURL || "assets/images/image_placeholder.png";
 
+    this.vehicleService.vehicleDefaultsChanged.subscribe((changed) => {
 
+      if(changed){
+        this.initialiseShiftRange();        
+      }     
+    
+    });
+
+    this.initialiseShiftRange();
+
+  }
+
+  private initialiseShiftRange() {
     this.hourRange = this.vehicleService.getHourRange();
     this.hours = this.hourRange.range;
 
     this.currentDayStart = new Date(this.shiftDate);
-    this.currentDayStart.setHours(this.hourRange.start,0,0);
+    this.currentDayStart.setHours(this.hourRange.start, 0, 0);
 
     this.currentDayEnd = new Date(this.shiftDate);
-    this.currentDayEnd.setHours(this.hourRange.end,59,59,999);
+    this.currentDayEnd.setHours(this.hourRange.end, 59, 59, 999);
 
     this.shifts$ = this.vehicleService.vehicleShifts.pipe(map(shifts => shifts
       .filter(shift => shift.vehicleId === this.vehicle.vehicleId)
       .map(shift => {
 
-      // We need to work out how long the shift is in minutes and then work that out as a % of the number of minutes in a day.
-      // Then this becomes the width of the element as a % of the parent width.
-      shift.length = this.getShiftLengthAsPercentageOf24Hours(shift.shiftEndTimeDate.getTime(), shift.shiftStartTimeDate.getTime());
+        // We need to work out how long the shift is in minutes and then work that out as a % of the number of minutes in a day.
+        // Then this becomes the width of the element as a % of the parent width.
+        shift.length = this.getShiftLengthAsPercentageOf24Hours(shift.shiftEndTimeDate.getTime(), shift.shiftStartTimeDate.getTime());
 
-      // Now we need to work out how far to the right we need to shift the div. This is the difference between midnight and the start
-      // time of the shift as a % of 24 hours.
-      let midnight = new Date(shift.shiftStartTimeDate.getTime());
+        // Now we need to work out how far to the right we need to shift the div. This is the difference between midnight and the start
+        // time of the shift as a % of 24 hours.
+        let midnight = new Date(shift.shiftStartTimeDate.getTime());
 
-      shift.left = (((shift.shiftStartTimeDate.getTime() - midnight.setHours(this.hourRange.start,0,0,0) - 6000) / 1000) / ((this.hourRange.end - this.hourRange.start + 1) * 60 * 60) * 100);
+        shift.left = (((shift.shiftStartTimeDate.getTime() - midnight.setHours(this.hourRange.start, 0, 0, 0) - 6000) / 1000) / ((this.hourRange.end - this.hourRange.start + 1) * 60 * 60) * 100);
 
-      return shift;
+        return shift;
 
-    }
+      }
 
-    )));
-
+      )));
   }
 
   // A function that determines the length of the shift in minutes and returns that as a % of 24 hours

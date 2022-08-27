@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { SearchResponse } from 'src/app/core/models/responses';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
-import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
+import { NavigationService } from 'navigation/navigation.service';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { HospitalManagerTabBarService } from '../../services/hospital-manager-tab-bar.service';
 

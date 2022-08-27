@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavRoute, NavRouteService } from '../../../nav-routing';
+import { NavRoute, NavRouteService } from '../src/app/nav-routing';
 
 export class Page {
     title: string;

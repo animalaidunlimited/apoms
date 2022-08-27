@@ -23,7 +23,7 @@
             <mat-label>Cruelty inspector</mat-label>
             <mat-select formControlName="crueltyInspector" [errorStateMatcher]="errorMatcher">
                 <mat-option *ngFor="let inspector of crueltyInspectors$ | async" [value]="inspector.userId">
-                    {{inspector.firstName}}
+                    {{ inspector.employeeNumber + ' - ' + inspector.firstName}}
                 </mat-option>
             </mat-select>
         </mat-form-field>

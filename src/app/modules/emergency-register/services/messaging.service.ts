@@ -7,8 +7,8 @@ import { OutstandingCaseService } from './outstanding-case.service';
 import { TreatmentListService } from '../../treatment-list/services/treatment-list.service';
 import { LocationService } from 'src/app/core/services/location/location.service';
 import { DriverViewService } from '../../driver-view/services/driver-view.service';
-import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 
 
 @Injectable({

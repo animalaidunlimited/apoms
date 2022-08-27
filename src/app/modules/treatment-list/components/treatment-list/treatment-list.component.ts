@@ -99,6 +99,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
   smallScreen = false;
 
+  tagSorted = 1;
+
   treatmentListForm: FormGroup;
   treatmentPriorities: Observable<Priority[]>;
 
@@ -116,7 +118,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.refreshing = this.ts.refreshing;
 
-    // Update the paramters to this component based upon the route parameters if we're trying to print the treatment list
+    // Update the parameters to this component based upon the route parameters if we're trying to print the treatment list
     this.incomingList = route.snapshot.params?.treatmentList;
 
     if(this.incomingList){
@@ -513,13 +515,34 @@ savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
 
 }
 
-getTreatmntPriority(element: number) : string {
+getTreatmentPriority(element: number) : string {
 
   const treatmentPriorities = ["Low","Medium","High","Urgent"];
 
   return treatmentPriorities[element - 1];
 
 }
+
+sortTable(columnName: string){
+
+  this.tagSorted = this.tagSorted * -1;
+
+  let currentAccepted = this.acceptedFiltered.value;
+
+  switch(columnName){
+
+    case "Tag number":
+
+      currentAccepted.sort((a,b) => a.get("Tag number")?.value < b.get("Tag number")?.value ? this.tagSorted * -1 : this.tagSorted);
+
+    break;
+
+  }
+
+  this.acceptedFiltered.next(currentAccepted);
+
+}
+
 
 
 }

@@ -7,10 +7,13 @@
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <mat-form-field>
+                <input type= 'text' placeholder='Employee number' formControlName='employeeNumber' matInput required>
+            </mat-form-field>
+            <mat-form-field>
                 <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
             </mat-form-field>
             <mat-form-field>
-                <input type= 'text' placeholder='Last name' formControlName='surName' matInput required>
+                <input type= 'text' placeholder='Last name' formControlName='surname' matInput required>
             </mat-form-field>
             <mat-form-field>
                 <span matPrefix>+91 &nbsp;</span>
@@ -80,6 +83,14 @@
 <div class="example-container mat-elevation-z8">
     <mat-table matSort #table [dataSource]="dataSource">
 
+      <ng-container matColumnDef="employeeNumber">
+        <mat-header-cell *matHeaderCellDef> Employee Number </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="mobile-label">Employee Number:</span>
+          {{row.employeeNumber}}
+        </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="firstName">
         <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -88,11 +99,11 @@
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="surName">
+      <ng-container matColumnDef="surname">
         <mat-header-cell *matHeaderCellDef> Surname </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <span class="mobile-label">Surname:</span>
-          {{row.surName}}
+          {{row.surname}}
         </mat-cell>
       </ng-container>
 

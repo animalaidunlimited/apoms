@@ -4,10 +4,11 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { generateUUID } from 'src/app/core/helpers/utils';
+import { formatDateForMinMax, generateUUID } from 'src/app/core/helpers/utils';
 import { User } from 'src/app/core/models/user';
 import { Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { UniqueValidators } from 'src/app/core/validators/unique-validators';
 import { VehicleService } from '../../services/vehicle.service';
@@ -27,6 +28,8 @@ interface IncomingVehicleDetails {
 export class VehicleShiftDialogComponent implements OnInit {
 
   addShiftFormGroup = this.fb.group({});
+
+  defaultShiftLength = 9;
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -53,6 +56,7 @@ export class VehicleShiftDialogComponent implements OnInit {
     private fb: FormBuilder,
     private datepipe: DatePipe,
     private shiftValidator: ShiftTimeValidator,
+    private organisationDetails: OrganisationDetailsService,
     public dialogRef: MatDialogRef<VehicleShiftDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingVehicleDetails
   ) { }
@@ -62,6 +66,16 @@ export class VehicleShiftDialogComponent implements OnInit {
     this.staff$ = this.dropdowns.getRescuers();
 
     this.isEdit = this.data.shift ? true : false;
+
+    this.organisationDetails.organisationDetail.subscribe(defaults => {
+      
+      this.defaultShiftLength = defaults.vehicleDefaults.defaultShiftLength;    
+      this.minDate = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftStartTime;
+      this.minEndTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftStartTime;
+      this.maxDate = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;
+      this.maxStartTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;    
+    
+    });
 
     this.addStaffAssignment();
 
@@ -164,8 +178,24 @@ export class VehicleShiftDialogComponent implements OnInit {
 
   }
 
+  updateShiftEndTime() : void {
 
-  resetForm(){
+    if(this.addShiftFormGroup?.get('shiftStartTime')?.value && !this.addShiftFormGroup?.get('shiftEndTime')?.value){
+
+      let startTime = (new Date(this.addShiftFormGroup?.get('shiftStartTime')?.value)).getTime();
+
+      startTime += (this.defaultShiftLength * 1000 * 60 * 60);
+
+      let shiftEndTime = formatDateForMinMax(new Date(startTime));
+
+      this.addShiftFormGroup?.get('shiftEndTime')?.setValue(shiftEndTime);
+
+    }
+
+  }
+
+
+  resetForm() : void {
 
     this.addShiftFormGroup.reset();
     this.addShiftFormGroup.get('vehicleId')?.setValue(this.data.vehicle?.vehicleId);

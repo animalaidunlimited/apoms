@@ -1,8 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
 import { LocationService } from 'src/app/core/services/location/location.service';
-
 import { Observable, Subject,  BehaviorSubject } from 'rxjs';
 import {
     concatAll,
@@ -15,8 +13,6 @@ import {
 import { ActiveVehicleLocation } from 'src/app/core/models/location';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-
-
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
 import {trigger, transition, style, animate, state} from '@angular/animations';

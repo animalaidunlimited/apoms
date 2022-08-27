@@ -31,8 +31,9 @@ SELECT
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE( 
 JSON_OBJECT("userId",UserDetails.UserId),
+JSON_OBJECT("employeeNumber",UserDetails.EmployeeNumber),
 JSON_OBJECT("firstName",UserDetails.FirstName),
-JSON_OBJECT("surName",UserDetails.Surname),
+JSON_OBJECT("surname",UserDetails.Surname),
 JSON_OBJECT("initials",UserDetails.Initials),
 JSON_OBJECT("colour",UserDetails.Colour),
 JSON_OBJECT("telephone",UserDetails.Telephone),
@@ -44,7 +45,7 @@ JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray)
 ))  AS userDetails
-FROM (SELECT u.UserId, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
+FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName,jobTitle.JobTypeId, jobTitle.JobTitle, IF(u.IsDeleted, 'Yes', 'No') 
             AS IsDeleted
 		FROM AAU.User u		

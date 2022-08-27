@@ -28,10 +28,6 @@ import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown
 import { VehicleType, Vehicle } from '../../models/vehicle';
 
 
-
-
-
-
 @Injectable({
     providedIn: 'root',
 })

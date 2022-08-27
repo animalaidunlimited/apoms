@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertUser (IN prm_User VARCHAR(45),
+									IN prm_EmployeeNumber VARCHAR(32),
 									IN prm_FirstName NVARCHAR(64),
 									IN prm_Surname NVARCHAR(64),
 									IN prm_Initials NVARCHAR(64),
@@ -47,27 +48,29 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 IF vUserCount = 0 THEN
 
 INSERT INTO AAU.User (OrganisationId,
-					   FirstName,
-                       Surname,
-                       Initials,
-                       Colour,
-                       Telephone,
-                       UserName,
-                       Password,
-                       RoleId,
-                       PermissionArray)
+						EmployeeNumber,
+						FirstName,
+						Surname,
+						Initials,
+						Colour,
+						Telephone,
+						UserName,
+						Password,
+						RoleId,
+						PermissionArray)
 				VALUES
 						(
-                        vOrganisationId,
+						vOrganisationId,
+                        prm_EmployeeNumber,
 						prm_FirstName,
 						prm_Surname,
-                        prm_Initials,
-                        prm_Colour,
+						prm_Initials,
+						prm_Colour,
 						prm_Telephone,
-                        prm_UserName,
-                        prm_Password,
+						prm_UserName,
+						prm_Password,
 						prm_RoleId,
-                        prm_PermissionArray
+						prm_PermissionArray
 						);
 
 

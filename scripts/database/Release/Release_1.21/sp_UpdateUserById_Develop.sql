@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
 
 DELIMITER $$
 CREATE PROCEDURE  AAU.sp_UpdateUserById (IN prm_UserId INT,
+										IN prm_EmployeeNumber VARCHAR(32),
 										IN prm_FirstName NVARCHAR(64),
 										IN prm_Surname NVARCHAR(64),
                                         IN prm_Initials NVARCHAR(64),
@@ -20,6 +21,10 @@ BEGIN
 Created By: Jim Mackenzie
 Created On: 22/08/2018
 Purpose: Used to update a user by id.
+
+Modified By: Jim Mackenzie
+Modified On: 25/08/2022
+Purpose: Adding in employee number. Yes, I know it's stored as a varchar, but you try telling any business that only numbers should be used for an employee number.
 */
 
 DECLARE vUserCount INT;
@@ -47,7 +52,8 @@ SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND
 IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 
 	UPDATE AAU.User
-		SET	FirstName	= prm_FirstName,
+		SET	EmployeeNumber = prm_EmployeeNumber,
+			FirstName	= prm_FirstName,
 			Surname		= prm_Surname,
             Initials    = prm_Initials,
             Colour      = prm_Colour,
@@ -57,7 +63,6 @@ IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 			RoleId		= prm_RoleId,
             PermissionArray = prm_PermissionArray
 	WHERE UserId = prm_UserId;
-
 
 SELECT 1 INTO vUpdateSuccess; -- User update OK.
 

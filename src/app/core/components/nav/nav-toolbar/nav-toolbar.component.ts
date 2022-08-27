@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserAccountDetails, UserPreferences } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { NavigationService, Page } from '../../../services/navigation/navigation.service';
+import { NavigationService, Page } from '../../../../../../navigation/navigation.service';
 
 @Component({
     selector: 'app-nav-toolbar',

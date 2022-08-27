@@ -7,7 +7,7 @@ import {
     UrlTree,
 } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { NavigationService } from './services/navigation/navigation.service';
+import { NavigationService } from '../../../navigation/navigation.service';
 import { sideNavPath } from '../nav-routing';
 import { EvaluatePermissionService } from './services/permissions/evaluate-permission.service';
 

@@ -1,7 +1,9 @@
 <h1 class="legend" style="padding-top: 61px;">Apoms: {{releaseVersion}}</h1>
 
 
-<div fxLayout="column" fxLayoutAlign="center center">
+<form
+[formGroup]="organisationOptions"
+fxLayout="column" fxLayoutAlign="center center">
 
     <div class="refresh-text">
     To get the latest version of the app, click the refresh button
@@ -13,18 +15,86 @@
         </button>
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="center center">
-
-        <fieldset class="form-sub-group" style="width: 90%; margin-bottom: 10px;">
-
-            <legend class="legend" i18n>Update dropdowns</legend>
-
-            <aau-organisation-dropdown></aau-organisation-dropdown>
-
-        </fieldset>
 
 
-       </div>
+    <mat-accordion class="accordian">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Edit dropdowns
+            </mat-panel-title>
+            <mat-panel-description>
+              Here you can edit the contents of many dropdowns in Apoms.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column" fxLayoutAlign="center center">
 
-</div>
+            <fieldset class="form-sub-group" style="width: 90%; margin-bottom: 10px;">
+    
+                <legend class="legend" i18n>Update dropdowns</legend>
+    
+                <aau-organisation-dropdown></aau-organisation-dropdown>
+    
+            </fieldset>
+    
+        </div>
+        </mat-expansion-panel>
 
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Vehicle staff assigner options.
+            </mat-panel-title>
+            <mat-panel-description>
+              Here you can set the default options for the vehicle staff assigner.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div fxLayout="column" fxLayoutAlign="center center">
+
+            <div formGroupName="vehicleDefaults" fxLayout="row wrap" fxLayoutAlign="center center">
+
+                <div>
+                    <mat-form-field>
+                        <input
+                        formControlName="shiftStartTime" 
+                        type="time" 
+                        placeholder="Shift start time" 
+                        matInput>
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field>
+                        <input
+                        formControlName="shiftEndTime" 
+                        type="time" 
+                        placeholder="Shift end time" 
+                        matInput>
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field>
+                        <input
+                        formControlName="defaultShiftLength" 
+                        type="number" 
+                        placeholder="Default shift length (in hours)" 
+                        matInput>
+                    </mat-form-field>
+                </div>
+    
+                </div>
+    
+                <div>
+                    <button mat-raised-button color="primary" (click)="saveOrganisationVehicleDetails();">Save</button>
+                </div>
+          </div>
+          
+
+
+        </mat-expansion-panel>
+      </mat-accordion>
+
+
+</form>

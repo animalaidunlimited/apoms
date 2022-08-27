@@ -67,7 +67,7 @@
       [cdkDropListData]="userList">
 
         <div *ngFor="let user of userList" fxLayout="row" cdkDrag>
-                  <div class="staff-member" >{{user.firstName}}</div>
+                  <div class="staff-member" >{{ user.employeeNumber + ' - ' + user.firstName }}</div>
         </div>
 
       </div>

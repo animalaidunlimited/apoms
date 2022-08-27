@@ -87,7 +87,7 @@ export class ReleaseDetailsComponent implements OnInit {
 
     this.dropdown.getReleaseManagers().pipe(take(1)).subscribe(managers => {
       this.releaseManagers = managers;
-      this.releaseManagers.unshift({FirstName: this.username});
+      this.releaseManagers.unshift({EmployeeNumber: '',FirstName: this.username});
     });
 
     this.specificStaff = false;

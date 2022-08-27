@@ -30,16 +30,9 @@
               <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
                   <div *ngFor="let vehicleStaff of vehicleStaff">
 
-                    <div fxFlex="none" class="avatar-circle" [matTooltip]="vehicleStaff.firstName + ' ' + vehicleStaff.surname">
+                    <div fxFlex="none" class="avatar-circle" [matTooltip]="vehicleStaff.employeeNumber + ' - ' + vehicleStaff.firstName + ' ' + vehicleStaff.surname">
                       <span class="initials">{{ vehicleStaff.initials }}</span>
                     </div>
-
-
-                      <!--<div fxFlex="none" class="avatar-circle" [matTooltip]="vehicleStaff.firstName vehicleStaff.surname ">
-                        <span class="initials">{{vehicleStaff.initials}}</span>
-
-                      </div>-->
-
 
                   </div>
               </div>

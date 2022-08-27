@@ -5,7 +5,7 @@ import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, O
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NavigationService } from '../../services/navigation/navigation.service';
+import { NavigationService } from '../../../../../navigation/navigation.service';
 import { Search, SearchValue } from '../record-search/record-search.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

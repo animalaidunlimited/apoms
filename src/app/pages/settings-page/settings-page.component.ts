@@ -1,15 +1,7 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { generateUUID } from 'src/app/core/helpers/utils';
-import { EmergencyCase } from 'src/app/core/models/emergency-record';
-import { Priority } from 'src/app/core/models/priority';
-import { TreatmentArea } from 'src/app/core/models/treatment-lists';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
-import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
-import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { OrganisationDetailsService } from './../../core/services/organisation-details/organisation-details.service';
+import { SnackbarService } from './../../core/services/snackbar/snackbar.service';
 
 export interface DummyRecordTag {
     tagNumber: string;
@@ -24,17 +16,63 @@ export class SettingsPageComponent implements OnInit {
 
     addOnBlur = true;
 
+    organisationOptions : FormGroup;
+
     releaseVersion! : string;
 
-    constructor() {}
+    constructor(
+        private fb: FormBuilder,
+        private organisationDetails : OrganisationDetailsService,
+        private snackbar: SnackbarService
+    ) {
+
+        this.organisationOptions = this.fb.group({
+            vehicleDefaults: this.fb.group({
+                shiftStartTime : ["07:00"],
+                shiftEndTime : ["23:00"],
+                defaultShiftLength: [9]
+            })
+        });
+
+    }
 
     ngOnInit() {
 
         this.releaseVersion = '1.21';
+
+        this.organisationDetails.organisationDetail.subscribe(organisationDetails => {
+
+            if(!organisationDetails.vehicleDefaults){
+                return;
+            }  
+
+            this.organisationOptions.get('vehicleDefaults')?.setValue(organisationDetails.vehicleDefaults);
+
+        })
     }
 
     refreshApp(){
         window.location.reload();
+    }
+
+    saveOrganisationVehicleDetails(){
+
+        if(!this.organisationOptions?.get('vehicleDefaults')?.value){
+            this.snackbar.warningSnackBar('No details to update','OK');
+            return;
+        }
+
+        this.organisationDetails.saveOrganisationVehicleDefaults(this.organisationOptions?.get('vehicleDefaults')?.value).then(response => {
+
+            response.success === 1 ?
+                this.snackbar.successSnackBar('Organisation vehicle details saved successfully', 'OK')
+            :
+                this.snackbar.errorSnackBar('An error has occurred: Error number: SPC: 60','OK');
+
+        });
+
+
+
     }
 
 

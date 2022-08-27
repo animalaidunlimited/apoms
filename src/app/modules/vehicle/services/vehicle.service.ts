@@ -9,7 +9,7 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { OrganisationDetailsService } from 'src/app/core/services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface UpsertShiftResult{
@@ -24,7 +24,15 @@ export class VehicleService  extends APIService {
 
   endpoint = 'Vehicle';
 
+
   currentVehicleShifts: VehicleShift[] = [];
+  
+  defaultShiftLength = 9;
+
+  shiftStart = "07:00";
+  shiftEnd = "23:00";
+  
+  vehicleDefaultsChanged = new BehaviorSubject<boolean>(false);
   vehicleShifts:BehaviorSubject<VehicleShift[]> = new BehaviorSubject<VehicleShift[]>([]);
 
   private ngUnsubscribe = new Subject();
@@ -33,9 +41,19 @@ export class VehicleService  extends APIService {
     public http: HttpClient,
     private dropdowns: DropdownService,
     private snackbar: SnackbarService,
-    private orgOptions: OrganisationDetailsService
+    private organisationDetails: OrganisationDetailsService
     ) {
     super(http);
+
+    this.organisationDetails.organisationDetail.subscribe(organisationSettings => {
+
+      this.shiftStart = organisationSettings.vehicleDefaults.shiftStartTime.substring(0,2);
+      this.shiftEnd = organisationSettings.vehicleDefaults.shiftEndTime.substring(0,2);
+      this.defaultShiftLength = organisationSettings.vehicleDefaults.defaultShiftLength;
+
+      this.vehicleDefaultsChanged.next(true);
+
+    })
   }
 
 
@@ -194,8 +212,8 @@ export class VehicleService  extends APIService {
 
   public getHourRange() : HourRange {
 
-    let start = this.orgOptions.getVehicleAssignerStartHour();
-    let end = this.orgOptions.getVehicleAssignerEndHour();
+    let start = Number(this.shiftStart.substring(0,2));
+    let end = Number(this.shiftEnd.substring(0,2));
 
     var range = [];
 

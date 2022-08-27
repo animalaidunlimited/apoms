@@ -8,10 +8,12 @@ export interface OrganisationMarker {
 }
 
 export interface OrganisationDetail{
+    organisationId: number;
     logoUrl: SafeUrl | undefined;
     name: string;
     address: OrganisationAddress[],
-    driverViewDeskNumber: string
+    driverViewDeskNumber: string,
+    vehicleDefaults: OrganisationVehicleDefaults
 }
 
 export interface OrganisationAddress{
@@ -19,4 +21,10 @@ export interface OrganisationAddress{
     latLng: google.maps.LatLngLiteral;
     name: string;
     number: string;
+}
+
+export interface OrganisationVehicleDefaults {
+    shiftStartTime: string;
+    shiftEndTime: string;
+    defaultShiftLength: number;
 }

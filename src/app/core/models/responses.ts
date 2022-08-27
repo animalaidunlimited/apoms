@@ -64,6 +64,7 @@ export interface RescueDetails {
 
 export interface Rescuer {
     rescuerId: number;
+    rescuerEmployeeNumber: string;
     rescuerFirstName: string;
     rescuerSurname: string;
     rescuerColour: string;

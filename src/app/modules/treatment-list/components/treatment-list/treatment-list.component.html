@@ -5,7 +5,7 @@
       <!--<mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>-->
 
 
-      <legend class="legend ">{{area?.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
+      <legend class="legend ">{{area.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
 
       <div *ngIf="movedLists?.controls">
 
@@ -30,7 +30,7 @@
 
 
 
-    <table mat-table [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
+    <table mat-table mat-sort [dataSource]="acceptedFiltered" multiTemplateDataRows formArrayName="accepted" style="margin-top: 15px;">
 
 
     <!-- START: Header row first group -->
@@ -84,7 +84,7 @@
         </div>
 
         <mat-chip-list *ngIf="!isPrinting">
-          <mat-chip #treatedChip="matChip" class="treated-chip" (click)="openTreatmentDialog(row)">
+          <mat-chip #treatedChip="matChip" class="pointer" (click)="openTreatmentDialog(row)">
             <mat-icon [class.is-hidden]="!row.get('treatedToday').value || row.get('treatedToday').value === 0" class="complete">check_circle</mat-icon>
           </mat-chip>
         </mat-chip-list>
@@ -100,8 +100,10 @@
 
             <th mat-header-cell *matHeaderCellDef
             [class.small-column]="column.name !== 'Treatment priority'"
-            [class.center-columnm]="column.name !== 'Tag number'"
-            [class.select-width]="column.name == 'Treatment priority'">
+            [class.center-column]="column.name !== 'Tag number'"
+            [class.pointer]="column.name === 'Tag number'"
+            [class.select-width]="column.name == 'Treatment priority'"            
+            (click)="sortTable(column.name)">
               {{column.abbreviation || column.name}}
             </th>
 
@@ -109,7 +111,7 @@
             [formGroupName]="index"
             [class.small-column]="column.name !== 'Treatment priority'"
             [class.select-width]="column.name == 'Treatment priority'"
-            [class.center-columnm]="column.name !== 'Tag number'"
+            [class.center-column]="column.name !== 'Tag number'"
             [class.large-text]="column.name === 'Tag number'"
             [class.link]="column.name === 'Tag number'">
 
@@ -129,7 +131,7 @@
               <!--There's some issue that causes the priority to not load quick enough for the print. So some of hte records end up blank
               This is a temp solution - 2021-06-19 JM-->
               <div *ngIf="isPrinting">
-                {{getTreatmntPriority(row.get(column.name).value)}}
+                {{getTreatmentPriority(row.get(column.name).value)}}
               </div>
 
 
@@ -190,7 +192,7 @@
       <!--DYNAMIC FIELDS END-->
 
       <ng-container matColumnDef="Other">
-        <th mat-header-cell *matHeaderCellDef class="select-width center-columnm"> Other </th>
+        <th mat-header-cell *matHeaderCellDef class="select-width center-column"> Other </th>
 
         <td mat-cell *matCellDef="let row; let index = dataIndex;"
         class="select-width"
@@ -308,14 +310,14 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 
       <th mat-header-cell *matHeaderCellDef
       [class.small-column]="column.name !== 'Treatment priority'"
-      [class.center-columnm]="column.name !== 'Tag number'"
+      [class.center-column]="column.name !== 'Tag number'"
       [class.select-width]="column.name == 'Treatment priority'">
         {{column.abbreviation || column.name}}
       </th>
 
       <td mat-cell *matCellDef="let row; let index = dataIndex;"
       [class.small-column]="column.name !== 'Treatment priority'"
-      [class.center-columnm]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
+      [class.center-column]="column.name !== 'Treatment priority' && column.name !== 'Tag number'"
       [class.select-width]="column.name == 'Treatment priority'"
       [class.link]="column.name === 'Tag number'">
 
@@ -355,7 +357,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 <!--DYNAMIC FIELDS END-->
 
 <ng-container matColumnDef="Other">
-  <th mat-header-cell *matHeaderCellDef class="select-width center-columnm border-right"> Other </th>
+  <th mat-header-cell *matHeaderCellDef class="select-width center-column border-right"> Other </th>
 
   <td mat-cell *matCellDef="let row;"
   class="select-width border-right">
@@ -375,7 +377,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 </ng-container>
 
 <ng-container matColumnDef="Moved to">
-  <th mat-header-cell *matHeaderCellDef class="select-width center-columnm"> Moved out to </th>
+  <th mat-header-cell *matHeaderCellDef class="select-width center-column"> Moved out to </th>
 
   <td mat-cell *matCellDef="let row;" class="select-width">
 

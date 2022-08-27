@@ -17,7 +17,7 @@ export class UserOptionsService extends APIService{
     userName!: any;
     token!:any;
 
-    userDetails: BehaviorSubject<UserAccountDetails> = new BehaviorSubject<UserAccountDetails>(this.getEmpyUserDetails());
+    userDetails: BehaviorSubject<UserAccountDetails> = new BehaviorSubject<UserAccountDetails>(this.getEmtpyUserDetails());
 
     homeCoordinates$ = {
         lat: 24.57127,
@@ -36,10 +36,10 @@ export class UserOptionsService extends APIService{
 
             const userDetails = this.storage.read('UserDetails');
 
-            userDetails ? this.userDetails.next((userDetails as any) as UserAccountDetails) : this.userDetails.next(this.getEmpyUserDetails());
+            userDetails ? this.userDetails.next((userDetails as any) as UserAccountDetails) : this.userDetails.next(this.getEmtpyUserDetails());
     }
 
-    private getEmpyUserDetails() : UserAccountDetails {
+    private getEmtpyUserDetails() : UserAccountDetails {
 
         return {
             initials: "NA",

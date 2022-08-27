@@ -11,11 +11,11 @@ import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
-import { OrganisationDetailsService } from '../organisation-option/organisation-option.service';
 import { Comment, MediaItemReturnObject, MediaItem, LocalMediaItem, MediaItemsDataObject, MediaResponse, MediaUploadResponse } from '../../models/media';
 import { PatientOutcomeResponse } from '../../models/patients';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { OrganisationDetailsService } from '../organisation-details/organisation-details.service';
 
 interface IResizeImageOptions {
   maxSize: number;

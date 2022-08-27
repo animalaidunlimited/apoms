@@ -7,6 +7,7 @@
             name="shiftStartTime"
             [min]="minDate"
             [max]="maxStartTime"
+            (blur)="updateShiftEndTime()"
             placeholder="Shift start time" [errorStateMatcher]="errorMatcher" matInput>
 
                 <mat-error *ngIf="shiftStartTime?.hasError('inside-other-shift')">
@@ -24,7 +25,7 @@
         </mat-form-field>
 
         <mat-form-field>
-            <input formControlName="shiftEndTime" type="datetime-local"
+            <input formControlName="shiftEndTime" type="datetime-local"            
             name="shiftEndTime"
             [min]="minEndTime"
             [max]="maxDate"
@@ -58,7 +59,7 @@
                         <mat-select formControlName="userId" [errorStateMatcher]="errorMatcher">
                             <mat-option>N/A</mat-option>
                                 <mat-option *ngFor="let staff of staff$ | async" [value]="staff.userId">
-                                {{staff.firstName}} {{staff.surname}}
+                                {{staff.employeeNumber + ' - ' + staff.firstName}}
                             </mat-option>
                         </mat-select>
 

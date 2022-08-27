@@ -4,7 +4,7 @@ import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddSearchMediaDialogComponent } from '../add-search-media-dialog/add-search-media-dialog.component';
-import { NavigationService } from 'src/app/core/services/navigation/navigation.service';
+import { NavigationService } from 'navigation/navigation.service';
 import { CaseService } from '../../services/case.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

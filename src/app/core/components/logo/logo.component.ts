@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { OrganisationDetailsService } from '../../services/organisation-option/organisation-option.service';
+import { OrganisationDetailsService } from '../../services/organisation-details/organisation-details.service';
 
 @Component({
     selector: 'app-logo',
