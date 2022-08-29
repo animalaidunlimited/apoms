@@ -1,24 +1,50 @@
+
+table {
+    border-collapse: collapse;
+}
+
+th, tr, td {
+    border: 1px solid grey;
+}
+
 .rota-group {
-    min-height: 100px;
+    
+}
+
+.period-header {
+    min-height: 78px;
+    width:117px;
+    box-sizing: border-box;
+    // border-right: 1px solid gray;
+    // border-bottom: 1px solid gray;
 }
 
 .rotation-period {
-    border-right: 1px solid gray;
-    border-bottom: 1px solid gray;
-    min-height: 100px;
-    min-width:100px;
+    // border-right: 1px solid gray;
+    // border-bottom: 1px solid gray;
+    min-height: 78px;
+    min-width:117px;    
 }
 
 .staff-task {
-    border: 1px solid gray;
+    // border: 1px solid gray;
     min-height: 100px;
     width: 100%;
 }
 
 .group-header {
-    min-width: 150px;
-    min-height: 100px;
-    border-right: 1px solid gray;
+    min-width: 186px;
+    min-height: 70px;
+    // border-right: 1px solid gray;
+}
+
+.group-header-text{
+    padding: 10px;
+    height: 59px;
+}
+
+.role-header {
+    padding-top: 7px;
 }
 
 .add-rotation-period{
@@ -31,6 +57,7 @@
 
 .staff-member{
     min-height: 20px;
+    min-width: 75px;
     border: 1px solid gray;
     border-radius: 4%;
     padding: 15px;
@@ -41,8 +68,4 @@
 
 .staff-member:active {
     cursor: grabbing;
-}
-
-.group-header-text{
-    padding: 10px;
 }

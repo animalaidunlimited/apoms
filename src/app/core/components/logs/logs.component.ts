@@ -11,7 +11,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { LogsData } from '../../models/logs-data';
+import { LogsData, LogSearchObject } from '../../models/logs-data';
 
 @Component({
     selector: 'app-logs',
@@ -41,33 +41,19 @@ export class LogsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        let searchQuery='';
-        if(this.data)
-        {
-            searchQuery = [
-                this.data.emergencyCaseId,
-                this.data.patientFormArray?.map(patientDetails => {
-                    if (
-                        patientDetails.value.tagNumber !== null &&
-                        patientDetails.value.patientId !== 0
-                    ) {
-                        return `${patientDetails.value.patientId},${patientDetails.value.tagNumber}`;
-                    } else if (patientDetails.value.patientId !== 0) {
-                        return patientDetails.value.patientId;
-                    }
-                }),
-            ].join(',');
-        }
-        else{
-            if(this.logsData){
-                searchQuery = Object.values(this.logsData).toString();
+
+        let incomingData = this.logsData || this.data;
+
+        const searchQuery: LogSearchObject = {
+                emergencyCaseId : incomingData.emergencyCaseId,
+                patientIds : [ incomingData.patientFormArray?.map(patientDetails => patientDetails.value.patientId) ].join(',')
             }
-        }
 
         this.initLogs(searchQuery);
     }
 
-    async initLogs(searchQuery: string) {
+    async initLogs(searchQuery: LogSearchObject) {
+
         const logs = await this.logsService.getLogger(searchQuery);
 
         if (logs) {

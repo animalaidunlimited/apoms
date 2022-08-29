@@ -26,8 +26,6 @@ export class TreatmentAreaHistoryComponent implements OnInit {
 
     @ViewChild(MatTable) treatmentAreaHistoryTable!: MatTable<any>;
 
-    tagnumber = '';
-
     displayedColumns: string[] = ['Date', 'Area', 'Action','Days'];
     treatmentAreaHistory = ELEMENT_DATA;
 

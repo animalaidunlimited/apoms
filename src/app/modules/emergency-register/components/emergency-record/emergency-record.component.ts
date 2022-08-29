@@ -428,7 +428,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             maxWidth: '100vw',
             data: {
                 emergencyCaseId,
-                emergencyNumber,
                 patientFormArray: (this.recordForm.get('patients') as FormArray).controls,
             },
         });

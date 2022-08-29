@@ -2,8 +2,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetVehicles !!
 
-CALL AAU.sp_GetVehicles('Jim')
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetVehicles(IN prm_Username VARCHAR(45))
 BEGIN

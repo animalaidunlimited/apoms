@@ -1,6 +1,6 @@
 import { LogsData } from './../../../../core/models/logs-data';
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
@@ -119,10 +119,10 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
             });
 
         }
+
         this.logsData = {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
-            emergencyNumber: this.recordForm.value.emergencyDetails.emergencyNumber,
-            patientId: this.recordForm.value.patientDetails.patientId
+            patientFormArray: [this.recordForm?.get('patientDetails') || this.fb.control(null) as AbstractControl]
         };
 
 

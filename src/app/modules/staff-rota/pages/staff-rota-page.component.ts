@@ -4,6 +4,9 @@ import { UserDetails } from 'src/app/core/models/user';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { BehaviorSubject } from 'rxjs';
+import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 
 
 
@@ -11,6 +14,7 @@ interface StaffTask{
   coords: string;
   id: string;
   assignedUserId: number;
+  employeeNumber: string;
   firstName: string;
 }
 
@@ -29,6 +33,11 @@ interface AreaShift{
   endTime: string;
   }
 
+interface Role{
+  roleId: number;
+  role: string;
+}
+
 
 @Component({
   selector: 'app-staff-rota',
@@ -43,13 +52,40 @@ export class StaffRotaPageComponent implements OnInit {
 
   rotationPeriods: RotationPeriod[] = [];
 
+  jobRoles$ = new BehaviorSubject<Role[]>([{roleId: 1, role: 'N01'}, {roleId: 2, role: 'N02'}, {roleId: 3, role: 'N03'}]);
+  selectedJobRoles : string[] = [];
+
+  rotaForm:FormGroup;
+
   userList!: UserDetails[];
+
+  periodArrayForm: AbstractControl[];
 
   constructor(
     private userDetailsService: UserDetailsService,
-    private userOptionsService: UserOptionsService
+    private userOptionsService: UserOptionsService,
+    private fb: FormBuilder
     ) {
+
+      this.rotaForm = this.fb.group({
+        periodArray: this.fb.array([]),
+        groupArray: this.fb.array([])
+      });
+
+      let blankPeriod = this.fb.group({id: generateUUID(),
+        sequence: (this.groups?.length || -1) + 1,
+        name: "",
+        startDate: "",
+        endDate: ""});
+
+        let periodArray = this.rotaForm.get("periodArray") as FormArray;
+        periodArray.push(blankPeriod);
+
+        this.periodArrayForm = periodArray.controls;
+
   }
+
+
 
   ngOnInit(): void {
 
@@ -105,9 +141,13 @@ export class StaffRotaPageComponent implements OnInit {
 
   }
 
-
+  entered(){
+    console.log('entered');
+  }
 
   drop(event: CdkDragDrop<any>, periodId: string, groupId: string){
+
+    console.log('drop');
 
     const user = this.userList[event.previousIndex];
 
@@ -115,6 +155,7 @@ export class StaffRotaPageComponent implements OnInit {
       coords: groupId.concat(periodId),
       id: generateUUID(),
       assignedUserId: user.userId,
+      employeeNumber: user.employeeNumber,
       firstName: user.firstName
     }
 
@@ -130,7 +171,7 @@ export class StaffRotaPageComponent implements OnInit {
 
     const foundIndex = this.matrix.findIndex(element => element.coords == this.getCoords(groupId, periodId));
 
-    return foundIndex > -1 ? this.matrix[foundIndex].firstName : "";
+    return foundIndex > -1 ? this.matrix[foundIndex].employeeNumber + " - " + this.matrix[foundIndex].firstName : "";
 
   }
 
@@ -138,6 +179,13 @@ export class StaffRotaPageComponent implements OnInit {
     return groupId.concat(periodId)
   }
 
+  groupSelected($event: MatSelectChange) : void {
+
+    console.log($event);
+
+    this.selectedJobRoles.push($event.value as string);
+
+  }
 
 
 

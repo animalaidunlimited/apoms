@@ -1,3 +1,120 @@
+<form [formGroup]="rotaForm" cdkDropListGroup (cdkDropListEntered)="entered()">
+<table>
+  <thead>
+    <tr>
+        <th></th>
+        <th formArrayName="periodArray" *ngFor="let period of periodArrayForm; let i = index">
+
+          <div formGroupName="{{i}}">
+
+
+              <div *ngIf="period.get('startDate')?.value && period.get('endDate')?.value; else dateInputs">
+                  {{ period.get('startDate')?.value }}
+                  {{ period.get('startDate')?.value }}
+              </div>
+              <ng-template #dateInputs>
+                <mat-form-field>
+                  <input matInput type="date" formControlName="startDate" placeholder="Period start" />
+                </mat-form-field>
+
+                <mat-form-field>
+                  <input matInput type="date" formControlName="endDate" placeholder="Period end" />
+                </mat-form-field>
+              </ng-template>
+
+          </div>
+        </th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <tr *ngFor="let group of groups">
+
+      
+        <th>
+          
+          <mat-form-field>
+            <mat-label>Group name</mat-label>
+                <mat-select (selectionChange)="groupSelected($event)">
+                <mat-option>N/A</mat-option>
+                    <mat-option *ngFor="let role of jobRoles$ | async" [value]="role.roleId">
+                    {{role.role}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        </th>
+
+        <td *ngFor="let period of rotationPeriods">
+
+          <div
+          class="rotation-period"
+          cdkDropList
+          [cdkDropListData]="userList"
+                fxLayoutAlign="center center"
+                
+                (cdkDropListDropped)="drop($event, period.id, group.id)">
+
+                <div
+                    *ngIf="getGroupPeriodAssignedStaff(group.id, period.id); let staff"
+                    class="staff-member"
+                    cdkDrag>
+                    {{ staff }}
+                </div>
+
+            </div>
+        </td>
+
+      
+    </tr>
+  </tbody>
+</table>
+
+<div class="add-rotation-period">
+    <button
+        class="addrotationPeriodButton"
+        type="button"
+        (click)="addRotationPeriod()"
+        mat-mini-fab
+        color="primary"
+    >
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center center">
+    <button
+        class="addCallerButton"
+        type="button"
+        (click)="addAreaShift()"
+        mat-mini-fab
+        color="primary"
+    >
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+<div fxLayout="row">
+    <div class="group-header">
+        <div class="group-header-text">Unassigned staff:</div>
+    </div>
+
+    <div cdkDropList [cdkDropListData]="userList">
+        <div *ngFor="let user of userList" fxLayout="row" cdkDrag>
+            <div class="staff-member">
+                {{ user.employeeNumber + ' - ' + user.firstName }}
+            </div>
+        </div>
+    </div>
+</div>
+
+</form>
+
+
+
+
+<!-- 
+<form [formGroup]="rotaForm">
 
 <div fxLayout="row" fxLayoutAlign="start start">
 
@@ -5,9 +122,11 @@
     <div class="group-header-text">Periods</div>
   </div>
 
-  <div *ngFor="let period of rotationPeriods" fxLayout="column">
+  <div *ngFor="let period of rotationPeriods;let i = index;" fxLayout="column">
 
-    <div class="rotation-period"></div>
+    <div class="period-header">      
+          <input type="date">
+    </div>
 
   </div>
 
@@ -25,22 +144,36 @@
 
     <div *ngFor="let group of groups" class="rota-group" fxLayout="row">
 
-      <div class="group-header">
-        <div class="group-header-text">Group name: </div>
+      <div class="group-header role-header">
+
+      <mat-form-field>
+          <mat-label>Group name</mat-label>
+              <mat-select (selectionChange)="groupSelected($event)">
+              <mat-option>N/A</mat-option>
+                  <mat-option *ngFor="let role of jobRoles$ | async" [value]="role.roleId">
+                  {{role.role}}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+
       </div>
+      
+
+
 
       <div *ngFor="let period of rotationPeriods" fxLayout="column">
 
         <div class="rotation-period"
         cdkDropList
         [cdkDropListData]="userList"
+        fxLayoutAlign="center center"
         (cdkDropListDropped)="drop($event, period.id, group.id)">
 
-            <div class="staff-member" cdkDrag>
-              {{getGroupPeriodAssignedStaff(group.id, period.id)}}
+            <div *ngIf="getGroupPeriodAssignedStaff(group.id, period.id); let staff;" class="staff-member" cdkDrag>
+              {{staff}}
             </div>
 
-      </div>
+        </div>
 
 
 
@@ -80,3 +213,4 @@
 
 
 
+</form> -->
