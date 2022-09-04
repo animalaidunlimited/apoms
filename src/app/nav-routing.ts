@@ -94,15 +94,6 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.VehicleStaffAssignerModule)
     },
     {
-        data: { title: 'Staff Rota', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
-        icon: 'none',
-        group: '',
-        path: 'staff-rota',
-        loadChildren: () =>
-            import('./modules/staff-rota/staff-rota.module')
-            .then(m => m.StaffRotaModule)
-    },
-    {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: '',

@@ -233,17 +233,6 @@ export class UsersPageComponent implements OnInit {
           }]
         },
         {
-          groupNameId: 7,
-          groupName: 'Staff Rota',
-          permissions: [{
-            permissionId: 17,
-            permissionType: 'Read'
-          }, {
-            permissionId : 18,
-            permissionType: 'Write'
-          }]
-        },
-        {
           groupNameId: 8,
           groupName: 'Reporting',
           permissions: [{
