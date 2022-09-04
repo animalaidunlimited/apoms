@@ -5,6 +5,9 @@ table {
 
 th, tr, td {
     border: 1px solid grey;
+    font-weight: normal;
+    height: 50px;
+    padding: 5px;
 }
 
 .rota-group {
@@ -68,4 +71,12 @@ th, tr, td {
 
 .staff-member:active {
     cursor: grabbing;
+}
+
+.area-shift{
+    padding-top: 15px;
+}
+
+.table-container{
+    margin-top: 15px;
 }

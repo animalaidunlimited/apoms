@@ -2155,8 +2155,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLogs !!
 
-
-
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetLogs( IN prm_Username VARCHAR(45), IN prm_PatientIds TEXT, IN prm_EmergencyCaseId INT)
 BEGIN
@@ -2200,7 +2198,7 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 		)
     );
     
-END
+END$$
 
 
 

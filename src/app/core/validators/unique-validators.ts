@@ -5,11 +5,13 @@ import { isBlank, isPresent } from '../components/patient-visit-details/utils';
 export class UniqueValidators {
 
 	public static uniqueBy = (field: string): ValidatorFn => {
+
 		return (formArrayControl: AbstractControl): ({ [key: string]: boolean} | null)=> {
 			const formArray = formArrayControl as FormArray;
 			const controls: AbstractControl[] = formArray.controls.filter(formGroup => {
 				return isPresent(formGroup.get(field)?.value);
 			});
+			
 			const uniqueObj: ValidationErrors = { uniqueBy: true };
 			let find  = false;
 

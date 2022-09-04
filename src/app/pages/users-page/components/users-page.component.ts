@@ -71,7 +71,7 @@ interface Permissions {
 export class UsersPageComponent implements OnInit {
     loading = false;
 
-    permissionByGroupArray: PermissionObject[] = [];
+    permissionByareaShiftArray: PermissionObject[] = [];
 
     permissionGroupObject!: UserPermissions[];
 

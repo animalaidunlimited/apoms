@@ -43,15 +43,15 @@
       <button mat-raised-button color="secondary" tabindex="17" type="button" (click)="resetForm()">Reset</button>
 
       <mat-icon color="primary" class="logs_btn"
-      mattooltip="View logs"
-        (click)="openLogsDialog(recordForm?.get('emergencyDetails.emergencyCaseId')?.value,recordForm?.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
+      matTooltip="View logs"
+        (click)="openLogsDialog(recordForm.get('emergencyDetails.emergencyCaseId')?.value, recordForm.get('emergencyDetails.emergencyNumber')?.value); $event.preventDefault();">
         description
       </mat-icon>
 
       <mat-icon
       (click)="openCommentDialog(); $event.preventDefault();"
       [matBadge]="hasComments ? 1 : 0" matBadgeColor="primary"
-      role="img" mattooltip="Add/Edit comment" color="primary"
+      role="img" matTooltip="Add/Edit comment" color="primary"
       class="comment-icon"> comment </mat-icon>
 
     </div>
