@@ -7,12 +7,14 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil, take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-
+import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
+import { Role, Rota, RotaVersion } from 'src/app/core/models/rota';
+import { SnackbarService } from './../../../core/services/snackbar/snackbar.service';
 
 /*
 //Keep these here for the moment because we'll use them when we upgrade to Angular 14
@@ -39,10 +41,7 @@ interface AreaShift{
   }
   */
 
-interface Role{
-  roleId: number;
-  role: string;
-}
+
 
 
 @Component({
@@ -61,11 +60,24 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
 
   filteredUsers!: Observable<UserDetails[]> | undefined;
 
-  jobRoles$ = new BehaviorSubject<Role[]>([{roleId: 1, role: 'N01'}, {roleId: 2, role: 'N02'}, {roleId: 3, role: 'N03'}]);
+  jobRoles$ = new BehaviorSubject<Role[]>([{roleId: 1, role: 'N01', color: 'lightgreen'}, {roleId: 2, role: 'N02', color: 'lightblue'},
+  {roleId: 3, role: 'N03', color: 'lightcyan'}, {roleId: 4, role: 'HX1', color: 'lightpurple'}, {roleId: 5, role: 'HX2', color: 'lightyellow'}, {roleId: 6, role: 'HX3', color: 'lightsalmon'}]);
   
   periodPreviousValue = {};
 
+  rotas$: BehaviorSubject<Rota[]>;
+  rotaVersions$!: BehaviorSubject<RotaVersion[]>;
+
   rotaForm:FormGroup = this.fb.group({
+    currentRota: this.fb.group({
+      rotaId: undefined,
+      rotaName: ["", Validators.required],
+      defaultRota: [false],
+      rotaVersionId: undefined,
+      rotaVersionName: ["", Validators.required],
+      defaultRotaVersion: [false],
+      editing: true
+    }),
     rotationPeriodArray: this.fb.array([]),
     areaShiftArray: this.fb.array([]),
     matrix: this.fb.group([])
@@ -77,32 +89,45 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
   userList!: UserDetails[];
 
   get getRotationPeriodArray() : FormArray {
-
     return this.rotaForm.get('rotationPeriodArray') as FormArray || this.fb.array([]);
-
   }
 
   get getAreaShiftArray() : FormArray {
-
     return this.rotaForm.get('areaShiftArray') as FormArray || this.fb.array([]);
-
   }
 
   get getMatrix() : FormGroup {
-
     return this.rotaForm.get('matrix') as FormGroup || this.fb.array([]);
-
   }
 
+  get getCurrentRota() : FormGroup {
+    return this.rotaForm.get('currentRota') as FormGroup;
+  }
 
   constructor(
     private userDetailsService: UserDetailsService,
     private userOptionsService: UserOptionsService,
+    private rotaService: RotaService,
+    private snackbarService: SnackbarService,
     private fb: FormBuilder,
     public dialog: MatDialog,
     private rotationPeriodValidator: RotationPeriodValidator,
     private changeDetector: ChangeDetectorRef
-    ) {
+    ) {      
+
+      this.rotas$ = this.rotaService.rotas;
+      this.rotaVersions$ = this.rotaService.rotaVersions;
+
+      this.initialiseRotas();      
+
+      this.getCurrentRota.get("rotaId")?.valueChanges.subscribe(rotaId => {
+        
+        this.rotaService.setRotaVersionRotaId(rotaId);
+        this.changeDetector.detectChanges();
+        console.log(this.rotaVersions$.value);
+      })
+      
+
   }
 
   ngOnInit(): void {
@@ -122,6 +147,17 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
+
+  private async initialiseRotas() : Promise<void> {
+
+    //Let's do this second to avoid the response coming back as we're setting up the behaviour subjects above.
+    let currentRota = await this.rotaService.initialiseRotas();
+
+    console.log(currentRota);
+
+    this.getCurrentRota.patchValue(currentRota);
+
+  } 
 
   private initialiseArrays() {
 
@@ -162,7 +198,8 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
                           areaShiftId: generateUUID(),
                           sequence: (this.getAreaShiftArray?.length || -1) + 1,
                           roleId: undefined,
-                          roleName: ""
+                          roleName: "",
+                          color: "white"
                         });
   }
 
@@ -255,9 +292,13 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
     return `${areaShiftId}|${rotationPeriodId}`
   }
 
-  groupSelected($event: MatSelectChange) : void {
+  groupSelected($event: MatSelectChange, areaShift: AbstractControl) : void {
 
-    this.selectedJobRoles.push($event.value as string);
+    const selectedRole: Role | undefined = $event.value;
+
+    areaShift.get('color')?.setValue(selectedRole?.color)
+
+    this.selectedJobRoles.push(selectedRole?.role || "");
 
   }
 
@@ -392,8 +433,7 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
   });
 
   return dialogRef.afterClosed()
-  .pipe(takeUntil(this.ngUnsubscribe))
-  
+  .pipe(takeUntil(this.ngUnsubscribe));  
 
  }
 
@@ -460,6 +500,70 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
     this.changeDetector.detectChanges();
 
   }
+
+
+ }
+
+ rotaSelected($event: any){
+
+  console.log($event);
+
+ }
+
+ rotaVersionSelected($event: any){
+
+  console.log($event);
+
+ }
+
+ resetCurrentRota() : void {
+
+  this.getCurrentRota.get('rotaId')?.reset();
+  this.getCurrentRota.get('rotaVersionId')?.reset();
+
+ }
+
+ editRota() : void {
+
+  this.getCurrentRota?.get('editing')?.setValue(true);
+  this.changeDetector.detectChanges();
+
+}
+
+ saveRota() : void {
+
+  const newRotaNames: {rotaName: string, rotaVersionName: string} = this.getCurrentRota?.value;
+
+  this.getCurrentRota?.get('editing')?.setValue(false);
+
+  const newRota: Rota = {
+    rotaId: 1,
+    rotaName: newRotaNames.rotaName,
+    defaultRota: true,
+    rotaVersions: [
+      {
+        rotaId: 1,
+        rotaVersionId: 1,
+        rotaVersionName: newRotaNames.rotaVersionName,
+        defaultRotaVersion: true
+      }
+    ]
+  };
+  this.getCurrentRota.get('editing')?.setValue(false);
+
+  let result = this.rotaService.upsertRota(newRota);
+
+  if(result.success === 1) {
+    this.getCurrentRota.get('rotaId')?.setValue(result.rotaId);
+    this.getCurrentRota.get('rotaVersionId')?.setValue(result.rotaVersionId);
+    this.snackbarService.successSnackBar("Rota added successfully", "OK");
+  }
+  else {
+    this.snackbarService.errorSnackBar("ERR: SRP-543: Error adding rota, please see administrator", "OK");
+  }
+
+  this.changeDetector.detectChanges();
+
 
 
  }

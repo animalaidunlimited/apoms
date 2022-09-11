@@ -1754,6 +1754,7 @@ AND ec.AssignedVehicleId IN (SELECT VehicleId FROM VehicleIdCTE)
 AND p.PatientCallOutcomeId IS NULL
 AND p.IsDeleted = 0
 
+
 UNION
 
 SELECT rd.PatientId ,IF(rd.IsStreetTreatRelease = 1, 'STRelease','Release')
@@ -2154,6 +2155,8 @@ DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLogs !!
+
+
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetLogs( IN prm_Username VARCHAR(45), IN prm_PatientIds TEXT, IN prm_EmergencyCaseId INT)
@@ -4063,6 +4066,7 @@ Modified By: Jim Mackenzie
 Modified On: 17/02/2022
 Description: Removing StreetTreat team.
 */
+
 
 DECLARE vUserId INT;
 DECLARE vOrganisationId INT;
@@ -7404,4 +7408,5 @@ CALL AAU.sp_GetTreatmentListByPatientId(prm_UserName, prm_PatientId);
 
 END$$
 
+DELIMITER !!
 

@@ -3,8 +3,17 @@ THIS STEP IS VERY VERY IMMPORTANT
 BEFORE DOING ANYTHING PLEASE CHANGE TABLE NAME EMERGENCY CASE COPY TO EMERGENCY CASE.
 */
 
+CREATE TABLE AAU.EmergencyCase_Copy LIKE AAU.EmergencyCase; 
+INSERT AAU.EmergencyCase_Copy SELECT * FROM AAU.EmergencyCase;
+
+
 SET SQL_SAFE_UPDATES = 0;
 START TRANSACTION;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 10, 181, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 10, 181, Rescuer2Id)
+WHERE Rescuer1Id = 10 OR Rescuer2Id = 10;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 19, 47, Rescuer1Id),
@@ -22,54 +31,14 @@ SET Rescuer1Id = IF(Rescuer1Id = 21, 49, Rescuer1Id),
 WHERE Rescuer1Id = 21 OR Rescuer2Id = 21;
 
 UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 10, 181, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 10, 181, Rescuer2Id)
-WHERE Rescuer1Id = 10 OR Rescuer2Id = 10;
+SET Rescuer1Id = IF(Rescuer1Id = 22, 50, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 22, 50, Rescuer2Id)
+WHERE Rescuer1Id = 22 OR Rescuer2Id = 22;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 23, 51, Rescuer1Id),
 	Rescuer2Id = IF(Rescuer2Id= 23, 51, Rescuer2Id)
 WHERE Rescuer1Id = 23 OR Rescuer2Id = 23;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 30, 7, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 30, 7, Rescuer2Id)
-WHERE Rescuer1Id = 30 OR Rescuer2Id = 30;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 37, 64, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 37, 64, Rescuer2Id)
-WHERE Rescuer1Id = 37 OR Rescuer2Id = 37;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 28, 55, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 28, 55, Rescuer2Id)
-WHERE Rescuer1Id = 28 OR Rescuer2Id = 28;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 29, 65, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 29, 65, Rescuer2Id)
-WHERE Rescuer1Id = 29 OR Rescuer2Id = 29;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 27, 54, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 27, 54, Rescuer2Id)
-WHERE Rescuer1Id = 27 OR Rescuer2Id = 27;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 67, 190, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 67, 190, Rescuer2Id)
-WHERE Rescuer1Id = 67 OR Rescuer2Id = 67;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 38, 59, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 38, 59, Rescuer2Id)
-WHERE Rescuer1Id = 38 OR Rescuer2Id = 38;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 22, 50, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 22, 50, Rescuer2Id)
-WHERE Rescuer1Id = 22 OR Rescuer2Id = 22;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 24, 52, Rescuer1Id),
@@ -82,14 +51,64 @@ SET Rescuer1Id = IF(Rescuer1Id = 25, 53, Rescuer1Id),
 WHERE Rescuer1Id = 25 OR Rescuer2Id = 25;
 
 UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 26, 9, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 26, 9, Rescuer2Id)
+WHERE Rescuer1Id = 26 OR Rescuer2Id = 26;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 27, 54, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 27, 54, Rescuer2Id)
+WHERE Rescuer1Id = 27 OR Rescuer2Id = 27;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 28, 55, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 28, 55, Rescuer2Id)
+WHERE Rescuer1Id = 28 OR Rescuer2Id = 28;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 29, 65, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 29, 65, Rescuer2Id)
+WHERE Rescuer1Id = 29 OR Rescuer2Id = 29;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 30, 7, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 30, 7, Rescuer2Id)
+WHERE Rescuer1Id = 30 OR Rescuer2Id = 30;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 37, 64, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 37, 64, Rescuer2Id)
+WHERE Rescuer1Id = 37 OR Rescuer2Id = 37;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 38, 59, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 38, 59, Rescuer2Id)
+WHERE Rescuer1Id = 38 OR Rescuer2Id = 38;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 60, 103, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 60, 103, Rescuer2Id)
+WHERE Rescuer1Id = 60 OR Rescuer2Id = 60;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 66, 109, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 66, 109, Rescuer2Id)
+WHERE Rescuer1Id = 66 OR Rescuer2Id = 66;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 67, 190, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 67, 190, Rescuer2Id)
+WHERE Rescuer1Id = 67 OR Rescuer2Id = 67;
+
+UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 68, 59, Rescuer1Id),
 	Rescuer2Id = IF(Rescuer2Id= 68, 59, Rescuer2Id)
 WHERE Rescuer1Id = 68 OR Rescuer2Id = 68;
 
 UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 26, 9, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 26, 9, Rescuer2Id)
-WHERE Rescuer1Id = 26 OR Rescuer2Id = 26;
+SET Rescuer1Id = IF(Rescuer1Id = 69, 112, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 69, 112, Rescuer2Id)
+WHERE Rescuer1Id = 69 OR Rescuer2Id = 69;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 70, 113, Rescuer1Id),
@@ -106,22 +125,10 @@ SET Rescuer1Id = IF(Rescuer1Id = 75, 136, Rescuer1Id),
 	Rescuer2Id = IF(Rescuer2Id= 75,136 , Rescuer2Id)
 WHERE Rescuer1Id = 75 OR Rescuer2Id = 75;
 
-
 UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 66, 109, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 66, 109, Rescuer2Id)
-WHERE Rescuer1Id = 66 OR Rescuer2Id = 66;
-
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 60, 103, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 60, 103, Rescuer2Id)
-WHERE Rescuer1Id = 60 OR Rescuer2Id = 60;
-
-UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 69, 112, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 69, 112, Rescuer2Id)
-WHERE Rescuer1Id = 69 OR Rescuer2Id = 69;
+SET Rescuer1Id = IF(Rescuer1Id = 76, 137, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 76, 137, Rescuer2Id)
+WHERE Rescuer1Id = 76 OR Rescuer2Id = 76;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 77, 39, Rescuer1Id),
@@ -129,25 +136,19 @@ SET Rescuer1Id = IF(Rescuer1Id = 77, 39, Rescuer1Id),
 WHERE Rescuer1Id = 77 OR Rescuer2Id = 77;
 
 UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 76, 137, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 76, 137, Rescuer2Id)
-WHERE Rescuer1Id = 76 OR Rescuer2Id = 76;
-
-
-UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 82, 143, Rescuer1Id),
 	Rescuer2Id = IF(Rescuer2Id= 82, 143, Rescuer2Id)
 WHERE Rescuer1Id = 82 OR Rescuer2Id = 82;
 
 UPDATE AAU.EmergencyCase
-SET Rescuer1Id = IF(Rescuer1Id = 215, 46, Rescuer1Id),
-	Rescuer2Id = IF(Rescuer2Id= 215, 46, Rescuer2Id)
-WHERE Rescuer1Id = 215 OR Rescuer2Id = 215;
-
-UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 197, 48, Rescuer1Id),
 	Rescuer2Id = IF(Rescuer2Id= 197, 48, Rescuer2Id)
 WHERE Rescuer1Id = 197 OR Rescuer2Id = 197;
+
+UPDATE AAU.EmergencyCase
+SET Rescuer1Id = IF(Rescuer1Id = 215, 46, Rescuer1Id),
+	Rescuer2Id = IF(Rescuer2Id= 215, 46, Rescuer2Id)
+WHERE Rescuer1Id = 215 OR Rescuer2Id = 215;
 
 COMMIT;
 
@@ -515,12 +516,9 @@ FROM
 		GROUP BY Rescuer1Id, Rescuer2Id,CAST(CallDateTime AS DATE)
 )cteData;
 
-CREATE Table VehicleShiftData 
-LIKE
-VehicleShiftTemp;
+CREATE TABLE VehicleShiftData LIKE VehicleShiftTemp;
 
-INSERT INTO AAU.VehicleShiftData
-SELECT * FROM VehicleShiftTemp;
+INSERT INTO AAU.VehicleShiftData SELECT * FROM VehicleShiftTemp;
 
 -- DROP TABLE VehicleShiftData;
 DROP TABLE VehicleShiftTemp;
@@ -554,9 +552,13 @@ WHERE Rescuer2Id IS NOT NULL
 vsd ON vsd.StartTime = vs.StartDate AND vsd.EndTime = vs.EndDate AND vsd.AmbulanceId = vs.VehicleId
 WHERE Rescuer1Id IS NOT NULL;
 
-DELETE FROM AAU.VehicleShiftUser
+/*
+SELECT * FROM AAU.VehicleShiftUser
 WHERE VehicleShiftId != -1;
 
+DELETE FROM AAU.VehicleShiftUser
+WHERE VehicleShiftId != -1;
+*/
 
 SELECT *
 FROM AAU.EmergencyCase
@@ -568,31 +570,34 @@ SET Rescuer2Id = 0
 WHERE Rescuer1Id IS NOT NULL AND Rescuer2Id IS NULL;
 
 
--- (6,7,9,11,12,13,14,15,16,45,18,39,40,41,43,44,45,46,47,48,49,50,52,53,54,56,57,58,59,61,62,63,64,65,86,89,103,109,112,113,134,136,143,149,165,181,191) OLD
--- (6,7,9,11,12,14,16,39,40,41,43,44,45,46,47,48,49,50,52,53,54,58,59,61,63,64,65,86,105,112,113,134,143,149,165,181,182,191) NEW
+-- (6,7,9,11,12,14,16,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,56,58,59,61,63,64,65,86,105,106,112,113,134,143,149,157,161,165,181,182,191)
 -- Select three values at a time to use in where clause so that the query dont break.
 
+SET SESSION MAX_EXECUTION_TIME=1000;
+
 UPDATE AAU.EmergencyCase ec
-INNER JOIN AAU.VehicleShiftData vsd 
-ON vsd.Rescuer1Id = ec.Rescuer1Id AND IFNULL(vsd.Rescuer2Id , 0)= ec.Rescuer2Id AND vsd.StartTime <= ec.CallDateTime AND vsd.EndTime >= ec.CalldateTime
+INNER JOIN AAU.VehicleShiftData vsd ON 	vsd.Rescuer1Id = ec.Rescuer1Id AND
+										IFNULL(vsd.Rescuer2Id , 0) = ec.Rescuer2Id AND
+										vsd.StartTime <= ec.CallDateTime AND
+                                        vsd.EndTime >= ec.CalldateTime
 SET ec.AssignedvehicleId = vsd.AmbulanceId,
 ec.AmbulanceAssignmentTime = ec.CallDateTime
-WHERE vsd.Rescuer1Id IN (105,112,113,134,143,149,165,181,182,191);
+WHERE vsd.Rescuer1Id IN (51,42,56,161,106,157);
 
 
-
-DROP TABLE AAU.VehiceShiftData;
+DROP TABLE AAU.VehicleShiftData;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer2Id = NULL 
-WHERE Rescuer2Id = 0 AND REscuer1Id IS NOT NULL;
+WHERE Rescuer2Id = 0 AND Rescuer1Id IS NOT NULL;
 
 
-SELECT *
+SELECT * -- DISTINCT Rescuer1Id -- DISTINCT CAST(CallDateTime AS DATE) 
 FROM AAU.EmergencyCase
 WHERE Rescuer1Id IS NOT NULL
 AND SelfAdmission IS NULL
-AND AssignedVehicleId IS NULL
+AND AssignedVehicleId IS NULL;
+
 
 
 ROLLBACK;

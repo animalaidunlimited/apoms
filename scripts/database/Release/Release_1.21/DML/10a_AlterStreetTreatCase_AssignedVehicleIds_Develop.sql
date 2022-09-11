@@ -4,7 +4,10 @@ START TRANSACTION;
 
 WARNING!!!
 
-NEED TO SET THE Ids FOR STREETTREAT TEAMS
+NEED TO SET THE Ids FOR STREETTREAT TEAMS ON LINE 39
+
+SELECT DISTINCT AssignedVehicleId
+FROM AAU.StreetTreatCase
 
 ***********************************/
 
@@ -33,9 +36,9 @@ INSERT INTO AAU.Vehicle
 
 SELECT LAST_INSERT_ID() INTO @ST3;
 
-UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST1 WHERE AssignedVehicleId = 1;
-UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = 2;
-UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = 3;
+UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST1 WHERE AssignedVehicleId = ;
+UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = ;
+UPDATE AAU.StreetTreatCase SET AssignedVehicleId = @ST2 WHERE AssignedVehicleId = ;
 
 UPDATE AAU.StreetTreatCase st
 INNER JOIN AAU.Patient p ON p.PatientId = st.PatientId

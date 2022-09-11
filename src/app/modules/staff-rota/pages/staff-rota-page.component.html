@@ -7,7 +7,116 @@
       <table>
       <thead>
         <tr>
-            <th></th>
+            <th>
+              
+              <div fxLayout="row" fxLayoutAlign="center center" *ngIf="getCurrentRota.get('editing')?.value; else addRota">
+
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+                    <div formGroupName="currentRota" fxLayout="column" fxLayoutAlign="center center">
+
+                      <mat-form-field>
+                        <input matInput autocomplete="off" formControlName="rotaName" type="string" placeholder="Enter rota name"  [errorStateMatcher]="errorMatcher"/>  
+                      </mat-form-field>
+      
+                      <mat-form-field>
+                        <input matInput autocomplete="off" formControlName="rotaVersionName" type="string" placeholder="Enter version name"  [errorStateMatcher]="errorMatcher"/>  
+                      </mat-form-field>
+      
+                    </div>
+    
+                    <button mat-mini-fab color="primary" [disabled]="getCurrentRota.invalid" (click)="saveRota()">
+                      <mat-icon  matTooltip="save" >save</mat-icon>
+                    </button>
+
+                  </div>
+  
+
+              </div>
+
+                <ng-template #addRota>
+
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+                    <div formGroupName="currentRota" fxLayout="column" fxLayoutAlign="center center">
+    
+                      <div fxLayout="row" fxLayoutAlign="center center">
+  
+                        <mat-form-field class="hidden-input" >
+                          <input matInput autocomplete="off" formControlName="rotaId" type="number" pattern="\d*"/>  
+                        </mat-form-field>
+  
+                        <mat-form-field>
+                          <mat-label>Rota</mat-label>
+                              <mat-select (selectionChange)="rotaSelected($event)" formControlName="rotaId">
+                              <mat-option>N/A</mat-option>
+                                  <mat-option *ngFor="let rota of (rotas$ | async)" [value]="rota.rotaId">
+                                  {{rota.rotaName}}
+                              </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+  
+                        <!-- (change)="checkUnassignedStaff(period, $event.checked)" -->
+                        <mat-checkbox
+                        class="unassigned-checkbox"
+                        matTooltip="check unassigned staff"
+                        formControlName="defaultRota">
+                        </mat-checkbox>
+  
+                      </div>
+  
+                      <div fxLayout="row" fxLayoutAlign="center center">
+                      
+  
+                        <mat-form-field class="hidden-input" >
+                          <input matInput autocomplete="off" formControlName="rotaVersionId" type="number" pattern="\d*"/>  
+                        </mat-form-field>
+        
+                        <mat-form-field>
+                          <mat-label>Rota version</mat-label>
+                              <mat-select (selectionChange)="rotaVersionSelected($event)" formControlName="rotaVersionId">
+                              <mat-option>N/A</mat-option>
+                                  <mat-option *ngFor="let rotaVersion of (rotaVersions$ | async)" [value]="rotaVersion.rotaVersionId">
+                                  {{rotaVersion.rotaVersionName}}
+                              </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+  
+                        <!-- (change)="checkUnassignedStaff(period, $event.checked)" -->
+                        <mat-checkbox
+                        class="unassigned-checkbox"
+                        matTooltip="check unassigned staff"
+                        formControlName="defaultRotaVersion">
+                        </mat-checkbox>
+  
+  
+                      </div>
+      
+                    </div> 
+                    
+                    <div fxLayout="column" fxLayoutAlign="center center">
+      
+                      <button mat-mini-fab color="primary" (click)="resetCurrentRota()">                  
+                        <mat-icon matTooltip="save" class="close-icon">add</mat-icon>
+                      </button>
+        
+                      <button mat-mini-fab color="primary" class="rota-edit-icons" (click)="editRota()">                  
+                        <mat-icon matTooltip="save" class="close-icon">edit</mat-icon>
+                      </button>
+        
+                      <button mat-mini-fab color="primary" class="rota-edit-icons">
+                        <mat-icon matTooltip="save" class="close-icon">delete</mat-icon>
+                      </button>
+  
+                    </div>
+
+                  </div>
+
+
+
+                </ng-template>
+
+            </th>
             <th formArrayName="rotationPeriodArray" *ngFor="let period of getRotationPeriodArray.controls; let i = index">
 
               <div formGroupName="{{i}}">
@@ -21,7 +130,7 @@
                   else dateInputs" class="period-header-text">
 
                     <div (click)="editPeriod(period, false)"> 
-                      {{ (period.get('startDate')?.value | date : "dd/MMM") + " - " + (period.get('endDate')?.value | date : "dd/MMM") }}
+                      {{ (period.get('startDate')?.value | date : "EEE,dd/MMM") + " - " + (period.get('endDate')?.value | date : "EEE,dd/MMM") }}
 
                     </div>
 
@@ -36,19 +145,19 @@
 
                       <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, false)">
                         <mat-icon matTooltip="save" class="close-icon" >content_copy</mat-icon>
-                    </button>
+                      </button>
     
-                    <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
-                      <mat-icon matTooltip="cancel" class="close-icon" >difference</mat-icon>
-                    </button>
+                      <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
+                        <mat-icon matTooltip="cancel" class="close-icon" >difference</mat-icon>
+                      </button>
 
-                    <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">
-                      <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
-                    </button>
+                      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">
+                        <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
+                      </button>
 
-                    <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
-                      <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
-                    </button>
+                      <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
+                        <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+                      </button>
                     </div>
                   </div>
 
@@ -100,13 +209,13 @@
         
         <tr *ngFor="let areaShift of getAreaShiftArray.controls">
 
-            <th>
+            <th [style.background-color]="areaShift.get('color')?.value" >
               
               <mat-form-field>
                 <mat-label>Group name</mat-label>
-                    <mat-select (selectionChange)="groupSelected($event)">
+                    <mat-select (selectionChange)="groupSelected($event, areaShift)">
                     <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let role of jobRoles$ | async" [value]="role.roleId">
+                        <mat-option *ngFor="let role of jobRoles$ | async" [value]="role">
                         {{role.role}}
                     </mat-option>
                 </mat-select>
@@ -118,7 +227,7 @@
 
             </th>
 
-            <td formGroupName="matrix" *ngFor="let period of getRotationPeriodArray.controls;">
+            <td [style.background-color]="areaShift.get('color')?.value" formGroupName="matrix" *ngFor="let period of getRotationPeriodArray.controls;">
 
               <div *ngIf="getGroupPeriodAssignedStaff(areaShift?.value.areaShiftId, period?.value.rotationPeriodId); let assignedStaff">
 
@@ -153,7 +262,6 @@
 
       <div class="add-rotation-period">
         <button
-            class="addrotationPeriodButton"
             type="button"
             (click)="addRotationPeriod(true)"
             mat-mini-fab
