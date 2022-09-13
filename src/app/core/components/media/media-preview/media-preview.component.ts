@@ -267,8 +267,6 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     mediaCommentResponse.then((response:{success:number}) => {
 
-      console.log(response);
-
       if(response.success === 1){
         this.recordForm.get("currentComment")?.reset();
         // tslint:disable-next-line: deprecation

@@ -55,8 +55,6 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        console.log('init');
-
         // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
@@ -133,7 +131,6 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(){
-        console.log('destroy');
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }

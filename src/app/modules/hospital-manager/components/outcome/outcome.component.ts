@@ -76,8 +76,6 @@ export class OutcomeComponent implements OnInit {
 
         this.patientService.getPatientOutcomeForm(this.patientId).pipe(take(1)).subscribe(outcome => {
 
-            console.log(outcome);
-
             if(!outcome){
                 return;
             }
