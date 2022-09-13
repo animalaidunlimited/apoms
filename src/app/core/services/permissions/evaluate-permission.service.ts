@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserDetailsService } from '../user-details/user-details.service';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,9 @@ export class EvaluatePermissionService {
 
   constructor(private userService: UserDetailsService) { }
 
-  public async permissionTrueOrFalse(componentPermissionArray: number[]) : Promise<number | undefined>{
+  public permissionTrueOrFalse(componentPermissionArray: number[]) : Promise<number | undefined>{
 
-     return await this.userService.getUserPermissions().then(userPermissions=> {
-
-      return this.evaluatePermission(componentPermissionArray, userPermissions);
-
-    });
+      return of(this.evaluatePermission(componentPermissionArray, this.userService.permissionArray.value)).toPromise();    
 
 
   }

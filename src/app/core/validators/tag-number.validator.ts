@@ -22,7 +22,9 @@ export class UniqueTagNumberValidator {
                 .checkTagNumberExists(control.value, emergencyCaseId, patientId.value)
                 .pipe(
                     map((res:any) => {
-                        if (res) {
+
+                        if (res) {                            
+
                             // if tag number is already taken
                             if (res.success === 1) {
                                 return { tagNumberTaken: true };

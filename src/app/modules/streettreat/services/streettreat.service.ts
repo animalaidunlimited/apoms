@@ -29,7 +29,9 @@ export class StreetTreatService extends APIService {
    * @return streettreat case which are released
    */
   public searchCases(searchString: string) {
+
     const request = '/SearchStreetTreatCases/?' + searchString;
+
     return this.getObservable(request).pipe(
      map((response: SearchStreetTreatResponse[]) => {
           return response;
@@ -72,6 +74,7 @@ export class StreetTreatService extends APIService {
   }
 
   public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) {
+    
     return await this.post(streetTreatCaseForm)
     .then(data => {
         return data;
@@ -80,6 +83,7 @@ export class StreetTreatService extends APIService {
         console.log(error);
     });
   }
+
   public getActiveCasesForVehicleByDate(vehicleId: number,date: Date){
     const request = `?date=${date}&assignedVehicleId=${vehicleId}`;
     return this.getObservable(request).pipe(

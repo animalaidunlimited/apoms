@@ -237,6 +237,8 @@ export class PatientService extends APIService {
 
     public async savePatientOutcomeForm(outcomeForm: PatientOutcome) : Promise<PatientOutcomeResponse> {
 
+        console.log(outcomeForm);
+
         if(outcomeForm.patientOutcomeDetailsId){
 
             return await this.put(outcomeForm)

@@ -153,7 +153,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     }
     else {
       /**
-       * At current index if patient outcome is not admisson
+       * At current index if patient outcome is not admission
        * reset only current outcome form not even those who has been updated
        * previously programmatically
        */

@@ -104,19 +104,17 @@
 
     <mat-tab label="Outcome" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-        <app-outcome
-            [patientId]="patientId"></app-outcome>
+        <app-outcome *ngIf="patientId" [patientId]="patientId"></app-outcome>
     </mat-tab>
 
     <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
 
     <mat-tab label="Cruelty" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-        <cruelty-details
-            [patientId]="patientId"></cruelty-details>
+        <cruelty-details [patientId]="patientId"></cruelty-details>
     </mat-tab>
     <mat-tab label="Logs" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-        <app-logs [logsData]="logsData"></app-logs>
+        <app-logs *ngIf="!!logsData" [logsData]="logsData"></app-logs>
     </mat-tab>
 </mat-tab-group>

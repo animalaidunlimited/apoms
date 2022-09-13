@@ -300,8 +300,10 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
             // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
             // So mark it as error so the user knows to recheck it
             this.recordForm.updateValueAndValidity();
+
             if(this.hasWritePermission) {
                 this.loading = true;
+
                 if(this.recordForm.pending){
                     // The Emergency Number check might have gotten stuck due to the connection to the DB going down.
                     // So mark it as error so the user knows to recheck it

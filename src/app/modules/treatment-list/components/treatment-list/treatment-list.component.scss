@@ -19,6 +19,8 @@
 
     th {
       color:black;
+      font-weight: bold;
+      font-size: medium;
     }
 
     legend {
@@ -108,16 +110,16 @@
   font-size: large;
 }
 
-:host ::ng-deep .center-columnm{
+:host ::ng-deep .center-column{
   text-align: center !important;
-  //justify-content: center;
+  justify-content: center;
 }
 
 :host ::ng-deep .flex-start{
   text-align: start !important;
 }
 
-.mat-column-Other {
+.mat-column-other {
   min-width: 174px;
 }
 

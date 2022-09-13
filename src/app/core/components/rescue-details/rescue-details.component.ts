@@ -19,6 +19,7 @@ import { Vehicle } from '../../models/vehicle';
   styleUrls: ['./rescue-details.component.scss']
 })
 export class RescueDetailsComponent implements OnInit, OnDestroy {
+
     private ngUnsubscribe = new Subject();
     private ngUnsubscribeValidators = new Subject();
 
@@ -59,6 +60,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
     rescuers$!: Observable<User[]>;
 
     selfAdmission = false;
+    streetTreat = false;
 
     vehicleList$!: Observable<Vehicle[]>;
 
@@ -135,6 +137,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                     }
                 });
                 this.zone.run(() => {
+
                     this.recordForm.patchValue(rescueDetails);
                     this.rescueDetailsVal = rescueDetails;
                     this.refreshValueChangesSubscriptions();
@@ -362,14 +365,22 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
              }
          }
 
-         const streeTreat = patientArray?.controls.some(currentPatient =>
+         const streetTreat = patientArray?.controls.some(currentPatient =>
             currentPatient.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Street treatment approved by ST manager'
         );
 
-        if (streeTreat) {
+        if (streetTreat) {
             this.assignedVehicleId?.setValidators([Validators.required]);
             this.ambulanceAssignmentTime?.setValidators([Validators.required]);
         }
+
+        this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
+        this.assignedVehicleId?.updateValueAndValidity({ emitEvent: false });
+        this.rescueTime?.updateValueAndValidity({ emitEvent: false });
+        this.ambulanceArrivalTime?.updateValueAndValidity({ emitEvent: false });
+        this.ambulanceAssignmentTime?.updateValueAndValidity({ emitEvent: false });
+        this.code?.updateValueAndValidity({ emitEvent: false });
+        this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity({ emitEvent: false });
 
     }
 

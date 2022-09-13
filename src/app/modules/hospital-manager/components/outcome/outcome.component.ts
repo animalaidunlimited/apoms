@@ -28,9 +28,18 @@ export class OutcomeComponent implements OnInit {
     maxDate: string | Date = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
-    vaccinationDetails!: FormGroup;
-    antibioticDetails!: FormGroup;
-    isoReason!: FormGroup;
+
+    get vaccinationDetails() : FormGroup{
+        return this.outcomeForm.get('vaccinationDetails') as FormGroup;
+    }
+
+    get antibioticDetails() : FormGroup { 
+        return this.outcomeForm.get('antibioticDetails') as FormGroup;
+    }
+
+    get isoReason() : FormGroup { 
+        return this.outcomeForm.get('isoReason') as FormGroup;
+    }
 
 
     constructor(
@@ -38,6 +47,24 @@ export class OutcomeComponent implements OnInit {
         private dropdown: DropdownService,
         private snackbar: SnackbarService,
         private patientService: PatientService) {
+
+            this.outcomeForm = this.fb.group({
+                patientOutcomeDetailsId: [],
+                patientId: [this.patientId, Validators.required],
+                vaccinationDetails: this.fb.group({
+                    megavac1Date: [],
+                    megavac2Date: [],
+                    rabiesVaccinationDate: [],
+                }),
+                antibioticDetails: this.fb.group({
+                    antibiotics1: [],
+                    antibiotics2: [],
+                    antibiotics3: [],
+                }),
+                isoReason: this.fb.group({
+                    isoReasonId: [],
+                }),
+            });
 
     }
 
@@ -47,25 +74,9 @@ export class OutcomeComponent implements OnInit {
         this.isoReasons = this.dropdown.getIsoReasons();
         this.maxDate = getCurrentDateString();
 
-        this.outcomeForm = this.fb.group({
-            patientOutcomeDetailsId: [],
-            patientId: [this.patientId, Validators.required],
-            vaccinationDetails: this.fb.group({
-                megavac1Date: [],
-                megavac2Date: [],
-                rabiesVaccinationDate: [],
-            }),
-            antibioticDetails: this.fb.group({
-                antibiotics1: [],
-                antibiotics2: [],
-                antibiotics3: [],
-            }),
-            isoReason: this.fb.group({
-                isoReasonId: [],
-            }),
-        });
-
         this.patientService.getPatientOutcomeForm(this.patientId).pipe(take(1)).subscribe(outcome => {
+
+            console.log(outcome);
 
             if(!outcome){
                 return;
@@ -86,9 +97,6 @@ export class OutcomeComponent implements OnInit {
             this.outcomeForm.patchValue(outcome);
         });
 
-        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
-        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
-        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
 
     }
 
@@ -101,9 +109,9 @@ export class OutcomeComponent implements OnInit {
 
     toggleAntibioticChip(source:string, antibiotic:Antibiotic, chip: MatChip){
 
-        const selectedValue = chip.selected ? antibiotic.antibioticId : null;
-
-        this.antibioticDetails.get(source)?.setValue(selectedValue);
+        if(chip.selected) {
+            this.antibioticDetails.get(source)?.setValue(antibiotic.antibioticId);
+        }        
 
     }
 

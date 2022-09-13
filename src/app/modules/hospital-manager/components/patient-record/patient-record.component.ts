@@ -55,6 +55,8 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
+        console.log('init');
+
         // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 
@@ -125,10 +127,13 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
             patientFormArray: [this.recordForm?.get('patientDetails') || this.fb.control(null) as AbstractControl]
         };
 
+        this.changeDetector.detectChanges();       
+
 
     }
 
     ngOnDestroy(){
+        console.log('destroy');
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }

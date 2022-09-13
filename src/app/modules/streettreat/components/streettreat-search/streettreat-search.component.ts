@@ -23,7 +23,7 @@ export class StreetTreatSearchComponent implements OnInit {
     private streetTreatService: StreetTreatService,
   ) { }
 
-  searchResults$!:Observable<SearchStreetTreatResponse[]>;
+  searchResults!:SearchStreetTreatResponse[];
 
   ngOnInit(): void {
   }
@@ -38,16 +38,15 @@ export class StreetTreatSearchComponent implements OnInit {
     this.loading = true;
     this.noResults = false;
 
-    this.searchResults$ = this.streetTreatService.searchCases(searchQuery).pipe(takeUntil(this.ngUnsubscribe), map( result => {
+    this.streetTreatService.searchCases(searchQuery).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
 
         this.noResults = result.length === 0;
 
         this.loading = false;
 
-        return result;
+        this.searchResults =  result;
 
-      })
-    );
+      });
 
 
   }

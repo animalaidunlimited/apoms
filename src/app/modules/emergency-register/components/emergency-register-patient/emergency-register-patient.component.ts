@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -81,6 +81,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       {
         const selectedProblems =  this.problemsArray?.value as Problem[];
         const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
+
         return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()) && !(this.problemsExclusions$.value).includes(problem.Problem.trim()));
       }
     ),
@@ -103,10 +104,12 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
    }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
 
     this.patientForm = this.patientFormInput as FormGroup;
 
+    this.patientForm.updateValueAndValidity({ emitEvent: false});
+    
     this.exclusions = this.dropdown.getExclusions();
 
     this.treatmentAreaNames$ = this.dropdown.getTreatmentAreas();
@@ -117,14 +120,14 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
                                   .subscribe(animalTypes => this.initialiseAnimalTypeDropdown(animalTypes));
 
 
-    //this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
+    // this.filteredAnimalTypes$ = this.animalType?.valueChanges.pipe(
     //  takeUntil(this.ngUnsubscribe),
     //  startWith(''),
     //  map(animalType => typeof animalType === 'string'? animalType : animalType?.AnimalType),
     //  switchMap((animalType:string) =>
     //    animalType ? of(this.animalFilter(animalType.toLowerCase())) : of(this.sortedAnimalTypes)
     //  )
-    //);
+    // );
     
     this.treatmentListService.admissionAcceptReject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(patient => {
 
@@ -142,28 +145,20 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         }
       }
 
-    })
-
-
-
-    this.filteredProblems$ = this.problemInput?.valueChanges.pipe(
-      startWith(''),
-      map(problem => typeof problem === 'string' ? problem : problem.Problem),
-      switchMap((problem:string) => {
-        return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
-      }),
-    );
+    });
 
   }
 
 
   private initialiseAnimalTypeDropdown(animalTypes: AnimalType[]) {
+    
     this.sortedAnimalTypes = animalTypes;
     this.animalType.setValidators(animalTypeValidator(this.sortedAnimalTypes));
 
     this.animalType.enable();
 
     this.animalType?.valueChanges.pipe(
+      startWith(''),
       takeUntil(this.ngUnsubscribe),
       map(animalType => typeof animalType === 'string'? animalType : animalType?.AnimalType))
       .subscribe(animalType => {
@@ -179,7 +174,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   }
 
 
-  animalTypeChangessub(){
+  animalTypeChangesSub(){
 
     this.animalType?.valueChanges.pipe(takeUntil(this.animalTypeValueChangesUnsubscribe)).subscribe(animalType => {
 
@@ -237,11 +232,11 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   }
 
-  animalFilter(fitlerValue: string) : AnimalType[]{
+  animalFilter(filterValue: string) : AnimalType[]{
 
     return this.sortedAnimalTypes
                   .sort((a,b) => a.SortOrder - b.SortOrder)
-                  .filter(animalType => animalType.AnimalType.toLowerCase().indexOf(fitlerValue) === 0)
+                  .filter(animalType => animalType.AnimalType.toLowerCase().indexOf(filterValue) === 0)
   }
 
 
@@ -313,9 +308,18 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   hideIrrelevantProblems(animal:string) {
 
+    this.filteredProblems$ = this.problemInput?.valueChanges.pipe(
+      startWith(''),
+      map(problem => typeof problem === 'string' ? problem : problem.Problem),
+      switchMap((problem:string) => {
+
+        return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
+      })
+    );
+
     const currentExclusions = this.exclusions.filter(animalType => animalType.animalType === animal);
 
-    // Get the current patient and check if we're swtiching between animal chips, because if so we'll receive 3 calls,
+    // Get the current patient and check if we're switching between animal chips, because if so we'll receive 3 calls,
     // two for the new patient type, followed by an unset for the old patient type
 
     if(!(this.patientForm?.get('animalType')?.value === animal)){
@@ -455,14 +459,6 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         }
       }
     });
-
-
-
-
-
-
-
-
 
   }
 

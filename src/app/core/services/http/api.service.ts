@@ -99,6 +99,7 @@ export abstract class APIService<T = any> {
     public async post(body: any): Promise<any> {
         let response = null;
         try {
+
             response = await this.http
                 .post(`${this.url}/${this.endpoint}`, body)
                 .toPromise();

@@ -103,7 +103,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	showVisitDate = false;
 	status$!: Observable<Status[]>;
 	streetTreatCase!: any;
-	streatTreatForm!: FormGroup;
+	streetTreatForm!: FormGroup;
 	treatmentPriority$!: Observable<Priority[]>;
 	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
@@ -133,7 +133,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		if (!this.recordForm) this.recordForm = new FormGroup({});
 
 		this.recordForm.addControl(
-			'streatTreatForm',
+			'streetTreatForm',
 			this.fb.group({
 				streetTreatCaseId: [],
 				patientId: [this.patientId],
@@ -148,8 +148,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			})
 		);
 
-		this.streatTreatForm = this.recordForm.get('streatTreatForm') as FormGroup;
-		this.visitsArray = this.streatTreatForm.get('visits') as FormArray;
+		this.streetTreatForm = this.recordForm.get('streetTreatForm') as FormGroup;
+		this.visitsArray = this.streetTreatForm.get('visits') as FormArray;
 		this.problems$ = this.dropdown.getStreetTreatMainProblems();
 		this.status$ = this.dropdown.getStatus();
 		this.visitType$ = this.dropdown.getVisitType();
@@ -169,7 +169,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	ngOnChanges() {
 
-		if (this.streatTreatForm) {
+		if (this.streetTreatForm) {
 			if (this.isStreetTreatTrue) {
 				this.initStreetTreatForm();
 				this.streetTreatSetValidators();
@@ -193,7 +193,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	initStreetTreatForm() {
 
-		this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+		this.recordForm.get('streetTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 
 		this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
 		.pipe(takeUntil(this.ngUnsubscribe))
@@ -220,9 +220,9 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 													:
 													this.datepipe.transform(response.patientReleaseDate,'yyyy-MM-dd') || '';
 
-							// Set Validators Visit Date Unique When Date are finialized
-							this.recordForm.get('streatTreatForm.visits')?.clearValidators();
-							this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
+							// Set Validators Visit Date Unique When Date are finalized
+							this.recordForm.get('streetTreatForm.visits')?.clearValidators();
+							this.recordForm.get('streetTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 
 						}
 						if (visit.visit_date) {
@@ -254,7 +254,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 				this.prevVisits = response.visits.map((prevVisits: any) => prevVisits.visit_date ? prevVisits.visit_date.toString() : '');
 
-				this.streatTreatForm.patchValue(response);
+				this.streetTreatForm.patchValue(response);
 				this.callDateTime = formatDateForMinMax(response.callDateTime);
 
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
@@ -387,10 +387,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	streetTreatSetValidators() {
 		if (this.visitsArray.length === 0) {
 			this.visitsArray.push(this.getVisitFormGroup());
-			this.recordForm.get('streatTreatForm.visits')?.clearValidators();
-			this.recordForm.get('streatTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
+			this.recordForm.get('streetTreatForm.visits')?.clearValidators();
+			this.recordForm.get('streetTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
-		this.streatTreatForm.get('patientId')?.setValue(this.patientId);
+		this.streetTreatForm.get('patientId')?.setValue(this.patientId);
 
 		this.clearAndUpdateValidity(true);
 
@@ -399,8 +399,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	clearValidators() {
-		this.streatTreatForm.reset();
-		this.streatTreatForm.get('PatientId')?.setValue(this.patientId);
+		this.streetTreatForm.reset();
+		this.streetTreatForm.get('PatientId')?.setValue(this.patientId);
 
 		this.clearAndUpdateValidity(false);
 
@@ -409,7 +409,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.visitsArray.removeAt(i);
 		}
 
-		this.streatTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
+		this.streetTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 
 		this.changeDetectorRef.detectChanges();
 
@@ -423,10 +423,10 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		for (const control of controlsToClear) {
 
 			setRequired ?
-				this.streatTreatForm.get(control)?.setValidators([Validators.required])
+				this.streetTreatForm.get(control)?.setValidators([Validators.required])
 				:
-				this.streatTreatForm.get(control)?.clearValidators();
-			this.streatTreatForm.get(control)?.updateValueAndValidity({ emitEvent: false });
+				this.streetTreatForm.get(control)?.clearValidators();
+			this.streetTreatForm.get(control)?.updateValueAndValidity({ emitEvent: false });
 
 		}
 	}

@@ -63,6 +63,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     ngOnInit(): void {
+
         this.dispatchers$ = this.dropdowns.getDispatchers();
 
         this.minimumDate =
@@ -89,12 +90,17 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         });
 
-        this.caseService
-            .getEmergencyCaseById(emergencyCaseId?.value)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(result => {
-                this.recordForm.patchValue(result);
-            });
+        // REMOVING THIS AS THE FORM IS LOADED IN MULTIPLE OTHER PLACES
+
+        // this.caseService
+        //     .getEmergencyCaseById(emergencyCaseId?.value)
+        //     .pipe(takeUntil(this.ngUnsubscribe))
+        //     .subscribe(result => {
+                
+        //         console.log(result)
+
+        //         this.recordForm.patchValue(result);
+        //     });
 
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges
@@ -123,6 +129,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     private addFormControls() {
+
         this.emergencyDetails.addControl('emergencyNumber',
             new FormControl(
                 '',

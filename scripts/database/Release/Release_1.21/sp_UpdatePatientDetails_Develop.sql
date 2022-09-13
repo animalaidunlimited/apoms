@@ -49,8 +49,8 @@ START TRANSACTION;
 				ReleaseStatus		= prm_ReleaseStatus,
 				Temperament			= prm_Temperament,		
 				Age					= prm_Age,		
-				KnownAsName			= prm_KnownAsName /*,
-				UpdateTime					= NOW()*/
+				KnownAsName			= prm_KnownAsName,
+				UpdateTime					= NOW()
 				
 	WHERE PatientId = prm_PatientId;
    

@@ -12,7 +12,7 @@
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
-        (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
+        (focus)="animalTypeChangesSub()" (focusout)="animalTypeChangesUnsub()">
 
       <mat-autocomplete class="speciesAutocomplete" autoActiveFirstOption #animalAuto="matAutocomplete"
         (optionSelected)="animalSelected($event)">
