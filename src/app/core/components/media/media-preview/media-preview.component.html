@@ -56,16 +56,15 @@
                 <button mat-raised-button color="primary" (click)="uploader.click()">Browse for file</button>
             </div>
 
-        </ng-container>
-
+        </ng-container> 
     </div>
 
-    <video *ngIf="data.mediaData?.mediaType?.includes('video') || data.upload" class="video-wrapper"
-    controls (click)="toggleVideo($event)" #videoplayer>
-
-    <source src="{{imageLocation}}" type="video/mp4" />
-    Browser not supported
-    </video>
+        <video *ngIf="data.mediaData?.mediaType?.includes('video') && !data.upload" class="video-wrapper"
+        controls (click)="toggleVideo($event)" #videoplayer>
+    
+        <source src="{{imageLocation}}" type="video/mp4" />
+        Browser not supported
+        </video>
 
 
     <div style="padding: 0.5rem;" ngStyle.gt-xs="width: 98%;" [formGroup]="recordForm">

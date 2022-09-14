@@ -4,7 +4,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { getCurrentDateString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { Input } from '@angular/core';
-import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients';
+import { Antibiotic } from 'src/app/core/models/patients';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -48,24 +48,6 @@ export class OutcomeComponent implements OnInit {
         private snackbar: SnackbarService,
         private patientService: PatientService) {
 
-            this.outcomeForm = this.fb.group({
-                patientOutcomeDetailsId: [],
-                patientId: [this.patientId, Validators.required],
-                vaccinationDetails: this.fb.group({
-                    megavac1Date: [],
-                    megavac2Date: [],
-                    rabiesVaccinationDate: [],
-                }),
-                antibioticDetails: this.fb.group({
-                    antibiotics1: [],
-                    antibiotics2: [],
-                    antibiotics3: [],
-                }),
-                isoReason: this.fb.group({
-                    isoReasonId: [],
-                }),
-            });
-
     }
 
     ngOnInit() {
@@ -73,6 +55,24 @@ export class OutcomeComponent implements OnInit {
         this.antibiotics = this.dropdown.getAntibiotics();
         this.isoReasons = this.dropdown.getIsoReasons();
         this.maxDate = getCurrentDateString();
+
+        this.outcomeForm = this.fb.group({
+            patientOutcomeDetailsId: [],
+            patientId: [this.patientId, Validators.required],
+            vaccinationDetails: this.fb.group({
+                megavac1Date: [],
+                megavac2Date: [],
+                rabiesVaccinationDate: [],
+            }),
+            antibioticDetails: this.fb.group({
+                antibiotics1: [],
+                antibiotics2: [],
+                antibiotics3: [],
+            }),
+            isoReason: this.fb.group({
+                isoReasonId: [],
+            }),
+        });
 
         this.patientService.getPatientOutcomeForm(this.patientId).pipe(take(1)).subscribe(outcome => {
 
@@ -107,10 +107,8 @@ export class OutcomeComponent implements OnInit {
 
     toggleAntibioticChip(source:string, antibiotic:Antibiotic, chip: MatChip){
 
-        if(chip.selected) {
-            this.antibioticDetails.get(source)?.setValue(antibiotic.antibioticId);
-        }        
-
+        this.antibioticDetails.get(source)?.setValue(chip.selected ? null : antibiotic.antibioticId);
+        chip.toggleSelected();
     }
 
     setInitialDate($event:MouseEvent){
@@ -129,6 +127,9 @@ export class OutcomeComponent implements OnInit {
 
     async saveOutcomeDetails(){
 
+        console.log(this.outcomeForm.value);
+
+        /*
         if(this.outcomeForm.valid){
 
             const outcomeRespone:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
@@ -143,6 +144,7 @@ export class OutcomeComponent implements OnInit {
 
 
         }
+        */
 
     }
 }
