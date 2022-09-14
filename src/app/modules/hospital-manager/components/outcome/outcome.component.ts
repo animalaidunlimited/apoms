@@ -4,7 +4,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { getCurrentDateString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { Input } from '@angular/core';
-import { Antibiotic } from 'src/app/core/models/patients';
+import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -127,24 +127,22 @@ export class OutcomeComponent implements OnInit {
 
     async saveOutcomeDetails(){
 
-        console.log(this.outcomeForm.value);
-
-        /*
+        
         if(this.outcomeForm.valid){
 
-            const outcomeRespone:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
+            const outcomeResponse:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
 
-            outcomeRespone.success === 1 ?
+            outcomeResponse.success === 1 ?
             (
                 this.snackbar.successSnackBar('Outcome saved successfully', 'OK'),
-                this.outcomeForm.get('patientOutcomeDetailsId').setValue(outcomeRespone.patientOutcomeDetailsId)
+                this.outcomeForm.get('patientOutcomeDetailsId').setValue(outcomeResponse.patientOutcomeDetailsId)
             )   :
                 this.snackbar.errorSnackBar('Outcome save failed', 'OK');
 
 
 
         }
-        */
+        
 
     }
 }
