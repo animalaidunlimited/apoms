@@ -1,6 +1,7 @@
 <meta *ngIf="fullImageView" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=9.0, user-scalable=yes" />
 <meta *ngIf="!fullImageView"name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
+
 <button *ngIf="fullImageView" mat-icon-button class="close-button imageCloseBtn" (click)="removeFullView($event)" >
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
@@ -9,12 +10,14 @@
     <mat-icon class="close-icon" >close</mat-icon>
 </button>
 
-<div fxLayout="row" fxLayout.lt-lg="column" style="background: #F0F0F0; border-radius: 0.5em;">
+
+
+<div fxLayout="row" fxLayout.lt-md="column" style="background: #F0F0F0; border-radius: 0.5em;">
 
     <div #imgElement
     [style.backgroundImage]="'url('+ imageLocation +')'"
     class="mediaPreviewBackgroundImage"
-    [ngStyle.xs]="'min-height:'+ imageHeight+'vh'"
+    [ngStyle.xs]="'min-height:'+ (imageHeight - 1) +'vh'"
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
     *ngIf="data?.mediaData?.mediaType?.includes('image') || data.upload"
@@ -55,15 +58,15 @@
 
         </ng-container>
 
+    </div>
 
-    <video *ngIf="data.mediaData?.mediaType?.includes('video') && !data.upload" style="max-width:73%; padding:0.5em; min-height:67vh;"
-            controls (click)="toggleVideo($event)" #videoplayer>
+    <video *ngIf="data.mediaData?.mediaType?.includes('video') || data.upload" class="video-wrapper"
+    controls (click)="toggleVideo($event)" #videoplayer>
 
-        <source src="{{imageLocation}}" type="video/mp4" />
-        Browser not supported
+    <source src="{{imageLocation}}" type="video/mp4" />
+    Browser not supported
     </video>
 
-    </div>
 
     <div style="padding: 0.5rem;" ngStyle.gt-xs="width: 98%;" [formGroup]="recordForm">
         <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >

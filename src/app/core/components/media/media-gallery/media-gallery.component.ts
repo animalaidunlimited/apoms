@@ -116,7 +116,6 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   openMediaDialog(): void{
 
     const dialogRef = this.dialog.open(MediaPreviewComponent, {
-
       minWidth: '75vw',
       panelClass: 'media-preview-dialog',
       data: {

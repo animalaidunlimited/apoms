@@ -103,9 +103,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	showVisitDate = false;
 	status$!: Observable<Status[]>;
 	streetTreatCase!: any;
-	streetTreatForm!: FormGroup;
 	treatmentPriority$!: Observable<Priority[]>;
-	visitsArray!: FormArray;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
 	vehicleList$!: Observable<Vehicle[]>;
@@ -128,6 +126,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		return this.recordForm.get('patientId')?.value;
 	}
 
+	get streetTreatForm() : FormGroup {
+		return this.recordForm.get('streetTreatForm') as FormGroup;
+	}
+
+	get visitsArray() : FormArray {
+		return this.streetTreatForm.get('visits') as FormArray;
+	}
+
 	ngOnInit() {
 
 		if (!this.recordForm) this.recordForm = new FormGroup({});
@@ -148,8 +154,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			})
 		);
 
-		this.streetTreatForm = this.recordForm.get('streetTreatForm') as FormGroup;
-		this.visitsArray = this.streetTreatForm.get('visits') as FormArray;
+
 		this.problems$ = this.dropdown.getStreetTreatMainProblems();
 		this.status$ = this.dropdown.getStatus();
 		this.visitType$ = this.dropdown.getVisitType();
@@ -297,6 +302,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	getVisitFormGroup(date?: string): FormGroup {
+
 		const visitArray = this.fb.group({
 			visitId: [],
 			visit_status: [1, Validators.required],
@@ -309,9 +315,15 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 		if (this.showVisitDate) {
 				visitArray.get('visit_date')?.setValidators(Validators.required);
+
+				this.recordForm.get('streetTreatForm.visits')?.clearValidators();
+				this.recordForm.get('streetTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_date')]);
 			}
 			else {
 				visitArray.get('visit_day')?.setValidators(Validators.required);
+
+				this.recordForm.get('streetTreatForm.visits')?.clearValidators();
+				this.recordForm.get('streetTreatForm.visits')?.setValidators([UniqueValidators.uniqueBy('visit_day')]);
 		}
 		return visitArray;
 	}

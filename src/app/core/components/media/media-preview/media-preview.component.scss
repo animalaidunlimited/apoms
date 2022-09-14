@@ -2,16 +2,46 @@
 
 ::ng-deep .media-preview-dialog .mat-dialog-container {
     padding: 0 !important;
-    position: relative;
-    overflow: visible;
     margin-top: 3vh;
+
+    overflow-x:scroll;
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar {
+        background-color: #fff;
+        width: 0.8rem;
+        height: 0.8rem;
+    }
+    /* background of the scrollbar except button or resizer */
+    &::-webkit-scrollbar-track {
+        background-color: #fff;
+    }
+
+    /* scrollbar itself */
+    &::-webkit-scrollbar-thumb {
+        background-color: #babac0;
+        border-radius: 1rem;
+        border: 0.2rem solid #fff;
+    }
+
+    /* set button(top and bottom of the scrollbar) */
+    &::-webkit-scrollbar-button {
+        display:none;
+    }
+    
+    
+}
+
+::ng-deep .media-preview-dialog {
+    max-height: 96vh;
+    position:relative !important;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
 }
 
 .close-button {
     position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(64%, -64%);
+    top: 6px;
+    right: -12px;
     background: #607d8b;
     color: white;
     width: 2rem;
@@ -23,6 +53,10 @@
 	.mat-icon{
 		font-size:1.2rem;
 	}
+}
+
+.media-preview-dialog{
+    background-color: black;
 }
 
 .primary-image-toggle{
@@ -50,7 +84,7 @@
 
 .mediaPreviewBackgroundImage{
     background-size: contain;
-    min-width: 70%;
+    min-width: 67%;
     background-repeat: no-repeat;
     min-height: 70vh;
     background-position: center;
@@ -296,6 +330,19 @@
     }
   }
 
+  .video-wrapper{
+    padding:0.5em;
+    min-height:67vh;
+    max-width: 98%;
+}
+
+  @media (min-width: 1280px){
+    .video-wrapper{
+        padding:0.5em;
+        min-height:67vh;
+        max-width: 73%;
+    }
+  }
 
 @media (max-width: 600px){
     .mat-form-field {

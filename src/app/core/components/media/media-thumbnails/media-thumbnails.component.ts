@@ -50,6 +50,7 @@ export class MediaThumbnailsComponent implements OnInit, OnDestroy{
 
         const dialogRef = this.dialog.open(MediaPreviewComponent, {
             minWidth: '80vw',
+            maxHeight: '98vh',
             panelClass: 'media-preview-dialog',
             data: {
                 mediaData: this.mediaPatientItems.find(media => media.patientMediaItemId === image.patientMediaItemId)
