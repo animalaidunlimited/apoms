@@ -30,8 +30,6 @@
 
     <label class="label">Antibiotic 1</label>
 
-    <!-- (click)="antibiotic1.toggleSelected()"
-    (selectionChange)="toggleAntibioticChip('antibiotics1', antibiotic, antibiotic1)" -->
 
     <mat-chip-list #antibiotic1Chips aria-label="Antibiotic 1" selectable>
             <mat-chip
@@ -44,8 +42,7 @@
 
     <mat-chip-list #antibiotic2Chips aria-label="Antibiotic 2" selectable>
         <mat-chip
-        (click)="antibiotic2.toggleSelected()"
-        (selectionChange)="toggleAntibioticChip('antibiotics2', antibiotic, antibiotic2)"
+        (click)="toggleAntibioticChip('antibiotics2', antibiotic, antibiotic2)"
         #antibiotic2="matChip"
         *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
 </mat-chip-list>
@@ -54,8 +51,7 @@
 
 <mat-chip-list #antibiotic3Chips aria-label="Antibiotic 3" selectable>
         <mat-chip
-        (click)="antibiotic3.toggleSelected()"
-        (selectionChange)="toggleAntibioticChip('antibiotics3', antibiotic, antibiotic3)"
+        (click)="toggleAntibioticChip('antibiotics3', antibiotic, antibiotic3)"
         #antibiotic3="matChip"
         *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
 </mat-chip-list>
