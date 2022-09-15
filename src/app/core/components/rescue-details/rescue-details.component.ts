@@ -161,10 +161,15 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
 
                 if(changedSelfAdmissionValue){
 
-                    this.assignedVehicleId?.setValue(null)
-                    this.ambulanceArrivalTime?.setValue(null)
+                    this.assignedVehicleId?.setValue(null);
+                    this.ambulanceArrivalTime?.setValue(null);
                     this.ambulanceAssignmentTime?.setValue(null);
-                    this.rescueTime?.setValue(null)
+                    this.rescueTime?.setValue(null);
+
+                    this.assignedVehicleId?.clearValidators();
+                    this.ambulanceArrivalTime?.clearValidators();
+                    this.ambulanceAssignmentTime?.clearValidators();
+                    this.rescueTime?.clearValidators();
 
                 }
 
@@ -218,7 +223,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 // The values won't have bubbled up to the parent yet, so wait for one tick
                 setTimeout(() => this.updateValidators(), 0);
             });
-    }
+    }   
 
     updateValidators() : void {
 
@@ -317,7 +322,9 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         // if admission time then assignedVehicleId, ambulance arrived required, rescue time
         if (this.admissionTime?.value) {
 
-            this.assignedVehicleId?.setValidators([Validators.required]);
+            if(!this.selfAdmission){
+                this.assignedVehicleId?.setValidators([Validators.required]);
+            }
 
             if (Date.parse(this.rescueTime?.value) < Date.parse(this.callDateTime?.value)) {
 
@@ -361,7 +368,9 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
                 this.ambulanceAssignmentTime?.setValidators([Validators.required]);
                 this.code?.setValidators([Validators.required]);
                 this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
-
+             }
+             else {
+                this.assignedVehicleId?.setValue(null);
              }
          }
 

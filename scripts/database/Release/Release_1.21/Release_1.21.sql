@@ -1127,12 +1127,13 @@ visitsCTE AS
         stc.MainProblemId,
         ec.EmergencyCaseId,
         pr.Priority AS CasePriority,
-        s.Status AS CaseStatus,
+		cs.Status AS CaseStatus,
         at.AnimalType,
         s.Status AS VisitStatus,
 	ROW_NUMBER() OVER (PARTITION BY stc.StreetTreatCaseId ORDER BY v.Date DESC) AS RNum
 	FROM AAU.Visit v
 	INNER JOIN AAU.StreetTreatCase stc ON stc.StreetTreatCaseId = v.StreetTreatCaseId
+    INNER JOIN AAU.Status cs ON cs.StatusId = stc.StatusId
 	INNER JOIN AAU.Vehicle ve ON ve.VehicleId = stc.AssignedVehicleId
 	INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
 	INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
@@ -3917,7 +3918,7 @@ WITH PatientCTE AS (
 	FROM AAU.Patient p
 	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
 	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) >= IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId NOT IN (1,7), prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
 	AND p.PatientCallOutcomeId = 1
 	AND (
 		p.PatientStatusId IN (1,7)
