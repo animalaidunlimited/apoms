@@ -286,9 +286,11 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
     }
 
     if(!this.incomingObject.selected) {
-      const index = this.filterKeysArray.findIndex(obj=> obj.group === this.incomingObject.group &&
-      obj.value === this.incomingObject.value);
-      this.filterKeysArray.splice(index,1);
+
+      const index = this.filterKeysArray.findIndex(obj => obj.group === this.incomingObject.group &&
+                                                          obj.value === this.incomingObject.value);
+
+      this.filterKeysArray.splice(index,1);      
     }
 
     this.matChipObs.next(null);

@@ -2,6 +2,7 @@
         <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
 
                 <mat-tab *ngFor="let tab of tabs; let index = index"
+                class="emergency-tab"
                 label="tab">
 
                         <ng-template mat-tab-label>

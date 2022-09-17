@@ -32,3 +32,7 @@
 :host > .mat-tab-group:first-child ::ng-deep .mat-tab-label:last-child{
     margin-left: auto;
 }
+
+::ng-deep .mat-tab-body {
+    min-height: 695px;
+}
