@@ -208,7 +208,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 				this.showVisitDate = (response.autoAdded || !!response.patientReleaseDate);
 
-
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
 						/**

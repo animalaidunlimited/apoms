@@ -6188,7 +6188,8 @@ DECLARE vOrganisationId INT;
 DECLARE vPatientExists INT;
 DECLARE vPatientId INT;
 DECLARE vTagNumber VARCHAR(45);
-DECLARE vExistingTagNumber VARCHAR(45);
+DECLARE vExistingOutcomeId INT;
+DECLARE vAdmissionAccepted INT;
 DECLARE vSameAsEmergencyCaseId INT;
 DECLARE vSuccess INT;
 
@@ -6200,7 +6201,9 @@ FROM AAU.Patient WHERE PatientId <> prm_PatientId
 AND EmergencyCaseId = prm_EmergencyCaseId
 AND GUID = prm_GUID AND IsDeleted = 0;
 
-SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+SELECT PatientCallOutcomeId INTO vExistingOutcomeId FROM AAU.Patient WHERE PatientId = prm_PatientId;
+
+SELECT COUNT(1) INTO vAdmissionAccepted FROM AAU.TreatmentList WHERE PatientId = prm_PatientId AND Admission = 1 AND InAccepted = 1;
 
 SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
 
@@ -6220,15 +6223,22 @@ IF vPatientExists = 0 THEN
 								WHEN prm_IsDeleted = FALSE THEN NULL
                                 WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
 							  END
-	WHERE PatientId = prm_PatientId;
-
-    -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
-		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
-    END IF;
+	WHERE PatientId = prm_PatientId;    
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
+    
+    -- Check if we've set the patient to non admission from admission, and then remove the Treatment List record.
+    IF ( vExistingOutcomeId = 1 AND prm_PatientCallOutcomeId IS NULL AND vAdmissionAccepted != 1) THEN
+    
+		DELETE FROM AAU.TreatmentList WHERE PatientId = prm_PatientId;
+        
+        INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+		VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Removed treatment list record', NOW());
+        
+    END IF;
+    
+	
 
     SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
 
@@ -7123,7 +7133,7 @@ END IF;
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'ST Case','Upsert', NOW());
+	VALUES (prm_Username,vStreetTreatCaseId,'ST Case','Upsert', NOW());
     
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
     
@@ -7463,5 +7473,33 @@ SELECT vSuccess as success;
 END$$
 DELIMITER ;
 
+DELIMITER !!
 
-
+DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatientStatusAfterRelease !!
+
+DELIMITER $$
+CREATE PROCEDURE  AAU.sp_UpdatePatientStatusAfterRelease (IN prm_username VARCHAR(45), IN prm_ReleaseDetailsId INTEGER, IN prm_ReleaseEndDate DATE)
+BEGIN
+
+/*
+
+Created By: Jim Mackenzie
+Created On: 22/02/2021
+Purpose: When the release is complete we should update the patient status with the release
+end date as we know with certainty that the patient has been released.
+
+*/
+
+UPDATE AAU.Patient p
+INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+SET p.PatientStatusDate = prm_ReleaseEndDate, p.PatientStatusId = 2
+WHERE rd.ReleaseDetailsId = prm_ReleaseDetailsId;
+
+INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+VALUES (vOrganisationId, prm_UserName,prm_ReleaseDetailsId,'ReleaseDetails','Update Status Id - After Release: ', NOW());
+
+
+END $$
+
+
+

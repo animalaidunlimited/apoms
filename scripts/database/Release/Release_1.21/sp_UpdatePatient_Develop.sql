@@ -21,7 +21,8 @@ DECLARE vOrganisationId INT;
 DECLARE vPatientExists INT;
 DECLARE vPatientId INT;
 DECLARE vTagNumber VARCHAR(45);
-DECLARE vExistingTagNumber VARCHAR(45);
+DECLARE vExistingOutcomeId INT;
+DECLARE vAdmissionAccepted INT;
 DECLARE vSameAsEmergencyCaseId INT;
 DECLARE vSuccess INT;
 
@@ -33,7 +34,9 @@ FROM AAU.Patient WHERE PatientId <> prm_PatientId
 AND EmergencyCaseId = prm_EmergencyCaseId
 AND GUID = prm_GUID AND IsDeleted = 0;
 
-SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+SELECT PatientCallOutcomeId INTO vExistingOutcomeId FROM AAU.Patient WHERE PatientId = prm_PatientId;
+
+SELECT COUNT(1) INTO vAdmissionAccepted FROM AAU.TreatmentList WHERE PatientId = prm_PatientId AND Admission = 1 AND InAccepted = 1;
 
 SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
 
@@ -53,15 +56,22 @@ IF vPatientExists = 0 THEN
 								WHEN prm_IsDeleted = FALSE THEN NULL
                                 WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
 							  END
-	WHERE PatientId = prm_PatientId;
-
-    -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
-		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
-    END IF;
+	WHERE PatientId = prm_PatientId;    
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
+    
+    -- Check if we've set the patient to non admission from admission, and then remove the Treatment List record.
+    IF ( vExistingOutcomeId = 1 AND prm_PatientCallOutcomeId IS NULL AND vAdmissionAccepted != 1) THEN
+    
+		DELETE FROM AAU.TreatmentList WHERE PatientId = prm_PatientId;
+        
+        INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Removed treatment list record', NOW());
+        
+    END IF;
+    
+	
 
     SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
 
