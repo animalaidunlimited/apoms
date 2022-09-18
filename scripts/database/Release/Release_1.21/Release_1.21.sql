@@ -594,7 +594,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -718,7 +718,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -820,7 +820,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -911,7 +911,7 @@ SELECT
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -1613,7 +1613,7 @@ FROM AAU.StreetTreatCase c
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -4099,6 +4099,14 @@ DECLARE vVehicleNumber VARCHAR(100);
     ) v
     WHERE v.RNum = 1;
     
+    IF (vVehicleId IS NULL) THEN
+    
+    SELECT v.VehicleId, v.VehicleNumber INTO vVehicleId, vVehicleNumber
+    FROM AAU.Vehicle v
+    WHERE OrganisationId = vOrganisationId
+    AND v.StreetTreatDefaultVehicle = 1;
+    
+    END IF;   
     
 	SELECT vUserId AS UserId, vOrganisationId AS OrganisationId, vUserName AS UserName, vFirstName AS FirstName, vLastName AS LastName,
     vInitials AS Initials, vPermissions AS Permissions, vPreferences AS Preferences, vPassword AS Password, vSocketEndPoint AS SocketEndPoint, vVehicleId AS VehicleId, vVehicleNumber AS VehicleNumber;
