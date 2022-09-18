@@ -17,7 +17,7 @@ BEGIN
 	INSERT INTO AAU.VehicleType (`VehicleType`, `OrganisationId`) VALUES ('Van', '1');
 	INSERT INTO AAU.VehicleType (`VehicleType`, `OrganisationId`) VALUES ('Truck', '1');
 	INSERT INTO AAU.VehicleType (`VehicleType`, `OrganisationId`) VALUES ('Cow Truck', '1');
-  INSERT INTO AAU.VehicleType (`VehicleType`, `OrganisationId`) VALUES ('Two Wheeler', '1');
+	INSERT INTO AAU.VehicleType (`VehicleType`, `OrganisationId`) VALUES ('Two Wheeler', '1');
 
 END //
 DELIMITER ;
