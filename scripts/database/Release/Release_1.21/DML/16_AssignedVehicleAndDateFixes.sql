@@ -2,9 +2,15 @@
 THIS STEP IS VERY VERY IMMPORTANT
 BEFORE DOING ANYTHING PLEASE CHANGE TABLE NAME EMERGENCY CASE COPY TO EMERGENCY CASE.
 */
+-- CREATE TABLE AAU.EmergencyCase_Backup LIKE AAU.EmergencyCase;
+
+-- INSERT INTO AAU.EmergencyCase_Backup SELECT * FROM AAU.EmergencyCase;
+
 
 SET SQL_SAFE_UPDATES = 0;
 START TRANSACTION;
+
+
 
 UPDATE AAU.EmergencyCase
 SET Rescuer1Id = IF(Rescuer1Id = 19, 47, Rescuer1Id),
@@ -276,8 +282,9 @@ FROM
 GROUP BY callDateTime
 ORDER BY 2 DESC ;
 
+COMMIT;
 
-
+START TRANSACTION;
 -- INSERT THE MAX NUMBER OF VEHICLE BY THE ABOVE QUERY 
 
 INSERT INTO AAU.Vehicle
@@ -488,11 +495,13 @@ VALUES (
 
 
 
+COMMIT;
+
+START TRANSACTION;
+
 
 
 -- Insert data into vehicle shift table
-
-SELECT count(1) FROM VehicleShiftTemp;
 
 CREATE TEMPORARY TABLE VehicleShiftTemp 
 SELECT * 
@@ -525,13 +534,12 @@ SELECT * FROM VehicleShiftTemp;
 -- DROP TABLE VehicleShiftData;
 DROP TABLE VehicleShiftTemp;
 
-
-
-INSERT INTO VehicleShift (OrganisationId, VehicleId, StartDate, EndDate)
+INSERT INTO AAU.VehicleShift (OrganisationId, VehicleId, StartDate, EndDate)
 SELECT 1, AmbulanceId, StartTime, EndTime
 FROM AAU.VehicleShiftData;
 
 SELECT * FROM AAU.VehicleShift;
+SELECT * FROM AAU.VehicleShiftUser;
 
 -- INSERT DATA INTO VEHICLE SHIFT USER TABLE
 
@@ -557,7 +565,6 @@ WHERE Rescuer1Id IS NOT NULL;
 DELETE FROM AAU.VehicleShiftUser
 WHERE VehicleShiftId != -1;
 
-
 SELECT *
 FROM AAU.EmergencyCase
 WHERE Rescuer1Id IS NOT NULL AND Rescuer2Id IS NULL;
@@ -569,7 +576,7 @@ WHERE Rescuer1Id IS NOT NULL AND Rescuer2Id IS NULL;
 
 
 -- (6,7,9,11,12,13,14,15,16,45,18,39,40,41,43,44,45,46,47,48,49,50,52,53,54,56,57,58,59,61,62,63,64,65,86,89,103,109,112,113,134,136,143,149,165,181,191) OLD
--- (6,7,9,11,12,14,16,39,40,41,43,44,45,46,47,48,49,50,52,53,54,58,59,61,63,64,65,86,105,112,113,134,143,149,165,181,182,191) NEW
+-- (6,7,9,11,12,14,16,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,58,59,61,63,64,65,86,105,106,112,113,134,143,149,157,161,165,181,182,191) NEW
 -- Select three values at a time to use in where clause so that the query dont break.
 
 UPDATE AAU.EmergencyCase ec
@@ -577,18 +584,17 @@ INNER JOIN AAU.VehicleShiftData vsd
 ON vsd.Rescuer1Id = ec.Rescuer1Id AND IFNULL(vsd.Rescuer2Id , 0)= ec.Rescuer2Id AND vsd.StartTime <= ec.CallDateTime AND vsd.EndTime >= ec.CalldateTime
 SET ec.AssignedvehicleId = vsd.AmbulanceId,
 ec.AmbulanceAssignmentTime = ec.CallDateTime
-WHERE vsd.Rescuer1Id IN (105,112,113,134,143,149,165,181,182,191);
+WHERE vsd.Rescuer1Id IN (161,106,157);
 
 
-
-DROP TABLE AAU.VehiceShiftData;
+DROP TABLE AAU.VehicleShiftData;
 
 UPDATE AAU.EmergencyCase
 SET Rescuer2Id = NULL 
 WHERE Rescuer2Id = 0 AND REscuer1Id IS NOT NULL;
 
 
-SELECT *
+SELECT DISTINCT Rescuer1Id
 FROM AAU.EmergencyCase
 WHERE Rescuer1Id IS NOT NULL
 AND SelfAdmission IS NULL

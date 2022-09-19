@@ -36,15 +36,17 @@ export class OrganisationsPageComponent implements OnInit {
         private snackbar: SnackbarService
     ) {
 
-        this.organisationForm = this.fb.group({
-            address: '',
-            name: ''
-        });
+        // this.organisationForm = this.fb.group({
+        //     address: [],
+        //     name: '',
+        //     driverViewDeskNumber:  ''
+        // });
 
     }
 
 
-    get address() { return this.organisationForm?.get('address') as FormArray; }
+    get addressArray() { return this.organisationForm?.get('address') as FormArray; }
+
 
     ngOnInit() {
 
@@ -59,10 +61,14 @@ export class OrganisationsPageComponent implements OnInit {
             this.organisationForm = this.fb.group({
                 organisationId : this.organisationId,
                 logoUrl: orgDetail.logoUrl,
-                address: orgDetail.address ? this.createItem(orgDetail.address) : this.fb.array([this.createItem()]),
+                address: [],
                 name: orgDetail.name,
                 driverViewDeskNumber: orgDetail.driverViewDeskNumber
             });
+
+            const addressVal = (orgDetail.address ? this.createAddressArray(orgDetail.address) : this.fb.array([this.createEmptyItem()]));
+
+            this.organisationForm.setControl("address", addressVal);
 
         });
 
@@ -116,7 +122,7 @@ export class OrganisationsPageComponent implements OnInit {
             marker.position = this.center;
         }
 
-        this.updateAddressLocation(latLng, index)
+        // this.updateAddressLocation(latLng, index)
 
         this.markers.push(marker);
 
@@ -125,7 +131,7 @@ export class OrganisationsPageComponent implements OnInit {
 
     updateAddressLocation(latLng: google.maps.LatLngLiteral, index: number) : void {
 
-        this.address?.at(index)?.get('latLng')?.setValue(latLng);
+        this.addressArray?.at(index)?.get('latLng')?.setValue(latLng);
 
         this.latlngbounds.extend(new google.maps.LatLng(latLng.lat, latLng.lng));
 
@@ -197,44 +203,46 @@ export class OrganisationsPageComponent implements OnInit {
     addItem($event:Event): void {
         $event.preventDefault();
 
-        this.address.push(this.createItem());
+        this.addressArray.push(this.createEmptyItem());
 
     }
 
     deleteItem($event:Event, index:number){
         $event.preventDefault();
-        this.address.removeAt(index);
+        this.addressArray.removeAt(index);
     }
 
-    createItem(address?:any) : FormGroup | FormArray{
-        if(address){
+    createEmptyItem() : FormGroup {
 
-            const addressGroup = this.fb.array([]);
+        return this.fb.group({
+            name:'',
+            latLng: '',
+            address:'',
+            number: ''
+        })
 
-            // tslint:disable-next-line: no-shadowed-variable
-            address.forEach((address:OrganisationAddress, index:number) => {
+    }
 
-                this.addMarker(address.latLng, index);
+    createAddressArray(address:any) : FormArray{
+        
 
-                addressGroup.push(this.fb.group({
-                    name: address.name,
-                    latLng: address.latLng,
-                    address: address.address,
-                    number: address.number
-                }));
-            });
+        const addressGroup = this.fb.array([]);
 
-            return addressGroup;
+        // tslint:disable-next-line: no-shadowed-variable
+        address.forEach((address:OrganisationAddress, index:number) => {
 
-        }
-        else{
-            return this.fb.group({
-                name:'',
-                latLng: '',
-                address:'',
-                number: ''
-            });
-        }
+            this.addMarker(address.latLng, index);
+
+            addressGroup.push(this.fb.group({
+                name: address.name,
+                latLng: address.latLng,
+                address: address.address,
+                number: address.number
+            }));
+        });
+
+        return addressGroup;
+
     }
 
 
@@ -266,7 +274,7 @@ export class OrganisationsPageComponent implements OnInit {
 
         const result = place as google.maps.places.PlaceResult;
 
-        this.address.at(index).get('address')?.setValue(result.formatted_address);
+        this.addressArray.at(index).get('address')?.setValue(result.formatted_address);
 
         const address = this.addresstext.get(index)?.nativeElement;
 

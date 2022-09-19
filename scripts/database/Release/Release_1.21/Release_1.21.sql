@@ -7497,6 +7497,9 @@ Purpose: When the release is complete we should update the patient status with t
 end date as we know with certainty that the patient has been released.
 
 */
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username;
 
 UPDATE AAU.Patient p
 INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
