@@ -153,7 +153,6 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
       }
       else {
 
-
         // Now we need to search through the lists to find a home for the incoming record. We may already have it because multiple people
         // could be working on the same list at the same time.
         const listParent = this.movedListFormArray.controls.find(movedList => movedList.get('listType')?.value === patient.recordType);
@@ -188,10 +187,10 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
 
       }
 
-      this.sortTreatmentList();
-      this.emitTreatmentObject();
-
     });
+
+    this.sortTreatmentList();
+    this.emitTreatmentObject();
   }
 
   private addAcceptedRecord(patient: ReportPatientRecord) {
@@ -209,6 +208,7 @@ public receiveAcceptRejectMessage(acceptReject:AcceptRejectMove){
     const newRecord = this.getEmptyPatient();
 
     newRecord.patchValue(patient);
+
     return newRecord;
   }
 
@@ -560,6 +560,19 @@ private extractTreatmentListMoveInObject(currentPatient: AbstractControl, accept
 private getAcceptedPatient(patientId: number) : AbstractControl | undefined{
 
   return this.acceptedFormArray.controls.find(currentPatient => currentPatient.get('PatientId')?.value === patientId);
+
+}
+
+updatePatientRecord(patient: AbstractControl) : void {
+
+  let acceptedPatient = this.getAcceptedPatient(patient.get('PatientId')?.value);
+
+  acceptedPatient?.get('Treatment priority')?.setValue(patient?.get('Treatment priority')?.value);
+
+  this.sortTreatmentList();
+  this.emitTreatmentObject();
+
+
 
 }
 

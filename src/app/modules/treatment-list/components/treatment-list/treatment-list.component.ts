@@ -177,7 +177,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.setAcceptedAndRefresh();
 
-      this.acceptedFiltered.next(this.accepted.value);
+      this.acceptedFiltered.next(this.accepted.value);   
+
       this.changeDetector.detectChanges();
 
     });
@@ -234,13 +235,14 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     const updatePatient = this.patientService.getUpdatePatientObject(patient);
     this.changeDetector.detectChanges();
 
+
     this.patientService.updatePatientDetails(updatePatient.value).then(result => {
 
           if(result.success === 1){
 
-            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
-
-            this.ts.sortTreatmentList();
+            // patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+            this.ts.updatePatientRecord(patient);
+            
 
           }
 
@@ -259,7 +261,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName && !area.mainArea);
 
-      this.populatemovedInColumns(areaList);
+      this.populateMovedInColumns(areaList);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
@@ -311,7 +313,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
-  populatemovedInColumns(areaList: TreatmentArea[]) : void {
+  populateMovedInColumns(areaList: TreatmentArea[]) : void {
 
     const movedInColumns:Column[] = [];
 
@@ -542,8 +544,6 @@ sortTable(columnName: string){
   this.acceptedFiltered.next(currentAccepted);
 
 }
-
-
 
 }
 
