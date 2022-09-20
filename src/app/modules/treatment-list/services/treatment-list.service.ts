@@ -247,7 +247,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
         this.prepareTreatmentListSubjects(response);
       }
       else if (unknownResponse[0]?.success === -1){
-        this.snackbar.errorSnackBar('An error has occured in the database. Please see admin', 'OK');
+        this.snackbar.errorSnackBar('An error has occurred in the database. Please see admin', 'OK');
         this.refreshing.next(false);
       }
       else{
@@ -318,7 +318,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
         if ((a['Treatment priority'] || 999) === (b['Treatment priority'] || 999)) {
 
-          sortResult = a['Tag number'] < b['Tag number'] ? -1 : 1;
+          sortResult = a['Tag number'] > b['Tag number'] ? -1 : 1;
         }
         else {
 
@@ -416,7 +416,8 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
       Temperament: '',
       'Treatment priority': 0,
       treatmentListId: 0,
-      treatedToday: false
+      treatedToday: false,
+      editing: false
     });
 
     return returnGroup;
@@ -510,9 +511,8 @@ private acceptMoveIn(movedPatient: AbstractControl) {
 }
 
 public sortTreatmentList(){
-
-  const acceptedList = this.treatmentListForm.get('accepted') as FormArray;
-  acceptedList.controls.sort(this.sortTreatmentAbstractControls);
+  
+  this.acceptedFormArray.controls.sort(this.sortTreatmentAbstractControls);
 
 }
 
@@ -533,13 +533,13 @@ private sortTreatmentAbstractControls(a: AbstractControl, b: AbstractControl){
 
   let sortResult = 0;
 
-      if ((a.get('Treatment priority')?.value || 999) === (b.get('Treatment priority')?.value || 999)) {
+      if ((a.get('Treatment priority')?.value ?? 999) === (b.get('Treatment priority')?.value ?? 999)) {
 
-        sortResult = a.get('Tag number')?.value < b.get('Tag number')?.value ? -1 : 1;
+        sortResult = a.get('Tag number')?.value > b.get('Tag number')?.value ? -1 : 1;
       }
       else {
 
-        sortResult = (a.get('Treatment priority')?.value || 999) < (b.get('Treatment priority')?.value || 999) ? 1 : -1;
+        sortResult = (a.get('Treatment priority')?.value ?? 999) < (b.get('Treatment priority')?.value ?? 999) ? 1 : -1;
       }
 
       return sortResult;

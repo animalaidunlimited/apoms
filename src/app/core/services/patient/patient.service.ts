@@ -278,7 +278,7 @@ export class PatientService extends APIService {
 
         return this.fb.group({
           patientId: control.get('PatientId')?.value,
-          treatmentPriority: control.get('Treatment priority')?.value || null,
+          treatmentPriority: control.get('Treatment priority')?.value ?? null,
           temperament: control.get('Temperament')?.value || null,
           age: control.get('Age')?.value || null,
           releaseStatus: control.get('Release status')?.value || null,

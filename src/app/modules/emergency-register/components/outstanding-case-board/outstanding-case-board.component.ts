@@ -134,7 +134,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
 
       // The below logic made the filter list disappear when click outside it.
       if(!this.filterDiv.nativeElement.contains(e.target)) {
-        this.hideList= true;
+        this.hideList = true;
         this.showAmbulancePaths = false;
         this.changeDetector.detectChanges();
       }

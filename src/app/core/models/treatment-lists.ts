@@ -75,6 +75,7 @@ export interface ReportPatientRecord {
     animalTypeId: number;
     showOther: boolean;
     treatedToday: boolean;
+    editing: boolean;
 }
 
 export interface TreatmentListPrintContent{
