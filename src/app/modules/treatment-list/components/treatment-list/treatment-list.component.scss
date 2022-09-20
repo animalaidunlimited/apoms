@@ -90,12 +90,22 @@
   width: 175px;
 }
 
+.treatment-priority-wrapper{
+  position: absolute;
+}
+
+.treatment-priority-non-edit{
+  height: 40px;
+  // display: inline;
+}
+
 .pointer{
   cursor: pointer;
 }
 
 .treatment-priority-select{
   width: 125px;
+  text-align: center;
 }
 
 :host ::ng-deep .mat-chip-list-wrapper{
