@@ -104,76 +104,7 @@
     align-items: baseline;
     padding-left: 5px;
     width: 100%;
-    .commentSection{
-        width:100%;
-        max-height: 12rem;
-        overflow-y: scroll;
-        scroll-behavior: smooth;
-        display:flex;
-        flex-direction: column-reverse;
-        &::-webkit-scrollbar {
-            background-color: transparent;
-            width: 0.8rem;
-        }
-        /* background of the scrollbar except button or resizer */
-        &::-webkit-scrollbar-track {
-            background-color: #f0f0f2;
-        }
 
-        /* scrollbar itself */
-        &::-webkit-scrollbar-thumb {
-            background-color: #babac0;
-            border-radius: 1rem;
-            border: 0.2rem solid #f0f0f2;
-            min-height: 2rem;
-        }
-
-        /* set button(top and bottom of the scrollbar) */
-        &::-webkit-scrollbar-button {
-            display:none;
-        }
-        .imageChatPanel{
-            background: #fff;
-            width: 88%;
-            margin: 0.5rem auto;
-            padding: 0.5rem;
-            border-radius: 0.3rem;
-            font-size: 0.9rem;
-            color: #707C97;
-            box-shadow: 0 1rem 0.6rem -0.9rem rgb(158 158 158 / 75%);
-            position: relative;
-            .imageChatUser{
-                display: flex;
-                align-items: baseline;
-                gap: 0.5rem;
-                .imageChatAvatar {
-                    min-width: 2rem;
-                    height: 2rem;
-                    border-radius: 50%;
-                    display: flex;
-                    place-content: center;
-                    align-items: center;
-                    color: white;
-                    font-size: 0.9rem;
-                    margin-bottom: 0.5rem;
-                }
-                .imageChatUsername {
-                    color: black;
-                }
-            }
-            span {
-                font-size: 0.9rem;
-                width: 100%;
-                text-align: right;
-            }
-            p{
-                margin: 0.2rem 0;
-            }
-            &:not(:last-child){
-                margin-bottom: 0.5rem;
-            }
-        }
-    }
     &:not(:last-child){
         margin-bottom: 0.8rem;
     }
@@ -243,34 +174,7 @@
         margin-left: -0.1rem;
     }
 }
-.imageChatSidePanel{
-    ::ng-deep .mat-form-field-wrapper{
-        padding-bottom: 0;
-    }
 
-    ::ng-deep .mat-form-field-underline{
-        display: none;
-    }
-
-    h3{
-        font-size: 1.1rem;
-        color: #707C97;
-        font-weight: 500;
-        margin: 0.5rem 0.2rem 0.5rem .2rem;
-    }
-}
-.commentInput{
-    background: transparent;
-    border-bottom: 0.1rem solid #707c9752;
-    padding: 0.5rem  0.5rem 0.1rem 0.5rem !important;
-    font-size: 0.9rem;
-    width:calc(90% - 1rem)
-}
-
-.sendButton {
-    align-self: center;
-    margin-right: 10px;
-}
 
 
 

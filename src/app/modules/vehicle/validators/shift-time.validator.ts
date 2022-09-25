@@ -10,7 +10,7 @@ export class ShiftTimeValidator {
     ) {}
 
     //validate(time: string, shifts: VehicleShift[]): ValidatorFn {
-    validate(dateType: string, iMatchDate:AbstractControl|null, iUUID:string|null , vehicleId: number): ValidatorFn {
+    validate(dateType: string, defaultStart:string|Date, defaultEnd:string|Date, iMatchDate:AbstractControl|null, iUUID:string|null , vehicleId: number): ValidatorFn {
 
         return (
             control: AbstractControl,
@@ -24,11 +24,20 @@ export class ShiftTimeValidator {
 
             let shifts = this.vehicleService.vehicleShifts.value.filter(shift => shift.vehicleId === vehicleId);
 
+            //Check if the shift is starting before the default start time
+            if(matchDate < new Date(defaultStart) && matchDate.getFullYear() !== 1970){
+                errors["shift-before-default-start"] = true;
+            }
+
+            //Check if the shift is ending after the default end time
+            if(matchDate > new Date(defaultEnd)){
+                errors["shift-after-default-end"] = true;
+            }
+
             // Check if the time falls inside any existing shifts
             if(this.timeIsInsideOtherShift(currentTime, shifts, iUUID)){
                 errors["inside-other-shift"] = true;
             }
-
 
             // If the time is the start time, then check that it's before the end time
             if(dateType === 'start' && currentTime > matchDate){
@@ -39,6 +48,11 @@ export class ShiftTimeValidator {
             // If the time is an end time, check that it's after the start time.
             if(dateType === 'end' && currentTime < matchDate){
                 errors["end-before-start"] = true;
+            }
+
+            // Check that the end isn't on the next day
+            if(dateType === 'end' && currentTime.getDay() !== matchDate.getDay()){
+                errors["end-next-day"] = true;
             }
 
 

@@ -8,6 +8,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
 import { HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule } from '@angular/platform-browser';
 import * as Hammer from 'hammerjs';
+import { CommentModule } from '../comments/comment.module';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -24,6 +25,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     MediaGalleryDialogComponent
   ],
   imports: [
+    CommentModule,
     CommonModule,
     MaterialModule,
     FlexLayoutModule,

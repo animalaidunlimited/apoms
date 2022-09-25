@@ -94,3 +94,20 @@ export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAs
     return result;
 
   }
+
+export function getNotificationTypeFromCommentType(commentType: string) : number {
+
+    switch (commentType) {
+        case 'patient' :
+          return 1;
+        
+        case 'image' :
+          return 2;
+
+        case 'video' :
+          return 3;
+
+        default : return -1
+        
+      }
+}

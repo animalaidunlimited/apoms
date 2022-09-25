@@ -12,7 +12,7 @@ import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-sho
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
-interface EmergencyCaseIndentifiers {
+interface EmergencyCaseIdentifiers {
     emergencyNumber : number | string;
     GUID : string;
 }
@@ -130,15 +130,15 @@ export class TabBarComponent implements OnInit, OnDestroy {
               );
     }
 
-    updateEmergencyNumber(emergencyCaseIndentifiers: EmergencyCaseIndentifiers) {
+    updateEmergencyNumber(emergencyCaseIdentifiers: EmergencyCaseIdentifiers) {
 
         this.tabs.forEach(tab=> {
 
-              if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID.value === emergencyCaseIndentifiers.GUID) {
-            // if(tab.GUID.value === emergencyCaseIndentifiers.GUID) {
+              if(tab.value !== 'Board' && tab.value !== 'Search' && tab.GUID.value === emergencyCaseIdentifiers.GUID) {
+            // if(tab.GUID.value === emergencyCaseIdentifiers.GUID) {
 
                 tab.value = (
-                    emergencyCaseIndentifiers.emergencyNumber || 'New Case*'
+                    emergencyCaseIdentifiers.emergencyNumber || 'New Case*'
                 ).toString();
                 this.cdr.detectChanges();
             }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CaseService } from '../../emergency-register/services/case.service';
@@ -17,17 +17,20 @@ export class HospitalManagerPageComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
     constructor(route: ActivatedRoute,
+        private router: Router,
         private caseService: CaseService,
         private tabBar: HospitalManagerTabBarService) {
 
         route.params.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
             if(route.snapshot.params.tagNumber){
 
-                const searchTerm = `p.TagNumber=${route.snapshot.params.tagNumber}`;
+                const searchTerm = `p.TagNumber="${route.snapshot.params.tagNumber}"`;
 
             this.caseService.searchCases(searchTerm).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
                 this.tabBar.addTab(result);
             });
+
+            // router.navigate(['']);
 
             }
 
