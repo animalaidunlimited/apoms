@@ -43,7 +43,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if(connectionState){
 
-        if(this.MediaService.imageExsistInLocalStorage(this.patientId)) {
+        if(this.MediaService.imageExistsInLocalStorage(this.patientId)) {
 
           const localImages:LocalMedia[] = this.MediaService.getPatientMediaImagesFromLocalStorage(this.patientId);
 
@@ -71,7 +71,7 @@ export class MediaGalleryComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if(!connectionStatus){
 
-        if(this.MediaService.imageExsistInLocalStorage(this.patientId)){
+        if(this.MediaService.imageExistsInLocalStorage(this.patientId)){
 
           setTimeout(() => {
 

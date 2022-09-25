@@ -19,6 +19,14 @@
                         <patient-status [hasPermission]="hasWritePermission" [patientId]="recordForm.get('patientDetails.patientId')?.value" #patient></patient-status>
                     </fieldset>
 
+                    <!-- <fieldset class="form-sub-group" autocomplete=false>
+                        <legend class="legend" i18n>Comments</legend>
+
+                        <app-comment [parentRecordId]="recordForm.get('patientDetails.patientId')?.value" parentRecordType="patient"></app-comment>
+                    </fieldset> -->
+
+
+
                 </div>
 
                 <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
@@ -33,6 +41,13 @@
                         [emergencyNumber]="recordForm.get('emergencyDetails.emergencyNumber')?.value"
                         [animalType]="recordForm.get('patientDetails.animalType')?.value">
                     </surgery-details>
+
+                    <fieldset class="form-sub-group" autocomplete=false>
+                        <legend class="legend" i18n>Comments</legend>
+
+                        <app-comment [parentRecordId]="recordForm.get('patientDetails.patientId')?.value" parentRecordType="patient"></app-comment>
+                    </fieldset>
+
 
                     <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
                         <button mat-raised-button color="primary" (click)="saveForm(); patient.onSave()">Save</button>
@@ -74,6 +89,13 @@
                     <app-release-details [emergencyCaseId]="this.incomingPatient.emergencyCaseId" [patientId]="incomingPatient.patientId"></app-release-details>
 
                     <app-release-assign [patientId]="incomingPatient.patientId"></app-release-assign>
+
+                                        <fieldset class="form-sub-group" autocomplete=false>
+                        <legend class="legend" i18n>Comments</legend>
+
+                        <app-comment [parentRecordId]="recordForm.get('patientDetails.patientId')?.value" parentRecordType="patient"></app-comment>
+                    </fieldset>
+
 
                 </fieldset>
 

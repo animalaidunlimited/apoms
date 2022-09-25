@@ -109,32 +109,8 @@
                 </mat-chip>
               </mat-chip-list>
         </div>
-        <div class="imagePreviewSidePanel imageChatSidePanel" fxLayout="column">
-            <h3>Comments</h3>
-            <div class="commentSection">
-                <ng-container *ngFor="let comment of (patientMediaComments$ | async); trackBy:trackComment">
-                    <div class="imageChatPanel">
-                        <div class="imageChatUser">
-                            <div class="imageChatAvatar" [style.background]="comment.userColour">{{comment.userInitials}}</div>
-                            <div class="imageChatUsername">{{comment.userName}}</div>
-                            <span>{{comment.timestamp | timeAgo}}</span>
-                        </div>
-                        <p>{{comment.comment}}</p>
-                    </div>
-
-                </ng-container>
-            </div>
-
-            <div fxLayout="row" fxLayoutAlign="center space-between" style="width: 100%; margin-top: 20px">
-                <mat-form-field style="width: 100%;">
-                    <input matInput autocomplete="off" class="commentInput" formControlName="currentComment" type="text" placeholder="Type a comment here" />
-                </mat-form-field>
-
-                <button mat-mini-fab class="sendButton" color="primary" (click)="submitComment()">
-                    <mat-icon>send</mat-icon>
-                </button>
-
-            </div>
+        <div class="imagePreviewSidePanel chatSidePanel" fxLayout="column">
+            <app-comment style="width:100%" [parentRecordId]="data.mediaData?.patientMediaItemId || -1" [parentRecordType]="data?.mediaData?.mediaType?.includes('image') ? 'image' : 'video'"></app-comment>
         </div>
 
         <div fxLayout="row" fxLayoutAlign="center center">

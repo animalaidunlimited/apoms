@@ -82,7 +82,9 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         const selectedProblems =  this.problemsArray?.value as Problem[];
         const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
 
-        return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()) && !(this.problemsExclusions$.value).includes(problem.Problem.trim()));
+        let p = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()) && !(this.problemsExclusions$.value).includes(problem.Problem.trim()));
+
+        return p;
       }
     ),
     map(problems => problems.sort((a,b) => (a.Problem > b.Problem) ? 1 : ((b.Problem > a.Problem) ? -1 : 0)))
@@ -160,7 +162,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     this.animalType?.valueChanges.pipe(
       startWith(''),
       takeUntil(this.ngUnsubscribe),
-      map(animalType => typeof animalType === 'string'? animalType : animalType?.AnimalType))
+      map(animalType => typeof animalType === 'string' ? animalType : animalType?.AnimalType))
       .subscribe(animalType => {
 
         this.filteredAnimalTypes$ = animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes;
@@ -313,7 +315,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       map(problem => typeof problem === 'string' ? problem : problem.Problem),
       switchMap((problem:string) => {
 
-        return problem ? this.problemFilter(problem.toLowerCase()): this.sortedProblems;
+        return problem ? this.problemFilter(problem.toLowerCase()) : this.sortedProblems;
       })
     );
 
@@ -379,6 +381,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
 
   checkMainProblem(){
+
     const problemRefElement = this.problemRef.nativeElement;
 
     if(this.problemsArray.length === 0){

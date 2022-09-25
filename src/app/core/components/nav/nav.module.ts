@@ -7,6 +7,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { NavMenuItemComponent } from './nav-menu-item/nav-menu-item.component';
 import { NavToolbarComponent } from './nav-toolbar/nav-toolbar.component';
 import { MaterialModule } from 'src/app/material-module';
+import { UserPreferencesModule } from '../user-home/user-preferences.module';
 
 @NgModule({
     declarations: [NavComponent, NavMenuItemComponent, NavToolbarComponent],
@@ -16,6 +17,7 @@ import { MaterialModule } from 'src/app/material-module';
         LogoModule,
         FlexLayoutModule,
         MaterialModule,
-    ],
+        UserPreferencesModule
+    ]
 })
 export class NavModule {}

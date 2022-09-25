@@ -93,7 +93,7 @@ export const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, onSameUrlNavigation:'reload' }),
+        RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, onSameUrlNavigation:'reload', anchorScrolling: "enabled" }),
     ],
     exports: [RouterModule],
     providers: [

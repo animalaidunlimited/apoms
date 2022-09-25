@@ -11,8 +11,7 @@ import { isImageFile, isVideoFile } from '../../helpers/utils';
 import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 import { OnlineStatusService } from '../online-status/online-status.service';
 import { StorageService } from '../storage/storage.service';
-import { Comment, MediaItemReturnObject, MediaItem, LocalMediaItem, MediaItemsDataObject, MediaResponse, MediaUploadResponse } from '../../models/media';
-import { PatientOutcomeResponse } from '../../models/patients';
+import { MediaItemReturnObject, MediaItem, LocalMediaItem, MediaItemsDataObject, MediaResponse, MediaUploadResponse } from '../../models/media';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
 import { OrganisationDetailsService } from '../organisation-details/organisation-details.service';
@@ -83,7 +82,6 @@ export class MediaService extends APIService {
       newMediaItem.datetime = offlineUploadDate;
 
     }
-
 
       this.checkAuthenticated().then(async () => {
 
@@ -201,7 +199,7 @@ export class MediaService extends APIService {
          * add more images to patient
          */
 
-        if(this.imageExsistInLocalStorage(Id))
+        if(this.imageExistsInLocalStorage(Id))
         {
 
           let localMediaItems:LocalMediaItem[] = this.storageService.getItemArray('MEDIA').map(mediaItem =>
@@ -590,7 +588,7 @@ export class MediaService extends APIService {
     return this.getParseMediaObject().filter((mediaItem:LocalMediaItem) => mediaItem.patientId === patientId)[0];
   }
 
-  imageExsistInLocalStorage(patientId:number){
+  imageExistsInLocalStorage(patientId:number){
 
     return this.getMediaItemsFromLocalStoargeByPatientId(patientId)  ? true : false;
 
@@ -775,27 +773,7 @@ addEmptyPatientMediaBehaviorSubject(returnBehaviorSubject:BehaviorSubject<MediaI
 
 }
 
-public async savePatientMediaComment(comment: any) : Promise<PatientOutcomeResponse> {
-    return await this.post(comment)
-    .catch(error => {
-        console.log(error);
-    });
 
-}
-
-public getPatientMediaComments(patientMediaItemId: number): Observable<Comment[]> {
-
-    const request = '/PatientMediaComments?patientMediaItemId=' + patientMediaItemId;
-
-    return this.getObservable(request).pipe(
-        map(response => {
-            return  response?.sort((comment1: Comment,comment2:Comment)=> {
-                return new Date(comment2.timestamp).valueOf() - new Date(comment1.timestamp).valueOf();
-            });
-
-        })
-    );
-}
 
 //Let's get the media items for the current patient and return an observable of unique dates.
 public getGalleryDatesForPatientId(patientId: number): Observable<string[]> {

@@ -76,15 +76,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
     images: Image[];
   }
 
-  export interface Comment {
-    userId: number;
-    comment: string;
-    timestamp: string;
-    userColour: string;
-    userInitials: string;
-    userName?:string | null;
-  }
-
   export interface Tag {
     tag: string;
   }

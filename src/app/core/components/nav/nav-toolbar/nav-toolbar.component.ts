@@ -1,12 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/auth.service';
-import { UserAccountDetails, UserPreferences } from 'src/app/core/models/user';
-import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { NavigationService, Page } from '../../../../../../navigation/navigation.service';
 
 @Component({
@@ -20,27 +14,14 @@ export class NavToolbarComponent implements OnInit {
     @Input() previousUrl!: string[];
 
     @Output() toggleSideNav = new EventEmitter();
-    @Output() logout = new EventEmitter();
+    @Output() logout = new EventEmitter();   
 
-    @ViewChild('preferencesDiv') preferencesDiv!: ElementRef;
-
-    mobile = false;
-
-    userDetails!: BehaviorSubject<UserAccountDetails>;
-
-    userDetailsForm = this.fb.group({
-        clearSearchOnTabReturn: false
-    });
-
-    showPreferences = false;
+    mobile = false;    
 
     constructor(
         private navigationService: NavigationService,
-        private router: Router,
-        private snackbar: SnackbarService,
-        private userService: UserOptionsService,
-        private renderer: Renderer2,
-        private fb: FormBuilder) {}
+        private router: Router
+        ) {}
 
     ngOnInit() {
 
@@ -54,25 +35,7 @@ export class NavToolbarComponent implements OnInit {
                 });
         }
 
-        this.userDetails = this.userService.getUserAccountDetails();
 
-        this.userDetails.subscribe(preferences => {
-            this.userDetailsForm.patchValue(preferences.preferences, {emitEvent: false});
-        });
-
-        this.userDetailsForm.valueChanges.subscribe(preferences => {
-
-            this.saveUserPreferences(preferences);
-        });
-
-        this.renderer.listen('window', 'click',(e:Event)=>{
-
-            // Close the preferences div if clicking outside of it
-            if(!this.preferencesDiv.nativeElement.contains(e.target) && this.showPreferences) {
-              this.showPreferences = false;
-            }
-
-        });
 
     }
 
@@ -96,16 +59,5 @@ export class NavToolbarComponent implements OnInit {
         this.navigationService.isSearchClicked.next(true);
     }
 
-    saveUserPreferences(preferences : UserPreferences) : void {
 
-        this.userService.updateUserPreferences(preferences).then(result => {
-
-            result.success === 1 ?
-                this.snackbar.successSnackBar('User preferences updated successfully', 'OK')
-                 :
-                this.snackbar.errorSnackBar('Error updating user preferences', 'OK');
-
-        })
-
-    }
 }

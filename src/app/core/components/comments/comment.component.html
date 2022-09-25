@@ -1,0 +1,38 @@
+
+<form [formGroup]="commentForm">
+<h3 *ngIf="parentRecordType === 'media'">Comments</h3>
+<div class="commentSection" id='comments' fragment="comments">
+    <ng-container *ngFor="let comment of (comments$ | async); trackBy:trackComment">
+        <div class="chatPanel" [id]="'comment-' + comment.commentId">
+            <div class="chatUser">
+                <div class="chatAvatar" [style.background]="comment.userColour">{{comment.userInitials}}</div>
+                <div class="chatUsername">{{comment.userName}}</div>
+                <span>{{comment.timestamp | timeAgo}}</span>
+            </div>
+            <p>{{comment.comment}}</p>
+        </div>
+
+    </ng-container>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center space-between" style="width: 100%; margin-top: 20px">
+    <mat-form-field style="width: 100%;">
+        <input matInput autocomplete="off" class="commentInput" formControlName="currentComment" type="text"
+        [mention]="mentionUsers"
+        [mentionConfig]="mentionConfig"
+        (itemSelected)="userMentioned($event)"
+        placeholder="Type a comment here" />
+        <button mat-icon-button matSuffix class="sendButton" color="primary" (click)="submitComment()">
+            <mat-icon>send</mat-icon>
+        </button>
+    </mat-form-field>
+
+    <!-- <mat-form-field>
+        <input tabindex="5" formControlName="callerAlternativeNumber" type="tel" placeholder="Alt. Number" matInput  [errorStateMatcher]="errorMatcher">
+    </mat-form-field> -->
+
+
+
+</div>
+
+</form>

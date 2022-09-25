@@ -1,0 +1,52 @@
+<div *ngIf="(userDetails | async) as user" #preferencesDiv class="preferences-wrapper">
+  <div class="user-icon"
+  [matBadge]="notificationCount | async" matBadgePosition="below after" matBadgeColor="accent"
+  [matBadgeHidden]="(notificationCount | async) === 0"
+  (click)="showPreferences=!showPreferences"
+  [matTooltip]="user.fullname">
+
+  {{user.initials}}
+
+  </div>
+
+  <div fxLayout="column" class="user-home-wrapper">
+
+    <div>
+
+      <form [formGroup]="userDetailsForm" class="user-preferences" *ngIf="showPreferences" fxLayout="column" fxLayoutAlign="center center">
+
+        <div>
+            <mat-icon class="account-circle">account_circle</mat-icon>
+        </div>
+
+        <div class="user-full-name">
+            {{user.fullname}}
+        </div>
+
+        <div class="clear-search-wrapper">
+
+            <mat-slide-toggle
+                formControlName="clearSearchOnTabReturn"
+                class="clear-search-toggle">
+                Clear search term on tab switch
+            </mat-slide-toggle>
+
+            <div class="clear-search">
+                Clear the search results when switching between record tabs in the Emergency Register and Hospital Manager
+            </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div>      
+      <app-user-notifications *ngIf="showPreferences" (navigationOccurred)="notificationClicked($event)"></app-user-notifications>
+    </div>
+
+
+
+  </div>
+
+</div>

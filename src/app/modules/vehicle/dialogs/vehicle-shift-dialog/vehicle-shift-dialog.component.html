@@ -10,6 +10,10 @@
             (blur)="updateShiftEndTime()"
             placeholder="Shift start time" [errorStateMatcher]="errorMatcher" matInput>
 
+                <mat-error *ngIf="shiftStartTime?.hasError('shift-before-default-start')">
+                Shift start time is before minimum shift start time
+                </mat-error>
+
                 <mat-error *ngIf="shiftStartTime?.hasError('inside-other-shift')">
                 Shift start time is inside another shift.
                 </mat-error>
@@ -33,6 +37,14 @@
 
             <mat-error *ngIf="shiftEndTime?.hasError('inside-other-shift')">
                 Shift end time is inside another shift.
+            </mat-error>
+
+            <mat-error *ngIf="shiftEndTime?.hasError('shift-after-default-end')">
+            Shift end time is after maximum shift end time
+            </mat-error>
+
+            <mat-error *ngIf="shiftEndTime?.hasError('end-next-day')">
+            Shift end not on same day as start
             </mat-error>
 
             <mat-error *ngIf="shiftEndTime?.hasError('end-before-start')">

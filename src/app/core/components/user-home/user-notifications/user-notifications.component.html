@@ -1,0 +1,44 @@
+<div class="user-notifications">
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <h3>Notifications</h3>
+    <div>
+      <button mat-icon-button matSuffix color="primary" (click)="refreshNotifications()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="notificationForm" class="notification-form">
+
+    <div formArrayName="notifications"
+    
+    fxLayout="column"
+    fxLayoutAlign="start start"
+    *ngFor="let note of notificationArray.controls; let i = index">
+
+      <div formGroupName="{{i}}">
+
+        <div fxLayout="row" class="notificationPanel" [ngClass]="note.get('acknowledged')?.value ? 'acknowledged' : 'unacknowledged'">
+
+          <div (click)="followNotification(note)">
+            <div>             
+                {{note.get('tagNumber')?.value}} - {{(note.get('timestamp')?.value | timeAgo)}}              
+            </div>
+            <div>
+                {{note.get('notificationText')?.value}}
+            </div>
+          </div>
+          
+
+        </div>
+
+      </div>
+
+    </div>
+  </form>
+
+  <div></div>
+
+  <button mat-raised-button color="primary" (click)="notificationListNextPage()">Load more</button>
+
+</div>
