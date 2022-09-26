@@ -28,6 +28,7 @@ WHERE n.Acknowledged IS NULL;
 SELECT
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("notifications",
+IFNULL(
 JSON_ARRAYAGG(
 JSON_MERGE_PRESERVE(
 JSON_OBJECT("patientId",n.PatientId),
@@ -39,7 +40,7 @@ JSON_OBJECT("notificationTypeId",n.NotificationTypeId),
 JSON_OBJECT("acknowledged",n.Acknowledged),
 JSON_OBJECT("notificationRecordId",n.NotificationRecordId),
 JSON_OBJECT("timestamp",n.TimeStamp))
-)),
+),'[]')),
 JSON_OBJECT("totalUnacknowledged",vTotalUnacknowledged) 
 ) Notifications
 FROM 

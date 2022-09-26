@@ -55,7 +55,6 @@ constructor(public http: HttpClient) {
 
     let currentNotifications = this.notification.value;
 
-
     //If we're adding a brand new notification, then it needs to go to the front, not the back.
     for (let notification of notificationResponse.notifications){
 
