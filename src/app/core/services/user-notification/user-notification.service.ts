@@ -50,11 +50,15 @@ constructor(public http: HttpClient) {
     const request = `/GetNotificationsForUser?start=${start}&offset=${offset}`;
 
     this.get(request)
-    .then(result => result  as NotificationResponse)
+    .then((result:any) => {
+
+      result.notifications = JSON.parse(result.notifications)
+      
+      return result as NotificationResponse
+    })
     .then(notificationResponse => {
 
     let currentNotifications = this.notification.value;
-
 
     //If we're adding a brand new notification, then it needs to go to the front, not the back.
     for (let notification of notificationResponse.notifications){
