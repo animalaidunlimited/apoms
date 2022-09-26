@@ -50,7 +50,12 @@ constructor(public http: HttpClient) {
     const request = `/GetNotificationsForUser?start=${start}&offset=${offset}`;
 
     this.get(request)
-    .then(result => result  as NotificationResponse)
+    .then((result:any) => {
+
+      result.notifications = JSON.parse(result.notifications)
+      
+      return result as NotificationResponse
+    })
     .then(notificationResponse => {
 
     let currentNotifications = this.notification.value;

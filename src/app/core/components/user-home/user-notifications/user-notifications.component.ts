@@ -1,13 +1,12 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
-import { AcknowledgedNotificationResponse, Notification } from 'src/app/core/models/notification';
+import { Notification } from 'src/app/core/models/notification';
 import { UserNotificationService } from './../../../services/user-notification/user-notification.service';
-import { SuccessOnlyResponse } from './../../../models/responses';
 import { Router } from '@angular/router';
 import { MediaPreviewComponent } from '../../media/media-preview/media-preview.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaService } from 'src/app/core/services/media/media.service';
-import { skip, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 
@@ -51,6 +50,8 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   processNotifications(notifications: Notification[]) : void {
 
     this.notificationArray.clear();
+
+    console.log(notifications);
 
     for(let notification of notifications) {
 
