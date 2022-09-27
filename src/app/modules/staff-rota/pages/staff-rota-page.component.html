@@ -9,7 +9,7 @@
         <tr>
             <th>
               
-              <div fxLayout="row" fxLayoutAlign="center center" *ngIf="getCurrentRota.get('editing')?.value; else addRota">
+              <!-- <div fxLayout="row" fxLayoutAlign="center center" *ngIf="getCurrentRota.get('editing')?.value; else addRota">
 
                   <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
 
@@ -32,9 +32,9 @@
                   </div>
   
 
-              </div>
+              </div> -->
 
-                <ng-template #addRota>
+                <!-- <ng-template #addRota> -->
 
                   <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
 
@@ -45,76 +45,160 @@
                         <mat-form-field class="hidden-input" >
                           <input matInput autocomplete="off" formControlName="rotaId" type="number" pattern="\d*"/>  
                         </mat-form-field>
-  
-                        <mat-form-field>
-                          <mat-label>Rota</mat-label>
-                              <mat-select (selectionChange)="rotaSelected($event)" formControlName="rotaId">
-                              <mat-option>N/A</mat-option>
-                                  <mat-option *ngFor="let rota of (rotas$ | async)" [value]="rota.rotaId">
-                                  {{rota.rotaName}}
-                              </mat-option>
-                          </mat-select>
-                        </mat-form-field>
-  
-                        <!-- (change)="checkUnassignedStaff(period, $event.checked)" -->
-                        <mat-checkbox
-                        class="unassigned-checkbox"
-                        matTooltip="check unassigned staff"
-                        formControlName="defaultRota">
-                        </mat-checkbox>
+
+                        <div *ngIf="getCurrentRota.get('editingRota')?.value; else addRotaSection"
+                        fxLayout="row" fxLayoutAlign="center center">
+
+                          <mat-form-field>
+                            <mat-label>Rota</mat-label>
+                                <mat-select (selectionChange)="rotaSelected($event)" formControlName="rotaId">
+                                <mat-option>N/A</mat-option>
+                                    <mat-option *ngFor="let rota of (rotas$ | async)" [value]="rota.rotaId">
+                                    {{rota.rotaName}}
+                                </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <div fxLayout="row" fxLayoutAlign="center center">
+      
+                            <button mat-icon-button color="primary" (click)="addRota()">
+                              <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
+                            </button>
+              
+                            <button mat-icon-button color="primary" (click)="editRota(false)">                  
+                              <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
+                            </button>
+              
+                            <button mat-icon-button color="primary" (click)="editRota(true)">
+                              <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
+                            </button>
+        
+                          </div>
+
+                        </div>
+
+                          <ng-template #addRotaSection>
+
+                            <mat-form-field>
+                              <input matInput autocomplete="off" formControlName="rotaName" type="string"
+                              placeholder="Enter rota name"  [errorStateMatcher]="errorMatcher"/>  
+                            </mat-form-field>
+
+                            <mat-checkbox
+                            class="default-checkbox-wrapper"
+                            matTooltip="set rota as default"
+                            formControlName="defaultRota">
+                            </mat-checkbox>
+
+                            <div fxLayout="row" fxLayoutAlign="center center">
+          
+                              <button mat-icon-button color="primary" (click)="saveRota()" [disabled]="getCurrentRota.invalid">                  
+                                <mat-icon matTooltip="save" class="close-icon">save</mat-icon>
+                              </button>
+                
+                              <button mat-icon-button color="primary" (click)="cancelRotaEdit()">                  
+                                <mat-icon matTooltip="cancel" class="close-icon">cancel</mat-icon>
+                              </button>
+          
+                            </div>
+
+                      </ng-template>
   
                       </div>
   
-                      <div fxLayout="row" fxLayoutAlign="center center">
+                      <div class="rota-version-wrapper">
                       
   
                         <mat-form-field class="hidden-input" >
                           <input matInput autocomplete="off" formControlName="rotaVersionId" type="number" pattern="\d*"/>  
                         </mat-form-field>
         
-                        <mat-form-field>
-                          <mat-label>Rota version</mat-label>
-                              <mat-select (selectionChange)="rotaVersionSelected($event)" formControlName="rotaVersionId">
-                              <mat-option>N/A</mat-option>
-                                  <mat-option *ngFor="let rotaVersion of (rotaVersions$ | async)" [value]="rotaVersion.rotaVersionId">
-                                  {{rotaVersion.rotaVersionName}}
-                              </mat-option>
-                          </mat-select>
-                        </mat-form-field>
+
+                        <div *ngIf="getCurrentRota.get('editingRotaVersion')?.value; else editRotaVersionSection"                        
+                        fxLayout="row" fxLayoutAlign="center center">
+
+                          <mat-form-field>
+                            <mat-label>Rota version</mat-label>
+                                <mat-select (selectionChange)="rotaVersionSelected($event)" formControlName="rotaVersionId">
+                                <mat-option>N/A</mat-option>
+                                    <mat-option *ngFor="let rotaVersion of (rotaVersions$ | async)" [value]="rotaVersion.rotaVersionId">
+                                    {{rotaVersion.rotaVersionName}}
+                                </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <div fxLayout="row" fxLayoutAlign="center center">
+      
+                            <button mat-icon-button color="primary" (click)="addRotaVersion()">
+                              <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
+                            </button>
+              
+                            <button mat-icon-button color="primary" (click)="editRotaVersion()">                  
+                              <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
+                            </button>
+              
+                            <button mat-icon-button color="primary" (click)="saveRotaVersion(true)">
+                              <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
+                            </button>
+        
+                          </div>
+
+                        </div>
+
+
+
+                        <ng-template #editRotaVersionSection>
+
+                          <div fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field>
+                              <input matInput autocomplete="off" formControlName="rotaVersionName" type="string" placeholder="Enter version name"  [errorStateMatcher]="errorMatcher"/>  
+                            </mat-form-field>
   
-                        <!-- (change)="checkUnassignedStaff(period, $event.checked)" -->
-                        <mat-checkbox
-                        class="unassigned-checkbox"
-                        matTooltip="check unassigned staff"
-                        formControlName="defaultRotaVersion">
-                        </mat-checkbox>
+                            <div fxLayout="row" fxLayoutAlign="center center"
+                            >
+
+                              <div class="default-checkbox-wrapper">
+                                <mat-checkbox
+                                matTooltip="set rota as default"
+                                formControlName="defaultRota">
+                                </mat-checkbox>
+
+                              </div>
+        
+                              <button mat-icon-button color="primary" (click)="saveRotaVersion(false)"
+                              *ngIf="getCurrentRota.get('editingRota')?.value">
+                                <mat-icon matTooltip="save" class="close-icon">save</mat-icon>
+                              </button>
+                
+                              <button mat-icon-button color="primary" (click)="cancelRotaVersionEdit()"
+                              *ngIf="getCurrentRota.get('editingRota')?.value">                  
+                                <mat-icon matTooltip="edit" class="close-icon">cancel</mat-icon>
+                              </button>
+          
+                            </div>
+
+
+                          </div>
+
+
+
+                        </ng-template>
+                        
+
+
   
   
                       </div>
       
-                    </div> 
-                    
-                    <div fxLayout="column" fxLayoutAlign="center center">
-      
-                      <button mat-mini-fab color="primary" (click)="resetCurrentRota()">                  
-                        <mat-icon matTooltip="save" class="close-icon">add</mat-icon>
-                      </button>
-        
-                      <button mat-mini-fab color="primary" class="rota-edit-icons" (click)="editRota()">                  
-                        <mat-icon matTooltip="save" class="close-icon">edit</mat-icon>
-                      </button>
-        
-                      <button mat-mini-fab color="primary" class="rota-edit-icons">
-                        <mat-icon matTooltip="save" class="close-icon">delete</mat-icon>
-                      </button>
-  
-                    </div>
+                    </div>                    
+
 
                   </div>
 
 
 
-                </ng-template>
+                <!-- </ng-template> -->
 
             </th>
             <th formArrayName="rotationPeriodArray" *ngFor="let period of getRotationPeriodArray.controls; let i = index">
@@ -144,11 +228,11 @@
                       </mat-checkbox>
 
                       <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, false)">
-                        <mat-icon matTooltip="save" class="close-icon" >content_copy</mat-icon>
+                        <mat-icon matTooltip="copy" class="close-icon" >content_copy</mat-icon>
                       </button>
     
                       <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
-                        <mat-icon matTooltip="cancel" class="close-icon" >difference</mat-icon>
+                        <mat-icon matTooltip="copy + rotate" class="close-icon" >difference</mat-icon>
                       </button>
 
                       <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">
@@ -215,7 +299,7 @@
                 <mat-label>Group name</mat-label>
                     <mat-select (selectionChange)="groupSelected($event, areaShift)">
                     <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let role of jobRoles$ | async" [value]="role">
+                        <mat-option *ngFor="let role of jobRoles$ | async" [value]="role.roleId">
                         {{role.role}}
                     </mat-option>
                 </mat-select>

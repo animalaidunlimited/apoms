@@ -12,10 +12,11 @@ export interface Rota{
   }
   
 export interface RotaVersion{
-    rotaId: number;
+    rotaId: number;    
     rotaVersionId: number;
     rotaVersionName: string;
     defaultRotaVersion: boolean;
+    rotaVersionDeleted: boolean;
   }
 
 export interface CurrentRota {
