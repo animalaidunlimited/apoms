@@ -46,7 +46,7 @@
                           <input matInput autocomplete="off" formControlName="rotaId" type="number" pattern="\d*"/>  
                         </mat-form-field>
 
-                        <div *ngIf="getCurrentRota.get('editingRota')?.value; else addRotaSection"
+                        <div *ngIf="!getCurrentRota.get('editingRota')?.value; else addRotaSection"
                         fxLayout="row" fxLayoutAlign="center center">
 
                           <mat-form-field>
@@ -61,15 +61,21 @@
 
                           <div fxLayout="row" fxLayoutAlign="center center">
       
-                            <button mat-icon-button color="primary" (click)="addRota()">
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                            (click)="addRota()">
                               <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
                             </button>
               
-                            <button mat-icon-button color="primary" (click)="editRota(false)">                  
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                            (click)="editRota()">                  
                               <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
                             </button>
               
-                            <button mat-icon-button color="primary" (click)="editRota(true)">
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                            (click)="deleteRota()">
                               <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
                             </button>
         
@@ -114,7 +120,7 @@
                         </mat-form-field>
         
 
-                        <div *ngIf="getCurrentRota.get('editingRotaVersion')?.value; else editRotaVersionSection"                        
+                        <div *ngIf="!getCurrentRota.get('editingRotaVersion')?.value; else editRotaVersionSection"                        
                         fxLayout="row" fxLayoutAlign="center center">
 
                           <mat-form-field>
@@ -129,15 +135,21 @@
 
                           <div fxLayout="row" fxLayoutAlign="center center">
       
-                            <button mat-icon-button color="primary" (click)="addRotaVersion()">
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRota')?.value"
+                            (click)="addRotaVersion()">
                               <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
                             </button>
               
-                            <button mat-icon-button color="primary" (click)="editRotaVersion()">                  
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRota')?.value"
+                            (click)="editRotaVersion()">                  
                               <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
                             </button>
               
-                            <button mat-icon-button color="primary" (click)="saveRotaVersion(true)">
+                            <button mat-icon-button color="primary"
+                            [disabled]="getCurrentRota.get('editingRota')?.value"
+                            (click)="deleteRotaVersion()">
                               <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
                             </button>
         
@@ -161,18 +173,18 @@
                               <div class="default-checkbox-wrapper">
                                 <mat-checkbox
                                 matTooltip="set rota as default"
-                                formControlName="defaultRota">
+                                formControlName="defaultRotaVersion">
                                 </mat-checkbox>
 
                               </div>
         
-                              <button mat-icon-button color="primary" (click)="saveRotaVersion(false)"
-                              *ngIf="getCurrentRota.get('editingRota')?.value">
+                              <button mat-icon-button color="primary" (click)="saveRotaVersion()"
+                              *ngIf="!getCurrentRota.get('editingRota')?.value">
                                 <mat-icon matTooltip="save" class="close-icon">save</mat-icon>
                               </button>
                 
                               <button mat-icon-button color="primary" (click)="cancelRotaVersionEdit()"
-                              *ngIf="getCurrentRota.get('editingRota')?.value">                  
+                              *ngIf="!getCurrentRota.get('editingRota')?.value">                  
                                 <mat-icon matTooltip="edit" class="close-icon">cancel</mat-icon>
                               </button>
           

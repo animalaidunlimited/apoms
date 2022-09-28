@@ -12,7 +12,7 @@ import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confi
 import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
-import { Role, Rota, RotaVersion } from 'src/app/core/models/rota';
+import { Role, Rota, RotaVersion, CurrentRota } from 'src/app/core/models/rota';
 import { SnackbarService } from './../../../core/services/snackbar/snackbar.service';
 
 /*
@@ -55,7 +55,7 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   private ngUnsubscribeFromMatrixChanges = new Subject();
 
-  editingRotaVersionId = 0;
+  editingRotaVersion = {rotaVersionId: 0, rotaVersionName: ""};
   editingRota = {};
 
   errorMatcher = new CrossFieldErrorMatcher();
@@ -80,8 +80,8 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
       rotaVersionName: ["", Validators.required],
       rotaVersionDeleted: false,
       defaultRotaVersion: [false],
-      editingRota: true,
-      editingRotaVersion: true
+      editingRota: false,
+      editingRotaVersion: false
     }),
     rotationPeriodArray: this.fb.array([]),
     areaShiftArray: this.fb.array([]),
@@ -161,7 +161,7 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
       this.getCurrentRota.patchValue(currentRota);
     }
     else {
-      this.addRota();      
+      this.addRota();
     }
 
 
@@ -231,22 +231,34 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
 
   addRotaVersion() : void {
 
-    this.editingRotaVersionId = this.getCurrentRota.get('rotaVersionId')?.value;
+    this.storeCurrentRotaVersion();
 
-    this.getCurrentRota.get('editingRotaVersion')?.setValue(false);
+    this.getCurrentRota.get('editingRotaVersion')?.setValue(true);
     this.getCurrentRota.get('rotaVersionId')?.reset();
     this.getCurrentRota.get('rotaVersionName')?.reset();
+    this.getCurrentRota.get('defaultRotaVersion')?.reset();
 
   }
 
-  saveRotaVersion(deleteVersion: boolean) : void {    
+  saveRotaVersion() : void {
 
-    this.getCurrentRota.get('editingRotaVersion')?.setValue(true);
-    this.getCurrentRota.get('rotaVersionDeleted')?.setValue(deleteVersion);
+    this.rotaService.saveRotaVersion(this.getCurrentRotaVersionDetails()).then(response => {
 
-    let response = this.rotaService.saveRotaVersion(this.getCurrentRotaVersionDetails());
+      if(response.rotaVersionSuccess === 1){
 
-    this.getCurrentRota.get('rotaVersionId')?.setValue(response.rotaVersionId);
+        this.getCurrentRota.get('rotaId')?.enable();
+        this.getCurrentRota.get('editingRotaVersion')?.setValue(false);        
+        this.getCurrentRota.get('rotaVersionId')?.setValue(response.rotaVersionId);
+
+      }
+      else {
+
+        this.snackbarService.errorSnackBar("ERR: SRP-255: Error updating rota version, please see administrator", "OK");
+
+      }      
+
+    });
+
 
   }
 
@@ -262,17 +274,26 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
 
   editRotaVersion() : void {
 
-    this.editingRotaVersionId = this.getCurrentRota.get('rotaVersionId')?.value;
-    this.getCurrentRota.get('editingRotaVersion')?.setValue(false);    
+    this.storeCurrentRotaVersion();
+    this.getCurrentRota.get('editingRotaVersion')?.setValue(true);
+    this.getCurrentRota.get('rotaId')?.disable();
 
+  }
+
+  private storeCurrentRotaVersion() {
+    this.editingRotaVersion = {
+      rotaVersionId: this.getCurrentRota.get('rotaVersionId')?.value,
+      rotaVersionName: this.getCurrentRota.get('rotaVersionName')?.value,
+    };
   }
 
   cancelRotaVersionEdit() : void {
 
-
-    this.getCurrentRota.get('editingRotaVersion')?.setValue(true);
-    this.getCurrentRota.get('rotaVersionId')?.setValue(this.editingRotaVersionId);
-    this.editingRotaVersionId = 0;
+    this.getCurrentRota.get('editingRotaVersion')?.setValue(false);
+    this.getCurrentRota.get('rotaId')?.enable();
+    this.getCurrentRota.get('rotaVersionId')?.setValue(this.editingRotaVersion.rotaVersionId);
+    this.getCurrentRota.get('rotaVersionName')?.setValue(this.editingRotaVersion.rotaVersionName);
+    this.editingRotaVersion = {rotaVersionId: 0, rotaVersionName: ""};
     
   }
 
@@ -465,8 +486,7 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
  {
 
   this.confirm('Are you sure you want to remove this shift?').subscribe(response => {
-    if(response === true){
-      
+    if(response === true){      
 
       const index = this.getAreaShiftArray.controls.findIndex(element => element?.get('areaShiftId')?.value === areaShift.get('areaShiftId')?.value );
 
@@ -562,15 +582,26 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
 
  }
 
- rotaSelected($event: any){
+ rotaSelected($event: MatSelectChange){
 
-  console.log($event);
+  const defaultRotaVersion = this.rotaVersions$.value.find(version => version.rotaId === $event.value && version.defaultRotaVersion)
+
+  this.getCurrentRota.get('rotaVersionId')?.setValue(defaultRotaVersion?.rotaVersionId);
+  this.getCurrentRota.get('rotaVersionName')?.setValue(defaultRotaVersion?.rotaVersionName);
+  this.getCurrentRota.get('defaultRotaVersion')?.setValue(defaultRotaVersion?.defaultRotaVersion);
+
+  const rota = this.rotas$.value.find(element => element.rotaId === $event.value);
+
+  this.getCurrentRota.get('defaultRota')?.setValue(rota?.defaultRota);
 
  }
 
  rotaVersionSelected($event: any){
 
-  console.log($event);
+  const version = this.rotaVersions$.value.find(element => element.rotaVersionId === $event.value);
+
+  this.getCurrentRota.get('rotaVersionName')?.setValue(version?.rotaVersionName);
+  this.getCurrentRota.get('defaultRotaVersion')?.setValue(version?.defaultRotaVersion);
 
  }
 
@@ -582,13 +613,40 @@ export class StaffRotaPageComponent implements OnInit, OnDestroy {
 
  }
 
- editRota(deleteRota:boolean) : void {
+ deleteRota() : void {
+
+  this.confirm('Are you sure you want to remove this rota?').subscribe(response => {
+    if(response === true){ 
+      this.getCurrentRota?.get('rotaDeleted')?.setValue(true);        
+      this.saveRota();
+    }
+  });
+ }
+
+ deleteRotaVersion() : void {
+
+  this.confirm('Are you sure you want to remove this rota version?').subscribe(response => {
+    if(response === true){   
+      this.getCurrentRota.get('rotaVersionDeleted')?.setValue(true);      
+      this.saveRotaVersion();
+    }
+  });
+ }
+
+
+ editRota() : void {
 
   this.editingRota = this.getCurrentRota.value;
 
-  this.getCurrentRota?.get('editingRota')?.setValue(false);
+  this.getCurrentRota.get('editingRota')?.setValue(true);
+  this.getCurrentRota.get('rotaVersionId')?.disable();  
 
-  this.getCurrentRota?.get('rotaDeleted')?.setValue(deleteRota);
+  const foundRota = this.rotas$.value.find(element => element.rotaId === this.getCurrentRota.get('rotaId')?.value);
+
+  this.getCurrentRota.get('rotaName')?.setValue(foundRota?.rotaName);
+  // this.getCurrentRota.get('defaultRota')?.setValue(foundRota?.defaultRota);
+
+  
 
   this.changeDetector.detectChanges();
 
@@ -599,36 +657,45 @@ addRota() : void {
   this.editingRota = this.getCurrentRota.value;
 
   this.resetCurrentRota();
+
+  this.getCurrentRota?.get('editingRota')?.setValue(true);
+  this.getCurrentRota?.get('editingRotaVersion')?.setValue(true);
     
 }
 
 cancelRotaEdit() : void {
 
   this.getCurrentRota.patchValue(this.editingRota);
+  this.getCurrentRota.get('rotaVersionId')?.enable();
 
 }
 
  saveRota() : void {
 
-  const newRotaNames: {rotaName: string, rotaVersionName: string} = this.getCurrentRota?.value;
+  const newRotaNames: CurrentRota = this.getCurrentRota?.value;
+
+  this.getCurrentRota.get('rotaVersionId')?.enable();
+  
+  //If we're setting to default, then unset the other defaults
+  if(this.getCurrentRota.get('defaultRota')?.value){
+    this.rotaService.setRotaAsDefault(this.getCurrentRota.get('rotaId')?.value);
+  }
 
     this.rotaService.upsertRota(this.getCurrentRota.value).then(result => {
 
-      console.log(result);
+      if(result.rotaSuccess === 1 && result.rotaVersionSuccess === 1) {
 
-      if(result.rotaSuccess === 1 && result.rotaSuccess) {
-
-        this.getCurrentRota?.get('editingRota')?.setValue(true);
-        this.getCurrentRota?.get('editingRotaVersion')?.setValue(true);
-
+        this.getCurrentRota?.get('editingRota')?.setValue(false);        
+        this.getCurrentRota?.get('editingRotaVersion')?.setValue(false);
         this.getCurrentRota.get('rotaId')?.setValue(result.rotaId);
         this.getCurrentRota.get('rotaVersionId')?.setValue(result.rotaVersionId);        
     
         this.snackbarService.successSnackBar("Rota added successfully", "OK");
       }
       else {
-        this.getCurrentRota?.get('editingRota')?.setValue(false);
-        this.getCurrentRota?.get('editingRotaVersion')?.setValue(false);
+        this.getCurrentRota.get('rotaVersionId')?.disable();
+        this.getCurrentRota?.get('editingRota')?.setValue(true);
+        this.getCurrentRota?.get('editingRotaVersion')?.setValue(true);
         this.snackbarService.errorSnackBar("ERR: SRP-633: Error adding rota, please see administrator", "OK");
       }
     

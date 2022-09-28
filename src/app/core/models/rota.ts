@@ -8,6 +8,7 @@ export interface Rota{
     rotaId: number;
     rotaName: string;
     defaultRota: boolean;
+    rotaDeleted: boolean;
     rotaVersions: RotaVersion[]
   }
   
@@ -26,5 +27,7 @@ export interface CurrentRota {
     rotaVersionId: number | undefined;
     rotaVersionName: string | undefined;
     defaultRotaVersion: boolean | undefined;
+    rotaDeleted: boolean | undefined;
+    rotaVersionDeleted: boolean | undefined;
     editing: boolean;
 }

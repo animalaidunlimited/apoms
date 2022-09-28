@@ -22,6 +22,7 @@ DECLARE vSuccess INT;
 DECLARE vRotaVersionId INT;
 DECLARE vOrganisationId INT;
 DECLARE vTimeNow DATETIME;
+DECLARE vRotaVersionExists TINYINT;
 
 SET vRotaVersionId = prm_RotaVersionId;
 
@@ -30,34 +31,57 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
+SELECT COUNT(1) INTO vRotaVersionExists FROM AAU.RotaVersion WHERE RotaVersionId = prm_RotaVersionId;
+
 IF(prm_DefaultRotaVersion = 1) THEN
 
-UPDATE AAU.Rota SET DefaultRotaVersion = 0 WHERE DefaultRotaVersion = 1 AND RotaId = prm_RotaId;
+UPDATE AAU.RotaVersion SET DefaultRotaVersion = 0 WHERE DefaultRotaVersion = 1 AND RotaId = prm_RotaId;
 
 END IF;
 
-INSERT INTO AAU.RotaVersion(
-	OrganisationId,
-    RotaId,
-	RotaVersionName,
-	DefaultRotaVersion
-)
-VALUES(
-	vOrganisationId,
-    prm_RotaId,
-	prm_RotaVersionName,
-	prm_DefaultRotaVersion
-) ON DUPLICATE KEY UPDATE
-RotaVersionName = prm_RotaVersionName,
-DefaultRotaVersion = prm_DefaultRotaVersion,
-IsDeleted = prm_Deleted,
-DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL);
+IF vRotaVersionExists = 0 THEN
 
-	SELECT 1 INTO vSuccess;
+	INSERT INTO AAU.RotaVersion (
+		OrganisationId,
+		RotaId,
+		RotaVersionName,
+		DefaultRotaVersion
+	)
+	VALUES(
+		vOrganisationId,
+		prm_RotaId,
+		prm_RotaVersionName,
+		prm_DefaultRotaVersion
+	);
+
     SELECT LAST_INSERT_ID() INTO vRotaVersionId;
+    
+    SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaVersionId,'Rota version save','Upsert', NOW());
+	VALUES (prm_Username,vRotaVersionId,'Rota version save','Insert', NOW());
+
+ELSEIF vRotaVersionExists = 1 THEN
+
+	UPDATE AAU.RotaVersion SET
+	RotaVersionName = prm_RotaVersionName,
+	DefaultRotaVersion = prm_DefaultRotaVersion,
+	IsDeleted = prm_Deleted,
+	DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL)
+    WHERE RotaVersionId = prm_RotaVersionId;
+    
+	SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,vRotaVersionId,'Rota version save','Update', NOW());
+
+ELSE
+
+	SELECT 2 INTO vSuccess;
+
+END IF ;
+
+
     
 	SELECT vRotaVersionId AS rotaVersionId, vSuccess AS success;
     

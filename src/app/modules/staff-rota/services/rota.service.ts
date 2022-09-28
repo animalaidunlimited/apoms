@@ -24,9 +24,7 @@ export class RotaService extends APIService {
     super(http);
   }
 
-public checkDateNotInRange(date: Date | string) : Observable<{success: number}> { 
-
-  console.log('here');
+public checkDateNotInRange(date: Date | string) : Observable<{success: number}> {
 
   return of({success: 0});
 
@@ -55,9 +53,11 @@ public async initialiseRotas() : Promise<CurrentRota | undefined> {
       rotaId: currentRota?.rotaId,
       rotaName: currentRota?.rotaName,
       defaultRota: currentRota?.defaultRota,
+      rotaDeleted: currentRota?.rotaDeleted,
       rotaVersionId: currentRotaVersion?.rotaVersionId,
       rotaVersionName: currentRotaVersion?.rotaVersionName,
       defaultRotaVersion: currentRotaVersion?.defaultRotaVersion,
+      rotaVersionDeleted: currentRotaVersion?.rotaVersionDeleted,
       editing: !currentRota?.rotaId
     };
 
@@ -84,19 +84,41 @@ public setRotaVersionRotaId(rotaId: number) : void {
 
 }
 
-public upsertRota(rota: CurrentRota) : Promise<UpsertRotaResponse> {
+public setRotaAsDefault(defaultRotaId: number) : void {
+
+  let currentRotas = this.rotas.value;
+
+  currentRotas.forEach(rota => rota.defaultRota = rota.rotaId === defaultRotaId);
+
+  this.rotas.next(currentRotas);
+
+}
+
+public setRotaVersionAsDefault(defaultRotaVersionId: number) : void {
+
+  let currentRotaVersions = this.rotaVersions.value;
+
+  currentRotaVersions.forEach(rotaVersion => rotaVersion.defaultRotaVersion = rotaVersion.rotaVersionId === defaultRotaVersionId);
+
+  this.rotaVersions.next(currentRotaVersions);
+
+}
+
+public async upsertRota(rota: CurrentRota) : Promise<UpsertRotaResponse> {
 
   if(!rota.rotaId){
     rota.defaultRotaVersion = true;
   }
   
-  return rota.rotaId ? this.put(rota) : this.post(rota).then((result: UpsertRotaResponse) => {
+  let upsertResponse = rota.rotaId ? this.put(rota) : this.post(rota);
+  
+  return upsertResponse.then((result: UpsertRotaResponse) => {
+
+    let currentRotas = this.rotas.value;
+
+    let foundIndex = currentRotas.findIndex(element => element.rotaId === rota.rotaId);
 
     if(result.rotaSuccess === 1){
-
-      let currentRotas = this.rotas.value;
-
-      let foundIndex = currentRotas.findIndex(element => element.rotaId === rota.rotaId);
 
       rota.rotaId = result.rotaId;
       rota.rotaVersionId = result.rotaVersionId;
@@ -106,7 +128,20 @@ public upsertRota(rota: CurrentRota) : Promise<UpsertRotaResponse> {
         currentRota.push(this.getRotaFromCurrentRota(rota));
       }
       else {
-        currentRotas.splice(foundIndex, 1, this.getRotaFromCurrentRota(rota));
+
+        let updateRota = currentRotas[foundIndex];
+        
+        updateRota.rotaName = rota.rotaName || "";
+        updateRota.defaultRota = rota.defaultRota || false;
+
+        if(rota.rotaDeleted){
+          currentRotas.splice(foundIndex, 1);
+        }
+        else
+        {
+          currentRotas.splice(foundIndex, 1, updateRota);
+        }
+        
       }
 
       this.rotas.next(currentRotas);
@@ -123,6 +158,7 @@ getRotaFromCurrentRota(rota: CurrentRota) : Rota {
     rotaId: rota.rotaId || -1,
     rotaName: rota.rotaName || "",
     defaultRota: true,
+    rotaDeleted: false,
     rotaVersions: [{
         rotaId: rota.rotaId || -1,
         rotaVersionId: rota.rotaVersionId || -1,
@@ -136,54 +172,68 @@ getRotaFromCurrentRota(rota: CurrentRota) : Rota {
 
 }
 
-public saveRotaVersion(rotaVersion: RotaVersion) : UpsertRotaResponse {
+public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaResponse> {
 
-  let currentRotaVersions = this.rotaVersions?.value || [];
 
   let returnRotaVersion = {} as UpsertRotaResponse;
 
-  if(rotaVersion.rotaVersionId){
+  returnRotaVersion.rotaVersionSuccess = -1;
 
-      //TODO - Call the API and add a new rota version
+  return this.putSubEndpoint("RotaVersion",rotaVersion).then(response => {
 
-      if(rotaVersion.rotaVersionDeleted){
+      if(response.success === 1){
 
-        const removeIndex = currentRotaVersions.findIndex(element => element.rotaVersionId === rotaVersion.rotaVersionId)
-        currentRotaVersions.splice(removeIndex, 1);
+        const versions = this.rotaVersions.value;
+
+        const currentVersion = versions.find(element => element.rotaVersionId === rotaVersion.rotaVersionId);
+
+        if(currentVersion){
+          currentVersion.rotaVersionName = rotaVersion.rotaVersionName;
+        }
+        else {
+          const newRota = {
+            rotaId: rotaVersion.rotaId,   
+            rotaVersionId: response.rotaVersionId,
+            rotaVersionName: rotaVersion.rotaVersionName,
+            defaultRotaVersion: rotaVersion.defaultRotaVersion,
+            rotaVersionDeleted: false
+          }
+
+          versions.push(newRota);
+
+        }
+
+        if(rotaVersion.defaultRotaVersion){
+          this.setRotaVersionAsDefault(response.rotaVersionId);
+        }
+
+        this.rotaVersions.next(versions);
+
+        if(rotaVersion.rotaVersionDeleted){
+
+          const removeIndex = versions.findIndex(element => element.rotaVersionId === rotaVersion.rotaVersionId);
+          versions.splice(removeIndex, 1);
+    
+        }
+
+        returnRotaVersion = {
+          rotaId: rotaVersion.rotaId,
+          rotaVersionId: response.rotaVersionId,
+          rotaSuccess: 1,
+          rotaVersionSuccess: 1
+        };
+        
+        return returnRotaVersion;
 
       }
-
-
-  console.log(currentRotaVersions);
-
-  returnRotaVersion = {
-    rotaId: rotaVersion.rotaId,
-    rotaVersionId: rotaVersion.rotaVersionId,
-    rotaSuccess: 1,
-    rotaVersionSuccess: 1
-  };
-
-  }
-  else {
-
-    rotaVersion.rotaVersionId = 3;
-  
-    currentRotaVersions.push(rotaVersion);
-  
-    this.rotaVersions?.next(currentRotaVersions);
-
-    returnRotaVersion = {
-      rotaId: rotaVersion.rotaId,
-      rotaVersionId: 3,
-      rotaSuccess: 1,
-      rotaVersionSuccess: 1
       
-    };
+      return returnRotaVersion;
 
-  }
+    });
 
 
-  return returnRotaVersion;
+
+
 
 
 

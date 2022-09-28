@@ -19,6 +19,7 @@ Purpose: Procedure to add rota
 
 DECLARE vSuccess INT;
 DECLARE vRotaId INT;
+DECLARE vRotaExists INT;
 DECLARE vOrganisationId INT;
 DECLARE vTimeNow DATETIME;
 
@@ -29,11 +30,15 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
+SELECT COUNT(1) INTO vRotaExists FROM AAU.Rota WHERE RotaId = prm_RotaId;
+
 IF(prm_DefaultRota = 1) THEN
 
 UPDATE AAU.Rota SET DefaultRota = 0 WHERE DefaultRota = 1;
 
 END IF;
+
+IF vRotaExists = 0 THEN
 
 INSERT INTO AAU.Rota(
 	OrganisationId,
@@ -44,17 +49,33 @@ VALUES(
 	vOrganisationId,
 	prm_RotaName,
 	prm_DefaultRota
-) ON DUPLICATE KEY UPDATE
-RotaName = prm_RotaName,
-DefaultRota = prm_DefaultRota,
-IsDeleted = prm_Deleted,
-DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL);
+);
 
-	SELECT 1 INTO vSuccess;
-    SELECT LAST_INSERT_ID() INTO vRotaId;
+	SELECT LAST_INSERT_ID() INTO vRotaId;
+    SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaId,'Rota save','Upsert', NOW());
+	VALUES (prm_Username,vRotaId,'Rota save','Insert', NOW());
+
+ELSEIF vRotaExists = 1 THEN
+
+	UPDATE AAU.Rota SET
+	RotaName = prm_RotaName,
+	DefaultRota = prm_DefaultRota,
+	IsDeleted = prm_Deleted,
+	DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL)
+	WHERE RotaId = prm_rotaId;
+
+	SELECT 1 INTO vSuccess;    
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,vRotaId,'Rota save','Update', NOW());
+    
+ELSE
+
+SELECT 2 INTO vSuccess;    
+
+END IF;
     
 	SELECT vRotaId AS rotaId, vSuccess AS success;
     
