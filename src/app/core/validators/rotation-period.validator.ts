@@ -27,7 +27,7 @@ export class RotationPeriodValidator {
                 //first let's check if the date exists in another range in the current array
                 for(let current of currentArray?.controls){
 
-                    if(currentId !== current.get('rotationPeriodId')?.value &&
+                    if(currentId !== current.get('rotationPeriodGUID')?.value &&
                         this.checkDateInRange(
                             new Date(control.value),
                             new Date(current.get('startDate')?.value),

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
 DROP TABLE IF EXISTS `AAU`.`Rota`;
+DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
 
 CREATE TABLE `AAU`.`Rota` (
   `RotaId` INT NOT NULL AUTO_INCREMENT,
@@ -37,6 +38,23 @@ CREATE TABLE `AAU`.`RotaVersion` (
   CONSTRAINT `FK_RotaVersion_Organisation_OrganisationId`
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+CREATE TABLE `AAU`.`RotationPeriod` (
+  `RotationPeriodId` INT NOT NULL AUTO_INCREMENT,
+  `RotationPeriodGUID` VARCHAR(128) NOT NULL,
+  `RotaVersionId` INT NOT NULL,
+  `StartDate` DATE NOT NULL,
+  `EndDate` DATE NOT NULL,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (`RotationPeriodId`),
+  INDEX `FK_RotationPeriod_RotaVersion_RotaVersionId_idx` (`RotaVersionId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotationPeriod_RotaVersion_RotaVersionId`
+    FOREIGN KEY (`RotaVersionId`)
+    REFERENCES `AAU`.`RotaVersion` (`RotaVersionId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 

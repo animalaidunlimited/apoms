@@ -31,3 +31,32 @@ export interface CurrentRota {
     rotaVersionDeleted: boolean | undefined;
     editing: boolean;
 }
+
+//Keep these here for the moment because we'll use them when we upgrade to Angular 14
+export interface StaffTask{
+  staffTaskId: string;
+  assignedUserId: number;
+  employeeNumber: string;
+  firstName: string;
+}
+
+export interface RotationPeriod{
+  rotationPeriodId: string;
+  rotationGUID: string;
+  rotaVersionId: number;
+  startDate: Date | string;
+  endDate: Date | string;
+}
+
+export interface AreaShift{
+  staffTaskId: string;
+  rotationPeriodId: string;
+  sequence: number;
+  roleId: number;
+  roleName: string;
+  }
+
+export interface RotationPeriodResponse {
+  success: number;
+  rotationPeriodId: number;
+}
