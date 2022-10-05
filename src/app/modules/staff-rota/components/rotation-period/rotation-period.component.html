@@ -57,11 +57,11 @@
           </mat-error>
         </mat-form-field> 
 
-            <div fxLayout="column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
+        <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
+          <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+        </button>
 
-              <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
-                <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
-              </button>
+            <div fxLayout="column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
 
               <button mat-icon-button class="close-button" (click)="editPeriod(period, true)">
                   <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>

@@ -10,7 +10,6 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 import { RotaService } from '../../services/rota.service';
-import { SuccessOnlyResponse } from './../../../../core/models/responses';
 
 @Component({
   selector: 'app-rotation-period',
@@ -19,7 +18,6 @@ import { SuccessOnlyResponse } from './../../../../core/models/responses';
 })
 export class RotationPeriodComponent implements OnInit {
 
-  @Output() updateUnassignedStaffList : EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() inputPeriod! : AbstractControl;
   period!: FormGroup; 
 
@@ -28,8 +26,6 @@ export class RotationPeriodComponent implements OnInit {
   errorMatcher = new CrossFieldErrorMatcher();
 
   periodPreviousValue = {};
-
-
 
   constructor(
     private rotaService: RotaService,
@@ -66,7 +62,7 @@ export class RotationPeriodComponent implements OnInit {
       return false;
     });
   
-    this.updateUnassignedStaffList.emit(true);
+    this.rotaService.updateUnassignedStaffList()
   
    }
   
@@ -74,7 +70,7 @@ export class RotationPeriodComponent implements OnInit {
 
    copyRotationPeriod(period : AbstractControl, cycle: boolean){
 
-    const newRotationPeriodId = this.rotaService.addRotationPeriod(false);
+    const newRotationPeriodGUID = this.rotaService.addRotationPeriod(undefined, false);
 
     const staffAssignmentAreaShifts = this.rotaService.filterStaffAssignments(period.get('rotationPeriodGUID')?.value, 1)
                                .map(element => {
@@ -82,7 +78,7 @@ export class RotationPeriodComponent implements OnInit {
                                 let staffAssignment = this.rotaService.getMatrix.get(element);
 
                                 return {
-                                    areaShiftId: "" + staffAssignment?.get('staffTaskId')?.value.split('|')[0],
+                                    areaShiftGUID: "" + staffAssignment?.get('staffTaskId')?.value.split('|')[0],
                                     assignedUser: staffAssignment?.get('assignedUser')?.value as UserDetails
                                   };
 
@@ -111,7 +107,7 @@ export class RotationPeriodComponent implements OnInit {
          assigned++;
       }
 
-      this.rotaService.addAssignedStaffControlToMatrix(staffAssignmentAreaShifts[i]?.areaShiftId, newRotationPeriodId, assignedUser);
+      this.rotaService.addAssignedStaffControlToMatrix(staffAssignmentAreaShifts[i]?.areaShiftGUID, newRotationPeriodGUID, assignedUser);
       
    
     }
@@ -125,6 +121,8 @@ export class RotationPeriodComponent implements OnInit {
     this.rotaService.saveRotationPeriod(period.value).then((response: RotationPeriodResponse) => {
 
       if(response.success === 1){
+
+        this.updateMatrix()
 
         this.period.markAsPristine();
         this.changeDetector.detectChanges();
@@ -140,7 +138,25 @@ export class RotationPeriodComponent implements OnInit {
 
     });
 
-  }  
+  }
+
+  updateMatrix() : void {
+
+    this.rotaService.upsertMatrix(this.period.get('rotationPeriodGUID')?.value)
+    
+    /*.then((result:SuccessOnlyResponse) => {
+
+      if(result.success === 1){
+        this.snackbarService.successSnackBar("Staff matrix updated successfully", "OK");
+      }
+      else {
+        this.snackbarService.errorSnackBar("ERR: RPC-155: Error updating staff matrix, please see administrator", "OK");
+      }
+
+    })
+    */
+
+  }
 
   deleteRotationPeriod(period: AbstractControl) : void {
     
@@ -182,7 +198,7 @@ export class RotationPeriodComponent implements OnInit {
     const index = this.rotaService.getRotationPeriodArray.controls.findIndex(element => element?.get('rotationPeriodId')?.value === period.get('rotationPeriodId')?.value);
 
     this.rotaService.getRotationPeriodArray.removeAt(index);
-    this.updateUnassignedStaffList.emit(true);
+    this.rotaService.updateUnassignedStaffList();
   }
 
   confirm(message: string) : Observable<any> {

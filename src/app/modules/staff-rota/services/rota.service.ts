@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { ThisReceiver } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { Observable, of, BehaviorSubject} from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject} from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
-import { CurrentRota, Rota, RotationPeriod, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
+import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotationPeriod, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 import { SuccessOnlyResponse } from './../../../core/models/responses';
 
 interface UpsertRotaResponse{
@@ -20,11 +19,22 @@ interface UpsertRotaResponse{
   providedIn: 'root'
 })
 export class RotaService extends APIService {
+  
+  private ngUnsubscribeFromMatrixChanges = new Subject();
 
   endpoint = 'Rota';
 
+  firstRotationPeriodGUID = '';
+  lastRotationPeriodGUID = '';
+
+  offset = 0;
+  periodCycleReset = true;
+  periodsToShow = 3;
+
   rotas:BehaviorSubject<Rota[]> = new BehaviorSubject<Rota[]>([]);
   rotaVersions:BehaviorSubject<RotaVersion[]> = new BehaviorSubject<RotaVersion[]>([]);
+
+  beginningOrEndRotation: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
   rotaForm:FormGroup = this.fb.group({
     currentRota: this.fb.group({
@@ -42,7 +52,11 @@ export class RotaService extends APIService {
     rotationPeriodArray: this.fb.array([]),
     areaShiftArray: this.fb.array([]),
     matrix: this.fb.group([])
-  });  
+  });
+
+  unassignedUsers = new BehaviorSubject<UserDetails[]>([]);
+
+  userList: UserDetails[] = [];
 
   public get getRotationPeriodArray() : FormArray {
     return this.rotaForm.get('rotationPeriodArray') as FormArray || this.fb.array([]);
@@ -65,7 +79,7 @@ export class RotaService extends APIService {
   }
 
   constructor(
-    http: HttpClient,    
+    http: HttpClient,
     private fb: FormBuilder) {
     super(http);
 
@@ -76,20 +90,20 @@ export class RotaService extends APIService {
 
   }
 
-public checkDateNotInRange(date: Date | string) : Observable<{success: number}> {
+public checkDateNotInRange(date: Date | string) : Observable<SuccessOnlyResponse> {
 
   return of({success: 0});
 
 }
 
-public initialiseRotas() {
+public async initialiseRotas() : Promise<boolean> {
 
   let request = "/GetRotas";
 
-  this.get(request).then((response:any) => {
+  return this.get(request).then((response:any) => {
 
     if(!response){
-      return;
+      return false;
     }
 
     const rotaResponse: Rota[] = response;
@@ -118,21 +132,137 @@ public initialiseRotas() {
     }
     else {
       this.addRota();
-    }    
+    }
+
+    return true;
 
   });
   
 }
 
 
-public initialiseArrays() {
+public async initialiseArrays(users: UserDetails[]) {
+
+
+  this.userList = users;
 
   this.getAreaShiftArray.clear();
   this.getRotationPeriodArray.clear();
+  this.getMatrix.reset();
+
+  await this.initialiseRotationPeriods(this.periodsToShow);
 
   //Set up some defaults so we're not empty
-  this.addAreaShift();
-  this.addRotationPeriod(true);
+  await this.getAreaShifts().then(areaShifts => areaShifts?.forEach(areaShift => this.addAreaShift(areaShift)));  
+
+}
+
+async initialiseRotationPeriods(periodsToShow: number) {
+
+  await this.getRotationPeriods(periodsToShow).then(periods => {
+
+    this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
+    this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';
+    
+    periods?.rotationPeriods.forEach(period => this.addRotationPeriod(period, true));
+
+    if(this.getRotationPeriodArray.controls[0].get('rotationPeriodGUID')?.value === this.firstRotationPeriodGUID){
+      this.beginningOrEndRotation.next('beginningOfRange');
+    }
+    else if(this.getRotationPeriodArray.controls[this.getRotationPeriodArray?.length - 1].get('rotationPeriodGUID')?.value === this.lastRotationPeriodGUID){
+      this.beginningOrEndRotation.next('endOfRange');
+    }
+    else {
+      this.beginningOrEndRotation.next('undefined')
+    }
+  
+    const periodGUIDs = this.getRotationPeriodArray.controls.map(period => period.get('rotationPeriodGUID')?.value).join(',');
+  
+    this.loadMatrixForPeriods(periodGUIDs || "");
+  
+  });
+
+}
+
+getRotationPeriods(periodsToShow: number) : Promise<RotationPeriodResponse | null> {
+
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value;
+
+  return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${this.offset}`);
+
+}
+
+getAreaShifts() : Promise<AreaShift[] | null> {
+
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value;
+
+  return this.get(`/GetAreaShifts?rotaVersionId=${rotaVersionId}`);
+
+}
+
+async loadMatrixForPeriods(periodGUIDs: string) {
+
+  await this.getMatrixItems(periodGUIDs).then(staffAssignments =>        
+    
+    staffAssignments?.forEach(assignment => {
+
+    let user = this.userList.find(element => element.userId === assignment.assignedUserId);
+
+    // this.getMatrix.get(assignment.staffTaskId)?.get('assignedUser')?.setValue(user);
+    this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID,assignment.rotationPeriodGUID, user)
+  })
+
+  );
+
+}
+
+shiftLeftRotation() : void {
+
+  if(this.periodCycleReset){
+    this.periodCycleReset = false;
+    this.offset = this.periodsToShow - 1;
+  }
+
+  if(this.getRotationPeriodArray.controls.length === this.periodsToShow){
+    this.getRotationPeriodArray.controls.pop();   
+  }
+
+  this.offset++;
+
+  this.initialiseRotationPeriods(1);
+  
+}
+
+shiftRightRotation() : void {
+
+  if(!this.periodCycleReset){
+    this.periodCycleReset = true;
+    this.offset -= (this.periodsToShow - 1);
+  }
+
+  if(this.getRotationPeriodArray.controls.length === this.periodsToShow){
+    this.getRotationPeriodArray.controls.shift();   
+  }
+
+  this.offset--;
+
+  this.initialiseRotationPeriods(1);
+  
+}
+
+getMatrixItems(periodGUIDs: string) : Promise<AssignedStaffResponse[] | null> {
+
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value;
+
+  return this.get(`/GetMatrix?rotaVersionId=${rotaVersionId}&rotationPeriodGUIDs=${periodGUIDs}`);
+
+}
+
+upsertAreaShift(areaShift: AreaShift) : Promise<AreaShiftResponse> {
+
+  let areaShiftUpsert = areaShift.areaShiftId ? this.putSubEndpoint("AreaShift", areaShift) : this.postSubEndpoint("AreaShift", areaShift)
+
+  return areaShiftUpsert;  
 
 }
 
@@ -145,15 +275,11 @@ addRota() : void {
     
 }
 
-
-
 public getRotas() : BehaviorSubject<Rota[]> | undefined {
 
   return this.rotas;
 
 }
-
-
 
 public setRotaVersionRotaId(rotaId: number) : void {
 
@@ -335,46 +461,63 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
+  addAreaShift(areaShift: AreaShift | undefined){    
 
+  let defaultAreaShift = this.generateDefaultAreaShift();
 
+  if(areaShift){
+    defaultAreaShift.patchValue(areaShift);
+  }
 
-   addAreaShift(){
-
-    this.getAreaShiftArray.push(this.generateDefaultAreaShift());  
-    this.updateMatrix();
+  this.getAreaShiftArray.push(defaultAreaShift);
 
   }
 
-  addRotationPeriod(updateMatrix: boolean) : string {
+  addRotationPeriod(rotationPeriod: RotationPeriod | undefined, updateMatrix: boolean) : string {
 
-    const defaultRotationPeriod = this.generateDefaultRotationPeriod();
+    let defaultRotationPeriod = this.generateDefaultRotationPeriod();
+
+    if(rotationPeriod){
+      defaultRotationPeriod.patchValue(rotationPeriod);
+    }
 
     this.getRotationPeriodArray.push(defaultRotationPeriod);
 
-    if(updateMatrix){
-      this.updateMatrix();
-    }
+    this.getRotationPeriodArray.controls.sort((a,b) => new Date(a.get("startDate")?.value) < new Date(b.get("startDate")?.value) ? -1 : 1);
 
-    return defaultRotationPeriod.get('rotationPeriodId')?.value;
-
+    return defaultRotationPeriod.get('rotationPeriodGUID')?.value;
 
   }
 
   private generateDefaultRotationPeriod() : FormGroup {
 
-    const maxSequence = this.getRotationPeriodArray.controls.length === 0 ? 0 : this.getRotationPeriodArray.controls.reduce((a,b) => a.value.sequence < b.value.sequence ? b : a).value.sequence + 1
+    let lastRecord: AbstractControl;
+    let maxSequence = 0;
+    let nextStartDate = new Date();
+    let nextEndDate = new Date();
 
-    const groupId = generateUUID();
+    if(this.getRotationPeriodArray.controls.length > 0){
+      lastRecord = this.getRotationPeriodArray.controls.reduce((a,b) => a.value.endDate < b.value.endDate ? b : a);
+      maxSequence = lastRecord?.value?.sequence + 1;
+
+      nextStartDate = new Date(lastRecord.get('endDate')?.value);
+      nextStartDate.setUTCDate(nextStartDate.getUTCDate() + 1);
+
+      nextEndDate = new Date(lastRecord.get('endDate')?.value);
+      nextEndDate.setUTCDate(nextEndDate.getUTCDate() + 7);
+    }
+    
+    
 
     let newGroup = this.fb.group({
       rotationPeriodId: [],
-      rotationPeriodGUID: groupId,
+      rotationPeriodGUID: generateUUID(),
       rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
       sequence: maxSequence,
       isDeleted: false,
       name: "",
-      startDate: "",
-      endDate: "",
+      startDate: nextStartDate.toISOString().slice(0, 10),
+      endDate: nextEndDate.toISOString().slice(0, 10),
       editable: true,
       checkUnassigned: false});
 
@@ -388,64 +531,155 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
+  upsertMatrix(rotationPeriodGUID:string) : void{
+
+    const assignedStaff = this.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);    
+
+    for(let staff of assignedStaff){
+
+      let assignedUser = {
+        rotationPeriodGUID: staff.staffTaskId.split("|")[1],
+        areaShiftGUID: staff.staffTaskId.split("|")[0],
+        rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
+        userId: staff.userId
+      }
+
+      this.putSubEndpoint("UpsertMatrix",assignedUser).then(result =>
+
+        console.log(result)
+
+      )
+
+    }
+
+
+  }
+
+  public getStaffAssignmentsForRotationPeriod(rotationPeriodGUID: string) : AssignedUser[] {
+
+    return this.filterStaffAssignments(rotationPeriodGUID, 1)
+    .map(element => (
+        {          
+          staffTaskId: this.getMatrix.get(element)?.get("staffTaskId")?.value || "",
+          userId: this.getMatrix.get(element)?.get("assignedUser")?.value?.userId || -1
+        }
+      ));
+  }
+
   private generateDefaultAreaShift() : FormGroup {
 
     return this.fb.group({
-                          areaShiftId: generateUUID(),
+                          areaShiftId: null,
+                          areaShiftGUID: generateUUID(),
+                          rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value || -1,
                           sequence: (this.getAreaShiftArray?.length || -1) + 1,
-                          roleId: undefined,
+                          rotationRoleId: [, Validators.required],
                           roleName: "",
-                          color: "white"
+                          colour: "white",
+                          isDeleted: false
                         });
   }
 
-  private updateMatrix() : void {
-      
-    for(let shift of this.getAreaShiftArray.controls){
+addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, assignedUser?: UserDetails){
 
-      for(let period of this.getRotationPeriodArray.controls){          
-
-        this.addAssignedStaffControlToMatrix(shift.get('areaShiftId')?.value, period.get('rotationPeriodId')?.value);
-
-      }
-    }
-
-}
-
-addAssignedStaffControlToMatrix(areaShiftId: string, rotationPeriodId: string, assignedUser?: UserDetails){
-
-  let staffTaskId = this.getCoords(areaShiftId, rotationPeriodId);
+  let staffTaskId = this.getCoords(areaShiftGUID, rotationPeriodGUID);
 
   const addedTaskDetails = this.fb.group({
     staffTaskId: staffTaskId,
-    assignedUser: assignedUser});      
+    assignedUser: assignedUser
+  });
 
   if(!this.getMatrix.get(staffTaskId)){
     this.getMatrix.addControl(staffTaskId, addedTaskDetails);
   }
-
+  else {
+    this.getMatrix.get(staffTaskId)?.get('assignedUser')?.setValue(assignedUser, {emitEvent: true});
+  }
 
 }
 
-getCoords(areaShiftId: string, rotationPeriodId: string): string {
-  return `${areaShiftId}|${rotationPeriodId}`
+updateUnassignedStaffList() : void {
+
+  this.ngUnsubscribeFromMatrixChanges.next();
+
+  const periodsToCheck = this.getRotationPeriodArray.controls.map(period => {
+
+                                  if(period.get('checkUnassigned')?.value === true){
+                                    return period.get('rotationPeriodGUID')?.value;
+                                  }
+
+                                }).join(',');
+
+  if(periodsToCheck === ""){
+    this.unassignedUsers.next([]);
+  }
+  else {
+
+    //We now need to watch the matrix for changes
+    this.getMatrix.valueChanges.pipe(takeUntil(this.ngUnsubscribeFromMatrixChanges)).subscribe(() => {
+
+      this.updateUnassignedStaffList();
+
+    })
+
+    const assignedStaff = this.filterStaffAssignments(periodsToCheck, 1);
+
+    const unassigned = this.userList.filter(user => {
+
+      for(const staff of assignedStaff){
+
+        const currentStaff = this.getMatrix.get(staff)?.get("assignedUser")?.value?.userId as number | null;
+
+        if(user.userId === currentStaff){
+          return false;
+        }
+
+      }
+
+      return true;
+
+    });
+
+    this.unassignedUsers.next(unassigned);
+
+  }
+
+
+  }
+
+getCoords(areaShiftGUID: string, rotationPeriodGUID: string): string {
+  return `${areaShiftGUID}|${rotationPeriodGUID}`
 }
 
 public filterStaffAssignments(filterValue: string, periodOrShift: number) : string[] {
 
   let staffAssignments = Object.keys(this.getMatrix.controls);
 
+  if(!staffAssignments){
+    return [];
+  }
+
   //We use includes because the filterValue could be multiple comma separated ids.
-  staffAssignments = staffAssignments.filter(assignment => filterValue.includes(assignment.split('|')[periodOrShift]));
+  staffAssignments = staffAssignments?.filter(assignment => filterValue.includes(assignment.split('|')[periodOrShift]));
 
   return staffAssignments;
 }
 
-deleteAreaShift(areaShift: AbstractControl) : void {
+async deleteAreaShift(areaShift: AbstractControl) : Promise<AreaShiftResponse> {
 
-  const index = this.getAreaShiftArray.controls.findIndex(element => element?.get('areaShiftId')?.value === areaShift.get('areaShiftId')?.value );
+  areaShift.get('isDeleted')?.setValue(true);
 
-  this.getAreaShiftArray.removeAt(index);
+  return this.upsertAreaShift(areaShift.value).then(result => {
+
+    if(result.success === 1){
+      const index = this.getAreaShiftArray.controls.findIndex(element => element?.get('areaShiftId')?.value === areaShift.get('areaShiftId')?.value );
+  
+      this.getAreaShiftArray.removeAt(index);
+    }
+
+    return result;
+
+  });
   
 
 }
@@ -454,7 +688,7 @@ resetRotaForm() : void {
 
   this.rotaForm.reset();  
 
-  this.initialiseArrays();
+  this.initialiseArrays(this.userList);
 
 }
 

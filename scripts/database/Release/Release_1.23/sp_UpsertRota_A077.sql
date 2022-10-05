@@ -55,7 +55,7 @@ VALUES(
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaId,'Rota save','Insert', NOW());
+	VALUES (prm_Username,vRotaId,'Rota','Insert', NOW());
 
 ELSEIF vRotaExists = 1 THEN
 
@@ -69,7 +69,7 @@ ELSEIF vRotaExists = 1 THEN
 	SELECT 1 INTO vSuccess;    
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaId,'Rota save','Update', NOW());
+	VALUES (prm_Username,vRotaId,'Rota','Update', NOW());
     
 ELSE
 

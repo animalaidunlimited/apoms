@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { StaffRotaRoutingModule } from './staff-rota-routing.module';
 import { MaterialModule } from 'src/app/material-module';
-import { StaffRotaPageComponent } from './pages/staff-rota-page.component';
 import { RotationPeriodComponent } from './components/rotation-period/rotation-period.component';
-
+import { StaffRotationPageComponent } from './pages/staff-rotation/staff-rotation-page.component';
+import { StaffRotaRoutingModule } from './staff-rota-routing.module';
+import { AreaShiftComponent } from './components/area-shift/area-shift.component';
 
 @NgModule({
   declarations: [
-    StaffRotaPageComponent,
-    RotationPeriodComponent
+    StaffRotationPageComponent,
+    RotationPeriodComponent,
+    AreaShiftComponent
   ],
-  imports: [
+  imports: [  
     CommonModule,
     StaffRotaRoutingModule,
     MaterialModule

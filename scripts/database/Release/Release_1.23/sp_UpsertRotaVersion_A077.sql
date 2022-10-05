@@ -59,7 +59,7 @@ IF vRotaVersionExists = 0 THEN
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaVersionId,'Rota version save','Insert', NOW());
+	VALUES (prm_Username,vRotaVersionId,'RotationVersion','Insert', NOW());
 
 ELSEIF vRotaVersionExists = 1 THEN
 
@@ -73,7 +73,7 @@ ELSEIF vRotaVersionExists = 1 THEN
 	SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaVersionId,'Rota version save','Update', NOW());
+	VALUES (prm_Username,vRotaVersionId,'RotationVersion','Update', NOW());
 
 ELSE
 

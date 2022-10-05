@@ -26,6 +26,7 @@ import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
 import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
+import { RotationRole } from '../../models/rota';
 
 
 @Injectable({
@@ -56,6 +57,7 @@ export class DropdownService extends APIService {
     patientStates$!: Observable<PatientStatusResponse[]>;
     printableElements$!: Observable<PrintElement[]>;
     problems$!: Observable<ProblemDropdownResponse[]>;
+    rotationRoles$!: Observable<RotationRole[]>;
     rescuers$!: Observable<User[]>;
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
@@ -756,12 +758,29 @@ getVehicleListDropdown(): Observable<Vehicle[]> {
     if(!this.vehicleList$) {
         this.vehicleList$ = this.getObservable(request).pipe(
             map((response: Vehicle[])=>{
+                console.log(response)
                 return response;
             })
         );
     }
 
 return this.vehicleList$;
+
+}
+getRotationRole(): Observable<RotationRole[]> {
+
+    const request = '/GetRotationRoles';
+
+    if(!this.rotationRoles$) {
+        this.rotationRoles$ = this.getObservable(request).pipe(
+            map((response: RotationRole[])=>{
+                console.log(response)
+                return response;
+            })
+        );
+    }
+
+return this.rotationRoles$;
 
 }
 

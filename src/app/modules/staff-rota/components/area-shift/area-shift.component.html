@@ -1,0 +1,24 @@
+
+<div [formGroup]="areaShift" fxLayout="row" fxLayoutAlign="start center">
+
+  <mat-form-field>
+    <mat-label>Group name</mat-label>
+        <mat-select (selectionChange)="groupSelected($event, areaShift)"
+        formControlName="rotationRoleId"
+        [errorStateMatcher]="errorMatcher">
+        <mat-option>N/A</mat-option>
+            <mat-option *ngFor="let role of rotationRoles$ | async" [value]="role.rotationRoleId">
+            {{role.role}}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-icon-button class="close-button" (click)="deleteAreaShift(areaShift)">
+  <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+  </button>
+
+
+  <input type="color" formControlName="colour">
+
+
+</div>

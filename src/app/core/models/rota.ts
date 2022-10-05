@@ -1,7 +1,7 @@
-export interface Role{
-    roleId: number;
+export interface RotationRole{
+    rotationRoleId: number;
     role: string;
-    color: string
+    colour: string
   }
   
 export interface Rota{
@@ -40,23 +40,46 @@ export interface StaffTask{
   firstName: string;
 }
 
+export interface AssignedStaffResponse{
+  rotationPeriodGUID: string;
+  areaShiftGUID: string;
+  assignedUserId: number;
+}
+
+export interface RotationPeriodResponse{
+  firstRotationPeriodGUID: string,
+  lastRotationPeriodGUID: string,
+  rotationPeriods: RotationPeriod[]
+}
+
 export interface RotationPeriod{
   rotationPeriodId: string;
-  rotationGUID: string;
+  rotationPeriodGUID: string;
   rotaVersionId: number;
   startDate: Date | string;
   endDate: Date | string;
 }
 
 export interface AreaShift{
-  staffTaskId: string;
-  rotationPeriodId: string;
+  areaShiftId: number;
+  areaShiftGUID: string;
   sequence: number;
-  roleId: number;
+  rotationRoleId: number;
   roleName: string;
+  isDeleted: boolean;
   }
 
 export interface RotationPeriodResponse {
   success: number;
   rotationPeriodId: number;
+}
+
+export interface AreaShiftResponse{
+  success: number;
+  areaShiftId: number;
+}
+
+export interface AssignedUser {
+  staffTaskId: string,
+  userId: number
 }

@@ -77,14 +77,6 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.VehicleListPageModule)
     },
     {
-        data: { title: 'Driver View', permissionId:[13,14], componentPermissionLevel: new BehaviorSubject<number>(0)},
-        icon: 'none',
-        path: 'driver-view',
-        loadChildren: () =>
-            import('./modules/driver-view/driver-view-page.module')
-            .then(m => m.DriverViewPageModule)
-    },
-    {
         data: { title: 'Vehicle Staff Assigner', permissionId:[15,16], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Vehicles',
@@ -94,13 +86,39 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.VehicleStaffAssignerModule)
     },
     {
-        data: { title: 'Staff Rota', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Driver View', permissionId:[13,14], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
-        group: '',
-        path: 'staff-rota',
+        path: 'driver-view',
+        loadChildren: () =>
+            import('./modules/driver-view/driver-view-page.module')
+            .then(m => m.DriverViewPageModule)
+    },
+    {
+        data: { title: 'Rotation', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Staff Rota',
+        path: 'rotation',
         loadChildren: () =>
             import('./modules/staff-rota/staff-rota.module')
             .then(m => m.StaffRotaModule)
+    },
+    {
+        data: { title: 'Staff Rota', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'none',
+        group: 'Staff Rota',
+        path: 'staff-rotation',
+        loadChildren: () =>
+            import('./modules/staff-rota/pages/daily-rota/daily-rota.module')
+            .then(m => m.DailyRotaModule)
+    },
+    {
+        data: { title: 'Rota Settings', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: 'settings_applications',
+        group: 'Staff Rota',
+        path: 'rota-settings',
+        loadChildren: () =>
+            import('./modules/staff-rota/pages/settings/rota-settings.module')
+            .then(m => m.RotaSettingsModule)
     },
     {
         data: { title: 'Reporting' ,permissionId:[9,10], componentPermissionLevel: new BehaviorSubject<number>(0)},

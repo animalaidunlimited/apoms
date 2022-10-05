@@ -20,7 +20,6 @@ Purpose: Procedure to add rotationPeriod
 */
 
 DECLARE vSuccess INT;
-DECLARE vRotaVersionId INT;
 DECLARE vRotationPeriodExists INT;
 DECLARE vTimeNow DATETIME;
 DECLARE vRotationPeriodId INT;
@@ -50,11 +49,11 @@ VALUES(
     prm_EndDate
 );
 
-	SELECT LAST_INSERT_ID() INTO vRotaVersionId;
+	SELECT LAST_INSERT_ID() INTO vRotationPeriodId;
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaVersionId,'Rotation Period save','Insert', NOW());
+	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Insert', NOW());
 
 ELSEIF vRotationPeriodExists = 1 THEN
 
@@ -63,12 +62,12 @@ ELSEIF vRotationPeriodExists = 1 THEN
 		EndDate = prm_EndDate,
 		IsDeleted = prm_Deleted,
 		DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL)
-	WHERE RotationPeriodId = vRotationPeriodExists;
+	WHERE RotationPeriodId = vRotationPeriodId;
 
 	SELECT 1 INTO vSuccess;    
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotaVersionId,'Rotation Period save','Update', NOW());
+	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Update', NOW());
     
 ELSE
 
@@ -76,7 +75,7 @@ SELECT 2 INTO vSuccess;
 
 END IF;
     
-	SELECT vRotaVersionId AS rotationPeriodId, vSuccess AS success;
+	SELECT vRotationPeriodId AS rotationPeriodId, vSuccess AS success;
     
 END $$
 DELIMITER ;

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { StaffRotaPageComponent } from './pages/staff-rota-page.component';
+import { StaffRotationPageComponent } from './pages/staff-rotation/staff-rotation-page.component';
 
 const routes: Routes = [
   {
       path: '',
-      component: StaffRotaPageComponent,
-      data: { shouldReuse: true, key: 'staff-rotar' },
+      component: StaffRotationPageComponent,
+      data: { shouldReuse: true, key: 'staff-rotation' },
   },
 ];
 

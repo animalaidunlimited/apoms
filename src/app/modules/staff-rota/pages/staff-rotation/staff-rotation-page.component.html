@@ -177,47 +177,43 @@
             </th>
             <th formArrayName="rotationPeriodArray" *ngFor="let period of getRotationPeriodArray.controls; let i = index">
 
-              <app-rotation-period (updateUnassignedStaffList)="updateUnassignedStaffList()" [inputPeriod]="period"></app-rotation-period>
+              <app-rotation-period [inputPeriod]="period"></app-rotation-period>
               
             </th>
         </tr>
       </thead>
       <tbody>
         
-        <tr *ngFor="let areaShift of getAreaShiftArray.controls">
+        <tr *ngFor="let areaShift of getAreaShiftArray.controls; let i = index;">
+          
+          <th formArrayName="areaShiftArray"  [style.background-color]="areaShift.get('colour')?.value" >
+              <div formGroupName="{{i}}">            
+            
+                <app-area-shift [inputAreaShift]="areaShift"></app-area-shift>
 
-            <th [style.background-color]="areaShift.get('color')?.value" >
-              
-              <mat-form-field>
-                <mat-label>Group name</mat-label>
-                    <mat-select (selectionChange)="groupSelected($event, areaShift)">
-                    <mat-option>N/A</mat-option>
-                        <mat-option *ngFor="let role of jobRoles$ | async" [value]="role.roleId">
-                        {{role.role}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <button mat-icon-button class="close-button" (click)="deleteAreaShift(areaShift)">
-              <mat-icon matTooltip="cancel" class="close-icon" >delete</mat-icon>
-            </button>
+          </div>
 
             </th>
 
-            <td [style.background-color]="areaShift.get('color')?.value" formGroupName="matrix" *ngFor="let period of getRotationPeriodArray.controls;">
+            <td [style.background-color]="areaShift.get('colour')?.value" formGroupName="matrix" *ngFor="let period of getRotationPeriodArray.controls;">
+       
 
-              <div *ngIf="getGroupPeriodAssignedStaff(areaShift?.value.areaShiftId, period?.value.rotationPeriodId); let assignedStaff">
+              <div *ngIf="getGroupPeriodAssignedStaff(areaShift?.value.areaShiftGUID, period?.value.rotationPeriodGUID); let assignedStaff"
+              style="display: inline">
 
-                <div fxLayoutAlign="center center" [formGroupName]="assignedStaff.get('staffTaskId')?.value">
+                <div fxLayoutAlign="center center"
+                class="assigned-staff-wrapper"
+                [formGroupName]="assignedStaff.get('staffTaskId')?.value">
 
                   <mat-form-field>
 
                     <input  matInput
                             type="text"
-                            formControlName="assignedUser"
-                            (focus)="setFilteredUsers(period?.value.rotationPeriodId, assignedStaff?.get('assignedUser'))"
+                            formControlName="assignedUser"                            
+                            (focus)="setFilteredUsers(period?.value.rotationPeriodGUID, assignedStaff?.get('assignedUser'))"
                             [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="userSelectedForShift(period)">
                       <mat-option>N/A</mat-option>
                       <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
                         {{ user.employeeNumber + ' - ' + user.firstName }}
@@ -230,10 +226,10 @@
 
               </div>
 
-            </td>
-
+            </td>            
           
           </tr>
+
         </tbody>
       </table>
 
@@ -252,14 +248,32 @@
 
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center center" class="area-shift">
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" class="area-shift">
+
+    <button
+        type="button"
+        (click)="shiftLeftRotation()"
+        mat-mini-fab
+        [disabled]="beginningOfRange"
+        color="primary">
+        <mat-icon style="margin-left:10px;">arrow_back_ios</mat-icon>
+    </button>
+
     <button
         type="button"
         (click)="addAreaShift()"
         mat-mini-fab
-        color="primary"
-    >
+        color="primary">
         <mat-icon>add</mat-icon>
+    </button>
+
+    <button
+        type="button"
+        (click)="shiftRightRotation()"
+        mat-mini-fab
+        [disabled]="endOfRange"
+        color="primary">
+        <mat-icon style="margin-left:2px;">arrow_forward_ios</mat-icon>
     </button>
 </div>
 

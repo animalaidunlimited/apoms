@@ -59,7 +59,7 @@ export const routes: Routes = [
             ),
     },
     {
-        path: 'staff-rota',
+        path: 'staff-rotation',
         loadChildren: () =>
             import('./modules/staff-rota/staff-rota.module').then(
                 m => m.StaffRotaModule,
