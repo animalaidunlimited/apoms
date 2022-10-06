@@ -146,14 +146,39 @@ public async initialiseArrays(users: UserDetails[]) {
 
   this.userList = users;
 
-  this.getAreaShiftArray.clear();
-  this.getRotationPeriodArray.clear();
-  this.getMatrix.reset();
+  this.getAreaShiftArray.clear({emitEvent: false});
+  this.getRotationPeriodArray.clear({emitEvent: false});
+
+  //Set up some defaults so we're not empty
+  await this.getAreaShifts().then(areaShifts => areaShifts?.forEach(areaShift => this.addAreaShift(areaShift, false)));  
 
   await this.initialiseRotationPeriods(this.periodsToShow);
 
-  //Set up some defaults so we're not empty
-  await this.getAreaShifts().then(areaShifts => areaShifts?.forEach(areaShift => this.addAreaShift(areaShift)));  
+}
+
+public generateTableDataSource() : AbstractControl[] {
+
+  const dataSource: AbstractControl[] = [];
+
+  for(let areaShift of this.getAreaShiftArray.controls){
+
+    let row = this.fb.group({
+      areaShift: [areaShift]
+    });
+
+    for(let period of this.getRotationPeriodArray.controls) {
+
+      let controlName = this.getCoords(areaShift.get('areaShiftGUID')?.value, period.get('rotationPeriodGUID')?.value);
+
+        row.addControl(controlName, this.getMatrix.get(controlName) || this.fb.control({}));      
+
+    }
+
+    dataSource.push(row);
+
+  }
+
+  return dataSource;
 
 }
 
@@ -164,12 +189,12 @@ async initialiseRotationPeriods(periodsToShow: number) {
     this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
     this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';
     
-    periods?.rotationPeriods.forEach(period => this.addRotationPeriod(period, true));
+    periods?.rotationPeriods.forEach(period => this.addRotationPeriod(period, true, false));
 
-    if(this.getRotationPeriodArray.controls[0].get('rotationPeriodGUID')?.value === this.firstRotationPeriodGUID){
+    if(this.getRotationPeriodArray.controls[0]?.get('rotationPeriodGUID')?.value === this.firstRotationPeriodGUID){
       this.beginningOrEndRotation.next('beginningOfRange');
     }
-    else if(this.getRotationPeriodArray.controls[this.getRotationPeriodArray?.length - 1].get('rotationPeriodGUID')?.value === this.lastRotationPeriodGUID){
+    else if(this.getRotationPeriodArray.controls[this.getRotationPeriodArray?.length - 1]?.get('rotationPeriodGUID')?.value === this.lastRotationPeriodGUID){
       this.beginningOrEndRotation.next('endOfRange');
     }
     else {
@@ -202,17 +227,15 @@ getAreaShifts() : Promise<AreaShift[] | null> {
 
 async loadMatrixForPeriods(periodGUIDs: string) {
 
-  await this.getMatrixItems(periodGUIDs).then(staffAssignments =>        
+  await this.getMatrixItems(periodGUIDs).then(staffAssignments =>    
     
     staffAssignments?.forEach(assignment => {
 
     let user = this.userList.find(element => element.userId === assignment.assignedUserId);
 
     // this.getMatrix.get(assignment.staffTaskId)?.get('assignedUser')?.setValue(user);
-    this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID,assignment.rotationPeriodGUID, user)
-  })
-
-  );
+    this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID,assignment.rotationPeriodGUID, user)}
+  ));
 
 }
 
@@ -461,21 +484,29 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  addAreaShift(areaShift: AreaShift | undefined){    
+  addAreaShift(areaShift: AreaShift | undefined, updateMatrix: boolean){    
 
-  let defaultAreaShift = this.generateDefaultAreaShift();
+    let defaultAreaShift = this.generateDefaultAreaShift();
 
-  if(areaShift){
-    defaultAreaShift.patchValue(areaShift);
+    if(areaShift){
+      defaultAreaShift.patchValue(areaShift);
+    }
+
+    this.getAreaShiftArray.push(defaultAreaShift);
+
+    if(updateMatrix){
+      this.insertMatrixItemsForNewAreaShift(defaultAreaShift);
+    }
+
   }
 
-  this.getAreaShiftArray.push(defaultAreaShift);
-
-  }
-
-  addRotationPeriod(rotationPeriod: RotationPeriod | undefined, updateMatrix: boolean) : string {
+  addRotationPeriod(rotationPeriod: RotationPeriod | undefined, updateMatrix: boolean, markAsDirty: boolean) : string {
 
     let defaultRotationPeriod = this.generateDefaultRotationPeriod();
+
+    if(markAsDirty){
+      defaultRotationPeriod.markAsDirty();
+    }
 
     if(rotationPeriod){
       defaultRotationPeriod.patchValue(rotationPeriod);
@@ -485,7 +516,27 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.getRotationPeriodArray.controls.sort((a,b) => new Date(a.get("startDate")?.value) < new Date(b.get("startDate")?.value) ? -1 : 1);
 
+    if(updateMatrix){
+      this.insertMatrixItemsForNewRotation(defaultRotationPeriod);
+    }
+
     return defaultRotationPeriod.get('rotationPeriodGUID')?.value;
+
+  }
+
+  private insertMatrixItemsForNewRotation(newRotationPeriod: FormGroup) : void {
+
+    for(let areaShift of this.getAreaShiftArray.controls){
+      this.addAssignedStaffControlToMatrix(areaShift.get('areaShiftGUID')?.value,newRotationPeriod.get('rotationPeriodGUID')?.value, undefined);
+    }
+
+  }
+
+  private insertMatrixItemsForNewAreaShift(newAreaShift: FormGroup) : void {
+
+    for(let rotationPeriod of this.getRotationPeriodArray.controls){
+      this.addAssignedStaffControlToMatrix(newAreaShift.get('areaShiftGUID')?.value,rotationPeriod.get('rotationPeriodGUID')?.value, undefined);
+    }
 
   }
 

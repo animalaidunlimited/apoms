@@ -70,7 +70,7 @@ export class RotationPeriodComponent implements OnInit {
 
    copyRotationPeriod(period : AbstractControl, cycle: boolean){
 
-    const newRotationPeriodGUID = this.rotaService.addRotationPeriod(undefined, false);
+    const newRotationPeriodGUID = this.rotaService.addRotationPeriod(undefined, false, true);
 
     const staffAssignmentAreaShifts = this.rotaService.filterStaffAssignments(period.get('rotationPeriodGUID')?.value, 1)
                                .map(element => {

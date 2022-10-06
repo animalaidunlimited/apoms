@@ -1,11 +1,11 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetRotationRole !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetRotationRoles !!
 
--- CALL AAU.sp_RotationRole('Jim');
+-- CALL AAU.sp_GetRotationRoles('Jim');
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotationRole( IN prm_UserName VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetRotationRoles( IN prm_UserName VARCHAR(45))
 BEGIN
 
 /*
@@ -19,16 +19,24 @@ DECLARE vOrganisationId INT;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
-	SELECT 
-			JSON_ARRAYAGG(
-			JSON_MERGE_PRESERVE(
-			JSON_OBJECT("rotationRoleId", rr.RotationRoleId),
-			JSON_OBJECT("role", rr.`Role`),
-            JSON_OBJECT("colour", rr.Colour)
-			)) AS `RotationRoles`
-	FROM AAU.RotationRole rr
-    WHERE rr.OrganisationId = vOrganisationId
-    AND rr.IsDeleted = 0;
+SELECT RotationRoleId,RotationRole,SortOrder,IsDeleted,Colour
+FROM AAU.RotationRole;
+
+-- 	SELECT 
+-- 			JSON_ARRAYAGG(
+-- 			JSON_MERGE_PRESERVE(
+-- 			JSON_OBJECT("RotationRoleId", rr.RotationRoleId),
+-- 			JSON_OBJECT("RotationRole", rr.`RotationRole`),
+--             JSON_OBJECT("SortOrder", rr.`SortOrder`),
+--             JSON_OBJECT("IsDeleted", rr.`IsDeleted`)
+--             -- ,JSON_OBJECT("colour", rr.Colour) 
+-- 			)) AS `RotationRoles`
+-- 	FROM (
+--     SELECT * FROM AAU.RotationRole
+--     LIMIT 1
+--     ) rr
+--     WHERE rr.OrganisationId = vOrganisationId
+--     AND rr.IsDeleted = 0;
     
 END$$
 

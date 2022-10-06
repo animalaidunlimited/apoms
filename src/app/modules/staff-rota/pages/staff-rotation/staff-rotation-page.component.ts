@@ -26,6 +26,8 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   beginningOfRange = false;
 
+  dataSource: AbstractControl[] = [];
+
   editingRotaVersion = {rotaVersionId: 0, rotaVersionName: ""};
   editingRota = {};
 
@@ -283,13 +285,13 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   //Rotation Period Functions
 
   addRotationPeriod(updateMatrix: boolean) : void {
-    this.rotaService.addRotationPeriod(undefined, updateMatrix);
+    this.rotaService.addRotationPeriod(undefined, updateMatrix, true);
   }
 
   //Area Shift Functions
 
   addAreaShift() : void {
-    this.rotaService.addAreaShift(undefined);
+    this.rotaService.addAreaShift(undefined, true);
   }
 
   //Misc. Functions

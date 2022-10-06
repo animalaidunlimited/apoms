@@ -2,8 +2,8 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/cor
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { RotationRole, AreaShiftResponse } from 'src/app/core/models/rota';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -39,7 +39,13 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-    this.rotationRoles$ = this.dropdownService.getRotationRole();
+    this.rotationRoles$ = this.dropdownService.getRotationRole().pipe(map(roles => roles.map(role => (
+      {
+        rotationRoleId: role.RotationRoleId,
+        rotationRole: role.RotationRole,
+        colour: role.Colour
+      })
+    )));
 
     this.areaShift.get('colour')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
 

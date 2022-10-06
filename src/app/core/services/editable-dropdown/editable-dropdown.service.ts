@@ -54,20 +54,27 @@ export class EditableDropdownService {
 
   repopulateDropDownFormArray(dropdownData: any[]) {
 
-    this.editableDropdownForm = this.generateDropDownFormArray(
-      dropdownData.map(result => {
+    const data =  dropdownData.map(result => {   
+      
+      // console.log(result);
+        
+        const values = Object.values(result);
 
-            const vals = Object.values(result);
+        console.log(result);
+        console.log(values[1]);
 
-            return this.getEmptyElement(
-                          vals[0] as number,
-                          vals[1] as string,
-                          vals[2] as boolean,
-                          vals[3] as number,
-                          false);
-          }
-        )
-    );
+        let v = this.getEmptyElement(
+          values[0] as number,
+          values[1] as string,
+          values[2] as boolean,
+          values[3] as number,
+          false);
+
+        return v;
+      }
+    )
+
+    this.editableDropdownForm = this.generateDropDownFormArray(data);
 
     this.emit();
 
@@ -109,6 +116,8 @@ export class EditableDropdownService {
   generateDropDownFormArray(values:FormGroup[]){
 
     const dropDownFormArray = new FormArray(values);
+
+    console.log(values);
 
     dropDownFormArray.setValidators([UniqueValidators.uniqueBy('sort')]);
     dropDownFormArray.disable();
@@ -157,7 +166,7 @@ export class EditableDropdownService {
       dropdownElement.get('saving')?.setValue(false);
 
       if(result?.error){
-        this.snackbar.errorSnackBar('A server error has occured: error EDS-156', 'OK');
+        this.snackbar.errorSnackBar('A server error has occurred: error EDS-156', 'OK');
       }
       else {
         this.emit();

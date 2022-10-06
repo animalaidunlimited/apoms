@@ -69,7 +69,7 @@ CREATE TABLE `AAU`.`AreaShift` (
   `AreaShiftGUID` VARCHAR(128) NOT NULL,
   `Sequence` INT NULL,
   `Colour` VARCHAR(20) NOT NULL DEFAULT 'White',
-  `RoleId` INT NULL,
+  `RotationRoleId` INT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -111,9 +111,10 @@ CREATE TABLE `AAU`.`RotaMatrixItem` (
 
 CREATE TABLE `AAU`.`RotationRole` (
   `RotationRoleId` INT NOT NULL AUTO_INCREMENT,
-  `Role` VARCHAR(45) NOT NULL,
+  `RotationRole` VARCHAR(45) NOT NULL,
   `Colour` VARCHAR(16) NOT NULL,
   `OrganisationId` INT NOT NULL,
+  `SortOrder` INT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -131,7 +132,10 @@ INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 
 INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRotaVersion`, `RotaId`) VALUES
 (1, 'Version 1', 0, 1), (1, 'Version 2', 1, 1),
 (1, 'Desk Version MkI', 0, 2), (1, 'Desk Version MkII', 1, 2);
-INSERT INTO `AAU`.`RotationRole` (Role, Colour, OrganisationId) VALUES ('N01','lightgreen',1),('N02','lightblue',1),('N03','lightcyan',1),
-('HX1','lightpurple',1),('HX2','lightyellow',1),('HX3','lightsalmon',1);
 
+INSERT INTO AAU.RotationRole (Role, Colour, OrganisationId) VALUES ('N01','#CFE2F3',1),('N02','#CFE2F4',1),('N03','#CFE2F5',1)
+,('N04','#CFE2F6',1),('N05','#CFE2F7',1),('N06','#CFE2F8',1),('I01','#F4CCCC',1),('I02','#F4CCCC',1),('I03','#F4CCCC',1)
+,('I04','#F4CCCC',1),('C01','#FFF2CC',1),('C02','#FFF2CC',1),('C03','#FFF2CC',1),('C04','#FFF2CC',1),('H01','#D9EAD3',1)
+,('H02','#D9EAD3',1),('H10','#D9EAD3',1),('H04','#D9EAD3',1),('H05','#D9EAD3',1),('H07','#D9EAD3',1),('H06','#D9EAD3',1),
+('H08','#D9EAD3',1),('H09','#D9EAD3',1),('H03','#D9EAD3',1);
 */

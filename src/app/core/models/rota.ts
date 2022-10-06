@@ -1,7 +1,15 @@
 export interface RotationRole{
     rotationRoleId: number;
-    role: string;
+    rotationRole: string;
     colour: string
+  }
+
+export interface RotationRoleDropdown{
+    RotationRoleId: number;
+    RotationRole: string;
+    Colour: string;
+    IsDeleted: boolean;
+    SortOrder: number;
   }
   
 export interface Rota{

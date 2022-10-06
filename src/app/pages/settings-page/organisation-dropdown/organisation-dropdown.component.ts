@@ -67,7 +67,9 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
         let dropData = this.dropdownService.getDynamicDropdown(drop.request);
 
-        this.generateDropDownForOrganisation(dropData).subscribe(dropdownResult => this.eDropdownService.repopulateDropDownFormArray(dropdownResult));
+        this.generateDropDownForOrganisation(dropData)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe(dropdownResult => this.eDropdownService.repopulateDropDownFormArray(dropdownResult));
       });
 
       this.currentDropdownDataSource.subscribe(() => {

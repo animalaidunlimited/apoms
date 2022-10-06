@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
-import { filter, map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
@@ -26,7 +26,7 @@ import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
 import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
-import { RotationRole } from '../../models/rota';
+import { RotationRole, RotationRoleDropdown } from '../../models/rota';
 
 
 @Injectable({
@@ -50,23 +50,23 @@ export class DropdownService extends APIService {
     exclusions$!: Exclusions[];
     eyeDischarge$!: any[];
     isoReasons$!: any[];
+    jobTypes$!: Observable<UserJobType[]>;
     nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
     patientCallOutcome$!: Observable<PatientCallerInteractionOutcome[]>;
     patientStates$!: Observable<PatientStatusResponse[]>;
     printableElements$!: Observable<PrintElement[]>;
+	priority$!:Observable<Priority[]>;
     problems$!: Observable<ProblemDropdownResponse[]>;
-    rotationRoles$!: Observable<RotationRole[]>;
+    rotationRoles$!: Observable<RotationRoleDropdown[]>;
+    releaseManagers$!: Observable<ReleaseManager[]>;
     rescuers$!: Observable<User[]>;
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
-    surgeryTypes$!: Observable<SurgeryType[]>;
-    jobTypes$!: Observable<UserJobType[]>;
+    surgeryTypes$!: Observable<SurgeryType[]>;    
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
-	priority$!:Observable<Priority[]>;
-    releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
     treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
@@ -742,6 +742,7 @@ getVehicleType(): Observable<VehicleType[]> {
     if(!this.vehicleTypes$) {
         this.vehicleTypes$ = this.getObservable(request).pipe(
             map((response: VehicleType[])=>{
+                console.log(response)
                 return response;
             })
         );
@@ -758,7 +759,6 @@ getVehicleListDropdown(): Observable<Vehicle[]> {
     if(!this.vehicleList$) {
         this.vehicleList$ = this.getObservable(request).pipe(
             map((response: Vehicle[])=>{
-                console.log(response)
                 return response;
             })
         );
@@ -767,14 +767,13 @@ getVehicleListDropdown(): Observable<Vehicle[]> {
 return this.vehicleList$;
 
 }
-getRotationRole(): Observable<RotationRole[]> {
+getRotationRole(): Observable<RotationRoleDropdown[]> {
 
-    const request = '/GetRotationRoles';
+    const request = '/RotationRole';
 
     if(!this.rotationRoles$) {
         this.rotationRoles$ = this.getObservable(request).pipe(
-            map((response: RotationRole[])=>{
-                console.log(response)
+            map((response: RotationRoleDropdown[])=>{
                 return response;
             })
         );
