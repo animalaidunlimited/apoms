@@ -66,6 +66,7 @@ export interface RotationPeriod{
   rotaVersionId: number;
   startDate: Date | string;
   endDate: Date | string;
+  locked: boolean;
 }
 
 export interface AreaShift{

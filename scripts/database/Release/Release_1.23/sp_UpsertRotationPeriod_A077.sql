@@ -10,6 +10,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotationPeriod(
         IN prm_RotaVersionId INT,
         IN prm_StartDate DATE,
         IN prm_EndDate DATE,
+        IN prm_Locked TINYINT,   
         IN prm_Deleted TINYINT
 )
 BEGIN
@@ -60,8 +61,9 @@ ELSEIF vRotationPeriodExists = 1 THEN
 	UPDATE AAU.RotationPeriod SET
 		StartDate = prm_StartDate,
 		EndDate = prm_EndDate,
+        `Locked` = prm_Locked,
 		IsDeleted = prm_Deleted,
-		DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL)
+		DeletedDate = IF(prm_Deleted = 1, vTimeNow, NULL)         
 	WHERE RotationPeriodId = vRotationPeriodId;
 
 	SELECT 1 INTO vSuccess;    

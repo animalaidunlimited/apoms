@@ -19,7 +19,7 @@
         class="unassigned-checkbox"
         matTooltip="check unassigned staff"
         formControlName="checkUnassigned"
-        (change)="checkUnassignedStaff(period, $event.checked)">
+        (change)="checkUnassignedStaff(inputPeriod, $event.checked)">
       </mat-checkbox>
 
       <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, false)">
@@ -29,6 +29,12 @@
       <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
         <mat-icon matTooltip="copy + rotate" class="close-icon" >difference</mat-icon>
       </button>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center">
+      
+      
 
       <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">        
         <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>

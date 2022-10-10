@@ -8,7 +8,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotaVersion(
         IN prm_RotaId INT,
 		IN prm_RotaVersionId INT,
 		IN prm_RotaVersionName VARCHAR(64),
-        IN prm_DefaultRotaVersion TINYINT,
+        IN prm_DefaultRotaVersion TINYINT,        
         IN prm_Deleted TINYINT
 )
 BEGIN

@@ -5,7 +5,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, skip, startWith, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -26,7 +26,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   beginningOfRange = false;
 
-  dataSource: AbstractControl[] = [];
+  dataSource: BehaviorSubject<AbstractControl[]>;
 
   editingRotaVersion = {rotaVersionId: 0, rotaVersionName: ""};
   editingRota = {};
@@ -46,12 +46,12 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   userList!: UserDetails[];
 
+  displayColumns: Observable<string[]>;
+
+  rotationPeriods: Observable<string[]>
+
   public get getCurrentRota() : FormGroup {
     return this.rotaForm.get('currentRota') as FormGroup;
-  }
-
-  public get getRotationPeriodArray() : FormArray {
-    return this.rotaForm.get('rotationPeriodArray') as FormArray;
   }
 
   public get getAreaShiftArray() : FormArray {
@@ -72,12 +72,32 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     ) {      
 
       this.rotas$ = this.rotaService.rotas;
+
       this.rotaVersions$ = this.rotaService.rotaVersions;
 
       this.rotaForm = this.rotaService.getRotaForm;
       
       this.unassignedUsers = this.rotaService.unassignedUsers;
 
+      this.dataSource = this.rotaService.dataSource;
+
+      this.rotationPeriods = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 1)));
+
+      this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
+
+
+      
+  }
+
+  displayColumnsPipe(rotation: AbstractControl[], startIndex: number) : string[] {
+
+    if(!rotation || rotation?.length === 0){
+      return startIndex === 0 ? ["areaShift"] : [];
+      }
+
+      return Object.keys(rotation[0].value)
+                    .map(control => control === "areaShift" ? control : control.split("|")[1])
+                    .splice(startIndex);
   }
 
   ngOnInit(): void {
@@ -87,9 +107,11 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       if(complete){
         this.initialiseUsers();
       }
-    });    
+    });
 
-    this.getRotationPeriodArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
+    this.rotaForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges())
+
+    this.rotaService.getRotationPeriodArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
     this.getAreaShiftArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
     this.getMatrix.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
     this.unassignedUsers.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
@@ -213,13 +235,10 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     this.rotaService.saveRotaVersion(this.getCurrentRotaVersionDetails()).then(response => {
 
       if(response.rotaVersionSuccess === 1){
-        this.getCurrentRota.get('rotaId')?.enable();
-        
+        this.getCurrentRota.get('rotaId')?.enable();        
       }
       else {
-
         this.snackbarService.errorSnackBar("ERR: SRP-138: Error updating rota version, please see administrator", "OK");
-
       }
 
     });
@@ -349,8 +368,6 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   }
 
-
-
   displayFn(user: UserDetails): string {
 
     if(!user){
@@ -359,11 +376,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       
     return user.employeeNumber + ' - ' + user.firstName;    
   }
-  
 
-
-  userSelectedForShift(period: AbstractControl) : void {
-  period.markAsDirty();
+  userSelectedForShift(period: string) : void {
+    this.rotaService.markPeriodAsDirty(period);
   } 
 
   confirm(message: string) : Observable<any> {

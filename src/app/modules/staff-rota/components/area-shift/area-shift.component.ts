@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, skip, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { RotationRole, AreaShiftResponse } from 'src/app/core/models/rota';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -47,7 +47,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
       })
     )));
 
-    this.areaShift.get('colour')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+    this.areaShift.get('colour')?.valueChanges.pipe(skip(1), takeUntil(this.ngUnsubscribe)).subscribe(() => {
 
       //This takes a tick to update, so let's wait
       setTimeout(() => this.saveAreaShift(this.areaShift), 1);
@@ -60,7 +60,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
     this.groupSelectedUnsubscribe.next();
   }
 
-  ngOnChanges(change: SimpleChanges) {
+  ngOnChanges(change: SimpleChanges) {    
     this.areaShift = this.inputAreaShift as FormGroup;
   }
 
@@ -72,8 +72,9 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
       let colour = roles.find(element => element.rotationRoleId === $event.value)?.colour || "white";
       areaShift.get('colour')?.setValue(colour);
+     
       
-      this.saveAreaShift(areaShift);
+      //this.saveAreaShift(areaShift);      
 
     });
 

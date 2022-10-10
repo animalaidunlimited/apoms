@@ -742,7 +742,6 @@ getVehicleType(): Observable<VehicleType[]> {
     if(!this.vehicleTypes$) {
         this.vehicleTypes$ = this.getObservable(request).pipe(
             map((response: VehicleType[])=>{
-                console.log(response)
                 return response;
             })
         );

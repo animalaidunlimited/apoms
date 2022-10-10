@@ -89,7 +89,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     {name: 'Treatment priority', type: 'select'},
     {name: 'Other', type: 'select'}
   ]);
-  movedInDisplayColumns:Observable<string[]>;;
+  movedInDisplayColumns:Observable<string[]>;
 
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
@@ -259,7 +259,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.otherAreas = areaList.filter(area => area.areaName !== this.area?.areaName && !area.mainArea);
 
-      this.populatemovedInColumns(areaList);
+      this.populateMovedInColumns(areaList);
 
       // Here we need to filter down to our main areas that we want to display in the table.
       // Then we also want to filter out the current area from the list too.
@@ -311,7 +311,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
-  populatemovedInColumns(areaList: TreatmentArea[]) : void {
+  populateMovedInColumns(areaList: TreatmentArea[]) : void {
 
     const movedInColumns:Column[] = [];
 

@@ -1,9 +1,10 @@
 
-<div [formGroup]="areaShift" fxLayout="row" fxLayoutAlign="start center">
+<div [formGroup]="areaShift" fxLayout="row" fxLayoutAlign="space-between center">
 
-  <mat-form-field>
+  <mat-form-field style="width:125px">
     <mat-label>Group name</mat-label>
         <mat-select (selectionChange)="groupSelected($event, areaShift)"
+        style="text-align: center;"
         formControlName="rotationRoleId"
         [errorStateMatcher]="errorMatcher">
         <mat-option>N/A</mat-option>
@@ -13,12 +14,23 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-icon-button class="close-button" (click)="deleteAreaShift(areaShift)">
-  <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
-  </button>
+  <div class="area-shift-edit-buttons" fxLayout="row" fxLayoutAlign="center center">
+
+    <div class="colour-input">
+      <input type="color" formControlName="colour">
+    </div>
 
 
-  <input type="color" formControlName="colour">
+    <button mat-icon-button class="close-button" (click)="deleteAreaShift(areaShift)">
+    <mat-icon matTooltip="delete" class="close-icon" color="primary">delete</mat-icon>
+    </button>
+    
+  </div>
+
+
+
+
+  
 
 
 </div>

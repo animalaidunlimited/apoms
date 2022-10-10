@@ -55,22 +55,16 @@ export class EditableDropdownService {
   repopulateDropDownFormArray(dropdownData: any[]) {
 
     const data =  dropdownData.map(result => {   
-      
-      // console.log(result);
-        
+              
         const values = Object.values(result);
 
-        console.log(result);
-        console.log(values[1]);
-
-        let v = this.getEmptyElement(
+        return this.getEmptyElement(
           values[0] as number,
           values[1] as string,
           values[2] as boolean,
           values[3] as number,
           false);
 
-        return v;
       }
     )
 
@@ -116,8 +110,6 @@ export class EditableDropdownService {
   generateDropDownFormArray(values:FormGroup[]){
 
     const dropDownFormArray = new FormArray(values);
-
-    console.log(values);
 
     dropDownFormArray.setValidators([UniqueValidators.uniqueBy('sort')]);
     dropDownFormArray.disable();

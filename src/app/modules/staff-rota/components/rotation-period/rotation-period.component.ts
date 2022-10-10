@@ -18,7 +18,7 @@ import { RotaService } from '../../services/rota.service';
 })
 export class RotationPeriodComponent implements OnInit {
 
-  @Input() inputPeriod! : AbstractControl;
+  @Input() inputPeriod! : string;
   period!: FormGroup; 
 
   private ngUnsubscribe = new Subject();
@@ -39,7 +39,7 @@ export class RotationPeriodComponent implements OnInit {
   }
 
   ngOnChanges(change: SimpleChanges) {
-    this.period = this.inputPeriod as FormGroup;
+    this.period = this.rotaService.getPeriodByGUID(change.inputPeriod.currentValue);
 
     const groupId = this.period.get("rotationPeriodGUID")?.value;
 
@@ -50,10 +50,10 @@ export class RotationPeriodComponent implements OnInit {
 
   }
 
-  checkUnassignedStaff(period: AbstractControl, checked: boolean) : void {
+  checkUnassignedStaff(period: string, checked: boolean) : void {
 
     this.rotaService.getRotationPeriodArray.controls.some(rotationPeriod => {
-      if(rotationPeriod.get('rotationPeriodGUID')?.value === period.get('rotationPeriodGUID')?.value){
+      if(rotationPeriod.get('rotationPeriodGUID')?.value === period){
   
         rotationPeriod.get('checkUnassigned')?.setValue(checked);
   
@@ -65,8 +65,6 @@ export class RotationPeriodComponent implements OnInit {
     this.rotaService.updateUnassignedStaffList()
   
    }
-  
-
 
    copyRotationPeriod(period : AbstractControl, cycle: boolean){
 
