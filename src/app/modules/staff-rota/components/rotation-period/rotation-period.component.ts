@@ -138,6 +138,19 @@ export class RotationPeriodComponent implements OnInit {
 
   }
 
+  generateRotationPeriodDays(period: AbstractControl) : void {
+
+    this.confirm("Are you sure you want to generate the rota days for this period?").subscribe(response => {
+
+      if(response){
+        period.get('locked')?.setValue(true);
+        this.saveRotationPeriod(period);
+      }
+
+    })
+
+  }
+
   updateMatrix() : void {
 
     this.rotaService.upsertMatrix(this.period.get('rotationPeriodGUID')?.value)

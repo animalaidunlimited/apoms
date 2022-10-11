@@ -33,6 +33,16 @@
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">
+
+      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="generateRotationPeriodDays(period)"
+      *ngIf="!period.get('locked')?.value">        
+        <mat-icon matTooltip="generate" class="close-icon key">key</mat-icon>
+      </button>
+
+      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button"
+      *ngIf="period.get('locked')?.value">        
+        <mat-icon matTooltip="period locked" class="close-icon lock">lock</mat-icon>
+      </button>
       
       
 
