@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { AcknowledgedNotificationResponse, Notification, NotificationResponse, NotificationInsertResponse, UnsavedNotification } from '../../models/notification';
 import { APIService } from '../http/api.service';
-import { SuccessOnlyResponse } from './../../models/responses';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserNotificationService extends APIService {
 
   endpoint = 'UserAdmin';
@@ -52,7 +51,7 @@ constructor(public http: HttpClient) {
     this.get(request)
     .then((result:any) => {
 
-      result.notifications = JSON.parse(result.notifications)
+      result.notifications = JSON.parse(result.notifications);
       
       return result as NotificationResponse
     })

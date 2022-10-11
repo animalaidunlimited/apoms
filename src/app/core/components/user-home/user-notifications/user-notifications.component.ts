@@ -51,8 +51,6 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
     this.notificationArray.clear();
 
-    console.log(notifications);
-
     for(let notification of notifications) {
 
       const newNotification = this.fb.group({
