@@ -4,7 +4,11 @@
 
     <div>
 
-      <div formArrayName="callerArray" class="callerArray" *ngFor="let caller of callerArray.controls; let callerIndex = index;let last = last;" [ngClass]="{'lastCallerInArray': last}">
+      <div
+          formArrayName="callerArray"
+          class="callerArray"
+          *ngFor="let caller of callerArray.controls; let callerIndex = index;let last = last;"
+          [ngClass]="{'lastCallerInArray': last}">
 
         <app-caller-autocomplete
         [incomingCallerForm]="caller"

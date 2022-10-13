@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotaMatrix !!
 
--- CALL AAU.sp_GetRotaMatrix(2,'b83add4a-d267-5827-bf1e-0be6965f91f7');
+-- CALL AAU.sp_GetRotaMatrix(2,'b83add4a-d267-5827-bf1e-0be6965f91f7,c5ad4348-fead-21a5-73e0-fa9f5c4c6ddf');
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotaMatrix( IN prm_RotaVersionId INT, IN prm_RotationPeriodGUIDs VARCHAR(256))

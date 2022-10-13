@@ -89,6 +89,24 @@ export interface AreaShiftResponse{
 }
 
 export interface AssignedUser {
-  staffTaskId: string,
-  userId: number
+  staffTaskId: string;
+  userId: number;
+}
+
+export interface RotaDayAssignmentResponse {
+  rotationPeriodId: number;
+  rotaDays: RotaDay[];
+}
+
+export interface RotaDay{
+  rotaDayDate: Date | string;
+  rotaDayAssignment: RotaDayAssignment[]
+}
+
+export interface RotaDayAssignment{
+  rotaDayId: number;
+  areaShiftId: number;
+  userId: number;
+  rotationUserId: number;
+  leaveRequestId: number;
 }

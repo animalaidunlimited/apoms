@@ -1,9 +1,11 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotationPeriodResponse } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -30,6 +32,7 @@ export class RotationPeriodComponent implements OnInit {
   constructor(
     private rotaService: RotaService,
     public dialog: MatDialog,
+    private router: Router,
     private snackbarService: SnackbarService,
     private rotationPeriodValidator: RotationPeriodValidator,
     private changeDetector: ChangeDetectorRef
@@ -144,11 +147,33 @@ export class RotationPeriodComponent implements OnInit {
 
       if(response){
         period.get('locked')?.setValue(true);
-        this.saveRotationPeriod(period);
+        this.insertRotaDayAssignments(period);
       }
 
     })
 
+  }
+
+  navigateToRotationPeriod(period: AbstractControl) : void {
+
+    let rotationPeriodId = '' + period.get('rotationPeriodId')?.value;
+
+    this.router.navigate(['/nav/staff-rotation', {rotationPeriodId}], { replaceUrl: true });
+
+  }
+
+  insertRotaDayAssignments(period: AbstractControl) : void {
+
+    this.rotaService.insertRotaDayAssignments(period).then((result:SuccessOnlyResponse) => {
+
+      if(result.success === 1){
+        this.snackbarService.successSnackBar("Rota created for all days in the period", "OK");
+      }
+      else {
+        this.snackbarService.errorSnackBar("ERR: RPC-163: Error generating rota day assignments, please see administrator", "OK");
+      }
+
+    })
   }
 
   updateMatrix() : void {
