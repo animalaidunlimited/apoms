@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { RotationPeriodResponse } from 'src/app/core/models/rota';
+import { RotationPeriodResponse, RotationUser } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -69,18 +69,18 @@ export class RotationPeriodComponent implements OnInit {
   
    }
 
-   copyRotationPeriod(period : AbstractControl, cycle: boolean){
+   async copyRotationPeriod(period : AbstractControl, cycle: boolean){
 
-    const newRotationPeriodGUID = this.rotaService.addRotationPeriod(undefined, false, true);
+    const newRotationPeriodGUID = await this.rotaService.addRotationPeriod(undefined, false, true);
 
     const staffAssignmentAreaShifts = this.rotaService.filterStaffAssignments(period.get('rotationPeriodGUID')?.value, 1)
-                               .map(element => {
-                                
-                                let staffAssignment = this.rotaService.getMatrix.get(element);
+                               .map(element => {                                
+
+                                 let staffAssignment = this.rotaService.getMatrix.get(element);
 
                                 return {
                                     areaShiftGUID: "" + staffAssignment?.get('staffTaskId')?.value.split('|')[0],
-                                    assignedUser: staffAssignment?.get('assignedUser')?.value as UserDetails
+                                    assignedUser: staffAssignment?.get('assignedUser')?.value as RotationUser
                                   };
 
                               
@@ -105,11 +105,11 @@ export class RotationPeriodComponent implements OnInit {
       if(!!staffAssignmentAreaShifts[i].assignedUser?.userId || !cycle){
 
         assignedUser = populatedAssignments[assigned]?.assignedUser;
-         assigned++;
+        assigned++;
       }
 
-      this.rotaService.addAssignedStaffControlToMatrix(staffAssignmentAreaShifts[i]?.areaShiftGUID, newRotationPeriodGUID, assignedUser);
-      
+      this.rotaService.addAssignedStaffControlToMatrix(staffAssignmentAreaShifts[i]?.areaShiftGUID, newRotationPeriodGUID, assignedUser);   
+      this.rotaService.generateTableDataSource();   
    
     }
 

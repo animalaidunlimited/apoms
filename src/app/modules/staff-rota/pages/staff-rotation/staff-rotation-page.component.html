@@ -196,23 +196,24 @@
                       [formGroupName]="(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)"
                       class="assigned-staff-wrapper">
       
-                        <mat-form-field class="assigned-user">
+                        <mat-form-field class="assigned-user"
+                        *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period).get('assignedUser'); let assignedUser">                                      
       
-                          <input  matInput
+                          <input matInput
                           type="text"
-                          style="text-align: center;"
+                          class="user-input"
                           formControlName="assignedUser"                            
-                          (focus)="setFilteredUsers(period, element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period).get('assignedUser'))"
-                                  [matAutocomplete]="auto">
+                          (focus)="setFilteredUsers(period, assignedUser)"
+                          [matAutocomplete]="auto">
 
-                                  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                  (optionSelected)="userSelectedForShift(period)">
+                          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                  (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value)">
                             <mat-option>N/A</mat-option>
                             <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
                               {{ user.employeeNumber + ' - ' + user.firstName }}
                             </mat-option>
                           </mat-autocomplete>
-      
+                          <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('hasLeave')?.value" matSuffix>event_busy</mat-icon>      
                         </mat-form-field>
       
                       </div>            

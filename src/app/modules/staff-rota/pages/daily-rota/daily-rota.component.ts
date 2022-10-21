@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RotaService } from '../../services/rota.service';
-import { RotaDay, RotaDayAssignmentResponse } from './../../../../core/models/rota';
+import { RotaDayAssignmentResponse } from './../../../../core/models/rota';
 
 @Component({
   selector: 'app-daily-rota',
@@ -36,6 +36,8 @@ export class DailyRotaComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    
   }
 
   processRotaDays(rotaDays: RotaDayAssignmentResponse | null) : void {

@@ -1,3 +1,5 @@
+import { UserDetails } from "./user";
+
 export interface RotationRole{
     rotationRoleId: number;
     rotationRole: string;
@@ -109,4 +111,15 @@ export interface RotaDayAssignment{
   userId: number;
   rotationUserId: number;
   leaveRequestId: number;
+}
+
+export interface RotationUser extends UserDetails {
+  hasLeave: boolean;
+}
+
+export interface RotationPeriodLeave {
+  userId: number;
+  granted: boolean;
+  startDate: string | Date;
+  endDate: string | Date;
 }

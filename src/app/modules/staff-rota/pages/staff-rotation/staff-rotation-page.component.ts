@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
-import { AssignedUser, Rota, RotaVersion } from 'src/app/core/models/rota';
+import { AssignedUser, Rota, RotationUser, RotaVersion } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
  
 @Component({
@@ -84,8 +84,6 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       this.rotationPeriods = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 1)));
 
       this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
-
-
       
   }
 
@@ -107,9 +105,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       if(complete){
         this.initialiseUsers();
       }
-    });
+    });    
 
-    this.rotaForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges())
+    this.rotaForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
 
     this.rotaService.getRotationPeriodArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
     this.getAreaShiftArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
@@ -354,6 +352,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   private initialiseUsers(): void {
     //Go and get the user list so we can populate the drag list
     this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
+
       this.userList = userListData;
 
       //Let's wait until the user list is populated before we do any further initialisation
@@ -362,11 +361,11 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  getGroupPeriodAssignedStaff(areaShiftGUID: string, rotationPeriodGUID: string) : AbstractControl | null {
+  // getGroupPeriodAssignedStaff(areaShiftGUID: string, rotationPeriodGUID: string) : AbstractControl | null {
 
-    return this.rotaService.getMatrix?.get(this.rotaService.getCoords(areaShiftGUID, rotationPeriodGUID));
+  //   return this.rotaService.getMatrix?.get(this.rotaService.getCoords(areaShiftGUID, rotationPeriodGUID));
 
-  }
+  // }
 
   displayFn(user: UserDetails): string {
 
@@ -377,7 +376,10 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     return user.employeeNumber + ' - ' + user.firstName;    
   }
 
-  userSelectedForShift(period: string) : void {
+  userSelectedForShift(period: string, areaShiftGUID: string) : void {
+    
+    this.rotaService.checkForLeave(period, areaShiftGUID);
+
     this.rotaService.markPeriodAsDirty(period);
   } 
 
