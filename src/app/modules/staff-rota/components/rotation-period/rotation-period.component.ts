@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { RotationPeriodResponse, RotationUser } from 'src/app/core/models/rota';
+import { RotationPeriodResponse } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -80,7 +80,7 @@ export class RotationPeriodComponent implements OnInit {
 
                                 return {
                                     areaShiftGUID: "" + staffAssignment?.get('staffTaskId')?.value.split('|')[0],
-                                    assignedUser: staffAssignment?.get('assignedUser')?.value as RotationUser
+                                    assignedUser: staffAssignment?.get('assignedUser')?.value
                                   };
 
                               
@@ -234,7 +234,9 @@ export class RotationPeriodComponent implements OnInit {
     const index = this.rotaService.getRotationPeriodArray.controls.findIndex(element => element?.get('rotationPeriodId')?.value === period.get('rotationPeriodId')?.value);
 
     this.rotaService.getRotationPeriodArray.removeAt(index);
-    this.rotaService.updateUnassignedStaffList();
+    this.rotaService.generateTableDataSource();
+    
+    this.changeDetector.detectChanges();
   }
 
   confirm(message: string) : Observable<any> {
@@ -249,8 +251,7 @@ export class RotationPeriodComponent implements OnInit {
       }
     });
   
-    return dialogRef.afterClosed()
-    .pipe(takeUntil(this.ngUnsubscribe));  
+    return dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe));  
   
    } 
 

@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
-import { AssignedUser, Rota, RotationUser, RotaVersion } from 'src/app/core/models/rota';
+import { AssignedUser, Rota, RotaVersion } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
  
 @Component({
@@ -236,7 +236,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
         this.getCurrentRota.get('rotaId')?.enable();        
       }
       else {
-        this.snackbarService.errorSnackBar("ERR: SRP-138: Error updating rota version, please see administrator", "OK");
+        this.snackbarService.errorSnackBar("ERR: SRP-243: Error updating rota version, please see administrator", "OK");
       }
 
     });
@@ -376,9 +376,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     return user.employeeNumber + ' - ' + user.firstName;    
   }
 
-  userSelectedForShift(period: string, areaShiftGUID: string) : void {
+  userSelectedForShift(period: string, areaShiftGUID: string, user: AbstractControl) : void {
     
-    this.rotaService.checkForLeave(period, areaShiftGUID);
+    this.rotaService.checkForLeave(period, areaShiftGUID, user);
 
     this.rotaService.markPeriodAsDirty(period);
   } 

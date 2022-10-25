@@ -53,7 +53,7 @@ export class VehicleService  extends APIService {
 
       this.vehicleDefaultsChanged.next(true);
 
-    })
+    });
   }
 
 

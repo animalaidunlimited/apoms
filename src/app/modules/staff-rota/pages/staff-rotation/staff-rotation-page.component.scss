@@ -5,7 +5,7 @@
 }
 
 table {
-  width: 800px;
+  max-width: 800px;
 }
 
 .shift-form-field{
@@ -132,6 +132,21 @@ tr, th, td {
     cursor: pointer;
 }
 
+::ng-deep .leave-tooltip{
+    white-space: pre-line;    
+}
+
+.leave-full-overlap {
+    color: red;
+}
+
+.leave-granted {
+    color: green;
+}
+
+.leave-pending {
+    color: orange;
+}
 
 
 

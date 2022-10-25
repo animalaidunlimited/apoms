@@ -4,9 +4,11 @@ import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '
 import { Observable, of, BehaviorSubject, Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
-import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationPeriod, RotationPeriodLeave, RotationPeriodResponse, RotationUser, RotaVersion } from 'src/app/core/models/rota';
+import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationPeriod,
+  RotationPeriodLeave, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 import { SuccessOnlyResponse } from './../../../core/models/responses';
 
 interface UpsertRotaResponse{
@@ -35,7 +37,7 @@ export class RotaService extends APIService {
 
   offset = 0;
   periodCycleReset = true;
-  periodsToShow = 5;
+  periodsToShow = 1;
 
   rotas:BehaviorSubject<Rota[]> = new BehaviorSubject<Rota[]>([]);
   rotaVersions:BehaviorSubject<RotaVersion[]> = new BehaviorSubject<RotaVersion[]>([]);
@@ -86,8 +88,15 @@ export class RotaService extends APIService {
 
   constructor(
     http: HttpClient,    
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private organisationDetails: OrganisationDetailsService) {
     super(http);
+
+    this.organisationDetails.organisationDetail.subscribe(organisationSettings => {
+
+      this.periodsToShow = organisationSettings.rotaDefaults.periodsToShow;
+
+    });
 
     this.getCurrentRota.get("rotaId")?.valueChanges.subscribe(rotaId => {
         
@@ -218,6 +227,8 @@ async initialiseRotationPeriods(periodsToShow: number) {
     this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';
 
     if(!periods?.rotationPeriods){
+      this.getRotationPeriodArray.clear();
+      this.generateTableDataSource();
       return;
     }
 
@@ -271,7 +282,7 @@ getMatrixItems(periodGUIDs: string) : Promise<AssignedStaffResponse[] | null> {
 
 }
 
-async loadMatrixForPeriods(periodGUIDs: string) {    
+async loadMatrixForPeriods(periodGUIDs: string) {
 
   await this.getMatrixItems(periodGUIDs).then(async staffAssignments => {
 
@@ -281,9 +292,9 @@ async loadMatrixForPeriods(periodGUIDs: string) {
     
     for(let assignment of staffAssignments) {
 
-      let user = this.userList.find(element => element.userId === assignment.assignedUserId) as RotationUser;   
+      let user = this.userList.find(element => element.userId === assignment.assignedUserId);   
       
-      this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user)
+      this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user);
     }
 
     this.generateTableDataSource();
@@ -304,25 +315,24 @@ async getLeavesForRotationPeriod(period: AbstractControl) : Promise<void> {
     //Let's make sure the list is unique
     result?.forEach(element => {
 
-      if(!this.leaves.some(leave => leave.startDate === endDate && leave.endDate === startDate && leave.userId === element.userId)){
+      if(!this.leaves.some(leave => leave.leaveRequestId === element.leaveRequestId)){
         this.leaves.push(element);
       }     
-    });    
-
+    });
   
 
 }
 
 shiftLeftRotation() : void {
 
-  if(this.periodCycleReset){
-    this.periodCycleReset = false;
-    this.offset = this.periodsToShow - 1;
-  }
+  // if(this.periodCycleReset){
+  //   this.periodCycleReset = false;
+  //   this.offset = this.periodsToShow - 1;
+  // }
 
-  if(this.getRotationPeriodArray.controls.length === this.periodsToShow){
-    this.getRotationPeriodArray.controls.pop();   
-  }
+  // if(this.getRotationPeriodArray.controls.length === this.periodsToShow){
+  //   this.getRotationPeriodArray.controls.pop();   
+  // }
 
   this.offset++;
 
@@ -564,6 +574,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       this.insertMatrixItemsForNewAreaShift(defaultAreaShift);
     }
 
+    this.generateTableDataSource();
+
   }
 
   async addRotationPeriod(rotationPeriod: RotationPeriod | undefined, updateMatrix: boolean, markAsDirty: boolean) : Promise<string> {
@@ -586,7 +598,9 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     if(updateMatrix){      
       this.insertMatrixItemsForNewRotation(defaultRotationPeriod);
-    }    
+    }
+    
+    this.generateTableDataSource();
 
     return defaultRotationPeriod.get('rotationPeriodGUID')?.value;
 
@@ -691,53 +705,73 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           sequence: (this.getAreaShiftArray?.length || -1) + 1,
                           rotationRoleId: [, Validators.required],
                           roleName: "",
-                          colour: "white",
+                          colour: "#ffffff",
                           isDeleted: false
                         });
   }
 
-  addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, assignedUser?: RotationUser){
+  addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, assignedUser?: UserDetails){
 
     let staffTaskId = this.getCoords(areaShiftGUID, rotationPeriodGUID);
 
     const period = this.getRotationPeriodArray.controls.find(period => period.get("rotationPeriodGUID")?.value === rotationPeriodGUID);
 
+    let leave = undefined;    
 
-    if(assignedUser){
-
-      assignedUser.hasLeave = this.leaves.some(leave =>  leave.userId === assignedUser.userId &&
+      let foundLeaveRaw = this.leaves.find(leave =>  leave.userId === assignedUser?.userId &&
                                             leave.startDate <= period?.get("endDate")?.value &&
-                                            leave.endDate >= period?.get("startDate")?.value);
-    }
+                                            leave.endDate >= period?.get("startDate")?.value);                                            
 
-    const addedTaskDetails = this.fb.group({
-      staffTaskId: staffTaskId,
-      assignedUser: assignedUser,
-      hasLeave: assignedUser?.hasLeave
-    });
+      if(foundLeaveRaw){  
+        //We need to create a deep clone otherwise the leave gets updated by subsequent runs        
+        leave = JSON.parse(JSON.stringify(foundLeaveRaw));
+
+        leave.fullOverlap =  leave.startDate <= period?.get("startDate")?.value &&
+                                  leave.endDate >= period?.get("endDate")?.value; 
+        
+      }
 
     if(!this.getMatrix.get(staffTaskId)){
+
+      const addedTaskDetails = this.fb.group({
+        staffTaskId,
+        assignedUser,
+        leave
+      });
+
       this.getMatrix.addControl(staffTaskId, addedTaskDetails, {emitEvent: false});
     }
     else {
       this.getMatrix.get(staffTaskId)?.get('assignedUser')?.setValue(assignedUser, {emitEvent: false});
-      this.getMatrix.get(staffTaskId)?.get('hasLeave')?.setValue(assignedUser?.hasLeave, {emitEvent: false});        
+      this.getMatrix.get(staffTaskId)?.get('leave')?.setValue(leave, {emitEvent: false});
     }
 
   }
 
-  public async checkForLeave(period: string, areaShiftGUID: string) {
+  public async checkForLeave(rotationPeriodGUID: string, areaShiftGUID: string, userToCheck: AbstractControl) {
 
-    let user = this.getMatrix.get(this.getCoords(areaShiftGUID, period))?.value;
+    let user = userToCheck.value;
 
-    let periods = this.getRotationPeriodArray.controls.filter(rotationPeriod => rotationPeriod.get('rotationPeriodGUID')?.value === period)
+    let period = this.getRotationPeriodArray.controls.find(rotationPeriod => rotationPeriod.get('rotationPeriodGUID')?.value === rotationPeriodGUID);
 
-      const leave = this.leaves.find(leave =>  leave.userId === user.userId &&
-                                          periods[0].get("startDate")?.value <= leave.endDate &&
-                                          periods[0].get("endDate")?.value >= leave.startDate);
+      const rawLeave = this.leaves.find(leave => leave.userId === user.userId &&
+                                          leave.endDate >= period?.get("startDate")?.value &&
+                                          leave.startDate <= period?.get("endDate")?.value);
 
-      this.getMatrix.get(`${areaShiftGUID}|${period}`)?.get("hasLeave")?.setValue(leave?.granted);
+      let leave = undefined;
 
+      if(rawLeave){
+
+        leave = JSON.parse(JSON.stringify(rawLeave));
+
+        const fullOverlap = leave?.startDate <= period?.get("startDate")?.value &&
+                            leave?.endDate >= period?.get("endDate")?.value
+
+        leave.fullOverlap = fullOverlap;
+
+      }
+
+      this.getMatrix.get(this.getCoords(areaShiftGUID, rotationPeriodGUID))?.get("leave")?.setValue(leave);
 
   }
 
@@ -818,6 +852,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
         const index = this.getAreaShiftArray.controls.findIndex(element => element?.get('areaShiftId')?.value === areaShift.get('areaShiftId')?.value );
     
         this.getAreaShiftArray.removeAt(index);
+
+        this.generateTableDataSource();
       }
 
       return result;

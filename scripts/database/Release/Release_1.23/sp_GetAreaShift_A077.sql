@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetAreaShifts !!
 
--- CALL AAU.sp_GetAreaShifts(2, 2, 0);
+-- CALL AAU.sp_GetAreaShifts(2);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetAreaShifts( IN prm_RotaVersionId INT)
@@ -23,7 +23,7 @@ Purpose: Retrieve a list of area shifts for a rota version.
             JSON_OBJECT("rotaVersionId", a.RotaVersionId),
             JSON_OBJECT("colour", a.Colour),
             JSON_OBJECT("sequence", a.Sequence),
-            JSON_OBJECT("rotationRoleId", a.RoleId)
+            JSON_OBJECT("rotationRoleId", a.RotationRoleId)
 			)) AS `AreaShifts`
 	FROM AAU.AreaShift a
     WHERE a.RotaVersionId = prm_RotaVersionId

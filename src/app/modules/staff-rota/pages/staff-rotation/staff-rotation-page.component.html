@@ -207,13 +207,20 @@
                           [matAutocomplete]="auto">
 
                           <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                  (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value)">
+                                  (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value, assignedUser)">
                             <mat-option>N/A</mat-option>
                             <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
                               {{ user.employeeNumber + ' - ' + user.firstName }}
                             </mat-option>
                           </mat-autocomplete>
-                          <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('hasLeave')?.value" matSuffix>event_busy</mat-icon>      
+
+                            <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('leave')?.value; let leave;"
+                            matTooltipClass="leave-tooltip"
+                            [ngClass]="leave.fullOverlap === true ? 'leave-full-overlap' : leave.granted === 'Granted' ? 'leave-granted' : 'leave-pending'"
+                            [matTooltip]="(leave.startDate | date: 'EEE,dd/MMM') + ' to ' + (leave.endDate | date: 'EEE,dd/MMM')
+                            + ' (' + leave.granted + ')'"  matSuffix >event_busy</mat-icon>
+                          
+
                         </mat-form-field>
       
                       </div>            
@@ -266,15 +273,7 @@
           color="primary">
           <mat-icon>add</mat-icon>
       </button>
-  
-      <button
-          type="button"
-          (click)="shiftRightRotation()"
-          mat-mini-fab
-          [disabled]="endOfRange"
-          color="primary">
-          <mat-icon style="margin-left:2px;">arrow_forward_ios</mat-icon>
-      </button>
+
   </div>
   
   <div fxLayout="row" *ngIf="(unassignedUsers | async); let unassigned">

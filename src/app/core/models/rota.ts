@@ -112,14 +112,11 @@ export interface RotaDayAssignment{
   rotationUserId: number;
   leaveRequestId: number;
 }
-
-export interface RotationUser extends UserDetails {
-  hasLeave: boolean;
-}
-
 export interface RotationPeriodLeave {
+  leaveRequestId: number;
   userId: number;
   granted: boolean;
   startDate: string | Date;
   endDate: string | Date;
+  fullOverlap: boolean;
 }

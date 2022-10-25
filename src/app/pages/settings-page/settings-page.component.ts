@@ -38,7 +38,7 @@ export class SettingsPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.releaseVersion = '1.21';
+        this.releaseVersion = '1.23';
 
         this.organisationDetails.organisationDetail.subscribe(organisationDetails => {
 
@@ -48,7 +48,7 @@ export class SettingsPageComponent implements OnInit {
 
             this.organisationOptions.get('vehicleDefaults')?.setValue(organisationDetails.vehicleDefaults);
 
-        })
+        });
     }
 
     refreshApp(){
@@ -65,9 +65,9 @@ export class SettingsPageComponent implements OnInit {
         this.organisationDetails.saveOrganisationVehicleDefaults(this.organisationOptions?.get('vehicleDefaults')?.value).then(response => {
 
             response.success === 1 ?
-                this.snackbar.successSnackBar('Organisation vehicle details saved successfully', 'OK')
+                this.snackbar.successSnackBar('Organisation vehicle defaults saved successfully', 'OK')
             :
-                this.snackbar.errorSnackBar('An error has occurred: Error number: SPC: 60','OK');
+                this.snackbar.errorSnackBar('An error has occurred: Error number: SPC: 70','OK');
 
         });
 

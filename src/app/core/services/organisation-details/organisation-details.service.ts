@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
-import { OrganisationDetail, OrganisationVehicleDefaults } from '../../models/organisation';
+import { OrganisationDetail, OrganisationRotaDefaults, OrganisationVehicleDefaults } from '../../models/organisation';
 import { SuccessOnlyResponse } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { StorageService } from '../storage/storage.service';
@@ -38,6 +38,9 @@ export class OrganisationDetailsService extends APIService{
                     shiftStartTime: "07:00",
                     shiftEndTime: "23:00",
                     defaultShiftLength: 9
+                },
+                rotaDefaults: {
+                    periodsToShow: 4
                 }
             })
         }
@@ -116,6 +119,18 @@ export class OrganisationDetailsService extends APIService{
         return await this.updateOrganisationDetail(currentSettings);        
     
       }
+
+      public async saveOrganisationRotaDefaults(organisationRotaDefaults: OrganisationRotaDefaults) : Promise<SuccessOnlyResponse> {
+      
+          let currentSettings = this.organisationDetail.value;
+  
+          currentSettings.rotaDefaults = organisationRotaDefaults;
+  
+          this.organisationDetail.next(currentSettings);
+  
+          return await this.updateOrganisationDetail(currentSettings);        
+      
+        }
 
 
 

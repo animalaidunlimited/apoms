@@ -70,11 +70,8 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.rotationRoles$.pipe(takeUntil(this.groupSelectedUnsubscribe)).subscribe(roles => {
 
-      let colour = roles.find(element => element.rotationRoleId === $event.value)?.colour || "white";
+      let colour = roles.find(element => element.rotationRoleId === $event.value)?.colour || "#ffffff";
       areaShift.get('colour')?.setValue(colour);
-     
-      
-      //this.saveAreaShift(areaShift);      
 
     });
 
@@ -90,7 +87,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
       }
       else {
-        this.snackbarService.errorSnackBar("ERR: SRP-234: Error adding area shift, please see administrator", "OK");
+        this.snackbarService.errorSnackBar("ERR: RS-90: Error adding area shift, please see administrator", "OK");
       }
 
     });
