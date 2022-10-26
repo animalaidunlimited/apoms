@@ -19,16 +19,17 @@
             ></app-emergency-register-patient>
 
         </div>
-    <div *ngIf="!outcome && !isDisplayOnly" fxLayout="row" fxLayoutAlign="center center">
-        <button
-            #addPatientBtn
-            class="addButton"
-            type="button"
-            (click)="addPatientRow()"
-            mat-mini-fab
-            color="primary">
-            <mat-icon>add</mat-icon>
-        </button>
-    </div>
+
+        <div *ngIf="!outcome && !isDisplayOnly" fxLayout="row" fxLayoutAlign="center center">
+            <button
+                #addPatientBtn
+                class="addButton"
+                type="button"
+                (click)="addPatientRow()"
+                mat-mini-fab
+                color="primary">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
 
   </fieldset>

@@ -5,7 +5,7 @@ import { EmergencyCase, CaseToOpen } from 'src/app/core/models/emergency-record'
 import { EmergencyResponse, SearchResponse } from 'src/app/core/models/responses';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 import { debounceTime, map, mergeMap, share, skip, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { Observable, BehaviorSubject, Subject, combineLatest, merge } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, combineLatest, merge, of } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { OnlineStatusService } from 'src/app/core/services/online-status/online-status.service';
@@ -233,22 +233,21 @@ export class CaseService extends APIService {
     public searchCases(searchString: string): Observable<SearchResponse[]> {
         const request = '/SearchCases/?' + searchString;
 
+        let searchResult = of([] as SearchResponse[]);
+
         if(!searchString){
             this.clearResults$.next([]);
         }
-
-        const searchResult = this.getObservable(request)
-        .pipe(
-            debounceTime(1500),
-
-            map((response: SearchResponse[]) => {
-                return response;
-            }),
-            share()
-        );
-
+        else{
+            searchResult = this.getObservable(request)
+            .pipe(
+                debounceTime(1500),    
+                map((response: SearchResponse[]) => response),
+                share()
+            );
+        }
+        
         return merge(this.clearResults$, searchResult);
-
 
     }
 
