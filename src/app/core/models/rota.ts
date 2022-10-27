@@ -72,13 +72,29 @@ export interface RotationPeriod{
 }
 
 export interface AreaShift{
-  areaShiftId: number;
+  areaRowSpan: number;
   areaShiftGUID: string;
-  sequence: number;
+  areaShiftId: number;
+  colour: string;
+  rotaVersionId: number;
+  rotationAreaName: string;
+  rotationAreaColour: string;
+  rotationAreaId: number;
+  rotationAreaSequence: number;
   rotationRoleId: number;
+  sequence: number;
   roleName: string;
   isDeleted: boolean;
   }
+
+  export interface RotationArea {
+    areaRowSpan: number;
+    rotationAreaColour: string;
+    rotationAreaName: string;
+    rotationAreaId: number;
+    rotationAreaSequence: number;
+  }
+
 
 export interface RotationPeriodResponse {
   success: number;

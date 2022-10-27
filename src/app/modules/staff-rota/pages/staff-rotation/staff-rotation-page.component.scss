@@ -27,6 +27,23 @@ tr, th, td {
     padding: 5px;
 }
 
+.area-header{
+    writing-mode: vertical-lr;
+    text-align: -webkit-center;
+    transform: scale(-1);
+    vertical-align: top;
+    cursor: pointer;
+}
+
+.move-icon{
+    padding-right: 0 !important;
+
+    .mat-icon{
+        color: grey;
+        cursor: ns-resize;
+    }
+}
+
 .assigned-user {
 }
     

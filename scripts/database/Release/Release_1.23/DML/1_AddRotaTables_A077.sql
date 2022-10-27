@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`RotaMatrix`;
 DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
+DROP TABLE IF EXISTS `AAU`.`RotationArea`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
 DROP TABLE IF EXISTS `AAU`.`Rota`;
@@ -116,10 +117,31 @@ CREATE TABLE `AAU`.`RotationPeriod` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
     
+CREATE TABLE `AAU`.`RotationArea` (
+  `RotationAreaId` INT NOT NULL AUTO_INCREMENT,
+  `RotationAreaName`  VARCHAR(32) NOT NULL,
+  `RotationAreaGUID` VARCHAR(128) NOT NULL,
+  `RotaVersionId` INT NOT NULL,
+  `Color` VARCHAR(10) NOT NULL,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RotationAreaId`),
+  INDEX `FK_RotationArea_RotaVersion_RotaVersionId_idx` (`RotaVersionId` ASC) VISIBLE,
+  UNIQUE INDEX `RotationAreaGUID_UNIQUE` (`RotationAreaGUID` ASC) VISIBLE,
+  CONSTRAINT `FK_RotationArea_RotaVersion_RotaVersionId`
+    FOREIGN KEY (`RotaVersionId`)
+    REFERENCES `AAU`.`RotaVersion` (`RotaVersionId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+    
+    
 CREATE TABLE `AAU`.`AreaShift` (
-  `AreaShiftId` INT NOT NULL AUTO_INCREMENT,
+  `AreaShiftId` INT NOT NULL AUTO_INCREMENT,  
   `RotaVersionId` INT NOT NULL,
   `AreaShiftGUID` VARCHAR(128) NOT NULL,
+  `RotationAreaId` INT NOT NULL,
   `Sequence` INT NULL,
   `RoleId` INT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,

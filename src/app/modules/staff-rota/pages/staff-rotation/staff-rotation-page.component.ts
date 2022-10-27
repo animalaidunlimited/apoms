@@ -12,6 +12,7 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
 import { AssignedUser, Rota, RotaVersion } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
  
 @Component({
   selector: 'app-staff-rotation',
@@ -81,21 +82,28 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.dataSource = this.rotaService.dataSource;
 
-      this.rotationPeriods = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 1)));
+      this.rotationPeriods = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 2)));
 
       this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
+
       
   }
 
   displayColumnsPipe(rotation: AbstractControl[], startIndex: number) : string[] {
 
     if(!rotation || rotation?.length === 0){
-      return startIndex === 0 ? ["areaShift"] : [];
+      return startIndex === 0 ? ["area","areaShift","move"] : [];
       }
 
-      return Object.keys(rotation[0].value)
-                    .map(control => control === "areaShift" ? control : control.split("|")[1])
+      let columns = Object.keys(rotation[0].value)
+                    .map(control => (control === "areaShift" || control === "area") ? control : control.split("|")[1])
                     .splice(startIndex);
+
+      if(startIndex === 0){
+        columns.push("move");
+      }
+
+      return columns;
   }
 
   ngOnInit(): void {
@@ -398,6 +406,16 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   return dialogRef.afterClosed()
   .pipe(takeUntil(this.ngUnsubscribe));  
 
+  }
+
+  rowDropped(droppedRow: CdkDragDrop<BehaviorSubject<AbstractControl[]>>) : void {
+
+    if(droppedRow.currentIndex === droppedRow.previousIndex){
+      return;
+    }
+
+    
+    this.rotaService.moveAreaShift(droppedRow.previousIndex, droppedRow.currentIndex);
   }
 
 }

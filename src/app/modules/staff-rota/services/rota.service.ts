@@ -4,12 +4,14 @@ import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '
 import { Observable, of, BehaviorSubject, Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
-import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationPeriod,
+import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
   RotationPeriodLeave, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 import { SuccessOnlyResponse } from './../../../core/models/responses';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 
 interface UpsertRotaResponse{
   rotaId: number;
@@ -89,6 +91,7 @@ export class RotaService extends APIService {
   constructor(
     http: HttpClient,    
     private fb: FormBuilder,
+    private snackbar: SnackbarService,
     private organisationDetails: OrganisationDetailsService) {
     super(http);
 
@@ -165,7 +168,8 @@ public async initialiseArrays(users: UserDetails[]) {
   // this.displayColumns.next([]);
 
   //Set up some defaults so we're not empty
-  await this.getAreaShifts().then(areaShifts => areaShifts?.forEach(areaShift => this.addAreaShift(areaShift, false)));  
+  await this.getAreaShifts().then(areaShifts => areaShifts?.sort((a,b) => a.sequence - b.sequence)
+                                                           .forEach(areaShift => this.addAreaShift(areaShift, false)));  
 
   await this.initialiseRotationPeriods(this.periodsToShow);
 
@@ -183,12 +187,13 @@ public markPeriodAsDirty(rotationPeriodGUID: string) : void {
 
 public async generateTableDataSource() : Promise<void> {
 
-  const dataSource: AbstractControl[] = [];
+  let dataSource: AbstractControl[] = [];
 
   for(let areaShift of this.getAreaShiftArray.controls){
 
     let row = this.fb.group({
-      areaShift
+      area: [this.extractAreaFromAreaShift(areaShift)],
+      areaShift: areaShift
     });
 
     for(let period of this.getRotationPeriodArray.controls) {
@@ -214,8 +219,22 @@ public async generateTableDataSource() : Promise<void> {
 
   }
 
+  console.log(dataSource);
+
   this.dataSource.next(dataSource); 
 
+}
+
+public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
+
+  return {
+    areaRowSpan: areaShift.get('areaRowSpan')?.value,
+    rotationAreaColour: areaShift.get('rotationAreaColour')?.value,
+    rotationAreaName: areaShift.get('rotationAreaName')?.value,
+    rotationAreaId: areaShift.get('rotationAreaId')?.value,
+    rotationAreaSequence: areaShift.get('rotationAreaSequence')?.value
+  }
+  
 }
 
 
@@ -706,9 +725,17 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           rotationRoleId: [, Validators.required],
                           roleName: "",
                           colour: "#ffffff",
-                          isDeleted: false
+                          isDeleted: false,
+                          rotationAreaSequence: 0,
+                          areaRowSpan: 1,
+                          rotationAreaName: "",
+                          rotationAreaColour: "",
+                          rotationAreaId: "",
                         });
   }
+
+
+
 
   addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, assignedUser?: UserDetails){
 
@@ -883,6 +910,27 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     return this.get(`/GetRotaDayAssignmentsByRotationPeriodId?rotationPeriodId=${rotationPeriodId}`);
 
+  }
+
+  public moveAreaShift(from: number, to:number) : void {
+
+    moveItemInArray(this.getAreaShiftArray.controls, from, to);
+
+    this.getAreaShiftArray.controls.forEach((element, index) => {
+
+      element.get("sequence")?.setValue(index);
+
+      this.upsertAreaShift(element?.value).then(result => {
+
+        if(result.success === -1){
+          this.snackbar.errorSnackBar("An error has occurred when attempting to re-order the roles","OK");
+        }
+
+      });
+
+    });
+
+    this.generateTableDataSource();
   }
 
 }
