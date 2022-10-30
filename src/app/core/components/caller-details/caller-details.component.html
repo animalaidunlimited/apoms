@@ -13,7 +13,7 @@
         <app-caller-autocomplete
         [incomingCallerForm]="caller"
         [callerIndex]="callerIndex"
-        (callerDeleted) = "removeCaller($event)"
+        (callerDeleted)="removeCaller($event)"
         (isPrimary)="primaryCaller($event)"></app-caller-autocomplete>
     </div>
 

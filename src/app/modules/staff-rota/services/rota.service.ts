@@ -219,8 +219,6 @@ public async generateTableDataSource() : Promise<void> {
 
   }
 
-  console.log(dataSource);
-
   this.dataSource.next(dataSource); 
 
 }
@@ -230,7 +228,7 @@ public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
   return {
     areaRowSpan: areaShift.get('areaRowSpan')?.value,
     rotationAreaColour: areaShift.get('rotationAreaColour')?.value,
-    rotationAreaName: areaShift.get('rotationAreaName')?.value,
+    rotationArea: areaShift.get('rotationArea')?.value,
     rotationAreaId: areaShift.get('rotationAreaId')?.value,
     rotationAreaSequence: areaShift.get('rotationAreaSequence')?.value
   }

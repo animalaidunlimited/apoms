@@ -244,7 +244,6 @@ export class CaseService extends APIService {
                 debounceTime(1500),
     
                 map((response: SearchResponse[]) => {
-                    console.log(response);
                     return response || [];
                 }),
                 share()

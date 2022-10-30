@@ -9,7 +9,7 @@ import { RotationRole, AreaShiftResponse } from 'src/app/core/models/rota';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
 import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
-import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { RotaSettingsService } from './../../pages/settings/services/rota-settings.service';
 
 @Component({
   selector: 'app-area-shift',
@@ -33,19 +33,13 @@ export class AreaShiftComponent implements OnInit, OnChanges {
   constructor(
     private rotaService: RotaService,
     private snackbarService: SnackbarService,
-    private dropdownService: DropdownService,
+    private rotaSettingsService: RotaSettingsService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit() {
 
-    this.rotationRoles$ = this.dropdownService.getRotationRole().pipe(map(roles => roles.map(role => (
-      {
-        rotationRoleId: role.RotationRoleId,
-        rotationRole: role.RotationRole,
-        colour: role.Colour
-      })
-    )));
+    this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
 
     this.areaShift.get('colour')?.valueChanges.pipe(skip(1), takeUntil(this.ngUnsubscribe)).subscribe(() => {
 

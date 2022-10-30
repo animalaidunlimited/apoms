@@ -38,9 +38,7 @@ export class RotaSettingsComponent implements OnInit {
   saveOrganisationRotaDetails(){
 
     this.organisationDetails.saveOrganisationRotaDefaults(this.rotaOptions?.get('defaults')?.value).then(response => {
-
-      console.log(response)
-
+      
       response.success === 1 ?
           this.snackbar.successSnackBar('Organisation rota defaults saved successfully', 'OK')
       :

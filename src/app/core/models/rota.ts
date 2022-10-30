@@ -1,17 +1,18 @@
 import { UserDetails } from "./user";
 
-export interface RotationRole{
+export interface RotationRoleResponse{
     rotationRoleId: number;
-    rotationRole: string;
-    colour: string
+    success: number;
   }
 
-export interface RotationRoleDropdown{
-    RotationRoleId: number;
-    RotationRole: string;
-    Colour: string;
-    IsDeleted: boolean;
-    SortOrder: number;
+export interface RotationRole{
+    rotationRoleId: number | undefined;
+    rotationRole: string;
+    startTime: string;
+    endTime: string;
+    colour: string;
+    isDeleted: boolean;
+    sortOrder: number;
   }
   
 export interface Rota{
@@ -90,9 +91,14 @@ export interface AreaShift{
   export interface RotationArea {
     areaRowSpan: number;
     rotationAreaColour: string;
-    rotationAreaName: string;
+    rotationArea: string;
     rotationAreaId: number;
     rotationAreaSequence: number;
+  }
+
+  export interface RotationRoleResponse{
+    rotationAreaId: number;
+    success: number;
   }
 
 
