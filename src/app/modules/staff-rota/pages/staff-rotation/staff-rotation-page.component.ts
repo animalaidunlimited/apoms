@@ -41,7 +41,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   rotaForm: FormGroup;
 
   rotas$: BehaviorSubject<Rota[]>;
-  rotaVersions$!: BehaviorSubject<RotaVersion[]>;  
+  rotaVersions$!: BehaviorSubject<RotaVersion[]>;
+
+  addAreaShiftDisabled$: Observable<boolean>;
 
   unassignedUsers!: BehaviorSubject<UserDetails[]>;
 
@@ -86,6 +88,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
 
+      this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));
       
   }
 
@@ -188,6 +191,11 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   }
 
   cancelRotaEdit() : void {
+
+  if(Object.keys(this.editingRota).length === 0){
+    this.getCurrentRota.get('rotaName')?.reset();
+    this.getCurrentRota.get('rotaVersionName')?.reset();
+  }
 
   this.getCurrentRota.patchValue(this.editingRota);
   this.getCurrentRota.get('rotaVersionId')?.enable();
@@ -310,7 +318,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   //Rotation Period Functions
 
   addRotationPeriod(updateMatrix: boolean) : void {
-    this.rotaService.addRotationPeriod(undefined, updateMatrix, true);
+    this.rotaService.addRotationPeriod(undefined, updateMatrix, false);
   }
 
   //Area Shift Functions
@@ -349,7 +357,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
     const existingUsers: AssignedUser[] = this.rotaService.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);
     
-    return this.userList.filter(user => {
+    return this.userList?.filter(user => {
       
       return (user.employeeNumber + ' - ' + user.firstName).toLowerCase().includes(searchValue.toLowerCase()) &&
       !existingUsers.some(existingUser => existingUser.userId === user.userId)

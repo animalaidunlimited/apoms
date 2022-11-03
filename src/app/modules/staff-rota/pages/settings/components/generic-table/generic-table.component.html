@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSourceForm" class="generic-table">
+<table mat-table [dataSource]="dataSourceForm" class="generic-table" *ngIf="(data | async)">
 
   <ng-container *ngFor="let column of (displayedColumns | async)">
 

@@ -180,7 +180,7 @@
           [style.display]="element.get('area')?.value.areaRowSpan !== 0  ? '' : 'none'"
           class="area-header"
           [ngStyle]="{backgroundColor: element.get('area')?.value.rotationAreaColour}"
-          >{{element.get('area')?.value.rotationAreaName}}</td>
+          >{{element.get('area')?.value.rotationArea}}</td>
         </ng-container>
 
           <ng-container matColumnDef="areaShift" sticky>
@@ -261,10 +261,12 @@
 
     </form>
 
+    
     <div class="add-rotation-period">
       <button
           type="button"
           (click)="addRotationPeriod(true)"
+          [disabled]="!rotaForm.get('currentRota')?.get('rotaId')?.value"
           mat-mini-fab
           color="primary">
           <mat-icon>add</mat-icon>
@@ -281,7 +283,7 @@
           type="button"
           (click)="shiftLeftRotation()"
           mat-mini-fab
-          [disabled]="beginningOfRange"
+          [disabled]="beginningOfRange || !rotaForm.get('currentRota')?.get('rotaId')?.value"
           color="primary">
           <mat-icon style="margin-left:10px;">arrow_back_ios</mat-icon>
       </button>
@@ -289,6 +291,7 @@
       <button
           type="button"
           (click)="addAreaShift()"
+          [disabled]="(addAreaShiftDisabled$ | async) || !rotaForm.get('currentRota')?.get('rotaId')?.value"
           mat-mini-fab
           color="primary">
           <mat-icon>add</mat-icon>

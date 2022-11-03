@@ -5,7 +5,7 @@ export interface RotationRoleResponse{
     success: number;
   }
 
-export interface RotationRole{
+  export interface BaseRotationRole{
     rotationRoleId: number | undefined;
     rotationRole: string;
     startTime: string;
@@ -13,6 +13,12 @@ export interface RotationRole{
     colour: string;
     isDeleted: boolean;
     sortOrder: number;
+  }
+
+export interface RotationRole extends BaseRotationRole{    
+    rotationAreaId: number;
+    rotationArea: string;
+    rotationAreaColour: string;
   }
   
 export interface Rota{
@@ -78,12 +84,12 @@ export interface AreaShift{
   areaShiftId: number;
   colour: string;
   rotaVersionId: number;
-  rotationAreaName: string;
+  rotationArea: string;
   rotationAreaColour: string;
   rotationAreaId: number;
-  rotationAreaSequence: number;
+  rotationAreaSortOrder: number;
   rotationRoleId: number;
-  sequence: number;
+  sortOrder: number;
   roleName: string;
   isDeleted: boolean;
   }
@@ -93,7 +99,7 @@ export interface AreaShift{
     rotationAreaColour: string;
     rotationArea: string;
     rotationAreaId: number;
-    rotationAreaSequence: number;
+    rotationAreaSortOrder: number;
   }
 
   export interface RotationRoleResponse{

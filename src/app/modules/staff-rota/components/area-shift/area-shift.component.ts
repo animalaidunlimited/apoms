@@ -39,23 +39,27 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
+    this.areaShift = this.inputAreaShift as FormGroup;
+
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
 
-    this.areaShift.get('colour')?.valueChanges.pipe(skip(1), takeUntil(this.ngUnsubscribe)).subscribe(() => {
+    // skip(1), 
+    // this.areaShift.get('colour')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
 
-      //This takes a tick to update, so let's wait
-      setTimeout(() => this.saveAreaShift(this.areaShift), 1);
+    //   //This takes a tick to update, so let's wait
+    //   setTimeout(() => this.saveAreaShift(this.areaShift), 1);
       
-    });
+    // });
   }
 
   ngOnDestroy() : void {
     this.ngUnsubscribe.next();
     this.groupSelectedUnsubscribe.next();
+    
   }
 
   ngOnChanges(change: SimpleChanges) {    
-    this.areaShift = this.inputAreaShift as FormGroup;
+    // this.areaShift = this.inputAreaShift as FormGroup;
   }
 
   groupSelected($event: MatSelectChange, areaShift: AbstractControl) : void {
@@ -64,8 +68,11 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.rotationRoles$.pipe(takeUntil(this.groupSelectedUnsubscribe)).subscribe(roles => {
 
-      let colour = roles.find(element => element.rotationRoleId === $event.value)?.colour || "#ffffff";
-      areaShift.get('colour')?.setValue(colour);
+      let role = roles.find(element => element.rotationRoleId === $event.value);
+
+      areaShift.patchValue(role);   
+      
+      this.saveAreaShift(areaShift);
 
     });
 
@@ -75,12 +82,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.rotaService.upsertAreaShift(areaShift.value).then((result: AreaShiftResponse) => {
 
-      if (result.success === 1) {
-
-        areaShift.get('areaShiftId')?.setValue(result.areaShiftId);
-
-      }
-      else {
+      if (result.success !== 1)  {
         this.snackbarService.errorSnackBar("ERR: RS-90: Error adding area shift, please see administrator", "OK");
       }
 
@@ -125,6 +127,10 @@ export class AreaShiftComponent implements OnInit, OnChanges {
   return dialogRef.afterClosed()
   .pipe(takeUntil(this.ngUnsubscribe));  
 
+  }
+
+  updateColour() : void {
+    this.saveAreaShift(this.areaShift);
   }
 
 }

@@ -28,11 +28,11 @@
       <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
 
         <mat-form-field>
-          <input matInput type="time" formControlName="startTime" placeholder="Shift start time"  [errorStateMatcher]="errorMatcher"/>
+          <input matInput type="time" formControlName="startTime" placeholder="Shift start time" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
     
         <mat-form-field>
-          <input matInput type="time" formControlName="endTime" placeholder="Shift end time"  [errorStateMatcher]="errorMatcher"/>
+          <input matInput type="time" formControlName="endTime" placeholder="Shift end time" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
 
       </div>
@@ -40,11 +40,11 @@
       <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
 
         <mat-form-field>
-          <input matInput type="number" min=1 formControlName="sortOrder" placeholder="Sort order"  [errorStateMatcher]="errorMatcher"/>
+          <input matInput type="number" min=1 formControlName="sortOrder" placeholder="Sort order" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
     
         <mat-form-field>
-          <input matInput type="color" formControlName="colour" placeholder="Colour"  [errorStateMatcher]="errorMatcher"/>
+          <input matInput type="color" formControlName="colour" placeholder="Colour" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
       </div>
 
@@ -65,6 +65,7 @@
           (click)="saveRotationRole()"
           mat-mini-fab
           matTooltip="Save"
+          [disabled]="rotationRoleForm.invalid"
           color="primary">
           <mat-icon>save</mat-icon>
         </button>
@@ -84,7 +85,7 @@
 
   </fieldset>
 
-  <app-generic-table [data]="rotationRoles$" dataName="rotationRoles"  (clickedRow)="hydrateRotationRoleForEdit($event)"></app-generic-table>
+  <app-generic-table [data]="rotationRolesForGenericTable$" dataName="rotationRoles"  (clickedRow)="hydrateRotationRoleForEdit($event)"></app-generic-table>
 
 </form>
 

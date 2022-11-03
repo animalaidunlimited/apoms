@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { Observable, of, BehaviorSubject, Subject} from 'rxjs';
+import { BehaviorSubject, Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
@@ -12,6 +12,7 @@ import { OrganisationDetailsService } from 'src/app/core/services/organisation-d
 import { SuccessOnlyResponse } from './../../../core/models/responses';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
+import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 
 interface UpsertRotaResponse{
   rotaId: number;
@@ -19,6 +20,7 @@ interface UpsertRotaResponse{
   rotaSuccess: number;
   rotaVersionSuccess: number;
 }
+
 @Injectable({
   providedIn: 'root'
 })
@@ -92,6 +94,7 @@ export class RotaService extends APIService {
     http: HttpClient,    
     private fb: FormBuilder,
     private snackbar: SnackbarService,
+    private rotationPeriodValidator: RotationPeriodValidator,
     private organisationDetails: OrganisationDetailsService) {
     super(http);
 
@@ -104,27 +107,23 @@ export class RotaService extends APIService {
     this.getCurrentRota.get("rotaId")?.valueChanges.subscribe(rotaId => {
         
       this.setRotaVersionRotaId(rotaId);        
-    });  
-    
+    });
   }
 
-public checkDateNotInRange(date: Date | string) : Observable<SuccessOnlyResponse> {
 
-  return of({success: 0});
-
-}
 
 public async initialiseRotas() : Promise<boolean> {
 
   let request = "/GetRotas";
 
-  return this.get(request).then((response:any) => {
+  return this.get(request)
+  .then(response => response as Rota[])
+  .then(rotaResponse => {
 
-    if(!response){
-      return false;
+    if(!rotaResponse){
+      this.addRota();
+      return true;
     }
-
-    const rotaResponse: Rota[] = response;
 
     this.rotas.next(rotaResponse);
 
@@ -148,9 +147,6 @@ public async initialiseRotas() : Promise<boolean> {
     if(currentRota){
       this.getCurrentRota.patchValue(currentRotaDetails);
     }
-    else {
-      this.addRota();
-    }
 
     return true;
 
@@ -168,8 +164,11 @@ public async initialiseArrays(users: UserDetails[]) {
   // this.displayColumns.next([]);
 
   //Set up some defaults so we're not empty
-  await this.getAreaShifts().then(areaShifts => areaShifts?.sort((a,b) => a.sequence - b.sequence)
-                                                           .forEach(areaShift => this.addAreaShift(areaShift, false)));  
+  await this.getAreaShifts().then(areaShifts => {
+                                      areaShifts?.sort((a,b) => this.fnSortAreaShifts(a, b))
+                                                 .forEach(areaShift => this.addAreaShift(areaShift, false))
+  });
+                                                 
 
   await this.initialiseRotationPeriods(this.periodsToShow);
 
@@ -185,36 +184,13 @@ public markPeriodAsDirty(rotationPeriodGUID: string) : void {
   this.getRotationPeriodArray.controls.find(element => element.value.rotationPeriodGUID === rotationPeriodGUID)?.markAsDirty();
 }
 
-public async generateTableDataSource() : Promise<void> {
+public async generateTableDataSource() : Promise<void> {  
 
   let dataSource: AbstractControl[] = [];
 
   for(let areaShift of this.getAreaShiftArray.controls){
 
-    let row = this.fb.group({
-      area: [this.extractAreaFromAreaShift(areaShift)],
-      areaShift: areaShift
-    });
-
-    for(let period of this.getRotationPeriodArray.controls) {
-
-      const areaShiftGUID = areaShift.get('areaShiftGUID')?.value;
-      const rotationPeriodGUID = period.get('rotationPeriodGUID')?.value;
-
-      let controlName = this.getCoords(areaShiftGUID, rotationPeriodGUID);
-
-      let foundControl = this.getMatrix.get(controlName);
-
-      if(!foundControl){
-        this.addAssignedStaffControlToMatrix(areaShiftGUID, rotationPeriodGUID);
-      }
-
-      foundControl = this.getMatrix.get(controlName) as AbstractControl;
-
-      row.addControl(controlName, foundControl, {emitEvent: false});
-
-    }
-
+    let row = this.generateDataSourceRow(areaShift);
     dataSource.push(row);
 
   }
@@ -223,6 +199,35 @@ public async generateTableDataSource() : Promise<void> {
 
 }
 
+  private generateDataSourceRow(areaShift: AbstractControl) {
+
+    let row = this.fb.group({
+      area: [this.extractAreaFromAreaShift(areaShift)],
+      areaShift: areaShift
+    });
+
+    for (let period of this.getRotationPeriodArray.controls) {
+
+      const areaShiftGUID = areaShift.get('areaShiftGUID')?.value;
+      const rotationPeriodGUID = period.get('rotationPeriodGUID')?.value;
+
+      let controlName = this.getCoords(areaShiftGUID, rotationPeriodGUID);
+
+      let foundControl = this.getMatrix.get(controlName);
+
+      if (!foundControl) {
+        this.addAssignedStaffControlToMatrix(areaShiftGUID, rotationPeriodGUID);
+      }
+
+      foundControl = this.getMatrix.get(controlName) as AbstractControl;
+
+      row.addControl(controlName, foundControl, { emitEvent: false });
+
+    }
+
+    return row;
+  }
+
 public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
 
   return {
@@ -230,7 +235,7 @@ public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
     rotationAreaColour: areaShift.get('rotationAreaColour')?.value,
     rotationArea: areaShift.get('rotationArea')?.value,
     rotationAreaId: areaShift.get('rotationAreaId')?.value,
-    rotationAreaSequence: areaShift.get('rotationAreaSequence')?.value
+    rotationAreaSortOrder: areaShift.get('rotationAreaSortOrder')?.value
   }
   
 }
@@ -277,7 +282,7 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
 getRotationPeriods(periodsToShow: number) : Promise<RotationPeriodResponse | null> {
 
-  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value;
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;
 
   return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${this.offset}`);
 
@@ -285,7 +290,7 @@ getRotationPeriods(periodsToShow: number) : Promise<RotationPeriodResponse | nul
 
 getAreaShifts() : Promise<AreaShift[] | null> {
 
-  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value;
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;
 
   return this.get(`/GetAreaShifts?rotaVersionId=${rotaVersionId}`);
 
@@ -376,7 +381,28 @@ shiftRightRotation() : void {
 
 upsertAreaShift(areaShift: AreaShift) : Promise<AreaShiftResponse> {
 
-  let areaShiftUpsert = areaShift.areaShiftId ? this.putSubEndpoint("AreaShift", areaShift) : this.postSubEndpoint("AreaShift", areaShift)
+  //See if we have any other shifts in the same area
+  let sameArea = this.getAreaShiftArray.controls.filter(element => element.get('rotationAreaId')?.value === areaShift.rotationAreaId);
+  areaShift.sortOrder = sameArea.length || 1;
+
+  let areaShiftUpsert = areaShift.areaShiftId ? this.putSubEndpoint("AreaShift", areaShift) : this.postSubEndpoint("AreaShift", areaShift);
+
+  areaShiftUpsert.then((result: AreaShiftResponse) => {
+
+    if(result.success === 1){      
+
+      areaShift.areaShiftId = result.areaShiftId;
+
+      let item = this.getAreaShiftArray.controls.find(element => element.get('areaShiftGUID')?.value === areaShift.areaShiftGUID);
+
+      item?.patchValue(areaShift);
+
+      this.getAreaShiftArray.updateValueAndValidity();
+
+      this.sortAreaShifts();
+    }
+
+  });
 
   return areaShiftUpsert;  
 
@@ -427,11 +453,14 @@ public setRotaVersionAsDefault(defaultRotaVersionId: number) : void {
 
 public async upsertRota() : Promise<UpsertRotaResponse> {
 
-  let rota = this.getCurrentRota.value;
-
+  let rota = this.getCurrentRota.value as CurrentRota;
 
   if(!rota.rotaId){
     rota.defaultRotaVersion = true;
+  }
+
+  if(this.rotas.value?.length === 0){
+    rota.defaultRota = true;
   }
 
   this.getCurrentRota.get('rotaVersionId')?.enable();
@@ -441,13 +470,13 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
     this.setRotaAsDefault(this.getCurrentRota.get('rotaId')?.value);
   }
   
-  let upsertResponse = rota.rotaId ? this.put(rota) : this.post(rota);
-  
-  return upsertResponse.then((result: UpsertRotaResponse) => {
+  return this.post(rota).then((result: UpsertRotaResponse) => {
 
     let currentRotas = this.rotas.value;
+    let currentRotaVersions = this.rotaVersions.value;
 
-    let foundIndex = currentRotas.findIndex(element => element.rotaId === rota.rotaId);
+    let foundRotaIndex = currentRotas.findIndex(element => element.rotaId === rota.rotaId);
+    let foundRotaVersionIndex = currentRotaVersions.findIndex(element => element.rotaVersionId === rota.rotaVersionId);
 
     if(result.rotaSuccess === 1 && result.rotaVersionSuccess === 1){
 
@@ -459,28 +488,8 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
       rota.rotaId = result.rotaId;
       rota.rotaVersionId = result.rotaVersionId;
 
-      if(foundIndex === -1){
-        let currentRota = this.rotas.value;
-        currentRota.push(this.getRotaFromCurrentRota(rota));
-      }
-      else {
-
-        let updateRota = currentRotas[foundIndex];
-        
-        updateRota.rotaName = rota.rotaName || "";
-        updateRota.defaultRota = rota.defaultRota || false;
-
-        if(rota.rotaDeleted){
-          currentRotas.splice(foundIndex, 1);
-        }
-        else
-        {
-          currentRotas.splice(foundIndex, 1, updateRota);
-        }
-        
-      }
-
-      this.rotas.next(currentRotas);
+      this.updateRotasAndEmit(foundRotaIndex, rota, currentRotas);
+      this.updateRotaVersionsAndEmit(foundRotaVersionIndex, rota, currentRotaVersions);
     }
     else {
       this.getCurrentRota.get('rotaVersionId')?.disable();
@@ -492,6 +501,72 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
   });
 
 }
+
+private updateRotaVersionsAndEmit(foundIndex: number, rota: CurrentRota, currentRotaVersions: RotaVersion[]) : void {
+
+  if(rota.rotaDeleted){
+    this.rotaVersions.next([]);
+    return;
+  }
+
+  if (foundIndex === -1) {
+
+    let currentRota = this.getRotaFromCurrentRota(rota);
+
+    currentRotaVersions.push(currentRota.rotaVersions[0]);
+  }
+  else {
+
+    let updateVersion = currentRotaVersions[foundIndex];
+
+    updateVersion.rotaVersionName = rota.rotaVersionName || "";
+    updateVersion.defaultRotaVersion = rota.defaultRotaVersion || false;
+
+    if(rota.rotaVersionDeleted){
+      currentRotaVersions.splice(foundIndex, 1);
+
+      //Let's check if there's only one rota version left. If there is, let's make it the default.      
+      if(currentRotaVersions.length === 1){
+        currentRotaVersions[0].defaultRotaVersion = true;
+        this.saveRotaVersion(currentRotaVersions[0]);
+      }
+    }
+    else {
+      currentRotaVersions.splice(foundIndex, 1, updateVersion);
+    }
+
+
+  }
+
+  this.rotaVersions.next(currentRotaVersions);
+
+}
+
+  private updateRotasAndEmit(foundIndex: number, rota: CurrentRota, currentRotas: Rota[]) : void {
+
+    if (foundIndex === -1) {
+      currentRotas.push(this.getRotaFromCurrentRota(rota));
+    }
+    else {
+
+      let updateRota = currentRotas[foundIndex];
+
+      updateRota.rotaName = rota.rotaName || "";
+      updateRota.defaultRota = rota.defaultRota || false;
+
+      if (rota.rotaDeleted) {
+        currentRotas.splice(foundIndex, 1);
+        this.getCurrentRota.reset();
+      }
+
+      else {
+        currentRotas.splice(foundIndex, 1, updateRota);
+      }
+
+    }
+
+    this.rotas.next(currentRotas);
+  }
 
 getRotaFromCurrentRota(rota: CurrentRota) : Rota {
 
@@ -514,7 +589,6 @@ getRotaFromCurrentRota(rota: CurrentRota) : Rota {
 }
 
 public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaResponse> {
-
 
   let returnRotaVersion = {} as UpsertRotaResponse;
 
@@ -554,6 +628,11 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
           const removeIndex = versions.findIndex(element => element.rotaVersionId === rotaVersion.rotaVersionId);
           versions.splice(removeIndex, 1);
+
+          if(versions.length === 1){
+            versions[0].defaultRotaVersion = true;
+            this.saveRotaVersion(versions[0]);
+          }
     
         }
 
@@ -591,7 +670,11 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       this.insertMatrixItemsForNewAreaShift(defaultAreaShift);
     }
 
-    this.generateTableDataSource();
+    let row = this.generateDataSourceRow(defaultAreaShift);
+
+    let currentRows = this.dataSource.value;
+    currentRows.push(row);
+    this.dataSource.next(currentRows);
 
   }
 
@@ -599,19 +682,44 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     let defaultRotationPeriod = this.generateDefaultRotationPeriod();
 
+    if(!rotationPeriod && this.getRotationPeriodArray.controls.length === 0){
+      this.addAreaShift(undefined, false);
+    }
+
     if(markAsDirty){
       defaultRotationPeriod.markAsDirty();
     }
 
     if(rotationPeriod){
-      defaultRotationPeriod.patchValue(rotationPeriod);
-    }
 
+      defaultRotationPeriod.patchValue(rotationPeriod);
+
+    }    
+    
     await this.getLeavesForRotationPeriod(defaultRotationPeriod);
 
     this.getRotationPeriodArray.push(defaultRotationPeriod);
 
+    defaultRotationPeriod.get("startDate")?.setValidators(Validators.required);
+    defaultRotationPeriod.get("startDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(defaultRotationPeriod.get('rotationPeriodGUID')?.value, this.getRotationPeriodArray));
+    defaultRotationPeriod.get("startDate")?.updateValueAndValidity();
+    defaultRotationPeriod.get("endDate")?.setValidators(Validators.required);
+    defaultRotationPeriod.get("endDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(defaultRotationPeriod.get('rotationPeriodGUID')?.value, this.getRotationPeriodArray));
+    defaultRotationPeriod.get("endDate")?.updateValueAndValidity();
+
+
     this.getRotationPeriodArray.controls.sort((a,b) => new Date(a.get("startDate")?.value) < new Date(b.get("startDate")?.value) ? -1 : 1);
+
+    if(!defaultRotationPeriod?.get('rotationPeriodId')?.value && defaultRotationPeriod.valid){
+
+      let saveResult = await this.saveRotationPeriod(defaultRotationPeriod.value);
+
+      defaultRotationPeriod.get('rotationPeriodId')?.setValue(saveResult.rotationPeriodId);
+
+    }
+    else if(!rotationPeriod?.rotationPeriodId){
+      defaultRotationPeriod.markAsDirty();
+    }
 
     if(updateMatrix){      
       this.insertMatrixItemsForNewRotation(defaultRotationPeriod);
@@ -645,11 +753,13 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     let maxSequence = 0;
     let nextStartDate = new Date();
     let nextEndDate = new Date();
+    nextEndDate.setUTCDate(nextEndDate.getUTCDate() + 7);
 
     if(this.getRotationPeriodArray.controls.length > 0){
       lastRecord = this.getRotationPeriodArray.controls.reduce((a,b) => a.value.endDate < b.value.endDate ? b : a);
       maxSequence = lastRecord?.value?.sequence + 1;
 
+      //We need to make the start date of the new period 1 day after the end date of the previous period
       nextStartDate = new Date(lastRecord.get('endDate')?.value);
       nextStartDate.setUTCDate(nextStartDate.getUTCDate() + 1);
 
@@ -657,9 +767,11 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       nextEndDate.setUTCDate(nextEndDate.getUTCDate() + 7);
     }   
 
+    const periodGUID = generateUUID();
+
     return this.fb.group({
       rotationPeriodId: [],
-      rotationPeriodGUID: generateUUID(),
+      rotationPeriodGUID: periodGUID,
       rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
       sequence: maxSequence,
       isDeleted: false,
@@ -695,10 +807,9 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
         console.log(result)
 
-      )
+      );
 
     }
-
 
   }
 
@@ -724,9 +835,9 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           roleName: "",
                           colour: "#ffffff",
                           isDeleted: false,
-                          rotationAreaSequence: 0,
+                          rotationAreaSortOrder: 0,
                           areaRowSpan: 1,
-                          rotationAreaName: "",
+                          rotationArea: "",
                           rotationAreaColour: "",
                           rotationAreaId: "",
                         });
@@ -877,8 +988,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
         const index = this.getAreaShiftArray.controls.findIndex(element => element?.get('areaShiftId')?.value === areaShift.get('areaShiftId')?.value );
     
         this.getAreaShiftArray.removeAt(index);
-
-        this.generateTableDataSource();
+        this.sortAreaShifts();
       }
 
       return result;
@@ -886,6 +996,99 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     });
     
 
+  }
+
+  public sortAreaShifts() : void {
+
+    this.getAreaShiftArray.controls.sort((a,b) => this.fnSortAreaShifts(a.value, b.value));
+
+    this.resequenceAreaShifts();
+
+    this.generateTableDataSource();
+
+  }
+
+  fnSortAreaShifts(firstAreaShift: AreaShift, secondAreaShift: AreaShift) : number {
+
+    return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
+      firstAreaShift.sortOrder - secondAreaShift.sortOrder
+      :
+      firstAreaShift.rotationAreaSortOrder - secondAreaShift.rotationAreaSortOrder;
+
+  }
+
+  resequenceAreaShifts() : void {
+
+    let areaMap = this.getAreaCounts();
+
+    let currentAreaMap = new Map<string, boolean>();
+
+    this.getAreaShiftArray.controls.forEach((element, index) => {
+
+      const currentArea = element.get('rotationArea')?.value || "";
+
+      //If we're at the first index then we need to set this row to the current area's count
+      if(index === 0 && areaMap.has(currentArea)) {
+        element.get('areaRowSpan')?.setValue(areaMap.get(currentArea));
+        currentAreaMap.set(currentArea, true);
+      }
+
+
+      else {
+        
+        if(this.getAreaShiftArray.at(index - 1).get('rotationArea')?.value === element.get('rotationArea')?.value){
+          element.get('areaRowSpan')?.setValue(0);
+        }
+        else if(!currentAreaMap.has(currentArea)){
+          element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0));
+          currentAreaMap.set(currentArea, true);
+        }
+        else {
+          element.get('areaRowSpan')?.setValue(0);
+        }
+
+      }
+
+      //if we're at the last row, then we need to either set 1 or 0
+      // else if (index === (this.getAreaShiftArray.controls.length - 1) && areaMap.has(currentArea)){
+      //   element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0) > 0 ? 0 : 1)
+      // }
+
+      // else {
+        
+      //   if(this.getAreaShiftArray.at(index - 1).get('rotationArea')?.value === element.get('rotationArea')?.value){
+      //     element.get('areaRowSpan')?.setValue(0);
+      //   }
+      //   else {
+      //     element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0));
+      //   }
+
+      // }
+
+    });
+
+  }
+
+  private getAreaCounts() : Map<string, number> {
+    let areaMap = new Map<string, number>();
+
+    this.getAreaShiftArray.controls.forEach(element => {
+
+      const currentArea = element.get('rotationArea')?.value || "";
+
+      if (areaMap.has(currentArea)) {
+
+        const currentCount = areaMap.get(currentArea) || 0;
+        areaMap.set(currentArea, currentCount + 1);
+
+      }
+      else {
+        areaMap.set(currentArea, 1);
+      }
+
+    });
+
+    return areaMap;
   }
 
   resetRotaForm() : void {

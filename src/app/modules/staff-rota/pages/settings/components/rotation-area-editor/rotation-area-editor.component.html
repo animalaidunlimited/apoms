@@ -38,6 +38,7 @@
           type="button"
           (click)="saveRotationArea()"
           mat-mini-fab
+          [disabled]="rotationAreaForm.invalid"
           matTooltip="Save"
           color="primary">
           <mat-icon>save</mat-icon>

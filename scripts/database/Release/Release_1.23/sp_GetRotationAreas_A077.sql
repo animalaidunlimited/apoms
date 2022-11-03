@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationAreas !!
 
--- CALL AAU.sp_GetRotationAreas('Jim', );
+-- CALL AAU.sp_GetRotationAreas('Jim', 1);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotationAreas( IN prm_UserName VARCHAR(45), IN prm_IncludeDeleted TINYINT)

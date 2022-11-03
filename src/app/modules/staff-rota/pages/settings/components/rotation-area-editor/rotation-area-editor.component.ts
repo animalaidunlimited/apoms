@@ -21,7 +21,7 @@ export class RotationAreaEditorComponent implements OnInit {
       rotationAreaId: [],
       organisationId: [],
       rotationArea: ["", Validators.required],
-      sortOrder: [],
+      sortOrder: [, Validators.required],
       colour: ["#ffffff"],
       isDeleted: []
     });
@@ -50,7 +50,8 @@ export class RotationAreaEditorComponent implements OnInit {
   private updateSortOrder() {
     this.rotationAreas$.pipe(takeUntil(this.rotationAreaUnsubscribe)).subscribe(roles => {
 
-      this.rotationAreaForm.get('sortOrder')?.setValue(roles?.length + 1);
+      this.rotationAreaForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
+
       this.rotationAreaUnsubscribe.next();
     });
   }

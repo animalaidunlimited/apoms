@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { RotationArea, RotationRole } from 'src/app/core/models/rota';
+import { BaseRotationRole, RotationArea, RotationRole } from 'src/app/core/models/rota';
 import { Observable, Subject } from 'rxjs';
 import { RotaSettingsService } from './../../services/rota-settings.service';
 import { SnackbarService } from './../../../../../../core/services/snackbar/snackbar.service';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rotation-role-editor',
@@ -23,13 +23,14 @@ export class RotationRoleEditorComponent implements OnInit {
     colour: ["#ffffff"],
     startTime: ["", Validators.required],
     endTime: ["", Validators.required],
-    sortOrder: [],
+    sortOrder: [, Validators.required],
     organisationId: [],
     isDeleted: [],
   });
 
   rotationArea$!: Observable<RotationArea[]>;
   rotationRoles$!: Observable<RotationRole[]>;
+  rotationRolesForGenericTable$!: Observable<BaseRotationRole[]>;
 
   rotationRolesUnsubscribe = new Subject();
 
@@ -46,6 +47,21 @@ export class RotationRoleEditorComponent implements OnInit {
   private loadDropdowns() {
     this.rotationArea$ = this.rotaSettingsService.getRotationAreas(false);
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(true);
+    this.rotationRolesForGenericTable$ = this.rotationRoles$.pipe(map(values => values.map(value => {
+
+      return {
+        rotationRoleId: value.rotationRoleId,
+        rotationRole: value.rotationRole,
+        startTime: value.startTime,
+        endTime: value.endTime,
+        colour: value.colour,
+        isDeleted: value.isDeleted,
+        sortOrder: value.sortOrder
+      }
+    })
+    .sort((a,b) => a.sortOrder - b.sortOrder)
+    ))
+
   }
 
   ngOnInit() {
@@ -58,7 +74,7 @@ export class RotationRoleEditorComponent implements OnInit {
   private updateSortOrder() {
     this.rotationRoles$.pipe(takeUntil(this.rotationRolesUnsubscribe)).subscribe(roles => {
 
-      this.rotationRoleForm.get('sortOrder')?.setValue(roles?.length + 1);
+      this.rotationRoleForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
       this.rotationRolesUnsubscribe.next();
     });
   }

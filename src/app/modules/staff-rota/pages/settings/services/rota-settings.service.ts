@@ -24,12 +24,16 @@ export class RotaSettingsService extends APIService {
    }
 
 
-   getRotationRoles(includeDeleted: boolean): Observable<RotationRole[]> {
+   getRotationRoles(includeDeleted: boolean): Observable<RotationRole[]> {    
 
-    const request = `/GetRotationRoles?includeDeleted=${includeDeleted}`;
+    if(!this.rotationRoles$){
+      const request = `/GetRotationRoles?includeDeleted=${includeDeleted}`;
+
+      this.rotationRoles$ = this.getObservable(request).pipe(map((response: RotationRole[]) => response));
+      
+    }
     
-    return this.getObservable(request).pipe(map((response: RotationRole[]) => response));
-    
+    return this.rotationRoles$;
 
 }
   

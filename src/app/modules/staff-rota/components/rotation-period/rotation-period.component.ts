@@ -7,7 +7,6 @@ import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotationPeriodResponse } from 'src/app/core/models/rota';
-import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
@@ -34,7 +33,7 @@ export class RotationPeriodComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
     private snackbarService: SnackbarService,
-    private rotationPeriodValidator: RotationPeriodValidator,
+    // private rotationPeriodValidator: RotationPeriodValidator,
     private changeDetector: ChangeDetectorRef
   ) { }
 
@@ -44,12 +43,12 @@ export class RotationPeriodComponent implements OnInit {
   ngOnChanges(change: SimpleChanges) {
     this.period = this.rotaService.getPeriodByGUID(change.inputPeriod.currentValue);
 
-    const groupId = this.period.get("rotationPeriodGUID")?.value;
+    // const groupId = this.period.get("rotationPeriodGUID")?.value;
 
-    this.period.get("startDate")?.setValidators(Validators.required);
-    this.period.get("startDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(groupId, this.rotaService.getRotationPeriodArray));
-    this.period.get("endDate")?.setValidators(Validators.required);
-    this.period.get("endDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(groupId, this.rotaService.getRotationPeriodArray));
+    // this.period.get("startDate")?.setValidators(Validators.required);
+    // this.period.get("startDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(groupId, this.rotaService.getRotationPeriodArray));
+    // this.period.get("endDate")?.setValidators(Validators.required);
+    // this.period.get("endDate")?.setAsyncValidators(this.rotationPeriodValidator.checkDateNotInExistingRange(groupId, this.rotaService.getRotationPeriodArray));
 
   }
 

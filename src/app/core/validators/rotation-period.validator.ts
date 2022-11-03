@@ -3,6 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormArray } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';
+import { SuccessOnlyResponse } from '../models/responses';
 
 interface DateCheckResponse{
     success: number;
@@ -11,7 +12,7 @@ interface DateCheckResponse{
 @Injectable({ providedIn: 'root' })
 export class RotationPeriodValidator {
     
-    constructor(private rotaService: RotaService) {}
+    constructor() {}
 
     public checkDateNotInExistingRange(currentId: string, currentArray: FormArray): AsyncValidatorFn {
         return (
@@ -40,7 +41,7 @@ export class RotationPeriodValidator {
                 }
 
                 //Now let's check if the date exists in the database
-                return this.rotaService.checkDateNotInRange(control.value)
+                return this.checkDateNotInRange(control.value)
                 .pipe(
                     map((response:DateCheckResponse) => {
 
@@ -74,4 +75,12 @@ export class RotationPeriodValidator {
         return false;
 
     }
+
+    public checkDateNotInRange(date: Date | string) : Observable<SuccessOnlyResponse> {
+
+        //TODO: Fix this so it hits the database properly..
+
+        return of({success: 0});
+      
+      }
 }
