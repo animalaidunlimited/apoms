@@ -594,7 +594,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -718,7 +718,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -820,7 +820,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -911,7 +911,7 @@ SELECT
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -1127,12 +1127,13 @@ visitsCTE AS
         stc.MainProblemId,
         ec.EmergencyCaseId,
         pr.Priority AS CasePriority,
-        s.Status AS CaseStatus,
+		cs.Status AS CaseStatus,
         at.AnimalType,
         s.Status AS VisitStatus,
 	ROW_NUMBER() OVER (PARTITION BY stc.StreetTreatCaseId ORDER BY v.Date DESC) AS RNum
 	FROM AAU.Visit v
 	INNER JOIN AAU.StreetTreatCase stc ON stc.StreetTreatCaseId = v.StreetTreatCaseId
+    INNER JOIN AAU.Status cs ON cs.StatusId = stc.StatusId
 	INNER JOIN AAU.Vehicle ve ON ve.VehicleId = stc.AssignedVehicleId
 	INNER JOIN AAU.Patient p ON p.PatientId = stc.PatientId
 	INNER JOIN AAU.EmergencyCase ec ON ec.EmergencyCaseId = p.EmergencyCaseId
@@ -1612,7 +1613,7 @@ FROM AAU.StreetTreatCase c
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -3918,7 +3919,7 @@ WITH PatientCTE AS (
 	FROM AAU.Patient p
 	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
 	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) >= IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId NOT IN (1,7), prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
 	AND p.PatientCallOutcomeId = 1
 	AND (
 		p.PatientStatusId IN (1,7)
@@ -4100,6 +4101,14 @@ DECLARE vVehicleNumber VARCHAR(100);
     ) v
     WHERE v.RNum = 1;
     
+    IF (vVehicleId IS NULL) THEN
+    
+    SELECT v.VehicleId, v.VehicleNumber INTO vVehicleId, vVehicleNumber
+    FROM AAU.Vehicle v
+    WHERE OrganisationId = vOrganisationId
+    AND v.StreetTreatDefaultVehicle = 1;
+    
+    END IF;   
     
 	SELECT vUserId AS UserId, vOrganisationId AS OrganisationId, vUserName AS UserName, vFirstName AS FirstName, vLastName AS LastName,
     vInitials AS Initials, vPermissions AS Permissions, vPreferences AS Preferences, vPassword AS Password, vSocketEndPoint AS SocketEndPoint, vVehicleId AS VehicleId, vVehicleNumber AS VehicleNumber;
@@ -6189,7 +6198,8 @@ DECLARE vOrganisationId INT;
 DECLARE vPatientExists INT;
 DECLARE vPatientId INT;
 DECLARE vTagNumber VARCHAR(45);
-DECLARE vExistingTagNumber VARCHAR(45);
+DECLARE vExistingOutcomeId INT;
+DECLARE vAdmissionAccepted INT;
 DECLARE vSameAsEmergencyCaseId INT;
 DECLARE vSuccess INT;
 
@@ -6201,7 +6211,9 @@ FROM AAU.Patient WHERE PatientId <> prm_PatientId
 AND EmergencyCaseId = prm_EmergencyCaseId
 AND GUID = prm_GUID AND IsDeleted = 0;
 
-SELECT TagNumber INTO vExistingTagNumber FROM AAU.Patient WHERE PatientId = prm_PatientId;
+SELECT PatientCallOutcomeId INTO vExistingOutcomeId FROM AAU.Patient WHERE PatientId = prm_PatientId;
+
+SELECT COUNT(1) INTO vAdmissionAccepted FROM AAU.TreatmentList WHERE PatientId = prm_PatientId AND Admission = 1 AND InAccepted = 1;
 
 SELECT EmergencyCaseId INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsEmergencyNumber;
 
@@ -6221,15 +6233,22 @@ IF vPatientExists = 0 THEN
 								WHEN prm_IsDeleted = FALSE THEN NULL
                                 WHEN prm_IsDeleted = TRUE AND DeletedDate IS NULL THEN NOW()
 							  END
-	WHERE PatientId = prm_PatientId;
-
-    -- Now update the Census in case there were records entered there early.
-    IF IFNULL(prm_TagNumber, '') <> '' AND vExistingTagNumber <> prm_TagNumber THEN
-		UPDATE AAU.Census SET TagNumber = prm_TagNumber WHERE PatientId = prm_PatientId;
-    END IF;
+	WHERE PatientId = prm_PatientId;    
 
 	INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Update', NOW());
+    
+    -- Check if we've set the patient to non admission from admission, and then remove the Treatment List record.
+    IF ( vExistingOutcomeId = 1 AND prm_PatientCallOutcomeId IS NULL AND vAdmissionAccepted != 1) THEN
+    
+		DELETE FROM AAU.TreatmentList WHERE PatientId = prm_PatientId;
+        
+        INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+		VALUES (vOrganisationId, prm_Username, prm_PatientId,'Patient','Removed treatment list record', NOW());
+        
+    END IF;
+    
+	
 
     SELECT 1,prm_TagNumber,prm_PatientId INTO vSuccess,vTagNumber,vPatientId;
 
@@ -7124,7 +7143,7 @@ END IF;
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'ST Case','Upsert', NOW());
+	VALUES (prm_Username,vStreetTreatCaseId,'ST Case','Upsert', NOW());
     
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
     
@@ -7381,8 +7400,8 @@ START TRANSACTION;
 				ReleaseStatus		= prm_ReleaseStatus,
 				Temperament			= prm_Temperament,		
 				Age					= prm_Age,		
-				KnownAsName			= prm_KnownAsName /*,
-				UpdateTime					= NOW()*/
+				KnownAsName			= prm_KnownAsName,
+				UpdateTime					= NOW()
 				
 	WHERE PatientId = prm_PatientId;
    
@@ -7408,4 +7427,92 @@ CALL AAU.sp_GetTreatmentListByPatientId(prm_UserName, prm_PatientId);
 
 END$$
 
-
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_InsertPatientMediaComments !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_InsertPatientMediaComments(
+	IN prm_PatientMediaItemId INT,
+    IN prm_Username TEXT,
+    IN prm_Comment TEXT
+)
+BEGIN
+
+DECLARE vOrganisationId INT;
+DECLARE vUserId INT;
+DECLARE vCommentExists INT DEFAULT 0;
+DECLARE vSuccess INT;
+DECLARE vCommentId INT;
+
+SELECT UserId, OrganisationId INTO vUserId, vOrganisationId FROM AAU.User WHERE UserName = prm_Username;
+
+SELECT COUNT(*) INTO vCommentExists
+FROM AAU.PatientMediaComments
+WHERE UserId = vUserId AND
+Comment = prm_Comment AND
+PatientMediaItemId = prm_PatientMediaItemId;
+
+IF vCommentExists = 0 THEN
+INSERT INTO AAU.PatientMediaComments(
+	UserId,
+    Comment,
+    PatientMediaItemId
+) VALUES
+(
+	vUserId,
+    prm_Comment,
+    prm_PatientMediaItemId
+);
+
+SELECT 1 INTO vSuccess;
+
+SELECT LAST_INSERT_ID() INTO vCommentId;
+
+INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_Username,vCommentId,'Media Comment','Insert', NOW());
+    
+ELSE
+
+	SELECT 2 INTO vSuccess;
+    
+END IF;
+
+SELECT vSuccess as success;
+
+END$$
+DELIMITER ;
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdatePatientStatusAfterRelease !!
+
+DELIMITER $$
+CREATE PROCEDURE  AAU.sp_UpdatePatientStatusAfterRelease (IN prm_username VARCHAR(45), IN prm_ReleaseDetailsId INTEGER, IN prm_ReleaseEndDate DATE)
+BEGIN
+
+/*
+
+Created By: Jim Mackenzie
+Created On: 22/02/2021
+Purpose: When the release is complete we should update the patient status with the release
+end date as we know with certainty that the patient has been released.
+
+*/
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username;
+
+UPDATE AAU.Patient p
+INNER JOIN AAU.ReleaseDetails rd ON rd.PatientId = p.PatientId
+SET p.PatientStatusDate = prm_ReleaseEndDate, p.PatientStatusId = 2
+WHERE rd.ReleaseDetailsId = prm_ReleaseDetailsId;
+
+INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+VALUES (vOrganisationId, prm_UserName,prm_ReleaseDetailsId,'ReleaseDetails','Update Status Id - After Release: ', NOW());
+
+
+END $$
+
+
+

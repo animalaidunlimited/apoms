@@ -128,21 +128,54 @@
 
             <div *ngIf="column.type === 'select'" class="treatment-priority-select start">
 
-              <!--There's some issue that causes the priority to not load quick enough for the print. So some of hte records end up blank
-              This is a temp solution - 2021-06-19 JM-->
-              <div *ngIf="isPrinting">
-                {{getTreatmentPriority(row.get(column.name).value)}}
-              </div>
+            <!--Le'ts only load the select if we need to.-->
+            <div *ngIf="isPrinting || !row.get('editing')?.value"              
+            class="treatment-priority-non-edit pointer"
+            (click)="row.get('editing').setValue(true);"
+           
+            fxLayoutAlign="center center">
+              <div>{{getTreatmentPriority(row.get(column.name).value)}}</div>
+            </div>
+
+            <!-- <mat-form-field *ngIf="!isPrinting && !!row.get('editing')?.value"
+            class="treatment-priority-select"> -->
+
+            <div class="treatment-priority-wrapper"
+            *ngIf="!isPrinting && !!row.get('editing')?.value"
+            >
+
+              <mat-button-toggle-group
+              
+              class="treatment-priority-select"
+              fxLayout="column"
+              (vertical)="true"                           
+              [formControlName]="column.name" aria-label="Font Style">
+  
+                    <mat-button-toggle (click)="updateTreatmentPriority(row)" >N/A</mat-button-toggle>
+                    <mat-button-toggle *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId"
+                    (click)="updateTreatmentPriority(row)" >
+                      {{priority.Priority}}</mat-button-toggle>
+  
+              </mat-button-toggle-group>
+
+            </div>
 
 
-            <mat-form-field *ngIf="!isPrinting">
-              <mat-select
+
+              <!-- <mat-select
+              #mySelect
               (selectionChange)="updateTreatmentPriority(row)"
               [formControlName]="column.name">
                   <mat-option>N/A</mat-option>
-                  <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">{{priority.Priority}}</mat-option>
-              </mat-select>
-            </mat-form-field>
+                  <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">
+                    {{priority.Priority}}</mat-option>
+              </mat-select> -->
+            <!-- </mat-form-field>   -->
+
+
+
+
+            
 
 
             </div>

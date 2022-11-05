@@ -19,6 +19,8 @@
 
     th {
       color:black;
+      font-weight: bold;
+      font-size: medium;
     }
 
     legend {
@@ -88,12 +90,22 @@
   width: 175px;
 }
 
+.treatment-priority-wrapper{
+  position: absolute;
+}
+
+.treatment-priority-non-edit{
+  height: 40px;
+  // display: inline;
+}
+
 .pointer{
   cursor: pointer;
 }
 
 .treatment-priority-select{
   width: 125px;
+  text-align: center;
 }
 
 :host ::ng-deep .mat-chip-list-wrapper{
@@ -108,16 +120,16 @@
   font-size: large;
 }
 
-:host ::ng-deep .center-columnm{
+:host ::ng-deep .center-column{
   text-align: center !important;
-  //justify-content: center;
+  justify-content: center;
 }
 
 :host ::ng-deep .flex-start{
   text-align: start !important;
 }
 
-.mat-column-Other {
+.mat-column-other {
   min-width: 174px;
 }
 

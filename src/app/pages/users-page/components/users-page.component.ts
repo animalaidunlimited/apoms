@@ -233,17 +233,6 @@ export class UsersPageComponent implements OnInit {
           }]
         },
         {
-          groupNameId: 7,
-          groupName: 'Staff Rota',
-          permissions: [{
-            permissionId: 17,
-            permissionType: 'Read'
-          }, {
-            permissionId : 18,
-            permissionType: 'Write'
-          }]
-        },
-        {
           groupNameId: 8,
           groupName: 'Reporting',
           permissions: [{
@@ -272,11 +261,11 @@ export class UsersPageComponent implements OnInit {
       this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType=>{
         this.jobTypes = jobType;
       });
-      this.getrefreshTableData();
+      this.getRefreshTableData();
 
     }
 
-    getrefreshTableData() {
+    getRefreshTableData() {
 
       this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
         this.userList = userListData;
@@ -384,7 +373,7 @@ export class UsersPageComponent implements OnInit {
     }
 
     refreshPage() {
-      this.getrefreshTableData();
+      this.getRefreshTableData();
       this.resetForm();
     }
 

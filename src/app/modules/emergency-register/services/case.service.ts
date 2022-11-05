@@ -241,17 +241,13 @@ export class CaseService extends APIService {
         else{
             searchResult = this.getObservable(request)
             .pipe(
-                debounceTime(1500),
-    
-                map((response: SearchResponse[]) => {
-                    return response || [];
-                }),
+                debounceTime(1500),    
+                map((response: SearchResponse[]) => response),
                 share()
             );
         }
         
         return merge(this.clearResults$, searchResult);
-
 
     }
 

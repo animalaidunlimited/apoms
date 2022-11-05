@@ -6,8 +6,6 @@
 
     <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
 
-
-
         <div *ngFor="let control of data.formBuilderArray">
 
            <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
@@ -74,7 +72,7 @@
 
         <app-patient-visit-details
             [isStreetTreatTrue]="isStreetTreat"
-            *ngIf = "isStreetTreat"
+            *ngIf = "isStreetTreat && showVisits"
             [recordForm]="formGroup">
         </app-patient-visit-details>
 

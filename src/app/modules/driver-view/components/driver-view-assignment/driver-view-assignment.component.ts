@@ -99,7 +99,7 @@ export class DriverViewAssignmentComponent implements OnInit {
 
   }
 
-  togglebuttonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignment) {
+  toggleButtonSelection(subAction: string , actionStatusName: string , assignment: DriverAssignment) {
 
     if(this.patients.length > 1) {
       for(let i=1; i<= this.patients.length; i++) {

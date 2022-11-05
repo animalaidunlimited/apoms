@@ -40,6 +40,8 @@ formGroup = this.data.formGroup ;
 
 patientFormGroup = this.data.formGroup?.get('patients');
 
+showVisits = false;
+
   actionButtonEnabled = true;
   isStreetTreat!: boolean;
   private ngUnsubscribe = new Subject();
@@ -54,6 +56,9 @@ patientFormGroup = this.data.formGroup?.get('patients');
   ngOnInit(): void {
 
     this.isStreetTreat = false;
+
+    //Check to see if we have a release date, we only want to show the visits when we have them
+    this.checkShowVisits();
 
     this.data.formBuilderArray?.forEach((fb: any)=> {
 
@@ -76,11 +81,19 @@ patientFormGroup = this.data.formGroup?.get('patients');
     });
   }
 
+  private checkShowVisits() {
+    if (this.formGroup.get('releaseEndDate')?.value) {
+      this.showVisits = true;
+    }
+  }
+
   async onSubmit(updatedRecord: DriverAssignment) {
 
     updatedRecord.updateTime = getCurrentTimeString();
 
     updatedRecord.isUpdated = true;
+
+    this.checkShowVisits();
 
     const updatedRecordData = this.driverView.getAssignmentStatus(updatedRecord);
 
@@ -100,7 +113,7 @@ patientFormGroup = this.data.formGroup?.get('patients');
 
     this.driverView.saveDriverViewDataFromLocalStorage(updatedRecordData);
 
-    this.snackBar.successSnackBar('New Update recieved.','Ok');
+    this.snackBar.successSnackBar('New Update received.','Ok');
   }
 
   closeDialog() {

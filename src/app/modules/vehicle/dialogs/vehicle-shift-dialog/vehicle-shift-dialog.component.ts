@@ -67,13 +67,14 @@ export class VehicleShiftDialogComponent implements OnInit {
 
     this.isEdit = this.data.shift ? true : false;
 
-    this.organisationDetails.organisationDetail.subscribe(defaults => {
+    this.organisationDetails.organisationDetail.subscribe(defaults => {  
       
       this.defaultShiftLength = defaults.vehicleDefaults.defaultShiftLength;    
       this.minDate = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftStartTime;
       this.minEndTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftStartTime;
       this.maxDate = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;
-      this.maxStartTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;    
+      this.maxStartTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;
+
     
     });
 
@@ -89,6 +90,8 @@ export class VehicleShiftDialogComponent implements OnInit {
     this.addShiftFormGroup.get('shiftStartTime')?.setValidators([
       Validators.required,
       this.shiftValidator.validate('start',
+        this.minDate,
+        this.maxDate,
         this.addShiftFormGroup.get('shiftEndTime'),
         this.addShiftFormGroup.get('shiftUUID')?.value,
         this.data.vehicle?.vehicleId)
@@ -100,6 +103,8 @@ export class VehicleShiftDialogComponent implements OnInit {
     this.addShiftFormGroup.get('shiftEndTime')?.setValidators([
       Validators.required,
       this.shiftValidator.validate('end',
+        this.minDate,
+        this.maxDate,
         this.addShiftFormGroup.get('shiftStartTime'),
         this.addShiftFormGroup.get('shiftUUID')?.value,
         this.data.vehicle?.vehicleId)

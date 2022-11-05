@@ -8,7 +8,7 @@ import { CaseService } from '../../services/case.service';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { UpdateResponse } from 'src/app/core/models/outstanding-case';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -71,26 +71,27 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     }
 
-    this.callOutcomes$ = this.dropdowns.getCallOutcomes();
+    this.callOutcomes$ = this.dropdowns.getCallOutcomes();  
 
     this.callOutcomes$
-    .pipe(takeUntil(this.ngUnsubscribe))
+    // .pipe(take(1))
     .subscribe(callOutcome => {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;
-      this.outcomeChanged();
+      this.outcomeChanged();      
 
     });
 
-    this.patientForm.get('callOutcome.CallOutcome')?.valueChanges
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => {
-
-    this.outcomeChanged();
-
-    });
+    this.subscribeToOutcomeChanges();    
 
     this.changeDetector.detectChanges();
+  }
+
+  private subscribeToOutcomeChanges() {
+
+    this.patientForm.get('callOutcome.CallOutcome')?.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.outcomeChanged());
   }
 
   ngOnDestroy() {
@@ -137,7 +138,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
           }, {emitEvent: false});
 
           patient?.get('tagNumber')?.setValidators([Validators.required, Validators.pattern(/^[A-z0-9]*$/)]);
-          patient?.get('tagNumber')?.updateValueAndValidity();
+          patient?.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
           patient?.get('isAdmission')?.setValue(true ,{ emitEvent: false });
           patient?.get('isAdmission')?.updateValueAndValidity({ emitEvent: false });
@@ -153,7 +154,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     }
     else {
       /**
-       * At current index if patient outcome is not admisson
+       * At current index if patient outcome is not admission
        * reset only current outcome form not even those who has been updated
        * previously programmatically
        */

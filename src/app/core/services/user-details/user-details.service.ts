@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, share } from 'rxjs/operators';
 
 
 
@@ -11,8 +13,11 @@ export class UserDetailsService extends APIService{
 
   endpoint = 'UserAdmin';
 
+  public permissionArray = new BehaviorSubject<number[]>([]);
+
   constructor(public http: HttpClient) {
   super(http);
+  this.setUserPermissions();
   }
 
   public async insertUser(userDetails:any): Promise<any> {
@@ -28,9 +33,22 @@ export class UserDetailsService extends APIService{
     return this.get(request);
   }
 
-  public async getUserPermissions() : Promise<any> {
+  public getPermissions() : BehaviorSubject<number[]> {
+
+    return this.permissionArray;
+
+  }
+
+  public setUserPermissions() : void {
+
     const request = '?Username=' + null;
-    return this.get(request);
+
+    this.get(request).then(permissionResult => {
+
+      const permissions: number[] = permissionResult as number[];
+
+      this.permissionArray.next(permissions);
+    })
   }
 
 

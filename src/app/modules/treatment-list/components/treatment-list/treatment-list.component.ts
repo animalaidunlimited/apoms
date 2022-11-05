@@ -177,7 +177,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
       this.setAcceptedAndRefresh();
 
-      this.acceptedFiltered.next(this.accepted.value);
+      this.acceptedFiltered.next(this.accepted.value);   
+
       this.changeDetector.detectChanges();
 
     });
@@ -231,16 +232,18 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
     this.startSave(patient);
 
+    patient.get('editing')?.setValue(false);
     const updatePatient = this.patientService.getUpdatePatientObject(patient);
     this.changeDetector.detectChanges();
+
 
     this.patientService.updatePatientDetails(updatePatient.value).then(result => {
 
           if(result.success === 1){
 
-            patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+            // patient.get('patientDetails.treatmentPriority')?.setValue(patient.get('Treatment priority')?.value);
+            this.ts.updatePatientRecord(patient);
 
-            this.ts.sortTreatmentList();
 
           }
 
@@ -517,9 +520,9 @@ savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
 
 getTreatmentPriority(element: number) : string {
 
-  const treatmentPriorities = ["Low","Medium","High","Urgent"];
+  const treatmentPriorities = ["No treat","Low","Medium","High","Urgent"];
 
-  return treatmentPriorities[element - 1];
+  return treatmentPriorities[element];
 
 }
 
@@ -542,8 +545,6 @@ sortTable(columnName: string){
   this.acceptedFiltered.next(currentAccepted);
 
 }
-
-
 
 }
 

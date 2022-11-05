@@ -28,9 +28,18 @@ export class OutcomeComponent implements OnInit {
     maxDate: string | Date = '';
 
     errorMatcher = new CrossFieldErrorMatcher();
-    vaccinationDetails!: FormGroup;
-    antibioticDetails!: FormGroup;
-    isoReason!: FormGroup;
+
+    get vaccinationDetails() : FormGroup{
+        return this.outcomeForm.get('vaccinationDetails') as FormGroup;
+    }
+
+    get antibioticDetails() : FormGroup { 
+        return this.outcomeForm.get('antibioticDetails') as FormGroup;
+    }
+
+    get isoReason() : FormGroup { 
+        return this.outcomeForm.get('isoReason') as FormGroup;
+    }
 
 
     constructor(
@@ -86,9 +95,6 @@ export class OutcomeComponent implements OnInit {
             this.outcomeForm.patchValue(outcome);
         });
 
-        this.vaccinationDetails = this.outcomeForm.get('vaccinationDetails') as FormGroup;
-        this.antibioticDetails = this.outcomeForm.get('antibioticDetails') as FormGroup;
-        this.isoReason = this.outcomeForm.get('isoReason') as FormGroup;
 
     }
 
@@ -101,10 +107,8 @@ export class OutcomeComponent implements OnInit {
 
     toggleAntibioticChip(source:string, antibiotic:Antibiotic, chip: MatChip){
 
-        const selectedValue = chip.selected ? antibiotic.antibioticId : null;
-
-        this.antibioticDetails.get(source)?.setValue(selectedValue);
-
+        this.antibioticDetails.get(source)?.setValue(chip.selected ? null : antibiotic.antibioticId);
+        chip.toggleSelected();
     }
 
     setInitialDate($event:MouseEvent){
@@ -123,20 +127,22 @@ export class OutcomeComponent implements OnInit {
 
     async saveOutcomeDetails(){
 
+        
         if(this.outcomeForm.valid){
 
-            const outcomeRespone:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
+            const outcomeResponse:PatientOutcomeResponse = await this.patientService.savePatientOutcomeForm(this.outcomeForm.value);
 
-            outcomeRespone.success === 1 ?
+            outcomeResponse.success === 1 ?
             (
                 this.snackbar.successSnackBar('Outcome saved successfully', 'OK'),
-                this.outcomeForm.get('patientOutcomeDetailsId').setValue(outcomeRespone.patientOutcomeDetailsId)
+                this.outcomeForm.get('patientOutcomeDetailsId').setValue(outcomeResponse.patientOutcomeDetailsId)
             )   :
                 this.snackbar.errorSnackBar('Outcome save failed', 'OK');
 
 
 
         }
+        
 
     }
 }

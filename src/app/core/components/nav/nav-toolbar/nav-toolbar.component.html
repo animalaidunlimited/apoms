@@ -9,49 +9,13 @@
 
     <div fxFlex="100%">{{activePage?.title}}</div>
 
-
-    <div *ngIf="(userDetails | async) as user" #preferencesDiv class="preferences-wrapper">
-        <div class="user-icon"
-        (click)="showPreferences=!showPreferences"
-        [matTooltip]="user.fullname">
-
-        {{user.initials}}
-
-        </div>
-
-        <form [formGroup]="userDetailsForm" class="user-preferences" *ngIf="showPreferences" fxLayout="column" fxLayoutAlign="center center">
-
-            <div>
-                <mat-icon class="account-circle">account_circle</mat-icon>
-            </div>
-
-            <div class="user-full-name">
-                {{user.fullname}}
-            </div>
-
-            <div>
-
-                <mat-slide-toggle
-                    formControlName="clearSearchOnTabReturn"
-                    class="clear-search-toggle">
-                    Clear search term on tab switch
-                </mat-slide-toggle>
-
-                <div class="clear-search">
-                    Clear the search results when switching between record tabs in the
-                    <br>Emergency Register and Hospital Manager
-                </div>
-
-            </div>
-
-        </form>
-    </div>
+    <app-user-preferences class="user-preferences-wrapper"></app-user-preferences>
 
     <button mat-icon-button *ngIf="mobile" (click)="onSetSearchFocus()">
         <mat-icon>search</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="onLogout()">
+    <button mat-icon-button (click)="onLogout()" style="padding-right: 20px">
         <mat-icon>logout</mat-icon>
     </button>
 </mat-toolbar>

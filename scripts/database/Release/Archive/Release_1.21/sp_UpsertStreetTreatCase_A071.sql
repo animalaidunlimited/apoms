@@ -103,7 +103,7 @@ END IF;
     UPDATE AAU.Patient SET Description = IFNULL(prm_AnimalDescription,'') WHERE PatientId = prm_PatientId;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (NULL,vStreetTreatCaseId,'ST Case','Upsert', NOW());
+	VALUES (prm_Username,vStreetTreatCaseId,'ST Case','Upsert', NOW());
     
 	SELECT vStreetTreatCaseId AS streetTreatCaseId, vSuccess AS success;
     

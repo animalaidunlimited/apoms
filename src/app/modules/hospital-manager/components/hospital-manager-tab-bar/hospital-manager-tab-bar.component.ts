@@ -8,6 +8,7 @@ import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { NavigationService } from 'navigation/navigation.service';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
 import { HospitalManagerTabBarService } from '../../services/hospital-manager-tab-bar.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
 
     constructor(private tabBarService: HospitalManagerTabBarService,
         private navigationService: NavigationService,
+        private router: Router,
         private caseService: CaseService){
 
     }
@@ -32,12 +34,12 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         this.caseService.caseToOpen$
-        .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(caseValue => {
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe(caseValue => {
 
-        if(caseValue?.source === "hospitalManager"){
-            this.openCase(caseValue);
-        }
+                if(caseValue?.source === "hospitalManager"){
+                    this.openCase(caseValue);
+                }
 
     });
 
@@ -89,6 +91,8 @@ export class HospitalManagerTabBarComponent implements OnInit, OnDestroy {
         if (index > 0 && index < this.tabs.length) {
             this.tabs.splice(index, 1);
             this.selected.setValue(this.tabs.length - 1);
+            
+            this.router.navigate(['/nav/hospital-manager']);
         }
     }
 

@@ -204,7 +204,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             id: 15,
             inputType: 'text',
             searchValue: 'aka',
-            databaseField: 'search.KnownAsName',
+            databaseField: 'p.KnownAsName',
             name: 'Known as',
             inNotIn: false
         }

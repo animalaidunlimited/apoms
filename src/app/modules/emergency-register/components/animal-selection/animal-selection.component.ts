@@ -119,7 +119,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
         this.patients = this.recordForm.get('patients') as FormArray;
 
 
-        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value ? this.recordForm.get('emergencyDetails.emergencyCaseId')?.value : null;
+        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value || null;
 
         this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -193,11 +193,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
     // TODO fix any issues with the update flag here.
     // We'll need to make sure we're only updating patients that we need to update
     // and not just deleting them all and recreating.
-    populatePatient(isUpdate: boolean, patient: Patient) {
+    populatePatient(isUpdate: boolean, patient: Patient) : FormGroup {
 
         const problems = this.fb.array([]);
 
-        patient.problems.forEach(problem => {
+        patient.problems.forEach(() => {
 
             problems.push(this.fb.group({
                 problemId: [],
@@ -206,11 +206,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
         });
 
-        const newPatient = this.getPatient(problems);
-
-        this.setValidators(newPatient);
+        const newPatient = this.getPatient(problems);        
 
         newPatient.patchValue(patient);
+
+        this.setValidators(newPatient);
 
         if(newPatient.get('admissionAccepted')?.value){
             newPatient.get('admissionArea')?.disable();
@@ -251,10 +251,12 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
         patient.get('tagNumber')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(tagVal=> {
 
             if(tagVal && patientIdControl) {
+
                 patient.get('tagNumber')?.setAsyncValidators(this.tagNumberValidator.validate(
                     this.emergencyCaseId || -1,
                     patientIdControl,
-                ));
+                ));                
+                
             }
 
         });
@@ -305,7 +307,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
         if(this.incomingPatientArray?.length > 0) {
 
-
             this.incomingPatientArray.forEach(patient=> {
                 patient.deleted = !!+patient.deleted;
 
@@ -328,18 +329,17 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
             this.patientService.getPatientsByEmergencyCaseId(emergencyCaseId)
             .pipe(takeUntil(this.ngUnsubscribe))
-            // tslint:disable-next-line: deprecation
             .subscribe((patients: Patients) => {
 
                 patients.patients.forEach(patient => {
                     // We get a 0 or 1 from the database, so need to convert to a boolean.
                     patient.deleted = !!+patient.deleted;
 
-                    const newPatient = this.populatePatient(true, patient);
+                     const newPatient = this.populatePatient(true, patient);
                     /*
                     * loadPatientArray running multiple times on ngOnInit
                     * animal-selection HTML tag will instantiate ng on init
-                    * Rstrict length of patients array to length of incoming patients
+                    * Restrict length of patients array to length of incoming patients
                     */
                     if(this.patients.length < patients.patients.length )
                     {
@@ -349,11 +349,11 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
                 this.setChildOutcomeAsParentPatient(this.patients);
 
-
             },
                 err => console.error(err),
             );
         }
+
     }
 
 
@@ -369,10 +369,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
     /**
      * Same as inside call outcome value changes
      *  it is used for when fetching the data from api
-     * if api has call outcome admission because valuechanges will not run inside call outcome compoment on
+     * if api has call outcome admission because valueChanges will not run inside call outcome component on
      * ngOnIt
      */
-    setChildOutcomeAsParentPatient(patients: FormArray) {
+    setChildOutcomeAsParentPatient(patients: FormArray) : void {
 
         patients.controls[0].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
 

@@ -44,10 +44,12 @@ export class LogsComponent implements OnInit {
 
         let incomingData = this.logsData || this.data;
 
+        if(!incomingData) return;
+
         const searchQuery: LogSearchObject = {
-                emergencyCaseId : incomingData.emergencyCaseId,
-                patientIds : [ incomingData.patientFormArray?.map(patientDetails => patientDetails.value.patientId) ].join(',')
-            }
+                emergencyCaseId : incomingData?.emergencyCaseId,
+                patientIds : [ incomingData.patientFormArray?.map(patientDetails => patientDetails.get('patientId')?.value) ].join(',')
+        }
 
         this.initLogs(searchQuery);
     }

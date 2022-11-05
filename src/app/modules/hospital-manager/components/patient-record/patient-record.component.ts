@@ -8,10 +8,11 @@ import { MediaItem } from 'src/app/core/models/media';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { ReleaseDetails } from 'src/app/core/models/release';
 import { MediaService } from 'src/app/core/services/media/media.service';
+import { ViewportScroller } from '@angular/common';
 
 
 @Component({
@@ -53,7 +54,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
         }
 
-    ngOnInit() {
+    ngOnInit() {  
 
         // tslint:disable-next-line: deprecation
         this.route.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(val=> {
@@ -124,6 +125,8 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
             emergencyCaseId: this.recordForm.value.emergencyDetails.emergencyCaseId,
             patientFormArray: [this.recordForm?.get('patientDetails') || this.fb.control(null) as AbstractControl]
         };
+
+        this.changeDetector.detectChanges();       
 
 
     }

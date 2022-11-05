@@ -594,7 +594,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -718,7 +718,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -820,7 +820,7 @@ Description: Replacing team with assigned vehicle.
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -911,7 +911,7 @@ SELECT
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1
@@ -1612,7 +1612,7 @@ FROM AAU.StreetTreatCase c
         ec.Longitude, 
         ec.Location, 
         ec.EmergencyNumber 
-        FROM AAU.Emergencycase ec
+        FROM AAU.EmergencyCase ec
 		LEFT JOIN AAU.EmergencyCaller ecr ON ecr.EmergencyCaseId = ec.EmergencyCaseId
 		LEFT JOIN AAU.Caller c ON c.CallerId = ecr.CallerId
 		WHERE ecr.PrimaryCaller = 1

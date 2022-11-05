@@ -3,6 +3,7 @@ const PROXY_CONFIG = [
         context: [
             "/Auth",
             "/Caller",
+            "/Comment",
             "/DriverView",
             "/Dropdown",
             "/EmergencyRegister",

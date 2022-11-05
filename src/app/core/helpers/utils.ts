@@ -98,14 +98,26 @@ export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAs
 
 export function fnSortBySortOrderAndRotationPeriodSortOrder(firstAreaShift: AreaShift | RotationRole, secondAreaShift: AreaShift | RotationRole) : number {
 
-
-    console.log(firstAreaShift);
-    console.log(secondAreaShift);
-
-
     return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
       firstAreaShift.sortOrder - (secondAreaShift.sortOrder || 999)
       :
       firstAreaShift.rotationAreaSortOrder - (secondAreaShift.rotationAreaSortOrder || -999);
-
+  
   }
+
+export function getNotificationTypeFromCommentType(commentType: string) : number {
+
+    switch (commentType) {
+        case 'patient' :
+          return 1;
+        
+        case 'image' :
+          return 2;
+
+        case 'video' :
+          return 3;
+
+        default : return -1
+        
+      }
+}

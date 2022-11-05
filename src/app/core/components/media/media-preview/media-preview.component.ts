@@ -1,11 +1,11 @@
-import { Image, Comment, MediaItem, MediaItemReturnObject, SingleMediaItem } from './../../../models/media';
+import { MediaItem, MediaItemReturnObject, SingleMediaItem } from './../../../models/media';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Platform } from '@angular/cdk/platform';
 import { MediaCaptureComponent } from '../media-capture/media-capture.component';
@@ -14,8 +14,6 @@ import { takeUntil } from 'rxjs/operators';
 import { MediaService } from 'src/app/core/services/media/media.service';
 import { ConfirmationDialog } from '../../confirm-dialog/confirmation-dialog.component';
 import { getImageLocation } from 'src/app/core/helpers/media';
-
-
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -44,17 +42,13 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  onArrowKey = new EventEmitter<number>();
-
-  patientMediaComments$: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
+  onArrowKey = new EventEmitter<number>();  
 
   onPinch$: Subject<number> = new Subject<number>();
 
   @ViewChild('tagsControl') tagsControl!: ElementRef<HTMLInputElement>;
   @ViewChild('uploadMediaIcon') uploadMediaIcon!:ElementRef<HTMLElement>;
-
   @ViewChild('videoPlayer', { static: true }) videoplayer!: ElementRef;
-
   @ViewChild('imgElement') imgElement!: ElementRef;
 
   @HostListener('document:keydown', ['$event'])
@@ -95,14 +89,14 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     private renderer: Renderer2
   ) {
 
-    if(this.data.mediaData?.patientMediaItemId){
-      // tslint:disable-next-line: deprecation
-      this.mediaService.getPatientMediaComments(this.data.mediaData?.patientMediaItemId || -1)
-                          .pipe(takeUntil(this.ngUnsubscribe)).
-                          subscribe((comments)=>{
-                            this.patientMediaComments$.next(comments);
-                          });
-    }
+    // if(this.data.mediaData?.patientMediaItemId){
+    //   // tslint:disable-next-line: deprecation
+    //   this.commentService.getComments(this.data.mediaData?.patientMediaItemId || -1, 'media')
+    //                       .pipe(takeUntil(this.ngUnsubscribe)).
+    //                       subscribe((comments:any)=>{
+    //                         this.patientMediaComments$.next(comments);
+    //                       });
+    // }
 
   }
 
@@ -250,44 +244,8 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  submitComment(): void {
+  
 
-    let comment = this.recordForm.get("currentComment")?.value;
-
-    if(!comment){
-      return;
-    }
-
-    const commentObject = ({
-      patientMediaItemId : this.data.mediaData?.patientMediaItemId || -1,
-      comment
-    });
-
-    const mediaCommentResponse = this.mediaService.savePatientMediaComment(commentObject);
-
-    mediaCommentResponse.then((response:{success:number}) => {
-
-      if(response.success === 1){
-        this.recordForm.get("currentComment")?.reset();
-        // tslint:disable-next-line: deprecation
-        this.mediaService.getPatientMediaComments(this.data.mediaData?.patientMediaItemId || -1).pipe(takeUntil(this.ngUnsubscribe)).subscribe((comments)=>{
-          this.patientMediaComments$.next(comments);
-        });
-
-        this.showSnackBar.successSnackBar('Comment added successfully', 'OK');
-
-      }
-      else {
-        this.showSnackBar.errorSnackBar('Error adding comment: ERR-MP:278', 'OK');
-      }
-    });
-
-
-  }
-
-  trackComment(index:number, item:any){
-    return item.timestamp;
-  }
 
   deleteMediaItem(){
 
@@ -407,9 +365,9 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
 
     this.checkHeight(dialogData.mediaData?.heightPX);
 
-    this.mediaService.getPatientMediaComments(this.data.mediaData?.patientMediaItemId as number).pipe(takeUntil(this.ngUnsubscribe)).subscribe((comments)=>{
-      this.patientMediaComments$.next(comments);
-    });
+    // this.commentService.getComments(this.data.mediaData?.patientMediaItemId as number, 'media').pipe(takeUntil(this.ngUnsubscribe)).subscribe((comments)=>{
+    //   this.patientMediaComments$.next(comments);
+    // });
 
   }
 

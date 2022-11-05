@@ -49,9 +49,9 @@
 
                     <div fxLayout="column" class="address-row-wrapper">
 
-                        <div *ngFor="let item of address?.controls; let i = index">
+                        <div *ngFor="let item of addressArray.controls; let i = index">
 
-                            <div [formGroupName]="i"  fxLayout="row wrap" style="width: 100%;" fxLayoutGap="15px">
+                            <div [formGroupName]="i"  fxLayout="row" style="width: 100%;" fxLayoutGap="15px">
 
                                 <mat-form-field class="name-field" autocomplete="none">
 

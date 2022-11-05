@@ -129,7 +129,7 @@ export class StreetTreatRecordComponent implements OnInit {
     });
 
 
-    setTimeout(() => this.recordForm.get('streatTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
+    setTimeout(() => this.recordForm.get('streetTreatForm.streetTreatCaseStatus')?.valueChanges.subscribe((casePriority)=> {
       if(casePriority > 3)
       {
         this.recordForm.get('EndDate')?.setValidators([Validators.required]);
@@ -147,21 +147,23 @@ export class StreetTreatRecordComponent implements OnInit {
   saveForm(){
 
     if(this.hasWritePermission) {
+
      this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
 
        if(response.success === 1)
          {
            this.showSnackBar.successSnackBar('Street Treat updated successfully','OK');
+
            this.streetTreatService.getStreetTreatWithVisitDetailsByPatientId(this.patientId)
            .pipe(takeUntil(this.ngUnsubscribe))
            .subscribe((response) => {
-             this.recordForm.get('streatTreatForm.visits')?.patchValue(response.visits);
-           });
+             this.recordForm.get('streetTreatForm.visits')?.patchValue(response.visits);
+            });            
 
-         }
-         else {
-           this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
-         }
+        }
+        else {
+          this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');
+        }
 
        if(response?.success === -1){
          this.showSnackBar.errorSnackBar('Error updating Street Treat','OK');

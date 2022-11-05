@@ -4,10 +4,12 @@ START TRANSACTION;
 
 WARNING!!!
 
-NEED TO SET THE Ids FOR STREETTREAT TEAMS ON LINE 39
+WE NEED TO SET THE DEFAULT STREETREATVEHICLE AND WE SHOULD SET THIS TO THE VEHICLE THAT HAS THE MOST CASES! 
+THIS SHOULD BE 2, BUT CHECK!!
 
-SELECT DISTINCT AssignedVehicleId
-FROM AAU.StreetTreatCase
+SELECT AssignedVehicleId, COUNT(1)
+FROM AAU.StreetTreatCase stc
+GROUP BY AssignedVehicleId;
 
 ***********************************/
 
@@ -17,22 +19,22 @@ SET @ST3 = 0;
 
 INSERT INTO AAU.Vehicle
 (`OrganisationId`,`VehicleRegistrationNumber`,`VehicleNumber`,`VehicleTypeId`,`LargeAnimalCapacity`,`SmallAnimalCapacity`,`VehicleStatusId`,
-`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`) VALUES
-(1,'RJ ST1','ST1',3,0,4,1,CURDATE(),0, 1, 3);
+`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`,`StreetTreatVehicle`) VALUES
+(1,'RJ ST1','ST1',3,0,4,1,CURDATE(),0, 1, 3, 1);
 
 SELECT LAST_INSERT_ID() INTO @ST1;
 
 INSERT INTO AAU.Vehicle
 (`OrganisationId`,`VehicleRegistrationNumber`,`VehicleNumber`,`VehicleTypeId`,`LargeAnimalCapacity`,`SmallAnimalCapacity`,`VehicleStatusId`,
-`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`) VALUES
-(1,'RJ ST2','ST2',3,0,4,1,CURDATE(),0, 1, 3);
+`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`,`StreetTreatVehicle`) VALUES
+(1,'RJ ST2','ST2',3,0,4,1,CURDATE(),0, 1, 3, 1);
 
 SELECT LAST_INSERT_ID() INTO @ST2;
 
 INSERT INTO AAU.Vehicle
 (`OrganisationId`,`VehicleRegistrationNumber`,`VehicleNumber`,`VehicleTypeId`,`LargeAnimalCapacity`,`SmallAnimalCapacity`,`VehicleStatusId`,
-`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`) VALUES
-(1,'RJ ST5','ST5',3,0,4,1,CURDATE(),0, 1, 3);
+`CreatedDate`,`IsDeleted`,`MinRescuerCapacity`,`MaxRescuerCapacity`,`StreetTreatVehicle`) VALUES
+(1,'RJ ST5','ST5',3,0,4,1,CURDATE(),0, 1, 3, 1);
 
 SELECT LAST_INSERT_ID() INTO @ST3;
 
@@ -52,6 +54,9 @@ ADD CONSTRAINT `FK_StreetTreatCaseVehicleId_VehicleVehicleId`
   REFERENCES `AAU`.`Vehicle` (`VehicleId`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+  
+  
+  
   
 -- COMMIT
 

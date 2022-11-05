@@ -35,6 +35,7 @@ import { TreatmentAreaHistoryComponent } from './components/treatment-area-histo
 import { PatientDetailsModule } from './components/patient-details/patient-details.module';
 import { ReleaseAssignModule } from 'src/app/core/components/release-assign/release-assign.module';
 import { ReleaseDetailsComponent } from './components/release-details/release-details.component';
+import { CommentModule } from 'src/app/core/components/comments/comment.module';
 
 
 
@@ -58,6 +59,7 @@ import { ReleaseDetailsComponent } from './components/release-details/release-de
         ReleaseDetailsComponent,
     ],
     imports: [
+        CommentModule,
         CommonModule,
         HospitalManagerPageRoutingModule,
         MaterialModule,

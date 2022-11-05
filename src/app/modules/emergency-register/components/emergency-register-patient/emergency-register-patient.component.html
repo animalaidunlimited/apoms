@@ -8,11 +8,11 @@
 
     <!-- Animal Dropdown-->
     <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;"
-    fxFlexlayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
+    fxLayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
-        (focus)="animalTypeChangessub()" (focusout)="animalTypeChangesUnsub()">
+        (focus)="animalTypeChangesSub()" (focusout)="animalTypeChangesUnsub()">
 
       <mat-autocomplete class="speciesAutocomplete" autoActiveFirstOption #animalAuto="matAutocomplete"
         (optionSelected)="animalSelected($event)">
@@ -24,7 +24,7 @@
 
     </mat-form-field>
 
-    <!-- Main Problem -->
+    <!-- Main Problem-->
     <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
 
       <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
@@ -67,7 +67,7 @@
 
 
 
-  <!-- Calloutcome details-->
+  <!-- Call Outcome details-->
   <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>

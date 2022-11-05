@@ -95,7 +95,6 @@ constructor(
     // If not granted then emit to let watchers know
     requestPermission() {
 
-
         this.angularFireMessaging.requestToken.subscribe(
             (token) => {
                 this.zone.run(() => this.havePermission.next(true));
@@ -107,8 +106,7 @@ constructor(
                 }
                 else {
                     this.snackbar.warningSnackBar("An error occurred when subscribing to messaging","OK");
-                }
-                
+                }                
 
             },
             (error:any) => {

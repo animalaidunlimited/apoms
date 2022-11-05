@@ -19,7 +19,7 @@ WITH PatientCTE AS (
 	FROM AAU.Patient p
 	INNER JOIN AAU.PatientStatus ps ON ps.PatientStatusId = p.PatientStatusId
 	WHERE p.PatientId IN (SELECT PatientId FROM AAU.TreatmentList WHERE NULLIF(OutAccepted,0) IS NULL AND InTreatmentAreaId = prm_TreatmentAreaId)
-	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) >= IF(p.PatientStatusId > 1, prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
+	AND IFNULL(p.PatientStatusDate, prm_TreatmentListDate) = IF(p.PatientStatusId NOT IN (1,7), prm_TreatmentListDate, IFNULL(p.PatientStatusDate, prm_TreatmentListDate))
 	AND p.PatientCallOutcomeId = 1
 	AND (
 		p.PatientStatusId IN (1,7)
