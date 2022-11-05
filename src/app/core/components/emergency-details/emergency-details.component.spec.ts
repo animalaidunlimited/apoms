@@ -115,12 +115,14 @@ describe('EmergencyDetailsComponent', () => {
     it('Invalid form - Missing code', () => {
         component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
 
-        component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
-        component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
+        // component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue('2022-11-05T13:25:00');
 
         component.recordForm.get('emergencyDetails.code')?.setValue(null);
 
         component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(1);
+
+        console.log(component.recordForm)
 
         rescueDetails.updateValidators();
 

@@ -225,10 +225,16 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         this.assignedVehicleId?.clearValidators();
         this.ambulanceAssignmentTime?.clearValidators();
 
+
+        console.log(this.assignedVehicleId?.value);
+
         // if assignedVehicleId then set the other to required
         if (this.assignedVehicleId?.value > 0) {
 
+            console.log(this.recordForm);
+
             this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+            this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity();
 
             this.code?.setValidators([Validators.required]);
 
@@ -362,11 +368,11 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
              }
          }
 
-         const streeTreat = patientArray?.controls.some(currentPatient =>
+         const streetTreat = patientArray?.controls.some(currentPatient =>
             currentPatient.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Street treatment approved by ST manager'
         );
 
-        if (streeTreat) {
+        if (streetTreat) {
             this.assignedVehicleId?.setValidators([Validators.required]);
             this.ambulanceAssignmentTime?.setValidators([Validators.required]);
         }

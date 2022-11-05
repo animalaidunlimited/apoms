@@ -6,7 +6,7 @@ import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../../../../navigation/navigation.service';
-import { Search, SearchValue } from '../record-search/record-search.component';
+import { Search } from '../record-search/record-search.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
@@ -14,6 +14,16 @@ import { MatSelectChange } from '@angular/material/select';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+
+export interface SearchValue {
+    id: number;
+    inputType: string;
+    searchValue: string | undefined;
+    databaseField: string | undefined;
+    dropdownName?: string;
+    name: string | undefined;
+    inNotIn: boolean;
+}
 
 @Component({
     selector: 'app-search-field',
@@ -51,6 +61,9 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
 
     @Output() public searchString = new EventEmitter<string>();
     @ViewChild('searchBox') searchBox!:ElementRef;
+
+    searchHistory: string[][] = [];
+    historyShowing = false;
 
     search = new Search();
 
@@ -266,6 +279,8 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             this.updateSearchArray();
         }
 
+        this.historyShowing = false;
+
         // If we're on a mobile device, hide the keyboard after searching.
         if (document.activeElement instanceof HTMLElement && (this.platform.ANDROID || this.platform.IOS)) {
             document.activeElement.blur();
@@ -279,12 +294,18 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
             }
         }
 
-        const searchQuerys = searchArray
-            .map(async item => {
+        this.addRecordToHistory(searchArray);
+
+        this.processSearchQueriesAndExecute(searchArray);
+    }
+
+    private processSearchQueriesAndExecute(searchArray: string[]) {
+        const searchQueries = searchArray
+            .map(async (item) => {
 
                 const splitItem = item.split(':');
 
-                const option = this.options.find( optionVal => optionVal.searchValue === splitItem[0].toLowerCase() );
+                const option = this.options.find(optionVal => optionVal.searchValue === splitItem[0].toLowerCase());
 
                 // If we're dealing with an IN/NOT IN query, then change the IN/NOT IN depending on
                 // what the user has entered into the Search Term field
@@ -303,13 +324,11 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                 else if (option?.dropdownName) {
 
                     return await this.observableFactory(option?.dropdownName).pipe(
-                        map((dropdowns: any) =>
-                            dropdowns.map((dropdown: any) =>
-                            ({
-                                id: Object.values(dropdown)[0],
-                                value: Object.values(dropdown)[1]
-                            })
-                            )),
+                        map((dropdowns: any) => dropdowns.map((dropdown: any) => ({
+                            id: Object.values(dropdown)[0],
+                            value: Object.values(dropdown)[1]
+                        })
+                        )),
                         // eslint-disable-next-line max-len
                         map(dropdowns => dropdowns.filter((dropdown: any) => decodeURIComponent(dropdown.value).toLowerCase() === decodeURIComponent(splitItem[1].trim()).toLowerCase())[0]),
                         map(dropdown => dropdown ? dropdown.id : undefined)
@@ -323,12 +342,40 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
                 }
             });
 
-        Promise.all(searchQuerys).then((searchQuery) => {
+        Promise.all(searchQueries).then((searchQuery) => {
             this.searchString.emit(searchQuery.join('&'));
         });
     }
 
-    toggleSearchBox() {
+    addRecordToHistory(search: string[]) : void {
+        let found = this.searchHistory.find(element => JSON.stringify(element) === JSON.stringify(search));
+
+
+        if(!found){
+            this.searchHistory.push(search);
+        }
+
+        if(this.searchHistory.length > 10){
+            this.searchHistory.shift();
+        }
+
+    }
+
+    toggleHistoryBox() : void {
+
+        this.searchShowing = false;
+        this.historyShowing = !this.historyShowing;
+    }
+
+    loadHistorySearchItem(searchItem: string[]){
+        this.toggleHistoryBox();
+        this.processSearchQueriesAndExecute(searchItem);
+        this.search.searchString = searchItem.join(',');
+    }
+
+    toggleSearchBox() : void {
+
+        this.historyShowing = false;
 
         if (this.searchShowing) {
             this.search.searchString = this.getSearchString();

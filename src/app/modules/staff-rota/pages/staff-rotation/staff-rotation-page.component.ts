@@ -118,13 +118,6 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       }
     });    
 
-    this.rotaForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
-
-    this.rotaService.getRotationPeriodArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
-    this.getAreaShiftArray.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
-    this.getMatrix.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
-    this.unassignedUsers.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.changeDetector.detectChanges());
-
     this.rotaService.beginningOrEndRotation.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value => {
 
       if(!value) {
@@ -161,32 +154,32 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   rotaSelected($event: MatSelectChange) : void {
 
-  const defaultRotaVersion = this.rotaVersions$.value.find(version => version.rotaId === $event.value && version.defaultRotaVersion)
+    
+    const defaultRotaVersion = this.rotaVersions$.value.find(version => version.rotaId === $event.value && version.defaultRotaVersion);    
+    
+    this.getCurrentRota.get('rotaVersionId')?.setValue(defaultRotaVersion?.rotaVersionId);
+    this.getCurrentRota.get('rotaVersionName')?.setValue(defaultRotaVersion?.rotaVersionName);
+    this.getCurrentRota.get('defaultRotaVersion')?.setValue(defaultRotaVersion?.defaultRotaVersion);
 
-  this.getCurrentRota.get('rotaVersionId')?.setValue(defaultRotaVersion?.rotaVersionId);
-  this.getCurrentRota.get('rotaVersionName')?.setValue(defaultRotaVersion?.rotaVersionName);
-  this.getCurrentRota.get('defaultRotaVersion')?.setValue(defaultRotaVersion?.defaultRotaVersion);
+    const rota = this.rotas$.value.find(element => element.rotaId === $event.value);
 
-  const rota = this.rotas$.value.find(element => element.rotaId === $event.value);
+    this.rotaService.initialiseArrays(this.userList);
 
-  this.getCurrentRota.get('defaultRota')?.setValue(rota?.defaultRota);
-
-  this.rotaService.initialiseArrays(this.userList);
-
+    this.getCurrentRota.get('defaultRota')?.setValue(rota?.defaultRota);
   }
 
   editRota() : void {
 
-  this.editingRota = this.getCurrentRota.value;
+    this.editingRota = this.getCurrentRota.value;
 
-  this.getCurrentRota.get('editingRota')?.setValue(true);
-  this.getCurrentRota.get('rotaVersionId')?.disable();  
+    this.getCurrentRota.get('editingRota')?.setValue(true);
+    this.getCurrentRota.get('rotaVersionId')?.disable();  
 
-  const foundRota = this.rotas$.value.find(element => element.rotaId === this.getCurrentRota.get('rotaId')?.value);
+    const foundRota = this.rotas$.value.find(element => element.rotaId === this.getCurrentRota.get('rotaId')?.value);
 
-  this.getCurrentRota.get('rotaName')?.setValue(foundRota?.rotaName);  
+    this.getCurrentRota.get('rotaName')?.setValue(foundRota?.rotaName);  
 
-  this.changeDetector.detectChanges();
+    this.changeDetector.detectChanges();
 
   }
 
@@ -265,9 +258,8 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   this.getCurrentRota.get('rotaVersionName')?.setValue(version?.rotaVersionName);
   this.getCurrentRota.get('defaultRotaVersion')?.setValue(version?.defaultRotaVersion);
-
+ 
   this.rotaService.initialiseArrays(this.userList);
-
   }
 
   editRotaVersion() : void {

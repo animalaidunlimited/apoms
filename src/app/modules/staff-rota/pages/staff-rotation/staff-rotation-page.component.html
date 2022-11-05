@@ -208,7 +208,7 @@
                       class="assigned-staff-wrapper">
       
                         <mat-form-field class="assigned-user"
-                        *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period).get('assignedUser'); let assignedUser">                                      
+                        *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser'); let assignedUser">                                      
       
                           <input matInput
                           type="text"

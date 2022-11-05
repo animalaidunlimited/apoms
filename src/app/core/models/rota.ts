@@ -1,4 +1,3 @@
-import { UserDetails } from "./user";
 
 export interface RotationRoleResponse{
     rotationRoleId: number;
@@ -8,6 +7,7 @@ export interface RotationRoleResponse{
   export interface BaseRotationRole{
     rotationRoleId: number | undefined;
     rotationRole: string;
+    rotationAreaId: number;
     startTime: string;
     endTime: string;
     colour: string;
@@ -15,10 +15,10 @@ export interface RotationRoleResponse{
     sortOrder: number;
   }
 
-export interface RotationRole extends BaseRotationRole{    
-    rotationAreaId: number;
+export interface RotationRole extends BaseRotationRole{
     rotationArea: string;
     rotationAreaColour: string;
+    rotationAreaSortOrder: number;
   }
   
 export interface Rota{

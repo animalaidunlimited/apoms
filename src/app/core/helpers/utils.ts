@@ -3,6 +3,7 @@ import { UUID } from 'angular2-uuid';
 import { DriverAssignment } from '../models/driver-view';
 import { OutstandingAssignment } from '../models/outstanding-case';
 import { SearchResponse } from '../models/responses';
+import { AreaShift, RotationRole } from '../models/rota';
 
 export function getCurrentTimeString() : string {
     let currentTime = new Date();
@@ -92,5 +93,19 @@ export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAs
     };
 
     return result;
+
+}
+
+export function fnSortBySortOrderAndRotationPeriodSortOrder(firstAreaShift: AreaShift | RotationRole, secondAreaShift: AreaShift | RotationRole) : number {
+
+
+    console.log(firstAreaShift);
+    console.log(secondAreaShift);
+
+
+    return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
+      firstAreaShift.sortOrder - (secondAreaShift.sortOrder || 999)
+      :
+      firstAreaShift.rotationAreaSortOrder - (secondAreaShift.rotationAreaSortOrder || -999);
 
   }

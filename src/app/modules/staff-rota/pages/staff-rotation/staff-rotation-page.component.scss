@@ -1,10 +1,11 @@
 .rotation-container{
     max-width: 1400px;
-    overflow: auto;
+    overflow: hidden;
 }
 
 table {
   max-width: 800px;
+  min-width: 465px;
 }
 
 .shift-form-field{
@@ -22,16 +23,15 @@ table {
 tr, th, td {
     border: 1px solid #e0e0e0;
     font-weight: normal;
-    height: 50px;
-    padding: 5px;
 }
 
 .area-header{
     writing-mode: vertical-lr;
     text-align: -webkit-center;
     transform: scale(-1);
-    vertical-align: top;
-    cursor: pointer;
+    vertical-align: middle;
+    width: 35px;
+    padding-left: 0 !important;
 }
 
 .move-icon{

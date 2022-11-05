@@ -13,11 +13,20 @@
         placeholder="Search cases"
     />
 
+    <mat-icon *ngIf="searchHistory.length > 0" style="cursor: pointer; font-size: 1.2rem; vertical-align: text-bottom;" id="loadHistoryBtn" matSuffix
+    (click)="toggleHistoryBox()" >history</mat-icon>
+
     <mat-icon style="cursor: pointer; font-size: 1.2rem; vertical-align: text-bottom;" id="clearSearchBtn" matSuffix
     (click)="clearSearch()" >close</mat-icon>
 
     <mat-icon style="cursor: pointer;" matSuffix (click)="toggleSearchBox()">keyboard_arrow_down</mat-icon>
 </mat-form-field>
+
+<div class="search-form history-list-container" *ngIf="historyShowing">
+    <div *ngFor="let search of searchHistory">
+        <li class="list-item" (click)="loadHistorySearchItem(search)">{{search}}</li>    
+    </div>
+</div>
 
 <div
     [@expandSearchForm]="searchShowing ? 'open' : 'closed'"

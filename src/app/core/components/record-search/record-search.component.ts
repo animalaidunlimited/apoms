@@ -7,16 +7,6 @@ import { map, skip, takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { UserPreferences } from '../../models/user';
 
-export interface SearchValue {
-    id: number;
-    inputType: string;
-    searchValue: string | undefined;
-    databaseField: string | undefined;
-    dropdownName?: string;
-    name: string | undefined;
-    inNotIn: boolean;
-}
-
 export class Search {
     searchString = '';
 }

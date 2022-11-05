@@ -52,6 +52,7 @@ export class RotationRoleEditorComponent implements OnInit {
       return {
         rotationRoleId: value.rotationRoleId,
         rotationRole: value.rotationRole,
+        rotationAreaId: value.rotationAreaId,
         startTime: value.startTime,
         endTime: value.endTime,
         colour: value.colour,
@@ -71,7 +72,7 @@ export class RotationRoleEditorComponent implements OnInit {
 
   }
 
-  private updateSortOrder() {
+  private updateSortOrder(): void {
     this.rotationRoles$.pipe(takeUntil(this.rotationRolesUnsubscribe)).subscribe(roles => {
 
       this.rotationRoleForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
@@ -82,6 +83,8 @@ export class RotationRoleEditorComponent implements OnInit {
   saveRotationRole() : void {
 
     this.rotaSettingsService.saveRotationRole(this.rotationRoleForm.value).then(response => {
+
+      console.log(this.rotationRoleForm.value)
 
       if(response.success === 1) {
         this.snackbar.successSnackBar("Rotation role updated successfully", "OK");

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { generateUUID } from 'src/app/core/helpers/utils';
+import { fnSortBySortOrderAndRotationPeriodSortOrder, generateUUID } from 'src/app/core/helpers/utils';
 import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
   RotationPeriodLeave, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
@@ -162,14 +162,14 @@ public async initialiseArrays(users: UserDetails[]) {
   this.getAreaShiftArray.clear({emitEvent: false});
   this.getRotationPeriodArray.clear({emitEvent: false});
   // this.displayColumns.next([]);
+  this.dataSource.next([]);
 
   //Set up some defaults so we're not empty
   await this.getAreaShifts().then(areaShifts => {
-                                      areaShifts?.sort((a,b) => this.fnSortAreaShifts(a, b))
+                                      areaShifts?.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a, b))
                                                  .forEach(areaShift => this.addAreaShift(areaShift, false))
-  });
-                                                 
-
+  });                                                 
+  
   await this.initialiseRotationPeriods(this.periodsToShow);
 
 }
@@ -246,20 +246,20 @@ async initialiseRotationPeriods(periodsToShow: number) {
   await this.getRotationPeriods(periodsToShow).then(async periods => {
 
     this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
-    this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';
+    this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';    
 
-    if(!periods?.rotationPeriods){
+    if(!periods?.rotationPeriods){      
       this.getRotationPeriodArray.clear();
       this.generateTableDataSource();
       return;
     }
-
+    
     for(let period of periods?.rotationPeriods){
 
       await this.addRotationPeriod(period, true, false);
 
     }
-
+    
     if(this.getRotationPeriodArray.controls[0]?.get('rotationPeriodGUID')?.value === this.firstRotationPeriodGUID){
       this.beginningOrEndRotation.next('beginningOfRange');
     }
@@ -289,7 +289,7 @@ getRotationPeriods(periodsToShow: number) : Promise<RotationPeriodResponse | nul
 }
 
 getAreaShifts() : Promise<AreaShift[] | null> {
-
+  
   const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;
 
   return this.get(`/GetAreaShifts?rotaVersionId=${rotaVersionId}`);
@@ -664,6 +664,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       defaultAreaShift.patchValue(areaShift);
     }
 
+    console.log('adding shift');
+
     this.getAreaShiftArray.push(defaultAreaShift);
 
     if(updateMatrix){
@@ -830,15 +832,15 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaShiftId: null,
                           areaShiftGUID: generateUUID(),
                           rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value || -1,
-                          sequence: (this.getAreaShiftArray?.length || -1) + 1,
+                          sortOrder: (this.getAreaShiftArray?.length) + 1,
                           rotationRoleId: [, Validators.required],
                           roleName: "",
                           colour: "#ffffff",
                           isDeleted: false,
-                          rotationAreaSortOrder: 0,
+                          rotationAreaSortOrder: 999,
                           areaRowSpan: 1,
                           rotationArea: "",
-                          rotationAreaColour: "",
+                          rotationAreaColour: "#ffffff",
                           rotationAreaId: "",
                         });
   }
@@ -1000,7 +1002,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   public sortAreaShifts() : void {
 
-    this.getAreaShiftArray.controls.sort((a,b) => this.fnSortAreaShifts(a.value, b.value));
+    this.getAreaShiftArray.controls.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a.value, b.value));
 
     this.resequenceAreaShifts();
 
@@ -1008,14 +1010,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  fnSortAreaShifts(firstAreaShift: AreaShift, secondAreaShift: AreaShift) : number {
 
-    return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
-      firstAreaShift.sortOrder - secondAreaShift.sortOrder
-      :
-      firstAreaShift.rotationAreaSortOrder - secondAreaShift.rotationAreaSortOrder;
-
-  }
 
   resequenceAreaShifts() : void {
 
