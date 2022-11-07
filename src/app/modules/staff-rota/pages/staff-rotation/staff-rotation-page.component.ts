@@ -25,9 +25,13 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
+  addAreaShiftDisabled$: Observable<boolean>;
+
   beginningOfRange = false;
 
   dataSource: BehaviorSubject<AbstractControl[]>;
+
+  displayColumns: Observable<string[]>;
 
   editingRotaVersion = {rotaVersionId: 0, rotaVersionName: ""};
   editingRota = {};
@@ -41,17 +45,14 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   rotaForm: FormGroup;
 
   rotas$: BehaviorSubject<Rota[]>;
-  rotaVersions$!: BehaviorSubject<RotaVersion[]>;
 
-  addAreaShiftDisabled$: Observable<boolean>;
+  rotationPeriods: Observable<string[]>;
+
+  rotaVersions$!: BehaviorSubject<RotaVersion[]>;  
 
   unassignedUsers!: BehaviorSubject<UserDetails[]>;
 
   userList!: UserDetails[];
-
-  displayColumns: Observable<string[]>;
-
-  rotationPeriods: Observable<string[]>
 
   public get getCurrentRota() : FormGroup {
     return this.rotaForm.get('currentRota') as FormGroup;

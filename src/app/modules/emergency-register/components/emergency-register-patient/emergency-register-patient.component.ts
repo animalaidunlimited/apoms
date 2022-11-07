@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -110,7 +110,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     this.patientForm = this.patientFormInput as FormGroup;
 
-    this.patientForm.updateValueAndValidity({ emitEvent: false});
+    this.patientForm.updateValueAndValidity({ emitEvent: false });
     
     this.exclusions = this.dropdown.getExclusions();
 

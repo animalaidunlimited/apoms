@@ -9,7 +9,6 @@ import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotationPeriodResponse } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
 import { RotaService } from '../../services/rota.service';
 
 @Component({
@@ -38,6 +37,7 @@ export class RotationPeriodComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.period = this.rotaService.getPeriodByGUID(this.inputPeriod);
   }
 
   ngOnChanges(change: SimpleChanges) {

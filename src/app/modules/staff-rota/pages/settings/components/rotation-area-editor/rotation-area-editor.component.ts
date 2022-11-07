@@ -23,12 +23,12 @@ export class RotationAreaEditorComponent implements OnInit {
       rotationArea: ["", Validators.required],
       sortOrder: [, Validators.required],
       colour: ["#ffffff"],
-      isDeleted: []
+      isDeleted: [false]
     });
 
-    rotationAreas$!: Observable<RotationArea[]>;
+  rotationAreas$!: Observable<RotationArea[]>;
 
-    rotationAreaUnsubscribe = new Subject();
+  rotationAreaUnsubscribe = new Subject();
 
   constructor(
     private fb: FormBuilder,

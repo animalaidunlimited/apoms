@@ -56,7 +56,7 @@ let dialog: MatDialogRef<MediaDialogComponent>;
 
     component = fixture.componentInstance;
 
-    component.patientForm = fb.group({
+    component.patientFormInput = fb.group({
       animalType: 'Dog',
       animalTypeId: 10,
       updated: false,

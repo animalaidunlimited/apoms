@@ -26,7 +26,7 @@ describe('CallerDetailsComponent', () => {
                 NoopAnimationsModule,
                 MatAutocompleteModule,
                 FormsModule,
-                ReactiveFormsModule,
+                ReactiveFormsModule
             ],
             declarations: [
                 CallerDetailsComponent,

@@ -176,7 +176,7 @@ public async initialiseArrays(users: UserDetails[]) {
 
 public getPeriodByGUID(rotationPeriodGUID:string) : FormGroup {
 
-  return this.getRotationPeriodArray.controls.find(element => element.value.rotationPeriodGUID === rotationPeriodGUID) as FormGroup || this.fb.group({});
+  return this.getRotationPeriodArray.controls.find(element => element.value.rotationPeriodGUID === rotationPeriodGUID) as FormGroup || this.generateDefaultRotationPeriod();
 
 }
 
@@ -749,7 +749,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  private generateDefaultRotationPeriod() : FormGroup {
+  public generateDefaultRotationPeriod() : FormGroup {
 
     let lastRecord: AbstractControl;
     let maxSequence = 0;
@@ -826,7 +826,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       ));
   }
 
-  private generateDefaultAreaShift() : FormGroup {
+  public generateDefaultAreaShift() : FormGroup {
 
     return this.fb.group({
                           areaShiftId: null,
