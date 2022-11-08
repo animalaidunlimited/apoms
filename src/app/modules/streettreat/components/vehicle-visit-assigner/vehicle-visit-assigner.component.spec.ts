@@ -6,11 +6,11 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
 
-import { VehicleVisitAssingerComponent } from './vehicle-visit-assinger.component';
+import { VehicleVisitAssignerComponent } from './vehicle-visit-assigner.component';
 
-describe('VehicleVisitAssingerComponent', () => {
-  let component: VehicleVisitAssingerComponent;
-  let fixture: ComponentFixture<VehicleVisitAssingerComponent>;
+describe('VehicleVisitAssignerComponent', () => {
+  let component: VehicleVisitAssignerComponent;
+  let fixture: ComponentFixture<VehicleVisitAssignerComponent>;
   const formBuilder: FormBuilder = new FormBuilder();
 
   beforeEach(async () => {
@@ -24,14 +24,14 @@ describe('VehicleVisitAssingerComponent', () => {
       ],
       providers: [ DatePipe,
         { provide: FormBuilder, useValue: formBuilder }],
-      declarations: [ VehicleVisitAssingerComponent ],
+      declarations: [ VehicleVisitAssignerComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
 
   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
-    fixture = TestBed.createComponent(VehicleVisitAssingerComponent);
+    fixture = TestBed.createComponent(VehicleVisitAssignerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

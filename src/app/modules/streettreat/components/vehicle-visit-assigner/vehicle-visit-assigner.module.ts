@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../../../../material-module';
-import { VehicleVisitAssingerComponent } from './vehicle-visit-assinger.component';
+import { VehicleVisitAssignerComponent } from './vehicle-visit-assigner.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
     declarations: [
-        VehicleVisitAssingerComponent
+        VehicleVisitAssignerComponent
     ],
     imports: [
         CommonModule,
@@ -16,6 +16,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
         GoogleMapsModule,
         NgxChartsModule
         ],
-    exports: [VehicleVisitAssingerComponent]
+    exports: [VehicleVisitAssignerComponent]
 })
-export class VehicleVisitAssingerModule {}
+export class VehicleVisitAssignerModule {}

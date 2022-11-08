@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
-import { StreetTreatTab } from 'src/app/core/models/streettreet';
+import { StreetTreatTab } from 'src/app/core/models/streettreat';
 
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { StreetTreatService } from '../../services/streettreat.service';

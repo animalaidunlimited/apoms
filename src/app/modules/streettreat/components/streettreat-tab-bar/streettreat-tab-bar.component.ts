@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { StreetTreatTab } from 'src/app/core/models/streettreet';
+import { StreetTreatTab } from 'src/app/core/models/streettreat';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
 import { StreetTreatTabBarService } from '../../services/streettreat-tab-bar.service';
 import { ChangeDetectorRef } from '@angular/core';

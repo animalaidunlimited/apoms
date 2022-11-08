@@ -116,11 +116,11 @@
       {{animalType.value}}
     </div>
     <div *ngIf="problemsArray?.value.length > 1">
-      {{problemsArray?.value[0].problem}} + {{problemsArray?.value.length - 1}}
+      {{problemsArray.value[0].problem}} + {{problemsArray.value.length - 1}}
     </div>
 
     <div *ngIf="problemsArray?.value.length == 1">
-      {{problemsArray?.value[0].problem}}
+      {{problemsArray.value[0].problem}}
     </div>
 
     <div class="mediaIconsWrapper">

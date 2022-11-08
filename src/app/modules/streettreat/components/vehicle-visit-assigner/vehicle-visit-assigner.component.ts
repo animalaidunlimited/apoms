@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
-import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, VehicleColour } from 'src/app/core/models/streettreet';
+import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, VehicleColour } from 'src/app/core/models/streettreat';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -28,11 +28,11 @@ interface StreetTreatTabResult {
 
 
 @Component({
-  selector: 'app-vehicle-visit-assinger',
-  templateUrl: './vehicle-visit-assinger.component.html',
-  styleUrls: ['./vehicle-visit-assinger.component.scss']
+  selector: 'app-vehicle-visit-assigner',
+  templateUrl: './vehicle-visit-assigner.component.html',
+  styleUrls: ['./vehicle-visit-assigner.component.scss']
 })
-export class VehicleVisitAssingerComponent implements OnInit, AfterViewInit {
+export class VehicleVisitAssignerComponent implements OnInit, AfterViewInit {
 
   @Output() public openStreetTreatCase = new EventEmitter<StreetTreatTabResult>();
 

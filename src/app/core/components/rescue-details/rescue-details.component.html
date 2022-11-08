@@ -17,12 +17,12 @@
                 <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
 
                     <mat-icon [ngClass]="{
-                        'dot-grey' : code?.value?.EmergencyCodeId == 4,
-                        'dot-red' : code?.value?.EmergencyCodeId == 1,
-                        'dot-green' : code?.value?.EmergencyCodeId == 2,
-                        'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
+                        'dot-grey' : code.value?.EmergencyCodeId == 4,
+                        'dot-red' : code.value?.EmergencyCodeId == 1,
+                        'dot-green' : code.value?.EmergencyCodeId == 2,
+                        'dot-yellow' : code.value?.EmergencyCodeId == 3}"
                         matSuffix>fiber_manual_record</mat-icon>
-                    {{code?.value?.EmergencyCode}}
+                    {{code.value?.EmergencyCode}}
                 </mat-select-trigger>
 
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">

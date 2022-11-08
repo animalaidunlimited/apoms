@@ -1,13 +1,13 @@
 <div class="tab-container">
         <div>
-                <mat-tab-group [selectedIndex]="selected?.value" (selectedIndexChange)="selected?.setValue($event)">
+                <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected?.setValue($event)">
 
                         <mat-tab *ngFor="let tab of tabs; let i = index" label="{{tab}}">
                                 <ng-template mat-tab-label>
                                         {{tab.value}}
                                         <mat-icon *ngIf="i > 1" class="tab-icon" (click)="removeTab(i)">{{tab.icon}}</mat-icon>
                                 </ng-template>
-                                <app-vehicle-visit-assinger (openStreetTreatCase)="openCase($event)" *ngIf="i == 0"></app-vehicle-visit-assinger>
+                                <app-vehicle-visit-assigner (openStreetTreatCase)="openCase($event)" *ngIf="i == 0"></app-vehicle-visit-assigner>
                                 <app-streettreat-search *ngIf="i == 1" (openStreetTreatCase)="openCase($event)"
                                         class="tab-icon"></app-streettreat-search>
                                 <app-streettreat-record *ngIf="i > 1" [inputStreetTreatCase]="tab" class="tab-icon">

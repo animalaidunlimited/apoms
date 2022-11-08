@@ -1,14 +1,14 @@
 
 <mat-expansion-panel
-  [expanded]="outstandingCase?.searchCandidate == true"
-  [ngClass]="{'mat-release-panel':outstandingCase?.ambulanceAction !== 'Rescue'}"
+  [expanded]="outstandingCase.searchCandidate == true"
+  [ngClass]="{'mat-release-panel':outstandingCase.ambulanceAction !== 'Rescue'}"
   hideToggle>
     <mat-expansion-panel-header
-      [ngClass]="{'border-red' : outstandingCase?.emergencyCodeId == 1,
-                  'border-green' : outstandingCase?.emergencyCodeId == 2,
-                  'border-yellow' : outstandingCase?.emergencyCodeId == 3}"
+      [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
+                  'border-green' : outstandingCase.emergencyCodeId == 2,
+                  'border-yellow' : outstandingCase.emergencyCodeId == 3}"
 
-      [@rescueMoved]="outstandingCase?.moved === true ? 'moved' : 'still'">
+      [@rescueMoved]="outstandingCase.moved === true ? 'moved' : 'still'">
 
           <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
             <mat-icon
@@ -21,10 +21,10 @@
           </div>
 
           <div fxFlex="40" style="text-align: center;">
-            {{outstandingCase?.emergencyNumber}}
+            {{outstandingCase.emergencyNumber}}
             <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
               *ngFor="let patient of outstandingCase?.patients">
-              ({{outstandingCase?.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
+              ({{outstandingCase.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
             </div>
           </div>
 
@@ -34,7 +34,7 @@
               (click)="openCase(outstandingCase)">create</mat-icon>
           </div>
 
-          <div flFlex="none">{{outstandingCase?.callDateTime | timeAgo}}</div>
+          <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
 
         </mat-expansion-panel-header>
 
@@ -65,7 +65,7 @@
               <div class="patient-details">{{patient.tagNumber}} - {{patient.animalType}} - {{patient.problemsString}}
             </div>
           </div>
-          <div class="CallDateTime">{{outstandingCase?.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
-          <div class="animal-location">{{outstandingCase?.location}}</div>
+          <div class="CallDateTime">{{outstandingCase.callDateTime | date: "dd/MMM/yyyy HH:mm"}}</div>
+          <div class="animal-location">{{outstandingCase.location}}</div>
         </div>
       </mat-expansion-panel>
