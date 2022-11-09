@@ -1,6 +1,6 @@
 import { LogsData } from './../../../../core/models/logs-data';
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { Validators, UntypedFormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { SafeUrl } from '@angular/platform-browser';
@@ -45,7 +45,7 @@ export class PatientRecordComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
-    constructor(private fb: FormBuilder,
+    constructor(private fb: UntypedFormBuilder,
         private snackbar: SnackbarService,
         private changeDetector: ChangeDetectorRef,
         private mediaService: MediaService,

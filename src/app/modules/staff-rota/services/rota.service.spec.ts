@@ -4,7 +4,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { RotaService } from './rota.service';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from './../../../core/services/snackbar/snackbar.service';
 
@@ -29,7 +29,7 @@ describe('Service: Rota', () => {
   });
         
         
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     service = TestBed.inject(RotaService);    
   }));
 

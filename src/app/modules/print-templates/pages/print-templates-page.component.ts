@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CdkDragDrop, CdkDragEnd, moveItemInArray } from '@angular/cdk/drag-drop';
-import { FormBuilder, FormGroup, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, FormArray, AbstractControl, FormControl, Validators, UntypedFormArray } from '@angular/forms';
 import { Subscription, BehaviorSubject, Observable, Subject } from 'rxjs';
 import { PaperDimensions, PrintElement, PrintTemplate, SavePrintTemplateResponse } from 'src/app/core/models/print-templates';
 import { PrintTemplateService } from '../services/print-template.service';
@@ -36,7 +36,7 @@ export class PrintTemplatesPageComponent implements OnInit {
     private printService: PrintTemplateService,
     private dropdown: DropdownService,
     private snackbar: SnackbarService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
       this.templates = this.printService.getPrintTemplates();
       this.paperDimensions = this.dropdown.getPaperDimensions();
@@ -56,7 +56,7 @@ export class PrintTemplatesPageComponent implements OnInit {
 
   loading = false;
 
-  printElements:FormArray = new FormArray([]);
+  printElements:UntypedFormArray = new UntypedFormArray([]);
 
   orientations:string[] = ['Portrait', 'Landscape'];
 

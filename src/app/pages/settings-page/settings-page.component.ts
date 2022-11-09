@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { OrganisationDetailsService } from './../../core/services/organisation-details/organisation-details.service';
 import { SnackbarService } from './../../core/services/snackbar/snackbar.service';
 
@@ -21,7 +21,7 @@ export class SettingsPageComponent implements OnInit {
     releaseVersion! : string;
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private organisationDetails : OrganisationDetailsService,
         private snackbar: SnackbarService
     ) {

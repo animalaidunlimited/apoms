@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { RescueDetailsComponent } from './rescue-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -28,7 +28,7 @@ describe('RescueDetailsComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(RescueDetailsComponent);
         component = fixture.componentInstance;
 

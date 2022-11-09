@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { CallerDetailsComponent } from './caller-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaterialModule } from 'src/app/material-module';
@@ -36,7 +36,7 @@ describe('CallerDetailsComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(CallerDetailsComponent);
         component = fixture.componentInstance;
 

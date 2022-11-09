@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
@@ -62,7 +62,7 @@ describe('SearchFieldComponent', () => {
     }).compileComponents();
   });
 
-   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+   beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
 
     fixture = TestBed.createComponent(SearchFieldComponent);
     component = fixture.componentInstance;

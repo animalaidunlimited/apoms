@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,7 +17,7 @@ describe('EmergencyRegisterPatientComponent', () => {
   let component: EmergencyRegisterPatientComponent;
   let fixture: ComponentFixture<EmergencyRegisterPatientComponent>;
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
@@ -41,7 +41,7 @@ let dialog: MatDialogRef<MediaDialogComponent>;
       declarations: [ EmergencyRegisterPatientComponent, EmergencyCaseOutcomeComponent ],
       providers: [
         PrintTemplateService,
-        { provide: FormBuilder, useValue: formBuilder },
+        { provide: UntypedFormBuilder, useValue: formBuilder },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
         { provide: MatDialogRef, useValue: mockDialogRef }
       ],
@@ -50,7 +50,7 @@ let dialog: MatDialogRef<MediaDialogComponent>;
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(EmergencyRegisterPatientComponent);
     const dialog = TestBed.get(MatDialog);
 

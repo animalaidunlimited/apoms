@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,7 +13,7 @@ import { OutstandingCaseBoardCasePanelComponent } from './outstanding-case-board
 describe('OutstandingCaseBoardCasePanelComponent', () => {
     let component: OutstandingCaseBoardCasePanelComponent;
     let fixture: ComponentFixture<OutstandingCaseBoardCasePanelComponent>;
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
     const dialogData = {};
 
     const mockDialogRef = {
@@ -34,7 +34,7 @@ describe('OutstandingCaseBoardCasePanelComponent', () => {
                 MatSnackBar,
                 { provide: MatDialogRef, useValue: mockDialogRef },
               { provide: MAT_DIALOG_DATA, useValue: dialogData },
-              { provide: FormBuilder, useValue: formBuilder },
+              { provide: UntypedFormBuilder, useValue: formBuilder },
             ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         })

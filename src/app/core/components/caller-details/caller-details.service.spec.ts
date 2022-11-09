@@ -3,7 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { CallerDetailsService } from './caller-details.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CallerDetailsService', () => {
@@ -21,7 +21,7 @@ describe('CallerDetailsService', () => {
         }),
     );
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         service = TestBed.inject(CallerDetailsService);
 
     }));

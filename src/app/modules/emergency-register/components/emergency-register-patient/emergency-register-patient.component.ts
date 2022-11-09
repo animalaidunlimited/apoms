@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
+import { FormArray, UntypedFormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -95,7 +95,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   constructor(
     private dropdown: DropdownService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private dialog: MatDialog,
     private treatmentListService: TreatmentListService,
     private printService: PrintTemplateService,

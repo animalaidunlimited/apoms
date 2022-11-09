@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, ViewChildren, HostListener } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import { FormGroup, FormBuilder, AbstractControl, FormArray } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder, AbstractControl, FormArray } from '@angular/forms';
 import { Callers, Caller } from '../../models/responses';
 import { CallerDetailsService } from './caller-details.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
@@ -47,7 +47,7 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
 
     constructor(
         private callerService: CallerDetailsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private snackbar: SnackbarService,
     ) {}
 

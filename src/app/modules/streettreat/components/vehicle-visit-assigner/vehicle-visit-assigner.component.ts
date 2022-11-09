@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, 
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { StreetTreatService } from '../../services/streettreat.service';
 import { GoogleMap } from '@angular/google-maps';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { DatePipe } from '@angular/common';
@@ -88,7 +88,7 @@ export class VehicleVisitAssignerComponent implements OnInit, AfterViewInit {
   constructor(
     private streetTreatService: StreetTreatService,
     private changeDetector: ChangeDetectorRef,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private showSnackBar: SnackbarService,
     private datePipe: DatePipe,
     private elementRef:ElementRef,

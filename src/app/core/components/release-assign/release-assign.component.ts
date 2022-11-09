@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angu
 import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReleaseService } from '../../services/release/release.service';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
@@ -34,7 +34,7 @@ export class ReleaseAssignComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   constructor(private dropdown: DropdownService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private releaseDetails: ReleaseService,
     private showSnackBar: SnackbarService,
     private rescueDetailsService: RescueDetailsService

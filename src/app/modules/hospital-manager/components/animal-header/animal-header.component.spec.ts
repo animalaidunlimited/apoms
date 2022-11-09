@@ -11,7 +11,7 @@ import {
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
@@ -62,7 +62,7 @@ describe('AnimalHeaderComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(AnimalHeaderComponent);
         component = fixture.componentInstance;
 

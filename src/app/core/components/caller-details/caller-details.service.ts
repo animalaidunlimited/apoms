@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Caller, Callers } from '../../models/responses';
 import { APIService } from '../../services/http/api.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CallerDetailsService extends APIService {
     constructor(http: HttpClient,
-        private fb: FormBuilder) {
+        private fb: UntypedFormBuilder) {
         super(http);
     }
 

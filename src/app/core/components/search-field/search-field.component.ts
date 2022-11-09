@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
-import { FormControl, FormGroup, FormArray, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, UntypedFormBuilder, Validators, AbstractControl, UntypedFormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../../../../navigation/navigation.service';
 import { Search } from '../record-search/record-search.component';
@@ -70,7 +70,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     searchFieldForm = new FormControl();
 
     searchForm: FormGroup = new FormGroup({});
-    searchRows: FormArray = new FormArray([]);
+    searchRows: FormArray = new UntypedFormArray([]);
 
     errorMatcher = new CrossFieldErrorMatcher();
 
@@ -219,7 +219,7 @@ export class SearchFieldComponent implements OnInit, OnDestroy {
     constructor(
         public rescueDialog: MatDialog,
         public callDialog: MatDialog,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private navigationService: NavigationService,
         public platform: Platform,
         private datepipe: DatePipe,

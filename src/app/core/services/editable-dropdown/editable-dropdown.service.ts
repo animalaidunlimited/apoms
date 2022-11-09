@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, NgZone } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { EditableDropdownElement } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -33,7 +33,7 @@ export class EditableDropdownService {
 
   constructor(
     private zone: NgZone,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: SnackbarService,
     private dropdownService: DropdownService
   ) {

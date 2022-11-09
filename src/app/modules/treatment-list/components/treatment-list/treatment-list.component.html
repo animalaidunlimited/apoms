@@ -5,7 +5,7 @@
       <!--<mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>-->
 
 
-      <legend class="legend ">{{area.areaName}} - ({{acceptedFormArray?.controls?.length}}) - {{selectedDate | date}}</legend>
+      <legend class="legend ">{{area.areaName}} - ({{acceptedFormArray.controls.length}}) - {{selectedDate | date}}</legend>
 
       <div *ngIf="movedLists?.controls">
 
@@ -235,7 +235,7 @@
 
           <mat-form-field>
             <mat-select
-            (selectionChange)="areaChanged($event?.value, index)"
+            (selectionChange)="areaChanged($event.value, index)"
             formControlName="Moved to">
 
               <mat-option>N/A</mat-option>

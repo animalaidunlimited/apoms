@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormArray, UntypedFormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Subject} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { fnSortBySortOrderAndRotationPeriodSortOrder, generateUUID } from 'src/app/core/helpers/utils';
@@ -91,8 +91,8 @@ export class RotaService extends APIService {
   }
 
   constructor(
-    http: HttpClient,    
-    private fb: FormBuilder,
+    http: HttpClient,
+    private fb: UntypedFormBuilder,
     private snackbar: SnackbarService,
     private rotationPeriodValidator: RotationPeriodValidator,
     private organisationDetails: OrganisationDetailsService) {

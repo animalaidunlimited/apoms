@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -10,7 +10,7 @@ describe('EmergencyCaseOutcomeComponent', () => {
     let component: EmergencyCaseOutcomeComponent;
     let fixture: ComponentFixture<EmergencyCaseOutcomeComponent>;
 
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -21,13 +21,13 @@ describe('EmergencyCaseOutcomeComponent', () => {
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
             ],
-            providers: [{ provide: FormBuilder, useValue: formBuilder }],
+            providers: [{ provide: UntypedFormBuilder, useValue: formBuilder }],
             declarations: [EmergencyCaseOutcomeComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(EmergencyCaseOutcomeComponent);
         component = fixture.componentInstance;
 

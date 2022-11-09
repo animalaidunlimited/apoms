@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
     MatDialogRef,
@@ -45,7 +45,7 @@ describe('PatientCallDialogComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(PatientCallDialogComponent);
         component = fixture.componentInstance;
         dialog = TestBed.get(MatDialog);

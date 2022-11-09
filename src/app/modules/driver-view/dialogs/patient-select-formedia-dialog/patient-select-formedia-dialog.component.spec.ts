@@ -1,5 +1,5 @@
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { PatientSelectFormediaDialogComponent } from './patient-select-formedia-dialog.component';
@@ -7,7 +7,7 @@ import { PatientSelectFormediaDialogComponent } from './patient-select-formedia-
 describe('PatientSelectFormediaDialogComponent', () => {
   let component: PatientSelectFormediaDialogComponent;
   let fixture: ComponentFixture<PatientSelectFormediaDialogComponent>;
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
   const dialogData = {};
 
   const mockDialogRef = {
@@ -20,13 +20,13 @@ describe('PatientSelectFormediaDialogComponent', () => {
       imports:[MatDialogModule],
       providers:[ { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
-        { provide: FormBuilder, useValue: formBuilder }],
+        { provide: UntypedFormBuilder, useValue: formBuilder }],
       declarations: [ PatientSelectFormediaDialogComponent ]
     })
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(PatientSelectFormediaDialogComponent);
     component = fixture.componentInstance;
 

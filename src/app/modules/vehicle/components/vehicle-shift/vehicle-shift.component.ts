@@ -15,7 +15,7 @@ import { VehicleShiftDialogComponent } from '../../dialogs/vehicle-shift-dialog/
 export class VehicleShiftComponent implements OnInit {
 
   @Input() vehicle!: Vehicle;
-  @Input() shiftDate!: Date;
+  @Input() shiftDate!: string | null | undefined;
 
   currentDayStart!:Date;
   currentDayEnd!:Date;  
@@ -51,10 +51,10 @@ export class VehicleShiftComponent implements OnInit {
     this.hourRange = this.vehicleService.getHourRange();
     this.hours = this.hourRange.range;
 
-    this.currentDayStart = new Date(this.shiftDate);
+    this.currentDayStart = new Date(this.shiftDate || "");
     this.currentDayStart.setHours(this.hourRange.start, 0, 0);
 
-    this.currentDayEnd = new Date(this.shiftDate);
+    this.currentDayEnd = new Date(this.shiftDate || "");
     this.currentDayEnd.setHours(this.hourRange.end, 59, 59, 999);
 
     this.shifts$ = this.vehicleService.vehicleShifts.pipe(map(shifts => shifts

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
@@ -52,7 +52,7 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<PatientSelectFormediaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: FormBuilder) { }
+    private fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     this.patients = this.data.assignmentDetails?.patients;

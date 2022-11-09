@@ -137,8 +137,8 @@ export class AuthService extends APIService {
         return this.storage.read('SOCKET_END_POINT');
     }
 
-    public getOrganisationId() {
+    public getOrganisationId() : number {
 
-        return this.storage.read('OrganisationId');
+        return Number(this.storage.read('OrganisationId'));
     }
 }

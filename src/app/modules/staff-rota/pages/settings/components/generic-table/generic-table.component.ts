@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormControl, AbstractControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, AbstractControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -23,7 +23,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) { }
 
 

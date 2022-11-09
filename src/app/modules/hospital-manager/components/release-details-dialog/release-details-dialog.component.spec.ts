@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,7 +33,7 @@ describe('ReleaseDetailsDialogComponent', () => {
     patientId: 0
   };
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -45,7 +45,7 @@ describe('ReleaseDetailsDialogComponent', () => {
       declarations: [ ReleaseDetailsDialogComponent ],
       providers: [
         MatSnackBar,
-        { provide: FormBuilder, useValue: formBuilder },
+        { provide: UntypedFormBuilder, useValue: formBuilder },
         {
           provide: MAT_DIALOG_DATA,
           useValue: dialogData },
@@ -58,7 +58,7 @@ describe('ReleaseDetailsDialogComponent', () => {
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(ReleaseDetailsDialogComponent);
     authService = TestBed.inject(AuthService);
     component = fixture.componentInstance;

@@ -5,7 +5,7 @@ import { PatientStatusComponent } from './patient-status.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
     ReactiveFormsModule,
-    FormBuilder,
+    UntypedFormBuilder,
     FormsModule
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -34,7 +34,7 @@ describe('PatientStatusComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(PatientStatusComponent);
         component = fixture.componentInstance;
 

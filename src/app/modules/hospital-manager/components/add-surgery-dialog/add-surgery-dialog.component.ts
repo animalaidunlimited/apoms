@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SurgeryRecord, UpdatedSurgery } from 'src/app/core/models/surgery-details';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 
 export interface DialogData {
     patientId: number;
@@ -27,7 +27,7 @@ export class AddSurgeryDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<AddSurgeryDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
     ) {}
 
     ngOnInit() {

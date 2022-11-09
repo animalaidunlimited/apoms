@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -28,7 +28,7 @@ export class ReportingPageComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private treatmentList: TreatmentListService,
         private dialog: MatDialog,
         private router: Router,

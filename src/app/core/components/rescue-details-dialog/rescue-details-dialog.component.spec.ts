@@ -5,7 +5,7 @@
  import { RescueDetailsDialogComponent } from './rescue-details-dialog.component';
  import { HttpClientTestingModule } from '@angular/common/http/testing';
  import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
- import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+ import { FormGroup, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
  import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaterialModule } from 'src/app/material-module';
@@ -66,7 +66,7 @@ import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-registe
      .compileComponents();
    }));
 
-   beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+   beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
      fixture = TestBed.createComponent(RescueDetailsDialogComponent);
      component = fixture.componentInstance;
 

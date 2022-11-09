@@ -4,7 +4,7 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Patient, PatientStatusObject } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -42,7 +42,7 @@ export class PatientStatusComponent implements OnInit {
         private datepipe: DatePipe,
         private patientService: PatientService,
         private userOptions: UserOptionsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private showSnackBar: SnackbarService,
         private streetTreatService: StreetTreatService
     ) {

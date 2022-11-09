@@ -28,6 +28,12 @@ export interface UserDetails {
     jobTitle: string;
   }
 
+export interface UserDetailsForm extends UserDetails {
+    password: string;
+    isStreetTreatUser: boolean;
+    permissionArray: number[]
+}
+
 export interface ReleaseManager {
     EmployeeNumber: string;
     FirstName: string;

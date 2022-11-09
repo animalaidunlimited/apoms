@@ -1,6 +1,6 @@
 import { Inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {  DriverAssignment } from 'src/app/core/models/driver-view';
 
@@ -21,7 +21,7 @@ export class CallerDetailsDialogComponent implements OnInit {
 
   constructor( public dialogRef: MatDialogRef<CallerDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: FormBuilder) 
+    private fb: UntypedFormBuilder) 
   { }
 
 

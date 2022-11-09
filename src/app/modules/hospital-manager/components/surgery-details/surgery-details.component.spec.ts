@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { SurgeryDetailsComponent } from './surgery-details.component';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import {
     MatDialog,
     MatDialogModule,
@@ -48,7 +48,7 @@ describe('SurgeryDetailsComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(SurgeryDetailsComponent);
         component = fixture.componentInstance;
         const dialog = TestBed.get(MatDialog);

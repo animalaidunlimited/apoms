@@ -6,7 +6,7 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { ReleaseService } from 'src/app/core/services/release/release.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
@@ -73,7 +73,7 @@ export class ReleaseDetailsComponent implements OnInit {
   private ngUnsubscribe = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private showSnackBar: SnackbarService,
     private userService: UserOptionsService,
     private releaseService: ReleaseService,

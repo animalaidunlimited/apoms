@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
 
@@ -11,7 +11,7 @@ import { VehicleVisitAssignerComponent } from './vehicle-visit-assigner.componen
 describe('VehicleVisitAssignerComponent', () => {
   let component: VehicleVisitAssignerComponent;
   let fixture: ComponentFixture<VehicleVisitAssignerComponent>;
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,14 +23,14 @@ describe('VehicleVisitAssignerComponent', () => {
                 BrowserAnimationsModule
       ],
       providers: [ DatePipe,
-        { provide: FormBuilder, useValue: formBuilder }],
+        { provide: UntypedFormBuilder, useValue: formBuilder }],
       declarations: [ VehicleVisitAssignerComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(VehicleVisitAssignerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

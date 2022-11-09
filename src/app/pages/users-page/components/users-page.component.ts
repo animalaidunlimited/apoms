@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserDetails, UserJobType } from 'src/app/core/models/user';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UserDetails, UserDetailsForm, UserJobType } from 'src/app/core/models/user';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 
 
 interface StreetTreatRole {
@@ -101,11 +102,11 @@ export class UsersPageComponent implements OnInit {
 
     constructor(private dropdown : DropdownService,
       private userOptionsService: UserOptionsService,
-      private fb : FormBuilder,
+      private fb : UntypedFormBuilder,
       private userDetailsService : UserDetailsService,
       private snackBar: SnackbarService,
       private route: ActivatedRoute) {
-        const emptyUser = {
+        const emptyUser:UserDetails = {
           userId : 0,
           employeeNumber: '',
           firstName: '',
@@ -133,20 +134,20 @@ export class UsersPageComponent implements OnInit {
       'jobTitle'
     ];
 
-    userDetails = this.fb.group({
-      userId : [],
+    userDetails: ModelFormGroup<Omit<UserDetailsForm, 'role' | 'jobTitle'>> = this.fb.nonNullable.group({
+      userId : [0],
       employeeNumber : ['',Validators.required],
       firstName : ['',Validators.required],
       surname: ['',Validators.required],
-      telephone:[],
       initials: [''],
-      userName:['',Validators.required],
-      password: [''],
       colour:[''],
-      isStreetTreatUser:[],
-      roleId:[],
-      jobTitleId:[],
-      permissionArray:[]
+      telephone:[0],
+      userName:['',Validators.required],
+      roleId:[0],
+      jobTitleId:[0],
+      password: [''],
+      isStreetTreatUser:[false],
+      permissionArray:[[0]]
     });
 
     streettreatRoles: StreetTreatRole[] = [{
@@ -279,10 +280,10 @@ export class UsersPageComponent implements OnInit {
       const permissions = this.userDetails.get('permissionArray');
 
       if(permission.isUserInput && permission.source.selected) {
-          const arrayval = permissions?.value?.filter((val: number)=>
+          const arrayVal = permissions?.value?.filter((val: number)=>
           val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
-        );
-        permissions?.setValue(arrayval,{emitEvent:false});
+        ) || [];
+        permissions?.setValue(arrayVal,{emitEvent:false});
       }
 
     }

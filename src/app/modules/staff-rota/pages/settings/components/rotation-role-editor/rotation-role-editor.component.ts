@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { BaseRotationRole, RotationArea, RotationRole } from 'src/app/core/models/rota';
 import { Observable, Subject } from 'rxjs';
@@ -35,7 +35,7 @@ export class RotationRoleEditorComponent implements OnInit {
   rotationRolesUnsubscribe = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rotaSettingsService: RotaSettingsService,
     private snackbar: SnackbarService
   ) { 

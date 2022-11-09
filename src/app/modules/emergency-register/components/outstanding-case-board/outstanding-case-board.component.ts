@@ -3,7 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Renderer2, ViewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChildren } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MatChip, MatChipList } from '@angular/material/chips';
 import { ThemePalette } from '@angular/material/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -121,7 +121,7 @@ export class OutstandingCaseBoardComponent implements OnInit,OnDestroy {
   constructor(
     private outstandingCaseService: OutstandingCaseService,
     private locationService: LocationService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private messagingService: MessagingService,
     private changeDetector: ChangeDetectorRef,
     private dropDown: DropdownService,

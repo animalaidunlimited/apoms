@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -31,7 +31,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
     ) {
 
 

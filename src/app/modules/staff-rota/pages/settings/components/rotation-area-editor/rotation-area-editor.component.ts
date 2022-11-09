@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RotationArea } from 'src/app/core/models/rota';
 import { RotaSettingsService } from '../../services/rota-settings.service';
 import { Observable, Subject } from 'rxjs';
@@ -31,7 +31,7 @@ export class RotationAreaEditorComponent implements OnInit {
   rotationAreaUnsubscribe = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rotaSettingsService: RotaSettingsService,
     private snackbar: SnackbarService
   ) {

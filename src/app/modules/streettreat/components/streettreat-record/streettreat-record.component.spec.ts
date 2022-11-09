@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -16,7 +16,7 @@ describe('StreettreatRecordComponent', () => {
   let component: StreetTreatRecordComponent;
   let fixture: ComponentFixture<StreetTreatRecordComponent>;
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   const permissions$ = of({componentPermissionLevel: 2});
 
@@ -36,7 +36,7 @@ describe('StreettreatRecordComponent', () => {
     providers: [
       DatePipe,
       { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-      { provide: FormBuilder, useValue: formBuilder }
+      { provide: UntypedFormBuilder, useValue: formBuilder }
     ],
     declarations: [ StreetTreatRecordComponent ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
@@ -44,7 +44,7 @@ describe('StreettreatRecordComponent', () => {
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(StreetTreatRecordComponent);
     component = fixture.componentInstance;
 

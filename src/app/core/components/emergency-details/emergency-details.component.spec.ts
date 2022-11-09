@@ -6,7 +6,7 @@ import {
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
 
 import { EmergencyDetailsComponent } from './emergency-details.component';
 import { MaterialModule } from 'src/app/material-module';
@@ -38,7 +38,7 @@ describe('EmergencyDetailsComponent', () => {
         }).compileComponents();
     });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(EmergencyDetailsComponent);
         rescueDetailsFixture = TestBed.createComponent(RescueDetailsComponent);
 

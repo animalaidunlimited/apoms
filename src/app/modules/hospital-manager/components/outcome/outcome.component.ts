@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { getCurrentDateString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -43,7 +43,7 @@ export class OutcomeComponent implements OnInit {
 
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private dropdown: DropdownService,
         private snackbar: SnackbarService,
         private patientService: PatientService) {

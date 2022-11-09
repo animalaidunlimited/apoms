@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -27,7 +27,7 @@ interface IncomingVehicleDetails {
 })
 export class VehicleShiftDialogComponent implements OnInit {
 
-  addShiftFormGroup = this.fb.group({});
+  addShiftFormGroup = new UntypedFormGroup({});
 
   defaultShiftLength = 9;
 
@@ -53,7 +53,7 @@ export class VehicleShiftDialogComponent implements OnInit {
   constructor(
     private vehicleService: VehicleService,
     private dropdowns: DropdownService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private datepipe: DatePipe,
     private shiftValidator: ShiftTimeValidator,
     private organisationDetails: OrganisationDetailsService,
@@ -144,7 +144,7 @@ export class VehicleShiftDialogComponent implements OnInit {
 
   generateAddShiftForm() : FormGroup {
 
-    const staffArray = this.fb.array([]);
+    const staffArray = new UntypedFormArray([]);
 
     for(let i = 0; i < this.data.vehicle?.maxRescuerCapacity; i++){
 
@@ -187,7 +187,7 @@ export class VehicleShiftDialogComponent implements OnInit {
 
     if(this.addShiftFormGroup?.get('shiftStartTime')?.value && !this.addShiftFormGroup?.get('shiftEndTime')?.value){
 
-      let startTime = (new Date(this.addShiftFormGroup?.get('shiftStartTime')?.value)).getTime();
+      let startTime = (new Date('' + this.addShiftFormGroup?.get('shiftStartTime')?.value)).getTime();
 
       startTime += (this.defaultShiftLength * 1000 * 60 * 60);
 

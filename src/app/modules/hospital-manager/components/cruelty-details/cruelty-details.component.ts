@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, Validators, FormGroup } from '@angular/forms';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -26,7 +26,7 @@ export class CrueltyDetailsComponent implements OnInit {
     maxDate = getCurrentDateString();
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private dropdowns: DropdownService,
         private snackbar: SnackbarService,
         private patientService: PatientService) {

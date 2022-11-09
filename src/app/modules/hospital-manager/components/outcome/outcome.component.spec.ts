@@ -4,7 +4,7 @@ import { OutcomeComponent } from './outcome.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { MatChipsModule } from '@angular/material/chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +29,7 @@ describe('OutcomeComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(OutcomeComponent);
         component = fixture.componentInstance;
 

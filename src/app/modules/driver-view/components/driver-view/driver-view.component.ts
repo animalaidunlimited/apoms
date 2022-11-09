@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class DriverViewComponent implements OnInit {
   timer$!: Observable<{time:string, class:string} | null>;
   private ngUnsubscribe = new Subject();
 
-  constructor( private fb: FormBuilder,
+  constructor( private fb: UntypedFormBuilder,
     private driverView: DriverViewService,
     private locationService: LocationService,
     private dropDown: DropdownService,

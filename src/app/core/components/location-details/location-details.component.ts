@@ -1,6 +1,6 @@
 import { Component,OnInit,Input,ViewChild,Output,EventEmitter,ChangeDetectorRef,AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { CrossFieldErrorMatcher } from '../../../core/validators/cross-field-error-matcher';
-import { FormGroup,Validators,FormBuilder,AbstractControl } from '@angular/forms';
+import { FormGroup,Validators,UntypedFormBuilder,AbstractControl } from '@angular/forms';
 import { Location, LocationResponse } from '../../models/responses';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
 import { LocationDetailsService } from './location-details.service';
@@ -48,7 +48,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     constructor(
         private locationService: LocationDetailsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private userOptions: UserOptionsService,
         private changeDetector: ChangeDetectorRef
     ) {}

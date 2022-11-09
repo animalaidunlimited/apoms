@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -34,7 +34,7 @@ describe('PrintContentComponent', () => {
   const fakeActivatedRoute = {
     snapshot: { params: { printTemplate: JSON.stringify(printTemplate) } } };
 
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -47,7 +47,7 @@ describe('PrintContentComponent', () => {
       providers: [
         MatSnackBar, Overlay,
         { provide: ActivatedRoute, useValue: fakeActivatedRoute},
-        { provide: FormBuilder, useValue: formBuilder }],
+        { provide: UntypedFormBuilder, useValue: formBuilder }],
       declarations: [ PrintContentComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })

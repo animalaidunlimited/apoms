@@ -2,7 +2,7 @@
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 
 import { CommentComponent } from './comment.component';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Overlay } from '@angular/cdk/overlay';
@@ -36,7 +36,7 @@ describe('CommentComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(CommentComponent);
     component = fixture.componentInstance;
 

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing'
 
 import { RotationPeriodComponent } from './rotation-period.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
 import { RotaService } from '../../services/rota.service';
@@ -29,7 +29,7 @@ describe('RotationPeriodComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(RotationPeriodComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(RotaService);

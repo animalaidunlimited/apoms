@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { AnimalType } from 'src/app/core/models/animal-type';
 import { StreetTreatTab } from 'src/app/core/models/streettreat';
@@ -41,7 +41,7 @@ export class StreetTreatRecordComponent implements OnInit {
   mediaData!: BehaviorSubject<MediaItem[]>;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private streetTreatService: StreetTreatService,
     private dropdown: DropdownService,
     private mediaService: MediaService,
