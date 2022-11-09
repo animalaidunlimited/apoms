@@ -184,7 +184,11 @@ public markPeriodAsDirty(rotationPeriodGUID: string) : void {
   this.getRotationPeriodArray.controls.find(element => element.value.rotationPeriodGUID === rotationPeriodGUID)?.markAsDirty();
 }
 
-public async generateTableDataSource() : Promise<void> {  
+public async generateTableDataSource(source: number) : Promise<void> {
+
+  console.log(source);
+  
+  console.log('generating');
 
   let dataSource: AbstractControl[] = [];
 
@@ -250,7 +254,7 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
     if(!periods?.rotationPeriods){      
       this.getRotationPeriodArray.clear();
-      this.generateTableDataSource();
+      this.generateTableDataSource(257);
       return;
     }
     
@@ -319,7 +323,7 @@ async loadMatrixForPeriods(periodGUIDs: string) {
       this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user);
     }
 
-    this.generateTableDataSource();
+    // this.generateTableDataSource(326);
     
   
   });
@@ -664,8 +668,6 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       defaultAreaShift.patchValue(areaShift);
     }
 
-    console.log('adding shift');
-
     this.getAreaShiftArray.push(defaultAreaShift);
 
     if(updateMatrix){
@@ -727,7 +729,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       this.insertMatrixItemsForNewRotation(defaultRotationPeriod);
     }
     
-    this.generateTableDataSource();
+    this.generateTableDataSource(732);
 
     return defaultRotationPeriod.get('rotationPeriodGUID')?.value;
 
@@ -1006,7 +1008,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.resequenceAreaShifts();
 
-    this.generateTableDataSource();
+    this.generateTableDataSource(1011);
 
   }
 
@@ -1126,7 +1128,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     });
 
-    this.generateTableDataSource();
+    this.generateTableDataSource(1131);
   }
 
 }

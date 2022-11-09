@@ -108,7 +108,7 @@ export class RotationPeriodComponent implements OnInit {
       }
 
       this.rotaService.addAssignedStaffControlToMatrix(staffAssignmentAreaShifts[i]?.areaShiftGUID, newRotationPeriodGUID, assignedUser);   
-      this.rotaService.generateTableDataSource();   
+      this.rotaService.generateTableDataSource(111);   
    
     }
 
@@ -233,7 +233,7 @@ export class RotationPeriodComponent implements OnInit {
     const index = this.rotaService.getRotationPeriodArray.controls.findIndex(element => element?.get('rotationPeriodId')?.value === period.get('rotationPeriodId')?.value);
 
     this.rotaService.getRotationPeriodArray.removeAt(index);
-    this.rotaService.generateTableDataSource();
+    this.rotaService.generateTableDataSource(236);
     
     this.changeDetector.detectChanges();
   }

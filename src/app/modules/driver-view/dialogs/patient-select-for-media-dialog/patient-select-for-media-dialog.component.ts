@@ -9,13 +9,14 @@ assignmentDetails: DriverAssignment;
 }
 
 @Component({
-  selector: 'app-patient-select-formedia-dialog',
-  templateUrl: './patient-select-formedia-dialog.component.html',
-  styleUrls: ['./patient-select-formedia-dialog.component.scss']
+  selector: 'app-patient-select-for-media-dialog',
+  templateUrl: './patient-select-for-media-dialog.component.html',
+  styleUrls: ['./patient-select-for-media-dialog.component.scss']
 })
-export class PatientSelectFormediaDialogComponent implements OnInit {
+export class PatientSelectForMediaDialogComponent implements OnInit {
 
   formGroup = this.fb.group({});
+  
   patients: Patient[] = [{
     animalType: 'Dog',
       animalTypeId: 5,
@@ -50,7 +51,7 @@ export class PatientSelectFormediaDialogComponent implements OnInit {
 
     }];
 
-  constructor(public dialogRef: MatDialogRef<PatientSelectFormediaDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<PatientSelectForMediaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: UntypedFormBuilder) { }
 

@@ -44,21 +44,17 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-
     constructor(
         private callerService: CallerDetailsService,
         private fb: UntypedFormBuilder,
         private snackbar: SnackbarService,
     ) {}
 
-
-
     @HostListener('document:keydown.alt.shift.n', ['$event'])
     setFocusNumber(event: KeyboardEvent) {
         event.preventDefault();
         this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
     }
-
 
     ngOnInit() {
 

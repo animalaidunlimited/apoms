@@ -1,12 +1,12 @@
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormBuilder } from '@angular/forms';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { PatientSelectFormediaDialogComponent } from './patient-select-formedia-dialog.component';
+import { PatientSelectForMediaDialogComponent } from './patient-select-for-media-dialog.component';
 
-describe('PatientSelectFormediaDialogComponent', () => {
-  let component: PatientSelectFormediaDialogComponent;
-  let fixture: ComponentFixture<PatientSelectFormediaDialogComponent>;
+describe('PatientSelectForMediaDialogComponent', () => {
+  let component: PatientSelectForMediaDialogComponent;
+  let fixture: ComponentFixture<PatientSelectForMediaDialogComponent>;
   const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
   const dialogData = {};
 
@@ -21,13 +21,13 @@ describe('PatientSelectFormediaDialogComponent', () => {
       providers:[ { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
         { provide: UntypedFormBuilder, useValue: formBuilder }],
-      declarations: [ PatientSelectFormediaDialogComponent ]
+      declarations: [ PatientSelectForMediaDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
-    fixture = TestBed.createComponent(PatientSelectFormediaDialogComponent);
+    fixture = TestBed.createComponent(PatientSelectForMediaDialogComponent);
     component = fixture.componentInstance;
 
     component.formGroup = fb.group({});

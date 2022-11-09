@@ -12,7 +12,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
 import { DriverActionDialogComponent } from '../../dialogs/driver-action-dialog/driver-action-dialog.component';
 import { AnimalSelectionModule } from 'src/app/modules/emergency-register/components/animal-selection/animal-selection.module';
-import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-select-formedia-dialog/patient-select-formedia-dialog.component';
+import { PatientSelectForMediaDialogComponent } from '../../dialogs/patient-select-for-media-dialog/patient-select-for-media-dialog.component';
 import { PatientVisitDetailsModule } from 'src/app/core/components/patient-visit-details/patient-visit-details.module';
 import { CaseLocationModule } from '../case-location/case-location.module';
 
@@ -25,7 +25,7 @@ import { CaseLocationModule } from '../case-location/case-location.module';
     CallerDetailsDialogComponent,
     LocationDialogComponent,
     DriverActionDialogComponent,
-    PatientSelectFormediaDialogComponent
+    PatientSelectForMediaDialogComponent
   ],
   imports: [
     CommonModule,

@@ -10,7 +10,7 @@ import { LocationService } from 'src/app/core/services/location/location.service
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DriverViewService } from '../../services/driver-view.service';
-import { PatientSelectFormediaDialogComponent } from '../patient-select-formedia-dialog/patient-select-formedia-dialog.component';
+import { PatientSelectForMediaDialogComponent } from '../patient-select-for-media-dialog/patient-select-for-media-dialog.component';
 
 interface DialogData {
   formGroup:FormGroup;
@@ -323,7 +323,7 @@ showVisits = false;
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignment) {
-    const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
+    const dialogRef = this.dialog.open(PatientSelectForMediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',
       data: {assignmentDetails: assignment}

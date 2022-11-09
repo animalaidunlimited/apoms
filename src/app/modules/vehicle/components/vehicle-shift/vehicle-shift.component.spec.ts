@@ -23,7 +23,8 @@ describe('VehicleShiftComponent', () => {
     fixture = TestBed.createComponent(VehicleShiftComponent);
     component = fixture.componentInstance;
 
-    component.shiftDate = new Date();
+    component.shiftDate = "2022-11-09T11:01:00";
+
     component.vehicle =   {
                             vehicleId: 1,
                             vehicleType: "van",

@@ -44,6 +44,34 @@ describe('OutstandingCaseBoardCasePanelComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(OutstandingCaseBoardCasePanelComponent);
         component = fixture.componentInstance;
+
+        component.outstandingCase = {
+            actionStatusId: 0,
+            ambulanceAction: "",
+            ambulanceAssignmentTime: new Date(),
+            rescueAmbulanceId: 0,
+            releaseAmbulanceId: 0,
+            callDateTime: "",
+            callerDetails: [],
+            emergencyCaseId: 0,
+            emergencyCode: "",
+            emergencyCodeId: 0,
+            emergencyNumber: 0,
+            latLngLiteral: {lat: 0, lng: 0},
+            location: "",
+            moved: false,
+            patients: [],
+            releasePickupDate: "",
+            releaseBeginDate: "",
+            releaseEndDate: "",
+            releaseDetailsId: 0,
+            releaseType: "",
+            patientId: 0,
+            releaseRequestDate: "",
+            rescueTime:"",
+            searchCandidate: true
+        }
+
         fixture.detectChanges();
     });
 

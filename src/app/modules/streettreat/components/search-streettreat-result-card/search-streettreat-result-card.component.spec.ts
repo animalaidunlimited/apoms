@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from 'src/app/material-module';
 
-import { SearchStreetTreetResultCardComponent } from './search-streettreat-result-card.component';
+import { SearchStreetTreatResultCardComponent } from './search-streettreat-result-card.component';
 
-describe('SearchStreettreetResultCardComponent', () => {
-  let component: SearchStreetTreetResultCardComponent;
-  let fixture: ComponentFixture<SearchStreetTreetResultCardComponent>;
+describe('SearchStreetTreatResultCardComponent', () => {
+  let component: SearchStreetTreatResultCardComponent;
+  let fixture: ComponentFixture<SearchStreetTreatResultCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MaterialModule],
-      declarations: [ SearchStreetTreetResultCardComponent ]
+      declarations: [ SearchStreetTreatResultCardComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchStreetTreetResultCardComponent);
+    fixture = TestBed.createComponent(SearchStreetTreatResultCardComponent);
     component = fixture.componentInstance;
 
     component.record = {

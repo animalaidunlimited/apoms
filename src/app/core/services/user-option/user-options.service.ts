@@ -91,7 +91,7 @@ export class UserOptionsService extends APIService{
         }
         else {
             this.token = this.storage.read('AUTH_TOKEN');
-            let tokenData: any = window.atob(this.token.split('.')[1]);
+            let tokenData: any = window.atob(this.token?.split('.')[1]);
             tokenData = JSON.parse(tokenData);
             return tokenData.username;
         }
