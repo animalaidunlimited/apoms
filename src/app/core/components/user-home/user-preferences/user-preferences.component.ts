@@ -15,7 +15,6 @@ export class UserPreferencesComponent implements OnInit {
 
   notificationCount: BehaviorSubject<number>;
 
-
   showPreferences = false;
 
   userDetails!: BehaviorSubject<UserAccountDetails>;

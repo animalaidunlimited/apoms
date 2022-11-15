@@ -172,6 +172,8 @@ public async initialiseArrays(users: UserDetails[]) {
   
   await this.initialiseRotationPeriods(this.periodsToShow);
 
+  this.generateTableDataSource();
+
 }
 
 public getPeriodByGUID(rotationPeriodGUID:string) : FormGroup {
@@ -184,11 +186,7 @@ public markPeriodAsDirty(rotationPeriodGUID: string) : void {
   this.getRotationPeriodArray.controls.find(element => element.value.rotationPeriodGUID === rotationPeriodGUID)?.markAsDirty();
 }
 
-public async generateTableDataSource(source: number) : Promise<void> {
-
-  console.log(source);
-  
-  console.log('generating');
+public async generateTableDataSource() : Promise<void> {
 
   let dataSource: AbstractControl[] = [];
 
@@ -254,7 +252,7 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
     if(!periods?.rotationPeriods){      
       this.getRotationPeriodArray.clear();
-      this.generateTableDataSource(257);
+      this.generateTableDataSource();
       return;
     }
     
@@ -321,10 +319,7 @@ async loadMatrixForPeriods(periodGUIDs: string) {
       let user = this.userList.find(element => element.userId === assignment.assignedUserId);   
       
       this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user);
-    }
-
-    // this.generateTableDataSource(326);
-    
+    }    
   
   });
  
@@ -728,8 +723,6 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     if(updateMatrix){      
       this.insertMatrixItemsForNewRotation(defaultRotationPeriod);
     }
-    
-    this.generateTableDataSource(732);
 
     return defaultRotationPeriod.get('rotationPeriodGUID')?.value;
 
@@ -1008,7 +1001,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.resequenceAreaShifts();
 
-    this.generateTableDataSource(1011);
+    this.generateTableDataSource();
 
   }
 
@@ -1128,7 +1121,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     });
 
-    this.generateTableDataSource(1131);
+    this.generateTableDataSource();
   }
 
 }

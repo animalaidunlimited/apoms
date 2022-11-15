@@ -38,7 +38,7 @@ export class SettingsPageComponent implements OnInit {
 
     ngOnInit() {
 
-        this.releaseVersion = '1.23';
+        this.releaseVersion = '1.24';
 
         this.organisationDetails.organisationDetail.subscribe(organisationDetails => {
 

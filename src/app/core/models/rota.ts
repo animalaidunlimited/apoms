@@ -94,12 +94,15 @@ export interface AreaShift{
   isDeleted: boolean;
   }
 
-  export interface RotationArea {
-    areaRowSpan: number;
-    rotationAreaColour: string;
-    rotationArea: string;
+  export interface RotationAreaBase{
     rotationAreaId: number;
+    rotationArea: string;
     rotationAreaSortOrder: number;
+  }
+
+  export interface RotationArea extends RotationAreaBase {
+    areaRowSpan: number;
+    rotationAreaColour: string;    
   }
 
   export interface RotationRoleResponse{
@@ -130,15 +133,26 @@ export interface RotaDayAssignmentResponse {
 
 export interface RotaDay{
   rotaDayDate: Date | string;
-  rotaDayAssignment: RotaDayAssignment[]
+  rotaDayAssignments: RotaDayAssignment[]
 }
 
 export interface RotaDayAssignment{
   rotaDayId: number;
+  areaRowSpan: number;
   areaShiftId: number;
   userId: number;
   rotationUserId: number;
   leaveRequestId: number;
+  rotationRole: string;
+  rotationAreaId: number;
+  rotationArea: string;  
+  rotationAreaColour: string;
+  rotationAreaSortOrder: string;
+  plannedShiftStartTime: string;
+  plannedShiftEndTime: string;
+  actualShiftStartTime: string;
+  actualShiftEndTime: string;
+  notes: string;
 }
 export interface RotationPeriodLeave {
   leaveRequestId: number;

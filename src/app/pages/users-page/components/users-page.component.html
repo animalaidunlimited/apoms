@@ -2,31 +2,11 @@
 
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-    <fieldset class='form-sub-group'>
+    <fieldset class='form-sub-group user-details-form'>
         <legend class="legend">User details</legend>
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
-            <mat-form-field>
-                <input type= 'text' placeholder='Employee number' formControlName='employeeNumber' matInput required>
-            </mat-form-field>
-            <mat-form-field>
-                <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
-            </mat-form-field>
-            <mat-form-field>
-                <input type= 'text' placeholder='Last name' formControlName='surname' matInput required>
-            </mat-form-field>
-            <mat-form-field>
-                <span matPrefix>+91 &nbsp;</span>
-                <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput>
-            </mat-form-field>
-            <mat-form-field>
-                <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput>
-            </mat-form-field>
 
-        </div>
-
-
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <mat-form-field>
                 <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
             </mat-form-field>
@@ -43,10 +23,38 @@
 
         </div>
 
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+
+          <mat-form-field>
+              <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input type= 'text' placeholder='Last name' formControlName='surname' matInput required>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput>
+          </mat-form-field>
+
+        </div>
+
+        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+
+          <mat-form-field>
+              <input type= 'text' placeholder='Employee number' formControlName='employeeNumber' matInput required>
+          </mat-form-field>
+
+          <mat-form-field>                
+              <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput>
+          </mat-form-field>
+
+        </div>
+
 
         <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
             <mat-form-field style="padding-top: 20px;" appearance="fill">
-                <mat-label>-User job type-</mat-label>
+                <mat-label>User job type</mat-label>
                 <mat-select formControlName= 'jobTitleId' multiple>
                     <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
                         {{jobType.Title}}
@@ -64,9 +72,18 @@
                   </mat-optgroup>
                 </mat-select>
               </mat-form-field>
+
+              <mat-form-field style="padding-top: 20px;" appearance="fill">
+                <mat-label>Fixed day off</mat-label>
+                <mat-select formControlName='fixedDayOff'>
+                    <mat-option *ngFor='let day of days' [value]='day.dayId'>
+                        {{day.name}}
+                    </mat-option>
+                </mat-select>
+              </mat-form-field>
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+        <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="row wrap" fxLayoutAlign='center center'>
             <button type='submit' mat-raised-button color='primary'>Save</button>
             <button type='button' mat-raised-button color='primary'>Delete</button>
             <button type='button' (click)="resetForm()" mat-raised-button color='white'>Reset</button>

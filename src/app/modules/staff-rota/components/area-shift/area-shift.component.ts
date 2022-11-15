@@ -30,6 +30,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
   rotationRoles$!:Observable<RotationRole[]>;
 
+
   constructor(
     private rotaService: RotaService,
     private snackbarService: SnackbarService,
@@ -41,7 +42,12 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.areaShift = this.inputAreaShift as FormGroup;
 
+
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
+
+    // this.rotaSettingsService.getRotationRoles(false).subscribe(values => {
+    //     this.rotationRoles$ = values;
+    //   });
 
     // skip(1), 
     // this.areaShift.get('colour')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
@@ -65,6 +71,12 @@ export class AreaShiftComponent implements OnInit, OnChanges {
   groupSelected($event: MatSelectChange, areaShift: AbstractControl) : void {
 
     this.groupSelectedUnsubscribe.next();
+
+    // let role = this.rotationRoles$.find(element => element.rotationRoleId === $event.value);
+
+    //   areaShift.patchValue(role);   
+      
+    //   this.saveAreaShift(areaShift);
 
     this.rotationRoles$.pipe(takeUntil(this.groupSelectedUnsubscribe)).subscribe(roles => {
 

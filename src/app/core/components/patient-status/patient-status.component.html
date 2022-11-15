@@ -16,6 +16,10 @@
         <input formControlName="patientStatusDate" type="date" (click)="setDate()"
         name="patientStatusDate" min="{{createdDate | date:'yyyy-MM-dd'}}" max="{{currentTime | date:'yyyy-MM-dd'}}"
         placeholder="Date" [errorStateMatcher]="errorMatcher" matInput>
+
+        <mat-error *ngIf="patientStatusForm.get('patientStatusDate')?.errors?.invalidDate">
+          Cannot enter dates in the future
+      </mat-error>
       </mat-form-field>
 
     </div>

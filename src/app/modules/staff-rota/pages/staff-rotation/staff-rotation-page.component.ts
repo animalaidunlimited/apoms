@@ -311,7 +311,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   //Rotation Period Functions
 
   addRotationPeriod(updateMatrix: boolean) : void {
-    this.rotaService.addRotationPeriod(undefined, updateMatrix, false);
+    this.rotaService.addRotationPeriod(undefined, updateMatrix, false).then(() => {
+      this.rotaService.generateTableDataSource();
+    });
   }
 
   //Area Shift Functions

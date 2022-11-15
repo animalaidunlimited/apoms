@@ -14,7 +14,7 @@ import { AreaShiftComponent } from './components/area-shift/area-shift.component
     AreaShiftComponent
   ],
   imports: [  
-    CommonModule,
+  CommonModule,
     StaffRotaRoutingModule,
     MaterialModule
   ]

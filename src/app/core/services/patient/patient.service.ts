@@ -13,7 +13,7 @@ import { AbstractControl, UntypedFormBuilder, FormGroup } from '@angular/forms';
     providedIn: 'root',
 })
 export class PatientService extends APIService {
-
+    
     endpoint = 'Patient';
 
     constructor(

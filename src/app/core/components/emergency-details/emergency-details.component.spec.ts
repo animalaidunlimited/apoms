@@ -122,8 +122,6 @@ describe('EmergencyDetailsComponent', () => {
 
         component.recordForm.get('rescueDetails.assignedVehicleId')?.setValue(1);
 
-        console.log(component.recordForm)
-
         rescueDetails.updateValidators();
 
         expect(component.recordForm.get('emergencyDetails')?.valid).toEqual(false);

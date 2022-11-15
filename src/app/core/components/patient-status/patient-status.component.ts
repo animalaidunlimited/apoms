@@ -12,6 +12,7 @@ import { PatientStatusResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
 import { take, takeUntil } from 'rxjs/operators';
+import { dateValidator } from '../../validators/max-date';
 
 
 @Component({
@@ -43,8 +44,7 @@ export class PatientStatusComponent implements OnInit {
         private patientService: PatientService,
         private userOptions: UserOptionsService,
         private fb: UntypedFormBuilder,
-        private showSnackBar: SnackbarService,
-        private streetTreatService: StreetTreatService
+        private showSnackBar: SnackbarService
     ) {
 
         this.patientStates$ = this.dropdowns.getPatientStates();
@@ -59,7 +59,7 @@ export class PatientStatusComponent implements OnInit {
             tagNumber: [],
             createdDate: [, Validators.required],
             patientStatusId: [, Validators.required],
-            patientStatusDate: [, Validators.required],
+            patientStatusDate: [, [Validators.required, dateValidator()]],
             PN: [],
             suspectedRabies: [false],
         });

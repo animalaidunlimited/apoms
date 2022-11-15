@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EvaluatePermissionService } from './core/services/permissions/evaluate-permission.service';
 import { UserDetailsService } from './core/services/user-details/user-details.service';
+import { skip } from 'rxjs/operators';
 
 export interface NavRoute extends Route {
     path?: string;
@@ -209,7 +210,7 @@ export class NavRouteService {
 
     async setPermissions(){
         
-        this.userService.permissionArray.subscribe(userPermissions => {
+        this.userService.permissionArray.pipe(skip(1)).subscribe(userPermissions => {
 
             this.navRoute.children?.forEach(routeVal=> {
 
