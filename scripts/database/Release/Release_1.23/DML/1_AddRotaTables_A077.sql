@@ -1,14 +1,58 @@
+DROP TABLE IF EXISTS `AAU.`.`Department`;
 DROP TABLE IF EXISTS `AAU`.`RotaMatrixItem`;
 DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
+DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
 DROP TABLE IF EXISTS `AAU`.`RotationArea`;
 DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
 DROP TABLE IF EXISTS `AAU`.`Rota`;
+
+CREATE TABLE `AAU`.`Department` (
+`DepartmentId` INTEGER AUTO_INCREMENT NOT NULL,
+`OrganisationId` INTEGER NOT NULL,
+`Department` VARCHAR(64) NOT NULL,
+`Colour` VARCHAR(10) NULL,
+`SortOrder` INTEGER NULL,
+`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+`DeletedDate` DATETIME NULL,
+`CreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`DepartmentId`),
+  INDEX `FK_DepartmentId_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  CONSTRAINT `FK_DepartmentId_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+ALTER TABLE `AAU`.`Department`
+ADD UNIQUE INDEX `UQ_OrganisationDepartment` (`OrganisationId` ASC, `Department` ASC) VISIBLE;
+
+INSERT INTO `AAU`.`Department` (OrganisationId, Department, Colour, SortOrder) VALUES
+(1, 'Accounting and admin','#ffffff', 1),
+(1, 'Animal Care','#ffffff', 2),
+(1, 'Animal Care - Hospital','#ffffff', 3),
+(1, 'Animal Care - Shelter','#ffffff', 4),
+(1, 'Animal Welfare','#ffffff', 5),
+(1, 'Communication','#ffffff', 6),
+(1, 'Community relations','#ffffff', 7),
+(1, 'Cruelty Prevention','#ffffff', 8),
+(1, 'Emergency response','#f4cccc', 9),
+(1, 'Emergency Response - Desk','#f4cccc', 10),
+(1, 'Emergency Response - Rescue','#f4cccc', 11),
+(1, 'Emergency Response - ST','#f4cccc', 12),
+(1, 'Facilities','#ffffff', 13),
+(1, 'FDR','#ffffff', 14),
+(1, 'House Keeping','#ffffff', 15),
+(1, 'HR','#ffffff', 16),
+(1, 'Medical','#fff2cc', 17),
+(1, 'Security','#ffffff', 18),
+(1, 'Stock','#ffffff', 19);
 
 CREATE TABLE `AAU`.`Rota` (
   `RotaId` INT NOT NULL AUTO_INCREMENT,
@@ -69,13 +113,38 @@ CREATE TABLE `AAU`.`RotaVersion` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
     
+CREATE TABLE `AAU`.`LeaveRequestReason` (
+`LeaveRequestReasonId` INTEGER AUTO_INCREMENT NOT NULL,
+`OrganisationId` INT NOT NULL,
+`LeaveRequestReason` VARCHAR(128),
+`SortOrder` INTEGER NULL,
+`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+`DeletedDate` DATE NULL,
+PRIMARY KEY (`LeaveRequestReasonId`),
+INDEX `FK_LeaveRequestReason_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  CONSTRAINT `FK_LeaveRequestReason_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+INSERT INTO `AAU`.`LeaveRequestReason` (OrganisationId, LeaveRequestReason, SortOrder) VALUES 
+(1,'Personal reason',1),
+(1,'Death of relative',2),
+(1,'Family function',3),
+(1,'Festival',4),
+(1,'Wedding',5),
+(1,'Studies',6),
+(1,'Competition / Government Exam',7);
+
 CREATE TABLE `AAU`.`LeaveRequest` (
 `LeaveRequestId` INTEGER AUTO_INCREMENT NOT NULL,
 `OrganisationId` INT NOT NULL,
 `DepartmentId` INTEGER NOT NULL,
 `UserId` INTEGER NOT NULL,
 `RequestDate` DATE NOT NULL,
-`RequestReason` VARCHAR(128) NOT NULL,
+`LeaveRequestReasonId` INTEGER NOT NULL,
 `AdditionalInformation` TEXT NULL,
 `EmergencyMedicalLeave` TINYINT NULL,
 `LeaveStartDate` DATE NOT NULL,
@@ -85,14 +154,25 @@ CREATE TABLE `AAU`.`LeaveRequest` (
 `DateApprovedRejected` DATETIME NULL,
 `RecordedOnNoticeBoard` TINYINT NULL,
 `LeaveTaken` TINYINT NULL,
+`LeaveTakenComment` TEXT NULL,
 `Comment` TEXT NULL,
 `DocumentOrMedicalSlipProvided` TINYINT NULL,
+`DocumentOrMedicalSlipAccepted` TINYINT NULL,
+`IsDeleted` TINYINT NULL DEFAULT 0,
+`DeletedDate` DATETIME NULL,
+`CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`LeaveRequestId`),
   INDEX `FK_LeaveRequest_User_UserId_idx` (`UserId` ASC) VISIBLE,
   UNIQUE INDEX `RotationPeriodGUID_UNIQUE` (`LeaveRequestId` ASC) VISIBLE,
   CONSTRAINT `FK_LeaveRequest_User_UserId`
     FOREIGN KEY (`UserId`)
     REFERENCES `AAU`.`User` (`UserId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+INDEX `FK_LeaveRequest_Reason_ReasonId_idx` (`LeaveRequestReasonId` ASC) VISIBLE,
+  CONSTRAINT `FK_LeaveRequest_Reason_ReasonId`
+    FOREIGN KEY (`LeaveRequestReasonId`)
+    REFERENCES `AAU`.`LeaveRequestReason` (`LeaveRequestReasonId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
 INDEX `FK_LeaveRequest_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
@@ -212,7 +292,8 @@ CREATE TABLE `AAU`.`RotaMatrixItem` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
     
-CREATE TABLE `AAU`.`RotaDayAssignment`(
+   
+CREATE TABLE `AAU`.`RotaDayAssignment` (
 `RotaDayId` INTEGER AUTO_INCREMENT NOT NULL,
 `RotaDayDate` DATE NOT NULL,
 `RotationPeriodId` INTEGER NOT NULL,
@@ -221,7 +302,6 @@ CREATE TABLE `AAU`.`RotaDayAssignment`(
 `ActualStartTime` TIME NULL,
 `ActualEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
-`LeaveRequestId` INTEGER NULL,
 `Notes` VARCHAR(1024) NULL,
 `IsDeleted` TINYINT NOT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
@@ -249,12 +329,6 @@ INDEX `FK_RotaDayAssignment_AreaShift_AreaShiftId_idx` (`AreaShiftId` ASC) VISIB
   CONSTRAINT `FK_RotaDayAssignment_AreaShift_AreaShiftId`
     FOREIGN KEY (`AreaShiftId`)
     REFERENCES `AAU`.`AreaShift` (`AreaShiftId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-INDEX `FK_RotaDayAssignment_LeaveRequest_LeaveRequestId_idx` (`LeaveRequestId` ASC) VISIBLE,
-  CONSTRAINT `FK_RotaDayAssignment_LeaveRequest_LeaveRequestId`
-    FOREIGN KEY (`LeaveRequestId`)
-    REFERENCES `AAU`.`LeaveRequest` (`LeaveRequestId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );

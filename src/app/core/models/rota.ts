@@ -143,6 +143,8 @@ export interface RotaDayAssignment{
   userId: number;
   rotationUserId: number;
   leaveRequestId: number;
+  leaveGranted: string;
+  leaveUser: string;
   rotationRole: string;
   rotationAreaId: number;
   rotationArea: string;  
@@ -161,4 +163,51 @@ export interface RotationPeriodLeave {
   startDate: string | Date;
   endDate: string | Date;
   fullOverlap: boolean;
+}
+
+export interface LeaveRequest {
+  leaveRequestId: number | null;  
+  userId: number | null;
+  requestDate: string | Date | null;
+  leaveRequestReasonId: number | null;
+  leaveRequestReason: string;
+  additionalInformation: string;
+  emergencyMedicalLeave: boolean | null;
+  leaveStartDate: string | Date | null;
+  leaveEndDate: string | Date | null;
+  numberOfDays: number;
+  granted: number | null;
+  commentReasonManagementOnly: string;
+  dateApprovedRejected: string | Date | null;
+  recordedOnNoticeBoard: boolean | null;
+  leaveTaken: number | null;
+  leaveTakenComment: string;
+  documentOrMedicalSlipProvided: boolean | null;
+  documentOrMedicalSlipAccepted: boolean | null;
+  comment: string;
+  isDeleted: boolean;
+}
+
+export interface DisplayLeaveRequest extends LeaveRequest {
+department: string;
+userCode: string;
+departmentColour: string;
+}
+
+export interface LeaveRequestReason {
+  leaveRequestReasonId: number;
+  leaveRequestReason: string;
+  sortOrder: number;
+}
+
+export interface LeaveRequestSaveResponse {
+  leaveRequestId: number;
+  success: number;
+}
+
+export interface Department {
+  departmentId: number;
+  department: string;
+  colour: string;
+  sortOrder: number;
 }

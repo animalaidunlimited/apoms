@@ -10,10 +10,11 @@ import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
+import { Department } from 'src/app/core/models/rota';
 
 
 interface StreetTreatRole {
@@ -78,14 +79,16 @@ export class UsersPageComponent implements OnInit {
     dataSource: MatTableDataSource<UserDetails>;
 
     days = [
-      {dayId: 1, name: "Monday"},
-      {dayId: 2, name: "Tuesday"},
-      {dayId: 3, name: "Wednesday"},
-      {dayId: 4, name: "Thursday"},
-      {dayId: 5, name: "Friday"},
-      {dayId: 6, name: "Saturday"},
-      {dayId: 7, name: "Sunday"}
-    ]
+      {dayId: 0, name: "Monday"},
+      {dayId: 1, name: "Tuesday"},
+      {dayId: 2, name: "Wednesday"},
+      {dayId: 3, name: "Thursday"},
+      {dayId: 4, name: "Friday"},
+      {dayId: 5, name: "Saturday"},
+      {dayId: 6, name: "Sunday"}
+    ];
+
+    departments$: Observable<Department[]>;
 
     displayedColumns: string[] = [
       'employeeNumber',
@@ -134,7 +137,8 @@ export class UsersPageComponent implements OnInit {
       password: [''],
       isStreetTreatUser:[false],
       permissionArray:[[0]],
-      fixedDayOff: [0]
+      fixedDayOff: [0],
+      departmentId: [0]
     });
 
     userList!: UserDetails[];
@@ -149,6 +153,8 @@ export class UsersPageComponent implements OnInit {
       private userDetailsService : UserDetailsService,
       private snackBar: SnackbarService,
       private route: ActivatedRoute) {
+
+        this.departments$ = this.dropdown.getDepartments();
 
         const emptyUser:UserDetails = {
           userId : 0,
@@ -165,6 +171,7 @@ export class UsersPageComponent implements OnInit {
           jobTitle: '',
           permissionArray: [],
           fixedDayOff: 0,
+          departmentId: 0,
           isDeleted: false
         };
 

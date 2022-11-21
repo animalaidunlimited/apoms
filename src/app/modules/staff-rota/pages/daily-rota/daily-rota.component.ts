@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { RotaService } from '../../services/rota.service';
-import { RotaDay, RotaDayAssignment, RotaDayAssignmentResponse, RotationArea, RotationAreaBase } from './../../../../core/models/rota';
+import { RotaDay, RotaDayAssignment, RotaDayAssignmentResponse, RotationArea } from './../../../../core/models/rota';
 import { RotaSettingsService } from './../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
@@ -33,7 +33,7 @@ export class DailyRotaComponent implements OnInit {
 
   rotaDays!: BehaviorSubject<RotaDay[]>;
 
-  rotationPeriodId: number = -1;
+  rotationPeriodId: number = -1;  
 
   constructor(
     route: ActivatedRoute,
@@ -54,13 +54,14 @@ export class DailyRotaComponent implements OnInit {
 
       }
 
-  });
+    });
 
   }
 
   ngOnInit() {
 
     this.rotaSettings.getRotationAreas(false).subscribe(areas => this.areas = areas);
+
     this.setSelectedAreas();
     this.loadRotaDays();
     
@@ -108,17 +109,20 @@ export class DailyRotaComponent implements OnInit {
 
     for(let assignment of day.rotaDayAssignments){
       
-      if(!this.selectedAreas.find(area => area === assignment.rotationAreaId)){
+      if(!this.selectedAreas.find(area => area === assignment.rotationAreaId) && assignment.rotationAreaId > 0){
+        console.log('continuing');
         continue;        
       }
 
-      let assignments: ModelFormGroup<RotaDayAssignment> = this.fb.nonNullable.group({
+      let newAssignment: ModelFormGroup<RotaDayAssignment> = this.fb.nonNullable.group({
         rotaDayId :             [assignment.rotaDayId],
         areaRowSpan :           [assignment.areaRowSpan],
         areaShiftId :           [assignment.areaShiftId],
         userId :                [assignment.userId],
         rotationUserId :        [assignment.rotationUserId],
         leaveRequestId :        [assignment.leaveRequestId],
+        leaveGranted :          [assignment.leaveGranted],
+        leaveUser :             [assignment.leaveUser],
         rotationRole :          [assignment.rotationRole],
         rotationAreaId :        [assignment.rotationAreaId],
         rotationArea :          [assignment.rotationArea],
@@ -131,7 +135,12 @@ export class DailyRotaComponent implements OnInit {
         notes :                 [assignment.notes] 
       });
 
-      (rotaGroup.get('rotaDayAssignments') as FormArray)?.push(assignments);
+      if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
+        newAssignment.get('actualShiftStartTime')?.setValidators(Validators.required);
+        newAssignment.get('actualShiftEndTime')?.setValidators(Validators.required);
+      }
+
+      (rotaGroup.get('rotaDayAssignments') as FormArray)?.push(newAssignment);
 
     }
 
@@ -149,11 +158,13 @@ export class DailyRotaComponent implements OnInit {
 
         response.success === 1 ?
         this.snackbar.successSnackBar("Areas saved to preferences","OK") :
-        this.snackbar.errorSnackBar("Save failed - error: DRC-124","OK");
+        this.snackbar.errorSnackBar("Save failed - error: DRC-161","OK");
       });
 
     })
   }
+
+
 
 
 }

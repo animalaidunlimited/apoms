@@ -1,0 +1,189 @@
+<h1>Leave request</h1>
+<form [formGroup]="leaveRequestForm">
+
+  <fieldset>
+    <legend class="legend">Request</legend>
+
+    <div fxLayout="column">
+
+      <mat-form-field appearance="fill">
+        <mat-label>Worker name</mat-label>
+        <input matInput
+        [errorStateMatcher]="errorMatcher"
+        type="text"
+        formControlName="userId"
+        [matAutocomplete]="auto">
+    
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option>N/A</mat-option>
+          <mat-option *ngFor="let user of (userList | async)" [value]="user.userId">
+            {{ user.employeeNumber + ' - ' + user.firstName }}
+          </mat-option>
+        </mat-autocomplete>
+    
+      </mat-form-field>
+    
+      <mat-form-field appearance="fill">
+        <mat-label>Date of request</mat-label>
+        <input matInput type="date" placeholder="Date of request"  [errorStateMatcher]="errorMatcher"
+          formControlName="requestDate"  />
+      </mat-form-field>
+
+      <div>
+        <label
+        [ngStyle]="{'color': leaveRequestForm.get('leaveRequestReasonId')?.invalid ? 'red' : 'unset'}"
+        id="reason-radio-group-label">Reason for leave request *</label>
+        <mat-radio-group
+          aria-labelledby="reason-radio-group-label"
+          class="request-reasons"
+          formControlName="leaveRequestReasonId">
+          <mat-radio-button
+            class="reason-radio-button"
+            *ngFor="let reason of (requestReasons | async)" [value]="reason.leaveRequestReasonId">
+            {{ reason.leaveRequestReason }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Additional information on the leave</mat-label>
+        <input matInput type="text" [errorStateMatcher]="errorMatcher"
+          formControlName="additionalInformation"  />
+      </mat-form-field>
+
+      <div>
+        <label id="emergency-medical-radio-group-label">Is it an emergency medical leave?</label>
+        <mat-radio-group
+          aria-labelledby="emergency-medical-radio-group-label"
+          class="request-reasons"
+          formControlName="emergencyMedicalLeave">
+          <mat-radio-button class="reason-radio-button" [value]="false">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="true">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div fxLayout="row-wrap" fxLayoutAlign="start center">
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leave requested from</mat-label>
+          <input matInput type="date"  [errorStateMatcher]="errorMatcher"
+            formControlName="leaveStartDate"  />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>to</mat-label>
+          <input matInput type="date" [errorStateMatcher]="errorMatcher"
+            formControlName="leaveEndDate"  />
+        </mat-form-field>
+
+        <div fxLayout="column" fxLayoutAlign="center center" class="number-days-wrapper">          
+          <div class="number-days-number">{{leaveRequestForm.get('numberOfDays')?.value}}</div>
+          <div class="number-days-label">Days</div>
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </fieldset>
+
+  <fieldset>
+    <legend class="legend">Answer</legend>
+
+    <div fxLayout="column">
+
+      <div>
+        <label id="granted-radio-group-label">Leave granted</label>
+        <mat-radio-group
+          aria-labelledby="granted-radio-group-label"
+          class="request-reasons"
+          formControlName="granted">
+          <mat-radio-button class="reason-radio-button" [value]="1">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="0">No</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="2">Partially</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      
+
+      <mat-form-field appearance="fill">
+        <mat-label>Comment / reason (management only)</mat-label>
+        <input matInput type="text" [errorStateMatcher]="errorMatcher"
+          formControlName="commentReasonManagementOnly"  />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Date the leave was granted/refused</mat-label>
+        <input matInput type="date" [errorStateMatcher]="errorMatcher"
+          formControlName="dateApprovedRejected"  />
+      </mat-form-field>
+
+      <div>
+        <label id="recorded-on-noticeboard-radio-group-label">Has the Answer been recorded on Notice Board</label>
+        <mat-radio-group
+          aria-labelledby="recorded-on-noticeboard-radio-group-label"
+          class="request-reasons"
+          formControlName="recordedOnNoticeBoard">
+          <mat-radio-button class="reason-radio-button" [value]="true">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+    </div>
+  </fieldset>
+
+  
+
+  <fieldset>
+    <legend class="legend">Check</legend>
+
+    <div fxLayout="column">
+
+      <div>
+        <label id="leave-taken-radio-group-label">Did the worker actually take the leave?</label>
+        <mat-radio-group
+          aria-labelledby="leave-taken-radio-group-label"
+          class="request-reasons"
+          formControlName="leaveTaken">
+          <mat-radio-button class="reason-radio-button" [value]="1">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="0">No</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="2">Partially</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div>
+        <label id="document-provided-radio-group-label">Medical slip or other document provided?</label>
+        <mat-radio-group
+          aria-labelledby="document-provided-radio-group-label"
+          class="request-reasons"
+          formControlName="documentOrMedicalSlipProvided">
+          <mat-radio-button class="reason-radio-button" [value]="true">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div>
+        <label id="document-accepted-radio-group-label">Medical slip or other document accepted?</label>
+        <mat-radio-group
+          aria-labelledby="document-accepted-radio-group-label"
+          class="request-reasons"
+          formControlName="documentOrMedicalSlipAccepted">
+          <mat-radio-button class="reason-radio-button" [value]="true">Yes</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Comment</mat-label>
+        <input matInput type="text" [errorStateMatcher]="errorMatcher"
+          formControlName="comment"  />
+      </mat-form-field>
+
+    </div>
+
+  </fieldset>
+  <!-- [disabled]="leaveRequestForm.invalid" -->
+  <button mat-raised-button color="primary"  (click)="saveLeaveRequest()">Save</button>
+
+</form>

@@ -2,9 +2,6 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
-SELECT *
-FROM AAU.RotationPeriod
-
 -- CALL AAU.sp_InsertRotaDayAssignments(1);
 -- TRUNCATE TABLE AAU.RotaDayAssignment
 

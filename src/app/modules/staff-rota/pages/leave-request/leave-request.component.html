@@ -1,0 +1,130 @@
+
+<div>
+
+  <button mat-raised-button (click)="launchEditModal()" color="primary" style="margin-left: 20px;">
+    Add request
+    <mat-icon>add</mat-icon>
+  </button>
+
+</div>
+
+<div class="leave-table-container">
+
+<table mat-table [dataSource]="leaveRequests" class="leave-table">
+
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef> Edit </th>
+    <td mat-cell *matCellDef="let element"> 
+      <button mat-mini-fab (click)="launchEditModal(element.leaveRequestId)">
+        <mat-icon>edit</mat-icon>
+      </button> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="department">
+    <th mat-header-cell *matHeaderCellDef> Department </th>
+    <td mat-cell *matCellDef="let element" [ngStyle]="{ 'backgroundColor' : element.departmentColour}"> {{element.department}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="userCode">
+    <th mat-header-cell *matHeaderCellDef> Staff </th>
+    <td mat-cell *matCellDef="let element"> {{element.userCode}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="requestDate">
+    <th mat-header-cell *matHeaderCellDef> Request date </th>
+    <td mat-cell *matCellDef="let element"> {{element.requestDate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveRequestReason">
+    <th mat-header-cell *matHeaderCellDef> Reason </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveRequestReason}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="additionalInformation">
+    <th mat-header-cell *matHeaderCellDef> Additional info </th>
+    <td mat-cell *matCellDef="let element"> {{element.additionalInformation}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="emergencyMedicalLeave">
+    <th mat-header-cell *matHeaderCellDef> Emergency medical leave </th>
+    <td mat-cell *matCellDef="let element"> {{element.emergencyMedicalLeave === true ? "Yes" : element.emergencyMedicalLeave === false ? "No" : ""}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveStartDate">
+    <th mat-header-cell *matHeaderCellDef> Start date </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveStartDate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveEndDate">
+    <th mat-header-cell *matHeaderCellDef> To </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveEndDate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="numberOfDays">
+    <th mat-header-cell *matHeaderCellDef> No. days </th>
+    <td mat-cell *matCellDef="let element"> {{element.numberOfDays}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="granted">
+    <th mat-header-cell *matHeaderCellDef> Granted </th>
+    <td mat-cell *matCellDef="let element"> {{element.granted === 0 ? "Denied" : element.granted === 1 ? "Granted" : "Pending"}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="commentReasonManagementOnly">
+    <th mat-header-cell *matHeaderCellDef> Comment/reason (management only) </th>
+    <td mat-cell *matCellDef="let element"> {{element.commentReasonManagementOnly}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dateApprovedRejected">
+    <th mat-header-cell *matHeaderCellDef> Date approved/rejected </th>
+    <td mat-cell *matCellDef="let element"> {{element.dateApprovedRejected}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="recordedOnNoticeBoard">
+    <th mat-header-cell *matHeaderCellDef> Recorded on notice board </th>
+    
+    <td mat-cell *matCellDef="let element"> {{element.recordedOnNoticeBoard === true ? "Yes" : element.recordedOnNoticeBoard === false ? "No" : ""}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveTaken">
+    <th mat-header-cell *matHeaderCellDef> Leave taken </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveTaken === 0 ? "No" : element.leaveTaken === 1 ? "Yes" : element.leaveTaken === 2 ? "Partially" : "Pending"}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveTakenComment">
+    <th mat-header-cell *matHeaderCellDef> Comment </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveTakenComment}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="documentOrMedicalSlipProvided">
+    <th mat-header-cell *matHeaderCellDef> Medical slip provided </th>
+    
+    <td mat-cell *matCellDef="let element"> {{element.documentOrMedicalSlipProvided === true ? "Yes" : element.documentOrMedicalSlipProvided === false ? "No" : ""}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="documentOrMedicalSlipAccepted">
+    <th mat-header-cell *matHeaderCellDef> Medical slip accepted </th>
+    
+    <td mat-cell *matCellDef="let element"> {{element.documentOrMedicalSlipAccepted === true ? "Yes" : element.documentOrMedicalSlipAccepted === false ? "No" : ""}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="comment">
+    <th mat-header-cell *matHeaderCellDef> Comment </th>
+    <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef> Delete </th>
+    <td mat-cell *matCellDef="let element"> 
+      <button mat-mini-fab (click)="confirmDeleteLeaveRequest(element.leaveRequestId)" color="warn">
+        <mat-icon>delete</mat-icon>
+      </button> </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayColumns | async"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayColumns | async;"></tr>
+
+
+</table>
+
+</div>

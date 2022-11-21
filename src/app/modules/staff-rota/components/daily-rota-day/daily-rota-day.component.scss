@@ -16,6 +16,12 @@ th, td {
     text-align: -webkit-center !important;
 }
 
+.first-column {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    z-index: 101 !important;
+}
+
 .time-field{
     max-width: 75px;
 }
@@ -31,4 +37,41 @@ th, td {
     position: absolute;
     top: 50px;
     left: 5px;
+}
+
+.user-list-heading{
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+.leave-pending{
+    color: orange;
+}
+
+.leave-denied{
+    color:lightslategrey
+}
+
+.granted-leave-user{
+    font-size: smaller;
+    color: darkgray;
+    padding-top: 5px;
+}
+
+.who-icon{
+    cursor: pointer;
+}
+
+.who-header{
+    max-width: 200px;
+    z-index: 101 !important;
+}
+
+.user-search{
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 5px;
+    position: absolute;
+    left: 165px;
+    margin-top: 5px;
 }

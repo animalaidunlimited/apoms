@@ -34,10 +34,11 @@ export class ConfirmationDialog {
   }
 
   @HostListener('document:keydown.enter', ['$event'])
-  closeConfirmationDailog(event: KeyboardEvent){
+  closeConfirmationDialog(event: KeyboardEvent){
     event.preventDefault();
     this.onConfirmClick();
   }
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private dialogRef: MatDialogRef<ConfirmationDialog>) {

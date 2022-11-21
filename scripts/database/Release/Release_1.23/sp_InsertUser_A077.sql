@@ -14,7 +14,8 @@ CREATE PROCEDURE AAU.sp_InsertUser(IN prm_User VARCHAR(45),
 									IN prm_Password NVARCHAR(255),
 									IN prm_RoleId INTEGER,
 									IN prm_PermissionArray JSON,
-									IN prm_FixedDayOff TINYINT
+									IN prm_FixedDayOff TINYINT,
+                                    IN prm_Department INT
 									)
 BEGIN                                    
 
@@ -59,7 +60,8 @@ INSERT INTO AAU.User (OrganisationId,
 						Password,
 						RoleId,
 						PermissionArray,
-                        FixedDayOff
+                        FixedDayOff,
+                        Department
                         )
 				VALUES
 						(
@@ -74,7 +76,8 @@ INSERT INTO AAU.User (OrganisationId,
 						prm_Password,
 						prm_RoleId,
 						prm_PermissionArray,
-                        prm_FixedDayOff
+                        prm_FixedDayOff,
+                        prm_Department
 						);
 
 

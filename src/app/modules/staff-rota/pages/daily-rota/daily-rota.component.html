@@ -1,5 +1,7 @@
 
-  <div fxLayout="row" fxLayoutAlign="start center" [formGroup]="areaForm">
+<div fxLayout="row" fxLayoutAlign="space-between center" [formGroup]="areaForm">
+
+  <div>
 
     <mat-form-field appearance="fill">
       <mat-label>Areas</mat-label>
@@ -7,16 +9,30 @@
         <mat-option *ngFor="let area of areas" [value]="area.rotationAreaId">{{area.rotationArea}}</mat-option>
       </mat-select>
     </mat-form-field>
-
-    <button mat-icon-button color="primary" (click)="areaSelected()" matTooltip="Save areas to preferences">
+  
+    <button mat-mini-fab color="primary" (click)="areaSelected()" matTooltip="Save areas to preferences">
       <mat-icon>save</mat-icon>
     </button>
-  
-  
+
+
   </div>
 
+  <div>
+    <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+
+
+</div>
+
 <mat-tab-group >
-  <mat-tab *ngFor="let day of rotaDayForm.controls" [label]="day.get('rotaDayDate')?.value">      
+  <mat-tab *ngFor="let day of rotaDayForm.controls" >
+    <ng-template mat-tab-label>
+      <span>{{day.get('rotaDayDate')?.value}}</span>
+      <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" style="margin-left: 10px">error</mat-icon>
+  </ng-template>    
 
     <app-daily-rota-day [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-daily-rota-day>
   

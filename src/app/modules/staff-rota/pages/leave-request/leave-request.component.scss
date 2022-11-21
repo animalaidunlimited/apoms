@@ -1,0 +1,16 @@
+.leave-table{
+    width: 2000px;
+}
+
+td {
+    padding: 5px !important;
+}
+
+th.mat-header-cell:first-of-type{
+    padding-left: 13px !important;
+}
+
+.leave-table-container{
+    max-width: 100%;
+    overflow: auto;
+}   

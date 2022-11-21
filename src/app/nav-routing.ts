@@ -113,6 +113,15 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.DailyRotaModule)
     },
     {
+        data: { title: 'Leave Request', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        icon: '',
+        group: 'Staff Rota',
+        path: 'leave-request',
+        loadChildren: () =>
+            import('./modules/staff-rota/pages/leave-request/leave-request.module')
+            .then(m => m.LeaveRequestModule)
+    },
+    {
         data: { title: 'Rota Settings', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'settings_applications',
         group: 'Staff Rota',

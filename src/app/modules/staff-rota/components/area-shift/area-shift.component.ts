@@ -46,7 +46,8 @@ export class AreaShiftComponent implements OnInit, OnChanges {
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
 
     // this.rotaSettingsService.getRotationRoles(false).subscribe(values => {
-    //     this.rotationRoles$ = values;
+    //     // this.rotationRoles$ = values;
+    //     console.log(values)
     //   });
 
     // skip(1), 

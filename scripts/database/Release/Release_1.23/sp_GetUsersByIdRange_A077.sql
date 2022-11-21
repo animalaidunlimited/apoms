@@ -44,11 +44,12 @@ JSON_OBJECT("jobTitleId",UserDetails.JobTypeId),
 JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray),
 JSON_OBJECT("fixedDayOff",UserDetails.FixedDayOff),
+JSON_OBJECT("departmentId",UserDetails.DepartmentId),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle,
-            u.FixedDayOff,
+            u.FixedDayOff, u.DepartmentId,
             IF(u.IsDeleted, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS IsDeleted
 	FROM AAU.User u		
 		LEFT JOIN AAU.Role r ON r.RoleId = u.RoleId

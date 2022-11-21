@@ -6,7 +6,10 @@
 
         <ng-container matColumnDef="rotationArea">
           <th mat-header-cell *matHeaderCellDef class="first-column">
-            
+            <button mat-mini-fab [color]="rotaDayForm.touched ? 'warn' : 'primary'" (click)="saveRotaDay()" matTooltip="Save rota"
+            [disabled]="rotaDayForm.invalid">
+              <mat-icon>save</mat-icon>
+            </button>
           </th>
           <td mat-cell *matCellDef="let element"
           class="area-header"
@@ -23,27 +26,81 @@
         </ng-container>
       
         <ng-container matColumnDef="userId">
-          <th mat-header-cell *matHeaderCellDef style="max-width: 200px;"> Who </th>
+          <th mat-header-cell *matHeaderCellDef class="who-header" >
+            
+              <div fxLayout="row" fxLayoutAlign="center center">
+                  <div style="margin-left: 68px;">Who</div>
+                  <div>
+                    <div class="who-icon" style="margin-left: 20px;">
+                      <button mat-icon-button [disabled]="userSearch !== ''" (click)="showEmptyShiftsOnly()">
+                        <mat-icon 
+                        matTooltip="Show all shifts" style="color: orange;" *ngIf="showEmptyShifts">person_off</mat-icon>                
+                      
+                        <mat-icon 
+                        matTooltip="Show empty shifts" *ngIf="!showEmptyShifts">person</mat-icon>
+                      </button>
+                      <button mat-icon-button [disabled]="showEmptyShifts" (click)="toggleUserFilter()">
+                        <mat-icon  matTooltip="Search staff"
+                        [ngStyle]="{'color' : showUserFilter || userSearch !== '' ? 'orange' : 'unset'}">person_search</mat-icon>   
+                      </button>
+                                     
+                    </div>
+                  </div>
+                
+              </div>
+
+              <div class="user-search" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="showUserFilter" >
+                <mat-form-field >
+                  <input matInput type="text" (keyup)="searchUsers($event)" #userSearchInput autocomplete="off">
+                  <button matSuffix mat-icon-button aria-label="Clear" (click)="userSearchInput.value = ''; clearAndCloseUserSearch()">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </mat-form-field> 
+              </div>
+              
+
+
+          </th>
           <td mat-cell *matCellDef="let element; let i = index;" style="max-width: 200px;"> 
+
+            
+            <div [formGroupName]="i">
+
+              <div *ngIf="element.get('leaveUser')?.value && element.get('leaveGranted')?.value === 'Granted'"
+              class="granted-leave-user">
+                {{element.get('leaveUser')?.value}}
+              </div>    
+
+              <mat-form-field >
+      
+                <input matInput
+                type="text"
+                class="user-input"
+                formControlName="userId"              
+                (focus)="setFilteredUsers(element.get('userId'))"
+                [matAutocomplete]="auto">
+      
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                  <mat-option>N/A</mat-option>
+                  <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user.userId">
+                    {{ user.employeeNumber + ' - ' + user.firstName }}
+                  </mat-option>
+                </mat-autocomplete>
+  
+                
+                <mat-icon 
+                *ngIf="element.get('leaveGranted')?.value === 'Pending' || element.get('leaveGranted')?.value === 'Denied'; let leave"
+                matTooltipClass="leave-tooltip"
+                [ngClass]="element.get('leaveGranted')?.value === 'Pending' ? 'leave-pending' : 'leave-denied'"
+                [matTooltip]="element.get('leaveGranted')?.value"
+                matSuffix >event_busy</mat-icon>
+      
+      
+              </mat-form-field>
+
+            </div>
           
-            <mat-form-field [formGroupName]="i">
-    
-              <input matInput
-              type="text"
-              class="user-input"
-              formControlName="userId"              
-              (focus)="setFilteredUsers(element.get('userId'))"
-              [matAutocomplete]="auto">
-    
-              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user.userId">
-                  {{ user.employeeNumber + ' - ' + user.firstName }}
-                </mat-option>
-              </mat-autocomplete> 
-    
-    
-            </mat-form-field>
+            
           
           </td>
         </ng-container>
@@ -55,14 +112,14 @@
       
         <ng-container matColumnDef="plannedEndTime">
           <th mat-header-cell *matHeaderCellDef> End time </th>
-          <td mat-cell *matCellDef="let element"> {{element.get('plannedShiftEndTime')?.value}} </td>
+          <td mat-cell *matCellDef="let element" (click)="print(element)"> {{element.get('plannedShiftEndTime')?.value}} </td>
         </ng-container>
       
         <ng-container matColumnDef="actualStartTime">
           <th mat-header-cell *matHeaderCellDef> Real start </th>
           <td mat-cell *matCellDef="let element; let i = index;">
             <mat-form-field [formGroupName]="i" class="time-field">
-              <input matInput autocomplete="off" formControlName="actualShiftStartTime" type="time"/>  
+              <input matInput autocomplete="off" formControlName="actualShiftStartTime" type="time" (blur)="checkActualTimes(element)" [errorStateMatcher]="errorMatcher"/>  
             </mat-form-field>  
           </td>
         </ng-container>
@@ -71,7 +128,7 @@
           <th mat-header-cell *matHeaderCellDef> Real end </th>
           <td mat-cell *matCellDef="let element; let i = index;"> 
             <mat-form-field [formGroupName]="i" class="time-field">
-              <input matInput autocomplete="off" formControlName="actualShiftEndTime" type="time"/>  
+              <input matInput autocomplete="off" formControlName="actualShiftEndTime" type="time" (blur)="checkActualTimes(element)" [errorStateMatcher]="errorMatcher"/>  
             </mat-form-field>
           </td>
         </ng-container>
@@ -91,6 +148,41 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true;"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = dataIndex" ></tr>
   </table>
+
+  <div fxLayout="row" fxLayoutGap="20px">
+
+    <div>
+      <div class="user-list-heading">Unassigned staff</div>
+
+      <div *ngFor="let user of (unassignedStaff | async)">        
+        {{ user.employeeNumber + ' - ' + user.firstName }}
+      </div>
+
+    </div>
+
+    <div>
+      <div class="user-list-heading">Underutilised staff</div>
+  
+      <div *ngFor="let user of utilisation | async"  style="margin-bottom: 10px;">
+        <div *ngIf="user.utilisation === 'under'">
+          {{ user.userCode + ": " + (user.hours | date: 'HH:mm')}}
+        </div>
+      </div>
+
+      <div class="user-list-heading">Overutilised staff</div>
+  
+      <div *ngFor="let user of utilisation | async">
+        <div *ngIf="user.utilisation === 'over'">
+          {{ user.userCode + ": " + (user.hours | date: 'HH:mm')}}
+        </div>
+      </div>
+  
+    </div>
+
+
+  </div>
+
+
 
 
 </form>

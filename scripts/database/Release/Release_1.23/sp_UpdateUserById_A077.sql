@@ -14,7 +14,8 @@ CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
                                         IN prm_Password NVARCHAR(255),
 										IN prm_RoleId INTEGER,
                                         IN prm_PermissionArray JSON,
-                                        IN prm_FixedDayOff TINYINT
+                                        IN prm_FixedDayOff TINYINT,
+                                        IN prm_DepartmentId INT
 										)
 BEGIN                                    
 
@@ -53,17 +54,18 @@ SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND
 IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 
 	UPDATE AAU.User
-		SET	EmployeeNumber = prm_EmployeeNumber,
-			FirstName	= prm_FirstName,
-			Surname		= prm_Surname,
-            Initials    = prm_Initials,
-            Colour      = prm_Colour,
-			Telephone	= prm_Telephone,
-            UserName	= prm_UserName,
-            Password	= IFNULL(prm_Password , vPassword),
-			RoleId		= prm_RoleId,
+		SET	EmployeeNumber	= prm_EmployeeNumber,
+			FirstName		= prm_FirstName,
+			Surname			= prm_Surname,
+            Initials   		= prm_Initials,
+            Colour     		= prm_Colour,
+			Telephone		= prm_Telephone,
+            UserName		= prm_UserName,
+            Password		= IFNULL(prm_Password , vPassword),
+			RoleId			= prm_RoleId,
             PermissionArray = prm_PermissionArray,
-            FixedDayOff	= prm_FixedDayOff
+            FixedDayOff		= prm_FixedDayOff,
+            DepartmentId 	= prm_DepartmentId
 	WHERE UserId = prm_UserId;
 
 
