@@ -40,6 +40,18 @@
       <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
 
         <mat-form-field>
+          <input matInput type="time" formControlName="breakStartTime" placeholder="Break start time" [errorStateMatcher]="errorMatcher"/>
+        </mat-form-field>
+    
+        <mat-form-field>
+          <input matInput type="time" formControlName="breakEndTime" placeholder="Break end time" [errorStateMatcher]="errorMatcher"/>
+        </mat-form-field>
+
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+
+        <mat-form-field>
           <input matInput type="number" min=1 formControlName="sortOrder" placeholder="Sort order" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
     

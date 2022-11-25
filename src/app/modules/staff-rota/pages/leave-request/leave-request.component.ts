@@ -7,6 +7,7 @@ import { LeaveRequestFormComponent } from '../../components/leave-request-form/l
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { LeaveRequestHistoryComponent } from '../../components/leave-request-history/leave-request-history.component';
 
 @Component({
   selector: 'app-leave-request',
@@ -29,11 +30,8 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     this.leaveRequests = this.requestService.getLeaveRequests();
 
     this.displayColumns = of(["edit","department","userCode","requestDate","leaveRequestReason",
-    "additionalInformation","emergencyMedicalLeave",
-    "leaveStartDate","leaveEndDate","numberOfDays","granted","commentReasonManagementOnly",
-    "dateApprovedRejected","recordedOnNoticeBoard","leaveTaken",
-    "leaveTakenComment","documentOrMedicalSlipProvided","documentOrMedicalSlipAccepted","comment",
-    "delete"
+    "additionalInformation","leaveStartDate","leaveEndDate","numberOfDays","granted","commentReasonManagementOnly",
+    "dateApprovedRejected","recordedOnNoticeBoard","delete"
     ]);
 
     this.requestService.leavesUpdated.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() =>    
@@ -59,7 +57,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
       data: {
         leaveRequestId
       },
-  });
+    });
 
 
   }
@@ -117,6 +115,19 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
 
     });
 
+  }
+
+  launchSearchModal(userId?: number) : void {
+
+    const dialogRef = this.dialog.open(LeaveRequestHistoryComponent, {
+      width: '650px',
+      height: '100vh',
+      autoFocus: false,
+      data: {
+        userId
+      },
+    });
+    
   }
 
 }

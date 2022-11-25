@@ -15,39 +15,24 @@ export class DailyRotaService extends APIService{
 
   endpoint = 'Rota';
 
-  userList = new BehaviorSubject<UserDetails[]>([]);
-
-
 constructor(
-  http: HttpClient,
-  private userDetailsService: UserDetailsService,
-  private userOptionsService: UserOptionsService
+  http: HttpClient  
 ) {
   super(http);
-  this.initialiseUserList()
-
  }
-
- initialiseUserList() : void {
-  this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
-      
-    this.userList.next(userListData); 
-
-  });
- }
-
-getUserList() : BehaviorSubject<UserDetails[]> {
-
-  return this.userList;
-
-}
 
 saveAssignment(assignment: RotaDayAssignment) : Promise<SuccessOnlyResponse> {
 
-  console.log(assignment);
-
   return this.putSubEndpoint(`RotaDayAssignment`, assignment);
 
+}
+
+getRotationPeriodForRotaVersion(rotaVersionId: number, limit?: number, offset?: number) : Promise<number | null> {
+
+  limit = limit || 1;
+  offset = offset || 0;
+
+  return this.get(`GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${limit}&offset=${offset}`)
 
 }
 

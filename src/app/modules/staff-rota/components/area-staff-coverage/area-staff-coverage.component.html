@@ -1,0 +1,12 @@
+<form [formGroup]="assignmentForm">
+
+
+<div *ngFor="let assignment of data.assignments; let i = index" formArrayName="assignments">
+
+  <div formGroupName={{i}}>
+    <app-user-autocomplete formControlName="userId"></app-user-autocomplete>
+  </div>
+
+</div>
+
+</form>

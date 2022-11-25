@@ -43,18 +43,17 @@ tr, th, td {
     }
 }
 
-.assigned-user {
-}
-    
-    ::ng-deep .mat-form-field {
+::ng-deep .assigned-user {
+
+    .mat-form-field {
         height: 34px !important;
       }
 
-    ::ng-deep .mat-form-field-infix {
+    .mat-form-field-infix {
         border: none !important;
     }
-    
 
+}
 
 .rota-version-wrapper{
     width: 100%;

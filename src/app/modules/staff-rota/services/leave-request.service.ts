@@ -34,6 +34,12 @@ getLeaveRequests() : Observable<DisplayLeaveRequest[]> {
 
 }
 
+getLeaveRequestsForUser(userId: number) : Observable<DisplayLeaveRequest[]> {
+
+  return this.leaveRequests = this.getObservable(`/GetLeaveRequestsForUser?userId=${userId}`);
+
+}
+
 getDisplayColumns() : Observable<string[]> {
 
   return this.leaveRequests.pipe(map(element => Object.keys(element[0])));

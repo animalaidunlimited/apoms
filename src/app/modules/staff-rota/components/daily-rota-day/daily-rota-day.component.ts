@@ -1,11 +1,14 @@
-import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
 import { FormArray, AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, skip, startWith, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, skip, startWith, take, takeUntil } from 'rxjs/operators';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DailyRotaService } from './../../services/daily-rota.service';
+import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AreaStaffCoverageComponent } from './../area-staff-coverage/area-staff-coverage.component';
 
 interface UserUtilisation{
   userId: number;
@@ -24,12 +27,16 @@ interface AreaCount{
   templateUrl: './daily-rota-day.component.html',
   styleUrls: ['./daily-rota-day.component.scss']
 })
-export class DailyRotaDayComponent implements OnInit {
+export class DailyRotaDayComponent implements OnInit, OnDestroy {
 
   @Input() inputRotaDayAssignments!: unknown;
 
   @ViewChild('userSearchInput') userSearchInput!: ElementRef; //Using this because I want the filter to appear within the table, not outside, so couldn't use a form field.
+
+  ngUnsubscribe = new Subject();
   
+  assignedUsers = new BehaviorSubject<number[]>([]); 
+
   dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([this.fb.group({})]);
   
   errorMatcher = new CrossFieldErrorMatcher();
@@ -38,7 +45,9 @@ export class DailyRotaDayComponent implements OnInit {
     rotaDayAssignments: this.fb.array([])
   });
 
-  displayedColumns = ["rotationArea", "rotationRole", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime", "notes"];
+  displayedColumns = ["rotationArea", "rotationRole", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime",
+  "plannedBreakStartTime", "plannedBreakEndTime", "actualBreakStartTime", "actualBreakEndTime",
+  "notes"];
 
   filteredUsers!: Observable<UserDetails[]> | undefined;
 
@@ -63,7 +72,9 @@ export class DailyRotaDayComponent implements OnInit {
 
   constructor(
     private dailyRotaService: DailyRotaService,
+    private userDetailsService: UserDetailsService,
     private snackbar: SnackbarService,
+    private dialog: MatDialog,
     private fb: FormBuilder
   ) {     
 
@@ -71,17 +82,26 @@ export class DailyRotaDayComponent implements OnInit {
 
   ngOnInit() {
 
-    this.userList = this.dailyRotaService.getUserList();
-
-    this.userList.pipe(skip(1), take(1)).subscribe(() => this.initialiseForm());
-
-    setTimeout(() => this.checkUnassignedStaff(), 1000);
-
+    this.userList = this.userDetailsService.getUserList();
+      
+    this.initialiseForm();
+    this.checkUnassignedStaff();
     this.watchUnassignedStaff();
 
   }
 
+  ngOnChanges(changes: SimpleChanges) : void {
+
+    this.initialiseForm();
+
+  }
+
+  ngOnDestroy() : void {
+    this.ngUnsubscribe.next;
+  }
+
   private initialiseForm() {
+    
     this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;
 
     this.rotaDayAssignments.sort((a,b) => a.get('rotationAreaId')?.value === b.get('rotationAreaId')?.value ?
@@ -102,50 +122,65 @@ export class DailyRotaDayComponent implements OnInit {
     this.dataSource.next(this.filteredRotaDayAssignments);
   }
 
-  ngOnChanges(changes: SimpleChanges) : void {    
+//   setFilteredUsers(control: AbstractControl | null | undefined): void {
 
-    this.rotaDayForm?.setControl('rotaDayAssignments', <FormArray>this.inputRotaDayAssignments);
+//     if(!control){
+//       return;
+//     };
 
-    // this.initialiseForm();
+//     this.filteredUsers = control?.valueChanges.pipe(
+//       startWith(''),
+//       map(value => this._filter(value)),
+//     );
 
-  }
+//   }
 
-  setFilteredUsers(control: AbstractControl | null | undefined): void {
+//   private _filter(value: string | undefined): UserDetails[] {
 
-    if(!control){
-      return;
-    };
+//     const searchValue = typeof(value) === "string" ? (value || "") : "";
 
-    this.filteredUsers = control?.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value)),
-    );
-
-  }
-
-  private _filter(value: string | undefined): UserDetails[] {
-
-    const searchValue = typeof(value) === "string" ? (value || "") : "";
-
-    const existingUsers: number[] = this.currentUserList();
+//     const existingUsers: number[] = this.currentUserList();
     
-    return this.userList?.value.filter(user => {
+//     return this.userList?.value.filter(user => {
      
-      return (user.employeeNumber + ' - ' + user.firstName).toLowerCase().includes(searchValue.toLowerCase()) &&
-      !existingUsers.some(existingUserId => existingUserId === user.userId);
+//       return (user.employeeNumber + ' - ' + user.firstName).toLowerCase().includes(searchValue.toLowerCase()) &&
+//       !existingUsers.some(existingUserId => existingUserId === user.userId);
     
-    });
-  }
+//     });
+//   }
 
-private currentUserList() : number[] {
+// private currentUserList() : number[] {
 
-  return this.rotaDayAssignments.map(element => Number(element.get('userId')?.value || element.get('rotationUserId')?.value))
+//   return this.rotaDayAssignments.map(element => Number(element.get('userId')?.value || element.get('rotationUserId')?.value))
+
+// }
+
+// get displayFn() {
+//     return (userId:number) => this.findUser(userId);
+//  }
+
+showAreaStaffCoverage(rotationAreaId: number) : void {
+
+  const assignments = this.getAssignments.controls.filter(assignment => assignment.get('rotationAreaId')?.value === rotationAreaId);
+
+  const dialogRef = this.dialog.open(AreaStaffCoverageComponent, {
+    width: '650px',
+    height: '100vh',
+    autoFocus: false,
+    data: {
+      assignments
+    }
+  });
 
 }
 
-get displayFn() {
-    return (userId:number) => this.findUser(userId);
- }
+updateSelectedUsers() : void {
+
+  const currentUsers =  this.getAssignments?.controls.map(element => Number(element.get('userId')?.value || element.get('rotationUserId')?.value));
+
+  this.assignedUsers.next(currentUsers);
+
+}
 
  findUser(userId: number) : string {
 

@@ -29,7 +29,8 @@ export interface UserDetails {
     permissionArray: number[];
     fixedDayOff: number;
     departmentId: number;
-    isDeleted: boolean
+    localName: string;
+    isDeleted: boolean;
   }
 
 export interface UserDetailsForm extends UserDetails {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
@@ -12,6 +12,7 @@ import { DailyRotaService } from './../../services/daily-rota.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
+import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 
 interface DialogData {
   leaveRequestId: number;
@@ -24,7 +25,7 @@ interface DialogData {
   templateUrl: './leave-request-form.component.html',
   styleUrls: ['./leave-request-form.component.scss']
 })
-export class LeaveRequestFormComponent {
+export class LeaveRequestFormComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
@@ -37,7 +38,6 @@ export class LeaveRequestFormComponent {
     leaveRequestReasonId: new FormControl<number | null>(null, Validators.required),
     leaveRequestReason: [''],
     additionalInformation: [''],
-    emergencyMedicalLeave: new FormControl<boolean | null>(null),
     leaveStartDate: new FormControl<string | Date | null>(null),
     leaveEndDate: new FormControl<string | Date | null>(null),
     numberOfDays: [-1],
@@ -45,11 +45,6 @@ export class LeaveRequestFormComponent {
     commentReasonManagementOnly: [''],
     dateApprovedRejected: new FormControl<string | Date | null>(null),
     recordedOnNoticeBoard: new FormControl<boolean | null>(null),
-    leaveTaken: new FormControl<number | null>(null),
-    leaveTakenComment: [''],
-    documentOrMedicalSlipProvided: new FormControl<boolean | null>(null),
-    documentOrMedicalSlipAccepted: new FormControl<boolean | null>(null),
-    comment: [''],
     isDeleted: [false]
   });
 
@@ -80,17 +75,22 @@ export class LeaveRequestFormComponent {
     private fb: FormBuilder,
     private snackbar: SnackbarService,
     private dropdown: DropdownService,
+    private userDetailsService: UserDetailsService,
     private dailyRotaService: DailyRotaService,
     private dialogRef: MatDialogRef<LeaveRequestFormComponent>) {
 
-        if(data.leaveRequestId){
-          this.leaveRequestId = data.leaveRequestId;
-          this.loadLeaveRequest(this.leaveRequestId);
-        }
-
-        this.userList = this.dailyRotaService.getUserList();
+        this.userList = this.userDetailsService.getUserList();
         this.requestReasons = this.dropdown.getLeaveRequestReasons();
-        this.watchRequestDateChanges()
+        this.watchRequestDateChanges();
+  }
+
+  ngOnInit() : void {
+
+    if(this.data.leaveRequestId){
+      this.leaveRequestId = this.data.leaveRequestId;
+      this.loadLeaveRequest(this.leaveRequestId);
+    }
+
   }
 
   loadLeaveRequest(loadLeaveRequest: number) : void {
@@ -99,8 +99,6 @@ export class LeaveRequestFormComponent {
     .pipe(takeUntil(this.ngUnsubscribe)).subscribe(requests => {
 
       let foundRequest = requests.find(element => element.leaveRequestId === loadLeaveRequest);
-
-      console.log(foundRequest);
 
       if(foundRequest){
         this.leaveRequestForm.patchValue(foundRequest);

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormArray, UntypedFormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Subject} from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject} from 'rxjs';
+import { skip, takeUntil } from 'rxjs/operators';
 import { fnSortBySortOrderAndRotationPeriodSortOrder, generateUUID } from 'src/app/core/helpers/utils';
 import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
-  RotationPeriodLeave, RotationPeriodResponse, RotaVersion } from 'src/app/core/models/rota';
+  RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
@@ -13,6 +13,7 @@ import { SuccessOnlyResponse } from './../../../core/models/responses';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { RotationPeriodValidator } from 'src/app/core/validators/rotation-period.validator';
+import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 
 interface UpsertRotaResponse{
   rotaId: number;
@@ -68,7 +69,7 @@ export class RotaService extends APIService {
 
   unassignedUsers = new BehaviorSubject<UserDetails[]>([]);
 
-  userList: UserDetails[] = [];
+  userList: BehaviorSubject<UserDetails[]>;
 
   public get getRotationPeriodArray() : FormArray {
     return this.rotaForm.get('rotationPeriodArray') as FormArray || this.fb.array([]);
@@ -94,9 +95,12 @@ export class RotaService extends APIService {
     http: HttpClient,
     private fb: UntypedFormBuilder,
     private snackbar: SnackbarService,
+    private userDetailsService: UserDetailsService,
     private rotationPeriodValidator: RotationPeriodValidator,
     private organisationDetails: OrganisationDetailsService) {
     super(http);
+
+    this.userList = this.userDetailsService.getUserList();
 
     this.organisationDetails.organisationDetail.subscribe(organisationSettings => {
 
@@ -110,13 +114,20 @@ export class RotaService extends APIService {
     });
   }
 
+public getRotas() : Observable<Rota[] | null> {
+
+  let request = "/GetRotas";
+
+  return this.getObservable(request);
+
+}
+
 
 
 public async initialiseRotas() : Promise<boolean> {
 
-  let request = "/GetRotas";
-
-  return this.get(request)
+  return this.getRotas()
+  .toPromise()
   .then(response => response as Rota[])
   .then(rotaResponse => {
 
@@ -154,9 +165,7 @@ public async initialiseRotas() : Promise<boolean> {
   
 }
 
-public async initialiseArrays(users: UserDetails[]) {
-
-  this.userList = users;
+public async initialiseArrays() {
 
   this.rotaForm.setControl('matrix', this.fb.group({}));
   this.getAreaShiftArray.clear({emitEvent: false});
@@ -245,7 +254,9 @@ public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
 
 async initialiseRotationPeriods(periodsToShow: number) {
 
-  await this.getRotationPeriods(periodsToShow).then(async periods => {
+  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;
+
+  await this.getRotationPeriods(rotaVersionId, periodsToShow, this.offset).then(async periods => {
 
     this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
     this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';    
@@ -282,11 +293,12 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
 // API Calls
 
-getRotationPeriods(periodsToShow: number) : Promise<RotationPeriodResponse | null> {
+getRotationPeriods(rotaVersionId: number, periodsToShow?: number, offset?: number) : Promise<RotationPeriodResponse | null> {  
 
-  const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;
+  periodsToShow = periodsToShow || 1;
+  offset = offset || 0;
 
-  return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${this.offset}`);
+  return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${offset}`);
 
 }
 
@@ -316,7 +328,7 @@ async loadMatrixForPeriods(periodGUIDs: string) {
     
     for(let assignment of staffAssignments) {
 
-      let user = this.userList.find(element => element.userId === assignment.assignedUserId);   
+      let user = this.userList.value.find(element => element.userId === assignment.assignedUserId);   
       
       this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user);
     }    
@@ -414,12 +426,6 @@ addRota() : void {
   this.getCurrentRota?.get('editingRota')?.setValue(true);
   this.getCurrentRota?.get('editingRotaVersion')?.setValue(true);
     
-}
-
-public getRotas() : BehaviorSubject<Rota[]> | undefined {
-
-  return this.rotas;
-
 }
 
 public setRotaVersionRotaId(rotaId: number) : void {
@@ -781,7 +787,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  saveRotationPeriod(rotationPeriod: RotationPeriod) : Promise<RotationPeriodResponse> {
+  saveRotationPeriod(rotationPeriod: RotationPeriod) : Promise<RotationPeriodSaveResponse> {
 
     return rotationPeriod.rotationPeriodId ? this.postSubEndpoint("RotationPeriod",rotationPeriod) : this.putSubEndpoint("RotationPeriod",rotationPeriod);
 
@@ -934,7 +940,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
       const assignedStaff = this.filterStaffAssignments(periodsToCheck, 1);
 
-      const unassigned = this.userList.filter(user => {
+      const unassigned = this.userList.value.filter(user => {
 
         for(const staff of assignedStaff){
 
@@ -1085,7 +1091,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.rotaForm.reset();  
 
-    this.initialiseArrays(this.userList);
+    this.initialiseArrays();
 
   }
 

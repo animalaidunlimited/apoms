@@ -6,6 +6,10 @@
     <mat-icon>add</mat-icon>
   </button>
 
+  <button mat-mini-fab (click)="launchSearchModal()" color="primary" style="margin-left: 20px;">    
+    <mat-icon>person_search</mat-icon>
+  </button>
+
 </div>
 
 <div class="leave-table-container">
@@ -27,7 +31,7 @@
 
   <ng-container matColumnDef="userCode">
     <th mat-header-cell *matHeaderCellDef> Staff </th>
-    <td mat-cell *matCellDef="let element"> {{element.userCode}} </td>
+    <td mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="launchSearchModal(element.userId)"> {{element.userCode}} </td>
   </ng-container>
 
   <ng-container matColumnDef="requestDate">
@@ -43,11 +47,6 @@
   <ng-container matColumnDef="additionalInformation">
     <th mat-header-cell *matHeaderCellDef> Additional info </th>
     <td mat-cell *matCellDef="let element"> {{element.additionalInformation}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="emergencyMedicalLeave">
-    <th mat-header-cell *matHeaderCellDef> Emergency medical leave </th>
-    <td mat-cell *matCellDef="let element"> {{element.emergencyMedicalLeave === true ? "Yes" : element.emergencyMedicalLeave === false ? "No" : ""}} </td>
   </ng-container>
 
   <ng-container matColumnDef="leaveStartDate">
@@ -84,33 +83,6 @@
     <th mat-header-cell *matHeaderCellDef> Recorded on notice board </th>
     
     <td mat-cell *matCellDef="let element"> {{element.recordedOnNoticeBoard === true ? "Yes" : element.recordedOnNoticeBoard === false ? "No" : ""}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="leaveTaken">
-    <th mat-header-cell *matHeaderCellDef> Leave taken </th>
-    <td mat-cell *matCellDef="let element"> {{element.leaveTaken === 0 ? "No" : element.leaveTaken === 1 ? "Yes" : element.leaveTaken === 2 ? "Partially" : "Pending"}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="leaveTakenComment">
-    <th mat-header-cell *matHeaderCellDef> Comment </th>
-    <td mat-cell *matCellDef="let element"> {{element.leaveTakenComment}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="documentOrMedicalSlipProvided">
-    <th mat-header-cell *matHeaderCellDef> Medical slip provided </th>
-    
-    <td mat-cell *matCellDef="let element"> {{element.documentOrMedicalSlipProvided === true ? "Yes" : element.documentOrMedicalSlipProvided === false ? "No" : ""}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="documentOrMedicalSlipAccepted">
-    <th mat-header-cell *matHeaderCellDef> Medical slip accepted </th>
-    
-    <td mat-cell *matCellDef="let element"> {{element.documentOrMedicalSlipAccepted === true ? "Yes" : element.documentOrMedicalSlipAccepted === false ? "No" : ""}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="comment">
-    <th mat-header-cell *matHeaderCellDef> Comment </th>
-    <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
   </ng-container>
 
   <ng-container matColumnDef="delete">

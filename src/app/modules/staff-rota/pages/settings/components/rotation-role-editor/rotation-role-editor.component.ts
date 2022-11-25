@@ -23,6 +23,8 @@ export class RotationRoleEditorComponent implements OnInit {
     colour: ["#ffffff"],
     startTime: ["", Validators.required],
     endTime: ["", Validators.required],
+    breakStartTime: ["", Validators.required],
+    breakEndTime: ["", Validators.required],
     sortOrder: [, Validators.required],
     organisationId: [],
     isDeleted: [],
@@ -55,6 +57,8 @@ export class RotationRoleEditorComponent implements OnInit {
         rotationAreaId: value.rotationAreaId,
         startTime: value.startTime,
         endTime: value.endTime,
+        breakStartTime: value.breakStartTime,
+        breakEndTime: value.breakEndTime,
         colour: value.colour,
         isDeleted: value.isDeleted,
         sortOrder: value.sortOrder

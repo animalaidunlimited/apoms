@@ -4,16 +4,20 @@ import { DailyRotaComponent } from './daily-rota.component';
 import { MaterialModule } from 'src/app/material-module';
 import { DailyRotaComponentRoutingModule } from './daily-rota-routing.module';
 import { DailyRotaDayComponent } from '../../components/daily-rota-day/daily-rota-day.component';
+import { UserAutoCompleteModule } from '../../components/user-autocomplete/user-autocomplete.module';
+import { AreaStaffCoverageComponent } from './../../components/area-staff-coverage/area-staff-coverage.component';
 
 @NgModule({
   imports: [
-    CommonModule,
+  CommonModule,
     DailyRotaComponentRoutingModule,
-    MaterialModule
+    MaterialModule,
+    UserAutoCompleteModule
   ],
   declarations: [
     DailyRotaComponent,
-    DailyRotaDayComponent
+    DailyRotaDayComponent,
+    AreaStaffCoverageComponent
   ]
 })
 export class DailyRotaModule { }

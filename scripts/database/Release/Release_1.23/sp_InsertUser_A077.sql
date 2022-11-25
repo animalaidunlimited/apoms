@@ -4,18 +4,19 @@ DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertUser(IN prm_User VARCHAR(45),
-									IN prm_EmployeeNumber VARCHAR(32),
-									IN prm_FirstName NVARCHAR(64),
-									IN prm_Surname NVARCHAR(64),
-									IN prm_Initials NVARCHAR(64),
-									IN prm_Colour NVARCHAR(64),
-									IN prm_Telephone NVARCHAR(64),								
-									IN prm_UserName NVARCHAR(64),
-									IN prm_Password NVARCHAR(255),
+									IN prm_EmployeeNumber VARCHAR(32) CHARACTER SET UTF8MB4,
+									IN prm_FirstName VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_Surname VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_Initials VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_Colour VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_Telephone VARCHAR(64) CHARACTER SET UTF8MB4,				
+									IN prm_UserName VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_Password VARCHAR(255) CHARACTER SET UTF8MB4,
 									IN prm_RoleId INTEGER,
 									IN prm_PermissionArray JSON,
 									IN prm_FixedDayOff TINYINT,
-                                    IN prm_Department INT
+                                    IN prm_Department INT,
+                                    IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
 									)
 BEGIN                                    
 
@@ -61,7 +62,8 @@ INSERT INTO AAU.User (OrganisationId,
 						RoleId,
 						PermissionArray,
                         FixedDayOff,
-                        Department
+                        Department,
+                        LocalName
                         )
 				VALUES
 						(
@@ -77,7 +79,8 @@ INSERT INTO AAU.User (OrganisationId,
 						prm_RoleId,
 						prm_PermissionArray,
                         prm_FixedDayOff,
-                        prm_Department
+                        prm_Department,
+                        prm_LocalName
 						);
 
 

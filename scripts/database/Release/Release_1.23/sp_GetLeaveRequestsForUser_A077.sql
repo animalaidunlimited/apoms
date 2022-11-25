@@ -1,23 +1,19 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequests !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequestsForUser !!
 
--- CALL AAU.sp_GetLeaveRequests('Jim');
+-- CALL AAU.sp_GetLeaveRequestsForUser(8);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetLeaveRequests( IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetLeaveRequestsForUser( IN prm_UserId  INT)
 BEGIN
 
 /*
 Created By: Jim Mackenzie
-Created On: 20/11/2022
-Purpose: Retrieve a list of leave requests
+Created On: 22/11/2022
+Purpose: Retrieve a list of leave requests for a user
 
 */
-
-DECLARE vOrganisationId INT;
-
-SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
 
 SELECT
 			JSON_ARRAYAGG(
@@ -44,8 +40,8 @@ FROM AAU.LeaveRequest lr
 INNER JOIN AAU.LeaveRequestReason lrr ON lrr.LeaveRequestReasonId = lr.LeaveRequestReasonId
 INNER JOIN AAU.User u ON u.UserId = lr.UserId
 INNER JOIN AAU.Department d ON d.DepartmentId = u.DepartmentId
-WHERE lr.OrganisationId = vOrganisationId
+WHERE UserId = prm_UserId
 AND lr.IsDeleted = 0;
 
-END$$
+END $$
 

@@ -10,18 +10,12 @@ CREATE PROCEDURE AAU.sp_UpdateLeaveRequest( 	IN prm_UserName VARCHAR(45),
 												IN prm_RequestDate DATE,
 												IN prm_LeaveRequestReasonId INTEGER,
 												IN prm_AdditionalInformation TEXT,
-												IN prm_EmergencyMedicalLeave TINYINT,
 												IN prm_LeaveStartDate DATE,
 												IN prm_LeaveEndDate DATE,
 												IN prm_Granted TINYINT,
 												IN prm_CommentReasonManagementOnly TEXT,
 												IN prm_DateApprovedRejected DATETIME,
-												IN prm_RecordedOnNoticeBoard TINYINT,
-												IN prm_LeaveTaken TINYINT,
-                                                IN prm_LeaveTakenComment TEXT,
-                                                IN prm_DocumentOrMedicalSlipProvided TINYINT,
-                                                IN prm_DocumentOrMedicalSlipAccepted TINYINT,
-												IN prm_Comment TEXT,												
+												IN prm_RecordedOnNoticeBoard TINYINT,											
 												IN prm_IsDeleted TINYINT)
 BEGIN
 
@@ -49,18 +43,12 @@ SET vSuccess = 0;
 		RequestDate = prm_RequestDate,
 		LeaveRequestReasonId = prm_LeaveRequestReasonId,
 		AdditionalInformation = prm_AdditionalInformation,
-		EmergencyMedicalLeave = prm_EmergencyMedicalLeave,
 		LeaveStartDate = prm_LeaveStartDate,
 		LeaveEndDate = prm_LeaveEndDate,
 		Granted = prm_Granted,
 		CommentReasonManagementOnly = prm_CommentReasonManagementOnly,
 		DateApprovedRejected = prm_DateApprovedRejected,
 		RecordedOnNoticeBoard = prm_RecordedOnNoticeBoard,
-		LeaveTaken = prm_LeaveTaken,
-        LeaveTakenComment = prm_LeaveTakenComment,
-		DocumentOrMedicalSlipProvided = prm_DocumentOrMedicalSlipProvided,
-        DocumentOrMedicalSlipAccepted = prm_DocumentOrMedicalSlipAccepted,
-		Comment = prm_Comment,
 		IsDeleted = prm_IsDeleted
 	WHERE LeaveRequestId = prm_LeaveRequestId;
     

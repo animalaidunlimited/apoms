@@ -52,7 +52,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   unassignedUsers!: BehaviorSubject<UserDetails[]>;
 
-  userList!: UserDetails[];
+  userList!: BehaviorSubject<UserDetails[]>;
 
   public get getCurrentRota() : FormGroup {
     return this.rotaForm.get('currentRota') as FormGroup;
@@ -68,12 +68,13 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private userDetailsService: UserDetailsService,
-    private userOptionsService: UserOptionsService,
     private rotaService: RotaService,
     private snackbarService: SnackbarService,
     public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef
-    ) {      
+    ) {
+
+      this.initialiseRotas();
 
       this.rotas$ = this.rotaService.rotas;
 
@@ -89,8 +90,22 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
 
-      this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));
+      this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));      
       
+  }
+
+  initialiseRotas() : void {
+
+    this.userList = this.userDetailsService.getUserList();
+
+    this.rotaService.initialiseRotas().then(complete => {
+
+      if(complete){
+        this.rotaService.initialiseArrays();
+      }
+    });   
+    
+
   }
 
   displayColumnsPipe(rotation: AbstractControl[], startIndex: number) : string[] {
@@ -112,12 +127,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.rotaService.initialiseRotas().then(complete => {
-
-      if(complete){
-        this.initialiseUsers();
-      }
-    });    
+ 
 
     this.rotaService.beginningOrEndRotation.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value => {
 
@@ -154,7 +164,6 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   } 
 
   rotaSelected($event: MatSelectChange) : void {
-
     
     const defaultRotaVersion = this.rotaVersions$.value.find(version => version.rotaId === $event.value && version.defaultRotaVersion);    
     
@@ -164,7 +173,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
     const rota = this.rotas$.value.find(element => element.rotaId === $event.value);
 
-    this.rotaService.initialiseArrays(this.userList);
+    this.rotaService.initialiseArrays();
 
     this.getCurrentRota.get('defaultRota')?.setValue(rota?.defaultRota);
   }
@@ -260,7 +269,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   this.getCurrentRota.get('rotaVersionName')?.setValue(version?.rotaVersionName);
   this.getCurrentRota.get('defaultRotaVersion')?.setValue(version?.defaultRotaVersion);
  
-  this.rotaService.initialiseArrays(this.userList);
+  this.rotaService.initialiseArrays();
   }
 
   editRotaVersion() : void {
@@ -352,31 +361,13 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
     const existingUsers: AssignedUser[] = this.rotaService.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);
     
-    return this.userList?.filter(user => {
+    return this.userList?.value.filter(user => {
       
       return (user.employeeNumber + ' - ' + user.firstName).toLowerCase().includes(searchValue.toLowerCase()) &&
       !existingUsers.some(existingUser => existingUser.userId === user.userId)
     
     });
   }
-
-  private initialiseUsers(): void {
-    //Go and get the user list so we can populate the drag list
-    this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
-
-      this.userList = userListData;
-
-      //Let's wait until the user list is populated before we do any further initialisation
-      this.rotaService.initialiseArrays(userListData);
-
-    });
-  }
-
-  // getGroupPeriodAssignedStaff(areaShiftGUID: string, rotationPeriodGUID: string) : AbstractControl | null {
-
-  //   return this.rotaService.getMatrix?.get(this.rotaService.getCoords(areaShiftGUID, rotationPeriodGUID));
-
-  // }
 
   displayFn(user: UserDetails): string {
 

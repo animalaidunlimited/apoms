@@ -10,6 +10,8 @@ export interface RotationRoleResponse{
     rotationAreaId: number;
     startTime: string;
     endTime: string;
+    breakStartTime: string;
+    breakEndTime: string;
     colour: string;
     isDeleted: boolean;
     sortOrder: number;
@@ -70,7 +72,7 @@ export interface RotationPeriodResponse{
 }
 
 export interface RotationPeriod{
-  rotationPeriodId: string;
+  rotationPeriodId: number;
   rotationPeriodGUID: string;
   rotaVersionId: number;
   startDate: Date | string;
@@ -111,7 +113,7 @@ export interface AreaShift{
   }
 
 
-export interface RotationPeriodResponse {
+export interface RotationPeriodSaveResponse {
   success: number;
   rotationPeriodId: number;
 }
@@ -154,6 +156,10 @@ export interface RotaDayAssignment{
   plannedShiftEndTime: string;
   actualShiftStartTime: string;
   actualShiftEndTime: string;
+  plannedBreakStartTime: string;
+  plannedBreakEndTime: string;
+  actualBreakStartTime: string;
+  actualBreakEndTime: string;
   notes: string;
 }
 export interface RotationPeriodLeave {
@@ -172,7 +178,6 @@ export interface LeaveRequest {
   leaveRequestReasonId: number | null;
   leaveRequestReason: string;
   additionalInformation: string;
-  emergencyMedicalLeave: boolean | null;
   leaveStartDate: string | Date | null;
   leaveEndDate: string | Date | null;
   numberOfDays: number;
@@ -180,11 +185,6 @@ export interface LeaveRequest {
   commentReasonManagementOnly: string;
   dateApprovedRejected: string | Date | null;
   recordedOnNoticeBoard: boolean | null;
-  leaveTaken: number | null;
-  leaveTakenComment: string;
-  documentOrMedicalSlipProvided: boolean | null;
-  documentOrMedicalSlipAccepted: boolean | null;
-  comment: string;
   isDeleted: boolean;
 }
 

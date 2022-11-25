@@ -4,18 +4,19 @@ DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
-										IN prm_EmployeeNumber VARCHAR(32),
-										IN prm_FirstName NVARCHAR(64),
-										IN prm_Surname NVARCHAR(64),
-                                        IN prm_Initials NVARCHAR(64),
-                                        IN prm_Colour NVARCHAR(64),
-										IN prm_Telephone NVARCHAR(64),
-                                        IN prm_UserName NVARCHAR(64),
-                                        IN prm_Password NVARCHAR(255),
+										IN prm_EmployeeNumber VARCHAR(32) CHARACTER SET UTF8MB4,
+										IN prm_FirstName VARCHAR(64) CHARACTER SET UTF8MB4,
+										IN prm_Surname VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_Initials VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_Colour VARCHAR(64) CHARACTER SET UTF8MB4,
+										IN prm_Telephone VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_UserName VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_Password VARCHAR(255) CHARACTER SET UTF8MB4,
 										IN prm_RoleId INTEGER,
                                         IN prm_PermissionArray JSON,
                                         IN prm_FixedDayOff TINYINT,
-                                        IN prm_DepartmentId INT
+                                        IN prm_DepartmentId INT,
+                                        IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
 										)
 BEGIN                                    
 
@@ -30,7 +31,7 @@ Purpose: Adding in employee number. Yes, I know it's stored as a varchar, but yo
 */
 
 DECLARE vUserCount INT;
-DECLARE vPassword NVARCHAR(255);
+DECLARE vPassword VARCHAR(255) CHARACTER SET UTF8MB4;
 DECLARE vUsernameCount INT;
 DECLARE vComboKeyCount INT;
 DECLARE vUpdateSuccess INT;
@@ -65,7 +66,8 @@ IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 			RoleId			= prm_RoleId,
             PermissionArray = prm_PermissionArray,
             FixedDayOff		= prm_FixedDayOff,
-            DepartmentId 	= prm_DepartmentId
+            DepartmentId 	= prm_DepartmentId,
+            LocalName		= prm_LocalName
 	WHERE UserId = prm_UserId;
 
 

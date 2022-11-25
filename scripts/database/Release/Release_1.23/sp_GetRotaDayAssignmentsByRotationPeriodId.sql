@@ -43,6 +43,10 @@ SELECT
 	TIME_FORMAT(rr.EndTime, '%H:%i') AS EndTime,
 	TIME_FORMAT(rda.ActualStartTime, '%h:%i:%s') AS ActualStartTime,
 	TIME_FORMAT(rda.ActualEndTime, '%h:%i:%s') AS ActualEndTime,
+	TIME_FORMAT(rr.BreakStartTime, '%H:%i') AS BreakStartTime,
+	TIME_FORMAT(rr.BreakEndTime, '%H:%i') AS BreakEndTime,
+	TIME_FORMAT(rda.ActualBreakStartTime, '%h:%i:%s') AS ActualBreakStartTime,
+	TIME_FORMAT(rda.ActualBreakEndTime, '%h:%i:%s') AS ActualBreakEndTime,
     rda.Notes,
 	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY rda.RotaDayDate, a.Sequence) = 1,  
 					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY ra.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
@@ -87,6 +91,10 @@ SELECT
 	NULL,
 	NULL,
 	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	IF(ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId DESC) = 1, ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId), 0)
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
@@ -116,6 +124,10 @@ SELECT
 	'Fixed Off',
 	-2,
 	'#999999',
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -154,6 +166,10 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("plannedShiftEndTime", EndTime),
                         JSON_OBJECT("actualShiftStartTime", ActualStartTime),
                         JSON_OBJECT("actualShiftEndTime", ActualEndTime),
+                        JSON_OBJECT("plannedBreakStartTime", BreakStartTime),
+                        JSON_OBJECT("plannedBreakEndTime", BreakEndTime),
+                        JSON_OBJECT("actualBreakStartTime", ActualBreakStartTime),
+                        JSON_OBJECT("actualBreakEndTime", ActualBreakEndTime),
                         JSON_OBJECT("notes", Notes)
 					)
 				)

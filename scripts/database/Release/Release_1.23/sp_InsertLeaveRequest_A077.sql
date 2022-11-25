@@ -12,18 +12,12 @@ CREATE PROCEDURE AAU.sp_InsertLeaveRequest( 	IN prm_UserName VARCHAR(45),
 												IN prm_RequestDate DATE,
 												IN prm_LeaveRequestReasonId INTEGER,
 												IN prm_AdditionalInformation TEXT,
-												IN prm_EmergencyMedicalLeave TINYINT,
 												IN prm_LeaveStartDate DATE,
 												IN prm_LeaveEndDate DATE,
 												IN prm_Granted TINYINT,
 												IN prm_CommentReasonManagementOnly TEXT,
 												IN prm_DateApprovedRejected DATETIME,
-												IN prm_RecordedOnNoticeBoard TINYINT,
-												IN prm_LeaveTaken TINYINT,
-                                                IN prm_LeaveTakenComment TEXT,
-                                                IN prm_DocumentOrMedicalSlipProvided TINYINT,
-                                                IN prm_DocumentOrMedicalSlipAccepted TINYINT,
-												IN prm_Comment TEXT)
+												IN prm_RecordedOnNoticeBoard TINYINT)
 BEGIN
 
 /*
@@ -61,18 +55,12 @@ SET vOrganisationId = 0;
 	RequestDate,
 	LeaveRequestReasonId,
 	AdditionalInformation,
-	EmergencyMedicalLeave,
 	LeaveStartDate,
 	LeaveEndDate,
 	Granted,
 	CommentReasonManagementOnly,
 	DateApprovedRejected,
-	RecordedOnNoticeBoard,
-	LeaveTaken,
-	LeaveTakenComment,
-	DocumentOrMedicalSlipProvided,
-	DocumentOrMedicalSlipAccepted,
-	Comment
+	RecordedOnNoticeBoard
 	)
 	VALUES
 	(
@@ -81,18 +69,12 @@ SET vOrganisationId = 0;
 		prm_RequestDate,
 		prm_LeaveRequestReasonId,
 		prm_AdditionalInformation,
-		prm_EmergencyMedicalLeave,
 		prm_LeaveStartDate,
 		prm_LeaveEndDate,
 		prm_Granted,
 		prm_CommentReasonManagementOnly,
 		prm_DateApprovedRejected,
-		prm_RecordedOnNoticeBoard,
-		prm_LeaveTaken,
-		prm_LeaveTakenComment,
-		prm_DocumentOrMedicalSlipProvided,
-		prm_DocumentOrMedicalSlipAccepted,
-		prm_Comment
+		prm_RecordedOnNoticeBoard
 	);
     
     SELECT LAST_INSERT_ID() INTO vLeaveRequestId;

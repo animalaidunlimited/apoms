@@ -11,6 +11,8 @@ CREATE PROCEDURE AAU.sp_UpsertRotationRole(
         IN prm_Colour VARCHAR(10),
         IN prm_StartTime TIME,
         IN prm_Endtime TIME,
+        IN prm_BreakStartTime TIME,
+        IN prm_BreakEndtime TIME,
 		IN prm_SortOrder INT,        
         IN prm_Deleted TINYINT
 )
@@ -45,6 +47,8 @@ INSERT INTO AAU.RotationRole(
 	Colour,
 	StartTime,
 	EndTime,
+	BreakStartTime,
+	BreakEndTime,
 	SortOrder,
 	IsDeleted
 )
@@ -55,6 +59,8 @@ VALUES(
     prm_Colour,
     prm_StartTime,
     prm_EndTime,
+	prm_BreakStartTime,
+	prm_BreakEndTime,
 	prm_SortOrder,
     prm_Deleted
 );
@@ -73,6 +79,8 @@ UPDATE AAU.RotationRole SET
     RotationAreaId = prm_RotationAreaId,
     StartTime = prm_StartTime,
     EndTime = prm_EndTime,
+    BreakStartTime = prm_BreakStartTime,
+    BreakEndTime = prm_BreakEndTime,
     Colour = prm_Colour,
     SortOrder = prm_SortOrder,    
 	IsDeleted = prm_Deleted,

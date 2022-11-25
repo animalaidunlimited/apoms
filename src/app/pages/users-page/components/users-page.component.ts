@@ -138,7 +138,8 @@ export class UsersPageComponent implements OnInit {
       isStreetTreatUser:[false],
       permissionArray:[[0]],
       fixedDayOff: [0],
-      departmentId: [0]
+      departmentId: [0],
+      localName: ['']
     });
 
     userList!: UserDetails[];
@@ -156,7 +157,7 @@ export class UsersPageComponent implements OnInit {
 
         this.departments$ = this.dropdown.getDepartments();
 
-        const emptyUser:UserDetails = {
+        const emptyUser: UserDetails = {
           userId : 0,
           employeeNumber: '',
           firstName: '',
@@ -172,6 +173,7 @@ export class UsersPageComponent implements OnInit {
           permissionArray: [],
           fixedDayOff: 0,
           departmentId: 0,
+          localName: '',
           isDeleted: false
         };
 

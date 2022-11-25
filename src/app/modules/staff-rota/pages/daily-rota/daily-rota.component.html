@@ -1,5 +1,5 @@
 
-<div fxLayout="row" fxLayoutAlign="space-between center" [formGroup]="areaForm">
+<div fxLayout="row" fxLayoutAlign="space-around center" [formGroup]="areaForm" style="margin-top: 10px;">
 
   <div>
 
@@ -17,6 +17,52 @@
 
   </div>
 
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+
+    <div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Rota</mat-label>
+        <mat-select formControlName="rotaId">
+          <mat-option *ngFor="let rota of rotas | async" [value]="rota.rotaId">{{rota.rotaName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    <div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Version</mat-label>
+        <mat-select formControlName="rotaVersionId" (selectionChange)="getRotationPeriodForRotaVersion($event.value)">
+          <mat-option *ngFor="let version of rotaVersions | async" [value]="version.rotaVersionId">{{version.rotaVersionName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="column" fxLayoutAlign="center center" class="period-dates-wrapper">
+
+      <div [hidden]="!startDate">
+        {{(startDate | date : "EEE,dd/MMM") + ' - ' + (endDate | date : "EEE,dd/MMM")}}
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="space-around center" class="direction-container">
+
+        <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(previous)" [disabled]="leftDisabled" matTooltip="Save areas to preferences">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+
+        <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(next)" [disabled]="rightDisabled" matTooltip="Save areas to preferences">
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </div>
+
+
+    </div>
+
+  </div>
+
   <div>
     <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
       <mat-icon>refresh</mat-icon>
@@ -30,7 +76,7 @@
 <mat-tab-group >
   <mat-tab *ngFor="let day of rotaDayForm.controls" >
     <ng-template mat-tab-label>
-      <span>{{day.get('rotaDayDate')?.value}}</span>
+      <span>{{day.get('rotaDayDate')?.value | date : "EEE,dd/MMM"}}</span>
       <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" style="margin-left: 10px">error</mat-icon>
   </ng-template>    
 
@@ -38,85 +84,3 @@
   
   </mat-tab>
 </mat-tab-group>
-
-
-<!-- <mat-tab-group >
-    <mat-tab *ngFor="let day of (rotaDays | async)" [label]="day.rotaDayDate.toString()"> 
-      
-    
-      <table mat-table [dataSource]="day.rotaDayAssignments" class="day-rota-table">
-      
-        <ng-container matColumnDef="rotationArea">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element"
-          class="area-header"
-          [attr.rowspan]="element.areaRowSpan"
-          [style.display]="element.areaRowSpan !== 0  ? '' : 'none'"
-          [ngStyle]="{backgroundColor: element.rotationAreaColour}"
-          > {{element.rotationArea}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="rotationRole">
-          <th mat-header-cell *matHeaderCellDef> Rotation Role </th>
-          <td mat-cell *matCellDef="let element"> {{element.rotationRole}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="userId">
-          <th mat-header-cell *matHeaderCellDef> Who </th>
-          <td mat-cell *matCellDef="let element"> 
-          
-            <div>
-
-              
-              <input matInput
-              (focus)="setFilteredUsers(period, assignedUser)"                          
-              type="text"
-              class="user-input"                        
-              [matAutocomplete]="auto">
-
-              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-              (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value, assignedUser)"
-                      >
-                <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
-                  {{ user.employeeNumber + ' - ' + user.firstName }}
-                </mat-option>
-              </mat-autocomplete>
-
-            </div>
-          
-          </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="plannedStartTime">
-          <th mat-header-cell *matHeaderCellDef> Start time </th>
-          <td mat-cell *matCellDef="let element"> {{element.plannedShiftStartTime}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="plannedEndTime">
-          <th mat-header-cell *matHeaderCellDef> End time </th>
-          <td mat-cell *matCellDef="let element"> {{element.plannedShiftEndTime}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="actualStartTime">
-          <th mat-header-cell *matHeaderCellDef> Start time </th>
-          <td mat-cell *matCellDef="let element"> {{element.actualShiftStartTime}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="actualEndTime">
-          <th mat-header-cell *matHeaderCellDef> End time </th>
-          <td mat-cell *matCellDef="let element"> {{element.actualShiftEndTime}} </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="notes">
-          <th mat-header-cell *matHeaderCellDef> Notes </th>
-          <td mat-cell *matCellDef="let element">  </td>
-        </ng-container>
-      
-        <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true;"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      
-    
-    </mat-tab>
-</mat-tab-group> -->

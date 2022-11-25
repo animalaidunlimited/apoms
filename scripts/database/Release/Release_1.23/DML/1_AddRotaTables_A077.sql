@@ -69,7 +69,7 @@ CREATE TABLE `AAU`.`Rota` (
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);   
-
+    
 CREATE TABLE `AAU`.`RotationRole` (
   `RotationRoleId` INT NOT NULL AUTO_INCREMENT,
   `RotationRole` VARCHAR(45) NOT NULL,
@@ -77,6 +77,8 @@ CREATE TABLE `AAU`.`RotationRole` (
   `Colour` VARCHAR(16) NOT NULL,
   `StartTime` TIME NOT NULL,
   `EndTime` TIME NOT NULL,
+  `BreakStartTime` TIME NULL,
+  `BreakEndTime` TIME NULL,
   `SortOrder` INT NULL,
   `OrganisationId` INT NOT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
@@ -146,18 +148,12 @@ CREATE TABLE `AAU`.`LeaveRequest` (
 `RequestDate` DATE NOT NULL,
 `LeaveRequestReasonId` INTEGER NOT NULL,
 `AdditionalInformation` TEXT NULL,
-`EmergencyMedicalLeave` TINYINT NULL,
 `LeaveStartDate` DATE NOT NULL,
 `LeaveEndDate` DATE NOT NULL,
 `Granted` TINYINT NULL,
 `CommentReasonManagementOnly` TEXT NULL,
 `DateApprovedRejected` DATETIME NULL,
 `RecordedOnNoticeBoard` TINYINT NULL,
-`LeaveTaken` TINYINT NULL,
-`LeaveTakenComment` TEXT NULL,
-`Comment` TEXT NULL,
-`DocumentOrMedicalSlipProvided` TINYINT NULL,
-`DocumentOrMedicalSlipAccepted` TINYINT NULL,
 `IsDeleted` TINYINT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
 `CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
@@ -301,6 +297,8 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `UserId` INTEGER NULL,
 `ActualStartTime` TIME NULL,
 `ActualEndTime` TIME NULL,
+`ActualBreakStartTime` TIME NULL,
+`ActualBreakEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
 `Notes` VARCHAR(1024) NULL,
 `IsDeleted` TINYINT NOT NULL DEFAULT 0,

@@ -1,13 +1,15 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_UpdateRotaDayAssignments !!
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateRotaDayAssignment !!
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_UpdateRotaDayAssignments( 	IN prm_UserName VARCHAR(45),
+CREATE PROCEDURE AAU.sp_UpdateRotaDayAssignment( 	IN prm_UserName VARCHAR(45),
 													IN prm_rotaDayId INTEGER,
                                                     IN prm_userId INTEGER,
-													IN prm_actualShiftStartTime TIME,
-													IN prm_actualShiftEndTime TIME,
+													IN prm_actualStartTime TIME,
+													IN prm_actualEndTime TIME,
+													IN prm_actualBreakStartTime TIME,
+													IN prm_actualBreakEndTime TIME,
 													IN prm_notes VARCHAR(1024))
 BEGIN
 
@@ -30,8 +32,10 @@ SET vSuccess = 0;
 
 	UPDATE AAU.RotaDayAssignment SET
 		UserId = prm_userId,
-		ActualShiftStartTime = prm_actualShiftStartTime,
-		ActualShiftEndTime = prm_actualShiftEndTime,
+		ActualStartTime = prm_actualStartTime,
+		ActualEndTime = prm_actualEndTime,
+		ActualBreakStartTime = prm_actualBreakStartTime,
+		ActualBreakEndTime = prm_actualBreakEndTime,
 		Notes = prm_notes
 	WHERE RotaDayId = prm_rotaDayId;
     

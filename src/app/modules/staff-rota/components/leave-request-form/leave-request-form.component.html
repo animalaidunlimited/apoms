@@ -51,17 +51,6 @@
           formControlName="additionalInformation"  />
       </mat-form-field>
 
-      <div>
-        <label id="emergency-medical-radio-group-label">Is it an emergency medical leave?</label>
-        <mat-radio-group
-          aria-labelledby="emergency-medical-radio-group-label"
-          class="request-reasons"
-          formControlName="emergencyMedicalLeave">
-          <mat-radio-button class="reason-radio-button" [value]="false">Yes</mat-radio-button>
-          <mat-radio-button class="reason-radio-button" [value]="true">No</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
       <div fxLayout="row-wrap" fxLayoutAlign="start center">
 
         <mat-form-field appearance="fill">
@@ -131,58 +120,9 @@
       </div>
 
     </div>
-  </fieldset>
+  </fieldset> 
 
-  
 
-  <fieldset>
-    <legend class="legend">Check</legend>
-
-    <div fxLayout="column">
-
-      <div>
-        <label id="leave-taken-radio-group-label">Did the worker actually take the leave?</label>
-        <mat-radio-group
-          aria-labelledby="leave-taken-radio-group-label"
-          class="request-reasons"
-          formControlName="leaveTaken">
-          <mat-radio-button class="reason-radio-button" [value]="1">Yes</mat-radio-button>
-          <mat-radio-button class="reason-radio-button" [value]="0">No</mat-radio-button>
-          <mat-radio-button class="reason-radio-button" [value]="2">Partially</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <div>
-        <label id="document-provided-radio-group-label">Medical slip or other document provided?</label>
-        <mat-radio-group
-          aria-labelledby="document-provided-radio-group-label"
-          class="request-reasons"
-          formControlName="documentOrMedicalSlipProvided">
-          <mat-radio-button class="reason-radio-button" [value]="true">Yes</mat-radio-button>
-          <mat-radio-button class="reason-radio-button" [value]="false">No</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <div>
-        <label id="document-accepted-radio-group-label">Medical slip or other document accepted?</label>
-        <mat-radio-group
-          aria-labelledby="document-accepted-radio-group-label"
-          class="request-reasons"
-          formControlName="documentOrMedicalSlipAccepted">
-          <mat-radio-button class="reason-radio-button" [value]="true">Yes</mat-radio-button>
-          <mat-radio-button class="reason-radio-button" [value]="false">No</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Comment</mat-label>
-        <input matInput type="text" [errorStateMatcher]="errorMatcher"
-          formControlName="comment"  />
-      </mat-form-field>
-
-    </div>
-
-  </fieldset>
   <!-- [disabled]="leaveRequestForm.invalid" -->
   <button mat-raised-button color="primary"  (click)="saveLeaveRequest()">Save</button>
 

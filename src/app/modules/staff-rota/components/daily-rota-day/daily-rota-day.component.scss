@@ -10,6 +10,7 @@
     vertical-align: middle;
     width: 35px;
     padding-left: 0 !important;
+    cursor: pointer;
 }
 
 th, td {
@@ -44,6 +45,12 @@ th, td {
     margin-bottom: 10px;
 }
 
+.leave-icon{
+    position: absolute;
+    bottom: 45%;
+    right: 0;
+}
+
 .leave-pending{
     color: orange;
 }
@@ -74,4 +81,12 @@ th, td {
     position: absolute;
     left: 165px;
     margin-top: 5px;
+}
+
+@media(max-width: 600px) {
+ 
+    .mat-form-field{
+      max-width: 60% !important;
+    }
+
 }
