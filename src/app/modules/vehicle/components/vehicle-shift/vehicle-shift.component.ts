@@ -68,8 +68,6 @@ export class VehicleShiftComponent implements OnInit {
 
         // Now we need to work out how far to the right we need to shift the div. This is the difference between midnight and the start
         // time of the shift as a % of 24 hours.
-        let midnight = new Date(shift.shiftStartTimeDate.getTime());
-
         shift.left = getShiftLeftStartingPosition(shift.shiftStartTimeDate.getTime(), this.hourRange)
 
         return shift;
