@@ -116,11 +116,11 @@ export class VehicleService  extends APIService {
   }
 
   public async deleteVehicleListItem(vehicleId : number) : Promise<SuccessOnlyResponse> {
-    let deleteobject = {
+    let deleteObject = {
       vehicleId:vehicleId,
       isDeleted: true
     }
-    return await this.put(deleteobject).then((output)=>{
+    return await this.put(deleteObject).then((output)=>{
       return output;
     }).catch((error:any)=>{
         console.log(error);

@@ -15,7 +15,9 @@ CREATE PROCEDURE AAU.sp_UpdateLeaveRequest( 	IN prm_UserName VARCHAR(45),
 												IN prm_Granted TINYINT,
 												IN prm_CommentReasonManagementOnly TEXT,
 												IN prm_DateApprovedRejected DATETIME,
-												IN prm_RecordedOnNoticeBoard TINYINT,											
+												IN prm_RecordedOnNoticeBoard TINYINT,
+                                                IN prm_WithinProtocol TINYINT,
+                                                IN prm_FestivalId INT,
 												IN prm_IsDeleted TINYINT)
 BEGIN
 
@@ -37,19 +39,20 @@ SET vSuccess = 0;
     IF(vLeaveRequestExists = 1) THEN
     
 	UPDATE AAU.LeaveRequest SET
-		LeaveRequestId = prm_LeaveRequestId,
-		DepartmentId = prm_DepartmentId,
-		UserId = prm_UserId,
-		RequestDate = prm_RequestDate,
-		LeaveRequestReasonId = prm_LeaveRequestReasonId,
-		AdditionalInformation = prm_AdditionalInformation,
-		LeaveStartDate = prm_LeaveStartDate,
-		LeaveEndDate = prm_LeaveEndDate,
-		Granted = prm_Granted,
+		LeaveRequestId				= prm_LeaveRequestId,
+		UserId						= prm_UserId,
+		RequestDate					= prm_RequestDate,
+		LeaveRequestReasonId		= prm_LeaveRequestReasonId,
+		AdditionalInformation		= prm_AdditionalInformation,
+		LeaveStartDate				= prm_LeaveStartDate,
+		LeaveEndDate				= prm_LeaveEndDate,
+		Granted						= prm_Granted,
 		CommentReasonManagementOnly = prm_CommentReasonManagementOnly,
-		DateApprovedRejected = prm_DateApprovedRejected,
-		RecordedOnNoticeBoard = prm_RecordedOnNoticeBoard,
-		IsDeleted = prm_IsDeleted
+		DateApprovedRejected		= prm_DateApprovedRejected,
+		RecordedOnNoticeBoard		= prm_RecordedOnNoticeBoard,
+        WithinProtocol				= prm_WithinProtocol,
+        FestivalId					= prm_FestivalId,
+		IsDeleted					= prm_IsDeleted
 	WHERE LeaveRequestId = prm_LeaveRequestId;
     
     SELECT 1 INTO vSuccess;

@@ -26,7 +26,7 @@ import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
 import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
-import { Department, LeaveRequestReason } from '../../models/rota';
+import { Department, Festival, LeaveRequestReason } from '../../models/rota';
 
 
 
@@ -51,6 +51,7 @@ export class DropdownService extends APIService {
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
     eyeDischarge$!: any[];
+    festivals$!: Observable<Festival[]>;
     isoReasons$!: any[];
     jobTypes$!: Observable<UserJobType[]>;
     nasalDischarge$!: any[];
@@ -425,6 +426,18 @@ export class DropdownService extends APIService {
         }
 
         return this.eyeDischarge$;
+    }
+
+    getFestivals(): Observable<Festival[]> {
+        const request = '/GetFestivals';
+
+        if (!this.festivals$) {
+            this.festivals$ = this.getObservable(request).pipe(
+                map((response: Festival[]) => response.sort((a,b) => a.sortOrder - b.sortOrder)),
+            );
+        }
+
+        return this.festivals$;
     }
 
     getIsoReasons() {

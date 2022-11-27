@@ -1,7 +1,73 @@
 <h1>Leave request history</h1>
-<form [formGroup]="userForm">
+<form [formGroup]="userForm" fxLayout="row" fxLayoutAlign="start center">
+
     <app-user-autocomplete formControlName="userId"></app-user-autocomplete>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Department</mat-label>
+        <mat-select formControlName="departmentId">
+            <mat-option>N/A</mat-option>
+            <mat-option *ngFor="let department of (departments$ | async)" [value]="department.departmentId">
+                {{department.department}}
+            </mat-option>
+                
+        </mat-select>
+    </mat-form-field>
 
 </form>
 
-<button (click)="dis()">click me</button>
+<table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+       class="request-history-table">
+
+  <ng-container matColumnDef="requestDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Requested date
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.requestDate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveStartDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Start date
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveStartDate}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="leaveEndDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      to
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveEndDate}} </td>
+  </ng-container>  
+
+  <ng-container matColumnDef="numberOfDays">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Days
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.numberOfDays}} </td>
+  </ng-container> 
+
+  <ng-container matColumnDef="leaveRequestReason">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Reason
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.leaveRequestReason}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="granted">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+    Granted
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.granted === 0 ? "Denied" : element.granted === 1 ? "Granted" : "Pending"}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="additionalInformation">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+    Additional info
+    </th>
+    <td mat-cell *matCellDef="let element"> {{element.additionalInformation}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+</table>

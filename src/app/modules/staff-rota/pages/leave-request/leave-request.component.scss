@@ -13,4 +13,23 @@ th.mat-header-cell:first-of-type{
 .leave-table-container{
     max-width: 100%;
     overflow: auto;
-}   
+}
+
+.warning-icon {
+    color: orange;
+    vertical-align: middle;
+    
+}
+
+.help{
+    cursor: help;
+}
+
+.filter-field {
+    margin-left: 20px;
+    width: 245px;
+}
+
+.department-select{
+    width: 300px;
+}

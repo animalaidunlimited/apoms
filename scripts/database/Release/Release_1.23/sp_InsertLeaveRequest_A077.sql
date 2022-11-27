@@ -16,8 +16,10 @@ CREATE PROCEDURE AAU.sp_InsertLeaveRequest( 	IN prm_UserName VARCHAR(45),
 												IN prm_LeaveEndDate DATE,
 												IN prm_Granted TINYINT,
 												IN prm_CommentReasonManagementOnly TEXT,
-												IN prm_DateApprovedRejected DATETIME,
-												IN prm_RecordedOnNoticeBoard TINYINT)
+												IN prm_DateApprovedRejected DATETIME,                                                
+												IN prm_RecordedOnNoticeBoard TINYINT,
+                                                IN prm_WithinProtocol TINYINT,
+                                                IN prm_FestivalId INT)
 BEGIN
 
 /*
@@ -60,7 +62,9 @@ SET vOrganisationId = 0;
 	Granted,
 	CommentReasonManagementOnly,
 	DateApprovedRejected,
-	RecordedOnNoticeBoard
+	RecordedOnNoticeBoard,
+    WithinProtocol,
+    FestivalId
 	)
 	VALUES
 	(
@@ -74,7 +78,9 @@ SET vOrganisationId = 0;
 		prm_Granted,
 		prm_CommentReasonManagementOnly,
 		prm_DateApprovedRejected,
-		prm_RecordedOnNoticeBoard
+		prm_RecordedOnNoticeBoard,
+        prm_WithinProtocol,
+        prm_FestivalId
 	);
     
     SELECT LAST_INSERT_ID() INTO vLeaveRequestId;

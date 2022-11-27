@@ -25,44 +25,68 @@
     
       <mat-form-field appearance="fill">
         <mat-label>Date of request</mat-label>
-        <input matInput type="date" placeholder="Date of request"  [errorStateMatcher]="errorMatcher"
+        <input matInput type="date" placeholder="Date of request" [errorStateMatcher]="errorMatcher"
           formControlName="requestDate"  />
       </mat-form-field>
 
       <div>
-        <label
-        [ngStyle]="{'color': leaveRequestForm.get('leaveRequestReasonId')?.invalid ? 'red' : 'unset'}"
-        id="reason-radio-group-label">Reason for leave request *</label>
-        <mat-radio-group
-          aria-labelledby="reason-radio-group-label"
-          class="request-reasons"
-          formControlName="leaveRequestReasonId">
-          <mat-radio-button
-            class="reason-radio-button"
-            *ngFor="let reason of (requestReasons | async)" [value]="reason.leaveRequestReasonId">
-            {{ reason.leaveRequestReason }}
-          </mat-radio-button>
-        </mat-radio-group>
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Reason for leave request</mat-label>
+          <mat-select (selectionChange)="requestReasonSelected($event.value)"
+          [errorStateMatcher]="errorMatcher"
+          formControlName="leaveRequestReasonId"
+          [compareWith]="compareRequestReason">
+            <mat-option>N/A</mat-option>
+            <mat-option *ngFor="let reason of (requestReasons$ | async)" [value]="reason">
+              {{ reason.leaveRequestReason }}
+            </mat-option>
+          </mat-select>
+  
+        </mat-form-field>
+
       </div>
 
-      <mat-form-field appearance="fill">
-        <mat-label>Additional information on the leave</mat-label>
-        <input matInput type="text" [errorStateMatcher]="errorMatcher"
-          formControlName="additionalInformation"  />
+      <mat-form-field appearance="fill" *ngIf="leaveRequestForm.get('leaveRequestReason')?.value?.toLowerCase() === 'festival';">
+        <mat-label>Select festival</mat-label>
+        <mat-select (selectionChange)="checkAgainstProtocol()"
+        formControlName="festivalId">
+          <mat-option>N/A</mat-option>
+          <mat-option *ngFor="let festival of festivals" [value]="festival.festivalId">
+            {{ festival.festival }}
+          </mat-option>
+        </mat-select>
+
       </mat-form-field>
 
       <div fxLayout="row-wrap" fxLayoutAlign="start center">
 
         <mat-form-field appearance="fill">
           <mat-label>Leave requested from</mat-label>
-          <input matInput type="date"  [errorStateMatcher]="errorMatcher"
+          <input matInput type="date"
+            [min]="leaveRequestForm.get('requestDate')?.value"
+            [max]="leaveRequestForm.get('leaveEndDate')?.value"
+            [errorStateMatcher]="errorMatcher"
             formControlName="leaveStartDate"  />
-        </mat-form-field>
 
+            <mat-error *ngIf="leaveRequestForm.get('leaveStartDate')?.errors?.invalidDate_Min">
+              Date must be on or after {{(leaveRequestForm.get('requestDate')?.value | date : "EEE,dd/MMM")}}
+            </mat-error>
+
+            <mat-error *ngIf="leaveRequestForm.get('leaveStartDate')?.errors?.invalidDate_Max">
+              Date must be on or before {{(leaveRequestForm.get('leaveEndDate')?.value | date : "EEE,dd/MMM")}}
+            </mat-error>
+
+        </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>to</mat-label>
           <input matInput type="date" [errorStateMatcher]="errorMatcher"
+          [min]="leaveRequestForm.get('leaveStartDate')?.value"
             formControlName="leaveEndDate"  />
+
+            <mat-error *ngIf="leaveRequestForm.get('leaveEndDate')?.errors?.invalidDate_Min">
+              Date must be on or before {{(leaveRequestForm.get('leaveStartDate')?.value | date : "EEE,dd/MMM")}}
+            </mat-error>
+
         </mat-form-field>
 
         <div fxLayout="column" fxLayoutAlign="center center" class="number-days-wrapper">          
@@ -71,6 +95,14 @@
         </div>
 
       </div>
+
+      <div *ngIf="leaveRequestForm.get('withinProtocol')?.value === false" class="out-of-protocol">OUT OF PROTOCOL.</div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Additional information on the leave</mat-label>
+        <input matInput type="text" [errorStateMatcher]="errorMatcher"
+          formControlName="additionalInformation"  />
+      </mat-form-field>
 
 
 
@@ -122,8 +154,6 @@
     </div>
   </fieldset> 
 
-
-  <!-- [disabled]="leaveRequestForm.invalid" -->
-  <button mat-raised-button color="primary"  (click)="saveLeaveRequest()">Save</button>
+  <button mat-raised-button color="primary" [disabled]="leaveRequestForm.invalid" (click)="saveLeaveRequest()">Save</button>
 
 </form>

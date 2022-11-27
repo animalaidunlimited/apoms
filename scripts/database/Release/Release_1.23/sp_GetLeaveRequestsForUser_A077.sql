@@ -19,6 +19,7 @@ SELECT
 			JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
 			JSON_OBJECT("leaveRequestId", lr.LeaveRequestId),
+            JSON_OBJECT("departmentId", d.DepartmentId),
 			JSON_OBJECT("department", d.Department),
             JSON_OBJECT("departmentColour", d.Colour),
 			JSON_OBJECT("userId", lr.UserId),
@@ -31,6 +32,7 @@ SELECT
 			JSON_OBJECT("leaveEndDate", lr.LeaveEndDate),
             JSON_OBJECT("numberOfDays", DATEDIFF(lr.LeaveEndDate, lr.LeaveStartDate) + 1),
 			JSON_OBJECT("granted", lr.Granted),
+            JSON_OBJECT("festival", f.Festival),
 			JSON_OBJECT("commentReasonManagementOnly", lr.CommentReasonManagementOnly),
 			JSON_OBJECT("dateApprovedRejected", lr.DateApprovedRejected),
 			JSON_OBJECT("recordedOnNoticeBoard", AAU.fn_CastTinyIntToJSONBoolean(lr.RecordedOnNoticeBoard)),
@@ -40,7 +42,8 @@ FROM AAU.LeaveRequest lr
 INNER JOIN AAU.LeaveRequestReason lrr ON lrr.LeaveRequestReasonId = lr.LeaveRequestReasonId
 INNER JOIN AAU.User u ON u.UserId = lr.UserId
 INNER JOIN AAU.Department d ON d.DepartmentId = u.DepartmentId
-WHERE UserId = prm_UserId
+LEFT JOIN AAU.Festival f ON f.FestivalId = lr.FestivalId
+WHERE lr.UserId = prm_UserId
 AND lr.IsDeleted = 0;
 
 END $$

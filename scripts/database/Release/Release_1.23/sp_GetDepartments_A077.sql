@@ -24,7 +24,7 @@ SELECT
 			JSON_MERGE_PRESERVE(
 			JSON_OBJECT("departmentId", d.DepartmentId),
 			JSON_OBJECT("department", d.Department),
-            JSON_OBJECT("departmentColour", d.Colour),
+            JSON_OBJECT("colour", d.Colour),
 			JSON_OBJECT("sortOrder", d.SortOrder)
 			)) AS `Departments`
 FROM AAU.Department d

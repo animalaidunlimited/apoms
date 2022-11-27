@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
-import { LeaveRequest, LeaveRequestReason, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
+import { Festival, LeaveRequest, LeaveRequestReason, LeaveRequestSaveResponse, LeaveRequestProtocol } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { LeaveRequestService } from '../../services/leave-request.service';
@@ -13,48 +13,58 @@ import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
+import { maxDateTodayValidator, maxDateValidator, minDateValidator } from 'src/app/core/validators/date-validators';
 
 interface DialogData {
   leaveRequestId: number;
 }
-
-
 
 @Component({
   selector: 'app-leave-request-form',
   templateUrl: './leave-request-form.component.html',
   styleUrls: ['./leave-request-form.component.scss']
 })
-export class LeaveRequestFormComponent implements OnInit {
+export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
+  festivals: Festival[] = [];  
+
   leaveRequestForm: ModelFormGroup<LeaveRequest> = this.fb.nonNullable.group({
     leaveRequestId: new FormControl<number | null>(null),
     userId: new FormControl<number | null>(null, Validators.required),
-    requestDate: new FormControl<string | Date | null>(getCurrentDateString(), Validators.required),
-    leaveRequestReasonId: new FormControl<number | null>(null, Validators.required),
+    requestDate: new FormControl<string | Date | null>(getCurrentDateString(), [Validators.required, maxDateTodayValidator()]),
+    leaveRequestReasonId: new FormControl<any | null>(null, Validators.required),
     leaveRequestReason: [''],
+    leaveStartDate: new FormControl<string | Date | null>(null, Validators.required),
+    leaveEndDate: new FormControl<string | Date | null>(null, Validators.required),    
     additionalInformation: [''],
-    leaveStartDate: new FormControl<string | Date | null>(null),
-    leaveEndDate: new FormControl<string | Date | null>(null),
     numberOfDays: [-1],
     granted: new FormControl<number | null>(null),
     commentReasonManagementOnly: [''],
     dateApprovedRejected: new FormControl<string | Date | null>(null),
     recordedOnNoticeBoard: new FormControl<boolean | null>(null),
+    withinProtocol: new FormControl<boolean | null>(null),
+    festivalId: new FormControl<number | null>(null),
+    lastFestivalDetails: new FormControl<any | null>(null),
     isDeleted: [false]
   });
 
-  minDate = getCurrentDateString();
-
   leaveRequestId = 0;
 
-  requestReasons: Observable<LeaveRequestReason[]>;
+  leaveRequestProtocol!: LeaveRequestProtocol[];
+
+  minDate = getCurrentDateString();
+
+  requestReasons$: Observable<LeaveRequestReason[]>;
 
   userList: BehaviorSubject<UserDetails[]>;
+
+  get requestDate() : string | Date | null | undefined {
+    return this.leaveRequestForm.get('requestDate')?.value;
+  }
 
   get leaveStartDate() : string | Date | null | undefined {
     return this.leaveRequestForm.get('leaveStartDate')?.value;
@@ -68,7 +78,6 @@ export class LeaveRequestFormComponent implements OnInit {
     return this.leaveRequestForm.get('numberOfDays');
   }
 
-
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
     private requestService: LeaveRequestService,
@@ -80,9 +89,12 @@ export class LeaveRequestFormComponent implements OnInit {
     private dialogRef: MatDialogRef<LeaveRequestFormComponent>) {
 
         this.userList = this.userDetailsService.getUserList();
-        this.requestReasons = this.dropdown.getLeaveRequestReasons();
+        this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
+        this.dropdown.getFestivals().subscribe(festivals => this.festivals = festivals);
         this.watchRequestDateChanges();
-  }
+        this.requestService.getLeaveRequestProtocol().subscribe(protocol => this.leaveRequestProtocol = protocol);
+      
+      }
 
   ngOnInit() : void {
 
@@ -93,10 +105,18 @@ export class LeaveRequestFormComponent implements OnInit {
 
   }
 
+  ngOnDestroy() : void {
+
+    this.ngUnsubscribe.next();
+
+  }
+
   loadLeaveRequest(loadLeaveRequest: number) : void {
 
     this.requestService.getLeaveRequests()
     .pipe(takeUntil(this.ngUnsubscribe)).subscribe(requests => {
+
+      console.log(requests);
 
       let foundRequest = requests.find(element => element.leaveRequestId === loadLeaveRequest);
 
@@ -104,36 +124,105 @@ export class LeaveRequestFormComponent implements OnInit {
         this.leaveRequestForm.patchValue(foundRequest);
       }
 
+    });
 
-    })
+  }
 
+  compareRequestReason(o1: LeaveRequestReason, selectedReason: number) : boolean {
 
+    return o1?.leaveRequestReasonId === selectedReason;
+}
+
+  requestReasonSelected(reason: LeaveRequestReason) : void {
+    this.leaveRequestForm.get('leaveRequestReasonId')?.setValue(reason.leaveRequestReasonId);
+    this.leaveRequestForm.get('leaveRequestReason')?.setValue(reason.leaveRequestReason);
   }
 
   watchRequestDateChanges() : void {
 
-    const startDate = this.leaveRequestForm.get('leaveStartDate')?.valueChanges;
-    const endDate = this.leaveRequestForm.get('leaveEndDate')?.valueChanges;
+    const leaveStart = this.leaveRequestForm.get('leaveStartDate');
+    const leaveEnd = this.leaveRequestForm.get('leaveEndDate');
+
+    const startDate = leaveStart?.valueChanges;
+    const endDate = leaveEnd?.valueChanges;
 
     if(startDate && endDate){
 
       merge(startDate, endDate).subscribe(() => {
 
-        if(this.leaveStartDate && this.leaveEndDate){
+        this.setLeaveDays();
+        this.checkAgainstProtocol();
 
-          let startDate = new Date(this.leaveStartDate);
-          let endDate = new Date(this.leaveEndDate);
-
-        const numberOfDays = ((endDate.getTime() - startDate.getTime()) / 1000 / 86400) + 1;
-
-        this.numberOfDays?.setValue(numberOfDays);
-
-      }
+        this.resetLeaveDateValidators(leaveStart, leaveEnd);
 
       });
 
     }
     
+  }
+
+  private resetLeaveDateValidators(leaveStart: AbstractControl<string | Date | null, string | Date | null>, leaveEnd: AbstractControl<string | Date | null, string | Date | null>) {
+    
+    leaveStart?.clearValidators();
+    leaveEnd?.clearValidators();
+
+    leaveStart?.setValidators([ Validators.required,
+                                minDateValidator(new Date(this.requestDate || "")),
+                                maxDateValidator(new Date(leaveEnd?.value || ""))]);
+    leaveEnd?.setValidators([Validators.required, minDateValidator(new Date(leaveStart?.value || ""))]);
+
+  }
+
+  private setLeaveDays() {
+    if (this.leaveStartDate && this.leaveEndDate) {
+
+      let startDate = new Date(this.leaveStartDate);
+      let endDate = new Date(this.leaveEndDate);
+
+      const numberOfDays = ((endDate.getTime() - startDate.getTime()) / 1000 / 86400) + 1;
+
+      this.numberOfDays?.setValue(numberOfDays);
+
+    }
+  }
+
+  checkAgainstProtocol() : void {
+
+    let noticeDaysRequired = this.leaveRequestForm.get('leaveRequestReason')?.value?.toLowerCase() === 'festival' ?
+      this.getFestivalNoticeDays() :
+      this.getNonFestivalNoticeDays();
+
+    const noticeGiven = ((new Date(this.leaveStartDate || "").getTime()) - (new Date(this.requestDate || "").getTime())) / 86400 / 1000;
+
+    console.log(noticeGiven);
+    console.log(noticeDaysRequired);
+    console.log(noticeGiven > noticeDaysRequired);
+
+
+    this.leaveRequestForm.get('withinProtocol')?.setValue(noticeGiven > noticeDaysRequired);
+
+  }
+
+  getNonFestivalNoticeDays() : number {
+
+    return this.leaveRequestProtocol
+    .sort((a,b) => a.dayRangeEnd - b.dayRangeEnd)
+    .find(element => (this.numberOfDays?.value || -1) <= element.dayRangeEnd)?.noticeDaysRequired || 0;
+
+  }
+  
+  getFestivalNoticeDays() : number {
+
+    const selectedFestival = this.leaveRequestForm.get('leaveRequestReasonId')?.value || -1;
+
+    console.log(selectedFestival);
+
+    let v = this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
+
+    console.log(v);
+
+    return v;
+
   }
 
   onConfirmClick(): void {

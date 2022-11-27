@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `AAU.`.`Department`;
+
 DROP TABLE IF EXISTS `AAU`.`RotaMatrixItem`;
 DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
@@ -11,48 +11,9 @@ DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
 DROP TABLE IF EXISTS `AAU`.`Rota`;
-
-CREATE TABLE `AAU`.`Department` (
-`DepartmentId` INTEGER AUTO_INCREMENT NOT NULL,
-`OrganisationId` INTEGER NOT NULL,
-`Department` VARCHAR(64) NOT NULL,
-`Colour` VARCHAR(10) NULL,
-`SortOrder` INTEGER NULL,
-`IsDeleted` TINYINT NOT NULL DEFAULT 0,
-`DeletedDate` DATETIME NULL,
-`CreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`DepartmentId`),
-  INDEX `FK_DepartmentId_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
-  CONSTRAINT `FK_DepartmentId_Organisation_OrganisationId`
-    FOREIGN KEY (`OrganisationId`)
-    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-);
-
-ALTER TABLE `AAU`.`Department`
-ADD UNIQUE INDEX `UQ_OrganisationDepartment` (`OrganisationId` ASC, `Department` ASC) VISIBLE;
-
-INSERT INTO `AAU`.`Department` (OrganisationId, Department, Colour, SortOrder) VALUES
-(1, 'Accounting and admin','#ffffff', 1),
-(1, 'Animal Care','#ffffff', 2),
-(1, 'Animal Care - Hospital','#ffffff', 3),
-(1, 'Animal Care - Shelter','#ffffff', 4),
-(1, 'Animal Welfare','#ffffff', 5),
-(1, 'Communication','#ffffff', 6),
-(1, 'Community relations','#ffffff', 7),
-(1, 'Cruelty Prevention','#ffffff', 8),
-(1, 'Emergency response','#f4cccc', 9),
-(1, 'Emergency Response - Desk','#f4cccc', 10),
-(1, 'Emergency Response - Rescue','#f4cccc', 11),
-(1, 'Emergency Response - ST','#f4cccc', 12),
-(1, 'Facilities','#ffffff', 13),
-(1, 'FDR','#ffffff', 14),
-(1, 'House Keeping','#ffffff', 15),
-(1, 'HR','#ffffff', 16),
-(1, 'Medical','#fff2cc', 17),
-(1, 'Security','#ffffff', 18),
-(1, 'Stock','#ffffff', 19);
+DROP TABLE IF EXISTS `AAU`.`Festival`;
+DROP TABLE IF EXISTS `AAU.`.`Department`;
+DROP TABLE IF EXISTS `AAU`.`LeaveRequestProtocol`;
 
 CREATE TABLE `AAU`.`Rota` (
   `RotaId` INT NOT NULL AUTO_INCREMENT,
@@ -154,6 +115,8 @@ CREATE TABLE `AAU`.`LeaveRequest` (
 `CommentReasonManagementOnly` TEXT NULL,
 `DateApprovedRejected` DATETIME NULL,
 `RecordedOnNoticeBoard` TINYINT NULL,
+`WithinProtocol` TINYINT NOT NULL,
+`FestivalId` INTEGER NULL,
 `IsDeleted` TINYINT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
 `CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
@@ -331,8 +294,96 @@ INDEX `FK_RotaDayAssignment_AreaShift_AreaShiftId_idx` (`AreaShiftId` ASC) VISIB
     ON UPDATE NO ACTION
 );
 
+CREATE TABLE `AAU`.`Department` (
+`DepartmentId` INTEGER AUTO_INCREMENT NOT NULL,
+`OrganisationId` INTEGER NOT NULL,
+`Department` VARCHAR(64) NOT NULL,
+`Colour` VARCHAR(10) NULL,
+`SortOrder` INTEGER NULL,
+`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+`DeletedDate` DATETIME NULL,
+`CreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`DepartmentId`),
+  INDEX `FK_DepartmentId_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  CONSTRAINT `FK_DepartmentId_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
 
+INSERT INTO `AAU`.`Department` (OrganisationId, Department, Colour, SortOrder) VALUES
+(1, 'Accounting and admin','#ffffff', 1),
+(1, 'Animal Care','#ffffff', 2),
+(1, 'Animal Care - Hospital','#ffffff', 3),
+(1, 'Animal Care - Shelter','#ffffff', 4),
+(1, 'Animal Welfare','#ffffff', 5),
+(1, 'Communication','#ffffff', 6),
+(1, 'Community relations','#ffffff', 7),
+(1, 'Cruelty Prevention','#ffffff', 8),
+(1, 'Emergency response','#f4cccc', 9),
+(1, 'Emergency Response - Desk','#f4cccc', 10),
+(1, 'Emergency Response - Rescue','#f4cccc', 11),
+(1, 'Emergency Response - ST','#f4cccc', 12),
+(1, 'Facilities','#ffffff', 13),
+(1, 'FDR','#ffffff', 14),
+(1, 'House Keeping','#ffffff', 15),
+(1, 'HR','#ffffff', 16),
+(1, 'Medical','#fff2cc', 17),
+(1, 'Security','#ffffff', 18),
+(1, 'Stock','#ffffff', 19);
+
+ALTER TABLE `AAU`.`Department`
+ADD UNIQUE INDEX `UQ_OrganisationDepartment` (`OrganisationId` ASC, `Department` ASC) VISIBLE;
+
+CREATE TABLE `AAU`.`Festival` (
+`FestivalId` INTEGER AUTO_INCREMENT NOT NULL,
+`OrganisationId` INTEGER NOT NULL,
+`Festival` VARCHAR(64) NOT NULL,
+`LocalName` VARCHAR(64) CHARACTER SET UTF8MB4 NOT NULL ,
+`NoticeDaysRequired` INTEGER NOT NULL,
+`SortOrder` INTEGER NULL,
+`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+`DeletedDate` DATETIME NULL,
+`CreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`FestivalId`),
+  INDEX `FK_FestivalId_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  CONSTRAINT `FK_FestivalId_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+INSERT INTO AAU.Festival (OrganisationId, Festival, LocalName, NoticeDaysRequired, SortOrder) VALUES 
+(1,'Holi', 'होली',30,1),
+(1,'Devali', 'दीपावली',30,2),
+(1,'Mansa Mahadev', 'मनसा महादेव',30,3);
+
+CREATE TABLE `AAU`.`LeaveRequestProtocol` (
+`LeaveRequestProtocolId` INTEGER AUTO_INCREMENT NOT NULL,
+`OrganisationId` INTEGER NOT NULL,
+`DayRangeStart` INTEGER NOT NULL,
+`DayRangeEnd` INTEGER NOT NULL,
+`NoticeDaysRequired` INTEGER NOT NULL,
+`SortOrder` INTEGER NULL,
+`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+`DeletedDate` DATETIME NULL,
+`CreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`LeaveRequestProtocolId`),
+  INDEX `FK_LeaveRequestProtocolId_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+  CONSTRAINT `FK_LeaveRequestProtocolId_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
     
+INSERT INTO AAU.LeaveRequestProtocol (OrganisationId, DayRangeStart, DayRangeEnd, NoticeDaysRequired, SortOrder) VALUES
+(1,0,1,3,1),
+(1,2,3,7,1),
+(1,4,5,14,1),
+(1,6,999,30,1);
     
 /*
 INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 'Hospital Staff', 1), (1, 'Desk Staff', 0);

@@ -4,6 +4,7 @@ import { DriverAssignment } from '../models/driver-view';
 import { OutstandingAssignment } from '../models/outstanding-case';
 import { SearchResponse } from '../models/responses';
 import { AreaShift, RotationRole } from '../models/rota';
+import { HourRange } from 'src/app/core/models/vehicle';
 
 export function getCurrentTimeString() : string {
     let currentTime = new Date();
@@ -121,3 +122,22 @@ export function getNotificationTypeFromCommentType(commentType: string) : number
         
       }
 }
+
+// A function that determines the length of the shift in minutes and returns that as a % of 24 hours
+export function getShiftLengthAsPercentageOf24Hours(endTime: number, startTime: number, hourRange: HourRange) : number {
+
+  const shiftLengthInSeconds = Math.round((endTime - startTime) / 1000);
+
+  return shiftLengthInSeconds / ((hourRange.end - hourRange.start + 1) * 60 * 60) * 100;
+
+}
+
+export function getShiftLeftStartingPosition(startTime: number, hourRange: HourRange) : number {
+
+    let midnight = new Date(startTime).setHours(hourRange.start, 0, 0, 0);
+
+    return (((startTime - midnight - 6000) / 1000) / ((hourRange.end - hourRange.start + 1) * 60 * 60) * 100);   
+
+}
+
+

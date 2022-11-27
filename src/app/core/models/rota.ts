@@ -171,6 +171,13 @@ export interface RotationPeriodLeave {
   fullOverlap: boolean;
 }
 
+export interface LastFestivalDetails {
+  requestDate: string | Date | null;
+  leaveStartDate: string | Date | null;
+  leaveEndDate: string | Date | null;
+  numberOfDays: number;
+}
+
 export interface LeaveRequest {
   leaveRequestId: number | null;  
   userId: number | null;
@@ -185,11 +192,15 @@ export interface LeaveRequest {
   commentReasonManagementOnly: string;
   dateApprovedRejected: string | Date | null;
   recordedOnNoticeBoard: boolean | null;
+  withinProtocol: boolean | null;
+  festivalId: number | null;
   isDeleted: boolean;
+  lastFestivalDetails: LastFestivalDetails | null
 }
 
 export interface DisplayLeaveRequest extends LeaveRequest {
 department: string;
+departmentId: number;
 userCode: string;
 departmentColour: string;
 }
@@ -210,4 +221,19 @@ export interface Department {
   department: string;
   colour: string;
   sortOrder: number;
+}
+
+export interface Festival {
+  festivalId: number;
+  festival: string;
+  localName: string;
+  noticeDaysRequired: number;
+  sortOrder: number;
+}
+
+export interface LeaveRequestProtocol{
+  sortOrder: number;
+  dayRangeEnd: number;
+  dayRangeStart: number;
+  noticeDaysRequired: number;
 }

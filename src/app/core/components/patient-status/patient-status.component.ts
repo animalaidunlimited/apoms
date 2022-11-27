@@ -12,7 +12,7 @@ import { PatientStatusResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
 import { take, takeUntil } from 'rxjs/operators';
-import { dateValidator } from '../../validators/max-date';
+import { maxDateTodayValidator } from '../../validators/date-validators';
 
 
 @Component({
@@ -59,7 +59,7 @@ export class PatientStatusComponent implements OnInit {
             tagNumber: [],
             createdDate: [, Validators.required],
             patientStatusId: [, Validators.required],
-            patientStatusDate: [, [Validators.required, dateValidator()]],
+            patientStatusDate: [, [Validators.required, maxDateTodayValidator()]],
             PN: [],
             suspectedRabies: [false],
         });

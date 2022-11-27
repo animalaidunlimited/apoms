@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DisplayLeaveRequest, LeaveRequest, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
+import { DisplayLeaveRequest, LeaveRequest, LeaveRequestProtocol, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { map } from 'rxjs/operators';
 
@@ -14,6 +14,8 @@ export class LeaveRequestService extends APIService {
 
   leaveRequests!: Observable<DisplayLeaveRequest[]>;
 
+  leaveRequestProtocol$! : Observable<LeaveRequestProtocol[]>;
+
   public leavesUpdated = new BehaviorSubject<boolean>(false);
 
 constructor(
@@ -24,25 +26,31 @@ constructor(
 
  // API Calls
 
-getLeaveRequests() : Observable<DisplayLeaveRequest[]> {
+ getLeaveRequestProtocol(): Observable<LeaveRequestProtocol[]> {
+  const request = '/GetLeaveRequestProtocol';
 
-  if(!this.leaveRequests){
-    this.leaveRequests = this.getObservable(`/GetLeaveRequests`);
+  if (!this.leaveRequestProtocol$) {
+      this.leaveRequestProtocol$ = this.getObservable(request).pipe(
+          map((response: LeaveRequestProtocol[]) => {
+
+            console.log(response);
+            
+            return response.sort((a,b) => a.sortOrder - b.sortOrder)}),
+      );
   }
 
-  return this.leaveRequests;
+  return this.leaveRequestProtocol$;
+}
+
+getLeaveRequests() : Observable<DisplayLeaveRequest[]> {
+  
+    return this.getObservable(`/GetLeaveRequests`);
 
 }
 
 getLeaveRequestsForUser(userId: number) : Observable<DisplayLeaveRequest[]> {
 
-  return this.leaveRequests = this.getObservable(`/GetLeaveRequestsForUser?userId=${userId}`);
-
-}
-
-getDisplayColumns() : Observable<string[]> {
-
-  return this.leaveRequests.pipe(map(element => Object.keys(element[0])));
+  return this.getObservable(`/GetLeaveRequestsForUser?userId=${userId}`);
 
 }
 
