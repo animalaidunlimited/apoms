@@ -6,7 +6,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
 import { Overlay } from '@angular/cdk/overlay';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 
 describe('LogoService', () => {
   let service: LogoService;

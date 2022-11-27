@@ -7,11 +7,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 
 import {
-    MatDialog,
-    MatDialogRef,
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+    MatLegacyDialogModule as MatDialogModule,
+} from '@angular/material/legacy-dialog';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Overlay } from '@angular/cdk/overlay';

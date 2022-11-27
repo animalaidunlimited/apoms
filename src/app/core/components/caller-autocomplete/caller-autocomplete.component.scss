@@ -4,6 +4,12 @@
     margin-top:1rem;
 }
 
+.flex-wrap-gap{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .checkBox {
     margin-left: 5px;
 }

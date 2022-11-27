@@ -8,7 +8,7 @@ import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { ReleaseDetails } from '../../models/release';
 import { takeUntil } from 'rxjs/operators';
-import { MatSelectChange } from '@angular/material/select';
+import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
 import { Vehicle } from '../../models/vehicle';

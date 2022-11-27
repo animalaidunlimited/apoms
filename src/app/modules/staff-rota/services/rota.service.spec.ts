@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { RotaService } from './rota.service';
 import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { SnackbarService } from './../../../core/services/snackbar/snackbar.service';
 
 describe('Service: Rota', () => {

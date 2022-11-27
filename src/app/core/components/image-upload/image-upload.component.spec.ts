@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ImageUploadDialog } from './image-upload.component';
 import {
-    MatDialogRef,
-    MatDialog,
-    MatDialogModule,
-} from '@angular/material/dialog';
+    MatLegacyDialogRef as MatDialogRef,
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogModule as MatDialogModule,
+} from '@angular/material/legacy-dialog';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('ImageUploadDialog', () => {

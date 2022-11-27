@@ -5,7 +5,7 @@ import { getCurrentDateString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { Input } from '@angular/core';
 import { Antibiotic, PatientOutcomeResponse } from 'src/app/core/models/patients';
-import { MatChip, MatChipList } from '@angular/material/chips';
+import { MatLegacyChip as MatChip, MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { PatientService } from 'src/app/core/services/patient/patient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { take } from 'rxjs/operators';

@@ -1,13 +1,13 @@
  import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
- import { MatDialogRef, MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+ import { MatLegacyDialogRef as MatDialogRef, MatLegacyDialog as MatDialog, MatLegacyDialogModule as MatDialogModule, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 
  import { RescueDetailsDialogComponent } from './rescue-details-dialog.component';
  import { HttpClientTestingModule } from '@angular/common/http/testing';
  import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  import { FormGroup, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
  import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MaterialModule } from 'src/app/material-module';
 import { EmergencyCaseOutcomeComponent } from 'src/app/modules/emergency-register/components/emergency-case-outcome/emergency-case-outcome.component';
 

@@ -4,13 +4,13 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, UntypedFormBuilder, Validators, AbstractControl, UntypedFormArray } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { NavigationService } from '../../../../../navigation/navigation.service';
 import { Search } from '../record-search/record-search.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { MatSelectChange } from '@angular/material/select';
+import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Gallery,  MediaItem } from 'src/app/core/models/media';
 import { MediaService } from 'src/app/core/services/media/media.service';

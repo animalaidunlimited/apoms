@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Form, FormArray, UntypedFormBuilder, FormControl, FormControlName, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Observable } from 'rxjs';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
 import { DriverAssignment } from 'src/app/core/models/driver-view';

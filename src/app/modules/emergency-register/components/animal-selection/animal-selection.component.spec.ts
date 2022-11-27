@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 
 import { AnimalSelectionComponent } from './animal-selection.component';
 import {
-    MatDialogRef,
-    MatDialog,
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-} from '@angular/material/dialog';
+    MatLegacyDialogRef as MatDialogRef,
+    MatLegacyDialog as MatDialog,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+    MatLegacyDialogModule as MatDialogModule,
+} from '@angular/material/legacy-dialog';
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

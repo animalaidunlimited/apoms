@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } 
 import { Validators, AbstractControl, FormGroup } from '@angular/forms';
 import { startWith, debounceTime, switchMap, map, catchError, takeUntil } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent } from '@angular/material/legacy-autocomplete';
 import { Callers } from '../../models/responses';
 import { CallerDetailsService } from '../caller-details/caller-details.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';

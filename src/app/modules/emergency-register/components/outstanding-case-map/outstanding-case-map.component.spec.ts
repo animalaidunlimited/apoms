@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { createMapSpy, createMapConstructorSpy } from 'src/app/core/testing/fake-google-map-utils';
 //import { DEFAULT_OPTIONS } from 'src/app/core/testing/google-map';

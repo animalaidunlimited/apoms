@@ -7,7 +7,7 @@ import { ReactiveFormsModule, UntypedFormBuilder, FormsModule, Validators, FormA
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 
 describe('RescueDetailsComponent', () => {
     let component: RescueDetailsComponent;

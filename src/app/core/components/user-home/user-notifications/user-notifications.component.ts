@@ -4,7 +4,7 @@ import { Notification } from 'src/app/core/models/notification';
 import { UserNotificationService } from './../../../services/user-notification/user-notification.service';
 import { Router } from '@angular/router';
 import { MediaPreviewComponent } from '../../media/media-preview/media-preview.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MediaService } from 'src/app/core/services/media/media.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

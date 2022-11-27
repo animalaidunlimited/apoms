@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { AnimalHeaderComponent } from './animal-header.component';
 
 import {
-    MatDialog,
-    MatDialogRef,
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-} from '@angular/material/dialog';
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+    MatLegacyDialogModule as MatDialogModule,
+} from '@angular/material/legacy-dialog';
 import { ImageUploadDialog } from 'src/app/core/components/image-upload/image-upload.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MaterialModule } from 'src/app/material-module';

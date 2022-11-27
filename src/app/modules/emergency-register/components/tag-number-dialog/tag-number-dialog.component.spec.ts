@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { TagNumberDialog } from './tag-number-dialog.component';
 
 import {
-    MatDialogRef,
-    MatDialog,
-    MatDialogModule,
-    MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+    MatLegacyDialogRef as MatDialogRef,
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogModule as MatDialogModule,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';

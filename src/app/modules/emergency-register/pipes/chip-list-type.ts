@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { MatChipList, MatChip } from '@angular/material/chips';
+import { MatLegacyChipList as MatChipList, MatLegacyChip as MatChip } from '@angular/material/legacy-chips';
 
 @Pipe({name: 'chipListType'})
 

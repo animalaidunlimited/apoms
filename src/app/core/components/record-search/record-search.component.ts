@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SearchResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
 import { map, skip, takeUntil } from 'rxjs/operators';

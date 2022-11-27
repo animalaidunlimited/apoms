@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { PatientEditDialog } from './patient-edit.component';
 
 import {
-    MatDialogRef,
-    MatDialog,
-    MatDialogModule,
-    MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+    MatLegacyDialogRef as MatDialogRef,
+    MatLegacyDialog as MatDialog,
+    MatLegacyDialogModule as MatDialogModule,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { PatientStatusModule } from '../patient-status/patient-status.module';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';

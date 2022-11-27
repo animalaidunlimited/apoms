@@ -7,7 +7,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DailyRotaService } from './../../services/daily-rota.service';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AreaStaffCoverageComponent } from './../area-staff-coverage/area-staff-coverage.component';
 
 interface UserUtilisation{
