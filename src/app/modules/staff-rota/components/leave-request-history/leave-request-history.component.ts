@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, Observable } from 'rxjs';
 import { Department, DisplayLeaveRequest } from 'src/app/core/models/rota';
 import { LeaveRequestService } from './../../services/leave-request.service';
 import { FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { take, takeUntil } from 'rxjs/operators';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
@@ -89,7 +89,7 @@ export class LeaveRequestHistoryComponent implements OnInit, OnDestroy {
 
   watchUserId() : void {
 
-    this.userControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(userId =>
+    this.userControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((userId: number) =>
       this.loadRequestsForUserId(userId)
       );
 
