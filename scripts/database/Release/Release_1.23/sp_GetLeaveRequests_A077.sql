@@ -90,7 +90,8 @@ SELECT
 			JSON_OBJECT("isDeleted", lr.IsDeleted)
 			)) AS `LeaveRequests`
 FROM RawCTE lr
-WHERE RNum = 1;
+WHERE RNum = 1
+AND lr.LeaveStartDate >= CURRENT_DATE();
 
 END$$
 

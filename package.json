@@ -68,8 +68,8 @@
   "devDependencies": {
     "@angular-devkit/architect": "~0.1402.8",
     "@angular-devkit/build-angular": "^14.2.8",
-    "@angular-eslint/builder": "^3.0.0",
-    "@angular-eslint/eslint-plugin": "^3.0.0",
+    "@angular-eslint/builder": "^15.1.0",
+    "@angular-eslint/eslint-plugin": "^15.1.0",
     "@angular-eslint/eslint-plugin-template": "^3.0.0",
     "@angular-eslint/schematics": "14.1.2",
     "@angular-eslint/template-parser": "^3.0.0",
