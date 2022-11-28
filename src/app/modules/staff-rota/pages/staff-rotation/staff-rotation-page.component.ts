@@ -4,7 +4,7 @@ import { UserDetailsService } from 'src/app/core/services/user-details/user-deta
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
-import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
+import { MatSelectChange } from '@angular/material/select';
 import { map, skip, startWith, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';

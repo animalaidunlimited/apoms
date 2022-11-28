@@ -7,7 +7,7 @@ import { EmergencyRegisterPageComponent } from './pages/emergency-register-page.
 import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
 import { AddSearchMediaMatDialogModule } from './components/add-search-media-dialog/add-search-media-dialog.module';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [

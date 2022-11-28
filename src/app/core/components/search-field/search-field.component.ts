@@ -10,7 +10,7 @@ import { Search } from '../record-search/record-search.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
+import { MatSelectChange } from '@angular/material/select';
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';

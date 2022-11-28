@@ -4,7 +4,7 @@
 
   @media print {
     .isPrinting > * { display: none; }
-    .cdk-dialog-container { display: none !important; }
+    .mat-dialog-container { display: none !important; }
     .cdk_overlay_pane > * { display: none !important; }
 
     .moved-in-legend{

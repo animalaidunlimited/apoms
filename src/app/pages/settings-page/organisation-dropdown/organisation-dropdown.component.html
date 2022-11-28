@@ -47,9 +47,8 @@
 		<ng-container matColumnDef="value" sticky>
 			<mat-header-cell *matHeaderCellDef class="value-column"> {{currentDisplayName}} </mat-header-cell>
 			<mat-cell *matCellDef="let element" [formGroup]="element" class="value-column">
-				<mat-form-field floatLabel="never">
-					<input  matInput placeholder="Value" formControlName="value">
-
+				<mat-form-field>
+					<input matInput formControlName="value">
 				</mat-form-field>
 			</mat-cell>
 		</ng-container>
@@ -57,7 +56,7 @@
 		<ng-container matColumnDef="sort">
 			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
 			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element">
-				<mat-form-field floatLabel="never">
+				<mat-form-field>
 					<mat-select formControlName="sort" placeholder="Sort order">
 						<mat-option>None</mat-option>
 						<mat-option *ngFor="let x of (currentDropdownDataSource | async); let i = index;" [value]="i+1">

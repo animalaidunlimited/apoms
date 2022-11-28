@@ -6,7 +6,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 
 import { MaterialModule } from '../../../../material-module';
 import { DatePipe } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 describe('VehicleShiftDialogComponent', () => {
   let component: VehicleShiftDialogComponent;

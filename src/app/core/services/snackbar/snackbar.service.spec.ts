@@ -2,7 +2,7 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 
 import { SnackbarService } from './snackbar.service';
 
-import { MatLegacySnackBar as MatSnackBar, MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import {
     HttpTestingController,

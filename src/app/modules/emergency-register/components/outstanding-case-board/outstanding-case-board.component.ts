@@ -6,7 +6,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChildren } from '@
 import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MatLegacyChip as MatChip, MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { ThemePalette } from '@angular/material/core';
-import { MatLegacySlideToggleChange as MatSlideToggleChange } from '@angular/material/legacy-slide-toggle';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, takeUntil, map } from 'rxjs/operators';
 import { AnimalType } from 'src/app/core/models/animal-type';

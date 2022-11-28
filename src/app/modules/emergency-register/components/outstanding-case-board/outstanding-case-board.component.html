@@ -22,10 +22,10 @@
 
     <p *ngIf="filterKeysArray.length > 0" class="filterText">Filter:</p>
 
-    <mat-chip-list #filteredChipList aria-label="Filter selection">
+    <!-- <mat-chip-list #filteredChipList aria-label="Filter selection">
       <div *ngFor="let selectedChips of filterChips">
+        (removed)="selected.toggleSelected()"
         <mat-chip [removable]="removable"
-          (removed)="selected.toggleSelected()"
           style="cursor: pointer"
           selected
           *ngFor="let selected of (selectedChips.selected | chipListType)">
@@ -33,7 +33,7 @@
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
       </div>
-    </mat-chip-list>
+    </mat-chip-list> -->
 
   </div>
 

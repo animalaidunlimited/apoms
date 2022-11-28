@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { SurgeryService } from 'src/app/core/services/surgery/surgery.service';
 import { MatDialog } from '@angular/material/dialog';
-import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
+import { MatTable } from '@angular/material/table';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { SurgeryRecordDialogComponent } from '../surgery-record-dialog/surgery-record-dialog.component';
 import { take } from 'rxjs/operators';

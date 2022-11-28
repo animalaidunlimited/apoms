@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {
-    MatLegacyDialogRef as MatDialogRef,
-    MatLegacyDialog as MatDialog,
-    MatLegacyDialogModule as MatDialogModule,
-    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+    MatDialogRef,
+    MatDialog,
+    MatDialogModule,
+    MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { PatientCallDialogComponent } from './patient-call-dialog.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 

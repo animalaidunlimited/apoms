@@ -10,7 +10,7 @@ import { SurgeriesByDateDialogComponent } from '../../components/surgeries-by-da
 import { ReportingService } from '../../services/reporting.service';
 import { EmergencyCaseDialogComponent } from '../../components/emergency-case-dialog/emergency-case-dialog.component';
 import { EmergencyRecordTable } from 'src/app/core/models/emergency-record';
-import { MatLegacySlideToggleChange as MatSlideToggleChange } from '@angular/material/legacy-slide-toggle';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { take, takeUntil } from 'rxjs/operators';
 import { PatientCountInArea } from 'src/app/core/models/treatment-lists';
 import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';

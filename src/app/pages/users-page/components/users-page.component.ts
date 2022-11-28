@@ -4,17 +4,17 @@ import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
-import { MatLegacyTableDataSource as MatTableDataSource, MatLegacyTable as MatTable } from '@angular/material/legacy-table';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger } from '@angular/animations';
-import { MatLegacyOptionSelectionChange as MatOptionSelectionChange } from '@angular/material/legacy-core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { Department } from 'src/app/core/models/rota';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 
 interface StreetTreatRole {

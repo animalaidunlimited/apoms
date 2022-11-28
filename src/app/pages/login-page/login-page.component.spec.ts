@@ -3,9 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoginPageComponent } from './login-page.component';
 import { LogoModule } from '../../core/components/logo/logo.module';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -21,9 +18,6 @@ describe('LoginPageComponent', () => {
             declarations: [LoginPageComponent],
             imports: [
                 LogoModule,
-                MatCardModule,
-                MatButtonModule,
-                MatInputModule,
                 BrowserAnimationsModule,
                 FormsModule,
                 HttpClientTestingModule,

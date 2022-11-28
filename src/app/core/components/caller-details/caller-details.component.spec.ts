@@ -5,10 +5,9 @@ import { CallerDetailsComponent } from './caller-details.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaterialModule } from 'src/app/material-module';
 
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
@@ -21,7 +20,6 @@ describe('CallerDetailsComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                MatFormFieldModule,
                 MaterialModule,
                 NoopAnimationsModule,
                 MatAutocompleteModule,
