@@ -9,14 +9,14 @@
     margin: 5px;
   }
 
-  .mat-dialog-container {
+  .cdk-dialog-container {
     height: 100vh;
     overflow-x: scroll;
     scroll-behavior: smooth;
 }
 
 .number-days-wrapper {
-    width: 100%;
+    flex-grow: 1;
     margin-bottom: 24px;
 }
 

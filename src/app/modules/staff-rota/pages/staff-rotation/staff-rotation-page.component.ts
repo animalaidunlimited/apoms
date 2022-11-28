@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
 import { map, skip, startWith, takeUntil } from 'rxjs/operators';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from 'src/app/modules/staff-rota/services/rota.service';

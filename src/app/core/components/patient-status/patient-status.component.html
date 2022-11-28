@@ -1,6 +1,6 @@
 <form autocomplete="off" [formGroup]="patientStatusForm">
 
-      <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
+      <div class="flex-row flex-wrap" class="gap-20" class="flex-space-around-center">
 
       <mat-form-field>
         <mat-label>Status</mat-label>
@@ -24,7 +24,7 @@
 
     </div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
+    <div class="flex-row flex-wrap"  class="gap-20" class="flex-space-around-center">
 
       <mat-form-field *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
         <mat-label>P/N</mat-label>

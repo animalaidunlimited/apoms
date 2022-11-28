@@ -1,7 +1,7 @@
 
 <div class="contentWrapper" [formGroup]="driverViewDetails">
 
-   <div fxLayout="row wrap" fxLayoutAlign="center center" class="selectionDivWrapper">
+   <div class="selectionDivWrapper flex-row flex-wrap flex-center-center">
        <!-- Do not delete this code may be some point in the future we may need this again. -->
 
         <!-- <mat-form-field>
@@ -27,17 +27,17 @@
 
     <mat-toolbar-row *ngIf="!showComplete" class="horizontalTab">
 
-        <div fxLayout='column' class="iconDiv">
+        <div class="iconDiv flex-column">
             <a href="+918769184667" style="color: #607d8b;">
                 <mat-icon aria-label="Complete" style="font-size: 28px; cursor:pointer;">headset_mic</mat-icon>
             </a>
             <p class="iconTextCallDesk">Call desk</p>
         </div>
-        <div (click)="openMapComponent()" fxLayout='column' class="iconDiv">
+        <div (click)="openMapComponent()" class="iconDiv flex-column">
             <mat-icon aria-label="Complete" style="font-size: 30px; cursor:pointer;">location_on</mat-icon>
             <p class="iconText">Map</p>
         </div>
-        <div fxLayout='column' class="iconDiv" (click)='showCompleteList()'>
+        <div class="iconDiv flex-column" (click)="showCompleteList()">
             <mat-icon aria-label="Complete" color="primary" style="font-size: 30px; cursor:pointer;">check_circle</mat-icon>
             <p class="iconText">Complete</p>
         </div>
@@ -45,7 +45,7 @@
     </mat-toolbar-row>
 
     <mat-toolbar-row *ngIf="showComplete" class="horizontalTab">
-        <div (click)="showCompleteList()" fxLayout='column' class="backIconDiv">
+        <div (click)="showCompleteList()" class="backIconDiv flex-column">
             <mat-icon aria-label="Complete" style="font-size: 30px; cursor:pointer;">arrow_back</mat-icon>
             <p class="iconText">Back</p>
         </div>

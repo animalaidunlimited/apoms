@@ -1,23 +1,23 @@
 
-<div fxLayout="row" class="mediaGalleryContainer" *ngIf="displayImagesAndButtons">
+<div class="flex-row" class="mediaGalleryContainer" *ngIf="displayImagesAndButtons">
 
     <media-thumbnails [patientId]="patientId" [limitSize]=true></media-thumbnails>
 
 </div>
 
-<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center" *ngIf="displayImagesAndButtons">
+<div class="flex-row"  class="gap-10 flex-end-center" *ngIf="displayImagesAndButtons">
 
-    <button type='button' color="primary" mat-mini-fab>
+    <button type="button" color="primary" mat-mini-fab>
         <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>
     </button>
 
-    <button type='button' color="primary" mat-mini-fab>
+    <button type="button" color="primary" mat-mini-fab>
         <mat-icon (click)="openGalleryDialog($event)" style="cursor: pointer;">collections</mat-icon>
     </button>
 
 </div>
 
-<div fxLayout="row" fxLayoutGap='5px' fxLayoutAlign="end center" *ngIf="!displayImagesAndButtons">
+<div class="flex-row"  class="gap-50 flex-end-center" *ngIf="!displayImagesAndButtons">
 
     <div>
         <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>

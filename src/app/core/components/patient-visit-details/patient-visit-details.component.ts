@@ -14,7 +14,7 @@ import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepi
 import { UniqueValidators } from '../../validators/unique-validators';
 import { Observable, Subject } from 'rxjs';
 import { ConfirmationDialog } from '../confirm-dialog/confirmation-dialog.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
 import { map, takeUntil } from 'rxjs/operators';
 import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';

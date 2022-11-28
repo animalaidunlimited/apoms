@@ -12,7 +12,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute} from '@angular/router';
 import { LogsComponent } from 'src/app/core/components/logs/logs.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EmergencyDetailsComponent } from 'src/app/core/components/emergency-details/emergency-details.component';
 
 export interface SaveResult {

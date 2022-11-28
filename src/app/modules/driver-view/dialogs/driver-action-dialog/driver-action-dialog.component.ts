@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
@@ -46,7 +46,7 @@ showVisits = false;
   isStreetTreat!: boolean;
   private ngUnsubscribe = new Subject();
 
-  constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private driverView: DriverViewService,
     private snackBar: SnackbarService,
@@ -117,7 +117,7 @@ showVisits = false;
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
   checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {

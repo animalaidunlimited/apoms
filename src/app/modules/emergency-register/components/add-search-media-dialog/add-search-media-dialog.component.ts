@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { SearchResponse } from 'src/app/core/models/responses';
@@ -19,7 +19,7 @@ export class AddSearchMediaDialogComponent {
   searchResults$!:Observable<SearchResponse[]>;
 
   constructor(
-              public dialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
+              public MatDialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               public dialog: MatDialog,
               private caseService: CaseService

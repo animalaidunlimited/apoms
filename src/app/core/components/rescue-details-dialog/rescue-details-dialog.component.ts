@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
 import { takeUntil } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class RescueDetailsDialogComponent implements OnInit {
   constructor(
     private fb:UntypedFormBuilder,
     private detector: ChangeDetectorRef,
-    public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
+    public MatDialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
 
@@ -78,7 +78,7 @@ export class RescueDetailsDialogComponent implements OnInit {
 
         this.result.success = 1;
 
-        this.dialogRef.close(this.result);
+        this.MatDialogRef.close(this.result);
         this.detector.detectChanges();
       }
     });
@@ -88,7 +88,7 @@ export class RescueDetailsDialogComponent implements OnInit {
    }
 
   onCancel(): void {
-    this.dialogRef.close(this.result);
+    this.MatDialogRef.close(this.result);
   }
 
   onRescueDetailsResult(result:UpdateResponse){

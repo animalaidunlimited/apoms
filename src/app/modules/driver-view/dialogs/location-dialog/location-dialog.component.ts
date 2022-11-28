@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Marker } from 'src/app/core/components/location-details/location-details.component';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 
@@ -26,7 +26,7 @@ export class LocationDialogComponent implements OnInit {
 
   zoom!: number;
 
-  constructor(public dialogRef: MatDialogRef<LocationDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<LocationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
@@ -67,7 +67,7 @@ export class LocationDialogComponent implements OnInit {
 }
 
 closeLocationDialog() {
-  this.dialogRef.close();
+  this.MatDialogRef.close();
 }
 
 }

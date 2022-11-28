@@ -1,6 +1,6 @@
 <form
 [formGroup]="rotaOptions"
-fxLayout="column" fxLayoutAlign="center center">
+class="flex-column" class="flex-center-center">
 
 <mat-accordion class="accordian">
   <mat-expansion-panel>
@@ -12,9 +12,9 @@ fxLayout="column" fxLayoutAlign="center center">
         Here you can edit the settings for the rota system.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="flex-column" class="flex-center-center">
 
-        <div formGroupName="defaults" fxLayout="row wrap" fxLayoutAlign="center center">
+        <div formGroupName="defaults" class="flex-row flex-wrap" class="flex-center-center">
 
           <div>
             <mat-form-field>
@@ -48,7 +48,7 @@ fxLayout="column" fxLayoutAlign="center center">
         Add and update the rota areas.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="flex-column" class="flex-center-center">
 
       <app-rotation-area-editor class="add-records"></app-rotation-area-editor>
 
@@ -64,7 +64,7 @@ fxLayout="column" fxLayoutAlign="center center">
         Add and update the rotation roles.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="flex-column" class="flex-center-center">
 
       <app-rotation-role-editor class="add-records"></app-rotation-role-editor>
 

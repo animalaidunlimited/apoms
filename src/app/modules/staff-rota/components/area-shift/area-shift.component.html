@@ -1,5 +1,5 @@
 
-<div [formGroup]="areaShift" fxLayout="row" fxLayoutAlign="space-between center">
+<div [formGroup]="areaShift" class="flex-row flex-space-between-center">
 
   <mat-form-field style="width:125px">
         <mat-select (selectionChange)="groupSelected($event, areaShift)"
@@ -13,7 +13,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div class="area-shift-edit-buttons" fxLayout="row" fxLayoutAlign="center center">
+  <div class="area-shift-edit-buttons" class="flex-row flex-center-center">
 
     <div class="colour-input">
       <input type="color" formControlName="colour" (blur)="updateColour()">

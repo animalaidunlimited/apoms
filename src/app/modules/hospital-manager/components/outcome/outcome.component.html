@@ -3,7 +3,7 @@
 
     <legend class="legend">Vaccination details</legend>
 
-    <div fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="start">
+    <div class="flex-row flex-wrap" class="gap-15 flex-start-start">
 
     <mat-form-field>
         <input formControlName="megavac1Date" name="megavac1Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>
@@ -26,7 +26,7 @@
 
     <legend class="legend">Antibiotic details</legend>
 
-    <div fxLayout="column" fxLayout.lt-md="row wrap" fxLayoutGap="15px" fxLayoutAlign="start">
+    <div class="flex-column" fxLayout.lt-md="row wrap" class="gap-15 flex-start-start">
 
     <label class="label">Antibiotic 1</label>
 

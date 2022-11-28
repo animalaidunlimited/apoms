@@ -17,7 +17,7 @@ import { TreatmentArea } from 'src/app/core/models/treatment-lists';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { generateUUID } from 'src/app/core/helpers/utils';
 

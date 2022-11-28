@@ -1,7 +1,6 @@
-<div
-    fxLayout="row"
+<div    
     fxLayoutAlign.gt-md="space-around center"
-    class="info_tiles"
+    class="info_tiles flex-row"
     *ngIf="(scoreCards$ | async) as scoreCards">
     <div>
         <h4>Total Cases</h4>
@@ -60,7 +59,7 @@
         gdColumns.xs="repeat(2, 1fr)"
         >
         <div class="AssignedVehicle_Compare"
-            fxLayout="row wrap"
+            class="flex-row flex-wrap"
             fxLayoutAlign.lt-md="end"
             [formGroup]="assignedVehicleGroup">
             <div class="AssignedVehicle_Comapre_Visit_btn" fxFlexOrder.lt-md="3">
@@ -143,7 +142,7 @@
                                 </ng-container>
                             </div>
                         </mat-expansion-panel-header>
-                        <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
+                        <div class="flex-column gap-10 flex-start-start">
                             <div>{{streetTreatCaseDetails.AnimalDetails.Problem}}</div>
                             <div>{{streetTreatCaseDetails.AnimalDetails.Priority}}</div>
                             <div>{{streetTreatCaseDetails.AnimalDetails.MainProblem}}</div>

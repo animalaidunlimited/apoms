@@ -2,16 +2,15 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LeaveRequestService } from './../../services/leave-request.service';
 import { Department, DisplayLeaveRequest, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
 import { Observable, of, Subject } from 'rxjs';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestFormComponent } from '../../components/leave-request-form/leave-request-form.component';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { LeaveRequestHistoryComponent } from '../../components/leave-request-history/leave-request-history.component';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
-import { DatePipe } from '@angular/common';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
@@ -52,6 +51,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     this.leaveRequests = this.requestService.getLeaveRequests();
 
     this.leaveRequests.pipe(take(1), takeUntil(this.ngUnsubscribe)).subscribe(requests => {
+
         this.dataSource = new MatTableDataSource(requests);
         this.dataSource.sort = this.sort;
         this.requests = requests;
@@ -72,7 +72,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
-    this.defaultFilterPredicate = this.dataSource.filterPredicate;    
+    // this.defaultFilterPredicate = this.dataSource.filterPredicate;    
   }
 
   ngOnDestroy() {
@@ -106,7 +106,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((confirmed: boolean) => {
+    .subscribe(confirmed => {
       if (confirmed) {
         this.deleteLeaveRequest(leaveRequestId)
       }
@@ -175,8 +175,6 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
   }
 
   departmentFilterChanged(selectedDepartments: number[]) : void {
-
-    console.log(selectedDepartments);
 
     let filteredRequests = this.requests.filter(request => selectedDepartments.includes(request.departmentId));
 

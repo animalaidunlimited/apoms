@@ -1,6 +1,6 @@
 <div [formGroup]="period">
 
-  <div fxLayout="column" fxLayoutAlign="center center"
+  <div class="flex-column" class="flex-center-center"
   *ngIf="period.get('startDate')?.value
   && period.get('endDate')?.value
   && (period.get('editable')?.value === true)
@@ -13,7 +13,7 @@
 
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex-row flex-center-center">
 
       <mat-checkbox
         class="unassigned-checkbox"
@@ -31,7 +31,7 @@
       </button>
 
     </div>
-    <div fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex-row flex-center-center">
       <button mat-icon-button (click)="generateRotationPeriodDays(period)"
       *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        
         <mat-icon matTooltip="generate" [ngClass]="(!period.get('rotationPeriodId')?.value  || period.dirty) ? 'close-icon disabled' : 'close-button key'">key</mat-icon>
@@ -56,7 +56,7 @@
 
   <ng-template #dateInputs>
 
-        <div fxLayout="row" fxLayoutAlign="center center">
+        <div class="flex-row flex-center-center">
           <mat-form-field>
           <input matInput type="date" [max]="period.get('endDate')?.value" formControlName="startDate" placeholder="Period start"  [errorStateMatcher]="errorMatcher"/>
           <mat-error *ngIf="period.get('startDate')?.hasError('dateExistsInRange')">
@@ -75,7 +75,7 @@
           <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
         </button>
 
-            <div fxLayout="column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
+            <div class="flex-column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
 
               <button mat-icon-button class="close-button" (click)="editPeriod(period, true)">
                   <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>

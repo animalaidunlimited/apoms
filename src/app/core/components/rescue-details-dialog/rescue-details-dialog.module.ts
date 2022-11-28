@@ -16,4 +16,4 @@ import { RescueDetailsModule } from '../rescue-details/rescue-details.module';
     ],
     exports: [RescueDetailsDialogComponent],
 })
-export class RescueDetailsDialogModule {}
+export class RescueDetailsMatDialogModule {}

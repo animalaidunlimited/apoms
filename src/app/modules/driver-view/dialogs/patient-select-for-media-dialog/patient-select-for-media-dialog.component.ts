@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, FormGroup } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';
 
@@ -51,7 +51,7 @@ export class PatientSelectForMediaDialogComponent implements OnInit {
 
     }];
 
-  constructor(public dialogRef: MatDialogRef<PatientSelectForMediaDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<PatientSelectForMediaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: UntypedFormBuilder) { }
 
@@ -62,7 +62,7 @@ export class PatientSelectForMediaDialogComponent implements OnInit {
 
 
   closeDialog() {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 

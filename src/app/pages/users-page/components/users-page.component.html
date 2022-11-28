@@ -1,74 +1,74 @@
-<form [formGroup]='userDetails' (ngSubmit)='submit(userDetails)'>
+<form [formGroup]="userDetails" (ngSubmit)="submit(userDetails)">
 
     <mat-spinner [diameter]="100" class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-    <fieldset class='form-sub-group user-details-form'>
+    <fieldset class="form-sub-group user-details-form">
         <legend class="legend">User details</legend>
 
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
 
             <mat-form-field appearance="fill">
-                <input type='text' placeholder="Username" formControlName= 'userName' matInput required>
+                <input type="text" placeholder="Username" formControlName= "userName" matInput required>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
-                <input [type]='hide?"password":"text"' placeholder="Password" formControlName= 'password' matInput>
+                <input [type]="hide?'password':'text'" placeholder="Password" formControlName= "password" matInput>
                 <mat-icon matSuffix style="cursor: pointer;" (click)="hide=!hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Pick color</mat-label>
-                <input type="color" formControlName='colour' matInput>
+                <input type="color" formControlName="colour" matInput>
             </mat-form-field>
 
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
 
           <mat-form-field appearance="fill">
-              <input type= 'text' placeholder='First name' formControlName='firstName' matInput required>
+              <input type= "text" placeholder="First name" formControlName="firstName" matInput required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-              <input type= 'text' placeholder='Last name' formControlName='surname' matInput required>
+              <input type= "text" placeholder="Last name" formControlName="surname" matInput required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-              <input type= 'text' placeholder='Local name' formControlName='localName' matInput required>
+              <input type= "text" placeholder="Local name" formControlName="localName" matInput required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-            <input type= 'text' placeholder='Initials' formControlName= 'initials' matInput>
+            <input type= "text" placeholder="Initials" formControlName= "initials" matInput>
           </mat-form-field>
 
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
 
           <mat-form-field appearance="fill">
-              <input type= 'text' placeholder='Employee number' formControlName='employeeNumber' matInput required>
+              <input type= "text" placeholder="Employee number" formControlName="employeeNumber" matInput required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Department</mat-label>
-            <mat-select formControlName='departmentId'>
-                <mat-option *ngFor='let department of (departments$ | async)' [value]='department.departmentId'>
+            <mat-select formControlName="departmentId">
+                <mat-option *ngFor="let department of (departments$ | async)" [value]="department.departmentId">
                     {{department.department}}
                 </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="fill">                
-              <input type= 'tel' placeholder='Phone number' formControlName= 'telephone' matInput>
+              <input type= "tel" placeholder="Phone number" formControlName= "telephone" matInput>
           </mat-form-field>
 
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '20px' fxLayout.lt-md="row wrap" fxLayoutAlign='start center'>
+        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
             <mat-form-field style="padding-top: 20px;" appearance="fill">
                 <mat-label>User job type</mat-label>
-                <mat-select formControlName= 'jobTitleId' multiple>
-                    <mat-option *ngFor='let jobType of jobTypes' [value]='jobType.JobTypeId'>
+                <mat-select formControlName= "jobTitleId" multiple>
+                    <mat-option *ngFor="let jobType of jobTypes" [value]="jobType.JobTypeId">
                         {{jobType.Title}}
                     </mat-option>
                 </mat-select>
@@ -87,18 +87,18 @@
 
               <mat-form-field style="padding-top: 20px;" appearance="fill">
                 <mat-label>Fixed day off</mat-label>
-                <mat-select formControlName='fixedDayOff'>
-                    <mat-option *ngFor='let day of days' [value]='day.dayId'>
+                <mat-select formControlName="fixedDayOff">
+                    <mat-option *ngFor="let day of days" [value]="day.dayId">
                         {{day.name}}
                     </mat-option>
                 </mat-select>
               </mat-form-field>
         </div>
 
-        <div fxLayout='row' fxLayoutGap= '10px' fxLayout.lt-md="row wrap" fxLayoutAlign='center center'>
-            <button type='submit' mat-raised-button [disabled]="userDetails.invalid" color='primary'>Save</button>
-            <button type='button' mat-raised-button color='primary'>Delete</button>
-            <button type='button' (click)="resetForm()" mat-raised-button color='white'>Reset</button>
+        <div class="flex-row flex-center-center gap-20" fxLayout.lt-md="row wrap">
+            <button type="submit" mat-raised-button [disabled]="userDetails.invalid" color="primary">Save</button>
+            <button type="button" mat-raised-button color="primary">Delete</button>
+            <button type="button" (click)="resetForm()" mat-raised-button color="white">Reset</button>
         </div>
     </fieldset>
 </form>

@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@include mat.core();
 @import "variables";
 
 
@@ -23,90 +24,21 @@
 
 $my-app-foreground: my-mat-light-theme-foreground($main-font-color);
 
-$my-app-theme: mat.define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+$my-app-theme: mat.define-light-theme(
+    (
+    color: (
+        primary: $my-app-primary,
+        accent: $my-app-accent,
+        warn: $my-app-warn),
+    typography: mat.define-typography-config(),
+    density: -2
+    )
+    
+);
+
 $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-foreground));
+
 @include mat.all-legacy-component-themes($my-app-theme-with-foreground);
 
-// @include mat-base-typography($custom-typography);
 
-
-
-// @include mat-core($custom-typography);
-
-
-// @import "~@ng-select/ng-select/themes/material.theme.css";
-
-// @import '@angular/material/theming';
-
-// // Define a custom typography config that overrides the font-family as well as the
-// // `headlines` and `body-1` levels.
-//     $custom-typography: mat-typography-config(
-//     $font-family:   'Roboto',
-//     $display-4:     mat-typography-level(112px, 112px, 300),
-//     $display-3:     mat-typography-level(56px, 56px, 400),
-//     $display-2:     mat-typography-level(45px, 48px, 400),
-//     $display-1:     mat-typography-level(34px, 40px, 400),
-//     $headline:      mat-typography-level(24px, 32px, 400),
-//     $title:         mat-typography-level(20px, 32px, 500),
-//     $subheading-2:  mat-typography-level(16px, 28px, 400),
-//     $subheading-1:  mat-typography-level(15px, 24px, 400),
-//     $body-2:        mat-typography-level(14px, 24px, 500),
-//     $body-1:        mat-typography-level(14px, 20px, 400),
-//     $caption:       mat-typography-level(12px, 20px, 400),
-//     $button:        mat-typography-level(14px, 14px, 500),
-//     $input:         mat-typography-level(12px, 1.125, 400),
-//     $base:              $main-font-color,
-//     $divider:           rgba($main-font-color, 0.20),
-//     $dividers:          rgba($main-font-color, 0.20),
-//     $disabled:          rgba($main-font-color, 0.38),
-//     $disabled-button:   rgba($main-font-color, 0.38),
-//     $disabled-text:     rgba($main-font-color, 0.38),
-//     $hint-text:         rgba($main-font-color, 0.38),
-//     $secondary-text:    rgba($main-font-color, 0.54),
-//     $icon:              rgba($main-font-color, 0.54),
-//     $icons:             rgba($main-font-color, 0.54),
-//     $text:              rgba($main-font-color, 1),
-//     $slider-off:        rgba($main-font-color, 0.26),
-//     $slider-off-active: rgba($main-font-color, 0.38),
-//     $slider-min:        rgba($main-font-color, 0.38)
-// );
-
-// @include mat-base-typography($custom-typography);
-
-// // Override typography for all Angular Material, including mat-base-typography and all components.
-// @include angular-material-typography($custom-typography);
-
-// @include mat-core($custom-typography);
-
-// @import "~@ng-select/ng-select/themes/material.theme.css";
-
-// @import '@angular/material/theming';
-
-// // Define a custom typography config that overrides the font-family as well as the
-// // `headlines` and `body-1` levels.
-//     $custom-typography: mat-typography-config(
-//     $font-family:   'Roboto',
-//     $display-4:     mat-typography-level(12px, 12px, 300),
-//     $display-3:     mat-typography-level(6px, 6px, 400),
-//     $display-2:     mat-typography-level(5px, 8px, 400),
-//     $display-1:     mat-typography-level(4px, 10px, 400),
-//     $headline:      mat-typography-level(4px, 2px, 400),
-//     $title:         mat-typography-level(10px, 2px, 500),
-//     $subheading-2:  mat-typography-level(6px, 8px, 400),
-//     $subheading-1:  mat-typography-level(5px, 4px, 400),
-//     $body-2:        mat-typography-level(12px, 12px, 500),
-//     $body-1:        mat-typography-level(12px, 12px, 400),
-//     $caption:       mat-typography-level(2px, 10px, 400),
-//     $button:        mat-typography-level(12px, 12px, 500),
-//     $input:         mat-typography-level(12px, 1, 400)
-// );
-
-// @include mat-base-typography($custom-typography);
-
-// // Override typography for a specific Angular Material components.
-// @include mat-checkbox-typography($custom-typography);
-
-// // Override typography for all Angular Material, including mat-base-typography and all components.
-// @include angular-material-typography($custom-typography);
-
-// @include mat-core($custom-typography);
+// @include mat.all-component-themes($my-app-theme);

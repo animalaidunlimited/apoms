@@ -4,7 +4,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { VehicleShiftDialogComponent } from '../../dialogs/vehicle-shift-dialog/vehicle-shift-dialog.component';
 import { getShiftLeftStartingPosition, getShiftLengthAsPercentageOf24Hours } from 'src/app/core/helpers/utils';
 
@@ -111,6 +111,8 @@ export class VehicleShiftComponent implements OnInit {
         }
       }
     });
+
+    
 
     dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((confirmed: boolean) => {

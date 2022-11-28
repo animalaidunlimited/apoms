@@ -1,17 +1,17 @@
-<form fxLayoutAlign="center center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
+<form class="flex-center-center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
 
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-  <div fxLayout="column">
+  <div class="flex-column" >
 
     <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true"
       (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-    <caller-details [recordForm]="recordForm" [incomingCallerDetails]='[]'></caller-details>
+    <caller-details [recordForm]="recordForm" [incomingCallerDetails]="[]"></caller-details>
 
     <location-details [recordForm]="recordForm"></location-details>
 
-    <animal-selection [isDisplayOnly]='false' [incomingPatientArray] = '[]' (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
+    <animal-selection [isDisplayOnly]="false" [incomingPatientArray] = "[]" (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
 
     <fieldset class="form-sub-group">
 
@@ -23,9 +23,9 @@
 
     </fieldset>
 
-    <animal-selection [isDisplayOnly]='false' [incomingPatientArray] = '[]' [outcome]="true" [recordForm]="recordForm"></animal-selection>
+    <animal-selection [isDisplayOnly]="false" [incomingPatientArray] = "[]" [outcome]="true" [recordForm]="recordForm"></animal-selection>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
+    <div class="flex-row flex-wrap" class="gap-20" class="flex-center-center" class="form-sub-group">
 
       <div class="emergencySyncIcon">
         <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)"

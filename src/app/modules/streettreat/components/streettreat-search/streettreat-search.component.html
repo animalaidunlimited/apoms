@@ -4,7 +4,7 @@
 
 <div class="search-results">
 
-    <div fxLayout="column" fxLayoutAlign="center center" style="width: 100%;" *ngIf="noResults">
+    <div class="flex-column flex-center-center" style="width: 100%;" *ngIf="noResults">
 
         <mat-icon class="no-result-icon">search</mat-icon>
         <div class="no-result-primary-text">No results found</div>
@@ -12,13 +12,13 @@
         <div class="no-result-secondary-text">Please try another search</div>
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="start"  *ngIf="searchResults as searchResults;">
+    <div class="flex-column flex-start-start" *ngIf="searchResults as searchResults;">
 
         <div *ngIf="searchResults?.length !== 0;" class="result-count">
             {{searchResults?.length}} result<span *ngIf="(searchResults?.length || 0) > 1">s</span>
         </div>
 
-        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start" *ngFor="let record of searchResults">
+        <div class="flex-row flex-wrap flex-start-start gap-20" *ngFor="let record of searchResults">
 
             <app-search-streettreat-result-card (openStreetTreatCase)="openCase($event)" [record]="record"></app-search-streettreat-result-card>
 

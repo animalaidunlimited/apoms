@@ -11,7 +11,7 @@
 
   <div class="capture-buttons">
 
-    <div class='timer' [ngClass]="timer > 24000 ? 'alert' : timer > 14000 ? 'warning' : 'no-warning'" *ngIf="capturing">00:{{timer | date:'ss'}}</div>
+    <div class="timer" [ngClass]="timer > 24000 ? 'alert' : timer > 14000 ? 'warning' : 'no-warning'" *ngIf="capturing">00:{{timer | date:'ss'}}</div>
 
 
 
@@ -29,9 +29,9 @@
   </div>
 
   <div style="position: absolute; bottom: 0;">
-    <div *ngFor="let thumnailPreview of capturedImages ">
+    <div *ngFor="let thumbnailPreview of capturedImages ">
         <img
-        [src]="thumnailPreview"
+        [src]="thumbnailPreview"
         style="
         width: 4em;
         height: 4em;

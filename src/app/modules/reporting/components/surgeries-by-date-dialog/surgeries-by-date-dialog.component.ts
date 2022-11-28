@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SurgeryRecord } from 'src/app/core/models/surgery-details';
@@ -26,7 +26,7 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<PatientCallDialogComponent>
+    public MatDialogRef: MatDialogRef<PatientCallDialogComponent>
   ) {
     this.dataSource = new MatTableDataSource(this.data.surgeries);
     this.surgeryDate = this.data.surgeries[0]?.date;
@@ -40,7 +40,7 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

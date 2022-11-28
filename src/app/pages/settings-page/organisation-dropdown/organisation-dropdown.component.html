@@ -1,5 +1,5 @@
 
-<form [formGroup]="dropdownForm" fxLayout="column" fxLayoutAlign="center center">
+<form [formGroup]="dropdownForm" class="flex-column" class="flex-center-center">
 
 	<mat-form-field>
 		<mat-select placeholder="Select dropdown"
@@ -74,7 +74,7 @@
 		<ng-container matColumnDef="isDeleted">
 			<mat-header-cell *matHeaderCellDef style="justify-content: center;"> Disabled </mat-header-cell>
 			<mat-cell *matCellDef="let element; let i = index;"  [formGroup]="element" style="justify-content: center;">
-				<mat-checkbox  formControlName="isDeleted" (change)='setUpdatable(i,$event)'></mat-checkbox>
+				<mat-checkbox  formControlName="isDeleted" (change)="setUpdatable(i,$event)"></mat-checkbox>
 			</mat-cell>
 		</ng-container>
 

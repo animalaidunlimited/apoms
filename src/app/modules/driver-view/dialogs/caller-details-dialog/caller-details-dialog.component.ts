@@ -1,7 +1,7 @@
 import { Inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 
 interface DialogData {
@@ -19,7 +19,7 @@ export class CallerDetailsDialogComponent implements OnInit {
     emergencyCaseId: [this.data.assignmentDetails?.emergencyCaseId],
   });
 
-  constructor( public dialogRef: MatDialogRef<CallerDetailsDialogComponent>,
+  constructor( public MatDialogRef: MatDialogRef<CallerDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: UntypedFormBuilder) 
   { }
@@ -30,7 +30,7 @@ export class CallerDetailsDialogComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

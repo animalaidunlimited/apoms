@@ -33,3 +33,37 @@ th.mat-header-cell:first-of-type{
 .department-select{
     width: 300px;
 }
+
+.request-header-button {
+    margin-left: 20px;
+    vertical-align: super;
+}
+
+.department-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+  }
+  
+  .department-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none !important;
+  
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+  
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+  }
+
+  .department-cell{
+    cursor: context-menu;
+  }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchResponse } from '../../models/responses';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { PatientEditDialog } from '../patient-edit/patient-edit.component';
 import { RescueDetailsDialogComponent } from '../rescue-details-dialog/rescue-details-dialog.component';
 import { PatientCallDialogComponent } from 'src/app/modules/hospital-manager/components/patient-call-dialog/patient-call-dialog.component';

@@ -7,9 +7,9 @@
 
          <div [formGroupName]="index"
           class="unaccepted-item"
-          fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px">
+          class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px">
 
-        <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
+        <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
             class="unaccepted-form-fields">
 
 
@@ -26,7 +26,7 @@
 
           </div>
 
-            <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
+            <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
             class="unaccepted-form-fields">
 
 
@@ -45,7 +45,7 @@
 
           </div>
 
-          <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+          <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
           class="button-container">
 
             <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
@@ -61,7 +61,7 @@
           </div>
 
 
-       <div fxLayout="row wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
+       <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
        class="moved-out" *ngIf="listType === 'rejected from'">
 
         <button mat-button class="moveout-button" (click)="toggleMoveOut(item)">

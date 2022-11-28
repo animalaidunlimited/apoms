@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
@@ -86,7 +86,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     private dropdown: DropdownService,
     private userDetailsService: UserDetailsService,
     private dailyRotaService: DailyRotaService,
-    private dialogRef: MatDialogRef<LeaveRequestFormComponent>) {
+    private MatDialogRef: MatDialogRef<boolean>) {
 
         this.userList = this.userDetailsService.getUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
@@ -217,22 +217,18 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
     console.log(selectedFestival);
 
-    let v = this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
-
-    console.log(v);
-
-    return v;
+    return this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
 
   }
 
   onConfirmClick(): void {
     this.ngUnsubscribe.next();
-    this.dialogRef.close(true);
+    this.MatDialogRef.close(true);
   }
 
   onCancel(): void {
     this.ngUnsubscribe.next();
-    this.dialogRef.close(false);
+    this.MatDialogRef.close(false);
   }
 
   get displayFn() {

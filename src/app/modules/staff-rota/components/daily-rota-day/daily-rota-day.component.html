@@ -27,7 +27,7 @@
         <ng-container matColumnDef="userId">
           <th mat-header-cell *matHeaderCellDef class="who-header" >
             
-              <div fxLayout="row" fxLayoutAlign="center center">
+              <div class="flex-row flex-center-center">
                   <div style="margin-left: 68px;">Who</div>
                   <div>
                     <div class="who-icon" style="margin-left: 20px;">
@@ -48,7 +48,7 @@
                 
               </div>
 
-              <div class="user-search" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="showUserFilter" >
+              <div class="user-search" class="flex-row flex-space-between-center" *ngIf="showUserFilter" >
                 <mat-form-field >
                   <input matInput type="text" (keyup)="searchUsers($event)" #userSearchInput autocomplete="off">
                   <button matSuffix mat-icon-button aria-label="Clear" (click)="userSearchInput.value = ''; clearAndCloseUserSearch()">
@@ -169,7 +169,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = dataIndex" ></tr>
   </table>
 
-  <div fxLayout="row" fxLayoutGap="20px">
+  <div class="flex-row" class="gap-20">
 
     <div>
       <div class="user-list-heading">Unassigned staff</div>

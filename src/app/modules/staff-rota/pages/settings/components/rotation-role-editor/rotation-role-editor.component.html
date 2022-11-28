@@ -3,9 +3,9 @@
   <fieldset class="form-sub-group">
     <legend class="legend" i18n>Add new rotation area</legend>
 
-    <div fxLayout="column" fxLayoutAlign="start start">
+    <div class="flex-column flex-start-start">
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="string" formControlName="rotationRole" placeholder="Rotation role name"  [errorStateMatcher]="errorMatcher"/>
@@ -25,7 +25,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="time" formControlName="startTime" placeholder="Shift start time" [errorStateMatcher]="errorMatcher"/>
@@ -37,7 +37,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="time" formControlName="breakStartTime" placeholder="Break start time" [errorStateMatcher]="errorMatcher"/>
@@ -49,7 +49,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="number" min=1 formControlName="sortOrder" placeholder="Sort order" [errorStateMatcher]="errorMatcher"/>
@@ -60,7 +60,7 @@
         </mat-form-field>
       </div>
 
-        <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+        <div class="form-row flex-row flex-space-evenly-center">
     
         <mat-checkbox
           style="align-self: center;"
@@ -70,7 +70,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutGap="20px" class="form-row save-button">
+      <div class="form-row save-button flex-row gap-20 flex-space-evenly-center">
 
         <button
           type="button"

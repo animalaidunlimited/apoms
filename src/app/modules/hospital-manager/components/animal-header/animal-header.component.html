@@ -1,9 +1,9 @@
 
 <fieldset [formGroup]="patientDetailsFormGroup" class="form-sub-group">
 
-<div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="start">
+<div class="flex-row" fxLayout.lt-md="column" class="gap-5 flex-start-start">
 
-    <div fxLayout="column" fxFlex="1 1 50" fxLayoutGap="15px" fxLayoutAlign="start">
+    <div class="flex-column" fxFlex="1 1 50" class="gap-15 flex-start-start">
 
         <div class="container">
             <img [src]="profileUrl" class="containerImage" alt="Click to upload"/>
@@ -11,23 +11,23 @@
 
     </div>
 
-    <div fxLayout="column" fxFlex="0 1 50" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+    <div class="flex-column" fxFlex="0 1 50" class="gap-15" class="flex-space-around-center">
 
-        <div fxLayout="column" *ngIf="recordForm.get('patientDetails.knownAsName')?.value" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
+        <div class="flex-column" *ngIf="recordForm.get('patientDetails.knownAsName')?.value" fxFlex="0 1 60" fxLayoutGap="0px" class="flex-center-center">
             <div class="tag-number">
                 <label >{{recordForm.get('patientDetails.knownAsName')?.value}}</label>
             </div>
             <div class="primary-font-color">Known as</div>
         </div>
 
-        <div fxLayout="column" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
+        <div class="flex-column" fxFlex="0 1 60" fxLayoutGap="0px" class="flex-center-center">
             <div class="tag-number">
                 <label >{{recordForm.get('patientDetails.tagNumber')?.value}}</label>
             </div>
             <div class="primary-font-color">Tag number</div>
         </div>
 
-        <div fxLayout="column" fxFlex="0 1 60" fxLayoutGap="0px" fxLayoutAlign="center center">
+        <div class="flex-column" fxFlex="0 1 60" fxLayoutGap="0px" class="flex-center-center">
             <div>
                 <label class="current-area">{{recordForm.get('patientDetails.currentLocation')?.value}}</label>
             </div>

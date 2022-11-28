@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { UpdatedSurgery } from 'src/app/core/models/surgery-details';
 import { takeUntil } from 'rxjs/operators';
@@ -29,7 +29,7 @@ export class SurgeryRecordDialogComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
     constructor(
-        public dialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
+        public MatDialogRef: MatDialogRef<SurgeryRecordDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         private fb: UntypedFormBuilder,
     ) {
@@ -47,13 +47,13 @@ export class SurgeryRecordDialogComponent implements OnInit {
         this.canExit.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
             if (values.surgeryDetailsUpdateComplete !== 0) {
-                this.dialogRef.close(this.result);
+                this.MatDialogRef.close(this.result);
             }
         });
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.MatDialogRef.close();
     }
 
     onSurgeryDetailsResult(result: UpdatedSurgery) {

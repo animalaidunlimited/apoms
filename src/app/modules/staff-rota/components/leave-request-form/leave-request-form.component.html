@@ -4,7 +4,7 @@
   <fieldset>
     <legend class="legend">Request</legend>
 
-    <div fxLayout="column">
+    <div class="flex-column" >
 
       <mat-form-field appearance="fill">
         <mat-label>Worker name</mat-label>
@@ -58,7 +58,7 @@
 
       </mat-form-field>
 
-      <div fxLayout="row-wrap" fxLayoutAlign="start center">
+      <div class="flex-row flex-wrap flex-start-center">
 
         <mat-form-field appearance="fill">
           <mat-label>Leave requested from</mat-label>
@@ -89,7 +89,7 @@
 
         </mat-form-field>
 
-        <div fxLayout="column" fxLayoutAlign="center center" class="number-days-wrapper">          
+        <div class="number-days-wrapper flex-column flex-center-center">          
           <div class="number-days-number">{{leaveRequestForm.get('numberOfDays')?.value}}</div>
           <div class="number-days-label">Days</div>
         </div>
@@ -113,7 +113,7 @@
   <fieldset>
     <legend class="legend">Answer</legend>
 
-    <div fxLayout="column">
+    <div class="flex-column" >
 
       <div>
         <label id="granted-radio-group-label">Leave granted</label>

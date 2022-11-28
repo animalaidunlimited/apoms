@@ -2,10 +2,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequests !!
 
--- CALL AAU.sp_GetLeaveRequests('Jim');
+-- CALL AAU.sp_GetLeaveRequests2('Jim',null, null);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetLeaveRequests( IN prm_Username VARCHAR(45))
+CREATE PROCEDURE AAU.sp_GetLeaveRequests( IN prm_Username VARCHAR(45), IN prm_StartDate DATE, IN prm_EndDate DATE)
 BEGIN
 
 /*
@@ -15,9 +15,16 @@ Purpose: Retrieve a list of leave requests
 
 */
 
+
 DECLARE vOrganisationId INT;
 
+SELECT IF(prm_StartDate IS NULL, CURRENT_DATE(), prm_StartDate) INTO prm_StartDate;
+SELECT IF(prm_EndDate IS NULL, DATE_ADD(CURRENT_DATE(), INTERVAL 2 YEAR), prm_EndDate) INTO prm_EndDate; 
+
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+-- INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+-- 		VALUES (prm_Username,-111,'Leave Request','Insert', NOW());
 
 With RawCTE AS
 (
@@ -32,12 +39,25 @@ SELECT
 	lr.LeaveRequestReasonId,
 	CONCAT(lrr.LeaveRequestReason, IF(LOWER(lrr.LeaveRequestReason) = 'festival', CONCAT(' (', f.Festival,')'),'')) AS `LeaveRequestReason`,
             JSON_OBJECT("lastFestivalDetails", 
-            JSON_MERGE_PRESERVE(
-						JSON_OBJECT("requestDate", lrl.RequestDate),
-						JSON_OBJECT("leaveStartDate", lrl.LeaveStartDate),
-						JSON_OBJECT("leaveEndDate", lrl.LeaveEndDate),
-						JSON_OBJECT("numberOfDays", DATEDIFF(lrl.LeaveEndDate, lrl.LeaveStartDate) + 1)
-						)
+				JSON_MERGE_PRESERVE(
+							JSON_OBJECT("requestDate", lrl.RequestDate),
+							JSON_OBJECT("leaveStartDate", lrl.LeaveStartDate),
+							JSON_OBJECT("leaveEndDate", lrl.LeaveEndDate),
+							JSON_OBJECT("numberOfDays", DATEDIFF(lrl.LeaveEndDate, lrl.LeaveStartDate) + 1),
+							JSON_OBJECT("granted", lrl.Granted),
+							JSON_OBJECT("toolTip",CONCAT(
+									"Previous ",
+									f.Festival,
+									IF(lrl.Granted = 1, " granted", " not granted"),
+									". Started: ",
+									lrl.LeaveStartDate,
+									" for ",
+									DATEDIFF(lrl.LeaveEndDate, lrl.LeaveStartDate) + 1,
+									" day",
+									IF(DATEDIFF(lrl.LeaveEndDate, lrl.LeaveStartDate) + 1 > 1, "s", "")
+								)
+							)
+				)
 			) AS `LastGrantedFestivalDetails`,
 	lr.AdditionalInformation,
 	lr.LeaveStartDate,
@@ -58,7 +78,6 @@ INNER JOIN AAU.Department d ON d.DepartmentId = u.DepartmentId
 LEFT JOIN AAU.Festival f ON f.FestivalId = lr.FestivalId
 LEFT JOIN AAU.LeaveRequest lrl ON	lrl.UserId = lr.UserId AND
 									lrl.FestivalId = lr.FestivalId AND
-									lrl.Granted = 1 AND
                                     lrl.LeaveStartDate < lr.LeaveStartDate
 WHERE lr.OrganisationId = vOrganisationId
 AND lr.IsDeleted = 0
@@ -91,18 +110,7 @@ SELECT
 			)) AS `LeaveRequests`
 FROM RawCTE lr
 WHERE RNum = 1
-AND lr.LeaveStartDate >= CURRENT_DATE();
+AND lr.LeaveStartDate BETWEEN prm_StartDate AND prm_EndDate;
 
 END$$
-
-
-
-
-
-
-
-
-
-
-
 

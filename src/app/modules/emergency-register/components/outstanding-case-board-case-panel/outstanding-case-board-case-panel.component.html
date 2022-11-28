@@ -22,7 +22,7 @@
 
           <div fxFlex="40" style="text-align: center;">
             {{outstandingCase.emergencyNumber}}
-            <div fxLayout="row-wrap" fxLayoutAlign="space-around center"
+            <div class="flex-row flex-wrap" class="flex-space-around-center"
               *ngFor="let patient of outstandingCase?.patients">
               ({{outstandingCase.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
             </div>
@@ -38,10 +38,10 @@
 
         </mat-expansion-panel-header>
 
-        <div fxLayout="column" fxLayoutAlign="space-around start">
+        <div class="flex-column flex-space-around-start">
 
           <div *ngFor="let callerDetails of outstandingCase?.callerDetails">
-            <div fxLayout="row" fxLayoutAlign="start end">
+            <div class="flex-row flex-start-end">
               <div class="telephone-dash-container">
                 <svg height="11" width="25">
                   <line x1="10" y1="11" x2="25" y2="11" class="telephone-dash" />
@@ -55,8 +55,7 @@
 
           <div class="patients-group"
           *ngFor="let patient of outstandingCase?.patients"
-          fxLayout="row-wrap"
-          fxLayoutAlign="space-around start">
+          class="flex-row flex-wrap flex-space-around-start">
             <mat-icon
               class="imageIcon"
               (click)="openMediaDialog({patientId:patient.patientId, tagNumber:patient.tagNumber})">

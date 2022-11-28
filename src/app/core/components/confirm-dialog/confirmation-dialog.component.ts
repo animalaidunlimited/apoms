@@ -1,5 +1,5 @@
 import { Component, HostListener, Inject } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
 export interface DialogData {
@@ -29,7 +29,7 @@ export class ConfirmationDialog {
   title = 'Confirm action';
   icon = 'warn';
 
-  get vals() {
+  get messageValues() {
     return this.message.split('\n');
   }
 
@@ -41,7 +41,7 @@ export class ConfirmationDialog {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
-    private dialogRef: MatDialogRef<ConfirmationDialog>) {
+    private MatDialogRef: MatDialogRef<boolean>) {
 
         if(data){
 
@@ -54,11 +54,11 @@ export class ConfirmationDialog {
   }
 
   onConfirmClick(): void {
-    this.dialogRef.close(true);
+    this.MatDialogRef.close(true);
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.MatDialogRef.close(false);
   }
 
 }

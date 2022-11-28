@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { formatDateForMinMax, generateUUID } from 'src/app/core/helpers/utils';
@@ -57,7 +57,7 @@ export class VehicleShiftDialogComponent implements OnInit {
     private datepipe: DatePipe,
     private shiftValidator: ShiftTimeValidator,
     private organisationDetails: OrganisationDetailsService,
-    public dialogRef: MatDialogRef<VehicleShiftDialogComponent>,
+    public MatDialogRef: MatDialogRef<VehicleShiftDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingVehicleDetails
   ) { }
 

@@ -54,7 +54,7 @@ export class CaseLocationComponent implements OnInit, AfterViewInit{
 
   }
 
-  hasLargeAninmal(patients:any) : boolean{
+  hasLargeAnimal(patients:any) : boolean{
 
     return patients.some((patient: any) => patient.largeAnimal);
 

@@ -1,6 +1,6 @@
 import { MediaItem, MediaItemReturnObject, SingleMediaItem } from './../../../models/media';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -259,8 +259,7 @@ export class MediaPreviewComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed()
-    .pipe(takeUntil(this.ngUnsubscribe))
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
     .subscribe((confirmed: boolean) => {
 
       if (confirmed) {

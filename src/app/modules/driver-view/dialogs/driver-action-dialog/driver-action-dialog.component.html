@@ -4,15 +4,15 @@
 
 <div mat-dialog-content>
 
-    <form [formGroup]="formGroup" (ngSubmit)='onSubmit(formGroup.value)'>
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
 
         <div *ngFor="let control of data.formBuilderArray">
 
-           <div fxLayout = "row wrap" fxLayoutGap='10px' fxLayoutAlign="start end">
+           <div fxLayout = "row wrap gap-10 flex-start-end">
 
                 <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
                     <mat-label>{{control.label}}</mat-label>
-                    <input type="{{control.type}}" [min]='minTime' [max]='maxTime' [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
+                    <input type="{{control.type}}" [min]="minTime" [max]="maxTime" [errorStateMatcher]="errorMatcher" [formControlName]="control.formControlName" matInput>
                 </mat-form-field>
 
                 <input type="button" *ngIf="control.type == 'datetime-local'" value="{{data.subAction}}" class="actionButton"
@@ -42,9 +42,9 @@
 
            </div>
 
-           <div fxLayout='row' fxLayoutGap='10px'>
-                <div fxLayout='row' fxLayoutGap='20px'>
-                    <mat-icon class='crosshairIcon'
+           <div class="flex-row gap-10">
+                <div class="flex-row gap-20">
+                    <mat-icon class="crosshairIcon"
                     [ngClass]="{
                         'grey' : latLngChanged == false,
                         'green' : latLngChanged == true
@@ -56,7 +56,7 @@
                 </div>
 
 
-                <div (click)="openPatientSelectForMediaDialog(formGroup.value)" fxLayout='row' fxLayoutGap='20px'>
+                <div (click)="openPatientSelectForMediaDialog(formGroup.value)" class="flex-row gap-20">
                     <mat-icon class="crosshairIcon">add_a_photo</mat-icon>
                     <p>Add images</p>
                 </div>
@@ -68,7 +68,7 @@
 
         </div>
 
-        <animal-selection [isDisplayOnly]='true' hidden = 'true' [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
+        <animal-selection [isDisplayOnly]="true" hidden = "true" [outcome]="true" [recordForm]="formGroup" [incomingPatientArray] = "data.patientsArray"></animal-selection>
 
         <app-patient-visit-details
             [isStreetTreatTrue]="isStreetTreat"

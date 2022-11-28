@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'image-upload',
@@ -7,11 +7,11 @@ import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dia
     styleUrls: ['./image-upload.component.scss'],
 })
 export class ImageUploadDialog implements OnInit {
-    constructor(public dialogRef: MatDialogRef<ImageUploadDialog>) {}
+    constructor(public MatDialogRef: MatDialogRef<ImageUploadDialog>) {}
 
     ngOnInit() {}
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.MatDialogRef.close();
     }
 }

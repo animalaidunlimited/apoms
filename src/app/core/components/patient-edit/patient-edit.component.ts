@@ -1,6 +1,6 @@
 import { Component, Inject, Input } from '@angular/core';
 import { UntypedFormBuilder, FormGroup } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
     patientId: number;
@@ -22,7 +22,7 @@ export class PatientEditDialog {
     formInvalid = true;
 
     constructor(
-        public dialogRef: MatDialogRef<PatientEditDialog>,
+        public MatDialogRef: MatDialogRef<PatientEditDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         private fb: UntypedFormBuilder
     ) {
@@ -44,7 +44,7 @@ export class PatientEditDialog {
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.MatDialogRef.close();
     }
 
     setFormValidity($event:boolean){

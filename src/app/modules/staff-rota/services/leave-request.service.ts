@@ -42,9 +42,11 @@ constructor(
   return this.leaveRequestProtocol$;
 }
 
-getLeaveRequests() : Observable<DisplayLeaveRequest[]> {
+getLeaveRequests(startDate?: string, endDate?: string) : Observable<DisplayLeaveRequest[]> {
+
+  console.log(startDate);
   
-    return this.getObservable(`/GetLeaveRequests`);
+    return this.getObservable(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`);
 
 }
 

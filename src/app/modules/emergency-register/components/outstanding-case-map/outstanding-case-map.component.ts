@@ -8,7 +8,7 @@ import { CaseService } from '../../services/case.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { LocationPathSegment } from 'src/app/core/models/location';
 import { LocationService } from 'src/app/core/services/location/location.service';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { Patient } from 'src/app/core/models/patients';

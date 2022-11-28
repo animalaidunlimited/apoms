@@ -4,7 +4,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
 import { FormControl, FormGroup, FormArray, UntypedFormBuilder, Validators, AbstractControl, UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { NavigationService } from '../../../../../navigation/navigation.service';
 import { Search } from '../record-search/record-search.component';
 import { Subject } from 'rxjs';

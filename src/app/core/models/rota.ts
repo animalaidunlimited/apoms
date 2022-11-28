@@ -176,6 +176,8 @@ export interface LastFestivalDetails {
   leaveStartDate: string | Date | null;
   leaveEndDate: string | Date | null;
   numberOfDays: number;
+  granted: number | null;
+  toolTip: string | null;
 }
 
 export interface LeaveRequest {

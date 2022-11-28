@@ -17,7 +17,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" style="margin-top: 15px" *ngIf="!isPrinting">
+      <div class="flex-row" class="flex-start-center" class="gap-15" style="margin-top: 15px" *ngIf="!isPrinting">
 
         <mat-form-field >
           <mat-label>Filter by tag number</mat-label>
@@ -133,7 +133,7 @@
             class="treatment-priority-non-edit pointer"
             (click)="row.get('editing').setValue(true);"
            
-            fxLayoutAlign="center center">
+            class="flex-center-center">
               <div>{{getTreatmentPriority(row.get(column.name).value)}}</div>
             </div>
 
@@ -147,7 +147,7 @@
               <mat-button-toggle-group
               
               class="treatment-priority-select"
-              fxLayout="column"
+              class="flex-column" 
               (vertical)="true"                           
               [formControlName]="column.name" aria-label="Font Style">
   
@@ -202,7 +202,7 @@
 
             </div>
 
-            <div *ngIf="column.type === 'checkbox'" class='checkbox-column' fxLayout="row" fxLayoutAlign="center center">
+            <div *ngIf="column.type === 'checkbox'" class="checkbox-column flex-row flex-center-center">
 
 
               <mat-radio-group>
@@ -231,7 +231,7 @@
         class="select-width"
         [formGroupName]="index">
 
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="select-width">
+        <div class="select-width flex-row flex-space-between-center">
 
           <mat-form-field>
             <mat-select
@@ -375,7 +375,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 
       </div>
 
-        <div *ngIf="column.type === 'checkbox'" class='checkbox-column' fxLayout="row" fxLayoutAlign="center center">
+        <div *ngIf="column.type === 'checkbox'" class="checkbox-column" class="flex-row flex-center-center">
        <mat-radio-group>
           <mat-radio-button [value]="1"></mat-radio-button>
         </mat-radio-group>
@@ -395,7 +395,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
   <td mat-cell *matCellDef="let row;"
   class="select-width border-right">
 
-  <div fxLayout="row" fxLayoutAlign="space-between center" class="select-width">
+  <div class="select-width flex-row flex-space-between-center">
 
     <mat-form-field>
       <mat-select>
@@ -414,7 +414,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 
   <td mat-cell *matCellDef="let row;" class="select-width">
 
-  <div fxLayout="row" fxLayoutAlign="space-between center" class="select-width">
+  <div class="select-width flex-row flex-space-between-center">
 
     <mat-form-field>
       <mat-select>

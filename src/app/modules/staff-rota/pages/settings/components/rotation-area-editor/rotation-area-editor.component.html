@@ -3,9 +3,9 @@
   <fieldset class="form-sub-group">
     <legend class="legend" i18n>Add new rotation area</legend>
 
-    <div fxLayout="column" fxLayoutAlign="start start">
+    <div class="flex-column flex-start-start">
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="string" formControlName="rotationArea" placeholder="Rotation area name"  [errorStateMatcher]="errorMatcher"/>
@@ -17,7 +17,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" class="form-row">
+      <div class="form-row flex-row flex-space-evenly-center">
 
         <mat-form-field>
           <input matInput type="color" formControlName="colour" placeholder="Colour"  [errorStateMatcher]="errorMatcher"/>
@@ -32,7 +32,7 @@
 
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutGap="20px" class="form-row save-button">
+      <div class="form-row save-button flex-row flex-space-evenly-center gap-20">
 
         <button
           type="button"

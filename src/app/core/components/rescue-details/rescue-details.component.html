@@ -2,10 +2,10 @@
     [formGroup]="rescueDetails"
     fxLayout.gt-sm="column"
     fxLayoutAlign.gt-sm="center center"
-    fxLayoutGap="20"
+    class="gap-20"
     [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center"
+    <div class="flex-row flex-wrap" fxLayout.lt-md="row wrap" class="gap-20" class="flex-start-center"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
@@ -42,7 +42,7 @@
 
     </div>
 
-    <div fxLayout="row wrap"  fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap"  class="gap-20" class="flex-start-center">
 
         <ng-container *ngIf="!selfAdmission && !streetTreat">
 
@@ -98,7 +98,7 @@
 
     </div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap" class="gap-20" class="flex-start-center">
 
 
         <ng-container *ngIf="!selfAdmission">

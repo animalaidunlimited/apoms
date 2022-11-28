@@ -1,5 +1,5 @@
 
-<div fxLayout="row" fxLayoutAlign="space-around center" [formGroup]="areaForm" style="margin-top: 10px;">
+<div class="flex-row" class="flex-space-around-center" [formGroup]="areaForm" style="margin-top: 10px;">
 
   <div>
 
@@ -17,7 +17,7 @@
 
   </div>
 
-  <div fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="flex-row flex-space-between-center">
 
     <div>
 
@@ -41,13 +41,13 @@
 
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="center center" class="period-dates-wrapper">
+    <div class="flex-column" class="flex-center-center" class="period-dates-wrapper">
 
       <div [hidden]="!startDate">
         {{(startDate | date : "EEE,dd/MMM") + ' - ' + (endDate | date : "EEE,dd/MMM")}}
       </div>
 
-      <div fxLayout="row" fxLayoutAlign="space-around center" class="direction-container">
+      <div class="flex-row" class="flex-space-around-center" class="direction-container">
 
         <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(previous)" [disabled]="leftDisabled" matTooltip="Save areas to preferences">
           <mat-icon>keyboard_arrow_left</mat-icon>

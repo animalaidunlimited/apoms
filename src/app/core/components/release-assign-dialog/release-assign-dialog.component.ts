@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OutstandingAssignment } from '../../models/outstanding-case';
 import { ReleaseDetails } from '../../models/release';
 
@@ -17,7 +17,7 @@ export class ReleaseAssignDialogComponent implements OnInit {
   formData!: ReleaseDetails;
   formInvalid = false;
 
-  constructor(public dialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
 
 
@@ -44,12 +44,12 @@ export class ReleaseAssignDialogComponent implements OnInit {
 
   onSaveResponse(result:any){
     if(result > 0){
-      this.dialogRef.close();
+      this.MatDialogRef.close();
     }
   }
 
   closeDialog(){
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }
