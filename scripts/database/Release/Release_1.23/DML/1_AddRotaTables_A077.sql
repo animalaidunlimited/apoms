@@ -256,7 +256,7 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `RotaDayId` INTEGER AUTO_INCREMENT NOT NULL,
 `RotaDayDate` DATE NOT NULL,
 `RotationPeriodId` INTEGER NOT NULL,
-`AreaShiftId` INTEGER NOT NULL,
+`RotationRoleId` INTEGER NOT NULL,
 `UserId` INTEGER NULL,
 `ActualStartTime` TIME NULL,
 `ActualEndTime` TIME NULL,
@@ -286,10 +286,10 @@ INDEX `FK_RotaDayAssignment_RotationPeriod_RotationPeriodId_idx` (`RotationPerio
     REFERENCES `AAU`.`RotationPeriod` (`RotationPeriodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-INDEX `FK_RotaDayAssignment_AreaShift_AreaShiftId_idx` (`AreaShiftId` ASC) VISIBLE,
-  CONSTRAINT `FK_RotaDayAssignment_AreaShift_AreaShiftId`
-    FOREIGN KEY (`AreaShiftId`)
-    REFERENCES `AAU`.`AreaShift` (`AreaShiftId`)
+INDEX `FK_RotaDayAssignment_RotationRole_RotationRoleId_idx` (`RotationRoleId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotaDayAssignment_RotationRole_RotationRoleId`
+    FOREIGN KEY (`RotationRoleId`)
+    REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );

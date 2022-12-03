@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UsersPageRoutingModule } from './users-page-routing.module';
-import { MaterialModule } from 'src/app/material-module';
 import { UsersPageComponent } from './components/users-page.component';
+import { MaterialModule } from 'src/app/material-module';
 
 @NgModule({
     declarations: [UsersPageComponent],

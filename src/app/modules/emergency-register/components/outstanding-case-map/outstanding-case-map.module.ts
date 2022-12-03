@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material-module';
 import { OutstandingCaseMapComponent } from './outstanding-case-map.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
@@ -16,7 +15,6 @@ import { SearchResultCardModule } from 'src/app/core/components/search-result-ca
 
         CommonModule,
         MaterialModule,
-        FlexLayoutModule,
         GoogleMapsModule,
         SearchResultCardModule,
         OutstandingCaseBoardAmbulanceModule

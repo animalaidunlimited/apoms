@@ -7,7 +7,6 @@ import { CdkStepperModule } from '@angular/cdk/stepper';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CdkMenuModule } from '@angular/cdk/menu';
-import { FlexLayoutModule, MediaMarshaller } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -54,7 +53,6 @@ import { ReactiveFormsModule } from '@angular/forms';
         CdkTreeModule,
         CdkMenuModule,
         DragDropModule,
-        FlexLayoutModule,
         FormsModule,
         MatAutocompleteModule,
         MatBadgeModule,
@@ -99,30 +97,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ],
 })
 
-export class MaterialModule {
-
-    lastValue:any;
-
-    public constructor (
-      m: MediaMarshaller
-    ) {
-      // hack until resolve: https://github.com/angular/flex-layout/issues/1201
-      // @ts-ignore
-      m.subject.subscribe((x) => {
-        if (m.activatedBreakpoints.filter((b) => b.alias === 'print').length === 0) {
-          this.lastValue = [...m.activatedBreakpoints];
-        } else {
-          m.activatedBreakpoints = [...this.lastValue];
-          // @ts-ignore
-          m.hook.collectActivations = () => {};
-          // @ts-ignore
-          m.hook.deactivations = [...this.lastValue];
-        }
-      });
-    }
-
-
-}
+export class MaterialModule {}
 
 /*  Copyright 2019 Google LLC. All Rights Reserved.
     Use of this source code is governed by an MIT-style license that
